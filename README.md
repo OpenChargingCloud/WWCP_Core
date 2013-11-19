@@ -1,11 +1,11 @@
-eMI3 Mockup CLI
-===============
+eMI3 Mockup
+===========
 
 Thank you for your interest in the Electro Mobility ICT Interoperability
 Initiative (eMI3) Open Source Implementation, which is currently being
 administered by the Belectric Group (Belectric Drive GmbH / Belectric IT
 Solutions GmbH). This software is maintained to support the requirements
-analysis in WG55 (Communication Protocols) and to ensure the practicability of
+analysis in WG5 (Communication Protocols) and to ensure the practicability of
 the upcoming standard. Therefore it is _not_ intended for production use, but
 for reference and educational purpose only.
 
