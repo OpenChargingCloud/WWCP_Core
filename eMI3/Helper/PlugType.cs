@@ -21,6 +21,8 @@ namespace de.eMI3
     public enum PlugType
     {
 
+        SCHUKO                  = 0,
+
         Standard_Type_A         = 1,
         Standard_Type_B         = 2,
         Standard_Type_C         = 3,

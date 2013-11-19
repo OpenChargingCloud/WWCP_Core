@@ -148,6 +148,35 @@ namespace de.eMI3
         #endregion
 
 
+        #region CreateNewSocketOutlet(SocketOutlet_Id, Action)
+
+        /// <summary>
+        /// Register a new socket outlet.
+        /// </summary>
+        public SocketOutlet CreateNewSocketOutlet(SocketOutlet_Id SocketOutlet_Id, Action<SocketOutlet> Action)
+        {
+
+            if (SocketOutlet_Id == null)
+                throw new ArgumentNullException("SocketOutlet_Id", "The given SocketOutlet_Id must not be null!");
+
+            if (_SocketOutlets.ContainsKey(SocketOutlet_Id))
+                throw new Exception();
+
+
+            var _SocketOutlet = new SocketOutlet(SocketOutlet_Id, this);
+
+            if (Action != null)
+                Action(_SocketOutlet);
+
+            if (_SocketOutlets.TryAdd(SocketOutlet_Id, _SocketOutlet))
+                return _SocketOutlet;
+
+            throw new Exception();
+
+        }
+
+        #endregion
+
 
         #region IEnumerable<SocketOutlet> Members
 

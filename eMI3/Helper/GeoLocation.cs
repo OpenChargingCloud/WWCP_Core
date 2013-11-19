@@ -32,6 +32,15 @@ namespace de.eMI3
 
         #region Properties
 
+        public Boolean              IsValid
+        {
+            get
+            {
+                return (Latitude != 0.0 && Longitude != 0.0);
+            }
+        }
+
+
         /// <summary>
         /// The gravitational model.
         /// </summary>

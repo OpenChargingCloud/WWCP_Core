@@ -99,6 +99,7 @@ namespace de.eMI3
 
         /// <summary>
         /// The geographical location of the charging station.
+        /// If it is not set return the geographical location of its EVSPool.
         /// </summary>
         [Optional]
         public GeoLocation GeoLocation
@@ -106,7 +107,13 @@ namespace de.eMI3
 
             get
             {
-                return _StationLocation;
+
+                if (_StationLocation.IsValid)
+                    return _StationLocation;
+
+                else
+                    return Pool.PoolLocation;
+
             }
 
             set

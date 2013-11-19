@@ -386,10 +386,10 @@ namespace de.eMI3
         #endregion
 
 
-        #region CreateNewPool(EVSPool_Id, Action)
+        #region CreateNewStation(ChargingStation_Id, Action)
 
         /// <summary>
-        /// Register an EVSPool.
+        /// Register a new charging station.
         /// </summary>
         public ChargingStation CreateNewStation(ChargingStation_Id ChargingStation_Id, Action<ChargingStation> Action)
         {
