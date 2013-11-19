@@ -46,6 +46,43 @@ namespace de.eMI3
 
         #region Properties
 
+        #region Name
+
+        private I8NString _Name;
+
+        /// <summary>
+        /// The offical (multi-language) name of an EVSE operator.
+        /// </summary>
+        [Mandatory]
+        public I8NString Name
+        {
+
+            get
+            {
+                return _Name;
+            }
+
+            set
+            {
+                SetProperty<I8NString>(ref _Name, value);
+            }
+
+        }
+
+        #endregion
+
+
+        #region EVSPools
+
+        public IEnumerable<EVSPool> EVSPools
+        {
+            get
+            {
+                return _RegisteredEVSPools.Values;
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -75,7 +112,9 @@ namespace de.eMI3
             : base(Id)
         {
 
-            this._RegisteredEVSPools  = new ConcurrentDictionary<EVSPool_Id, EVSPool>();
+            this.Name                   = new I8NString();
+
+            this._RegisteredEVSPools    = new ConcurrentDictionary<EVSPool_Id, EVSPool>();
 
         }
 
