@@ -386,12 +386,12 @@ namespace de.eMI3
         #endregion
 
 
-        #region CreateNewStation(ChargingStation_Id, Action)
+        #region CreateNewStation(ChargingStation_Id, Action = null)
 
         /// <summary>
         /// Register a new charging station.
         /// </summary>
-        public ChargingStation CreateNewStation(ChargingStation_Id ChargingStation_Id, Action<ChargingStation> Action)
+        public ChargingStation CreateNewStation(ChargingStation_Id ChargingStation_Id, Action<ChargingStation> Action = null)
         {
 
             if (ChargingStation_Id == null)

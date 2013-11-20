@@ -256,7 +256,7 @@ namespace de.eMI3
         #endregion
 
 
-        public EVSE CreateNewEVSE(EVSE_Id Id, Action<EVSE> Action)
+        public EVSE CreateNewEVSE(EVSE_Id Id, Action<EVSE> Action = null)
         {
 
             if (Id == null)

@@ -88,19 +88,19 @@ namespace de.eMI3
 
         #region Constructor(s)
 
-        #region EVSEOperator()
+        #region (internal) EVSEOperator()
 
         /// <summary>
         /// Create a new Electric Vehicle Supply Equipment Operator (EVSOP) to manage
         /// multiple Electric Vehicle Supply Equipments (EVSEs).
         /// </summary>
-        public EVSEOperator()
-            : this(EVSEOperator_Id.New)
+        internal EVSEOperator(RoamingNetwork  RoamingNetwork)
+            : this(EVSEOperator_Id.New, RoamingNetwork)
         { }
 
         #endregion
 
-        #region EVSEOperator(Id)
+        #region (internal) EVSEOperator(Id)
 
         /// <summary>
         /// Create a new Electric Vehicle Supply Equipment Operator (EVSOP) to manage
@@ -108,7 +108,8 @@ namespace de.eMI3
         /// and having the given EVSEOperator_Id.
         /// </summary>
         /// <param name="Id">The EVSPool Id.</param>
-        public EVSEOperator(EVSEOperator_Id Id)
+        internal EVSEOperator(EVSEOperator_Id  Id,
+                              RoamingNetwork       RoamingNetwork)
             : base(Id)
         {
 

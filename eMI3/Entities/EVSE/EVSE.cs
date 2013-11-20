@@ -148,12 +148,12 @@ namespace de.eMI3
         #endregion
 
 
-        #region CreateNewSocketOutlet(SocketOutlet_Id, Action)
+        #region CreateNewSocketOutlet(SocketOutlet_Id, Action = null)
 
         /// <summary>
         /// Register a new socket outlet.
         /// </summary>
-        public SocketOutlet CreateNewSocketOutlet(SocketOutlet_Id SocketOutlet_Id, Action<SocketOutlet> Action)
+        public SocketOutlet CreateNewSocketOutlet(SocketOutlet_Id SocketOutlet_Id, Action<SocketOutlet> Action = null)
         {
 
             if (SocketOutlet_Id == null)

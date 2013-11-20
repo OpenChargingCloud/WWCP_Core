@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Helper\Attributes\ChargeWithContract.cs" />
     <Compile Include="Helper\Attributes\ChargeWithoutContract.cs" />
     <Compile Include="Helper\Attributes\FreeCharge.cs" />
@@ -76,14 +77,14 @@
     <Compile Include="Entities\eMT_Id.cs" />
     <Compile Include="Entities\EVSE\EVSE_Id.cs" />
     <Compile Include="Entities\EVSE\EVSE.cs" />
+    <Compile Include="RoamingNetwork\RoamingNetwork_Id.cs" />
+    <Compile Include="RoamingNetwork\RoamingNetwork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Playground\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

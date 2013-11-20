@@ -37,7 +37,7 @@ namespace de.eMI3
     /// <summary>
     /// An abstract ev entity.
     /// </summary>
-    public abstract class AEntity<TId>
+    public abstract class AEntity<TId> : IEntity<TId>
         where TId : IId
     {
 
