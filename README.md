@@ -1,5 +1,5 @@
-eMI3 Mockup
-===========
+eMI3 Core
+=========
 
 Thank you for your interest in the Electro Mobility ICT Interoperability
 Initiative (eMI3) Open Source Implementation, which is currently being
