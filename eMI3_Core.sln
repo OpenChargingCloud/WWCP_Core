@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eMI3", "eMI3\eMI3.csproj", "{33836742-AF1D-4AA4-963F-B0A8E60E6480}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eMI3_Core", "eMI3_Core\eMI3_Core.csproj", "{33836742-AF1D-4AA4-963F-B0A8E60E6480}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eMI3_UnitTests", "eMI3_UnitTests\eMI3_UnitTests.csproj", "{C07EA868-FCF7-4919-AC03-7B6D97F81040}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eMI3_Core_UnitTests", "eMI3_Core_UnitTests\eMI3_Core_UnitTests.csproj", "{C07EA868-FCF7-4919-AC03-7B6D97F81040}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eMI3_XML", "Representations\eMI3_XML\eMI3_XML.csproj", "{98E75E5F-03B6-4003-A6C1-CB94E3888010}"
 EndProject

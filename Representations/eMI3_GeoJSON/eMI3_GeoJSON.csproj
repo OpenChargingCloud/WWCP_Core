@@ -51,13 +51,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\eMI3\eMI3.csproj">
-      <Project>{33836742-af1d-4aa4-963f-b0a8e60e6480}</Project>
-      <Name>eMI3</Name>
-    </ProjectReference>
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="README.md" />
+    <ProjectReference Include="..\..\eMI3_Core\eMI3_Core.csproj">
+      <Project>{33836742-af1d-4aa4-963f-b0a8e60e6480}</Project>
+      <Name>eMI3_Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

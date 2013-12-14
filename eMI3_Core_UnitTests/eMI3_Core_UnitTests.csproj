@@ -7,8 +7,8 @@
     <ProjectGuid>{C07EA868-FCF7-4919-AC03-7B6D97F81040}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>de.EMICT.UnitTests</RootNamespace>
-    <AssemblyName>EMICT_UnitTests</AssemblyName>
+    <RootNamespace>de.eMI3.Core.UnitTests</RootNamespace>
+    <AssemblyName>eMI3_Core_UnitTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\EMICT_UnitTests.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\eMI3_Core_UnitTests.xml</DocumentationFile>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -31,7 +31,7 @@
     </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\EMICT_UnitTests.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\eMI3_Core_UnitTests.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="nunit.framework">
@@ -55,9 +55,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\eMI3\eMI3.csproj">
+    <ProjectReference Include="..\eMI3_Core\eMI3_Core.csproj">
       <Project>{33836742-af1d-4aa4-963f-b0a8e60e6480}</Project>
-      <Name>eMI3</Name>
+      <Name>eMI3_Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\Representations\eMI3_GeoJSON\eMI3_GeoJSON.csproj">
       <Project>{5fecd89d-80c3-407a-9ccd-2b6180882f17}</Project>
@@ -66,6 +66,10 @@
     <ProjectReference Include="..\Representations\eMI3_JSON-LD\eMI3_JSON-LD.csproj">
       <Project>{0fdf7565-a2b4-4ae6-b18c-57c927d4a532}</Project>
       <Name>eMI3_JSON-LD</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Representations\eMI3_RDF\eMI3_RDF.csproj">
+      <Project>{0fbd2942-fe7a-4d7c-a57c-59172506e2e0}</Project>
+      <Name>eMI3_RDF</Name>
     </ProjectReference>
     <ProjectReference Include="..\Representations\eMI3_XML\eMI3_XML.csproj">
       <Project>{98e75e5f-03b6-4003-a6c1-cb94e3888010}</Project>

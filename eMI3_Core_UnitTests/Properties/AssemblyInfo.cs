@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("eMI3 Classes")]
-[assembly: AssemblyDescription("eMI3 Classes")]
+[assembly: AssemblyTitle("eMI3 Core UnitTests")]
+[assembly: AssemblyDescription("eMI3 Core UnitTests")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("BELECTRIC IT Solutions GmbH")]
-[assembly: AssemblyProduct("eMI3 Classes")]
-[assembly: AssemblyCopyright("Copyright © 2013 BELECTRIC IT Solutions GmbH")]
+[assembly: AssemblyProduct("eMI3 Core UnitTests")]
+[assembly: AssemblyCopyright("Copyright ©  2013 BELECTRIC IT Solutions GmbH")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("b9bbf6a0-73c8-4a0f-99a9-61ed7b8d33fe")]
+[assembly: Guid("e1071ea6-0c73-4e80-baa5-0fa8de0dd0d3")]
 
 // Version information for an assembly consists of the following four values:
 //
