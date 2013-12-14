@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MinimalTests.cs" />
     <Compile Include="Ids\EVP_IdTests.cs" />
     <Compile Include="Ids\EVSP_IdTests.cs" />
     <Compile Include="Ids\EVSEOperator_IdTests.cs" />

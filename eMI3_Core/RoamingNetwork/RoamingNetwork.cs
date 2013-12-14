@@ -33,8 +33,8 @@ namespace de.eMI3
     /// with the EVSE Operator backend.
     /// </summary>
     public class RoamingNetwork : AEntity<RoamingNetwork_Id>,
-                              IEquatable<RoamingNetwork>, IComparable<RoamingNetwork>, IComparable,
-                              IEnumerable<IEntity>
+                                  IEquatable<RoamingNetwork>, IComparable<RoamingNetwork>, IComparable,
+                                  IEnumerable<IEntity>
     {
 
         #region Data
@@ -124,7 +124,7 @@ namespace de.eMI3
 
         #endregion
 
-        #region RoamingNetwork(Id, Operator)
+         #region RoamingNetwork(Id, Operator)
 
         /// <summary>
         /// Create a new group/pool of Electric Vehicle Supply Equipments (RoamingNetwork)
