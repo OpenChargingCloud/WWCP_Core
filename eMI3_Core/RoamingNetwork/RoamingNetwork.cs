@@ -21,6 +21,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
+using eu.Vanaheimr.Illias.Commons;
+using eu.Vanaheimr.Illias.Commons.Votes;
+using eu.Vanaheimr.Styx.Arrows;
+
 #endregion
 
 namespace de.eMI3
@@ -145,6 +149,94 @@ namespace de.eMI3
 
         #region Events
 
+        #region EVSEOperatorAddition
+
+        private readonly IVotingNotificator<RoamingNetwork, EVSEOperator, Boolean> EVSEOperatorAddition;
+
+        /// <summary>
+        /// Called whenever an EVSEOperator will be or was added.
+        /// </summary>
+        public IVotingSender<RoamingNetwork, EVSEOperator, Boolean> OnEVSEOperatorAddition
+        {
+            get
+            {
+                return EVSEOperatorAddition;
+            }
+        }
+
+        #endregion
+
+        #region EVServiceProviderAddition
+
+        private readonly IVotingNotificator<RoamingNetwork, EVServiceProvider, Boolean> EVServiceProviderAddition;
+
+        /// <summary>
+        /// Called whenever an EVServiceProvider will be or was added.
+        /// </summary>
+        public IVotingSender<RoamingNetwork, EVServiceProvider, Boolean> OnEVServiceProviderAddition
+        {
+            get
+            {
+                return EVServiceProviderAddition;
+            }
+        }
+
+        #endregion
+
+        #region RoamingProviderAddition
+
+        private readonly IVotingNotificator<RoamingNetwork, RoamingProvider, Boolean> RoamingProviderAddition;
+
+        /// <summary>
+        /// Called whenever a RoamingProvider will be or was added.
+        /// </summary>
+        public IVotingSender<RoamingNetwork, RoamingProvider, Boolean> OnRoamingProviderAddition
+        {
+            get
+            {
+                return RoamingProviderAddition;
+            }
+        }
+
+        #endregion
+
+        #region SearchProviderAddition
+
+        private readonly IVotingNotificator<RoamingNetwork, SearchProvider, Boolean> SearchProviderAddition;
+
+        /// <summary>
+        /// Called whenever an SearchProvider will be or was added.
+        /// </summary>
+        public IVotingSender<RoamingNetwork, SearchProvider, Boolean> OnSearchProviderAddition
+        {
+            get
+            {
+                return SearchProviderAddition;
+            }
+        }
+
+        #endregion
+
+
+        // EVSE operator events
+
+        #region EVSPoolAddition
+
+        internal readonly IVotingNotificator<EVSEOperator, EVSPool, Boolean> EVSPoolAddition;
+
+        /// <summary>
+        /// Called whenever an EVS pool will be or was added.
+        /// </summary>
+        public IVotingSender<EVSEOperator, EVSPool, Boolean> OnEVSPoolAddition
+        {
+            get
+            {
+                return EVSPoolAddition;
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
@@ -152,8 +244,8 @@ namespace de.eMI3
         #region RoamingNetwork()
 
         /// <summary>
-        /// Create a new roaming network
-        /// having a random roaming network identification.
+        /// Create a new roaming network having a random
+        /// roaming network identification.
         /// </summary>
         public RoamingNetwork()
             : this(RoamingNetwork_Id.New)
@@ -161,24 +253,31 @@ namespace de.eMI3
 
         #endregion
 
-        #region RoamingNetwork(Id, Operator)
+        #region RoamingNetwork(Id)
 
         /// <summary>
-        /// Create a new roaming network
-        /// having the given roaming network identification.
+        /// Create a new roaming network having the given
+        /// unique roaming network identification.
         /// </summary>
-        /// <param name="Id">The RoamingNetwork Id.</param>
+        /// <param name="Id">The unique identification of the roaming network.</param>
         public RoamingNetwork(RoamingNetwork_Id Id)
             : base(Id)
         {
 
-            this._EVSEOperators       = new ConcurrentDictionary<EVSEOperator_Id,      EVSEOperator>();
-            this._EVServiceProviders  = new ConcurrentDictionary<EVServiceProvider_Id, EVServiceProvider>();
-            this._RoamingProviders    = new ConcurrentDictionary<RoamingProvider_Id,   RoamingProvider>();
-            this._SearchProviders     = new ConcurrentDictionary<SearchProvider_Id,    SearchProvider>();
+            this._EVSEOperators             = new ConcurrentDictionary<EVSEOperator_Id,      EVSEOperator>();
+            this._EVServiceProviders        = new ConcurrentDictionary<EVServiceProvider_Id, EVServiceProvider>();
+            this._RoamingProviders          = new ConcurrentDictionary<RoamingProvider_Id,   RoamingProvider>();
+            this._SearchProviders           = new ConcurrentDictionary<SearchProvider_Id,    SearchProvider>();
 
-            this.Name                 = new I8NString(Languages.en, Id.ToString());
-            this.Description          = new I8NString();
+            this.Name                       = new I8NString(Languages.en, Id.ToString());
+            this.Description                = new I8NString();
+
+            this.EVSEOperatorAddition       = new VotingNotificator<RoamingNetwork, EVSEOperator,      Boolean>(() => new VetoVote(), true);
+            this.EVServiceProviderAddition  = new VotingNotificator<RoamingNetwork, EVServiceProvider, Boolean>(() => new VetoVote(), true);
+            this.RoamingProviderAddition    = new VotingNotificator<RoamingNetwork, RoamingProvider,   Boolean>(() => new VetoVote(), true);
+            this.SearchProviderAddition     = new VotingNotificator<RoamingNetwork, SearchProvider,    Boolean>(() => new VetoVote(), true);
+
+            this.EVSPoolAddition            = new VotingNotificator<EVSEOperator,   EVSPool,           Boolean>(() => new VetoVote(), true);
 
         }
 
@@ -190,7 +289,8 @@ namespace de.eMI3
         #region CreateNewEVSEOperator(EVSEOperator_Id, Action = null)
 
         /// <summary>
-        /// Create and register a new EVSE operator.
+        /// Create and register a new EVSE operator having the given
+        /// unique EVSE operator identification.
         /// </summary>
         /// <param name="EVSEOperator_Id">The unique identification of the new EVSE operator.</param>
         /// <param name="Action">An optional delegate to configure the new EVSE operator after its creation.</param>
@@ -210,8 +310,14 @@ namespace de.eMI3
             if (Action != null)
                 Action(_EVSEOperator);
 
-            if (_EVSEOperators.TryAdd(EVSEOperator_Id, _EVSEOperator))
-                return _EVSEOperator;
+            if (EVSEOperatorAddition.SendVoting(this, _EVSEOperator))
+            {
+                if (_EVSEOperators.TryAdd(EVSEOperator_Id, _EVSEOperator))
+                {
+                    EVSEOperatorAddition.SendNotification(this, _EVSEOperator);
+                    return _EVSEOperator;
+                }
+            }
 
             throw new Exception();
 
@@ -222,7 +328,8 @@ namespace de.eMI3
         #region CreateNewEVServiceProvider(EVServiceProvider_Id, Action = null)
 
         /// <summary>
-        /// Create and register a new electric vehicle service provider.
+        /// Create and register a new electric vehicle service provider having the given
+        /// unique electric vehicle service provider identification.
         /// </summary>
         /// <param name="EVServiceProvider_Id">The unique identification of the new roaming provider.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
@@ -242,8 +349,14 @@ namespace de.eMI3
             if (Action != null)
                 Action(_EVServiceProvider);
 
-            if (_EVServiceProviders.TryAdd(EVServiceProvider_Id, _EVServiceProvider))
-                return _EVServiceProvider;
+            if (EVServiceProviderAddition.SendVoting(this, _EVServiceProvider))
+            {
+                if (_EVServiceProviders.TryAdd(EVServiceProvider_Id, _EVServiceProvider))
+                {
+                    EVServiceProviderAddition.SendNotification(this, _EVServiceProvider);
+                    return _EVServiceProvider;
+                }
+            }
 
             throw new Exception();
 
@@ -254,7 +367,8 @@ namespace de.eMI3
         #region CreateNewRoamingProvider(RoamingProvider_Id, Action = null)
 
         /// <summary>
-        /// Create and register a new roaming provider.
+        /// Create and register a new electric vehicle roaming provider having the given
+        /// unique electric vehicle roaming provider identification.
         /// </summary>
         /// <param name="RoamingProvider_Id">The unique identification of the new roaming provider.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
@@ -274,8 +388,14 @@ namespace de.eMI3
             if (Action != null)
                 Action(_RoamingProvider);
 
-            if (_RoamingProviders.TryAdd(RoamingProvider_Id, _RoamingProvider))
-                return _RoamingProvider;
+            if (RoamingProviderAddition.SendVoting(this, _RoamingProvider))
+            {
+                if (_RoamingProviders.TryAdd(RoamingProvider_Id, _RoamingProvider))
+                {
+                    RoamingProviderAddition.SendNotification(this, _RoamingProvider);
+                    return _RoamingProvider;
+                }
+            }
 
             throw new Exception();
 
@@ -286,7 +406,8 @@ namespace de.eMI3
         #region CreateNewSearchProvider(SearchProvider_Id, Action = null)
 
         /// <summary>
-        /// Create and register a new search provider.
+        /// Create and register a new charging station search provider having the given
+        /// unique charging station search provider identification.
         /// </summary>
         /// <param name="SearchProvider_Id">The unique identification of the new search provider.</param>
         /// <param name="Action">An optional delegate to configure the new search provider after its creation.</param>
@@ -306,8 +427,14 @@ namespace de.eMI3
             if (Action != null)
                 Action(_SearchProvider);
 
-            if (_SearchProviders.TryAdd(SearchProvider_Id, _SearchProvider))
-                return _SearchProvider;
+            if (SearchProviderAddition.SendVoting(this, _SearchProvider))
+            {
+                if (_SearchProviders.TryAdd(SearchProvider_Id, _SearchProvider))
+                {
+                    SearchProviderAddition.SendNotification(this, _SearchProvider);
+                    return _SearchProvider;
+                }
+            }
 
             throw new Exception();
 

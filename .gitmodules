@@ -1,0 +1,6 @@
+[submodule "libs/Illias"]
+	path = libs/Illias
+	url = git@github.com:Vanaheimr/Illias.git
+[submodule "libs/Styx"]
+	path = libs/Styx
+	url = git@github.com:Vanaheimr/Styx.git

@@ -24,6 +24,10 @@ using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
+using eu.Vanaheimr.Illias.Commons;
+using eu.Vanaheimr.Illias.Commons.Votes;
+using eu.Vanaheimr.Styx.Arrows;
+
 #endregion
 
 namespace de.eMI3
@@ -41,6 +45,27 @@ namespace de.eMI3
         #region Data
 
         private readonly ConcurrentDictionary<EVSPool_Id, EVSPool>  _RegisteredEVSPools;
+
+        #endregion
+
+        #region Events
+
+        #region EVSPoolAddition
+
+        private readonly IVotingNotificator<EVSEOperator, EVSPool, Boolean> EVSPoolAddition;
+
+        /// <summary>
+        /// Called whenever an EVS pool will be or was added.
+        /// </summary>
+        public IVotingSender<EVSEOperator, EVSPool, Boolean> OnEVSPoolAddition
+        {
+            get
+            {
+                return OnEVSPoolAddition;
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -88,26 +113,28 @@ namespace de.eMI3
 
         #region Constructor(s)
 
-        #region (internal) EVSEOperator()
+        #region (internal) EVSEOperator(RoamingNetwork)
 
         /// <summary>
         /// Create a new Electric Vehicle Supply Equipment Operator (EVSOP) to manage
         /// multiple Electric Vehicle Supply Equipments (EVSEs).
         /// </summary>
+        /// <param name="RoamingNetwork">The unique identification of the associated roaming network.</param>
         internal EVSEOperator(RoamingNetwork  RoamingNetwork)
             : this(EVSEOperator_Id.New, RoamingNetwork)
         { }
 
         #endregion
 
-        #region (internal) EVSEOperator(Id)
+        #region (internal) EVSEOperator(Id, RoamingNetwork)
 
         /// <summary>
         /// Create a new Electric Vehicle Supply Equipment Operator (EVSOP) to manage
         /// multiple Electric Vehicle Supply Equipments (EVSEs)
         /// and having the given EVSEOperator_Id.
         /// </summary>
-        /// <param name="Id">The EVSPool Id.</param>
+        /// <param name="Id">The unique identification of the EVSE operator.</param>
+        /// <param name="RoamingNetwork">The unique identification of the associated roaming network.</param>
         internal EVSEOperator(EVSEOperator_Id  Id,
                               RoamingNetwork   RoamingNetwork)
             : base(Id)
@@ -116,6 +143,10 @@ namespace de.eMI3
             this.Name                   = new I8NString();
 
             this._RegisteredEVSPools    = new ConcurrentDictionary<EVSPool_Id, EVSPool>();
+
+            this.EVSPoolAddition        = new VotingNotificator<EVSEOperator, EVSPool, Boolean>(() => new VetoVote(), true);
+
+            this.OnEVSPoolAddition.OnVoting += (evseoperator, evspool, vote) => RoamingNetwork.EVSPoolAddition.SendVoting2(evseoperator, evspool, vote);
 
         }
 
@@ -127,7 +158,8 @@ namespace de.eMI3
         #region CreateNewPool(EVSPool_Id, Action)
 
         /// <summary>
-        /// Register an EVSPool.
+        /// Create and register a new EVS pool having the given
+        /// unique EVS pool identification.
         /// </summary>
         public EVSPool CreateNewPool(EVSPool_Id EVSPool_Id, Action<EVSPool> Action)
         {
@@ -136,7 +168,7 @@ namespace de.eMI3
                 throw new ArgumentNullException("EVSPool_Id", "The given EVSPool_Id must not be null!");
 
             if (_RegisteredEVSPools.ContainsKey(EVSPool_Id))
-                throw new Exception();
+                throw new EVSPoolAlreadyExists(EVSPool_Id, this.Id);
 
 
             var _EVSPool = new EVSPool(EVSPool_Id, this);
@@ -144,69 +176,20 @@ namespace de.eMI3
             if (Action != null)
                 Action(_EVSPool);
 
-            if (_RegisteredEVSPools.TryAdd(EVSPool_Id, _EVSPool))
-                return _EVSPool;
+            if (EVSPoolAddition.SendVoting(this, _EVSPool))
+            {
+                if (_RegisteredEVSPools.TryAdd(EVSPool_Id, _EVSPool))
+                {
+                    EVSPoolAddition.SendNotification(this, _EVSPool);
+                    return _EVSPool;
+                }
+            }
 
             throw new Exception();
 
         }
 
         #endregion
-
-        //#region RegisterEVSPool(EVSPool)
-
-        ///// <summary>
-        ///// Register an EVSE.
-        ///// </summary>
-        ///// <param name="EVSE">An EVSE.</param>
-        //public RegisterEVSEResult RegisterEVSPool(EVSPool EVSPool)
-        //{
-
-        //    if (EVSPool == null)
-        //        throw new ArgumentNullException("EVSPool", "The given EVSPool must not be null!");
-
-        //    if (RegisteredEVSPools.TryAdd(EVSPool.Id, EVSPool))
-        //    {
-        //        EVSPool.Operator = this;
-        //        return RegisterEVSEResult.success;
-        //    }
-
-        //    if (RegisteredEVSPools.ContainsKey(EVSPool.Id))
-        //        return RegisterEVSEResult.duplicate;
-
-        //    return RegisterEVSEResult.unknown;
-
-        //}
-
-        //#endregion
-
-        //#region RegisterEVSPools(EVSPools)
-
-        ///// <summary>
-        ///// Register multiple EVSEs.
-        ///// </summary>
-        ///// <param name="EVSEs">An enumeration of EVSEs.</param>
-        //public RegisterEVSEResult RegisterEVSPools(IEnumerable<EVSPool> EVSPools)
-        //{
-
-        //    if (EVSPools == null)
-        //        throw new ArgumentNullException("EVSPools", "The given enumeration of EVSPools must not be null!");
-
-        //    foreach (var EVSPool in EVSPools)
-        //        if (RegisteredEVSPools.ContainsKey(EVSPool.Id))
-        //            return RegisterEVSEResult.duplicate;
-
-        //    foreach (var EVSPool in EVSPools)
-        //        if (RegisteredEVSPools.TryAdd(EVSPool.Id, EVSPool))
-        //            EVSPool.Operator = this;
-        //        else
-        //            return RegisterEVSEResult.failed;
-
-        //    return RegisterEVSEResult.success;
-
-        //}
-
-        //#endregion
 
 
         #region IEnumerable<EVSPool> Members
