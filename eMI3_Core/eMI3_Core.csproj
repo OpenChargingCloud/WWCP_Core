@@ -51,6 +51,7 @@
     <Compile Include="CommonTypes\Attributes\Optional.cs" />
     <Compile Include="CommonTypes\Address.cs" />
     <Compile Include="CommonTypes\AuthorizationOptions.cs" />
+    <Compile Include="CommonTypes\eMI3_Exception.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\EVSPool\OpeningTime.cs" />
     <Compile Include="CommonTypes\I8NString.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\ChargingStation.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\AddEVSEResult.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\EVSPool\EVSPool.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\RegisterEVSEResult.cs" />
+    <Compile Include="RoamingNetwork\RoamingNetworkExceptions.cs" />
     <Compile Include="RoamingNetwork\EVSEOperator\EVSEOperator.cs" />
     <Compile Include="CommonTypes\GeoLocation.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\ChargingStation_Id.cs" />

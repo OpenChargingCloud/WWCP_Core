@@ -27,10 +27,7 @@ namespace de.eMI3
 {
 
     /// <summary>
-    /// A group/pool of electric vehicle charging stations.
-    /// The geo locations of these charging stations will be close together and the RoamingNetwork
-    /// might provide a shared network access to aggregate and optimize communication
-    /// with the EVSE Operator backend.
+    /// A roaming network is the collection of all entities to provide electric vehicle charging.
     /// </summary>
     public class RoamingNetwork : AEntity<RoamingNetwork_Id>,
                                   IEquatable<RoamingNetwork>, IComparable<RoamingNetwork>, IComparable,
@@ -39,7 +36,10 @@ namespace de.eMI3
 
         #region Data
 
-        private  readonly ConcurrentDictionary<EVSEOperator_Id, EVSEOperator>  _EVSEOperators;
+        private  readonly ConcurrentDictionary<EVSEOperator_Id,      EVSEOperator>      _EVSEOperators;
+        private  readonly ConcurrentDictionary<EVServiceProvider_Id, EVServiceProvider> _EVServiceProviders;
+        private  readonly ConcurrentDictionary<RoamingProvider_Id,   RoamingProvider>   _RoamingProviders;
+        private  readonly ConcurrentDictionary<SearchProvider_Id,    SearchProvider>    _SearchProviders;
 
         #endregion
 
@@ -96,6 +96,11 @@ namespace de.eMI3
         #endregion
 
 
+        #region EVSEOperators
+
+        /// <summary>
+        /// Return all EVSE operators registered within this roaming network.
+        /// </summary>
         public IEnumerable<EVSEOperator> EVSEOperators
         {
             get
@@ -103,6 +108,38 @@ namespace de.eMI3
                 return _EVSEOperators.Values;
             }
         }
+
+        #endregion
+
+        #region RoamingProviders
+
+        /// <summary>
+        /// Return all roaming providers registered within this roaming network.
+        /// </summary>
+        public IEnumerable<RoamingProvider> RoamingProviders
+        {
+            get
+            {
+                return _RoamingProviders.Values;
+            }
+        }
+
+        #endregion
+
+        #region SearchProviders
+
+        /// <summary>
+        /// Return all search providers registered within this roaming network.
+        /// </summary>
+        public IEnumerable<SearchProvider> SearchProviders
+        {
+            get
+            {
+                return _SearchProviders.Values;
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -115,8 +152,8 @@ namespace de.eMI3
         #region RoamingNetwork()
 
         /// <summary>
-        /// Create a new group/pool of Electric Vehicle Supply Equipments (RoamingNetwork)
-        /// having a random RoamingNetwork identification.
+        /// Create a new roaming network
+        /// having a random roaming network identification.
         /// </summary>
         public RoamingNetwork()
             : this(RoamingNetwork_Id.New)
@@ -124,21 +161,24 @@ namespace de.eMI3
 
         #endregion
 
-         #region RoamingNetwork(Id, Operator)
+        #region RoamingNetwork(Id, Operator)
 
         /// <summary>
-        /// Create a new group/pool of Electric Vehicle Supply Equipments (RoamingNetwork)
-        /// having the given RoamingNetwork identification.
+        /// Create a new roaming network
+        /// having the given roaming network identification.
         /// </summary>
         /// <param name="Id">The RoamingNetwork Id.</param>
         public RoamingNetwork(RoamingNetwork_Id Id)
             : base(Id)
         {
 
-            this._EVSEOperators     = new ConcurrentDictionary<EVSEOperator_Id, EVSEOperator>();
+            this._EVSEOperators       = new ConcurrentDictionary<EVSEOperator_Id,      EVSEOperator>();
+            this._EVServiceProviders  = new ConcurrentDictionary<EVServiceProvider_Id, EVServiceProvider>();
+            this._RoamingProviders    = new ConcurrentDictionary<RoamingProvider_Id,   RoamingProvider>();
+            this._SearchProviders     = new ConcurrentDictionary<SearchProvider_Id,    SearchProvider>();
 
-            this.Name               = new I8NString(Languages.en, Id.ToString());
-            this.Description        = new I8NString();
+            this.Name                 = new I8NString(Languages.en, Id.ToString());
+            this.Description          = new I8NString();
 
         }
 
@@ -150,16 +190,19 @@ namespace de.eMI3
         #region CreateNewEVSEOperator(EVSEOperator_Id, Action = null)
 
         /// <summary>
-        /// Register a new charging station.
+        /// Create and register a new EVSE operator.
         /// </summary>
-        public EVSEOperator CreateNewEVSEOperator(EVSEOperator_Id EVSEOperator_Id, Action<EVSEOperator> Action = null)
+        /// <param name="EVSEOperator_Id">The unique identification of the new EVSE operator.</param>
+        /// <param name="Action">An optional delegate to configure the new EVSE operator after its creation.</param>
+        public EVSEOperator CreateNewEVSEOperator(EVSEOperator_Id       EVSEOperator_Id,
+                                                  Action<EVSEOperator>  Action = null)
         {
 
             if (EVSEOperator_Id == null)
                 throw new ArgumentNullException("EVSEOperator_Id", "The given EVSEOperator_Id must not be null!");
 
             if (_EVSEOperators.ContainsKey(EVSEOperator_Id))
-                throw new Exception();
+                throw new EVSEOperatorAlreadyExists(EVSEOperator_Id, this.Id);
 
 
             var _EVSEOperator = new EVSEOperator(EVSEOperator_Id, this);
@@ -169,6 +212,102 @@ namespace de.eMI3
 
             if (_EVSEOperators.TryAdd(EVSEOperator_Id, _EVSEOperator))
                 return _EVSEOperator;
+
+            throw new Exception();
+
+        }
+
+        #endregion
+
+        #region CreateNewEVServiceProvider(EVServiceProvider_Id, Action = null)
+
+        /// <summary>
+        /// Create and register a new electric vehicle service provider.
+        /// </summary>
+        /// <param name="EVServiceProvider_Id">The unique identification of the new roaming provider.</param>
+        /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
+        public EVServiceProvider CreateNewEVServiceProvider(EVServiceProvider_Id       EVServiceProvider_Id,
+                                                            Action<EVServiceProvider>  Action = null)
+        {
+
+            if (EVServiceProvider_Id == null)
+                throw new ArgumentNullException("EVServiceProvider_Id", "The given EVServiceProvider_Id must not be null!");
+
+            if (_EVServiceProviders.ContainsKey(EVServiceProvider_Id))
+                throw new EVServiceProviderAlreadyExists(EVServiceProvider_Id, this.Id);
+
+
+            var _EVServiceProvider = new EVServiceProvider(EVServiceProvider_Id, this);
+
+            if (Action != null)
+                Action(_EVServiceProvider);
+
+            if (_EVServiceProviders.TryAdd(EVServiceProvider_Id, _EVServiceProvider))
+                return _EVServiceProvider;
+
+            throw new Exception();
+
+        }
+
+        #endregion
+
+        #region CreateNewRoamingProvider(RoamingProvider_Id, Action = null)
+
+        /// <summary>
+        /// Create and register a new roaming provider.
+        /// </summary>
+        /// <param name="RoamingProvider_Id">The unique identification of the new roaming provider.</param>
+        /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
+        public RoamingProvider CreateNewRoamingProvider(RoamingProvider_Id       RoamingProvider_Id,
+                                                        Action<RoamingProvider>  Action = null)
+        {
+
+            if (RoamingProvider_Id == null)
+                throw new ArgumentNullException("RoamingProvider_Id", "The given RoamingProvider_Id must not be null!");
+
+            if (_RoamingProviders.ContainsKey(RoamingProvider_Id))
+                throw new RoamingProviderAlreadyExists(RoamingProvider_Id, this.Id);
+
+
+            var _RoamingProvider = new RoamingProvider(RoamingProvider_Id, this);
+
+            if (Action != null)
+                Action(_RoamingProvider);
+
+            if (_RoamingProviders.TryAdd(RoamingProvider_Id, _RoamingProvider))
+                return _RoamingProvider;
+
+            throw new Exception();
+
+        }
+
+        #endregion
+
+        #region CreateNewSearchProvider(SearchProvider_Id, Action = null)
+
+        /// <summary>
+        /// Create and register a new search provider.
+        /// </summary>
+        /// <param name="SearchProvider_Id">The unique identification of the new search provider.</param>
+        /// <param name="Action">An optional delegate to configure the new search provider after its creation.</param>
+        public SearchProvider CreateNewSearchProvider(SearchProvider_Id       SearchProvider_Id,
+                                                      Action<SearchProvider>  Action = null)
+        {
+
+            if (SearchProvider_Id == null)
+                throw new ArgumentNullException("SearchProvider_Id", "The given SearchProvider_Id must not be null!");
+
+            if (_SearchProviders.ContainsKey(SearchProvider_Id))
+                throw new SearchProviderAlreadyExists(SearchProvider_Id, this.Id);
+
+
+            var _SearchProvider = new SearchProvider(SearchProvider_Id, this);
+
+            if (Action != null)
+                Action(_SearchProvider);
+
+            if (_SearchProviders.TryAdd(SearchProvider_Id, _SearchProvider))
+                return _SearchProvider;
 
             throw new Exception();
 
