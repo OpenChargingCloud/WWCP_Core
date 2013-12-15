@@ -21,6 +21,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
+using eu.Vanaheimr.Illias.Commons;
+using eu.Vanaheimr.Illias.Commons.Votes;
+using eu.Vanaheimr.Styx.Arrows;
+
 #endregion
 
 namespace de.eMI3
@@ -324,6 +328,11 @@ namespace de.eMI3
         #endregion
 
 
+        #region ChargingStations
+
+        /// <summary>
+        /// Return all charging stations registered within this EVS pool.
+        /// </summary>
         public IEnumerable<ChargingStation> ChargingStations
         {
             get
@@ -334,7 +343,66 @@ namespace de.eMI3
 
         #endregion
 
+        #endregion
+
         #region Events
+
+        #region ChargingStationAddition
+
+        private readonly IVotingNotificator<EVSPool, ChargingStation, Boolean> ChargingStationAddition;
+
+        /// <summary>
+        /// Called whenever a charging station will be or was added.
+        /// </summary>
+        public IVotingSender<EVSPool, ChargingStation, Boolean> OnChargingStationAddition
+        {
+            get
+            {
+                return ChargingStationAddition;
+            }
+        }
+
+        #endregion
+
+
+        // Charging station events
+
+        #region EVSEAddition
+
+        internal readonly IVotingNotificator<ChargingStation, EVSE, Boolean> EVSEAddition;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was added.
+        /// </summary>
+        public IVotingSender<ChargingStation, EVSE, Boolean> OnEVSEAddition
+        {
+            get
+            {
+                return EVSEAddition;
+            }
+        }
+
+        #endregion
+
+
+        // EVSE events
+
+        #region SocketOutletAddition
+
+        internal readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletAddition;
+
+        /// <summary>
+        /// Called whenever a socket outlet will be or was added.
+        /// </summary>
+        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
+        {
+            get
+            {
+                return SocketOutletAddition;
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -343,32 +411,42 @@ namespace de.eMI3
         #region (internal) EVSPool(Operator)
 
         /// <summary>
-        /// Create a new group/pool of Electric Vehicle Supply Equipments (EVSPool)
-        /// having a random EVSPool identification.
+        /// Create a new group/pool of charging stations having a random identification.
         /// </summary>
-        internal EVSPool(EVSEOperator  Operator)
-            : this(EVSPool_Id.New, Operator)
+        /// <param name="EVSEOperator">The parent EVSE operator.</param>
+        internal EVSPool(EVSEOperator EVSEOperator)
+            : this(EVSPool_Id.New, EVSEOperator)
         { }
 
         #endregion
 
-        #region (internal) EVSPool(Id, Operator)
+        #region (internal) EVSPool(Id, EVSEOperator)
 
         /// <summary>
-        /// Create a new group/pool of Electric Vehicle Supply Equipments (EVSPool)
-        /// having the given EVSPool identification.
+        /// Create a new group/pool of charging stations having the given identification.
         /// </summary>
-        /// <param name="Id">The EVSPool Id.</param>
+        /// <param name="Id">The unique identification of the EVS pool.</param>
+        /// <param name="EVSEOperator">The parent EVSE operator.</param>
         internal EVSPool(EVSPool_Id    Id,
-                         EVSEOperator  Operator)
+                         EVSEOperator  EVSEOperator)
             : base(Id)
         {
 
-            if (Operator == null)
-                throw new ArgumentNullException();
+            #region Initial checks
 
-            this.Operator           = Operator;
-            this._ChargingStations   = new ConcurrentDictionary<ChargingStation_Id, ChargingStation>();
+            if (Id == null)
+                throw new ArgumentNullException("Id", "The unique identification of the EVS pool must not be null!");
+
+            if (EVSEOperator == null)
+                throw new ArgumentNullException("EVSEOperator", "The EVSE operator must not be null!");
+
+            this.Operator = EVSEOperator;
+
+            #endregion
+
+            #region Init data and properties
+
+            this._ChargingStations  = new ConcurrentDictionary<ChargingStation_Id, ChargingStation>();
 
             this.Name               = new I8NString(Languages.en, Id.ToString());
             this.Description        = new I8NString();
@@ -378,6 +456,32 @@ namespace de.eMI3
             this.Address            = new Address();
             this.EntranceLocation   = new GeoLocation();
             this.EntranceAddress    = new Address();
+
+            #endregion
+
+            #region Init and link events
+
+            // EVS pool events
+            this.ChargingStationAddition    = new VotingNotificator<EVSPool, ChargingStation, Boolean>(() => new VetoVote(), true);
+
+            this.OnChargingStationAddition.OnVoting       += (evseoperator, evspool, vote) => Operator.ChargingStationAddition.SendVoting      (evseoperator, evspool, vote);
+            this.OnChargingStationAddition.OnNotification += (evseoperator, evspool)       => Operator.ChargingStationAddition.SendNotification(evseoperator, evspool);
+
+
+            // Charging station events
+            this.EVSEAddition               = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+
+            this.OnEVSEAddition.OnVoting                  += (chargingstation, evse, vote) => EVSEOperator.EVSEAddition.SendVoting      (chargingstation, evse, vote);
+            this.OnEVSEAddition.OnNotification            += (chargingstation, evse)       => EVSEOperator.EVSEAddition.SendNotification(chargingstation, evse);
+
+
+            // EVSE events
+            this.SocketOutletAddition       = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+
+            this.SocketOutletAddition.OnVoting            += (evse, socketoutlet , vote) => EVSEOperator.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
+            this.SocketOutletAddition.OnNotification      += (evse, socketoutlet)        => EVSEOperator.SocketOutletAddition.SendNotification(evse, socketoutlet);
+
+            #endregion
 
         }
 
@@ -389,25 +493,36 @@ namespace de.eMI3
         #region CreateNewStation(ChargingStation_Id, Action = null)
 
         /// <summary>
-        /// Register a new charging station.
+        /// Create and register a new charging station having the given
+        /// unique charging station identification.
         /// </summary>
+        /// <param name="ChargingStation_Id">The unique identification of the new charging station.</param>
+        /// <param name="Action">An optional delegate to configure the new charging station after its creation.</param>
         public ChargingStation CreateNewStation(ChargingStation_Id ChargingStation_Id, Action<ChargingStation> Action = null)
         {
 
+            #region Initial checks
+
             if (ChargingStation_Id == null)
-                throw new ArgumentNullException("ChargingStation_Id", "The given ChargingStation_Id must not be null!");
+                throw new ArgumentNullException("ChargingStation_Id", "The given charging station identification must not be null!");
 
             if (_ChargingStations.ContainsKey(ChargingStation_Id))
-                throw new Exception();
+                throw new ChargingStationAlreadyExists(ChargingStation_Id, this.Id);
 
+            #endregion
 
             var _ChargingStation = new ChargingStation(ChargingStation_Id, this);
 
-            if (Action != null)
-                Action(_ChargingStation);
+            Action.FailSafeRun(_ChargingStation);
 
-            if (_ChargingStations.TryAdd(ChargingStation_Id, _ChargingStation))
-                return _ChargingStation;
+            if (ChargingStationAddition.SendVoting(this, _ChargingStation))
+            {
+                if (_ChargingStations.TryAdd(ChargingStation_Id, _ChargingStation))
+                {
+                    ChargingStationAddition.SendNotification(this, _ChargingStation);
+                    return _ChargingStation;
+                }
+            }
 
             throw new Exception();
 

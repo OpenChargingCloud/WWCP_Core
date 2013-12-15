@@ -149,6 +149,8 @@ namespace de.eMI3
 
         #region Events
 
+        // Roaming network events
+
         #region EVSEOperatorAddition
 
         private readonly IVotingNotificator<RoamingNetwork, EVSEOperator, Boolean> EVSEOperatorAddition;
@@ -237,6 +239,66 @@ namespace de.eMI3
 
         #endregion
 
+
+        // EVS pool events
+
+        #region ChargingStationAddition
+
+        internal readonly IVotingNotificator<EVSPool, ChargingStation, Boolean> ChargingStationAddition;
+
+        /// <summary>
+        /// Called whenever a charging station will be or was added.
+        /// </summary>
+        public IVotingSender<EVSPool, ChargingStation, Boolean> OnChargingStationAddition
+        {
+            get
+            {
+                return ChargingStationAddition;
+            }
+        }
+
+        #endregion
+
+
+        // Charging station events
+
+        #region EVSEAddition
+
+        internal readonly IVotingNotificator<ChargingStation, EVSE, Boolean> EVSEAddition;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was added.
+        /// </summary>
+        public IVotingSender<ChargingStation, EVSE, Boolean> OnEVSEAddition
+        {
+            get
+            {
+                return EVSEAddition;
+            }
+        }
+
+        #endregion
+
+
+        // EVSE events
+
+        #region SocketOutletAddition
+
+        internal readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletAddition;
+
+        /// <summary>
+        /// Called whenever a socket outlet will be or was added.
+        /// </summary>
+        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
+        {
+            get
+            {
+                return SocketOutletAddition;
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
@@ -264,6 +326,15 @@ namespace de.eMI3
             : base(Id)
         {
 
+            #region Initial checks
+
+            if (Id == null)
+                throw new ArgumentNullException("Id", "The given unique roaming network identification must not be null!");
+
+            #endregion
+
+            #region Init data and properties
+
             this._EVSEOperators             = new ConcurrentDictionary<EVSEOperator_Id,      EVSEOperator>();
             this._EVServiceProviders        = new ConcurrentDictionary<EVServiceProvider_Id, EVServiceProvider>();
             this._RoamingProviders          = new ConcurrentDictionary<RoamingProvider_Id,   RoamingProvider>();
@@ -272,12 +343,28 @@ namespace de.eMI3
             this.Name                       = new I8NString(Languages.en, Id.ToString());
             this.Description                = new I8NString();
 
-            this.EVSEOperatorAddition       = new VotingNotificator<RoamingNetwork, EVSEOperator,      Boolean>(() => new VetoVote(), true);
-            this.EVServiceProviderAddition  = new VotingNotificator<RoamingNetwork, EVServiceProvider, Boolean>(() => new VetoVote(), true);
-            this.RoamingProviderAddition    = new VotingNotificator<RoamingNetwork, RoamingProvider,   Boolean>(() => new VetoVote(), true);
-            this.SearchProviderAddition     = new VotingNotificator<RoamingNetwork, SearchProvider,    Boolean>(() => new VetoVote(), true);
+            #endregion
 
-            this.EVSPoolAddition            = new VotingNotificator<EVSEOperator,   EVSPool,           Boolean>(() => new VetoVote(), true);
+            #region Init and link events
+
+            this.EVSEOperatorAddition       = new VotingNotificator<RoamingNetwork,  EVSEOperator,      Boolean>(() => new VetoVote(), true);
+            this.EVServiceProviderAddition  = new VotingNotificator<RoamingNetwork,  EVServiceProvider, Boolean>(() => new VetoVote(), true);
+            this.RoamingProviderAddition    = new VotingNotificator<RoamingNetwork,  RoamingProvider,   Boolean>(() => new VetoVote(), true);
+            this.SearchProviderAddition     = new VotingNotificator<RoamingNetwork,  SearchProvider,    Boolean>(() => new VetoVote(), true);
+
+            // EVSE operator events
+            this.EVSPoolAddition            = new VotingNotificator<EVSEOperator,    EVSPool,           Boolean>(() => new VetoVote(), true);
+
+            // EVS pool events
+            this.ChargingStationAddition    = new VotingNotificator<EVSPool,         ChargingStation,   Boolean>(() => new VetoVote(), true);
+
+            // Charging station events
+            this.EVSEAddition               = new VotingNotificator<ChargingStation, EVSE,              Boolean>(() => new VetoVote(), true);
+
+            // EVSE events
+            this.SocketOutletAddition       = new VotingNotificator<EVSE,            SocketOutlet,      Boolean>(() => new VetoVote(), true);
+
+            #endregion
 
         }
 
@@ -298,17 +385,19 @@ namespace de.eMI3
                                                   Action<EVSEOperator>  Action = null)
         {
 
+            #region Initial checks
+
             if (EVSEOperator_Id == null)
-                throw new ArgumentNullException("EVSEOperator_Id", "The given EVSEOperator_Id must not be null!");
+                throw new ArgumentNullException("EVSEOperator_Id", "The given EVSE operator identification must not be null!");
 
             if (_EVSEOperators.ContainsKey(EVSEOperator_Id))
                 throw new EVSEOperatorAlreadyExists(EVSEOperator_Id, this.Id);
 
+            #endregion
 
             var _EVSEOperator = new EVSEOperator(EVSEOperator_Id, this);
 
-            if (Action != null)
-                Action(_EVSEOperator);
+            Action.FailSafeRun(_EVSEOperator);
 
             if (EVSEOperatorAddition.SendVoting(this, _EVSEOperator))
             {
@@ -337,17 +426,19 @@ namespace de.eMI3
                                                             Action<EVServiceProvider>  Action = null)
         {
 
+            #region Initial checks
+
             if (EVServiceProvider_Id == null)
-                throw new ArgumentNullException("EVServiceProvider_Id", "The given EVServiceProvider_Id must not be null!");
+                throw new ArgumentNullException("EVServiceProvider_Id", "The given electric vehicle service provider identification must not be null!");
 
             if (_EVServiceProviders.ContainsKey(EVServiceProvider_Id))
                 throw new EVServiceProviderAlreadyExists(EVServiceProvider_Id, this.Id);
 
+            #endregion
 
             var _EVServiceProvider = new EVServiceProvider(EVServiceProvider_Id, this);
 
-            if (Action != null)
-                Action(_EVServiceProvider);
+            Action.FailSafeRun(_EVServiceProvider);
 
             if (EVServiceProviderAddition.SendVoting(this, _EVServiceProvider))
             {
@@ -376,17 +467,19 @@ namespace de.eMI3
                                                         Action<RoamingProvider>  Action = null)
         {
 
+            #region Initial checks
+
             if (RoamingProvider_Id == null)
-                throw new ArgumentNullException("RoamingProvider_Id", "The given RoamingProvider_Id must not be null!");
+                throw new ArgumentNullException("RoamingProvider_Id", "The given roaming provider identification must not be null!");
 
             if (_RoamingProviders.ContainsKey(RoamingProvider_Id))
                 throw new RoamingProviderAlreadyExists(RoamingProvider_Id, this.Id);
 
+            #endregion
 
             var _RoamingProvider = new RoamingProvider(RoamingProvider_Id, this);
 
-            if (Action != null)
-                Action(_RoamingProvider);
+            Action.FailSafeRun(_RoamingProvider);
 
             if (RoamingProviderAddition.SendVoting(this, _RoamingProvider))
             {
@@ -415,17 +508,19 @@ namespace de.eMI3
                                                       Action<SearchProvider>  Action = null)
         {
 
+            #region Initial checks
+
             if (SearchProvider_Id == null)
-                throw new ArgumentNullException("SearchProvider_Id", "The given SearchProvider_Id must not be null!");
+                throw new ArgumentNullException("SearchProvider_Id", "The given search provider identification must not be null!");
 
             if (_SearchProviders.ContainsKey(SearchProvider_Id))
                 throw new SearchProviderAlreadyExists(SearchProvider_Id, this.Id);
 
+            #endregion
 
             var _SearchProvider = new SearchProvider(SearchProvider_Id, this);
 
-            if (Action != null)
-                Action(_SearchProvider);
+            Action.FailSafeRun(_SearchProvider);
 
             if (SearchProviderAddition.SendVoting(this, _SearchProvider))
             {

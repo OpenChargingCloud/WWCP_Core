@@ -18,11 +18,12 @@
 #region Usings
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Concurrent;
+
+using eu.Vanaheimr.Illias.Commons;
+using eu.Vanaheimr.Illias.Commons.Votes;
+using eu.Vanaheimr.Styx.Arrows;
 
 #endregion
 
@@ -109,6 +110,27 @@ namespace de.eMI3
 
         #endregion
 
+        #region Events
+
+        #region SocketOutletAddition
+
+        private readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletAddition;
+
+        /// <summary>
+        /// Called whenever a socket outlet will be or was added.
+        /// </summary>
+        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
+        {
+            get
+            {
+                return SocketOutletAddition;
+            }
+        }
+
+        #endregion
+
+        #endregion
+
         #region Constructor(s)
 
         #region (internal) EVSE(Pool)
@@ -117,6 +139,7 @@ namespace de.eMI3
         /// Create a new Electric Vehicle Supply Equipment (EVSE)
         /// having a random EVSE_Id.
         /// </summary>
+        /// <param name="ChargingStation">The parent EVS pool.</param>
         public EVSE(ChargingStation ChargingStation)
             : this(EVSE_Id.New, ChargingStation)
         { }
@@ -127,19 +150,41 @@ namespace de.eMI3
 
         /// <summary>
         /// Create a new Electric Vehicle Supply Equipment (EVSE)
-        /// having a random EVSE_Id.
+        /// having the given EVSE_Id.
         /// </summary>
-        /// <param name="Id">The ChargingStation Id.</param>
+        /// <param name="Id">The unique identification of the EVSE.</param>
+        /// <param name="ChargingStation">The parent EVS pool.</param>
         internal EVSE(EVSE_Id          Id,
                       ChargingStation  ChargingStation)
             : base(Id)
         {
 
-            if (ChargingStation == null)
-                throw new ArgumentNullException();
+            #region Initial checks
 
-            this.ChargingStation        = ChargingStation;
+            if (Id == null)
+                throw new ArgumentNullException("Id", "The unique identification of the EVSE must not be null!");
+
+            if (ChargingStation == null)
+                throw new ArgumentNullException("ChargingStation", "The charging station must not be null!");
+
+            this.ChargingStation = ChargingStation;
+
+            #endregion
+
+            #region Init data and properties
+
             this._SocketOutlets          = new ConcurrentDictionary<SocketOutlet_Id, SocketOutlet>();
+
+            #endregion
+
+            #region Init and link events
+
+            this.SocketOutletAddition = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+
+            this.OnSocketOutletAddition.OnVoting       += (evse, socketoutlet, vote) => ChargingStation.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
+            this.OnSocketOutletAddition.OnNotification += (evse, socketoutlet)       => ChargingStation.SocketOutletAddition.SendNotification(evse, socketoutlet);
+
+            #endregion
 
         }
 
@@ -151,25 +196,36 @@ namespace de.eMI3
         #region CreateNewSocketOutlet(SocketOutlet_Id, Action = null)
 
         /// <summary>
-        /// Register a new socket outlet.
+        /// Create and register a new socket outlet having the given
+        /// unique socket outlet identification.
         /// </summary>
+        /// <param name="SocketOutlet_Id">The unique identification of the new socket outlet.</param>
+        /// <param name="Action">An optional delegate to configure the new socket outlet after its creation.</param>
         public SocketOutlet CreateNewSocketOutlet(SocketOutlet_Id SocketOutlet_Id, Action<SocketOutlet> Action = null)
         {
 
+            #region Initial checks
+
             if (SocketOutlet_Id == null)
-                throw new ArgumentNullException("SocketOutlet_Id", "The given SocketOutlet_Id must not be null!");
+                throw new ArgumentNullException("SocketOutlet_Id", "The given socket outlet identification must not be null!");
 
             if (_SocketOutlets.ContainsKey(SocketOutlet_Id))
-                throw new Exception();
+                throw new SocketOutletAlreadyExists(SocketOutlet_Id, this.Id);
 
+            #endregion
 
             var _SocketOutlet = new SocketOutlet(SocketOutlet_Id, this);
 
-            if (Action != null)
-                Action(_SocketOutlet);
+            Action.FailSafeRun(_SocketOutlet);
 
-            if (_SocketOutlets.TryAdd(SocketOutlet_Id, _SocketOutlet))
-                return _SocketOutlet;
+            if (SocketOutletAddition.SendVoting(this, _SocketOutlet))
+            {
+                if (_SocketOutlets.TryAdd(SocketOutlet_Id, _SocketOutlet))
+                {
+                    SocketOutletAddition.SendNotification(this, _SocketOutlet);
+                    return _SocketOutlet;
+                }
+            }
 
             throw new Exception();
 

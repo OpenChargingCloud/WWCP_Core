@@ -21,6 +21,10 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
+using eu.Vanaheimr.Illias.Commons;
+using eu.Vanaheimr.Illias.Commons.Votes;
+using eu.Vanaheimr.Styx.Arrows;
+
 #endregion
 
 namespace de.eMI3
@@ -212,36 +216,87 @@ namespace de.eMI3
 
         #endregion
 
-        #region Constructor(s)
+        #region Events
 
-        #region (internal) ChargingStation(Pool)
+        #region EVSEAddition
+
+        private readonly IVotingNotificator<ChargingStation, EVSE, Boolean> EVSEAddition;
 
         /// <summary>
-        /// Create a new Electric Vehicle Supply Equipment (ChargingStation)
-        /// having a random ChargingStation_Id.
+        /// Called whenever an EVSE will be or was added.
         /// </summary>
-        public ChargingStation(EVSPool Pool)
-            : this(ChargingStation_Id.New, Pool)
+        public IVotingSender<ChargingStation, EVSE, Boolean> OnEVSEAddition
+        {
+            get
+            {
+                return EVSEAddition;
+            }
+        }
+
+        #endregion
+
+
+        // EVSE events
+
+        #region SocketOutletAddition
+
+        internal readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletAddition;
+
+        /// <summary>
+        /// Called whenever a socket outlet will be or was added.
+        /// </summary>
+        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
+        {
+            get
+            {
+                return SocketOutletAddition;
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Constructor(s)
+
+        #region (internal) ChargingStation(EVSPool)
+
+        /// <summary>
+        /// Create a new charging station having a random identification.
+        /// </summary>
+        /// <param name="EVSPool">The parent EVS pool.</param>
+        public ChargingStation(EVSPool EVSPool)
+            : this(ChargingStation_Id.New, EVSPool)
         { }
 
         #endregion
 
-        #region (internal) ChargingStation(Id, Pool)
+        #region (internal) ChargingStation(Id, EVSPool)
 
         /// <summary>
-        /// Create a new Electric Vehicle Supply Equipment (ChargingStation)
-        /// having the given ChargingStation_Id.
+        /// Create a new charging station having the given identification.
         /// </summary>
-        /// <param name="Id">The ChargingStation Id.</param>
+        /// <param name="Id">The unique identification of the charging station pool.</param>
+        /// <param name="EVSPool">The parent EVS pool.</param>
         internal ChargingStation(ChargingStation_Id  Id,
-                                 EVSPool             Pool)
+                                 EVSPool             EVSPool)
             : base(Id)
         {
 
-            if (Pool == null)
-                throw new ArgumentNullException();
+            #region Initial checks
 
-            this.Pool                    = Pool;
+            if (Id == null)
+                throw new ArgumentNullException("Id", "The unique identification of the charging station must not be null!");
+
+            if (EVSPool == null)
+                throw new ArgumentNullException("EVSPool", "The EVS pool must not be null!");
+
+            this.Pool = EVSPool;
+
+            #endregion
+
+            #region Init data and properties
+
             this._EVSEs                  = new ConcurrentDictionary<EVSE_Id, EVSE>();
 
             this._Photos                 = new List<String>();
@@ -249,6 +304,23 @@ namespace de.eMI3
             this.ServiceProviderComment  = new I8NString();
             this.GeoLocation             = new GeoLocation();
 
+            #endregion
+
+            #region Init and link events
+
+            this.EVSEAddition               = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+
+            this.OnEVSEAddition.OnVoting                  += (chargingstation, evse, vote) => Pool.EVSEAddition.SendVoting      (chargingstation, evse, vote);
+            this.OnEVSEAddition.OnNotification            += (chargingstation, evse)       => Pool.EVSEAddition.SendNotification(chargingstation, evse);
+
+            // EVSE events
+            this.SocketOutletAddition       = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+
+            this.SocketOutletAddition.OnVoting            += (evse, socketoutlet , vote) => EVSPool.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
+            this.SocketOutletAddition.OnNotification      += (evse, socketoutlet)        => EVSPool.SocketOutletAddition.SendNotification(evse, socketoutlet);
+
+            #endregion
+
         }
 
         #endregion
@@ -256,27 +328,45 @@ namespace de.eMI3
         #endregion
 
 
-        public EVSE CreateNewEVSE(EVSE_Id Id, Action<EVSE> Action = null)
+        #region CreateNewEVSE(EVSE_Id, Action = null)
+
+        /// <summary>
+        /// Create and register a new EVSE having the given
+        /// unique EVSE identification.
+        /// </summary>
+        /// <param name="EVSE_Id">The unique identification of the new EVSE.</param>
+        /// <param name="Action">An optional delegate to configure the new EVSE after its creation.</param>
+        public EVSE CreateNewEVSE(EVSE_Id EVSE_Id, Action<EVSE> Action = null)
         {
 
-            if (Id == null)
-                throw new ArgumentNullException("Id", "The given Id must not be null!");
+            #region Initial checks
 
-            if (_EVSEs.ContainsKey(Id))
-                throw new Exception();
+            if (EVSE_Id == null)
+                throw new ArgumentNullException("EVSE_Id", "The given EVSE identification must not be null!");
 
-            var _EVSE = new EVSE(Id, this);
+            if (_EVSEs.ContainsKey(EVSE_Id))
+                throw new EVSEAlreadyExists(EVSE_Id, this.Id);
 
+            #endregion
 
-            if (Action != null)
-                Action(_EVSE);
+            var _EVSE = new EVSE(EVSE_Id, this);
 
-            if (_EVSEs.TryAdd(Id, _EVSE))
-                return _EVSE;
+            Action.FailSafeRun(_EVSE);
+
+            if (EVSEAddition.SendVoting(this, _EVSE))
+            {
+                if (_EVSEs.TryAdd(EVSE_Id, _EVSE))
+                {
+                    EVSEAddition.SendNotification(this, _EVSE);
+                    return _EVSE;
+                }
+            }
 
             throw new Exception();
 
         }
+
+        #endregion
 
 
         #region IEnumerable<EVSE> Members

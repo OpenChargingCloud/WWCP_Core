@@ -27,37 +27,19 @@ namespace de.eMI3
 {
 
     /// <summary>
-    /// A EVSE operator exception.
+    /// A socket outlet exception.
     /// </summary>
-    public class EVSEOperatorException : eMI3Exception
+    public class SocketOutletException : eMI3Exception
     {
 
-        public EVSEOperatorException(String Message)
+        public SocketOutletException(String Message)
             : base(Message)
         { }
 
-        public EVSEOperatorException(String Message, Exception InnerException)
+        public SocketOutletException(String Message, Exception InnerException)
             : base(Message, InnerException)
         { }
 
     }
-
-
-    #region EVSPoolAlreadyExists
-
-    /// <summary>
-    /// An exception thrown whenever an EVS pool already exists within the given EVSE operator.
-    /// </summary>
-    public class EVSPoolAlreadyExists : EVSEOperatorException
-    {
-
-        public EVSPoolAlreadyExists(EVSPool_Id       EVSPool_Id,
-                                    EVSEOperator_Id  EVSEOperator_Id)
-            : base("The given EVSPool identification '" + EVSPool_Id + "' already exists within the given '" + EVSEOperator_Id + "' EVSE operator!")
-        { }
-
-    }
-
-    #endregion
 
 }
