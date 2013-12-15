@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2013 Achim Friedland <achim.friedland@belectric.com>
- * This file is part of eMI3 Mockup <http://www.github.com/eMI3/Mockup>
+ * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@belectric.com>
+ * This file is part of eMI3 Core <http://www.github.com/eMI3/Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.

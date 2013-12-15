@@ -25,9 +25,9 @@ namespace de.eMI3
 {
 
     /// <summary>
-    /// The unique identification of a playground.
+    /// The unique identification of an Electric Vehicle Supply Equipment Operator (EVSE Op).
     /// </summary>
-    public class RoamingNetwork_Id : IId, IEquatable<RoamingNetwork_Id>, IComparable<RoamingNetwork_Id>
+    public class EVSEOperator_Id : IId, IEquatable<EVSEOperator_Id>, IComparable<EVSEOperator_Id>
     {
 
         #region Data
@@ -60,25 +60,25 @@ namespace de.eMI3
 
         #region Constructor(s)
 
-        #region RoamingNetwork_Id()
+        #region EVSEOperator_Id()
 
         /// <summary>
         /// Generate a new Electric Vehicle Supply Equipment Operator (EVSE Op) identification.
         /// </summary>
-        public RoamingNetwork_Id()
+        public EVSEOperator_Id()
         {
             _Id = Guid.NewGuid().ToString();
         }
 
         #endregion
 
-        #region RoamingNetwork_Id(String)
+        #region EVSEOperator_Id(String)
 
         /// <summary>
         /// Generate a new Electric Vehicle Supply Equipment Operator (EVSE Op) identification.
         /// based on the given string.
         /// </summary>
-        public RoamingNetwork_Id(String String)
+        public EVSEOperator_Id(String String)
         {
             _Id = String.Trim();
         }
@@ -91,13 +91,13 @@ namespace de.eMI3
         #region New
 
         /// <summary>
-        /// Generate a new RoamingNetwork_Id.
+        /// Generate a new EVSEOperator_Id.
         /// </summary>
-        public static RoamingNetwork_Id New
+        public static EVSEOperator_Id New
         {
             get
             {
-                return new RoamingNetwork_Id(Guid.NewGuid().ToString());
+                return new EVSEOperator_Id(Guid.NewGuid().ToString());
             }
         }
 
@@ -106,13 +106,13 @@ namespace de.eMI3
         #region Clone
 
         /// <summary>
-        /// Clone an RoamingNetwork_Id.
+        /// Clone an EVSEOperator_Id.
         /// </summary>
-        public RoamingNetwork_Id Clone
+        public EVSEOperator_Id Clone
         {
             get
             {
-                return new RoamingNetwork_Id(_Id);
+                return new EVSEOperator_Id(_Id);
             }
         }
 
@@ -121,119 +121,119 @@ namespace de.eMI3
 
         #region Operator overloading
 
-        #region Operator == (RoamingNetwork_Id1, RoamingNetwork_Id2)
+        #region Operator == (EVSEOperator_Id1, EVSEOperator_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetwork_Id1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetwork_Id2">Another RoamingNetwork_Id.</param>
+        /// <param name="EVSEOperator_Id1">A EVSEOperator_Id.</param>
+        /// <param name="EVSEOperator_Id2">Another EVSEOperator_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (RoamingNetwork_Id RoamingNetwork_Id1, RoamingNetwork_Id RoamingNetwork_Id2)
+        public static Boolean operator == (EVSEOperator_Id EVSEOperator_Id1, EVSEOperator_Id EVSEOperator_Id2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(RoamingNetwork_Id1, RoamingNetwork_Id2))
+            if (Object.ReferenceEquals(EVSEOperator_Id1, EVSEOperator_Id2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) RoamingNetwork_Id1 == null) || ((Object) RoamingNetwork_Id2 == null))
+            if (((Object) EVSEOperator_Id1 == null) || ((Object) EVSEOperator_Id2 == null))
                 return false;
 
-            return RoamingNetwork_Id1.Equals(RoamingNetwork_Id2);
+            return EVSEOperator_Id1.Equals(EVSEOperator_Id2);
 
         }
 
         #endregion
 
-        #region Operator != (RoamingNetwork_Id1, RoamingNetwork_Id2)
+        #region Operator != (EVSEOperator_Id1, EVSEOperator_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetwork_Id1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetwork_Id2">Another RoamingNetwork_Id.</param>
+        /// <param name="EVSEOperator_Id1">A EVSEOperator_Id.</param>
+        /// <param name="EVSEOperator_Id2">Another EVSEOperator_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (RoamingNetwork_Id RoamingNetwork_Id1, RoamingNetwork_Id RoamingNetwork_Id2)
+        public static Boolean operator != (EVSEOperator_Id EVSEOperator_Id1, EVSEOperator_Id EVSEOperator_Id2)
         {
-            return !(RoamingNetwork_Id1 == RoamingNetwork_Id2);
+            return !(EVSEOperator_Id1 == EVSEOperator_Id2);
         }
 
         #endregion
 
-        #region Operator <  (RoamingNetwork_Id1, RoamingNetwork_Id2)
+        #region Operator <  (EVSEOperator_Id1, EVSEOperator_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetwork_Id1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetwork_Id2">Another RoamingNetwork_Id.</param>
+        /// <param name="EVSEOperator_Id1">A EVSEOperator_Id.</param>
+        /// <param name="EVSEOperator_Id2">Another EVSEOperator_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (RoamingNetwork_Id RoamingNetwork_Id1, RoamingNetwork_Id RoamingNetwork_Id2)
+        public static Boolean operator < (EVSEOperator_Id EVSEOperator_Id1, EVSEOperator_Id EVSEOperator_Id2)
         {
 
-            if ((Object) RoamingNetwork_Id1 == null)
-                throw new ArgumentNullException("The given RoamingNetwork_Id1 must not be null!");
+            if ((Object) EVSEOperator_Id1 == null)
+                throw new ArgumentNullException("The given EVSEOperator_Id1 must not be null!");
 
-            return RoamingNetwork_Id1.CompareTo(RoamingNetwork_Id2) < 0;
+            return EVSEOperator_Id1.CompareTo(EVSEOperator_Id2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (RoamingNetwork_Id1, RoamingNetwork_Id2)
+        #region Operator <= (EVSEOperator_Id1, EVSEOperator_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetwork_Id1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetwork_Id2">Another RoamingNetwork_Id.</param>
+        /// <param name="EVSEOperator_Id1">A EVSEOperator_Id.</param>
+        /// <param name="EVSEOperator_Id2">Another EVSEOperator_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (RoamingNetwork_Id RoamingNetwork_Id1, RoamingNetwork_Id RoamingNetwork_Id2)
+        public static Boolean operator <= (EVSEOperator_Id EVSEOperator_Id1, EVSEOperator_Id EVSEOperator_Id2)
         {
-            return !(RoamingNetwork_Id1 > RoamingNetwork_Id2);
+            return !(EVSEOperator_Id1 > EVSEOperator_Id2);
         }
 
         #endregion
 
-        #region Operator >  (RoamingNetwork_Id1, RoamingNetwork_Id2)
+        #region Operator >  (EVSEOperator_Id1, EVSEOperator_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetwork_Id1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetwork_Id2">Another RoamingNetwork_Id.</param>
+        /// <param name="EVSEOperator_Id1">A EVSEOperator_Id.</param>
+        /// <param name="EVSEOperator_Id2">Another EVSEOperator_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (RoamingNetwork_Id RoamingNetwork_Id1, RoamingNetwork_Id RoamingNetwork_Id2)
+        public static Boolean operator > (EVSEOperator_Id EVSEOperator_Id1, EVSEOperator_Id EVSEOperator_Id2)
         {
 
-            if ((Object) RoamingNetwork_Id1 == null)
-                throw new ArgumentNullException("The given RoamingNetwork_Id1 must not be null!");
+            if ((Object) EVSEOperator_Id1 == null)
+                throw new ArgumentNullException("The given EVSEOperator_Id1 must not be null!");
 
-            return RoamingNetwork_Id1.CompareTo(RoamingNetwork_Id2) > 0;
+            return EVSEOperator_Id1.CompareTo(EVSEOperator_Id2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (RoamingNetwork_Id1, RoamingNetwork_Id2)
+        #region Operator >= (EVSEOperator_Id1, EVSEOperator_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetwork_Id1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetwork_Id2">Another RoamingNetwork_Id.</param>
+        /// <param name="EVSEOperator_Id1">A EVSEOperator_Id.</param>
+        /// <param name="EVSEOperator_Id2">Another EVSEOperator_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (RoamingNetwork_Id RoamingNetwork_Id1, RoamingNetwork_Id RoamingNetwork_Id2)
+        public static Boolean operator >= (EVSEOperator_Id EVSEOperator_Id1, EVSEOperator_Id EVSEOperator_Id2)
         {
-            return !(RoamingNetwork_Id1 < RoamingNetwork_Id2);
+            return !(EVSEOperator_Id1 < EVSEOperator_Id2);
         }
 
         #endregion
 
         #endregion
 
-        #region IComparable<RoamingNetwork_Id> Members
+        #region IComparable<EVSEOperator_Id> Members
 
         #region CompareTo(Object)
 
@@ -247,35 +247,35 @@ namespace de.eMI3
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an RoamingNetwork_Id.
-            var RoamingNetwork_Id = Object as RoamingNetwork_Id;
-            if ((Object) RoamingNetwork_Id == null)
-                throw new ArgumentException("The given object is not a RoamingNetwork_Id!");
+            // Check if the given object is an EVSEOperator_Id.
+            var EVSEOperator_Id = Object as EVSEOperator_Id;
+            if ((Object) EVSEOperator_Id == null)
+                throw new ArgumentException("The given object is not a EVSEOperator_Id!");
 
-            return CompareTo(RoamingNetwork_Id);
+            return CompareTo(EVSEOperator_Id);
 
         }
 
         #endregion
 
-        #region CompareTo(RoamingNetwork_Id)
+        #region CompareTo(EVSEOperator_Id)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetwork_Id">An object to compare with.</param>
-        public Int32 CompareTo(RoamingNetwork_Id RoamingNetwork_Id)
+        /// <param name="EVSEOperator_Id">An object to compare with.</param>
+        public Int32 CompareTo(EVSEOperator_Id EVSEOperator_Id)
         {
 
-            if ((Object) RoamingNetwork_Id == null)
-                throw new ArgumentNullException("The given RoamingNetwork_Id must not be null!");
+            if ((Object) EVSEOperator_Id == null)
+                throw new ArgumentNullException("The given EVSEOperator_Id must not be null!");
 
-            // Compare the length of the RoamingNetwork_Ids
-            var _Result = this.Length.CompareTo(RoamingNetwork_Id.Length);
+            // Compare the length of the EVSEOperator_Ids
+            var _Result = this.Length.CompareTo(EVSEOperator_Id.Length);
 
             // If equal: Compare Ids
             if (_Result == 0)
-                _Result = _Id.CompareTo(RoamingNetwork_Id._Id);
+                _Result = _Id.CompareTo(EVSEOperator_Id._Id);
 
             return _Result;
 
@@ -285,7 +285,7 @@ namespace de.eMI3
 
         #endregion
 
-        #region IEquatable<RoamingNetwork_Id> Members
+        #region IEquatable<EVSEOperator_Id> Members
 
         #region Equals(Object)
 
@@ -300,31 +300,31 @@ namespace de.eMI3
             if (Object == null)
                 return false;
 
-            // Check if the given object is an RoamingNetwork_Id.
-            var RoamingNetwork_Id = Object as RoamingNetwork_Id;
-            if ((Object) RoamingNetwork_Id == null)
+            // Check if the given object is an EVSEOperator_Id.
+            var EVSEOperator_Id = Object as EVSEOperator_Id;
+            if ((Object) EVSEOperator_Id == null)
                 return false;
 
-            return this.Equals(RoamingNetwork_Id);
+            return this.Equals(EVSEOperator_Id);
 
         }
 
         #endregion
 
-        #region Equals(RoamingNetwork_Id)
+        #region Equals(EVSEOperator_Id)
 
         /// <summary>
-        /// Compares two RoamingNetwork_Ids for equality.
+        /// Compares two EVSEOperator_Ids for equality.
         /// </summary>
-        /// <param name="RoamingNetwork_Id">A RoamingNetwork_Id to compare with.</param>
+        /// <param name="EVSEOperator_Id">A EVSEOperator_Id to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(RoamingNetwork_Id RoamingNetwork_Id)
+        public Boolean Equals(EVSEOperator_Id EVSEOperator_Id)
         {
 
-            if ((Object) RoamingNetwork_Id == null)
+            if ((Object) EVSEOperator_Id == null)
                 return false;
 
-            return _Id.Equals(RoamingNetwork_Id._Id);
+            return _Id.Equals(EVSEOperator_Id._Id);
 
         }
 
