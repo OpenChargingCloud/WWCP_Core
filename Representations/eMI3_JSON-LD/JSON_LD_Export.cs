@@ -127,10 +127,11 @@ namespace de.eMI3.IO.JSON_LD
         {
 
             return JSON.Create(Pool.Id.              ToJSON("Id"),
-                               Pool.LastChange.       ToJSON("Timestamp"),
+                               Pool.LastChange.      ToJSON("Timestamp"),
                                Pool.Name.            ToJSON("Name"),
-                               (!Pool.Description.IsEmpty) ?
-                               Pool.Description.     ToJSON("Description") : null,
+                               (!Pool.Description.IsEmpty)
+                                   ? Pool.Description.ToJSON("Description")
+                                   : null,
                                Pool.LocationLanguage.ToJSON("LocationLanguage"),
                                Pool.PoolLocation.    ToJSON("PoolLocation"),
                                Pool.EntranceLocation.ToJSON("EntranceLocation")
