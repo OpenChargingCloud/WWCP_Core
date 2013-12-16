@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0FDF7565-A2B4-4AE6-B18C-57C927D4A532}</ProjectGuid>
+    <ProjectGuid>{F1AAAB4C-C860-44E1-9CBA-8548C86D32A6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>de.eMI3.IO.JSON</RootNamespace>

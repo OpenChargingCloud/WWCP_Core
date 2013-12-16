@@ -52,6 +52,9 @@
     <Compile Include="CommonTypes\Address.cs" />
     <Compile Include="CommonTypes\AuthorizationOptions.cs" />
     <Compile Include="CommonTypes\eMI3_Exception.cs" />
+    <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\ChargingStationExceptions.cs" />
+    <Compile Include="RoamingNetwork\ChargingStations\EVSE\EVSEExceptions.cs" />
+    <Compile Include="RoamingNetwork\ChargingStations\EVSPool\EVSPoolExceptions.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\EVSPool\OpeningTime.cs" />
     <Compile Include="CommonTypes\I8NString.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\ChargingStation.cs" />
@@ -59,6 +62,7 @@
     <Compile Include="CommonTypes\IId.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\ChargingStationFeatures.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\EVSE\EVSERealTimeStatus.cs" />
+    <Compile Include="RoamingNetwork\ChargingStations\SocketOutlet\SocketOutletExceptions.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\SocketOutlet\PlugType.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\SocketOutlet\CableType.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\SocketOutlet\SocketOutlet.cs" />
@@ -99,10 +103,6 @@
     <ProjectReference Include="..\..\Illias\Commons\Commons.csproj">
       <Project>{d3b1af79-161f-4299-8b14-133286d635b8}</Project>
       <Name>Commons</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Illias\Geometry\Geometry.csproj">
-      <Project>{9f38dcc9-cd80-4b71-8a9c-b3f37e471cab}</Project>
-      <Name>Geometry</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Styx\Styx.NET4.5\Styx.NET4.5.csproj">
       <Project>{af76ecc0-2ca5-4cff-9e1e-ff5478c4b6e4}</Project>

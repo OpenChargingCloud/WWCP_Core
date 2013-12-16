@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5FECD89D-80C3-407A-9CCD-2B6180882F17}</ProjectGuid>
+    <ProjectGuid>{FDEC0671-FE4B-4F4C-B2A8-57B70779871B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>de.eMI3.IO.GeoJSON</RootNamespace>

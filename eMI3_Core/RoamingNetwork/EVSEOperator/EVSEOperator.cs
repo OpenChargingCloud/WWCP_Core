@@ -44,7 +44,8 @@ namespace de.eMI3
 
         #region Data
 
-        private readonly ConcurrentDictionary<EVSPool_Id, EVSPool>  _RegisteredEVSPools;
+        internal readonly RoamingNetwork                             RoamingNetwork;
+        private  readonly ConcurrentDictionary<EVSPool_Id, EVSPool>  _RegisteredEVSPools;
 
         #endregion
 
@@ -61,7 +62,67 @@ namespace de.eMI3
         {
             get
             {
-                return OnEVSPoolAddition;
+                return EVSPoolAddition;
+            }
+        }
+
+        #endregion
+
+
+        // EVS pool events
+
+        #region ChargingStationAddition
+
+        internal readonly IVotingNotificator<EVSPool, ChargingStation, Boolean> ChargingStationAddition;
+
+        /// <summary>
+        /// Called whenever a charging station will be or was added.
+        /// </summary>
+        public IVotingSender<EVSPool, ChargingStation, Boolean> OnChargingStationAddition
+        {
+            get
+            {
+                return ChargingStationAddition;
+            }
+        }
+
+        #endregion
+
+
+        // Charging station events
+
+        #region EVSEAddition
+
+        internal readonly IVotingNotificator<ChargingStation, EVSE, Boolean> EVSEAddition;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was added.
+        /// </summary>
+        public IVotingSender<ChargingStation, EVSE, Boolean> OnEVSEAddition
+        {
+            get
+            {
+                return EVSEAddition;
+            }
+        }
+
+        #endregion
+
+
+        // EVSE events
+
+        #region SocketOutletAddition
+
+        internal readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletAddition;
+
+        /// <summary>
+        /// Called whenever a socket outlet will be or was added.
+        /// </summary>
+        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
+        {
+            get
+            {
+                return SocketOutletAddition;
             }
         }
 
@@ -99,6 +160,9 @@ namespace de.eMI3
 
         #region EVSPools
 
+        /// <summary>
+        /// Return all EVS pools registered within this EVSE operator.
+        /// </summary>
         public IEnumerable<EVSPool> EVSPools
         {
             get
@@ -116,10 +180,11 @@ namespace de.eMI3
         #region (internal) EVSEOperator(RoamingNetwork)
 
         /// <summary>
-        /// Create a new Electric Vehicle Supply Equipment Operator (EVSOP) to manage
-        /// multiple Electric Vehicle Supply Equipments (EVSEs).
+        /// Create a new Electric Vehicle Supply Equipment Operator (EVSEOP) to manage
+        /// multiple Electric Vehicle Supply Equipments (EVSEs)
+        /// and having the given EVSE operator identification.
         /// </summary>
-        /// <param name="RoamingNetwork">The unique identification of the associated roaming network.</param>
+        /// <param name="RoamingNetwork">The parent roaming network.</param>
         internal EVSEOperator(RoamingNetwork  RoamingNetwork)
             : this(EVSEOperator_Id.New, RoamingNetwork)
         { }
@@ -129,24 +194,67 @@ namespace de.eMI3
         #region (internal) EVSEOperator(Id, RoamingNetwork)
 
         /// <summary>
-        /// Create a new Electric Vehicle Supply Equipment Operator (EVSOP) to manage
+        /// Create a new Electric Vehicle Supply Equipment Operator (EVSEOP) to manage
         /// multiple Electric Vehicle Supply Equipments (EVSEs)
-        /// and having the given EVSEOperator_Id.
+        /// and having the given EVSE operator identification.
         /// </summary>
         /// <param name="Id">The unique identification of the EVSE operator.</param>
-        /// <param name="RoamingNetwork">The unique identification of the associated roaming network.</param>
+        /// <param name="RoamingNetwork">The parent roaming network.</param>
         internal EVSEOperator(EVSEOperator_Id  Id,
                               RoamingNetwork   RoamingNetwork)
             : base(Id)
         {
 
-            this.Name                   = new I8NString();
+            #region Initial checks
 
-            this._RegisteredEVSPools    = new ConcurrentDictionary<EVSPool_Id, EVSPool>();
+            if (Id == null)
+                throw new ArgumentNullException("Id", "The unique identification of the roaming network must not be null!");
 
-            this.EVSPoolAddition        = new VotingNotificator<EVSEOperator, EVSPool, Boolean>(() => new VetoVote(), true);
+            if (RoamingNetwork == null)
+                throw new ArgumentNullException("RoamingNetwork", "The roaming network must not be null!");
 
-            this.OnEVSPoolAddition.OnVoting += (evseoperator, evspool, vote) => RoamingNetwork.EVSPoolAddition.SendVoting2(evseoperator, evspool, vote);
+            this.RoamingNetwork = RoamingNetwork;
+
+            #endregion
+
+            #region Init data and properties
+
+            this._RegisteredEVSPools      = new ConcurrentDictionary<EVSPool_Id, EVSPool>();
+
+            this.Name                     = new I8NString();
+
+            #endregion
+
+            #region Init and link events
+
+            // EVSEOperator events
+            this.EVSPoolAddition          = new VotingNotificator<EVSEOperator,    EVSPool,         Boolean>(() => new VetoVote(), true);
+
+            this.OnEVSPoolAddition.        OnVoting       += (evseoperator, evspool, vote) => RoamingNetwork.EVSPoolAddition.SendVoting      (evseoperator, evspool, vote);
+            this.OnEVSPoolAddition.        OnNotification += (evseoperator, evspool)       => RoamingNetwork.EVSPoolAddition.SendNotification(evseoperator, evspool);
+
+
+            // EVS pool events
+            this.ChargingStationAddition  = new VotingNotificator<EVSPool,         ChargingStation, Boolean>(() => new VetoVote(), true);
+
+            this.OnChargingStationAddition.OnVoting       += (evseoperator, evspool, vote) => RoamingNetwork.ChargingStationAddition.SendVoting      (evseoperator, evspool, vote);
+            this.OnChargingStationAddition.OnNotification += (evseoperator, evspool)       => RoamingNetwork.ChargingStationAddition.SendNotification(evseoperator, evspool);
+
+
+            // Charging station events
+            this.EVSEAddition             = new VotingNotificator<ChargingStation, EVSE,            Boolean>(() => new VetoVote(), true);
+
+            this.OnEVSEAddition.           OnVoting       += (chargingstation, evse, vote) => RoamingNetwork.EVSEAddition.SendVoting      (chargingstation, evse, vote);
+            this.OnEVSEAddition.           OnNotification += (chargingstation, evse)       => RoamingNetwork.EVSEAddition.SendNotification(chargingstation, evse);
+
+
+            // EVSE events
+            this.SocketOutletAddition     = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+
+            this.SocketOutletAddition.OnVoting            += (evse, socketoutlet , vote)   => RoamingNetwork.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
+            this.SocketOutletAddition.OnNotification      += (evse, socketoutlet)          => RoamingNetwork.SocketOutletAddition.SendNotification(evse, socketoutlet);
+
+            #endregion
 
         }
 
@@ -155,14 +263,18 @@ namespace de.eMI3
         #endregion
 
 
-        #region CreateNewPool(EVSPool_Id, Action)
+        #region CreateNewEVSPool(EVSPool_Id, Action)
 
         /// <summary>
         /// Create and register a new EVS pool having the given
         /// unique EVS pool identification.
         /// </summary>
-        public EVSPool CreateNewPool(EVSPool_Id EVSPool_Id, Action<EVSPool> Action)
+        /// <param name="EVSPool_Id">The unique identification of the new EVS pool.</param>
+        /// <param name="Action">An optional delegate to configure the new EVS pool after its creation.</param>
+        public EVSPool CreateNewEVSPool(EVSPool_Id EVSPool_Id, Action<EVSPool> Action)
         {
+
+            #region Initial checks
 
             if (EVSPool_Id == null)
                 throw new ArgumentNullException("EVSPool_Id", "The given EVSPool_Id must not be null!");
@@ -170,11 +282,11 @@ namespace de.eMI3
             if (_RegisteredEVSPools.ContainsKey(EVSPool_Id))
                 throw new EVSPoolAlreadyExists(EVSPool_Id, this.Id);
 
+            #endregion
 
             var _EVSPool = new EVSPool(EVSPool_Id, this);
 
-            if (Action != null)
-                Action(_EVSPool);
+            Action.FailSafeRun(_EVSPool);
 
             if (EVSPoolAddition.SendVoting(this, _EVSPool))
             {
