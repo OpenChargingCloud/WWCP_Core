@@ -28,7 +28,7 @@ using System.Runtime.CompilerServices;
 
 #endregion
 
-namespace de.eMI3
+namespace org.emi3group
 {
 
     public delegate void PropertyChanged_EventHandler   (Object Sender, String PropertyName, Object OldValue, Object NewValue);

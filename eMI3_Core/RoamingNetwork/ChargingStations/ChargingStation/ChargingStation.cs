@@ -27,7 +27,7 @@ using eu.Vanaheimr.Styx.Arrows;
 
 #endregion
 
-namespace de.eMI3
+namespace org.emi3group
 {
 
     /// <summary>
@@ -186,7 +186,7 @@ namespace de.eMI3
         /// <summary>
         /// A photo of the charging station.
         /// </summary>
-        [Optional]
+        [Optional, Not_eMI3defined]
         public List<String> Photos
         {
             get

@@ -30,7 +30,7 @@ using eu.Vanaheimr.Styx.Arrows;
 
 #endregion
 
-namespace de.eMI3
+namespace org.emi3group
 {
 
     /// <summary>

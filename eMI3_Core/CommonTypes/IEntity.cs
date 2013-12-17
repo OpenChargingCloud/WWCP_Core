@@ -21,7 +21,7 @@ using System;
 
 #endregion
 
-namespace de.eMI3
+namespace org.emi3group
 {
 
     public interface IEntity

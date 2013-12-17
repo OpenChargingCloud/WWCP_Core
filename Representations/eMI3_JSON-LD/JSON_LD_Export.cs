@@ -22,12 +22,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-using de.eMI3;
+using org.emi3group;
 using Newtonsoft.Json.Linq;
 
 #endregion
 
-namespace de.eMI3.IO.JSON_LD
+namespace org.emi3group.IO.JSON_LD
 {
 
     /// <summary>

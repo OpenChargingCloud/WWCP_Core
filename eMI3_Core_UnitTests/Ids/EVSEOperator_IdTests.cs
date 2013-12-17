@@ -22,11 +22,11 @@ using System.Collections.Generic;
 
 using NUnit.Framework;
 
-using de.eMI3;
+using org.emi3group;
 
 #endregion
 
-namespace de.eMI3.UnitTests
+namespace org.emi3group.UnitTests
 {
 
     /// <summary>

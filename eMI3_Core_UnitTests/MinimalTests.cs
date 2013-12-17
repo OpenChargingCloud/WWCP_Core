@@ -23,11 +23,11 @@ using System.Collections.Generic;
 
 using NUnit.Framework;
 
-using de.eMI3;
+using org.emi3group;
 
 #endregion
 
-namespace de.eMI3.UnitTests
+namespace org.emi3group.UnitTests
 {
 
     /// <summary>
@@ -92,7 +92,7 @@ namespace de.eMI3.UnitTests
                                           pool.Address.FloorLevel       = "12";
                                           pool.Address.PostalCode       = "07743";
                                           pool.Address.City             = "Jena";
-                                          pool.Address.Country          = "Germany";
+                                          pool.Address.Country          = Country.Germany;
 
                                           //pool.OpeningTime
 

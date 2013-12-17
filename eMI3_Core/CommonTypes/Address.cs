@@ -21,7 +21,7 @@ using System;
 
 #endregion
 
-namespace de.eMI3
+namespace org.emi3group
 {
 
     /// <summary>
@@ -65,7 +65,7 @@ namespace de.eMI3
         /// <summary>
         /// The Country.
         /// </summary>
-        public String    Country            { get; set; }
+        public Country   Country            { get; set; }
 
         /// <summary>
         /// Additional text to describe the address.

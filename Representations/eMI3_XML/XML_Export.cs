@@ -22,11 +22,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-using de.eMI3;
+using org.emi3group;
 
 #endregion
 
-namespace de.eMI3.IO.XML
+namespace org.emi3group.IO.XML
 {
 
     public static class XMLExport

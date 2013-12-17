@@ -15,20 +15,30 @@
  * limitations under the License.
  */
 
-namespace de.eMI3
+namespace org.emi3group
 {
 
     public enum PlugType
     {
 
-        SCHUKO                  = 0,
+        undefined               = 0,
 
         Standard_Type_A         = 1,
         Standard_Type_B         = 2,
         Standard_Type_C         = 3,
         Standard_Type_D         = 4,
         Standard_Type_E         = 5,
+
+        /// <summary>
+        /// Same as Type F
+        /// </summary>
+        SCHUKO                  = 6,
+
+        /// <summary>
+        /// Same as SCHUKO
+        /// </summary>
         Standard_Type_F         = 6,
+
         Standard_Type_E_F       = 7,
         Standard_Type_G         = 8,
         Standard_Type_H         = 9,

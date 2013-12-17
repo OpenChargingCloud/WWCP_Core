@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace de.eMI3
+namespace org.emi3group
 {
 
     public enum AddEVSEResult

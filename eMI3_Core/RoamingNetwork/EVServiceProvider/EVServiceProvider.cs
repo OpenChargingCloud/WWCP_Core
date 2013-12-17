@@ -26,7 +26,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace de.eMI3
+namespace org.emi3group
 {
 
     /// <summary>

@@ -23,7 +23,7 @@ using System.Collections.Concurrent;
 
 #endregion
 
-namespace de.eMI3
+namespace org.emi3group
 {
 
     /// <summary>

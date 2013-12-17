@@ -24,8 +24,8 @@ using System;
 namespace org.emi3group
 {
 
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
-    public class FreeCharge : Attribute
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+    public class Not_eMI3defined : Attribute
     {
 
     }

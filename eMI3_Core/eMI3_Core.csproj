@@ -43,6 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonTypes\Attributes\Not_eMI3defined.cs" />
+    <Compile Include="CommonTypes\EVSEStatus.cs" />
+    <Compile Include="CommonTypes\Country.cs" />
     <Compile Include="CommonTypes\IEntity.cs" />
     <Compile Include="CommonTypes\Attributes\ChargeWithContract.cs" />
     <Compile Include="CommonTypes\Attributes\ChargeWithoutContract.cs" />

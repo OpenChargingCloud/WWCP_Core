@@ -27,7 +27,7 @@ using eu.Vanaheimr.Styx.Arrows;
 
 #endregion
 
-namespace de.eMI3
+namespace org.emi3group
 {
 
     /// <summary>
@@ -93,6 +93,28 @@ namespace de.eMI3
             set
             {
                 SetProperty<Double>(ref _AverageVoltage, value);
+            }
+
+        }
+
+        #endregion
+
+        #region EVSEStatus
+
+        private EVSEStatusType _Status = EVSEStatusType.OutOfService;
+
+        [Mandatory, Not_eMI3defined]
+        public EVSEStatusType Status
+        {
+
+            get
+            {
+                return _Status;
+            }
+
+            set
+            {
+                SetProperty<EVSEStatusType>(ref _Status, value);
             }
 
         }

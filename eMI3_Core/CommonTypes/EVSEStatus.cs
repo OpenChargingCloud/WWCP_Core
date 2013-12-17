@@ -24,9 +24,38 @@ using System;
 namespace org.emi3group
 {
 
-    [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
-    public class FreeCharge : Attribute
+    public enum EVSEStatusType
     {
+
+        /// <summary>
+        /// Unknown EVSE status.
+        /// </summary>
+        Unknown,
+
+        /// <summary>
+        /// Charging Spot is available for charging.
+        /// </summary>
+        Available,
+
+        /// <summary>
+        /// Charging Spot is reserved and not available for charging.
+        /// </summary>
+        Reserved,
+
+        /// <summary>
+        /// Charging Spot is busy.
+        /// </summary>
+        Occupied,
+
+        /// <summary>
+        /// Charging Spot is out of service and not available for charging.
+        /// </summary>
+        OutOfService,
+
+        /// <summary>
+        /// The requested EVSEID and EVSE status does not exist within the database.
+        /// </summary>
+        EvseNotFound
 
     }
 
