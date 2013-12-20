@@ -90,7 +90,7 @@ namespace org.emi3group.IO.XML
 
             return new XElement(Namespace + ElementName,
                                 I8N.Select(v => new XElement(NS_eMI3 + I8N_Root,
-                                     new XAttribute(NS_eMI3 + I8N_Language, v.Key),
+                                     new XAttribute(NS_eMI3 + I8N_Language, v.Language),
                                      v.Value)));
 
         }

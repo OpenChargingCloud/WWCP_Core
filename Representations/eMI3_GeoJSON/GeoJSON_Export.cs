@@ -120,7 +120,7 @@ namespace org.emi3group.IO.GeoJSON
 
             return new JProperty(JPropertyKey,
                                  new JObject(I8N.Select(v =>
-                                     new JProperty(v.Key.ToString(), v.Value)
+                                     new JProperty(v.Language.ToString(), v.Value)
                                  )));
 
         }

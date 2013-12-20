@@ -44,8 +44,8 @@ namespace org.emi3group
 
         #region Data
 
-        internal readonly RoamingNetwork                             RoamingNetwork;
-        private  readonly ConcurrentDictionary<EVSPool_Id, EVSPool>  _RegisteredEVSPools;
+        public  readonly RoamingNetwork                             RoamingNetwork;
+        private readonly ConcurrentDictionary<EVSPool_Id, EVSPool>  _RegisteredEVSPools;
 
         #endregion
 

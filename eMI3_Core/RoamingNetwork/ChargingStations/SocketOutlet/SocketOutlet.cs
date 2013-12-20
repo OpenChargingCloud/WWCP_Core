@@ -37,7 +37,7 @@ namespace org.emi3group
 
         #region Data
 
-        internal readonly EVSE EVSE;
+        public readonly EVSE EVSE;
 
         #endregion
 
@@ -221,7 +221,7 @@ namespace org.emi3group
         /// </summary>
         public override String ToString()
         {
-            return Id.ToString();
+            return "eMI3 SocketOutlet: " + Id.ToString();
         }
 
         #endregion

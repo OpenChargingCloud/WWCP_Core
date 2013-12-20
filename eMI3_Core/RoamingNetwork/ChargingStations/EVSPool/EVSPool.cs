@@ -43,8 +43,8 @@ namespace org.emi3group
 
         #region Data
 
-        internal readonly EVSEOperator                                               Operator;
-        private  readonly ConcurrentDictionary<ChargingStation_Id, ChargingStation>  _ChargingStations;
+        public  readonly EVSEOperator                                               Operator;
+        private readonly ConcurrentDictionary<ChargingStation_Id, ChargingStation>  _ChargingStations;
 
         #endregion
 
@@ -656,7 +656,7 @@ namespace org.emi3group
         /// </summary>
         public override String ToString()
         {
-            return Id.ToString();
+            return "eMI3 EVSPool" + Id.ToString();
         }
 
         #endregion

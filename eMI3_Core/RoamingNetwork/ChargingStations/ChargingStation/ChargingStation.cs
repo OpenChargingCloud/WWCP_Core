@@ -40,8 +40,8 @@ namespace org.emi3group
 
         #region Data
 
-        internal readonly EVSPool                              Pool;
-        private  readonly ConcurrentDictionary<EVSE_Id, EVSE>  _EVSEs;
+        public  readonly EVSPool                              Pool;
+        private readonly ConcurrentDictionary<EVSE_Id, EVSE>  _EVSEs;
 
         #endregion
 
@@ -494,7 +494,7 @@ namespace org.emi3group
         /// </summary>
         public override String ToString()
         {
-            return Id.ToString();
+            return "eMI3 ChargingStation: " + Id.ToString();
         }
 
         #endregion

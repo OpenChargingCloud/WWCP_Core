@@ -42,8 +42,8 @@ namespace org.emi3group
 
         #region Data
 
-        internal readonly ChargingStation                                      ChargingStation;
-        private  readonly ConcurrentDictionary<SocketOutlet_Id, SocketOutlet>  _SocketOutlets;
+        public  readonly ChargingStation                                      ChargingStation;
+        private readonly ConcurrentDictionary<SocketOutlet_Id, SocketOutlet>  _SocketOutlets;
 
         #endregion
 
@@ -381,7 +381,7 @@ namespace org.emi3group
         /// </summary>
         public override String ToString()
         {
-            return Id.ToString();
+            return "eMI3 EVSE: " + Id.ToString();
         }
 
         #endregion
