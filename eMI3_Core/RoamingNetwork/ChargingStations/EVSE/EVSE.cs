@@ -238,7 +238,7 @@ namespace org.emi3group
 
             var _SocketOutlet = new SocketOutlet(SocketOutlet_Id, this);
 
-            Action.FailSafeRun(_SocketOutlet);
+            Action.FailSafeInvoke(_SocketOutlet);
 
             if (SocketOutletAddition.SendVoting(this, _SocketOutlet))
             {

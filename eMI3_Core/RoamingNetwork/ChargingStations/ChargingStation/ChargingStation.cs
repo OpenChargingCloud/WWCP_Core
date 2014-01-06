@@ -351,7 +351,7 @@ namespace org.emi3group
 
             var _EVSE = new EVSE(EVSE_Id, this);
 
-            Action.FailSafeRun(_EVSE);
+            Action.FailSafeInvoke(_EVSE);
 
             if (EVSEAddition.SendVoting(this, _EVSE))
             {

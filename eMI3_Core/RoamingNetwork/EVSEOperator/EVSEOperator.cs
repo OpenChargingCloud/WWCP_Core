@@ -286,7 +286,7 @@ namespace org.emi3group
 
             var _EVSPool = new EVSPool(EVSPool_Id, this);
 
-            Action.FailSafeRun(_EVSPool);
+            Action.FailSafeInvoke(_EVSPool);
 
             if (EVSPoolAddition.SendVoting(this, _EVSPool))
             {

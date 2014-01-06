@@ -513,7 +513,7 @@ namespace org.emi3group
 
             var _ChargingStation = new ChargingStation(ChargingStation_Id, this);
 
-            Action.FailSafeRun(_ChargingStation);
+            Action.FailSafeInvoke(_ChargingStation);
 
             if (ChargingStationAddition.SendVoting(this, _ChargingStation))
             {

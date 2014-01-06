@@ -397,7 +397,7 @@ namespace org.emi3group
 
             var _EVSEOperator = new EVSEOperator(EVSEOperator_Id, this);
 
-            Action.FailSafeRun(_EVSEOperator);
+            Action.FailSafeInvoke(_EVSEOperator);
 
             if (EVSEOperatorAddition.SendVoting(this, _EVSEOperator))
             {
@@ -438,7 +438,7 @@ namespace org.emi3group
 
             var _EVServiceProvider = new EVServiceProvider(EVServiceProvider_Id, this);
 
-            Action.FailSafeRun(_EVServiceProvider);
+            Action.FailSafeInvoke(_EVServiceProvider);
 
             if (EVServiceProviderAddition.SendVoting(this, _EVServiceProvider))
             {
@@ -479,7 +479,7 @@ namespace org.emi3group
 
             var _RoamingProvider = new RoamingProvider(RoamingProvider_Id, this);
 
-            Action.FailSafeRun(_RoamingProvider);
+            Action.FailSafeInvoke(_RoamingProvider);
 
             if (RoamingProviderAddition.SendVoting(this, _RoamingProvider))
             {
@@ -520,7 +520,7 @@ namespace org.emi3group
 
             var _SearchProvider = new SearchProvider(SearchProvider_Id, this);
 
-            Action.FailSafeRun(_SearchProvider);
+            Action.FailSafeInvoke(_SearchProvider);
 
             if (SearchProviderAddition.SendVoting(this, _SearchProvider))
             {
