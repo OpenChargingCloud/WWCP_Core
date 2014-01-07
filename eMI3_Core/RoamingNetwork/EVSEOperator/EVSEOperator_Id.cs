@@ -103,6 +103,18 @@ namespace org.emi3group
 
         #endregion
 
+        #region Parse(EVSEOperatorId)
+
+        /// <summary>
+        /// Parse the given string as an EVSE Operator identification.
+        /// </summary>
+        public static EVSEOperator_Id Parse(String EVSEOperatorId)
+        {
+            return new EVSEOperator_Id(EVSEOperatorId);
+        }
+
+        #endregion
+
         #region Clone
 
         /// <summary>

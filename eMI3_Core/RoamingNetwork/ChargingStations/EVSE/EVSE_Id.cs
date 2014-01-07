@@ -103,6 +103,18 @@ namespace org.emi3group
 
         #endregion
 
+        #region Parse(EVSEId)
+
+        /// <summary>
+        /// Parse the given string as an EVSE identification.
+        /// </summary>
+        public static EVSE_Id Parse(String EVSEId)
+        {
+            return new EVSE_Id(EVSEId);
+        }
+
+        #endregion
+
         #region Clone
 
         /// <summary>
