@@ -138,10 +138,17 @@ namespace org.emi3group
 
         public String this[Languages Language]
         {
+
             get
             {
                 return I8NStrings[Language];
             }
+
+            set
+            {
+                I8NStrings[Language] = value;
+            }
+
         }
 
         public I8NString Remove(Languages Language)
