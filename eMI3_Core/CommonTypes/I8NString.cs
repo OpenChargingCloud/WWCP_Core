@@ -132,6 +132,9 @@ namespace org.emi3group
             if (!I8NStrings.ContainsKey(Language))
                 I8NStrings.Add(Language, Value);
 
+            else
+                I8NStrings[Language] = Value;
+
             return this;
 
         }
