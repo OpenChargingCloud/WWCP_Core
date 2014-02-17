@@ -35,7 +35,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\libs\JSON.NET\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\Hermod\libs\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
