@@ -472,8 +472,16 @@ namespace org.emi3group
         /// <param name="CountryName">A country name.</param>
         public static Country ParseCountryName(String CountryName)
         {
+
             ReflectData();
-            return CountryNames[CountryName];
+
+            Country _Country;
+
+            if (CountryNames.TryGetValue(CountryName, out _Country))
+                return _Country;
+
+            return null;
+
         }
 
         #endregion
@@ -503,8 +511,16 @@ namespace org.emi3group
         /// <param name="Alpha2Code">An alpha2code for a country, e.g. "DE" for Germany.</param>
         public static Country ParseAlpha2Code(String Alpha2Code)
         {
+
             ReflectData();
-            return Alpha2Codes[Alpha2Code];
+
+            Country _Country;
+
+            if (Alpha2Codes.TryGetValue(Alpha2Code, out _Country))
+                return _Country;
+
+            return null;
+
         }
 
         #endregion
@@ -534,8 +550,16 @@ namespace org.emi3group
         /// <param name="Alpha3Code">An alpha3code for a country, e.g. "DEU" for Germany.</param>
         public static Country ParseAlpha3Code(String Alpha3Code)
         {
+
             ReflectData();
-            return Alpha3Codes[Alpha3Code];
+
+            Country _Country;
+
+            if (Alpha3Codes.TryGetValue(Alpha3Code, out _Country))
+                return _Country;
+
+            return null;
+
         }
 
         #endregion
@@ -565,8 +589,16 @@ namespace org.emi3group
         /// <param name="NumericCode">A numeric code for a country, e.g. "276" for Germany.</param>
         public static Country ParseNumericCode(UInt16 NumericCode)
         {
+
             ReflectData();
-            return NumericCodes[NumericCode];
+
+            Country _Country;
+
+            if (NumericCodes.TryGetValue(NumericCode, out _Country))
+                return _Country;
+
+            return null;
+
         }
 
         /// <summary>
