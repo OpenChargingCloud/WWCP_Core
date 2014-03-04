@@ -115,6 +115,28 @@ namespace org.emi3group
 
         #endregion
 
+        // Value '49*822*48P5*2' is not facet-valid with respect to pattern '\+?[0-9]{1,3}\*[0-9]{3,6}\*[0-9\*]{1,32}' for type 'EvseIDType'.
+        #region TryParse(Text, out EVSEId)
+
+        /// <summary>
+        /// Parse the given string as an EVSE identification.
+        /// </summary>
+        public static Boolean TryParse(String Text, out EVSE_Id EVSEId)
+        {
+            try
+            {
+                EVSEId = new EVSE_Id(Text);
+                return true;
+            }
+            catch (Exception e)
+            {
+                EVSEId = null;
+                return false;
+            }
+        }
+
+        #endregion
+
         #region Clone
 
         /// <summary>

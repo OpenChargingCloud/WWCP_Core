@@ -115,6 +115,27 @@ namespace org.emi3group
 
         #endregion
 
+        #region TryParse(Text, out EVSEOperatorId)
+
+        /// <summary>
+        /// Parse the given string as an EVSE Operator identification.
+        /// </summary>
+        public static Boolean TryParse(String Text, out EVSEOperator_Id EVSEOperatorId)
+        {
+            try
+            {
+                EVSEOperatorId = new EVSEOperator_Id(Text);
+                return true;
+            }
+            catch (Exception e)
+            {
+                EVSEOperatorId = null;
+                return false;
+            }
+        }
+
+        #endregion
+
         #region Clone
 
         /// <summary>
