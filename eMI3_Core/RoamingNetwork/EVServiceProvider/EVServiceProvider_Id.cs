@@ -103,6 +103,39 @@ namespace org.emi3group
 
         #endregion
 
+        #region Parse(EVServiceProviderId)
+
+        /// <summary>
+        /// Parse the given string as an EV Service Provider identification.
+        /// </summary>
+        public static EVServiceProvider_Id Parse(String EVServiceProviderId)
+        {
+            return new EVServiceProvider_Id(EVServiceProviderId);
+        }
+
+        #endregion
+
+        #region TryParse(Text, out EVSEOperatorId)
+
+        /// <summary>
+        /// Parse the given string as an EV Service Provider identification.
+        /// </summary>
+        public static Boolean TryParse(String Text, out EVServiceProvider_Id EVServiceProviderId)
+        {
+            try
+            {
+                EVServiceProviderId = new EVServiceProvider_Id(Text);
+                return true;
+            }
+            catch (Exception e)
+            {
+                EVServiceProviderId = null;
+                return false;
+            }
+        }
+
+        #endregion
+
         #region Clone
 
         /// <summary>
