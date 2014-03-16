@@ -43,6 +43,22 @@ namespace org.emi3group
     }
 
 
+    #region RoamingNetworkAlreadyExists
+
+    /// <summary>
+    /// An exception thrown whenever a roaming network already exists.
+    /// </summary>
+    public class RoamingNetworkAlreadyExists : RoamingNetworkException
+    {
+
+        public RoamingNetworkAlreadyExists(RoamingNetwork_Id  RoamingNetwork_Id)
+            : base("The given roaming network identification '" + RoamingNetwork_Id + "' already exists!")
+        { }
+
+    }
+
+    #endregion
+
     #region EVSEOperatorAlreadyExists
 
     /// <summary>

@@ -23,6 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using org.emi3group.LocalService;
 
 #endregion
 
@@ -71,6 +72,21 @@ namespace org.emi3group
         #endregion
 
 
+        #region EMobilityService
+
+        private readonly IEMobilityService _EMobilityService;
+
+        public IEMobilityService EMobilityService
+        {
+            get
+            {
+                return _EMobilityService;
+            }
+        }
+
+        #endregion
+
+
         #region EVSPools
 
         public IEnumerable<EVSPool> EVSPools
@@ -87,30 +103,46 @@ namespace org.emi3group
 
         #region Constructor(s)
 
-        #region (internal) EVSProvider()
-
-        /// <summary>
-        /// Create a new Electric Vehicle Service Provider (EVSP).
-        /// </summary>
-        internal EVServiceProvider(RoamingNetwork  RoamingNetwork)
-            : this(EVServiceProvider_Id.New, RoamingNetwork)
-        { }
-
-        #endregion
-
-        #region (internal) EVSProvider(Id)
+        #region (internal) EVSProvider(Id, RoamingNetwork)
 
         /// <summary>
         /// Create a new Electric Vehicle Service Provider (EVSP)
         /// having the given EVSProvider_Id.
         /// </summary>
         /// <param name="Id">The EVSPool Id.</param>
+        /// <param name="RoamingNetwork">The corresponding roaming network.</param>
         internal EVServiceProvider(EVServiceProvider_Id  Id,
-                             RoamingNetwork  RoamingNetwork)
+                                   RoamingNetwork        RoamingNetwork)
+            : this(Id, RoamingNetwork, new LocalEMobilityService(Id + " Local Authorizator"))
+        { }
+
+        #endregion
+
+        #region (internal) EVSProvider(Id, RoamingNetwork, EMobilityService)
+
+        /// <summary>
+        /// Create a new Electric Vehicle Service Provider (EVSP)
+        /// having the given EVSProvider_Id.
+        /// </summary>
+        /// <param name="Id">The EVSPool Id.</param>
+        /// <param name="RoamingNetwork">The corresponding roaming network.</param>
+        /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
+        internal EVServiceProvider(EVServiceProvider_Id  Id,
+                                   RoamingNetwork        RoamingNetwork,
+                                   IEMobilityService     EMobilityService)
             : base(Id)
         {
 
+            #region Initial Checks
+
+            if (EMobilityService == null)
+                throw new ArgumentNullException("EMobilityService", "The given e-mobility service must not be null!");
+
+            #endregion
+
             this.Name                   = new I8NString();
+
+            this._EMobilityService      = EMobilityService;
 
             this._RegisteredEVSPools    = new ConcurrentDictionary<EVSPool_Id, EVSPool>();
 
@@ -119,6 +151,10 @@ namespace org.emi3group
         #endregion
 
         #endregion
+
+
+
+
 
 
         #region IEnumerable<EVSPool> Members

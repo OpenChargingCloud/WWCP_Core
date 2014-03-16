@@ -55,6 +55,15 @@
     <Compile Include="CommonTypes\Address.cs" />
     <Compile Include="CommonTypes\AuthorizationOptions.cs" />
     <Compile Include="CommonTypes\eMI3_Exception.cs" />
+    <Compile Include="LocalService\AResult.cs" />
+    <Compile Include="LocalService\AUTHResult.cs" />
+    <Compile Include="LocalService\AUTHSTARTResult.cs" />
+    <Compile Include="LocalService\AUTHSTOPResult.cs" />
+    <Compile Include="LocalService\IEMobilityService.cs" />
+    <Compile Include="LocalService\LocalEMobilityService.cs" />
+    <Compile Include="LocalService\RequestRouter.cs" />
+    <Compile Include="LocalService\SENDCDRResult.cs" />
+    <Compile Include="LocalService\SessionInfo.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\ChargingStationExceptions.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\EVSE\EVSEExceptions.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\EVSPool\EVSPoolExceptions.cs" />
@@ -72,6 +81,7 @@
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\AddEVSEResult.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\EVSPool\EVSPool.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\RegisterEVSEResult.cs" />
+    <Compile Include="RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="RoamingNetwork\EVSEOperator\EVSEOperatorExceptions.cs" />
     <Compile Include="RoamingNetwork\RoamingNetworkExceptions.cs" />
     <Compile Include="RoamingNetwork\EVSEOperator\EVSEOperator.cs" />
@@ -93,6 +103,7 @@
     <Compile Include="RoamingNetwork\RoamingProvider\RoamingProvider_Id.cs" />
     <Compile Include="RoamingNetwork\SearchProvider\SearchProvider.cs" />
     <Compile Include="RoamingNetwork\SearchProvider\SearchProvider_Id.cs" />
+    <Compile Include="Semantics.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README.md" />

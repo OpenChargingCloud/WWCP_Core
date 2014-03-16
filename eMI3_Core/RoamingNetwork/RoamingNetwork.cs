@@ -25,6 +25,8 @@ using eu.Vanaheimr.Illias.Commons;
 using eu.Vanaheimr.Illias.Commons.Votes;
 using eu.Vanaheimr.Styx.Arrows;
 
+using org.emi3group.LocalService;
+
 #endregion
 
 namespace org.emi3group
@@ -115,6 +117,21 @@ namespace org.emi3group
 
         #endregion
 
+        #region EVServiceProviders
+
+        /// <summary>
+        /// Return all EV service providers registered within this roaming network.
+        /// </summary>
+        public IEnumerable<EVServiceProvider> EVServiceProviders
+        {
+            get
+            {
+                return _EVServiceProviders.Values;
+            }
+        }
+
+        #endregion
+
         #region RoamingProviders
 
         /// <summary>
@@ -140,6 +157,21 @@ namespace org.emi3group
             get
             {
                 return _SearchProviders.Values;
+            }
+        }
+
+        #endregion
+
+
+        #region RequestRouter
+
+        private readonly RequestRouter _RequestRouter;
+
+        public RequestRouter RequestRouter
+        {
+            get
+            {
+                return _RequestRouter;
             }
         }
 
@@ -339,6 +371,7 @@ namespace org.emi3group
             this._EVServiceProviders        = new ConcurrentDictionary<EVServiceProvider_Id, EVServiceProvider>();
             this._RoamingProviders          = new ConcurrentDictionary<RoamingProvider_Id,   RoamingProvider>();
             this._SearchProviders           = new ConcurrentDictionary<SearchProvider_Id,    SearchProvider>();
+            this._RequestRouter             = new RequestRouter();
 
             this.Name                       = new I8NString(Languages.en, Id.ToString());
             this.Description                = new I8NString();
@@ -423,7 +456,7 @@ namespace org.emi3group
         /// <param name="EVServiceProvider_Id">The unique identification of the new roaming provider.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
         public EVServiceProvider CreateNewEVServiceProvider(EVServiceProvider_Id       EVServiceProvider_Id,
-                                                            Action<EVServiceProvider>  Action = null)
+                                                            Action<EVServiceProvider>  Action  = null)
         {
 
             #region Initial checks
@@ -455,6 +488,49 @@ namespace org.emi3group
 
         #endregion
 
+        #region CreateNewEVServiceProvider(EVServiceProvider_Id, EMobilityService, Action = null)
+
+        /// <summary>
+        /// Create and register a new electric vehicle service provider having the given
+        /// unique electric vehicle service provider identification.
+        /// </summary>
+        /// <param name="EVServiceProvider_Id">The unique identification of the new roaming provider.</param>
+        /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
+        /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
+        public EVServiceProvider CreateNewEVServiceProvider(EVServiceProvider_Id       EVServiceProvider_Id,
+                                                            IEMobilityService          EMobilityService,
+                                                            Action<EVServiceProvider>  Action  = null)
+        {
+
+            #region Initial checks
+
+            if (EVServiceProvider_Id == null)
+                throw new ArgumentNullException("EVServiceProvider_Id", "The given electric vehicle service provider identification must not be null!");
+
+            if (_EVServiceProviders.ContainsKey(EVServiceProvider_Id))
+                throw new EVServiceProviderAlreadyExists(EVServiceProvider_Id, this.Id);
+
+            #endregion
+
+            var _EVServiceProvider = new EVServiceProvider(EVServiceProvider_Id, this, EMobilityService);
+
+            Action.FailSafeInvoke(_EVServiceProvider);
+
+            if (EVServiceProviderAddition.SendVoting(this, _EVServiceProvider))
+            {
+                if (_EVServiceProviders.TryAdd(EVServiceProvider_Id, _EVServiceProvider))
+                {
+                    EVServiceProviderAddition.SendNotification(this, _EVServiceProvider);
+                    return _EVServiceProvider;
+                }
+            }
+
+            throw new Exception();
+
+        }
+
+        #endregion
+
         #region CreateNewRoamingProvider(RoamingProvider_Id, Action = null)
 
         /// <summary>
@@ -464,6 +540,7 @@ namespace org.emi3group
         /// <param name="RoamingProvider_Id">The unique identification of the new roaming provider.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
         public RoamingProvider CreateNewRoamingProvider(RoamingProvider_Id       RoamingProvider_Id,
+                                                        IEMobilityService        EMobilityService,
                                                         Action<RoamingProvider>  Action = null)
         {
 
@@ -477,7 +554,7 @@ namespace org.emi3group
 
             #endregion
 
-            var _RoamingProvider = new RoamingProvider(RoamingProvider_Id, this);
+            var _RoamingProvider = new RoamingProvider(RoamingProvider_Id, this, EMobilityService);
 
             Action.FailSafeInvoke(_RoamingProvider);
 

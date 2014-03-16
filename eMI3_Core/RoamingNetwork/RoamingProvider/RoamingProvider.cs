@@ -23,6 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using org.emi3group.LocalService;
 
 #endregion
 
@@ -71,6 +72,21 @@ namespace org.emi3group
         #endregion
 
 
+        #region EMobilityService
+
+        private readonly IEMobilityService _EMobilityService;
+
+        public IEMobilityService EMobilityService
+        {
+            get
+            {
+                return _EMobilityService;
+            }
+        }
+
+        #endregion
+
+
         #region EVSPools
 
         public IEnumerable<EVSPool> EVSPools
@@ -89,16 +105,16 @@ namespace org.emi3group
 
         #region (internal) RoamingProvider()
 
-        /// <summary>
-        /// Create a new Electric Vehicle Roaming Provider (EVRP).
-        /// </summary>
-        internal RoamingProvider(RoamingNetwork  RoamingNetwork)
-            : this(RoamingProvider_Id.New, RoamingNetwork)
-        { }
+        ///// <summary>
+        ///// Create a new Electric Vehicle Roaming Provider (EVRP).
+        ///// </summary>
+        //internal RoamingProvider(RoamingNetwork  RoamingNetwork)
+        //    : this(RoamingProvider_Id.New, RoamingNetwork)
+        //{ }
 
         #endregion
 
-        #region (internal) RoamingProvider(Id)
+        #region (internal) RoamingProvider(Id, RoamingNetwork, EMobilityService)
 
         /// <summary>
         /// Create a new Electric Vehicle Roaming Provider (EVRP)
@@ -106,11 +122,21 @@ namespace org.emi3group
         /// </summary>
         /// <param name="Id">The EVSPool Id.</param>
         internal RoamingProvider(RoamingProvider_Id  Id,
-                                 RoamingNetwork      RoamingNetwork)
+                                 RoamingNetwork      RoamingNetwork,
+                                 IEMobilityService   EMobilityService)
             : base(Id)
         {
 
+            #region Initial Checks
+
+            if (EMobilityService == null)
+                throw new ArgumentNullException("EMobilityService", "The given e-mobility service must not be null!");
+
+            #endregion
+
             this.Name                   = new I8NString();
+
+            this._EMobilityService      = EMobilityService;
 
             this._RegisteredEVSPools    = new ConcurrentDictionary<EVSPool_Id, EVSPool>();
 
