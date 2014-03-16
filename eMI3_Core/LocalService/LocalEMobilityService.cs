@@ -43,6 +43,20 @@ namespace org.emi3group.LocalService
 
         #region Properties
 
+        #region EVSPId
+
+        private readonly EVServiceProvider_Id _EVSPId;
+
+        public EVServiceProvider_Id EVSPId
+        {
+            get
+            {
+                return _EVSPId;
+            }
+        }
+
+        #endregion
+
         #region AuthorizatorId
 
         private readonly String _AuthorizatorId;
@@ -61,8 +75,10 @@ namespace org.emi3group.LocalService
 
         #region Constructor(s)
 
-        public LocalEMobilityService(String AuthorizatorId = "Belectric Drive EV Gateway Database")
+        public LocalEMobilityService(EVServiceProvider_Id  EVSPId,
+                                     String                AuthorizatorId = "Belectric Drive EV Gateway Database")
         {
+            this._EVSPId                = EVSPId;
             this._AuthorizatorId        = AuthorizatorId;
             this.AuthorizationDatabase  = new Dictionary<String, AuthorizationResult>();
             this.SessionDatabase        = new Dictionary<Guid,   SessionInfo>();
@@ -129,7 +145,7 @@ namespace org.emi3group.LocalService
                                        AuthorizationResult  = AuthenticationResult,
                                        SessionId            = SessionId.ToString(),
                                        PartnerSessionId     = PartnerSessionId,
-                                       ProviderId           = EVServiceProvider_Id.Parse(AuthorizatorId)
+                                       ProviderId           = EVSPId
                                    };
 
                     }
@@ -142,7 +158,7 @@ namespace org.emi3group.LocalService
                         return new AUTHSTARTResult(AuthorizatorId) {
                                        AuthorizationResult  = AuthenticationResult,
                                        PartnerSessionId     = PartnerSessionId,
-                                       ProviderId           = EVServiceProvider_Id.Parse(AuthorizatorId),
+                                       ProviderId           = EVSPId,
                                        Description          = "UID is blocked!"
                                    };
 
@@ -154,7 +170,7 @@ namespace org.emi3group.LocalService
                         return new AUTHSTARTResult(AuthorizatorId) {
                                        AuthorizationResult  = AuthenticationResult,
                                        PartnerSessionId     = PartnerSessionId,
-                                       ProviderId           = EVServiceProvider_Id.Parse(AuthorizatorId),
+                                       ProviderId           = EVSPId,
                                    };
 
                     #endregion
@@ -167,7 +183,7 @@ namespace org.emi3group.LocalService
                     return new AUTHSTARTResult(AuthorizatorId) {
                                    AuthorizationResult  = AuthorizationResult.NotAuthorized,
                                    PartnerSessionId     = PartnerSessionId,
-                                   ProviderId           = EVServiceProvider_Id.Parse(AuthorizatorId),
+                                   ProviderId           = EVSPId,
                                    Description          = "Unkown UID!"
                                };
 
@@ -212,7 +228,7 @@ namespace org.emi3group.LocalService
                                            AuthorizationResult  = AuthenticationResult,
                                            SessionId            = SessionId,
                                            PartnerSessionId     = PartnerSessionId,
-                                           ProviderId           = EVServiceProvider_Id.Parse(AuthorizatorId)
+                                           ProviderId           = EVSPId
                                        };
 
                             #endregion
@@ -224,7 +240,7 @@ namespace org.emi3group.LocalService
                                 return new AUTHSTOPResult(AuthorizatorId) {
                                                AuthorizationResult  = AuthorizationResult.NotAuthorized,
                                                PartnerSessionId     = PartnerSessionId,
-                                               ProviderId           = EVServiceProvider_Id.Parse(AuthorizatorId),
+                                               ProviderId           = EVSPId,
                                                Description          = "Invalid UID for SessionId!"
                                            };
                             }
@@ -240,7 +256,7 @@ namespace org.emi3group.LocalService
                             return new AUTHSTOPResult(AuthorizatorId) {
                                            AuthorizationResult  = AuthorizationResult.NotAuthorized,
                                            PartnerSessionId     = PartnerSessionId,
-                                           ProviderId           = EVServiceProvider_Id.Parse(AuthorizatorId),
+                                           ProviderId           = EVSPId,
                                            Description          = "Invalid SessionId!"
                                        };
                         }
@@ -255,7 +271,7 @@ namespace org.emi3group.LocalService
                         return new AUTHSTOPResult(AuthorizatorId) {
                                        AuthorizationResult  = AuthenticationResult,
                                        PartnerSessionId     = PartnerSessionId,
-                                       ProviderId           = EVServiceProvider_Id.Parse(AuthorizatorId),
+                                       ProviderId           = EVSPId,
                                        Description          = "UID is blocked!"
                                    };
 
@@ -267,7 +283,7 @@ namespace org.emi3group.LocalService
                         return new AUTHSTOPResult(AuthorizatorId) {
                                        AuthorizationResult  = AuthenticationResult,
                                        PartnerSessionId     = PartnerSessionId,
-                                       ProviderId           = EVServiceProvider_Id.Parse(AuthorizatorId),
+                                       ProviderId           = EVSPId,
                                    };
 
                     #endregion
@@ -280,7 +296,7 @@ namespace org.emi3group.LocalService
                     return new AUTHSTOPResult(AuthorizatorId) {
                                        AuthorizationResult  = AuthorizationResult.NotAuthorized,
                                        PartnerSessionId     = PartnerSessionId,
-                                       ProviderId           = EVServiceProvider_Id.Parse(AuthorizatorId),
+                                       ProviderId           = EVSPId,
                                        Description          = "Unkown UID!"
                                    };
 
