@@ -308,13 +308,14 @@ namespace org.emi3group.LocalService
 
         #endregion
 
-        #region SendCDR(EVSEId, SessionId, PartnerSessionId, PartnerProductId, UID, ChargeStart, ChargeEnd, SessionStart = null, SessionEnd = null, MeterValueStart = null, MeterValueEnd = null)
+        #region SendCDR(EVSEId, SessionId, PartnerSessionId, PartnerProductId, UID, eMAId, ChargeStart, ChargeEnd, SessionStart = null, SessionEnd = null, MeterValueStart = null, MeterValueEnd = null)
 
         public SENDCDRResult SendCDR(EVSE_Id    EVSEId,
                                      String     SessionId,
                                      String     PartnerSessionId,
                                      String     PartnerProductId,
                                      String     UID,
+                                     String     eMAId,
                                      DateTime   ChargeStart,
                                      DateTime   ChargeEnd,
                                      DateTime?  SessionStart    = null,

@@ -55,6 +55,7 @@ namespace org.emi3group.LocalService
                                        String           PartnerSessionId,
                                        String           PartnerProductId,
                                        String           UID,
+                                       String           eMAId,
                                        DateTime         ChargeStart,
                                        DateTime         ChargeEnd,
                                        DateTime?        SessionStart    = null,
