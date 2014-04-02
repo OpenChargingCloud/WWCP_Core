@@ -74,9 +74,9 @@ namespace org.emi3group
 
         #region EMobilityService
 
-        private readonly IEMobilityService _EMobilityService;
+        private readonly IUpstreamEMobilityService _EMobilityService;
 
-        public IEMobilityService EMobilityService
+        public IUpstreamEMobilityService EMobilityService
         {
             get
             {
@@ -123,7 +123,7 @@ namespace org.emi3group
         /// <param name="Id">The EVSPool Id.</param>
         internal RoamingProvider(RoamingProvider_Id  Id,
                                  RoamingNetwork      RoamingNetwork,
-                                 IEMobilityService   EMobilityService)
+                                 IUpstreamEMobilityService   EMobilityService)
             : base(Id)
         {
 

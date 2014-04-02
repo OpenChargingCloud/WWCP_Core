@@ -28,7 +28,7 @@ namespace org.emi3group.LocalService
     /// <summary>
     /// The common interface for all E-Mobility services.
     /// </summary>
-    public interface IEMobilityService
+    public interface IUpstreamEMobilityService
     {
 
         #region Properties
@@ -41,21 +41,21 @@ namespace org.emi3group.LocalService
 
         AUTHSTARTResult AuthorizeStart(EVSEOperator_Id  OperatorId,
                                        EVSE_Id          EVSEId,
-                                       String           PartnerSessionId,
-                                       String           UID);
+                                       SessionId        PartnerSessionId,
+                                       Token            UID);
 
         AUTHSTOPResult  AuthorizeStop (EVSEOperator_Id  OperatorId,
                                        EVSE_Id          EVSEId,
-                                       String           SessionId,
-                                       String           PartnerSessionId,
-                                       String           UID);
+                                       SessionId        SessionId,
+                                       SessionId        PartnerSessionId,
+                                       Token            UID);
 
         SENDCDRResult   SendCDR       (EVSE_Id          EVSEId,
-                                       String           SessionId,
-                                       String           PartnerSessionId,
+                                       SessionId        SessionId,
+                                       SessionId        PartnerSessionId,
                                        String           PartnerProductId,
-                                       String           UID,
-                                       String           eMAId,
+                                       Token            UID,
+                                       eMA_Id           eMAId,
                                        DateTime         ChargeStart,
                                        DateTime         ChargeEnd,
                                        DateTime?        SessionStart    = null,
@@ -64,6 +64,29 @@ namespace org.emi3group.LocalService
                                        Double?          MeterValueEnd   = null);
 
         #endregion
+
+    }
+
+    /// <summary>
+    /// The common interface for all E-Mobility services.
+    /// </summary>
+    public interface IDownstreamEMobilityService
+    {
+
+        #region Properties
+
+        String AuthorizatorId { get; }
+
+        #endregion
+
+        RemoteStartResult RemoteStart(EVSE_Id               EVSEId,
+                                      String                SessionId,
+                                      EVServiceProvider_Id  EVServiceProviderId,
+                                      eMA_Id                eMAId);
+
+        RemoteStopResult  RemoteStop (EVSE_Id               EVSEId,
+                                      String                SessionId,
+                                      EVServiceProvider_Id  EVServiceProviderId);
 
     }
 

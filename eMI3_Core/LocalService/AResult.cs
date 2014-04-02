@@ -43,8 +43,8 @@ namespace org.emi3group.LocalService
 
         #endregion
 
-        public String  PartnerSessionId         { get; set; }
-        public String  Description              { get; set; }
+        public SessionId  PartnerSessionId         { get; set; }
+        public String     Description              { get; set; }
 
         #endregion
 

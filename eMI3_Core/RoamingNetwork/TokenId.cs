@@ -25,9 +25,9 @@ namespace org.emi3group
 {
 
     /// <summary>
-    /// The unique identification of an Electric Mobility Account (driver contract) (eMA_Id).
+    /// The unique identification of a token.
     /// </summary>
-    public class eMA_Id : IEquatable<eMA_Id>, IComparable<eMA_Id>, IComparable
+    public class Token : IId, IEquatable<Token>, IComparable<Token>
     {
 
         #region Data
@@ -60,25 +60,24 @@ namespace org.emi3group
 
         #region Constructor(s)
 
-        #region eMA_Id()
+        #region TokenId()
 
         /// <summary>
-        /// Generate a new Electric Vehicle Mobility Account (driver contract) identification (eMA_Id).
+        /// Generate a new token.
         /// </summary>
-        public eMA_Id()
+        public Token()
         {
             _Id = Guid.NewGuid().ToString();
         }
 
         #endregion
 
-        #region eMA_Id(String)
+        #region TokenId(String)
 
         /// <summary>
-        /// Generate a new Electric Vehicle Mobility Account (driver contract) identification (eMA_Id)
-        /// based on the given string.
+        /// Generate a new token based on the given string.
         /// </summary>
-        public eMA_Id(String String)
+        public Token(String String)
         {
             _Id = String.Trim();
         }
@@ -91,45 +90,45 @@ namespace org.emi3group
         #region New
 
         /// <summary>
-        /// Generate a new eMA_Id.
+        /// Generate a new token.
         /// </summary>
-        public static eMA_Id New
+        public static Token New
         {
             get
             {
-                return new eMA_Id(Guid.NewGuid().ToString());
+                return new Token(Guid.NewGuid().ToString());
             }
         }
 
         #endregion
 
-        #region Parse(eMAId)
+        #region Parse(EVSEOperatorId)
 
         /// <summary>
-        /// Parse the given string as an eMA identification.
+        /// Parse the given string as a token.
         /// </summary>
-        public static eMA_Id Parse(String eMAId)
+        public static Token Parse(String EVSEOperatorId)
         {
-            return new eMA_Id(eMAId);
+            return new Token(EVSEOperatorId);
         }
 
         #endregion
 
-        #region TryParse(Text, out eMAId)
+        #region TryParse(Text, out EVSEOperatorId)
 
         /// <summary>
-        /// Parse the given string as an eMA identification.
+        /// Parse the given string as a token.
         /// </summary>
-        public static Boolean TryParse(String Text, out eMA_Id eMAId)
+        public static Boolean TryParse(String Text, out Token EVSEOperatorId)
         {
             try
             {
-                eMAId = new eMA_Id(Text);
+                EVSEOperatorId = new Token(Text);
                 return true;
             }
             catch (Exception e)
             {
-                eMAId = null;
+                EVSEOperatorId = null;
                 return false;
             }
         }
@@ -139,13 +138,13 @@ namespace org.emi3group
         #region Clone
 
         /// <summary>
-        /// Clone an eMA_Id.
+        /// Clone a token.
         /// </summary>
-        public eMA_Id Clone
+        public Token Clone
         {
             get
             {
-                return new eMA_Id(_Id);
+                return new Token(_Id);
             }
         }
 
@@ -154,119 +153,119 @@ namespace org.emi3group
 
         #region Operator overloading
 
-        #region Operator == (eMA_Id1, eMA_Id2)
+        #region Operator == (TokenId1, TokenId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="TokenId1">A TokenId.</param>
+        /// <param name="TokenId2">Another TokenId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator == (Token TokenId1, Token TokenId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(eMA_Id1, eMA_Id2))
+            if (Object.ReferenceEquals(TokenId1, TokenId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) eMA_Id1 == null) || ((Object) eMA_Id2 == null))
+            if (((Object) TokenId1 == null) || ((Object) TokenId2 == null))
                 return false;
 
-            return eMA_Id1.Equals(eMA_Id2);
+            return TokenId1.Equals(TokenId2);
 
         }
 
         #endregion
 
-        #region Operator != (eMA_Id1, eMA_Id2)
+        #region Operator != (TokenId1, TokenId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="TokenId1">A TokenId.</param>
+        /// <param name="TokenId2">Another TokenId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator != (Token TokenId1, Token TokenId2)
         {
-            return !(eMA_Id1 == eMA_Id2);
+            return !(TokenId1 == TokenId2);
         }
 
         #endregion
 
-        #region Operator <  (eMA_Id1, eMA_Id2)
+        #region Operator <  (TokenId1, TokenId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="TokenId1">A TokenId.</param>
+        /// <param name="TokenId2">Another TokenId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator < (Token TokenId1, Token TokenId2)
         {
 
-            if ((Object) eMA_Id1 == null)
-                throw new ArgumentNullException("The given eMA_Id1 must not be null!");
+            if ((Object) TokenId1 == null)
+                throw new ArgumentNullException("The given TokenId1 must not be null!");
 
-            return eMA_Id1.CompareTo(eMA_Id2) < 0;
+            return TokenId1.CompareTo(TokenId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (eMA_Id1, eMA_Id2)
+        #region Operator <= (TokenId1, TokenId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="TokenId1">A TokenId.</param>
+        /// <param name="TokenId2">Another TokenId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator <= (Token TokenId1, Token TokenId2)
         {
-            return !(eMA_Id1 > eMA_Id2);
+            return !(TokenId1 > TokenId2);
         }
 
         #endregion
 
-        #region Operator >  (eMA_Id1, eMA_Id2)
+        #region Operator >  (TokenId1, TokenId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="TokenId1">A TokenId.</param>
+        /// <param name="TokenId2">Another TokenId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator > (Token TokenId1, Token TokenId2)
         {
 
-            if ((Object) eMA_Id1 == null)
-                throw new ArgumentNullException("The given eMA_Id1 must not be null!");
+            if ((Object) TokenId1 == null)
+                throw new ArgumentNullException("The given TokenId1 must not be null!");
 
-            return eMA_Id1.CompareTo(eMA_Id2) > 0;
+            return TokenId1.CompareTo(TokenId2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (eMA_Id1, eMA_Id2)
+        #region Operator >= (TokenId1, TokenId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="TokenId1">A TokenId.</param>
+        /// <param name="TokenId2">Another TokenId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator >= (Token TokenId1, Token TokenId2)
         {
-            return !(eMA_Id1 < eMA_Id2);
+            return !(TokenId1 < TokenId2);
         }
 
         #endregion
 
         #endregion
 
-        #region IComparable<eMA_Id> Members
+        #region IComparable<TokenId> Members
 
         #region CompareTo(Object)
 
@@ -280,35 +279,35 @@ namespace org.emi3group
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an eMA_Id.
-            var eMA_Id = Object as eMA_Id;
-            if ((Object) eMA_Id == null)
-                throw new ArgumentException("The given object is not a eMA_Id!");
+            // Check if the given object is an TokenId.
+            var TokenId = Object as Token;
+            if ((Object) TokenId == null)
+                throw new ArgumentException("The given object is not a TokenId!");
 
-            return CompareTo(eMA_Id);
+            return CompareTo(TokenId);
 
         }
 
         #endregion
 
-        #region CompareTo(eMA_Id)
+        #region CompareTo(TokenId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id">An object to compare with.</param>
-        public Int32 CompareTo(eMA_Id eMA_Id)
+        /// <param name="TokenId">An object to compare with.</param>
+        public Int32 CompareTo(Token TokenId)
         {
 
-            if ((Object) eMA_Id == null)
-                throw new ArgumentNullException("The given eMA_Id must not be null!");
+            if ((Object) TokenId == null)
+                throw new ArgumentNullException("The given TokenId must not be null!");
 
-            // Compare the length of the eMA_Ids
-            var _Result = this.Length.CompareTo(eMA_Id.Length);
+            // Compare the length of the TokenIds
+            var _Result = this.Length.CompareTo(TokenId.Length);
 
             // If equal: Compare Ids
             if (_Result == 0)
-                _Result = _Id.CompareTo(eMA_Id._Id);
+                _Result = _Id.CompareTo(TokenId._Id);
 
             return _Result;
 
@@ -318,7 +317,7 @@ namespace org.emi3group
 
         #endregion
 
-        #region IEquatable<eMA_Id> Members
+        #region IEquatable<TokenId> Members
 
         #region Equals(Object)
 
@@ -333,31 +332,31 @@ namespace org.emi3group
             if (Object == null)
                 return false;
 
-            // Check if the given object is an eMA_Id.
-            var eMA_Id = Object as eMA_Id;
-            if ((Object) eMA_Id == null)
+            // Check if the given object is an TokenId.
+            var TokenId = Object as Token;
+            if ((Object) TokenId == null)
                 return false;
 
-            return this.Equals(eMA_Id);
+            return this.Equals(TokenId);
 
         }
 
         #endregion
 
-        #region Equals(eMA_Id)
+        #region Equals(TokenId)
 
         /// <summary>
-        /// Compares two eMA_Ids for equality.
+        /// Compares two TokenIds for equality.
         /// </summary>
-        /// <param name="eMA_Id">A eMA_Id to compare with.</param>
+        /// <param name="TokenId">A TokenId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(eMA_Id eMA_Id)
+        public Boolean Equals(Token TokenId)
         {
 
-            if ((Object) eMA_Id == null)
+            if ((Object) TokenId == null)
                 return false;
 
-            return _Id.Equals(eMA_Id._Id);
+            return _Id.Equals(TokenId._Id);
 
         }
 

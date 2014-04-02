@@ -34,6 +34,9 @@
     <DocumentationFile>bin\Release\eMI3_Core.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\Hermod\libs\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -81,6 +84,8 @@
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\AddEVSEResult.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\EVSPool\EVSPool.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\RegisterEVSEResult.cs" />
+    <Compile Include="RoamingNetwork\TokenId.cs" />
+    <Compile Include="RoamingNetwork\SessionId.cs" />
     <Compile Include="RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="RoamingNetwork\EVSEOperator\EVSEOperatorExceptions.cs" />
     <Compile Include="RoamingNetwork\RoamingNetworkExceptions.cs" />
@@ -110,6 +115,22 @@
     <None Include="RoamingNetwork\README.md" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Hermod\HermodHTTPClient\HermodHTTPClient.csproj">
+      <Project>{0ab343e8-aa69-4685-9676-bfa27e418a20}</Project>
+      <Name>HermodHTTPClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hermod\HermodHTTPServer\HermodHTTPServer.csproj">
+      <Project>{9ce48dac-0512-4947-942b-ef4c42c52b47}</Project>
+      <Name>HermodHTTPServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hermod\HermodHTTP\HermodHTTP.csproj">
+      <Project>{9a00bd39-1385-4db4-8f38-363bb947ccb4}</Project>
+      <Name>HermodHTTP</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hermod\Hermod\Hermod.csproj">
+      <Project>{477efd16-3627-4473-957d-44ca9a9dfb79}</Project>
+      <Name>Hermod</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Illias\Commons.NET4.5\Commons.NET4.5.csproj">
       <Project>{ccc826d7-9ac7-4ce6-82f8-b835168eba35}</Project>
       <Name>Commons.NET4.5</Name>

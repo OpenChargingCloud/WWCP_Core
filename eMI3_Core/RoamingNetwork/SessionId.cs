@@ -25,9 +25,9 @@ namespace org.emi3group
 {
 
     /// <summary>
-    /// The unique identification of an Electric Mobility Account (driver contract) (eMA_Id).
+    /// The unique identification of an Electric Vehicle Charging Session.
     /// </summary>
-    public class eMA_Id : IEquatable<eMA_Id>, IComparable<eMA_Id>, IComparable
+    public class SessionId : IId, IEquatable<SessionId>, IComparable<SessionId>
     {
 
         #region Data
@@ -60,25 +60,25 @@ namespace org.emi3group
 
         #region Constructor(s)
 
-        #region eMA_Id()
+        #region SessionId()
 
         /// <summary>
-        /// Generate a new Electric Vehicle Mobility Account (driver contract) identification (eMA_Id).
+        /// Generate a new Electric Vehicle Charging Session identification.
         /// </summary>
-        public eMA_Id()
+        public SessionId()
         {
             _Id = Guid.NewGuid().ToString();
         }
 
         #endregion
 
-        #region eMA_Id(String)
+        #region SessionId(String)
 
         /// <summary>
-        /// Generate a new Electric Vehicle Mobility Account (driver contract) identification (eMA_Id)
+        /// Generate a new Electric Vehicle Charging Session identification.
         /// based on the given string.
         /// </summary>
-        public eMA_Id(String String)
+        public SessionId(String String)
         {
             _Id = String.Trim();
         }
@@ -91,45 +91,45 @@ namespace org.emi3group
         #region New
 
         /// <summary>
-        /// Generate a new eMA_Id.
+        /// Generate a new SessionId.
         /// </summary>
-        public static eMA_Id New
+        public static SessionId New
         {
             get
             {
-                return new eMA_Id(Guid.NewGuid().ToString());
+                return new SessionId(Guid.NewGuid().ToString());
             }
         }
 
         #endregion
 
-        #region Parse(eMAId)
+        #region Parse(EVSEOperatorId)
 
         /// <summary>
-        /// Parse the given string as an eMA identification.
+        /// Parse the given string as an Electric Vehicle Charging Session identification.
         /// </summary>
-        public static eMA_Id Parse(String eMAId)
+        public static SessionId Parse(String EVSEOperatorId)
         {
-            return new eMA_Id(eMAId);
+            return new SessionId(EVSEOperatorId);
         }
 
         #endregion
 
-        #region TryParse(Text, out eMAId)
+        #region TryParse(Text, out EVSEOperatorId)
 
         /// <summary>
-        /// Parse the given string as an eMA identification.
+        /// Parse the given string as an Electric Vehicle Charging Session identification.
         /// </summary>
-        public static Boolean TryParse(String Text, out eMA_Id eMAId)
+        public static Boolean TryParse(String Text, out SessionId EVSEOperatorId)
         {
             try
             {
-                eMAId = new eMA_Id(Text);
+                EVSEOperatorId = new SessionId(Text);
                 return true;
             }
             catch (Exception e)
             {
-                eMAId = null;
+                EVSEOperatorId = null;
                 return false;
             }
         }
@@ -139,13 +139,13 @@ namespace org.emi3group
         #region Clone
 
         /// <summary>
-        /// Clone an eMA_Id.
+        /// Clone an SessionId.
         /// </summary>
-        public eMA_Id Clone
+        public SessionId Clone
         {
             get
             {
-                return new eMA_Id(_Id);
+                return new SessionId(_Id);
             }
         }
 
@@ -154,119 +154,119 @@ namespace org.emi3group
 
         #region Operator overloading
 
-        #region Operator == (eMA_Id1, eMA_Id2)
+        #region Operator == (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="SessionId1">A SessionId.</param>
+        /// <param name="SessionId2">Another SessionId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator == (SessionId SessionId1, SessionId SessionId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(eMA_Id1, eMA_Id2))
+            if (Object.ReferenceEquals(SessionId1, SessionId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) eMA_Id1 == null) || ((Object) eMA_Id2 == null))
+            if (((Object) SessionId1 == null) || ((Object) SessionId2 == null))
                 return false;
 
-            return eMA_Id1.Equals(eMA_Id2);
+            return SessionId1.Equals(SessionId2);
 
         }
 
         #endregion
 
-        #region Operator != (eMA_Id1, eMA_Id2)
+        #region Operator != (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="SessionId1">A SessionId.</param>
+        /// <param name="SessionId2">Another SessionId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator != (SessionId SessionId1, SessionId SessionId2)
         {
-            return !(eMA_Id1 == eMA_Id2);
+            return !(SessionId1 == SessionId2);
         }
 
         #endregion
 
-        #region Operator <  (eMA_Id1, eMA_Id2)
+        #region Operator <  (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="SessionId1">A SessionId.</param>
+        /// <param name="SessionId2">Another SessionId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator < (SessionId SessionId1, SessionId SessionId2)
         {
 
-            if ((Object) eMA_Id1 == null)
-                throw new ArgumentNullException("The given eMA_Id1 must not be null!");
+            if ((Object) SessionId1 == null)
+                throw new ArgumentNullException("The given SessionId1 must not be null!");
 
-            return eMA_Id1.CompareTo(eMA_Id2) < 0;
+            return SessionId1.CompareTo(SessionId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (eMA_Id1, eMA_Id2)
+        #region Operator <= (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="SessionId1">A SessionId.</param>
+        /// <param name="SessionId2">Another SessionId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator <= (SessionId SessionId1, SessionId SessionId2)
         {
-            return !(eMA_Id1 > eMA_Id2);
+            return !(SessionId1 > SessionId2);
         }
 
         #endregion
 
-        #region Operator >  (eMA_Id1, eMA_Id2)
+        #region Operator >  (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="SessionId1">A SessionId.</param>
+        /// <param name="SessionId2">Another SessionId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator > (SessionId SessionId1, SessionId SessionId2)
         {
 
-            if ((Object) eMA_Id1 == null)
-                throw new ArgumentNullException("The given eMA_Id1 must not be null!");
+            if ((Object) SessionId1 == null)
+                throw new ArgumentNullException("The given SessionId1 must not be null!");
 
-            return eMA_Id1.CompareTo(eMA_Id2) > 0;
+            return SessionId1.CompareTo(SessionId2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (eMA_Id1, eMA_Id2)
+        #region Operator >= (SessionId1, SessionId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="SessionId1">A SessionId.</param>
+        /// <param name="SessionId2">Another SessionId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator >= (SessionId SessionId1, SessionId SessionId2)
         {
-            return !(eMA_Id1 < eMA_Id2);
+            return !(SessionId1 < SessionId2);
         }
 
         #endregion
 
         #endregion
 
-        #region IComparable<eMA_Id> Members
+        #region IComparable<SessionId> Members
 
         #region CompareTo(Object)
 
@@ -280,35 +280,35 @@ namespace org.emi3group
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an eMA_Id.
-            var eMA_Id = Object as eMA_Id;
-            if ((Object) eMA_Id == null)
-                throw new ArgumentException("The given object is not a eMA_Id!");
+            // Check if the given object is an SessionId.
+            var SessionId = Object as SessionId;
+            if ((Object) SessionId == null)
+                throw new ArgumentException("The given object is not a SessionId!");
 
-            return CompareTo(eMA_Id);
+            return CompareTo(SessionId);
 
         }
 
         #endregion
 
-        #region CompareTo(eMA_Id)
+        #region CompareTo(SessionId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id">An object to compare with.</param>
-        public Int32 CompareTo(eMA_Id eMA_Id)
+        /// <param name="SessionId">An object to compare with.</param>
+        public Int32 CompareTo(SessionId SessionId)
         {
 
-            if ((Object) eMA_Id == null)
-                throw new ArgumentNullException("The given eMA_Id must not be null!");
+            if ((Object) SessionId == null)
+                throw new ArgumentNullException("The given SessionId must not be null!");
 
-            // Compare the length of the eMA_Ids
-            var _Result = this.Length.CompareTo(eMA_Id.Length);
+            // Compare the length of the SessionIds
+            var _Result = this.Length.CompareTo(SessionId.Length);
 
             // If equal: Compare Ids
             if (_Result == 0)
-                _Result = _Id.CompareTo(eMA_Id._Id);
+                _Result = _Id.CompareTo(SessionId._Id);
 
             return _Result;
 
@@ -318,7 +318,7 @@ namespace org.emi3group
 
         #endregion
 
-        #region IEquatable<eMA_Id> Members
+        #region IEquatable<SessionId> Members
 
         #region Equals(Object)
 
@@ -333,31 +333,31 @@ namespace org.emi3group
             if (Object == null)
                 return false;
 
-            // Check if the given object is an eMA_Id.
-            var eMA_Id = Object as eMA_Id;
-            if ((Object) eMA_Id == null)
+            // Check if the given object is an SessionId.
+            var SessionId = Object as SessionId;
+            if ((Object) SessionId == null)
                 return false;
 
-            return this.Equals(eMA_Id);
+            return this.Equals(SessionId);
 
         }
 
         #endregion
 
-        #region Equals(eMA_Id)
+        #region Equals(SessionId)
 
         /// <summary>
-        /// Compares two eMA_Ids for equality.
+        /// Compares two SessionIds for equality.
         /// </summary>
-        /// <param name="eMA_Id">A eMA_Id to compare with.</param>
+        /// <param name="SessionId">A SessionId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(eMA_Id eMA_Id)
+        public Boolean Equals(SessionId SessionId)
         {
 
-            if ((Object) eMA_Id == null)
+            if ((Object) SessionId == null)
                 return false;
 
-            return _Id.Equals(eMA_Id._Id);
+            return _Id.Equals(SessionId._Id);
 
         }
 

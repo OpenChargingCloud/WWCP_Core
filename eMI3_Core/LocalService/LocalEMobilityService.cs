@@ -31,13 +31,13 @@ namespace org.emi3group.LocalService
     /// <summary>
     /// A local E-Mobility service implementation.
     /// </summary>
-    public class LocalEMobilityService : IEMobilityService
+    public class LocalEMobilityService : IUpstreamEMobilityService
     {
 
         #region Data
 
-        private readonly Dictionary<String, AuthorizationResult>  AuthorizationDatabase;
-        private readonly Dictionary<Guid,   SessionInfo>          SessionDatabase;
+        private readonly Dictionary<Token,     AuthorizationResult>  AuthorizationDatabase;
+        private readonly Dictionary<SessionId, SessionInfo>          SessionDatabase;
 
         #endregion
 
@@ -80,8 +80,8 @@ namespace org.emi3group.LocalService
         {
             this._EVSPId                = EVSPId;
             this._AuthorizatorId        = AuthorizatorId;
-            this.AuthorizationDatabase  = new Dictionary<String, AuthorizationResult>();
-            this.SessionDatabase        = new Dictionary<Guid,   SessionInfo>();
+            this.AuthorizationDatabase  = new Dictionary<Token,     AuthorizationResult>();
+            this.SessionDatabase        = new Dictionary<SessionId, SessionInfo>();
         }
 
         #endregion
@@ -89,7 +89,7 @@ namespace org.emi3group.LocalService
 
         #region AddUID(UID, AuthenticationResult = AuthenticationResult.Allowed)
 
-        public Boolean AddUID(String                UID,
+        public Boolean AddUID(Token                UID,
                               AuthorizationResult  AuthenticationResult = AuthorizationResult.Authorized)
         {
 
@@ -107,7 +107,7 @@ namespace org.emi3group.LocalService
 
         #region RemoveUID(UID)
 
-        public Boolean RemoveUID(String UID)
+        public Boolean RemoveUID(Token UID)
         {
             return AuthorizationDatabase.Remove(UID);
         }
@@ -119,8 +119,8 @@ namespace org.emi3group.LocalService
 
         public AUTHSTARTResult AuthorizeStart(EVSEOperator_Id  OperatorId,
                                               EVSE_Id          EVSEId,
-                                              String           PartnerSessionId,
-                                              String           UID)
+                                              SessionId        PartnerSessionId,
+                                              Token            UID)
 
         {
 
@@ -137,13 +137,13 @@ namespace org.emi3group.LocalService
                     if (AuthenticationResult == AuthorizationResult.Authorized)
                     {
 
-                        var SessionId = Guid.NewGuid();
+                        var _SessionId = SessionId.New;
 
-                        SessionDatabase.Add(SessionId, new SessionInfo(UID));
+                        SessionDatabase.Add(_SessionId, new SessionInfo(UID));
 
                         return new AUTHSTARTResult(AuthorizatorId) {
                                        AuthorizationResult  = AuthenticationResult,
-                                       SessionId            = SessionId.ToString(),
+                                       SessionId            = _SessionId,
                                        PartnerSessionId     = PartnerSessionId,
                                        ProviderId           = EVSPId
                                    };
@@ -199,9 +199,9 @@ namespace org.emi3group.LocalService
 
         public AUTHSTOPResult AuthorizeStop(EVSEOperator_Id  OperatorId,
                                             EVSE_Id          EVSEId,
-                                            String           SessionId,
-                                            String           PartnerSessionId,
-                                            String           UID)
+                                            SessionId        SessionId,
+                                            SessionId        PartnerSessionId,
+                                            Token            UID)
 
         {
 
@@ -218,12 +218,12 @@ namespace org.emi3group.LocalService
 
                         SessionInfo SessionInfo = null;
 
-                        if (SessionDatabase.TryGetValue(new Guid(SessionId), out SessionInfo))
+                        if (SessionDatabase.TryGetValue(SessionId, out SessionInfo))
                         {
 
                             #region Authorized
 
-                            if (UID == SessionInfo.UID)
+                            if (UID == SessionInfo.Token)
                                 return new AUTHSTOPResult(AuthorizatorId) {
                                            AuthorizationResult  = AuthenticationResult,
                                            SessionId            = SessionId,
@@ -311,11 +311,11 @@ namespace org.emi3group.LocalService
         #region SendCDR(EVSEId, SessionId, PartnerSessionId, PartnerProductId, UID, eMAId, ChargeStart, ChargeEnd, SessionStart = null, SessionEnd = null, MeterValueStart = null, MeterValueEnd = null)
 
         public SENDCDRResult SendCDR(EVSE_Id    EVSEId,
-                                     String     SessionId,
-                                     String     PartnerSessionId,
+                                     SessionId  SessionId,
+                                     SessionId  PartnerSessionId,
                                      String     PartnerProductId,
-                                     String     UID,
-                                     String     eMAId,
+                                     Token      UID,
+                                     eMA_Id     eMAId,
                                      DateTime   ChargeStart,
                                      DateTime   ChargeEnd,
                                      DateTime?  SessionStart    = null,
@@ -327,18 +327,17 @@ namespace org.emi3group.LocalService
             lock (AuthorizationDatabase)
             {
 
-                var         _SessionId   = new Guid(SessionId); //ToDo: Might fail!
                 SessionInfo SessionInfo  = null;
 
-                if (SessionDatabase.TryGetValue(_SessionId, out SessionInfo))
+                if (SessionDatabase.TryGetValue(SessionId, out SessionInfo))
                 {
 
                     #region Success
 
-                    if (UID == SessionInfo.UID)
+                    if (UID == SessionInfo.Token)
                     {
 
-                        SessionDatabase.Remove(_SessionId);
+                        SessionDatabase.Remove(SessionId);
 
                         return new SENDCDRResult(AuthorizatorId) {
                             State             = true,

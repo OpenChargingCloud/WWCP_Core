@@ -46,15 +46,15 @@ namespace org.emi3group.LocalService
 
         #endregion
 
-        #region UID
+        #region Token
 
-        private readonly String _UID;
+        private readonly Token _Token;
 
-        public String UID
+        public Token Token
         {
             get
             {
-                return _UID;
+                return _Token;
             }
         }
 
@@ -66,10 +66,10 @@ namespace org.emi3group.LocalService
 
         #region Constructor(s)
 
-        public SessionInfo(String UID)
+        public SessionInfo(Token Token)
         {
             this._Created   = DateTime.Now;
-            this._UID       = UID;
+            this._Token     = Token;
         }
 
         #endregion
