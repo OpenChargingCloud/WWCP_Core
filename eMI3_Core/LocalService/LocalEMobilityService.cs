@@ -87,15 +87,15 @@ namespace org.emi3group.LocalService
         #endregion
 
 
-        #region AddUID(UID, AuthenticationResult = AuthenticationResult.Allowed)
+        #region AddToken(Token, AuthenticationResult = AuthenticationResult.Allowed)
 
-        public Boolean AddUID(Token                UID,
-                              AuthorizationResult  AuthenticationResult = AuthorizationResult.Authorized)
+        public Boolean AddToken(Token                Token,
+                                AuthorizationResult  AuthenticationResult = AuthorizationResult.Authorized)
         {
 
-            if (!AuthorizationDatabase.ContainsKey(UID))
+            if (!AuthorizationDatabase.ContainsKey(Token))
             {
-                AuthorizationDatabase.Add(UID, AuthenticationResult);
+                AuthorizationDatabase.Add(Token, AuthenticationResult);
                 return true;
             }
 
@@ -105,22 +105,22 @@ namespace org.emi3group.LocalService
 
         #endregion
 
-        #region RemoveUID(UID)
+        #region RemoveToken(Token)
 
-        public Boolean RemoveUID(Token UID)
+        public Boolean RemoveToken(Token Token)
         {
-            return AuthorizationDatabase.Remove(UID);
+            return AuthorizationDatabase.Remove(Token);
         }
 
         #endregion
 
 
-        #region AuthorizeStart(OperatorId, EVSEId, PartnerSessionId, UID)
+        #region AuthorizeStart(OperatorId, EVSEId, PartnerSessionId, Token)
 
         public AUTHSTARTResult AuthorizeStart(EVSEOperator_Id  OperatorId,
                                               EVSE_Id          EVSEId,
                                               SessionId        PartnerSessionId,
-                                              Token            UID)
+                                              Token            Token)
 
         {
 
@@ -129,7 +129,7 @@ namespace org.emi3group.LocalService
 
                 AuthorizationResult AuthenticationResult;
 
-                if (AuthorizationDatabase.TryGetValue(UID, out AuthenticationResult))
+                if (AuthorizationDatabase.TryGetValue(Token, out AuthenticationResult))
                 {
 
                     #region Authorized
@@ -139,7 +139,7 @@ namespace org.emi3group.LocalService
 
                         var _SessionId = SessionId.New;
 
-                        SessionDatabase.Add(_SessionId, new SessionInfo(UID));
+                        SessionDatabase.Add(_SessionId, new SessionInfo(Token));
 
                         return new AUTHSTARTResult(AuthorizatorId) {
                                        AuthorizationResult  = AuthenticationResult,
@@ -152,14 +152,14 @@ namespace org.emi3group.LocalService
 
                     #endregion
 
-                    #region UID is blocked!
+                    #region Token is blocked!
 
                     else if (AuthenticationResult == AuthorizationResult.Blocked)
                         return new AUTHSTARTResult(AuthorizatorId) {
                                        AuthorizationResult  = AuthenticationResult,
                                        PartnerSessionId     = PartnerSessionId,
                                        ProviderId           = EVSPId,
-                                       Description          = "UID is blocked!"
+                                       Description          = "Token is blocked!"
                                    };
 
                     #endregion
@@ -177,14 +177,14 @@ namespace org.emi3group.LocalService
 
                 }
 
-                #region Unkown UID!
+                #region Unkown Token!
 
                 else
                     return new AUTHSTARTResult(AuthorizatorId) {
                                    AuthorizationResult  = AuthorizationResult.NotAuthorized,
                                    PartnerSessionId     = PartnerSessionId,
                                    ProviderId           = EVSPId,
-                                   Description          = "Unkown UID!"
+                                   Description          = "Unkown token!"
                                };
 
                 #endregion
@@ -195,13 +195,13 @@ namespace org.emi3group.LocalService
 
         #endregion
 
-        #region AuthorizeStop(OperatorId, EVSEId, SessionId, PartnerSessionId, UID)
+        #region AuthorizeStop(OperatorId, EVSEId, SessionId, PartnerSessionId, Token)
 
         public AUTHSTOPResult AuthorizeStop(EVSEOperator_Id  OperatorId,
                                             EVSE_Id          EVSEId,
                                             SessionId        SessionId,
                                             SessionId        PartnerSessionId,
-                                            Token            UID)
+                                            Token            Token)
 
         {
 
@@ -210,7 +210,7 @@ namespace org.emi3group.LocalService
 
                 AuthorizationResult AuthenticationResult;
 
-                if (AuthorizationDatabase.TryGetValue(UID, out AuthenticationResult))
+                if (AuthorizationDatabase.TryGetValue(Token, out AuthenticationResult))
                 {
 
                     if (AuthenticationResult == AuthorizationResult.Authorized)
@@ -223,7 +223,7 @@ namespace org.emi3group.LocalService
 
                             #region Authorized
 
-                            if (UID == SessionInfo.Token)
+                            if (Token == SessionInfo.Token)
                                 return new AUTHSTOPResult(AuthorizatorId) {
                                            AuthorizationResult  = AuthenticationResult,
                                            SessionId            = SessionId,
@@ -233,7 +233,7 @@ namespace org.emi3group.LocalService
 
                             #endregion
 
-                            #region Invalid UID for SessionId!
+                            #region Invalid Token for SessionId!
 
                             else
                             {
@@ -241,7 +241,7 @@ namespace org.emi3group.LocalService
                                                AuthorizationResult  = AuthorizationResult.NotAuthorized,
                                                PartnerSessionId     = PartnerSessionId,
                                                ProviderId           = EVSPId,
-                                               Description          = "Invalid UID for SessionId!"
+                                               Description          = "Invalid token for given session identification!"
                                            };
                             }
 
@@ -257,7 +257,7 @@ namespace org.emi3group.LocalService
                                            AuthorizationResult  = AuthorizationResult.NotAuthorized,
                                            PartnerSessionId     = PartnerSessionId,
                                            ProviderId           = EVSPId,
-                                           Description          = "Invalid SessionId!"
+                                           Description          = "Invalid session identification!"
                                        };
                         }
 
@@ -272,7 +272,7 @@ namespace org.emi3group.LocalService
                                        AuthorizationResult  = AuthenticationResult,
                                        PartnerSessionId     = PartnerSessionId,
                                        ProviderId           = EVSPId,
-                                       Description          = "UID is blocked!"
+                                       Description          = "Token is blocked!"
                                    };
 
                     #endregion
@@ -290,14 +290,14 @@ namespace org.emi3group.LocalService
 
                 }
 
-                #region Unkown UID!
+                #region Unkown Token!
 
                 else
                     return new AUTHSTOPResult(AuthorizatorId) {
                                        AuthorizationResult  = AuthorizationResult.NotAuthorized,
                                        PartnerSessionId     = PartnerSessionId,
                                        ProviderId           = EVSPId,
-                                       Description          = "Unkown UID!"
+                                       Description          = "Unkown token!"
                                    };
 
                 #endregion
@@ -308,13 +308,13 @@ namespace org.emi3group.LocalService
 
         #endregion
 
-        #region SendCDR(EVSEId, SessionId, PartnerSessionId, PartnerProductId, UID, eMAId, ChargeStart, ChargeEnd, SessionStart = null, SessionEnd = null, MeterValueStart = null, MeterValueEnd = null)
+        #region SendCDR(EVSEId, SessionId, PartnerSessionId, PartnerProductId, Token, eMAId, ChargeStart, ChargeEnd, SessionStart = null, SessionEnd = null, MeterValueStart = null, MeterValueEnd = null)
 
         public SENDCDRResult SendCDR(EVSE_Id    EVSEId,
                                      SessionId  SessionId,
                                      SessionId  PartnerSessionId,
                                      String     PartnerProductId,
-                                     Token      UID,
+                                     Token      Token,
                                      eMA_Id     eMAId,
                                      DateTime   ChargeStart,
                                      DateTime   ChargeEnd,
@@ -334,7 +334,7 @@ namespace org.emi3group.LocalService
 
                     #region Success
 
-                    if (UID == SessionInfo.Token)
+                    if (Token == SessionInfo.Token)
                     {
 
                         SessionDatabase.Remove(SessionId);
@@ -348,13 +348,13 @@ namespace org.emi3group.LocalService
 
                     #endregion
 
-                    #region Invalid UID for SessionId!
+                    #region Invalid Token for SessionId!
 
                     else
                         return new SENDCDRResult(AuthorizatorId) {
                                        State             = false,
                                        PartnerSessionId  = PartnerSessionId,
-                                       Description       = "Invalid UID for SessionId!"
+                                       Description       = "Invalid token for given session identification!"
                                    };
 
                     #endregion
@@ -367,7 +367,7 @@ namespace org.emi3group.LocalService
                     return new SENDCDRResult(AuthorizatorId) {
                                    State             = false,
                                    PartnerSessionId  = PartnerSessionId,
-                                   Description       = "Invalid SessionId!"
+                                   Description       = "Invalid session identification!"
                                };
 
                 #endregion

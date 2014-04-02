@@ -84,8 +84,8 @@
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\AddEVSEResult.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\EVSPool\EVSPool.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\RegisterEVSEResult.cs" />
-    <Compile Include="RoamingNetwork\TokenId.cs" />
-    <Compile Include="RoamingNetwork\SessionId.cs" />
+    <Compile Include="CommonTypes\TokenId.cs" />
+    <Compile Include="CommonTypes\SessionId.cs" />
     <Compile Include="RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="RoamingNetwork\EVSEOperator\EVSEOperatorExceptions.cs" />
     <Compile Include="RoamingNetwork\RoamingNetworkExceptions.cs" />
