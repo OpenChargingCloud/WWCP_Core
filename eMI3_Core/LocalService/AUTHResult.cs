@@ -46,7 +46,7 @@ namespace org.emi3group.LocalService
 
         #region Constructor(s)
 
-        public AUTHResult(String AuthorizatorId)
+        public AUTHResult(AuthorizatorId AuthorizatorId)
             : base(AuthorizatorId)
         { }
 

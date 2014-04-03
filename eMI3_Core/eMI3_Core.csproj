@@ -66,6 +66,7 @@
     <Compile Include="LocalService\LocalEMobilityService.cs" />
     <Compile Include="LocalService\RequestRouter.cs" />
     <Compile Include="LocalService\SENDCDRResult.cs" />
+    <Compile Include="LocalService\AuthorizatorId.cs" />
     <Compile Include="LocalService\SessionInfo.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\ChargingStationExceptions.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\EVSE\EVSEExceptions.cs" />
@@ -84,7 +85,7 @@
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\AddEVSEResult.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\EVSPool\EVSPool.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\RegisterEVSEResult.cs" />
-    <Compile Include="CommonTypes\TokenId.cs" />
+    <Compile Include="CommonTypes\Token.cs" />
     <Compile Include="CommonTypes\SessionId.cs" />
     <Compile Include="RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="RoamingNetwork\EVSEOperator\EVSEOperatorExceptions.cs" />

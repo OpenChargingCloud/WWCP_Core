@@ -31,9 +31,9 @@ namespace org.emi3group.LocalService
 
         #region AuthorizatorId
 
-        private readonly String _AuthorizatorId;
+        private readonly AuthorizatorId _AuthorizatorId;
 
-        public String AuthorizatorId
+        public AuthorizatorId AuthorizatorId
         {
             get
             {
@@ -43,14 +43,23 @@ namespace org.emi3group.LocalService
 
         #endregion
 
+        #region PartnerSessionId
+
         public SessionId  PartnerSessionId         { get; set; }
+
+        #endregion
+
+        #region Description
+
         public String     Description              { get; set; }
+
+        #endregion
 
         #endregion
 
         #region Constructor(s)
 
-        public AResult(String AuthorizatorId)
+        public AResult(AuthorizatorId AuthorizatorId)
         {
             this._AuthorizatorId = AuthorizatorId;
         }

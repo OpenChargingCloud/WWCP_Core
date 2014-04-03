@@ -59,9 +59,9 @@ namespace org.emi3group.LocalService
 
         #region AuthorizatorId
 
-        private readonly String _AuthorizatorId;
+        private readonly AuthorizatorId _AuthorizatorId;
 
-        public String AuthorizatorId
+        public AuthorizatorId AuthorizatorId
         {
             get
             {
@@ -76,10 +76,10 @@ namespace org.emi3group.LocalService
         #region Constructor(s)
 
         public LocalEMobilityService(EVServiceProvider_Id  EVSPId,
-                                     String                AuthorizatorId = "Belectric Drive EV Gateway Database")
+                                     AuthorizatorId        AuthorizatorId = null)
         {
             this._EVSPId                = EVSPId;
-            this._AuthorizatorId        = AuthorizatorId;
+            this._AuthorizatorId        = (AuthorizatorId == null) ? AuthorizatorId.Parse("Belectric Drive EV Gateway Database") : AuthorizatorId;
             this.AuthorizationDatabase  = new Dictionary<Token,     AuthorizationResult>();
             this.SessionDatabase        = new Dictionary<SessionId, SessionInfo>();
         }

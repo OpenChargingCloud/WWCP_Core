@@ -56,9 +56,9 @@ namespace org.emi3group.LocalService
 
         #region AuthorizatorId
 
-        private readonly String _AuthorizatorId;
+        private readonly AuthorizatorId _AuthorizatorId;
 
-        public String AuthorizatorId
+        public AuthorizatorId AuthorizatorId
         {
             get
             {
@@ -68,15 +68,19 @@ namespace org.emi3group.LocalService
 
         #endregion
 
+        #region FrontendHTTPServer
+
         public URLMapping FrontendHTTPServer { get; set; }
+
+        #endregion
 
         #endregion
 
         #region Constructor(s)
 
-        public RequestRouter(String AuthorizatorId = "Belectric Drive EV Gateway")
+        public RequestRouter(AuthorizatorId AuthorizatorId = null)
         {
-            this._AuthorizatorId              = AuthorizatorId;
+            this._AuthorizatorId              = (AuthorizatorId == null) ? AuthorizatorId.Parse("Belectric Drive EV Gateway") : AuthorizatorId;
             this.AuthenticationServices       = new Dictionary<UInt32,          IUpstreamEMobilityService>();
             this.SessionIdAuthenticatorCache  = new Dictionary<SessionId,       IUpstreamEMobilityService>();
             this.EVSEOperatorLookup           = new Dictionary<EVSEOperator_Id, IDownstreamEMobilityService>();

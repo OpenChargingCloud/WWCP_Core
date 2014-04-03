@@ -113,7 +113,7 @@ namespace org.emi3group
         /// <param name="RoamingNetwork">The corresponding roaming network.</param>
         internal EVServiceProvider(EVServiceProvider_Id  Id,
                                    RoamingNetwork        RoamingNetwork)
-            : this(Id, RoamingNetwork, new LocalEMobilityService(Id, Id + " Local Authorizator"))
+            : this(Id, RoamingNetwork, new LocalEMobilityService(Id, AuthorizatorId.Parse(Id.ToString() + " Local Authorizator")))
         { }
 
         #endregion

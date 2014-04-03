@@ -33,7 +33,7 @@ namespace org.emi3group.LocalService
 
         #region Properties
 
-        String AuthorizatorId { get; }
+        AuthorizatorId AuthorizatorId { get; }
 
         #endregion
 
@@ -75,7 +75,7 @@ namespace org.emi3group.LocalService
 
         #region Properties
 
-        String AuthorizatorId { get; }
+        AuthorizatorId AuthorizatorId { get; }
 
         #endregion
 

@@ -27,7 +27,7 @@ namespace org.emi3group.LocalService
     public class AUTHSTOPResult : AUTHResult
     {
 
-        public AUTHSTOPResult(String AuthorizatorId)
+        public AUTHSTOPResult(AuthorizatorId AuthorizatorId)
             : base(AuthorizatorId)
         { }
 

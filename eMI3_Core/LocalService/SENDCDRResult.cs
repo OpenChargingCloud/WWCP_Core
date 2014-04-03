@@ -35,7 +35,7 @@ namespace org.emi3group.LocalService
 
         #region Constructor(s)
 
-        public SENDCDRResult(String AuthorizatorId)
+        public SENDCDRResult(AuthorizatorId AuthorizatorId)
             : base(AuthorizatorId)
         { }
 
