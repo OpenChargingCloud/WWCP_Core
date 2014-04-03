@@ -62,6 +62,8 @@
     <Compile Include="LocalService\AUTHResult.cs" />
     <Compile Include="LocalService\AUTHSTARTResult.cs" />
     <Compile Include="LocalService\AUTHSTOPResult.cs" />
+    <Compile Include="LocalService\MobileRemoteStopResult.cs" />
+    <Compile Include="LocalService\MobileRemoteStartResult.cs" />
     <Compile Include="LocalService\IEMobilityService.cs" />
     <Compile Include="LocalService\LocalEMobilityService.cs" />
     <Compile Include="LocalService\RequestRouter.cs" />
