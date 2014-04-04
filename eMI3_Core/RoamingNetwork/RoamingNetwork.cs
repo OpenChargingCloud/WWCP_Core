@@ -498,7 +498,7 @@ namespace org.emi3group
         /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
         public EVServiceProvider CreateNewEVServiceProvider(EVServiceProvider_Id       EVServiceProvider_Id,
-                                                            IUpstreamEMobilityService          EMobilityService,
+                                                            IEVSEOperator2HubjectService          EMobilityService,
                                                             Action<EVServiceProvider>  Action  = null)
         {
 
@@ -540,7 +540,7 @@ namespace org.emi3group
         /// <param name="RoamingProvider_Id">The unique identification of the new roaming provider.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
         public RoamingProvider CreateNewRoamingProvider(RoamingProvider_Id       RoamingProvider_Id,
-                                                        IUpstreamEMobilityService        EMobilityService,
+                                                        IEVSEOperator2HubjectService        EMobilityService,
                                                         Action<RoamingProvider>  Action = null)
         {
 

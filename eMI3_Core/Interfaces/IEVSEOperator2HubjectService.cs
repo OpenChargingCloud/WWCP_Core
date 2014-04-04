@@ -26,9 +26,10 @@ namespace org.emi3group.LocalService
 {
 
     /// <summary>
-    /// The common interface for all E-Mobility services.
+    /// The common interface for all E-Mobility services between
+    /// an EVSE operator -and-> Hubject.
     /// </summary>
-    public interface IUpstreamEMobilityService
+    public interface IEVSEOperator2HubjectService
     {
 
         #region Properties
@@ -64,29 +65,6 @@ namespace org.emi3group.LocalService
                                        Double?          MeterValueEnd   = null);
 
         #endregion
-
-    }
-
-    /// <summary>
-    /// The common interface for all E-Mobility services.
-    /// </summary>
-    public interface IDownstreamEMobilityService
-    {
-
-        #region Properties
-
-        AuthorizatorId AuthorizatorId { get; }
-
-        #endregion
-
-        RemoteStartResult RemoteStart(EVSE_Id               EVSEId,
-                                      String                SessionId,
-                                      EVServiceProvider_Id  EVServiceProviderId,
-                                      eMA_Id                eMAId);
-
-        RemoteStopResult  RemoteStop (EVSE_Id               EVSEId,
-                                      String                SessionId,
-                                      EVServiceProvider_Id  EVServiceProviderId);
 
     }
 

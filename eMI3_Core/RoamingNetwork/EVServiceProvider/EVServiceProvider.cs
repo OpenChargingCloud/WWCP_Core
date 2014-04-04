@@ -74,9 +74,9 @@ namespace org.emi3group
 
         #region EMobilityService
 
-        private readonly IUpstreamEMobilityService _EMobilityService;
+        private readonly IEVSEOperator2HubjectService _EMobilityService;
 
-        public IUpstreamEMobilityService EMobilityService
+        public IEVSEOperator2HubjectService EMobilityService
         {
             get
             {
@@ -129,7 +129,7 @@ namespace org.emi3group
         /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
         internal EVServiceProvider(EVServiceProvider_Id  Id,
                                    RoamingNetwork        RoamingNetwork,
-                                   IUpstreamEMobilityService     EMobilityService)
+                                   IEVSEOperator2HubjectService     EMobilityService)
             : base(Id)
         {
 

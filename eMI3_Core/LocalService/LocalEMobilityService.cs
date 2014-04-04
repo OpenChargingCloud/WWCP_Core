@@ -29,7 +29,7 @@ namespace org.emi3group.LocalService
     /// <summary>
     /// A local E-Mobility service implementation.
     /// </summary>
-    public class LocalEMobilityService : IUpstreamEMobilityService
+    public class LocalEMobilityService : IEVSEOperator2HubjectService
     {
 
         #region Data

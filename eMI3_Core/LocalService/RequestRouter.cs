@@ -40,15 +40,15 @@ namespace org.emi3group.LocalService
     /// implementations. The SessionId is used as a minimal state and routing
     /// key to avoid flooding.
     /// </summary>
-    public class RequestRouter : IUpstreamEMobilityService,
-                                 IDownstreamEMobilityService
+    public class RequestRouter : IEVSEOperator2HubjectService,
+                                 IHubject2EVSEOperatorService
     {
 
         #region Data
 
-        private readonly Dictionary<UInt32,          IUpstreamEMobilityService>    AuthenticationServices;
-        private readonly Dictionary<SessionId,       IUpstreamEMobilityService>    SessionIdAuthenticatorCache;
-        private readonly Dictionary<EVSEOperator_Id, IDownstreamEMobilityService>  EVSEOperatorLookup;
+        private readonly Dictionary<UInt32,          IEVSEOperator2HubjectService>    AuthenticationServices;
+        private readonly Dictionary<SessionId,       IEVSEOperator2HubjectService>    SessionIdAuthenticatorCache;
+        private readonly Dictionary<EVSEOperator_Id, IHubject2EVSEOperatorService>  EVSEOperatorLookup;
 
         #endregion
 
@@ -81,9 +81,9 @@ namespace org.emi3group.LocalService
         public RequestRouter(AuthorizatorId AuthorizatorId = null)
         {
             this._AuthorizatorId              = (AuthorizatorId == null) ? AuthorizatorId.Parse("Belectric Drive EV Gateway") : AuthorizatorId;
-            this.AuthenticationServices       = new Dictionary<UInt32,          IUpstreamEMobilityService>();
-            this.SessionIdAuthenticatorCache  = new Dictionary<SessionId,       IUpstreamEMobilityService>();
-            this.EVSEOperatorLookup           = new Dictionary<EVSEOperator_Id, IDownstreamEMobilityService>();
+            this.AuthenticationServices       = new Dictionary<UInt32,          IEVSEOperator2HubjectService>();
+            this.SessionIdAuthenticatorCache  = new Dictionary<SessionId,       IEVSEOperator2HubjectService>();
+            this.EVSEOperatorLookup           = new Dictionary<EVSEOperator_Id, IHubject2EVSEOperatorService>();
         }
 
         #endregion
@@ -92,7 +92,7 @@ namespace org.emi3group.LocalService
         #region RegisterService(Priority, AuthenticationService)
 
         public Boolean RegisterService(UInt32             Priority,
-                                       IUpstreamEMobilityService  AuthenticationService)
+                                       IEVSEOperator2HubjectService  AuthenticationService)
         {
 
             lock (AuthenticationServices)
@@ -188,7 +188,7 @@ namespace org.emi3group.LocalService
             {
 
                 AUTHSTOPResult         AuthStopResult;
-                IUpstreamEMobilityService  AuthenticationService;
+                IEVSEOperator2HubjectService  AuthenticationService;
 
                 #region An authenticator was found for the upstream SessionId!
 
@@ -259,7 +259,7 @@ namespace org.emi3group.LocalService
             {
 
                 SENDCDRResult              SENDCDRResult;
-                IUpstreamEMobilityService  AuthenticationService;
+                IEVSEOperator2HubjectService  AuthenticationService;
 
                 #region An authenticator was found for the upstream SessionId!
 
