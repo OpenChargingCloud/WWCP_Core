@@ -73,10 +73,13 @@
     <Compile Include="Responses\SENDCDRResult.cs" />
     <Compile Include="LocalService\AuthorizatorId.cs" />
     <Compile Include="LocalService\SessionInfo.cs" />
+    <Compile Include="RoamingNetwork\ChargingStations\ChargingGroup\ChargingGroupExceptions.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\ChargingStationExceptions.cs" />
+    <Compile Include="RoamingNetwork\ChargingStations\ChargingGroup\ChargingGroup.cs" />
+    <Compile Include="RoamingNetwork\ChargingStations\ChargingGroup\ChargingGroup_Id.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\EVSE\EVSEExceptions.cs" />
-    <Compile Include="RoamingNetwork\ChargingStations\EVSPool\EVSPoolExceptions.cs" />
-    <Compile Include="RoamingNetwork\ChargingStations\EVSPool\OpeningTime.cs" />
+    <Compile Include="RoamingNetwork\ChargingStations\ChargingPool\ChargingPoolExceptions.cs" />
+    <Compile Include="RoamingNetwork\ChargingStations\ChargingPool\OpeningTime.cs" />
     <Compile Include="CommonTypes\I8NString.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\ChargingStation.cs" />
     <Compile Include="CommonTypes\AEntity.cs" />
@@ -88,7 +91,7 @@
     <Compile Include="RoamingNetwork\ChargingStations\SocketOutlet\CableType.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\SocketOutlet\SocketOutlet.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\AddEVSEResult.cs" />
-    <Compile Include="RoamingNetwork\ChargingStations\EVSPool\EVSPool.cs" />
+    <Compile Include="RoamingNetwork\ChargingStations\ChargingPool\ChargingPool.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\RegisterEVSEResult.cs" />
     <Compile Include="CommonTypes\Token.cs" />
     <Compile Include="CommonTypes\SessionId.cs" />
@@ -99,7 +102,7 @@
     <Compile Include="CommonTypes\GeoLocation.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\ChargingStation\ChargingStation_Id.cs" />
     <Compile Include="RoamingNetwork\ChargingStations\SocketOutlet\SocketOutlet_Id.cs" />
-    <Compile Include="RoamingNetwork\ChargingStations\EVSPool\EVSPool_Id.cs" />
+    <Compile Include="RoamingNetwork\ChargingStations\ChargingPool\ChargingPool_Id.cs" />
     <Compile Include="RoamingNetwork\EVServiceProvider\EVServiceProvider.cs" />
     <Compile Include="RoamingNetwork\EVServiceProvider\EVServiceProvider_Id.cs" />
     <Compile Include="RoamingNetwork\EVSEOperator\EVSEOperator_Id.cs" />

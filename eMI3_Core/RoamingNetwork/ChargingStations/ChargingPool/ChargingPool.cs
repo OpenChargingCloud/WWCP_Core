@@ -31,14 +31,14 @@ namespace org.emi3group
 {
 
     /// <summary>
-    /// A group/pool of electric vehicle charging stations.
+    /// A pool of electric vehicle charging stations.
     /// The geo locations of these charging stations will be close together and the EVSPool
     /// might provide a shared network access to aggregate and optimize communication
     /// with the EVSE Operator backend.
     /// </summary>
-    public class EVSPool : AEntity<EVSPool_Id>,
-                           IEquatable<EVSPool>, IComparable<EVSPool>, IComparable,
-                           IEnumerable<ChargingStation>
+    public class ChargingPool : AEntity<ChargingPool_Id>,
+                                IEquatable<ChargingPool>, IComparable<ChargingPool>, IComparable,
+                                IEnumerable<ChargingStation>
     {
 
         #region Data
@@ -349,12 +349,12 @@ namespace org.emi3group
 
         #region ChargingStationAddition
 
-        private readonly IVotingNotificator<EVSPool, ChargingStation, Boolean> ChargingStationAddition;
+        private readonly IVotingNotificator<ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
 
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
-        public IVotingSender<EVSPool, ChargingStation, Boolean> OnChargingStationAddition
+        public IVotingSender<ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
         {
             get
             {
@@ -414,8 +414,8 @@ namespace org.emi3group
         /// Create a new group/pool of charging stations having a random identification.
         /// </summary>
         /// <param name="EVSEOperator">The parent EVSE operator.</param>
-        internal EVSPool(EVSEOperator EVSEOperator)
-            : this(EVSPool_Id.New, EVSEOperator)
+        internal ChargingPool(EVSEOperator EVSEOperator)
+            : this(ChargingPool_Id.New, EVSEOperator)
         { }
 
         #endregion
@@ -427,7 +427,7 @@ namespace org.emi3group
         /// </summary>
         /// <param name="Id">The unique identification of the EVS pool.</param>
         /// <param name="EVSEOperator">The parent EVSE operator.</param>
-        internal EVSPool(EVSPool_Id    Id,
+        internal ChargingPool(ChargingPool_Id    Id,
                          EVSEOperator  EVSEOperator)
             : base(Id)
         {
@@ -462,7 +462,7 @@ namespace org.emi3group
             #region Init and link events
 
             // EVS pool events
-            this.ChargingStationAddition    = new VotingNotificator<EVSPool, ChargingStation, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationAddition    = new VotingNotificator<ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
 
             this.OnChargingStationAddition.OnVoting       += (evseoperator, evspool, vote) => Operator.ChargingStationAddition.SendVoting      (evseoperator, evspool, vote);
             this.OnChargingStationAddition.OnNotification += (evseoperator, evspool)       => Operator.ChargingStationAddition.SendNotification(evseoperator, evspool);
@@ -507,7 +507,7 @@ namespace org.emi3group
                 throw new ArgumentNullException("ChargingStation_Id", "The given charging station identification must not be null!");
 
             if (_ChargingStations.ContainsKey(ChargingStation_Id))
-                throw new ChargingStationAlreadyExists(ChargingStation_Id, this.Id);
+                throw new ChargingStationAlreadyExistsInPool(ChargingStation_Id, this.Id);
 
             #endregion
 
@@ -560,7 +560,7 @@ namespace org.emi3group
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an EVSPool.
-            var EVSPool = Object as EVSPool;
+            var EVSPool = Object as ChargingPool;
             if ((Object) EVSPool == null)
                 throw new ArgumentException("The given object is not an EVSPool!");
 
@@ -576,7 +576,7 @@ namespace org.emi3group
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="EVSPool">An EVSPool object to compare with.</param>
-        public Int32 CompareTo(EVSPool EVSPool)
+        public Int32 CompareTo(ChargingPool EVSPool)
         {
 
             if ((Object) EVSPool == null)
@@ -606,7 +606,7 @@ namespace org.emi3group
                 return false;
 
             // Check if the given object is an EVSPool.
-            var EVSPool = Object as EVSPool;
+            var EVSPool = Object as ChargingPool;
             if ((Object) EVSPool == null)
                 return false;
 
@@ -623,7 +623,7 @@ namespace org.emi3group
         /// </summary>
         /// <param name="EVSPool">An EVSPool to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EVSPool EVSPool)
+        public Boolean Equals(ChargingPool EVSPool)
         {
 
             if ((Object) EVSPool == null)

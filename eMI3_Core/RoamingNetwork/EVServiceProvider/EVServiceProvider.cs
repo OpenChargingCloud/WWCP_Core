@@ -35,12 +35,12 @@ namespace org.emi3group
     /// </summary>
     public class EVServiceProvider : AEntity<EVServiceProvider_Id>,
                                      IEquatable<EVServiceProvider>, IComparable<EVServiceProvider>, IComparable,
-                                     IEnumerable<EVSPool>
+                                     IEnumerable<ChargingPool>
     {
 
         #region Data
 
-        private readonly ConcurrentDictionary<EVSPool_Id, EVSPool>  _RegisteredEVSPools;
+        private readonly ConcurrentDictionary<ChargingPool_Id, ChargingPool>  _RegisteredEVSPools;
 
         #endregion
 
@@ -89,7 +89,7 @@ namespace org.emi3group
 
         #region EVSPools
 
-        public IEnumerable<EVSPool> EVSPools
+        public IEnumerable<ChargingPool> EVSPools
         {
             get
             {
@@ -144,7 +144,7 @@ namespace org.emi3group
 
             this._EMobilityService      = EMobilityService;
 
-            this._RegisteredEVSPools    = new ConcurrentDictionary<EVSPool_Id, EVSPool>();
+            this._RegisteredEVSPools    = new ConcurrentDictionary<ChargingPool_Id, ChargingPool>();
 
         }
 
@@ -164,7 +164,7 @@ namespace org.emi3group
             return _RegisteredEVSPools.Values.GetEnumerator();
         }
 
-        public IEnumerator<EVSPool> GetEnumerator()
+        public IEnumerator<ChargingPool> GetEnumerator()
         {
             return _RegisteredEVSPools.Values.GetEnumerator();
         }

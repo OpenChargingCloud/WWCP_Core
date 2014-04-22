@@ -123,7 +123,7 @@ namespace org.emi3group.IO.JSON_LD
 
         #region ToJSON(this Pool)
 
-        public static JObject ToJSON(this EVSPool Pool)
+        public static JObject ToJSON(this ChargingPool Pool)
         {
 
             return JSON.Create(Pool.Id.              ToJSON("Id"),

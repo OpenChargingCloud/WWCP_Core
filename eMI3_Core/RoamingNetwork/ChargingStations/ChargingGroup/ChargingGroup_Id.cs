@@ -25,9 +25,9 @@ namespace org.emi3group
 {
 
     /// <summary>
-    /// The unique identification of an Electric Vehicle Pool (EVP Id).
+    /// The unique identification of a Electric Vehicle Charging Group Identification (EVCGId).
     /// </summary>
-    public class EVSPool_Id : IId, IEquatable<EVSPool_Id>, IComparable<EVSPool_Id>
+    public class ChargingGroup_Id : IId, IEquatable<ChargingGroup_Id>, IComparable<ChargingGroup_Id>
     {
 
         #region Data
@@ -60,25 +60,25 @@ namespace org.emi3group
 
         #region Constructor(s)
 
-        #region EVP_Id()
+        #region ChargingGroup_Id()
 
         /// <summary>
-        /// Generate a new Electric Vehicle Pool identification (EVP Id).
+        /// Generate a new Electric Vehicle Charging Group Identification (EVCG Id).
         /// </summary>
-        public EVSPool_Id()
+        public ChargingGroup_Id()
         {
             _Id = Guid.NewGuid().ToString();
         }
 
         #endregion
 
-        #region EVP_Id(String)
+        #region ChargingGroup_Id(String)
 
         /// <summary>
-        /// Generate a new Electric Vehicle Pool identification (EVP Id)
+        /// Generate a new Electric Vehicle Charging Group Identification (EVCG Id)
         /// based on the given string.
         /// </summary>
-        public EVSPool_Id(String String)
+        public ChargingGroup_Id(String String)
         {
             _Id = String.Trim();
         }
@@ -93,11 +93,11 @@ namespace org.emi3group
         /// <summary>
         /// Generate a new EVP_Id.
         /// </summary>
-        public static EVSPool_Id New
+        public static ChargingGroup_Id New
         {
             get
             {
-                return new EVSPool_Id(Guid.NewGuid().ToString());
+                return new ChargingGroup_Id(Guid.NewGuid().ToString());
             }
         }
 
@@ -108,11 +108,11 @@ namespace org.emi3group
         /// <summary>
         /// Clone an EVP_Id.
         /// </summary>
-        public EVSPool_Id Clone
+        public ChargingGroup_Id Clone
         {
             get
             {
-                return new EVSPool_Id(_Id);
+                return new ChargingGroup_Id(_Id);
             }
         }
 
@@ -129,7 +129,7 @@ namespace org.emi3group
         /// <param name="EVP_Id1">A EVP_Id.</param>
         /// <param name="EVP_Id2">Another EVP_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (EVSPool_Id EVP_Id1, EVSPool_Id EVP_Id2)
+        public static Boolean operator == (ChargingGroup_Id EVP_Id1, ChargingGroup_Id EVP_Id2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -154,7 +154,7 @@ namespace org.emi3group
         /// <param name="EVP_Id1">A EVP_Id.</param>
         /// <param name="EVP_Id2">Another EVP_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (EVSPool_Id EVP_Id1, EVSPool_Id EVP_Id2)
+        public static Boolean operator != (ChargingGroup_Id EVP_Id1, ChargingGroup_Id EVP_Id2)
         {
             return !(EVP_Id1 == EVP_Id2);
         }
@@ -169,7 +169,7 @@ namespace org.emi3group
         /// <param name="EVP_Id1">A EVP_Id.</param>
         /// <param name="EVP_Id2">Another EVP_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (EVSPool_Id EVP_Id1, EVSPool_Id EVP_Id2)
+        public static Boolean operator < (ChargingGroup_Id EVP_Id1, ChargingGroup_Id EVP_Id2)
         {
 
             if ((Object) EVP_Id1 == null)
@@ -189,7 +189,7 @@ namespace org.emi3group
         /// <param name="EVP_Id1">A EVP_Id.</param>
         /// <param name="EVP_Id2">Another EVP_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (EVSPool_Id EVP_Id1, EVSPool_Id EVP_Id2)
+        public static Boolean operator <= (ChargingGroup_Id EVP_Id1, ChargingGroup_Id EVP_Id2)
         {
             return !(EVP_Id1 > EVP_Id2);
         }
@@ -204,7 +204,7 @@ namespace org.emi3group
         /// <param name="EVP_Id1">A EVP_Id.</param>
         /// <param name="EVP_Id2">Another EVP_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (EVSPool_Id EVP_Id1, EVSPool_Id EVP_Id2)
+        public static Boolean operator > (ChargingGroup_Id EVP_Id1, ChargingGroup_Id EVP_Id2)
         {
 
             if ((Object) EVP_Id1 == null)
@@ -224,7 +224,7 @@ namespace org.emi3group
         /// <param name="EVP_Id1">A EVP_Id.</param>
         /// <param name="EVP_Id2">Another EVP_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (EVSPool_Id EVP_Id1, EVSPool_Id EVP_Id2)
+        public static Boolean operator >= (ChargingGroup_Id EVP_Id1, ChargingGroup_Id EVP_Id2)
         {
             return !(EVP_Id1 < EVP_Id2);
         }
@@ -248,7 +248,7 @@ namespace org.emi3group
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an EVP_Id.
-            var EVP_Id = Object as EVSPool_Id;
+            var EVP_Id = Object as ChargingGroup_Id;
             if ((Object) EVP_Id == null)
                 throw new ArgumentException("The given object is not a EVP_Id!");
 
@@ -264,7 +264,7 @@ namespace org.emi3group
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="EVP_Id">An object to compare with.</param>
-        public Int32 CompareTo(EVSPool_Id EVP_Id)
+        public Int32 CompareTo(ChargingGroup_Id EVP_Id)
         {
 
             if ((Object) EVP_Id == null)
@@ -301,7 +301,7 @@ namespace org.emi3group
                 return false;
 
             // Check if the given object is an EVP_Id.
-            var EVP_Id = Object as EVSPool_Id;
+            var EVP_Id = Object as ChargingGroup_Id;
             if ((Object) EVP_Id == null)
                 return false;
 
@@ -318,7 +318,7 @@ namespace org.emi3group
         /// </summary>
         /// <param name="EVP_Id">A EVP_Id to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EVSPool_Id EVP_Id)
+        public Boolean Equals(ChargingGroup_Id EVP_Id)
         {
 
             if ((Object) EVP_Id == null)

@@ -40,7 +40,7 @@ namespace org.emi3group
 
         #region Data
 
-        public  readonly EVSPool                              Pool;
+        public  readonly ChargingPool                              Pool;
         private readonly ConcurrentDictionary<EVSE_Id, EVSE>  _EVSEs;
 
         #endregion
@@ -265,7 +265,7 @@ namespace org.emi3group
         /// Create a new charging station having a random identification.
         /// </summary>
         /// <param name="EVSPool">The parent EVS pool.</param>
-        public ChargingStation(EVSPool EVSPool)
+        public ChargingStation(ChargingPool EVSPool)
             : this(ChargingStation_Id.New, EVSPool)
         { }
 
@@ -279,7 +279,7 @@ namespace org.emi3group
         /// <param name="Id">The unique identification of the charging station pool.</param>
         /// <param name="EVSPool">The parent EVS pool.</param>
         internal ChargingStation(ChargingStation_Id  Id,
-                                 EVSPool             EVSPool)
+                                 ChargingPool             EVSPool)
             : base(Id)
         {
 

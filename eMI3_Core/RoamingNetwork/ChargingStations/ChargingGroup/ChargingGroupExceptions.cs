@@ -27,33 +27,33 @@ namespace org.emi3group
 {
 
     /// <summary>
-    /// A EVSE operator exception.
+    /// A EV Charging Group exception.
     /// </summary>
-    public class EVSEOperatorException : eMI3Exception
+    public class ChargingGroupException : eMI3Exception
     {
 
-        public EVSEOperatorException(String Message)
+        public ChargingGroupException(String Message)
             : base(Message)
         { }
 
-        public EVSEOperatorException(String Message, Exception InnerException)
+        public ChargingGroupException(String Message, Exception InnerException)
             : base(Message, InnerException)
         { }
 
     }
 
 
-    #region EVSPoolAlreadyExists
+    #region ChargingStationAlreadyExistsInGroup
 
     /// <summary>
-    /// An exception thrown whenever an EVS pool already exists within the given EVSE operator.
+    /// An exception thrown whenever a charging station already exists within the given EV charging group.
     /// </summary>
-    public class EVSPoolAlreadyExists : EVSEOperatorException
+    public class ChargingStationAlreadyExistsInGroup : ChargingGroupException
     {
 
-        public EVSPoolAlreadyExists(ChargingPool_Id       EVSPool_Id,
-                                    EVSEOperator_Id  EVSEOperator_Id)
-            : base("The given EVSPool identification '" + EVSPool_Id + "' already exists within the given '" + EVSEOperator_Id + "' EVSE operator!")
+        public ChargingStationAlreadyExistsInGroup(ChargingStation_Id  ChargingStation_Id,
+                                                   ChargingGroup_Id    ChargingGroup_Id)
+            : base("The given charging station identification '" + ChargingStation_Id + "' already exists within the given '" + ChargingGroup_Id + "' charging group!")
         { }
 
     }

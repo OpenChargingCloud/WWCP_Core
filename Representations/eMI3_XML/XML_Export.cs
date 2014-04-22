@@ -132,7 +132,7 @@ namespace org.emi3group.IO.XML
         public static readonly String NS_EVSPool_Description       = "Description";
         public static readonly String NS_EVSPool_LocationLanguage  = "LocationLanguage";
 
-        public static XElement ToXML(this EVSPool Pool)
+        public static XElement ToXML(this ChargingPool Pool)
         {
 
             return new XElement(NS_EVSPool + NS_EVSPool_Root,

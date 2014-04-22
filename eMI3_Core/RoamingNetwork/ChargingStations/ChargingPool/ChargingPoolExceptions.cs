@@ -27,33 +27,33 @@ namespace org.emi3group
 {
 
     /// <summary>
-    /// A EVS pool exception.
+    /// A EV Charging Pool exception.
     /// </summary>
-    public class EVSPoolException : eMI3Exception
+    public class ChargingPoolPoolException : eMI3Exception
     {
 
-        public EVSPoolException(String Message)
+        public ChargingPoolPoolException(String Message)
             : base(Message)
         { }
 
-        public EVSPoolException(String Message, Exception InnerException)
+        public ChargingPoolPoolException(String Message, Exception InnerException)
             : base(Message, InnerException)
         { }
 
     }
 
 
-    #region ChargingStationAlreadyExists
+    #region ChargingStationAlreadyExistsInPool
 
     /// <summary>
-    /// An exception thrown whenever a charging station already exists within the given EVS pool.
+    /// An exception thrown whenever a charging station already exists within the given EV Charging pool.
     /// </summary>
-    public class ChargingStationAlreadyExists : EVSPoolException
+    public class ChargingStationAlreadyExistsInPool : ChargingPoolPoolException
     {
 
-        public ChargingStationAlreadyExists(ChargingStation_Id  ChargingStation_Id,
-                                            EVSPool_Id          EVSPool_Id)
-            : base("The given charging station identification '" + ChargingStation_Id + "' already exists within the given '" + EVSPool_Id + "' EVS pool!")
+        public ChargingStationAlreadyExistsInPool(ChargingStation_Id  ChargingStation_Id,
+                                                  ChargingPool_Id     ChargingPool_Id)
+            : base("The given charging station identification '" + ChargingStation_Id + "' already exists within the given '" + ChargingPool_Id + "' EVS pool!")
         { }
 
     }

@@ -256,12 +256,12 @@ namespace org.emi3group
 
         #region EVSPoolAddition
 
-        internal readonly IVotingNotificator<EVSEOperator, EVSPool, Boolean> EVSPoolAddition;
+        internal readonly IVotingNotificator<EVSEOperator, ChargingPool, Boolean> EVSPoolAddition;
 
         /// <summary>
         /// Called whenever an EVS pool will be or was added.
         /// </summary>
-        public IVotingSender<EVSEOperator, EVSPool, Boolean> OnEVSPoolAddition
+        public IVotingSender<EVSEOperator, ChargingPool, Boolean> OnEVSPoolAddition
         {
             get
             {
@@ -276,12 +276,12 @@ namespace org.emi3group
 
         #region ChargingStationAddition
 
-        internal readonly IVotingNotificator<EVSPool, ChargingStation, Boolean> ChargingStationAddition;
+        internal readonly IVotingNotificator<ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
 
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
-        public IVotingSender<EVSPool, ChargingStation, Boolean> OnChargingStationAddition
+        public IVotingSender<ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
         {
             get
             {
@@ -386,10 +386,10 @@ namespace org.emi3group
             this.SearchProviderAddition     = new VotingNotificator<RoamingNetwork,  SearchProvider,    Boolean>(() => new VetoVote(), true);
 
             // EVSE operator events
-            this.EVSPoolAddition            = new VotingNotificator<EVSEOperator,    EVSPool,           Boolean>(() => new VetoVote(), true);
+            this.EVSPoolAddition            = new VotingNotificator<EVSEOperator,    ChargingPool,           Boolean>(() => new VetoVote(), true);
 
             // EVS pool events
-            this.ChargingStationAddition    = new VotingNotificator<EVSPool,         ChargingStation,   Boolean>(() => new VetoVote(), true);
+            this.ChargingStationAddition    = new VotingNotificator<ChargingPool,         ChargingStation,   Boolean>(() => new VetoVote(), true);
 
             // Charging station events
             this.EVSEAddition               = new VotingNotificator<ChargingStation, EVSE,              Boolean>(() => new VetoVote(), true);

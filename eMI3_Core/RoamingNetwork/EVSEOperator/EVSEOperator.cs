@@ -39,13 +39,13 @@ namespace org.emi3group
     /// </summary>
     public class EVSEOperator : AEntity<EVSEOperator_Id>,
                                 IEquatable<EVSEOperator>, IComparable<EVSEOperator>, IComparable,
-                                IEnumerable<EVSPool>
+                                IEnumerable<ChargingPool>
     {
 
         #region Data
 
         public  readonly RoamingNetwork                             RoamingNetwork;
-        private readonly ConcurrentDictionary<EVSPool_Id, EVSPool>  _RegisteredEVSPools;
+        private readonly ConcurrentDictionary<ChargingPool_Id, ChargingPool>  _RegisteredEVSPools;
 
         #endregion
 
@@ -53,12 +53,12 @@ namespace org.emi3group
 
         #region EVSPoolAddition
 
-        private readonly IVotingNotificator<EVSEOperator, EVSPool, Boolean> EVSPoolAddition;
+        private readonly IVotingNotificator<EVSEOperator, ChargingPool, Boolean> EVSPoolAddition;
 
         /// <summary>
         /// Called whenever an EVS pool will be or was added.
         /// </summary>
-        public IVotingSender<EVSEOperator, EVSPool, Boolean> OnEVSPoolAddition
+        public IVotingSender<EVSEOperator, ChargingPool, Boolean> OnEVSPoolAddition
         {
             get
             {
@@ -73,12 +73,12 @@ namespace org.emi3group
 
         #region ChargingStationAddition
 
-        internal readonly IVotingNotificator<EVSPool, ChargingStation, Boolean> ChargingStationAddition;
+        internal readonly IVotingNotificator<ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
 
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
-        public IVotingSender<EVSPool, ChargingStation, Boolean> OnChargingStationAddition
+        public IVotingSender<ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
         {
             get
             {
@@ -163,7 +163,7 @@ namespace org.emi3group
         /// <summary>
         /// Return all EVS pools registered within this EVSE operator.
         /// </summary>
-        public IEnumerable<EVSPool> EVSPools
+        public IEnumerable<ChargingPool> EVSPools
         {
             get
             {
@@ -219,7 +219,7 @@ namespace org.emi3group
 
             #region Init data and properties
 
-            this._RegisteredEVSPools      = new ConcurrentDictionary<EVSPool_Id, EVSPool>();
+            this._RegisteredEVSPools      = new ConcurrentDictionary<ChargingPool_Id, ChargingPool>();
 
             this.Name                     = new I8NString();
 
@@ -228,14 +228,14 @@ namespace org.emi3group
             #region Init and link events
 
             // EVSEOperator events
-            this.EVSPoolAddition          = new VotingNotificator<EVSEOperator,    EVSPool,         Boolean>(() => new VetoVote(), true);
+            this.EVSPoolAddition          = new VotingNotificator<EVSEOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
 
             this.OnEVSPoolAddition.        OnVoting       += (evseoperator, evspool, vote) => RoamingNetwork.EVSPoolAddition.SendVoting      (evseoperator, evspool, vote);
             this.OnEVSPoolAddition.        OnNotification += (evseoperator, evspool)       => RoamingNetwork.EVSPoolAddition.SendNotification(evseoperator, evspool);
 
 
             // EVS pool events
-            this.ChargingStationAddition  = new VotingNotificator<EVSPool,         ChargingStation, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationAddition  = new VotingNotificator<ChargingPool,         ChargingStation, Boolean>(() => new VetoVote(), true);
 
             this.OnChargingStationAddition.OnVoting       += (evseoperator, evspool, vote) => RoamingNetwork.ChargingStationAddition.SendVoting      (evseoperator, evspool, vote);
             this.OnChargingStationAddition.OnNotification += (evseoperator, evspool)       => RoamingNetwork.ChargingStationAddition.SendNotification(evseoperator, evspool);
@@ -271,7 +271,7 @@ namespace org.emi3group
         /// </summary>
         /// <param name="EVSPool_Id">The unique identification of the new EVS pool.</param>
         /// <param name="Action">An optional delegate to configure the new EVS pool after its creation.</param>
-        public EVSPool CreateNewEVSPool(EVSPool_Id EVSPool_Id, Action<EVSPool> Action)
+        public ChargingPool CreateNewEVSPool(ChargingPool_Id EVSPool_Id, Action<ChargingPool> Action)
         {
 
             #region Initial checks
@@ -284,7 +284,7 @@ namespace org.emi3group
 
             #endregion
 
-            var _EVSPool = new EVSPool(EVSPool_Id, this);
+            var _EVSPool = new ChargingPool(EVSPool_Id, this);
 
             Action.FailSafeInvoke(_EVSPool);
 
@@ -311,7 +311,7 @@ namespace org.emi3group
             return _RegisteredEVSPools.Values.GetEnumerator();
         }
 
-        public IEnumerator<EVSPool> GetEnumerator()
+        public IEnumerator<ChargingPool> GetEnumerator()
         {
             return _RegisteredEVSPools.Values.GetEnumerator();
         }
