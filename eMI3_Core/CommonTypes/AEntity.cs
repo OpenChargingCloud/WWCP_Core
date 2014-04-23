@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@belectric.com>
+ * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 Core <http://www.github.com/eMI3/Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -101,8 +101,8 @@ namespace org.emi3group
             if (Id == null)
                 throw new ArgumentNullException("Id", "The given Id must not be null!");
 
-            this._Id                = Id;
-            this.LastChange          = DateTime.Now;
+            this._Id            = Id;
+            this.LastChange     = DateTime.Now;
 
         }
 
