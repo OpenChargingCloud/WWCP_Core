@@ -377,7 +377,7 @@ namespace org.emi3group.LocalService
                 var _DNSClient = new DNSClient();
                 var IPv4Addresses  = _DNSClient.Query<A>("portal.belectric-drive.de").Select(a => a.IPv4Address).ToArray();
 
-                using (var HTTPClient1 = new HTTPClient(IPv4Addresses.First(), new IPPort(20080)))//, "portal.belectric-drive.de"))
+                using (var HTTPClient1 = new HTTPClient(IPv4Addresses.First(), new IPPort(80))) //20080
                 {
 
                     var HTTPRequestBuilder = HTTPClient1.CreateRequest(new HTTPMethod("REMOTESTART"),
@@ -465,7 +465,7 @@ namespace org.emi3group.LocalService
 
         #endregion
 
-        #region RemoteStart(EVSEId, SessionId, ProviderId)
+        #region RemoteStop(EVSEId, SessionId, ProviderId)
 
         public RemoteStopResult RemoteStop(EVSE_Id               EVSEId,
                                            String                SessionId,
@@ -496,7 +496,7 @@ namespace org.emi3group.LocalService
                 var _DNSClient     = new DNSClient();
                 var IPv4Addresses  = _DNSClient.Query<A>("portal.belectric-drive.de").Select(a => a.IPv4Address).ToArray();
 
-                using (var HTTPClient1 = new HTTPClient(IPv4Addresses.First(), new IPPort(20080)))//, "portal.belectric-drive.de"))
+                using (var HTTPClient1 = new HTTPClient(IPv4Addresses.First(), new IPPort(80))) //20080
                 {
 
                     var HTTPRequestBuilder = HTTPClient1.CreateRequest(new HTTPMethod("REMOTESTOP"),
