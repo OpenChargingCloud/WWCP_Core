@@ -60,7 +60,7 @@ namespace org.emi3group
 
         #region EVSPoolAddition
 
-        private readonly IVotingNotificator<EVSEOperator, ChargingPool, Boolean> EVSPoolAddition;
+        private readonly IVotingNotificator<EVSEOperator, ChargingPool, Boolean> ChargingPoolAddition;
 
         /// <summary>
         /// Called whenever an EVS pool will be or was added.
@@ -69,7 +69,7 @@ namespace org.emi3group
         {
             get
             {
-                return EVSPoolAddition;
+                return ChargingPoolAddition;
             }
         }
 
@@ -280,7 +280,7 @@ namespace org.emi3group
             #region Init and link events
 
             // EVSEOperator events
-            this.EVSPoolAddition          = new VotingNotificator<EVSEOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolAddition          = new VotingNotificator<EVSEOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
 
             this.OnEVSPoolAddition.        OnVoting       += (evseoperator, evspool, vote) => RoamingNetwork.EVSPoolAddition.SendVoting      (evseoperator, evspool, vote);
             this.OnEVSPoolAddition.        OnNotification += (evseoperator, evspool)       => RoamingNetwork.EVSPoolAddition.SendNotification(evseoperator, evspool);
@@ -315,42 +315,63 @@ namespace org.emi3group
         #endregion
 
 
-        #region CreateNewEVSPool(EVSPool_Id, Action)
+        #region CreateNewEVSPool(ChargingPoolId, OnSuccess, OnError = null)
 
         /// <summary>
         /// Create and register a new EVS pool having the given
         /// unique EVS pool identification.
         /// </summary>
-        /// <param name="EVSPool_Id">The unique identification of the new EVS pool.</param>
-        /// <param name="Action">An optional delegate to configure the new EVS pool after its creation.</param>
-        public ChargingPool CreateNewEVSPool(ChargingPool_Id EVSPool_Id, Action<ChargingPool> Action)
+        /// <param name="ChargingPoolId">The unique identification of the new charging pool.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
+        public ChargingPool CreateNewEVSPool(ChargingPool_Id                        ChargingPoolId,
+                                             Action<ChargingPool>                   OnSuccess,
+                                             Action<EVSEOperator, ChargingPool_Id>  OnError = null)
         {
 
             #region Initial checks
 
-            if (EVSPool_Id == null)
-                throw new ArgumentNullException("EVSPool_Id", "The given EVSPool_Id must not be null!");
+            if (ChargingPoolId == null)
+                throw new ArgumentNullException("ChargingPoolId", "The given ChargingPoolId must not be null!");
 
-            if (_RegisteredChargingPools.ContainsKey(EVSPool_Id))
-                throw new EVSPoolAlreadyExists(EVSPool_Id, this.Id);
+            // Do not throw an exception when an OnError delegate was given!
+            if (_RegisteredChargingPools.ContainsKey(ChargingPoolId))
+            {
+                if (OnError == null)
+                    throw new EVSPoolAlreadyExists(ChargingPoolId, this.Id);
+                else
+                    OnError.FailSafeInvoke(this, ChargingPoolId);
+            }
 
             #endregion
 
-            var _EVSPool = new ChargingPool(EVSPool_Id, this);
+            var _ChargingPool = new ChargingPool(ChargingPoolId, this);
 
-            Action.FailSafeInvoke(_EVSPool);
-
-            if (EVSPoolAddition.SendVoting(this, _EVSPool))
+            if (ChargingPoolAddition.SendVoting(this, _ChargingPool))
             {
-                if (_RegisteredChargingPools.TryAdd(EVSPool_Id, _EVSPool))
+                if (_RegisteredChargingPools.TryAdd(ChargingPoolId, _ChargingPool))
                 {
-                    EVSPoolAddition.SendNotification(this, _EVSPool);
-                    return _EVSPool;
+                    OnSuccess.FailSafeInvoke(_ChargingPool);
+                    ChargingPoolAddition.SendNotification(this, _ChargingPool);
+                    return _ChargingPool;
                 }
             }
 
             throw new Exception();
 
+        }
+
+        #endregion
+
+        #region ContainsChargingPool(ChargingPoolId)
+
+        /// <summary>
+        /// Check if the given ChargingPool identification is already present within the EVSE operator.
+        /// </summary>
+        /// <param name="ChargingPoolId">The unique identification of the charging pool.</param>
+        public Boolean ContainsChargingPool(ChargingPool_Id ChargingPoolId)
+        {
+            return _RegisteredChargingPools.ContainsKey(ChargingPoolId);
         }
 
         #endregion
