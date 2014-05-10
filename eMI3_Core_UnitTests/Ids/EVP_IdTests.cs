@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 Achim Friedland <achim.friedland@belectric.com>
+ * Copyright (c) 2013 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 Mockup <http://www.github.com/eMI3/Mockup>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,11 +22,11 @@ using System.Collections.Generic;
 
 using NUnit.Framework;
 
-using de.eMI3;
+using org.emi3group;
 
 #endregion
 
-namespace de.eMI3.UnitTests
+namespace org.emi3group.UnitTests
 {
 
     /// <summary>
@@ -44,8 +44,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void EVP_IdEmptyConstructorTest()
         {
-            var _EVP_Id1 = new EVSPool_Id();
-            var _EVP_Id2 = new EVSPool_Id();
+            var _EVP_Id1 = new ChargingPool_Id();
+            var _EVP_Id2 = new ChargingPool_Id();
             Assert.IsTrue(_EVP_Id1.Length > 0);
             Assert.IsTrue(_EVP_Id2.Length > 0);
             Assert.AreNotEqual(_EVP_Id1, _EVP_Id2);
@@ -61,7 +61,7 @@ namespace de.eMI3.UnitTests
         [Test]
         public void EVP_IdStringConstructorTest()
         {
-            var _EVP_Id = new EVSPool_Id("123");
+            var _EVP_Id = new ChargingPool_Id("123");
             Assert.AreEqual("123", _EVP_Id.ToString());
             Assert.AreEqual(3,     _EVP_Id.Length);
         }
@@ -76,7 +76,7 @@ namespace de.eMI3.UnitTests
         [Test]
         public void EVP_IdEVP_IdConstructorTest()
         {
-            var _EVP_Id1 = EVSPool_Id.New;
+            var _EVP_Id1 = ChargingPool_Id.New;
             var _EVP_Id2 = _EVP_Id1.Clone;
             Assert.AreEqual(_EVP_Id1.ToString(), _EVP_Id2.ToString());
             Assert.AreEqual(_EVP_Id1.Length,     _EVP_Id2.Length);
@@ -94,8 +94,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void NewEVP_IdMethodTest()
         {
-            var _EVP_Id1 = EVSPool_Id.New;
-            var _EVP_Id2 = EVSPool_Id.New;
+            var _EVP_Id1 = ChargingPool_Id.New;
+            var _EVP_Id2 = ChargingPool_Id.New;
             Assert.AreNotEqual(_EVP_Id1, _EVP_Id2);
         }
 
@@ -110,8 +110,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Equality_Null_Test1()
         {
-            var      _EVP_Id1 = new EVSPool_Id();
-            EVSPool_Id _EVP_Id2 = null;
+            var      _EVP_Id1 = new ChargingPool_Id();
+            ChargingPool_Id _EVP_Id2 = null;
             Assert.IsFalse(_EVP_Id1 == _EVP_Id2);
         }
 
@@ -125,8 +125,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Equality_Null_Test2()
         {
-            EVSPool_Id _EVP_Id1 = null;
-            var      _EVP_Id2 = new EVSPool_Id();
+            ChargingPool_Id _EVP_Id1 = null;
+            var      _EVP_Id2 = new ChargingPool_Id();
             Assert.IsFalse(_EVP_Id1 == _EVP_Id2);
         }
 
@@ -140,8 +140,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Equality_BothNull_Test()
         {
-            EVSPool_Id _EVP_Id1 = null;
-            EVSPool_Id _EVP_Id2 = null;
+            ChargingPool_Id _EVP_Id1 = null;
+            ChargingPool_Id _EVP_Id2 = null;
             Assert.IsTrue(_EVP_Id1 == _EVP_Id2);
         }
 
@@ -156,7 +156,7 @@ namespace de.eMI3.UnitTests
         
         public void op_Equality_SameReference_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id();
+            var _EVP_Id1 = new ChargingPool_Id();
             #pragma warning disable
             Assert.IsTrue(_EVP_Id1 == _EVP_Id1);
             #pragma warning restore
@@ -172,8 +172,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Equality_Equals_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("1");
-            var _EVP_Id2 = new EVSPool_Id("1");
+            var _EVP_Id1 = new ChargingPool_Id("1");
+            var _EVP_Id2 = new ChargingPool_Id("1");
             Assert.IsTrue(_EVP_Id1 == _EVP_Id2);
         }
 
@@ -187,8 +187,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Equality_NotEquals_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("1");
-            var _EVP_Id2 = new EVSPool_Id("2");
+            var _EVP_Id1 = new ChargingPool_Id("1");
+            var _EVP_Id2 = new ChargingPool_Id("2");
             Assert.IsFalse(_EVP_Id1 == _EVP_Id2);
         }
 
@@ -203,8 +203,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Inequality_Null_Test1()
         {
-            var      _EVP_Id1 = new EVSPool_Id();
-            EVSPool_Id _EVP_Id2 = null;
+            var      _EVP_Id1 = new ChargingPool_Id();
+            ChargingPool_Id _EVP_Id2 = null;
             Assert.IsTrue(_EVP_Id1 != _EVP_Id2);
         }
 
@@ -218,8 +218,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Inequality_Null_Test2()
         {
-            EVSPool_Id _EVP_Id1 = null;
-            var      _EVP_Id2 = new EVSPool_Id();
+            ChargingPool_Id _EVP_Id1 = null;
+            var      _EVP_Id2 = new ChargingPool_Id();
             Assert.IsTrue(_EVP_Id1 != _EVP_Id2);
         }
 
@@ -233,8 +233,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Inequality_BothNull_Test()
         {
-            EVSPool_Id _EVP_Id1 = null;
-            EVSPool_Id _EVP_Id2 = null;
+            ChargingPool_Id _EVP_Id1 = null;
+            ChargingPool_Id _EVP_Id2 = null;
             Assert.IsFalse(_EVP_Id1 != _EVP_Id2);
         }
 
@@ -248,7 +248,7 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Inequality_SameReference_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id();
+            var _EVP_Id1 = new ChargingPool_Id();
             #pragma warning disable
             Assert.IsFalse(_EVP_Id1 != _EVP_Id1);
             #pragma warning restore
@@ -264,8 +264,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Inequality_Equals_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("1");
-            var _EVP_Id2 = new EVSPool_Id("1");
+            var _EVP_Id1 = new ChargingPool_Id("1");
+            var _EVP_Id2 = new ChargingPool_Id("1");
             Assert.IsFalse(_EVP_Id1 != _EVP_Id2);
         }
 
@@ -279,8 +279,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Inequality_NotEquals1_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("1");
-            var _EVP_Id2 = new EVSPool_Id("2");
+            var _EVP_Id1 = new ChargingPool_Id("1");
+            var _EVP_Id2 = new ChargingPool_Id("2");
             Assert.IsTrue(_EVP_Id1 != _EVP_Id2);
         }
 
@@ -294,8 +294,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Inequality_NotEquals2_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("5");
-            var _EVP_Id2 = new EVSPool_Id("23");
+            var _EVP_Id1 = new ChargingPool_Id("5");
+            var _EVP_Id2 = new ChargingPool_Id("23");
             Assert.IsTrue(_EVP_Id1 != _EVP_Id2);
         }
 
@@ -311,8 +311,8 @@ namespace de.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void op_Smaller_Null_Test1()
         {
-            var      _EVP_Id1 = new EVSPool_Id();
-            EVSPool_Id _EVP_Id2 = null;
+            var      _EVP_Id1 = new ChargingPool_Id();
+            ChargingPool_Id _EVP_Id2 = null;
             Assert.IsTrue(_EVP_Id1 < _EVP_Id2);
         }
 
@@ -327,8 +327,8 @@ namespace de.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void op_Smaller_Null_Test2()
         {
-            EVSPool_Id _EVP_Id1 = null;
-            var      _EVP_Id2 = new EVSPool_Id();
+            ChargingPool_Id _EVP_Id1 = null;
+            var      _EVP_Id2 = new ChargingPool_Id();
             Assert.IsTrue(_EVP_Id1 < _EVP_Id2);
         }
 
@@ -343,8 +343,8 @@ namespace de.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void op_Smaller_BothNull_Test()
         {
-            EVSPool_Id _EVP_Id1 = null;
-            EVSPool_Id _EVP_Id2 = null;
+            ChargingPool_Id _EVP_Id1 = null;
+            ChargingPool_Id _EVP_Id2 = null;
             Assert.IsFalse(_EVP_Id1 < _EVP_Id2);
         }
 
@@ -358,7 +358,7 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Smaller_SameReference_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id();
+            var _EVP_Id1 = new ChargingPool_Id();
             #pragma warning disable
             Assert.IsFalse(_EVP_Id1 < _EVP_Id1);
             #pragma warning restore
@@ -374,8 +374,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Smaller_Equals_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("1");
-            var _EVP_Id2 = new EVSPool_Id("1");
+            var _EVP_Id1 = new ChargingPool_Id("1");
+            var _EVP_Id2 = new ChargingPool_Id("1");
             Assert.IsFalse(_EVP_Id1 < _EVP_Id2);
         }
 
@@ -389,8 +389,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Smaller_Smaller1_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("1");
-            var _EVP_Id2 = new EVSPool_Id("2");
+            var _EVP_Id1 = new ChargingPool_Id("1");
+            var _EVP_Id2 = new ChargingPool_Id("2");
             Assert.IsTrue(_EVP_Id1 < _EVP_Id2);
         }
 
@@ -404,8 +404,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Smaller_Smaller2_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("5");
-            var _EVP_Id2 = new EVSPool_Id("23");
+            var _EVP_Id1 = new ChargingPool_Id("5");
+            var _EVP_Id2 = new ChargingPool_Id("23");
             Assert.IsTrue(_EVP_Id1 < _EVP_Id2);
         }
 
@@ -419,8 +419,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Smaller_Bigger1_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("2");
-            var _EVP_Id2 = new EVSPool_Id("1");
+            var _EVP_Id1 = new ChargingPool_Id("2");
+            var _EVP_Id2 = new ChargingPool_Id("1");
             Assert.IsFalse(_EVP_Id1 < _EVP_Id2);
         }
 
@@ -434,8 +434,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Smaller_Bigger2_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("23");
-            var _EVP_Id2 = new EVSPool_Id("5");
+            var _EVP_Id1 = new ChargingPool_Id("23");
+            var _EVP_Id2 = new ChargingPool_Id("5");
             Assert.IsFalse(_EVP_Id1 < _EVP_Id2);
         }
 
@@ -451,8 +451,8 @@ namespace de.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void op_SmallerOrEqual_Null_Test1()
         {
-            var      _EVP_Id1 = new EVSPool_Id();
-            EVSPool_Id _EVP_Id2 = null;
+            var      _EVP_Id1 = new ChargingPool_Id();
+            ChargingPool_Id _EVP_Id2 = null;
             Assert.IsTrue(_EVP_Id1 <= _EVP_Id2);
         }
 
@@ -467,8 +467,8 @@ namespace de.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void op_SmallerOrEqual_Null_Test2()
         {
-            EVSPool_Id _EVP_Id1 = null;
-            var      _EVP_Id2 = new EVSPool_Id();
+            ChargingPool_Id _EVP_Id1 = null;
+            var      _EVP_Id2 = new ChargingPool_Id();
             Assert.IsTrue(_EVP_Id1 <= _EVP_Id2);
         }
 
@@ -483,8 +483,8 @@ namespace de.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void op_SmallerOrEqual_BothNull_Test()
         {
-            EVSPool_Id _EVP_Id1 = null;
-            EVSPool_Id _EVP_Id2 = null;
+            ChargingPool_Id _EVP_Id1 = null;
+            ChargingPool_Id _EVP_Id2 = null;
             Assert.IsFalse(_EVP_Id1 <= _EVP_Id2);
         }
 
@@ -498,7 +498,7 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_SmallerOrEqual_SameReference_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id();
+            var _EVP_Id1 = new ChargingPool_Id();
             #pragma warning disable
             Assert.IsTrue(_EVP_Id1 <= _EVP_Id1);
             #pragma warning restore
@@ -514,8 +514,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_SmallerOrEqual_Equals_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("1");
-            var _EVP_Id2 = new EVSPool_Id("1");
+            var _EVP_Id1 = new ChargingPool_Id("1");
+            var _EVP_Id2 = new ChargingPool_Id("1");
             Assert.IsTrue(_EVP_Id1 <= _EVP_Id2);
         }
 
@@ -529,8 +529,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_SmallerOrEqual_SmallerThan1_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("1");
-            var _EVP_Id2 = new EVSPool_Id("2");
+            var _EVP_Id1 = new ChargingPool_Id("1");
+            var _EVP_Id2 = new ChargingPool_Id("2");
             Assert.IsTrue(_EVP_Id1 <= _EVP_Id2);
         }
 
@@ -544,8 +544,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_SmallerOrEqual_SmallerThan2_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("5");
-            var _EVP_Id2 = new EVSPool_Id("23");
+            var _EVP_Id1 = new ChargingPool_Id("5");
+            var _EVP_Id2 = new ChargingPool_Id("23");
             Assert.IsTrue(_EVP_Id1 <= _EVP_Id2);
         }
 
@@ -559,8 +559,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_SmallerOrEqual_Bigger1_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("2");
-            var _EVP_Id2 = new EVSPool_Id("1");
+            var _EVP_Id1 = new ChargingPool_Id("2");
+            var _EVP_Id2 = new ChargingPool_Id("1");
             Assert.IsFalse(_EVP_Id1 <= _EVP_Id2);
         }
 
@@ -574,8 +574,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_SmallerOrEqual_Bigger2_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("23");
-            var _EVP_Id2 = new EVSPool_Id("5");
+            var _EVP_Id1 = new ChargingPool_Id("23");
+            var _EVP_Id2 = new ChargingPool_Id("5");
             Assert.IsFalse(_EVP_Id1 <= _EVP_Id2);
         }
 
@@ -591,8 +591,8 @@ namespace de.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void op_Bigger_Null_Test1()
         {
-            var      _EVP_Id1 = new EVSPool_Id();
-            EVSPool_Id _EVP_Id2 = null;
+            var      _EVP_Id1 = new ChargingPool_Id();
+            ChargingPool_Id _EVP_Id2 = null;
             Assert.IsTrue(_EVP_Id1 > _EVP_Id2);
         }
 
@@ -607,8 +607,8 @@ namespace de.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void op_Bigger_Null_Test2()
         {
-            EVSPool_Id _EVP_Id1 = null;
-            var      _EVP_Id2 = new EVSPool_Id();
+            ChargingPool_Id _EVP_Id1 = null;
+            var      _EVP_Id2 = new ChargingPool_Id();
             Assert.IsTrue(_EVP_Id1 > _EVP_Id2);
         }
 
@@ -623,8 +623,8 @@ namespace de.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void op_Bigger_BothNull_Test()
         {
-            EVSPool_Id _EVP_Id1 = null;
-            EVSPool_Id _EVP_Id2 = null;
+            ChargingPool_Id _EVP_Id1 = null;
+            ChargingPool_Id _EVP_Id2 = null;
             Assert.IsFalse(_EVP_Id1 > _EVP_Id2);
         }
 
@@ -638,7 +638,7 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Bigger_SameReference_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id();
+            var _EVP_Id1 = new ChargingPool_Id();
             #pragma warning disable
             Assert.IsFalse(_EVP_Id1 > _EVP_Id1);
             #pragma warning restore
@@ -654,8 +654,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Bigger_Equals_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("1");
-            var _EVP_Id2 = new EVSPool_Id("1");
+            var _EVP_Id1 = new ChargingPool_Id("1");
+            var _EVP_Id2 = new ChargingPool_Id("1");
             Assert.IsFalse(_EVP_Id1 > _EVP_Id2);
         }
 
@@ -669,8 +669,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Bigger_Smaller1_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("1");
-            var _EVP_Id2 = new EVSPool_Id("2");
+            var _EVP_Id1 = new ChargingPool_Id("1");
+            var _EVP_Id2 = new ChargingPool_Id("2");
             Assert.IsFalse(_EVP_Id1 > _EVP_Id2);
         }
 
@@ -684,8 +684,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Bigger_Smaller2_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("5");
-            var _EVP_Id2 = new EVSPool_Id("23");
+            var _EVP_Id1 = new ChargingPool_Id("5");
+            var _EVP_Id2 = new ChargingPool_Id("23");
             Assert.IsFalse(_EVP_Id1 > _EVP_Id2);
         }
 
@@ -699,8 +699,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Bigger_Bigger1_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("2");
-            var _EVP_Id2 = new EVSPool_Id("1");
+            var _EVP_Id1 = new ChargingPool_Id("2");
+            var _EVP_Id2 = new ChargingPool_Id("1");
             Assert.IsTrue(_EVP_Id1 > _EVP_Id2);
         }
 
@@ -714,8 +714,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_Bigger_Bigger2_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("23");
-            var _EVP_Id2 = new EVSPool_Id("5");
+            var _EVP_Id1 = new ChargingPool_Id("23");
+            var _EVP_Id2 = new ChargingPool_Id("5");
             Assert.IsTrue(_EVP_Id1 > _EVP_Id2);
         }
 
@@ -731,8 +731,8 @@ namespace de.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void op_BiggerOrEqual_Null_Test1()
         {
-            var      _EVP_Id1 = new EVSPool_Id();
-            EVSPool_Id _EVP_Id2 = null;
+            var      _EVP_Id1 = new ChargingPool_Id();
+            ChargingPool_Id _EVP_Id2 = null;
             Assert.IsTrue(_EVP_Id1 >= _EVP_Id2);
         }
 
@@ -747,8 +747,8 @@ namespace de.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void op_BiggerOrEqual_Null_Test2()
         {
-            EVSPool_Id _EVP_Id1 = null;
-            var      _EVP_Id2 = new EVSPool_Id();
+            ChargingPool_Id _EVP_Id1 = null;
+            var      _EVP_Id2 = new ChargingPool_Id();
             Assert.IsTrue(_EVP_Id1 >= _EVP_Id2);
         }
 
@@ -763,8 +763,8 @@ namespace de.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void op_BiggerOrEqual_BothNull_Test()
         {
-            EVSPool_Id _EVP_Id1 = null;
-            EVSPool_Id _EVP_Id2 = null;
+            ChargingPool_Id _EVP_Id1 = null;
+            ChargingPool_Id _EVP_Id2 = null;
             Assert.IsFalse(_EVP_Id1 >= _EVP_Id2);
         }
 
@@ -778,7 +778,7 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_BiggerOrEqual_SameReference_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id();
+            var _EVP_Id1 = new ChargingPool_Id();
             #pragma warning disable
             Assert.IsTrue(_EVP_Id1 >= _EVP_Id1);
             #pragma warning restore
@@ -794,8 +794,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_BiggerOrEqual_Equals_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("1");
-            var _EVP_Id2 = new EVSPool_Id("1");
+            var _EVP_Id1 = new ChargingPool_Id("1");
+            var _EVP_Id2 = new ChargingPool_Id("1");
             Assert.IsTrue(_EVP_Id1 >= _EVP_Id2);
         }
 
@@ -809,8 +809,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_BiggerOrEqual_SmallerThan1_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("1");
-            var _EVP_Id2 = new EVSPool_Id("2");
+            var _EVP_Id1 = new ChargingPool_Id("1");
+            var _EVP_Id2 = new ChargingPool_Id("2");
             Assert.IsFalse(_EVP_Id1 >= _EVP_Id2);
         }
 
@@ -824,8 +824,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_BiggerOrEqual_SmallerThan2_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("5");
-            var _EVP_Id2 = new EVSPool_Id("23");
+            var _EVP_Id1 = new ChargingPool_Id("5");
+            var _EVP_Id2 = new ChargingPool_Id("23");
             Assert.IsFalse(_EVP_Id1 >= _EVP_Id2);
         }
 
@@ -839,8 +839,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_BiggerOrEqual_Bigger1_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("2");
-            var _EVP_Id2 = new EVSPool_Id("1");
+            var _EVP_Id1 = new ChargingPool_Id("2");
+            var _EVP_Id2 = new ChargingPool_Id("1");
             Assert.IsTrue(_EVP_Id1 >= _EVP_Id2);
         }
 
@@ -854,8 +854,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void op_BiggerOrEqual_Bigger2_Test()
         {
-            var _EVP_Id1 = new EVSPool_Id("23");
-            var _EVP_Id2 = new EVSPool_Id("5");
+            var _EVP_Id1 = new ChargingPool_Id("23");
+            var _EVP_Id2 = new ChargingPool_Id("5");
             Assert.IsTrue(_EVP_Id1 >= _EVP_Id2);
         }
 
@@ -871,7 +871,7 @@ namespace de.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void CompareToNullTest1()
         {
-            var    _EVP_Id = EVSPool_Id.New;
+            var    _EVP_Id = ChargingPool_Id.New;
             Object _Object   = null;
             _EVP_Id.CompareTo(_Object);
         }
@@ -887,8 +887,8 @@ namespace de.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void CompareToNullTest2()
         {
-            var      _EVP_Id = EVSPool_Id.New;
-            EVSPool_Id _Object   = null;
+            var      _EVP_Id = ChargingPool_Id.New;
+            ChargingPool_Id _Object   = null;
             _EVP_Id.CompareTo(_Object);
         }
 
@@ -903,7 +903,7 @@ namespace de.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentException))]
         public void CompareToNonEVP_IdTest()
         {
-            var _EVP_Id = EVSPool_Id.New;
+            var _EVP_Id = ChargingPool_Id.New;
             var _Object   = "123";
             _EVP_Id.CompareTo(_Object);
         }
@@ -918,8 +918,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void CompareToSmallerTest1()
         {
-            var _EVP_Id1 = new EVSPool_Id("1");
-            var _EVP_Id2 = new EVSPool_Id("2");
+            var _EVP_Id1 = new ChargingPool_Id("1");
+            var _EVP_Id2 = new ChargingPool_Id("2");
             Assert.IsTrue(_EVP_Id1.CompareTo(_EVP_Id2) < 0);
         }
 
@@ -933,8 +933,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void CompareToSmallerTest2()
         {
-            var _EVP_Id1 = new EVSPool_Id("5");
-            var _EVP_Id2 = new EVSPool_Id("23");
+            var _EVP_Id1 = new ChargingPool_Id("5");
+            var _EVP_Id2 = new ChargingPool_Id("23");
             Assert.IsTrue(_EVP_Id1.CompareTo(_EVP_Id2) < 0);
         }
 
@@ -948,8 +948,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void CompareToEqualsTest()
         {
-            var _EVP_Id1 = new EVSPool_Id("1");
-            var _EVP_Id2 = new EVSPool_Id("1");
+            var _EVP_Id1 = new ChargingPool_Id("1");
+            var _EVP_Id2 = new ChargingPool_Id("1");
             Assert.IsTrue(_EVP_Id1.CompareTo(_EVP_Id2) == 0);
         }
 
@@ -963,8 +963,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void CompareToBiggerTest()
         {
-            var _EVP_Id1 = new EVSPool_Id("2");
-            var _EVP_Id2 = new EVSPool_Id("1");
+            var _EVP_Id1 = new ChargingPool_Id("2");
+            var _EVP_Id2 = new ChargingPool_Id("1");
             Assert.IsTrue(_EVP_Id1.CompareTo(_EVP_Id2) > 0);
         }
 
@@ -979,7 +979,7 @@ namespace de.eMI3.UnitTests
         [Test]
         public void EqualsNullTest1()
         {
-            var    _EVP_Id = EVSPool_Id.New;
+            var    _EVP_Id = ChargingPool_Id.New;
             Object _Object   = null;
             Assert.IsFalse(_EVP_Id.Equals(_Object));
         }
@@ -994,8 +994,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void EqualsNullTest2()
         {
-            var      _EVP_Id = EVSPool_Id.New;
-            EVSPool_Id _Object   = null;
+            var      _EVP_Id = ChargingPool_Id.New;
+            ChargingPool_Id _Object   = null;
             Assert.IsFalse(_EVP_Id.Equals(_Object));
         }
 
@@ -1009,7 +1009,7 @@ namespace de.eMI3.UnitTests
         [Test]
         public void EqualsNonEVP_IdTest()
         {
-            var _EVP_Id = EVSPool_Id.New;
+            var _EVP_Id = ChargingPool_Id.New;
             var _Object   = "123";
             Assert.IsFalse(_EVP_Id.Equals(_Object));
         }
@@ -1024,8 +1024,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void EqualsEqualsTest()
         {
-            var _EVP_Id1 = new EVSPool_Id("1");
-            var _EVP_Id2 = new EVSPool_Id("1");
+            var _EVP_Id1 = new ChargingPool_Id("1");
+            var _EVP_Id2 = new ChargingPool_Id("1");
             Assert.IsTrue(_EVP_Id1.Equals(_EVP_Id2));
         }
 
@@ -1039,8 +1039,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void EqualsNotEqualsTest()
         {
-            var _EVP_Id1 = new EVSPool_Id("1");
-            var _EVP_Id2 = new EVSPool_Id("2");
+            var _EVP_Id1 = new ChargingPool_Id("1");
+            var _EVP_Id2 = new ChargingPool_Id("2");
             Assert.IsFalse(_EVP_Id1.Equals(_EVP_Id2));
         }
 
@@ -1055,8 +1055,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void GetHashCodeEqualTest()
         {
-            var _SensorHashCode1 = new EVSPool_Id("5").GetHashCode();
-            var _SensorHashCode2 = new EVSPool_Id("5").GetHashCode();
+            var _SensorHashCode1 = new ChargingPool_Id("5").GetHashCode();
+            var _SensorHashCode2 = new ChargingPool_Id("5").GetHashCode();
             Assert.AreEqual(_SensorHashCode1, _SensorHashCode2);
         }
 
@@ -1070,8 +1070,8 @@ namespace de.eMI3.UnitTests
         [Test]
         public void GetHashCodeNotEqualTest()
         {
-            var _SensorHashCode1 = new EVSPool_Id("1").GetHashCode();
-            var _SensorHashCode2 = new EVSPool_Id("2").GetHashCode();
+            var _SensorHashCode1 = new ChargingPool_Id("1").GetHashCode();
+            var _SensorHashCode2 = new ChargingPool_Id("2").GetHashCode();
             Assert.AreNotEqual(_SensorHashCode1, _SensorHashCode2);
         }
 
@@ -1087,9 +1087,9 @@ namespace de.eMI3.UnitTests
         public void EVP_IdsAndNUnitTest()
         {
 
-            var a = new EVSPool_Id("1");
-            var b = new EVSPool_Id("2");
-            var c = new EVSPool_Id("1");
+            var a = new ChargingPool_Id("1");
+            var b = new ChargingPool_Id("2");
+            var c = new ChargingPool_Id("1");
 
             Assert.AreEqual(a, a);
             Assert.AreEqual(b, b);
@@ -1112,11 +1112,11 @@ namespace de.eMI3.UnitTests
         public void EVP_IdsInHashSetTest()
         {
 
-            var a = new EVSPool_Id("1");
-            var b = new EVSPool_Id("2");
-            var c = new EVSPool_Id("1");
+            var a = new ChargingPool_Id("1");
+            var b = new ChargingPool_Id("2");
+            var c = new ChargingPool_Id("1");
 
-            var _HashSet = new HashSet<EVSPool_Id>();
+            var _HashSet = new HashSet<ChargingPool_Id>();
             Assert.AreEqual(0, _HashSet.Count);
 
             _HashSet.Add(a);

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@belectric.com>
+ * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 Core <http://www.github.com/eMI3/Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -21,7 +21,7 @@ using System;
 
 #endregion
 
-namespace de.eMI3
+namespace org.emi3group
 {
 
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]

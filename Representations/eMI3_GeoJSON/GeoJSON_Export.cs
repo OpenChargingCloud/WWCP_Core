@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 Achim Friedland <achim.friedland@belectric.com>
+ * Copyright (c) 2013 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 Mockup <http://www.github.com/eMI3/Mockup>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -24,11 +24,11 @@ using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
-using de.eMI3;
+using org.emi3group;
 
 #endregion
 
-namespace de.eMI3.IO.GeoJSON
+namespace org.emi3group.IO.GeoJSON
 {
 
     // {
@@ -120,7 +120,7 @@ namespace de.eMI3.IO.GeoJSON
 
             return new JProperty(JPropertyKey,
                                  new JObject(I8N.Select(v =>
-                                     new JProperty(v.Key.ToString(), v.Value)
+                                     new JProperty(v.Language.ToString(), v.Value)
                                  )));
 
         }

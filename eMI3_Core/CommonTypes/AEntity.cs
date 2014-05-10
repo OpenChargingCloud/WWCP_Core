@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@belectric.com>
+ * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 Core <http://www.github.com/eMI3/Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -28,7 +28,7 @@ using System.Runtime.CompilerServices;
 
 #endregion
 
-namespace de.eMI3
+namespace org.emi3group
 {
 
     public delegate void PropertyChanged_EventHandler   (Object Sender, String PropertyName, Object OldValue, Object NewValue);
@@ -101,8 +101,8 @@ namespace de.eMI3
             if (Id == null)
                 throw new ArgumentNullException("Id", "The given Id must not be null!");
 
-            this._Id                = Id;
-            this.LastChange          = DateTime.Now;
+            this._Id            = Id;
+            this.LastChange     = DateTime.Now;
 
         }
 

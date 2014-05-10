@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 Achim Friedland <achim.friedland@belectric.com>
+ * Copyright (c) 2013 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 Mockup <http://www.github.com/eMI3/Mockup>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -23,11 +23,11 @@ using System.Collections.Generic;
 
 using NUnit.Framework;
 
-using de.eMI3;
+using org.emi3group;
 
 #endregion
 
-namespace de.eMI3.UnitTests
+namespace org.emi3group.UnitTests
 {
 
     /// <summary>
@@ -73,7 +73,11 @@ namespace de.eMI3.UnitTests
             #region Create an EVSE pool
 
             var BITSPool = BelectricDriveOperator.CreateNewEVSPool(
+<<<<<<< HEAD
                                       new EVSPool_Id("BITS"),
+=======
+                                      new ChargingPool_Id("BITS"),
+>>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5
                                       pool => {
 
                                           pool.Name.       Add(Languages.en, "Belectric IT Solutions").
@@ -92,7 +96,7 @@ namespace de.eMI3.UnitTests
                                           pool.Address.FloorLevel       = "12";
                                           pool.Address.PostalCode       = "07743";
                                           pool.Address.City             = "Jena";
-                                          pool.Address.Country          = "Germany";
+                                          pool.Address.Country          = Country.Germany;
 
                                           //pool.OpeningTime
 

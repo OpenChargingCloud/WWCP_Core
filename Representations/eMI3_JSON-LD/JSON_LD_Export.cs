@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 Achim Friedland <achim.friedland@belectric.com>
+ * Copyright (c) 2013 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 Mockup <http://www.github.com/eMI3/Mockup>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -22,12 +22,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-using de.eMI3;
+using org.emi3group;
 using Newtonsoft.Json.Linq;
 
 #endregion
 
-namespace de.eMI3.IO.JSON_LD
+namespace org.emi3group.IO.JSON_LD
 {
 
     /// <summary>
@@ -88,7 +88,7 @@ namespace de.eMI3.IO.JSON_LD
 
             return new JProperty(JPropertyKey,
                                  new JObject(I8N.Select(v =>
-                                     new JProperty(v.Key.ToString(), v.Value)
+                                     new JProperty(v.Language.ToString(), v.Value)
                                  )));
 
         }
@@ -123,14 +123,15 @@ namespace de.eMI3.IO.JSON_LD
 
         #region ToJSON(this Pool)
 
-        public static JObject ToJSON(this EVSPool Pool)
+        public static JObject ToJSON(this ChargingPool Pool)
         {
 
             return JSON.Create(Pool.Id.              ToJSON("Id"),
-                               Pool.LastChange.       ToJSON("Timestamp"),
+                               Pool.LastChange.      ToJSON("Timestamp"),
                                Pool.Name.            ToJSON("Name"),
-                               (!Pool.Description.IsEmpty) ?
-                               Pool.Description.     ToJSON("Description") : null,
+                               (!Pool.Description.IsEmpty)
+                                   ? Pool.Description.ToJSON("Description")
+                                   : null,
                                Pool.LocationLanguage.ToJSON("LocationLanguage"),
                                Pool.PoolLocation.    ToJSON("PoolLocation"),
                                Pool.EntranceLocation.ToJSON("EntranceLocation")

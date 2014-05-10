@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0FBD2942-FE7A-4D7C-A57C-59172506E2E0}</ProjectGuid>
+    <ProjectGuid>{7B261262-E8A6-4DDD-AB9E-D7F7C83A0D44}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>de.eMI3.IO.RDF</RootNamespace>

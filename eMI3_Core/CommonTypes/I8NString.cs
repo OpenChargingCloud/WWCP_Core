@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@belectric.com>
+ * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 Core <http://www.github.com/eMI3/Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -23,7 +23,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace de.eMI3
+namespace org.emi3group
 {
 
     public enum Languages
@@ -33,10 +33,27 @@ namespace de.eMI3
         en
     }
 
+    public struct I8NPair
+    {
+
+        private readonly Languages _Key;
+        public Languages Language { get { return _Key;   } }
+
+        private readonly String    _Value;
+        public String    Value    { get { return _Value; } }
+
+        public I8NPair(Languages key, String value)
+        {
+            _Key   = key;
+            _Value = value;
+        }
+
+    }
+
     /// <summary>
     /// An internationalized string.
     /// </summary>
-    public class I8NString : IEnumerable<KeyValuePair<Languages, String>>
+    public class I8NString : IEnumerable<I8NPair>
     {
 
         #region Data
@@ -115,7 +132,25 @@ namespace de.eMI3
             if (!I8NStrings.ContainsKey(Language))
                 I8NStrings.Add(Language, Value);
 
+            else
+                I8NStrings[Language] = Value;
+
             return this;
+
+        }
+
+        public String this[Languages Language]
+        {
+
+            get
+            {
+                return I8NStrings[Language];
+            }
+
+            set
+            {
+                I8NStrings[Language] = value;
+            }
 
         }
 
@@ -139,14 +174,14 @@ namespace de.eMI3
         }
 
 
-        public IEnumerator<KeyValuePair<Languages, String>> GetEnumerator()
+        public IEnumerator<I8NPair> GetEnumerator()
         {
-            return I8NStrings.GetEnumerator();
+            return I8NStrings.Select(kvp => new I8NPair(kvp.Key, kvp.Value)).GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return I8NStrings.GetEnumerator();
+            return I8NStrings.Select(kvp => new I8NPair(kvp.Key, kvp.Value)).GetEnumerator();
         }
 
 

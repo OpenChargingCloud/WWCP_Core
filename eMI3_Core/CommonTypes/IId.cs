@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@belectric.com>
+ * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 Core <http://www.github.com/eMI3/Core>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,15 +21,15 @@ using System;
 
 #endregion
 
-namespace de.eMI3
+namespace org.emi3group
 {
 
     public interface IId : IComparable
     {
 
-        //global::de.eMI3.EVSPool_Id Clone { get; }
-        //int CompareTo(global::de.eMI3.EVSPool_Id EVP_Id);
-        //bool Equals(global::de.eMI3.EVSPool_Id EVP_Id);
+        //global::org.emi3group.EVSPool_Id Clone { get; }
+        //int CompareTo(global::org.emi3group.EVSPool_Id EVP_Id);
+        //bool Equals(global::org.emi3group.EVSPool_Id EVP_Id);
         //int GetHashCode();
         //ulong Length { get; }
         //string ToString();

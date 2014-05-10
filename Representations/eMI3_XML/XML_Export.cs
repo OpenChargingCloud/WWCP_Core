@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013 Achim Friedland <achim.friedland@belectric.com>
+ * Copyright (c) 2013 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 Mockup <http://www.github.com/eMI3/Mockup>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -22,11 +22,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-using de.eMI3;
+using org.emi3group;
 
 #endregion
 
-namespace de.eMI3.IO.XML
+namespace org.emi3group.IO.XML
 {
 
     public static class XMLExport
@@ -90,7 +90,7 @@ namespace de.eMI3.IO.XML
 
             return new XElement(Namespace + ElementName,
                                 I8N.Select(v => new XElement(NS_eMI3 + I8N_Root,
-                                     new XAttribute(NS_eMI3 + I8N_Language, v.Key),
+                                     new XAttribute(NS_eMI3 + I8N_Language, v.Language),
                                      v.Value)));
 
         }
@@ -132,7 +132,7 @@ namespace de.eMI3.IO.XML
         public static readonly String NS_EVSPool_Description       = "Description";
         public static readonly String NS_EVSPool_LocationLanguage  = "LocationLanguage";
 
-        public static XElement ToXML(this EVSPool Pool)
+        public static XElement ToXML(this ChargingPool Pool)
         {
 
             return new XElement(NS_EVSPool + NS_EVSPool_Root,
