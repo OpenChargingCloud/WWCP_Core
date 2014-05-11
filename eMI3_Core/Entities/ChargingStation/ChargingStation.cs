@@ -265,11 +265,7 @@ namespace org.emi3group
         /// Create a new charging station having a random identification.
         /// </summary>
         /// <param name="EVSPool">The parent EVS pool.</param>
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/ChargingStations/ChargingStation/ChargingStation.cs
-        public ChargingStation(EVSPool EVSPool)
-=======
         public ChargingStation(ChargingPool EVSPool)
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/ChargingStation/ChargingStation.cs
             : this(ChargingStation_Id.New, EVSPool)
         { }
 
@@ -283,11 +279,7 @@ namespace org.emi3group
         /// <param name="Id">The unique identification of the charging station pool.</param>
         /// <param name="EVSPool">The parent EVS pool.</param>
         internal ChargingStation(ChargingStation_Id  Id,
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/ChargingStations/ChargingStation/ChargingStation.cs
-                                 EVSPool             EVSPool)
-=======
                                  ChargingPool             EVSPool)
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/ChargingStation/ChargingStation.cs
             : base(Id)
         {
 
@@ -359,11 +351,7 @@ namespace org.emi3group
 
             var _EVSE = new EVSE(EVSE_Id, this);
 
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/ChargingStations/ChargingStation/ChargingStation.cs
-            Action.FailSafeRun(_EVSE);
-=======
             Action.FailSafeInvoke(_EVSE);
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/ChargingStation/ChargingStation.cs
 
             if (EVSEAddition.SendVoting(this, _EVSE))
             {

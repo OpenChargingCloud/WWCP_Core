@@ -349,20 +349,12 @@ namespace org.emi3group
 
         #region ChargingStationAddition
 
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/ChargingStations/EVSPool/EVSPool.cs
-        private readonly IVotingNotificator<EVSPool, ChargingStation, Boolean> ChargingStationAddition;
-=======
         private readonly IVotingNotificator<ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/ChargingPool/ChargingPool.cs
 
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/ChargingStations/EVSPool/EVSPool.cs
-        public IVotingSender<EVSPool, ChargingStation, Boolean> OnChargingStationAddition
-=======
         public IVotingSender<ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/ChargingPool/ChargingPool.cs
         {
             get
             {
@@ -422,13 +414,8 @@ namespace org.emi3group
         /// Create a new group/pool of charging stations having a random identification.
         /// </summary>
         /// <param name="EVSEOperator">The parent EVSE operator.</param>
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/ChargingStations/EVSPool/EVSPool.cs
-        internal EVSPool(EVSEOperator EVSEOperator)
-            : this(EVSPool_Id.New, EVSEOperator)
-=======
         internal ChargingPool(EVSEOperator EVSEOperator)
             : this(ChargingPool_Id.New, EVSEOperator)
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/ChargingPool/ChargingPool.cs
         { }
 
         #endregion
@@ -440,11 +427,7 @@ namespace org.emi3group
         /// </summary>
         /// <param name="Id">The unique identification of the EVS pool.</param>
         /// <param name="EVSEOperator">The parent EVSE operator.</param>
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/ChargingStations/EVSPool/EVSPool.cs
-        internal EVSPool(EVSPool_Id    Id,
-=======
         internal ChargingPool(ChargingPool_Id    Id,
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/ChargingPool/ChargingPool.cs
                          EVSEOperator  EVSEOperator)
             : base(Id)
         {
@@ -479,11 +462,7 @@ namespace org.emi3group
             #region Init and link events
 
             // EVS pool events
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/ChargingStations/EVSPool/EVSPool.cs
-            this.ChargingStationAddition    = new VotingNotificator<EVSPool, ChargingStation, Boolean>(() => new VetoVote(), true);
-=======
             this.ChargingStationAddition    = new VotingNotificator<ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/ChargingPool/ChargingPool.cs
 
             this.OnChargingStationAddition.OnVoting       += (evseoperator, evspool, vote) => Operator.ChargingStationAddition.SendVoting      (evseoperator, evspool, vote);
             this.OnChargingStationAddition.OnNotification += (evseoperator, evspool)       => Operator.ChargingStationAddition.SendNotification(evseoperator, evspool);
@@ -528,21 +507,13 @@ namespace org.emi3group
                 throw new ArgumentNullException("ChargingStation_Id", "The given charging station identification must not be null!");
 
             if (_ChargingStations.ContainsKey(ChargingStation_Id))
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/ChargingStations/EVSPool/EVSPool.cs
-                throw new ChargingStationAlreadyExists(ChargingStation_Id, this.Id);
-=======
                 throw new ChargingStationAlreadyExistsInPool(ChargingStation_Id, this.Id);
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/ChargingPool/ChargingPool.cs
 
             #endregion
 
             var _ChargingStation = new ChargingStation(ChargingStation_Id, this);
 
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/ChargingStations/EVSPool/EVSPool.cs
-            Action.FailSafeRun(_ChargingStation);
-=======
             Action.FailSafeInvoke(_ChargingStation);
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/ChargingPool/ChargingPool.cs
 
             if (ChargingStationAddition.SendVoting(this, _ChargingStation))
             {

@@ -73,11 +73,7 @@ namespace org.emi3group.UnitTests
             #region Create an EVSE pool
 
             var BITSPool = BelectricDriveOperator.CreateNewEVSPool(
-<<<<<<< HEAD
-                                      new EVSPool_Id("BITS"),
-=======
                                       new ChargingPool_Id("BITS"),
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5
                                       pool => {
 
                                           pool.Name.       Add(Languages.en, "Belectric IT Solutions").

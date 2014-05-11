@@ -43,7 +43,7 @@ namespace org.emi3group
 
         #region Data
 
-        private readonly ConcurrentDictionary<String, PropertyChanged_EventHandler>  Events;
+        private readonly ConcurrentDictionary<String, PropertyChanged_EventHandler> Events;
 
         #endregion
 

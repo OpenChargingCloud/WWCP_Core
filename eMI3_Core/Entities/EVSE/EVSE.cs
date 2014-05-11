@@ -238,11 +238,7 @@ namespace org.emi3group
 
             var _SocketOutlet = new SocketOutlet(SocketOutlet_Id, this);
 
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/ChargingStations/EVSE/EVSE.cs
-            Action.FailSafeRun(_SocketOutlet);
-=======
             Action.FailSafeInvoke(_SocketOutlet);
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/EVSE/EVSE.cs
 
             if (SocketOutletAddition.SendVoting(this, _SocketOutlet))
             {

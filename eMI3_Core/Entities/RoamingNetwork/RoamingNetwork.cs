@@ -281,20 +281,12 @@ namespace org.emi3group
 
         #region ChargingStationAddition
 
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/RoamingNetwork.cs
-        internal readonly IVotingNotificator<EVSPool, ChargingStation, Boolean> ChargingStationAddition;
-=======
         internal readonly IVotingNotificator<ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/RoamingNetwork/RoamingNetwork.cs
 
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/RoamingNetwork.cs
-        public IVotingSender<EVSPool, ChargingStation, Boolean> OnChargingStationAddition
-=======
         public IVotingSender<ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/RoamingNetwork/RoamingNetwork.cs
         {
             get
             {
@@ -396,15 +388,6 @@ namespace org.emi3group
             this.EVSEOperatorAddition       = new VotingNotificator<RoamingNetwork,  EVSEOperator,      Boolean>(() => new VetoVote(), true);
             this.EVServiceProviderAddition  = new VotingNotificator<RoamingNetwork,  EVServiceProvider, Boolean>(() => new VetoVote(), true);
             this.RoamingProviderAddition    = new VotingNotificator<RoamingNetwork,  RoamingProvider,   Boolean>(() => new VetoVote(), true);
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/RoamingNetwork.cs
-            this.SearchProviderAddition     = new VotingNotificator<RoamingNetwork,  SearchProvider,    Boolean>(() => new VetoVote(), true);
-
-            // EVSE operator events
-            this.EVSPoolAddition            = new VotingNotificator<EVSEOperator,    EVSPool,           Boolean>(() => new VetoVote(), true);
-
-            // EVS pool events
-            this.ChargingStationAddition    = new VotingNotificator<EVSPool,         ChargingStation,   Boolean>(() => new VetoVote(), true);
-=======
             this.SearchProviderAddition     = new VotingNotificator<RoamingNetwork,  NavigationServiceProvider,    Boolean>(() => new VetoVote(), true);
 
             // EVSE operator events
@@ -412,7 +395,6 @@ namespace org.emi3group
 
             // EVS pool events
             this.ChargingStationAddition    = new VotingNotificator<ChargingPool,         ChargingStation,   Boolean>(() => new VetoVote(), true);
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/RoamingNetwork/RoamingNetwork.cs
 
             // Charging station events
             this.EVSEAddition               = new VotingNotificator<ChargingStation, EVSE,              Boolean>(() => new VetoVote(), true);
@@ -453,11 +435,7 @@ namespace org.emi3group
 
             var _EVSEOperator = new EVSEOperator(EVSEOperator_Id, this);
 
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/RoamingNetwork.cs
-            Action.FailSafeRun(_EVSEOperator);
-=======
             Action.FailSafeInvoke(_EVSEOperator);
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/RoamingNetwork/RoamingNetwork.cs
 
             if (EVSEOperatorAddition.SendVoting(this, _EVSEOperator))
             {
@@ -498,9 +476,6 @@ namespace org.emi3group
 
             var _EVServiceProvider = new EVServiceProvider(EVServiceProvider_Id, this);
 
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/RoamingNetwork.cs
-            Action.FailSafeRun(_EVServiceProvider);
-=======
             Action.FailSafeInvoke(_EVServiceProvider);
 
             if (EVServiceProviderAddition.SendVoting(this, _EVServiceProvider))
@@ -545,7 +520,6 @@ namespace org.emi3group
             var _EVServiceProvider = new EVServiceProvider(EVServiceProvider_Id, this, EMobilityService);
 
             Action.FailSafeInvoke(_EVServiceProvider);
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/RoamingNetwork/RoamingNetwork.cs
 
             if (EVServiceProviderAddition.SendVoting(this, _EVServiceProvider))
             {
@@ -587,11 +561,7 @@ namespace org.emi3group
 
             var _RoamingProvider = new RoamingProvider(RoamingProvider_Id, this, EMobilityService);
 
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/RoamingNetwork.cs
-            Action.FailSafeRun(_RoamingProvider);
-=======
             Action.FailSafeInvoke(_RoamingProvider);
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/RoamingNetwork/RoamingNetwork.cs
 
             if (RoamingProviderAddition.SendVoting(this, _RoamingProvider))
             {
@@ -632,11 +602,7 @@ namespace org.emi3group
 
             var _SearchProvider = new NavigationServiceProvider(SearchProvider_Id, this);
 
-<<<<<<< HEAD:eMI3_Core/RoamingNetwork/RoamingNetwork.cs
-            Action.FailSafeRun(_SearchProvider);
-=======
             Action.FailSafeInvoke(_SearchProvider);
->>>>>>> eda9d1ffad4f5be4e2672bd1ed4b681a16a312d5:eMI3_Core/Entities/RoamingNetwork/RoamingNetwork.cs
 
             if (SearchProviderAddition.SendVoting(this, _SearchProvider))
             {
