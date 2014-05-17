@@ -47,6 +47,31 @@ namespace org.emi3group
 
         #region Properties
 
+        #region ServiceIdentification
+
+        private String _ServiceIdentification;
+
+        /// <summary>
+        /// The internal service identification of the charging station maintained by the EVSE operator.
+        /// </summary>
+        [Optional]
+        public String ServiceIdentification
+        {
+
+            get
+            {
+                return _ServiceIdentification;
+            }
+
+            set
+            {
+                SetProperty<String>(ref _ServiceIdentification, value);
+            }
+
+        }
+
+        #endregion
+
         #region UserComment
 
         private I8NString _UserComment;
@@ -97,9 +122,9 @@ namespace org.emi3group
 
         #endregion
 
-        #region StationLocation
+        #region GeoLocation
 
-        private GeoLocation _StationLocation;
+        private GeoLocation _GeoLocation;
 
         /// <summary>
         /// The geographical location of the charging station.
@@ -112,8 +137,8 @@ namespace org.emi3group
             get
             {
 
-                if (_StationLocation.IsValid)
-                    return _StationLocation;
+                if (_GeoLocation.IsValid)
+                    return _GeoLocation;
 
                 else
                     return Pool.PoolLocation;
@@ -122,7 +147,7 @@ namespace org.emi3group
 
             set
             {
-                SetProperty<GeoLocation>(ref _StationLocation, value);
+                SetProperty<GeoLocation>(ref _GeoLocation, value);
             }
 
         }
