@@ -122,6 +122,8 @@ namespace org.emi3group
         #endregion
 
 
+        #region SocketOutlets
+
         public IEnumerable<SocketOutlet> SocketOutlets
         {
             get
@@ -129,6 +131,8 @@ namespace org.emi3group
                 return _SocketOutlets.Values;
             }
         }
+
+        #endregion
 
         #endregion
 
