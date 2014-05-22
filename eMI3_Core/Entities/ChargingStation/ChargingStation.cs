@@ -222,6 +222,24 @@ namespace org.emi3group
 
         #endregion
 
+        #region PointOfDelivery // MeterId
+
+        private readonly String _PointOfDelivery;
+
+        /// <summary>
+        /// Point of delivery or meter identification.
+        /// </summary>
+        [Optional]
+        public String PointOfDelivery
+        {
+            get
+            {
+                return _PointOfDelivery;
+            }
+        }
+
+        #endregion
+
 
         #region EVSEs
 

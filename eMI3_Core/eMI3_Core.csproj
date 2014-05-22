@@ -58,6 +58,8 @@
     <Compile Include="CommonTypes\Address.cs" />
     <Compile Include="CommonTypes\AuthorizationOptions.cs" />
     <Compile Include="CommonTypes\eMI3_Exception.cs" />
+    <Compile Include="Entities\ServicePlan\ChargingServicePlan.cs" />
+    <Compile Include="Entities\ServicePlan\ChargingServicePlan_Id.cs" />
     <Compile Include="Interfaces\IEMP2HubjectService.cs" />
     <Compile Include="Interfaces\IHubject2EMPService.cs" />
     <Compile Include="Responses\AResult.cs" />
