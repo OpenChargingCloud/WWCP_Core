@@ -154,6 +154,31 @@ namespace org.emi3group
 
         #endregion
 
+        #region GridConnection
+
+        private GridConnection _GridConnection;
+
+        /// <summary>
+        /// The grid connection of the charging station.
+        /// </summary>
+        [Optional]
+        public GridConnection GridConnection
+        {
+
+            get
+            {
+                return _GridConnection;
+            }
+
+            set
+            {
+                SetProperty<GridConnection>(ref _GridConnection, value);
+            }
+
+        }
+
+        #endregion
+
         #region Features
 
         private ChargingStationFeatures _Features;
