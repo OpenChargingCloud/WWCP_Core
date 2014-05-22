@@ -58,8 +58,10 @@
     <Compile Include="CommonTypes\Address.cs" />
     <Compile Include="CommonTypes\AuthorizationOptions.cs" />
     <Compile Include="CommonTypes\eMI3_Exception.cs" />
-    <Compile Include="Entities\ServicePlan\ChargingServicePlan.cs" />
-    <Compile Include="Entities\ServicePlan\ChargingServicePlan_Id.cs" />
+    <Compile Include="Entities\ChargingServicePlan\ChargingServicePlan.cs" />
+    <Compile Include="Entities\ChargingServicePlan\ChargingServicePlan_Id.cs" />
+    <Compile Include="Entities\ParkingSpot\ParkingSpot.cs" />
+    <Compile Include="Entities\ParkingSpot\ParkingSpot_Id.cs" />
     <Compile Include="Interfaces\IEMP2HubjectService.cs" />
     <Compile Include="Interfaces\IHubject2EMPService.cs" />
     <Compile Include="Responses\AResult.cs" />
@@ -96,7 +98,7 @@
     <Compile Include="Entities\ChargingPool\ChargingPool.cs" />
     <Compile Include="Entities\ChargingStation\RegisterEVSEResult.cs" />
     <Compile Include="CommonTypes\Token.cs" />
-    <Compile Include="CommonTypes\SessionId.cs" />
+    <Compile Include="Entities\ChargingSession\ChargingSessionId.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="Entities\EVSEOperator\EVSEOperatorExceptions.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkExceptions.cs" />
@@ -118,7 +120,7 @@
     <Compile Include="Entities\RoamingProvider\RoamingProvider.cs" />
     <Compile Include="Entities\RoamingProvider\RoamingProvider_Id.cs" />
     <Compile Include="Entities\NavigationServiceProvider\NavigationServiceProvider.cs" />
-    <Compile Include="Entities\NavigationServiceProvider\SearchProvider_Id.cs" />
+    <Compile Include="Entities\NavigationServiceProvider\NavigationServiceProvider_Id.cs" />
     <Compile Include="Semantics.cs" />
   </ItemGroup>
   <ItemGroup>

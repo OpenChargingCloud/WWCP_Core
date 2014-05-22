@@ -27,7 +27,10 @@ namespace org.emi3group
     /// <summary>
     /// The unique identification of an authorizator.
     /// </summary>
-    public class AuthorizatorId : IId, IEquatable<AuthorizatorId>, IComparable<AuthorizatorId>
+    public class AuthorizatorId : IId,
+                                  IEquatable<AuthorizatorId>,
+                                  IComparable<AuthorizatorId>
+
     {
 
         #region Data

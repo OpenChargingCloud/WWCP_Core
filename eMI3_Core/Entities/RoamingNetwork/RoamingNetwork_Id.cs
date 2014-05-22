@@ -27,7 +27,10 @@ namespace org.emi3group
     /// <summary>
     /// The unique identification of a playground.
     /// </summary>
-    public class RoamingNetwork_Id : IId, IEquatable<RoamingNetwork_Id>, IComparable<RoamingNetwork_Id>
+    public class RoamingNetwork_Id : IId,
+                                     IEquatable<RoamingNetwork_Id>,
+                                     IComparable<RoamingNetwork_Id>
+
     {
 
         #region Data

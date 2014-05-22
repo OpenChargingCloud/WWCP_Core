@@ -27,7 +27,10 @@ namespace org.emi3group
     /// <summary>
     /// The unique identification of an Electric Vehicle Charging Pool (EVCP Id).
     /// </summary>
-    public class ChargingPool_Id : IId, IEquatable<ChargingPool_Id>, IComparable<ChargingPool_Id>
+    public class ChargingPool_Id : IId,
+                                   IEquatable<ChargingPool_Id>,
+                                   IComparable<ChargingPool_Id>
+
     {
 
         #region Data

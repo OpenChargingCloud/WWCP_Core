@@ -27,7 +27,10 @@ namespace org.emi3group
     /// <summary>
     /// The unique identification of an Electric Vehicle Supply Equipment Operator (EVSE Op).
     /// </summary>
-    public class EVSEOperator_Id : IId, IEquatable<EVSEOperator_Id>, IComparable<EVSEOperator_Id>
+    public class EVSEOperator_Id : IId,
+                                   IEquatable<EVSEOperator_Id>,
+                                   IComparable<EVSEOperator_Id>
+
     {
 
         #region Data

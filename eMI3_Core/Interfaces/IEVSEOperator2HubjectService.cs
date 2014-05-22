@@ -42,18 +42,18 @@ namespace org.emi3group.LocalService
 
         AUTHSTARTResult AuthorizeStart(EVSEOperator_Id  OperatorId,
                                        EVSE_Id          EVSEId,
-                                       SessionId        PartnerSessionId,
+                                       ChargingSessionId        PartnerSessionId,
                                        Token            UID);
 
         AUTHSTOPResult  AuthorizeStop (EVSEOperator_Id  OperatorId,
                                        EVSE_Id          EVSEId,
-                                       SessionId        SessionId,
-                                       SessionId        PartnerSessionId,
+                                       ChargingSessionId        SessionId,
+                                       ChargingSessionId        PartnerSessionId,
                                        Token            UID);
 
         SENDCDRResult   SendCDR       (EVSE_Id          EVSEId,
-                                       SessionId        SessionId,
-                                       SessionId        PartnerSessionId,
+                                       ChargingSessionId        SessionId,
+                                       ChargingSessionId        PartnerSessionId,
                                        String           PartnerProductId,
                                        Token            UID,
                                        eMA_Id           eMAId,

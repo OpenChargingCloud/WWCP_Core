@@ -47,7 +47,7 @@ namespace org.emi3group.LocalService
         #region Data
 
         private readonly Dictionary<UInt32,          IEVSEOperator2HubjectService>    AuthenticationServices;
-        private readonly Dictionary<SessionId,       IEVSEOperator2HubjectService>    SessionIdAuthenticatorCache;
+        private readonly Dictionary<ChargingSessionId,       IEVSEOperator2HubjectService>    SessionIdAuthenticatorCache;
         private readonly Dictionary<EVSEOperator_Id, IHubject2EVSEOperatorService>  EVSEOperatorLookup;
 
         #endregion
@@ -82,7 +82,7 @@ namespace org.emi3group.LocalService
         {
             this._AuthorizatorId              = (AuthorizatorId == null) ? AuthorizatorId.Parse("Belectric Drive EV Gateway") : AuthorizatorId;
             this.AuthenticationServices       = new Dictionary<UInt32,          IEVSEOperator2HubjectService>();
-            this.SessionIdAuthenticatorCache  = new Dictionary<SessionId,       IEVSEOperator2HubjectService>();
+            this.SessionIdAuthenticatorCache  = new Dictionary<ChargingSessionId,       IEVSEOperator2HubjectService>();
             this.EVSEOperatorLookup           = new Dictionary<EVSEOperator_Id, IHubject2EVSEOperatorService>();
         }
 
@@ -117,7 +117,7 @@ namespace org.emi3group.LocalService
 
         public AUTHSTARTResult AuthorizeStart(EVSEOperator_Id  OperatorId,
                                               EVSE_Id          EVSEId,
-                                              SessionId        PartnerSessionId,
+                                              ChargingSessionId        PartnerSessionId,
                                               Token            UID)
         {
 
@@ -179,8 +179,8 @@ namespace org.emi3group.LocalService
 
         public AUTHSTOPResult AuthorizeStop(EVSEOperator_Id  OperatorId,
                                             EVSE_Id          EVSEId,
-                                            SessionId        SessionId,
-                                            SessionId        PartnerSessionId,
+                                            ChargingSessionId        SessionId,
+                                            ChargingSessionId        PartnerSessionId,
                                             Token            UID)
         {
 
@@ -242,8 +242,8 @@ namespace org.emi3group.LocalService
         #region SendCDR(EVSEId, SessionId, PartnerSessionId, PartnerProductId, UID, eMAId, ChargeStart, ChargeEnd, SessionStart = null, SessionEnd = null, MeterValueStart = null, MeterValueEnd = null)
 
         public SENDCDRResult SendCDR(EVSE_Id     EVSEId,
-                                     SessionId   SessionId,
-                                     SessionId   PartnerSessionId,
+                                     ChargingSessionId   SessionId,
+                                     ChargingSessionId   PartnerSessionId,
                                      String      PartnerProductId,
                                      Token       UID,
                                      eMA_Id      eMAId,

@@ -27,7 +27,10 @@ namespace org.emi3group
     /// <summary>
     /// The unique identification of a Electric Vehicle Charging Group Identification (EVCGId).
     /// </summary>
-    public class ChargingGroup_Id : IId, IEquatable<ChargingGroup_Id>, IComparable<ChargingGroup_Id>
+    public class ChargingGroup_Id : IId,
+                                    IEquatable<ChargingGroup_Id>,
+                                    IComparable<ChargingGroup_Id>
+
     {
 
         #region Data

@@ -27,7 +27,10 @@ namespace org.emi3group
     /// <summary>
     /// The unique identification of an Electric Vehicle Supply Equipment Connector (EVSEConnector_Id)
     /// </summary>
-    public class SocketOutlet_Id : IId, IEquatable<SocketOutlet_Id>, IComparable<SocketOutlet_Id>
+    public class SocketOutlet_Id : IId,
+                                   IEquatable<SocketOutlet_Id>,
+                                   IComparable<SocketOutlet_Id>
+
     {
 
         #region Data

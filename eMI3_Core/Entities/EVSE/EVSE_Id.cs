@@ -27,7 +27,10 @@ namespace org.emi3group
     /// <summary>
     /// The unique identification of an Electric Vehicle Supply Equipment (EVSE_Id)
     /// </summary>
-    public class EVSE_Id : IId, IEquatable<EVSE_Id>, IComparable<EVSE_Id>
+    public class EVSE_Id : IId,
+                           IEquatable<EVSE_Id>,
+                           IComparable<EVSE_Id>
+
     {
 
         #region Data

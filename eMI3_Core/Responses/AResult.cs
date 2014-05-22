@@ -45,7 +45,7 @@ namespace org.emi3group.LocalService
 
         #region PartnerSessionId
 
-        public SessionId  PartnerSessionId         { get; set; }
+        public ChargingSessionId  PartnerSessionId         { get; set; }
 
         #endregion
 

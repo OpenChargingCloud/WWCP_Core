@@ -27,7 +27,10 @@ namespace org.emi3group
     /// <summary>
     /// The unique identification of an Electric Vehicle Supply Equipment (ChargingStation_Id)
     /// </summary>
-    public class ChargingStation_Id : IId, IEquatable<ChargingStation_Id>, IComparable<ChargingStation_Id>
+    public class ChargingStation_Id : IId,
+                                      IEquatable<ChargingStation_Id>,
+                                      IComparable<ChargingStation_Id>
+
     {
 
         #region Data

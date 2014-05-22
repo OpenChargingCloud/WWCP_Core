@@ -39,7 +39,7 @@ namespace org.emi3group.LocalService
         #region Properties
 
         public AuthorizationResult   AuthorizationResult   { get; set; }
-        public SessionId             SessionId             { get; set; }
+        public ChargingSessionId             SessionId             { get; set; }
         public EVServiceProvider_Id  ProviderId            { get; set; }
 
         #endregion

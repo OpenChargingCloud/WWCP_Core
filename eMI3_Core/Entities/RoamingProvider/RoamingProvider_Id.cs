@@ -27,7 +27,10 @@ namespace org.emi3group
     /// <summary>
     /// The unique identification of an Electric Vehicle Roaming Provider (EVRP Id).
     /// </summary>
-    public class RoamingProvider_Id : IId, IEquatable<RoamingProvider_Id>, IComparable<RoamingProvider_Id>
+    public class RoamingProvider_Id : IId,
+                                      IEquatable<RoamingProvider_Id>,
+                                      IComparable<RoamingProvider_Id>
+
     {
 
         #region Data

@@ -27,7 +27,10 @@ namespace org.emi3group
     /// <summary>
     /// The unique identification of an Electric Vehicle Service Provider (EVSProvider Id).
     /// </summary>
-    public class EVServiceProvider_Id : IId, IEquatable<EVServiceProvider_Id>, IComparable<EVServiceProvider_Id>
+    public class EVServiceProvider_Id : IId,
+                                        IEquatable<EVServiceProvider_Id>,
+                                        IComparable<EVServiceProvider_Id>
+
     {
 
         #region Data
