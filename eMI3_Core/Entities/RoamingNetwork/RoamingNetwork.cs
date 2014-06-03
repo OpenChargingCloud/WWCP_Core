@@ -376,7 +376,7 @@ namespace org.emi3group
             this._EVServiceProviders        = new ConcurrentDictionary<EVServiceProvider_Id, EVServiceProvider>();
             this._RoamingProviders          = new ConcurrentDictionary<RoamingProvider_Id,   RoamingProvider>();
             this._SearchProviders           = new ConcurrentDictionary<NavigationServiceProvider_Id,    NavigationServiceProvider>();
-            this._RequestRouter             = new RequestRouter();
+            this._RequestRouter             = new RequestRouter(Id);
 
             this.Name                       = new I8NString(Languages.en, Id.ToString());
             this.Description                = new I8NString();

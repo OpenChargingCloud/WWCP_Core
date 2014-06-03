@@ -46,13 +46,27 @@ namespace org.emi3group.LocalService
 
         #region Data
 
-        private readonly Dictionary<UInt32,          IEVSEOperator2HubjectService>    AuthenticationServices;
-        private readonly Dictionary<ChargingSessionId,       IEVSEOperator2HubjectService>    SessionIdAuthenticatorCache;
-        private readonly Dictionary<EVSEOperator_Id, IHubject2EVSEOperatorService>  EVSEOperatorLookup;
+        private readonly Dictionary<UInt32,            IEVSEOperator2HubjectService>  AuthenticationServices;
+        private readonly Dictionary<ChargingSessionId, IEVSEOperator2HubjectService>  SessionIdAuthenticatorCache;
+        private readonly Dictionary<EVSEOperator_Id,   IHubject2EVSEOperatorService>  EVSEOperatorLookup;
 
         #endregion
 
         #region Properties
+
+        #region RoamingNetwork
+
+        private readonly RoamingNetwork_Id _RoamingNetwork;
+
+        public RoamingNetwork_Id RoamingNetwork
+        {
+            get
+            {
+                return _RoamingNetwork;
+            }
+        }
+
+        #endregion
 
         #region AuthorizatorId
 
@@ -78,12 +92,16 @@ namespace org.emi3group.LocalService
 
         #region Constructor(s)
 
-        public RequestRouter(AuthorizatorId AuthorizatorId = null)
+        public RequestRouter(RoamingNetwork_Id  RoamingNetwork,
+                             AuthorizatorId     AuthorizatorId = null)
         {
+
+            this._RoamingNetwork              = RoamingNetwork;
             this._AuthorizatorId              = (AuthorizatorId == null) ? AuthorizatorId.Parse("Belectric Drive EV Gateway") : AuthorizatorId;
-            this.AuthenticationServices       = new Dictionary<UInt32,          IEVSEOperator2HubjectService>();
-            this.SessionIdAuthenticatorCache  = new Dictionary<ChargingSessionId,       IEVSEOperator2HubjectService>();
-            this.EVSEOperatorLookup           = new Dictionary<EVSEOperator_Id, IHubject2EVSEOperatorService>();
+            this.AuthenticationServices       = new Dictionary<UInt32,            IEVSEOperator2HubjectService>();
+            this.SessionIdAuthenticatorCache  = new Dictionary<ChargingSessionId, IEVSEOperator2HubjectService>();
+            this.EVSEOperatorLookup           = new Dictionary<EVSEOperator_Id,   IHubject2EVSEOperatorService>();
+
         }
 
         #endregion
@@ -360,11 +378,12 @@ namespace org.emi3group.LocalService
                 FrontendHTTPServer.EventSource(Semantics.DebugLog).
                     SubmitSubEvent("REMOTESTARTRequest",
                                    new JObject(
-                                       new JProperty("Timestamp",   DateTime.Now.ToIso8601()),
-                                       new JProperty("SessionId",   SessionId),
-                                       new JProperty("ProviderId",  ProviderId.ToString()),
-                                       new JProperty("EVSEId",      EVSEId.ToString()),
-                                       new JProperty("eMAId",       eMAId.ToString())
+                                       new JProperty("Timestamp",       DateTime.Now.ToIso8601()),
+                                       new JProperty("RoamingNetwork",  RoamingNetwork.ToString()),
+                                       new JProperty("SessionId",       SessionId),
+                                       new JProperty("ProviderId",      ProviderId.ToString()),
+                                       new JProperty("EVSEId",          EVSEId.ToString()),
+                                       new JProperty("eMAId",           eMAId.ToString())
                                    ).ToString().
                                      Replace(Environment.NewLine, ""));
 
@@ -480,10 +499,11 @@ namespace org.emi3group.LocalService
                 FrontendHTTPServer.EventSource(Semantics.DebugLog).
                     SubmitSubEvent("REMOTESTOPRequest",
                                    new JObject(
-                                       new JProperty("Timestamp",   DateTime.Now.ToIso8601()),
-                                       new JProperty("SessionId",   SessionId),
-                                       new JProperty("ProviderId",  ProviderId.ToString()),
-                                       new JProperty("EVSEId",      EVSEId.ToString())
+                                       new JProperty("Timestamp",       DateTime.Now.ToIso8601()),
+                                       new JProperty("RoamingNetwork",  RoamingNetwork.ToString()),
+                                       new JProperty("SessionId",       SessionId),
+                                       new JProperty("ProviderId",      ProviderId.ToString()),
+                                       new JProperty("EVSEId",          EVSEId.ToString())
                                    ).ToString().
                                      Replace(Environment.NewLine, ""));
 
