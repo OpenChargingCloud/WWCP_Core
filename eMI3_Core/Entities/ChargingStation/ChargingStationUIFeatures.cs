@@ -25,7 +25,7 @@ namespace org.emi3group
 {
 
     [Flags]
-    public enum ChargingStationFeatures
+    public enum ChargingStationUIFeatures
     {
         Pinpad,
         Screen

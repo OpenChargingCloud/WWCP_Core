@@ -181,13 +181,13 @@ namespace org.emi3group
 
         #region Features
 
-        private ChargingStationFeatures _Features;
+        private ChargingStationUIFeatures _Features;
 
         /// <summary>
         /// The features of the charging station.
         /// </summary>
         [Optional]
-        public ChargingStationFeatures Features
+        public ChargingStationUIFeatures Features
         {
 
             get
@@ -197,7 +197,7 @@ namespace org.emi3group
 
             set
             {
-                SetProperty<ChargingStationFeatures>(ref _Features, value);
+                SetProperty<ChargingStationUIFeatures>(ref _Features, value);
             }
 
         }
