@@ -18,7 +18,7 @@
 namespace org.emi3group
 {
 
-    public enum EVSERealTimeStatus
+    public enum EVSEStatusType
     {
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace org.emi3group
         /// <summary>
         /// No car is connected, the pole is not ready to charge because under maintenance.
         /// </summary>
-        Maintained      = 6,
+        OutOfService    = 6,
 
         /// <summary>
         /// The platform has lost connection with the pole (may be used by customer depending on its ability to handle offline mode).

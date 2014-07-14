@@ -207,6 +207,64 @@ namespace org.emi3group
         #endregion
 
 
+        #region ValidEVSEIds
+
+        private List<EVSE_Id> _ValidEVSEIds;
+
+        /// <summary>
+        /// A list of valid EVSE Ids. All others will be filtered.
+        /// </summary>
+        public List<EVSE_Id> ValidEVSEIds
+        {
+            get
+            {
+                return _ValidEVSEIds;
+            }
+        }
+
+        #endregion
+
+        #region InvalidEVSEIds
+
+        private List<EVSE_Id> _InvalidEVSEIds;
+
+        /// <summary>
+        /// A list of invalid EVSE Ids.
+        /// </summary>
+        public List<EVSE_Id> InvalidEVSEIds
+        {
+            get
+            {
+                return _InvalidEVSEIds;
+            }
+        }
+
+        #endregion
+
+
+        #region AllEVSEStatus
+
+        public IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>> AllEVSEStates
+        {
+            get
+            {
+                return _RegisteredChargingPools.Values.SelectMany(v => v.ChargingStations).SelectMany(v => v.EVSEs).Select(v => new KeyValuePair<EVSE_Id, EVSEStatusType>(v.Id, v.Status));
+            }
+        }
+
+        #endregion
+
+        #region AllEVSEStatus
+
+        public EVSE EVSE(EVSE_Id EVSEId)
+        {
+            return _RegisteredChargingPools.Values.SelectMany(v => v.ChargingStations).SelectMany(v => v.EVSEs).Where(EVSE => EVSE.Id == EVSEId).FirstOrDefault();
+        }
+
+        #endregion
+
+
+
         #region ChargingPools
 
         /// <summary>
@@ -272,6 +330,8 @@ namespace org.emi3group
 
             this._Name                      = new I8NString();
             this._Description               = new I8NString();
+            this._ValidEVSEIds              = new List<EVSE_Id>();
+            this._InvalidEVSEIds            = new List<EVSE_Id>();
 
             this._RegisteredChargingPools   = new ConcurrentDictionary<ChargingPool_Id, ChargingPool>();
 
@@ -375,6 +435,23 @@ namespace org.emi3group
         }
 
         #endregion
+
+
+        public void SetEVSEStatus(EVSE_Id EVSEId, EVSEStatusType Status, Action<EVSE_Id, EVSEStatusType> OnSuccess = null)
+        {
+
+            if (InvalidEVSEIds.Contains(EVSEId))
+                return;
+
+            var TmpLookup = ChargingPools.SelectMany(v => v.ChargingStations).SelectMany(v => v.EVSEs).ToDictionary(v => v.Id, v => v);
+
+            EVSE _EVSE = null;
+            if (TmpLookup.TryGetValue(EVSEId, out _EVSE))
+            {
+                _EVSE.Status = Status;
+            }
+
+        }
 
 
         #region IEnumerable<EVSPool> Members

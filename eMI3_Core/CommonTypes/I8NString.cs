@@ -30,7 +30,8 @@ namespace org.emi3group
     {
         undef,
         de,
-        en
+        en,
+        fr
     }
 
     public struct I8NPair

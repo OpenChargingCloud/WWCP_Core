@@ -48,7 +48,6 @@
   <ItemGroup>
     <Compile Include="CommonTypes\Attributes\Not_eMI3defined.cs" />
     <Compile Include="CommonTypes\GridConnection.cs" />
-    <Compile Include="CommonTypes\EVSEStatus.cs" />
     <Compile Include="CommonTypes\Country.cs" />
     <Compile Include="CommonTypes\IEntity.cs" />
     <Compile Include="CommonTypes\Attributes\ChargeWithContract.cs" />
@@ -62,6 +61,7 @@
     <Compile Include="Entities\ChargingServicePlan\ChargingServicePlan.cs" />
     <Compile Include="Entities\ChargingServicePlan\ChargingServicePlan_Id.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationState.cs" />
+    <Compile Include="Entities\EVSE\EVSEStatusDiff.cs" />
     <Compile Include="Entities\ParkingSpot\ParkingSpot.cs" />
     <Compile Include="Entities\ParkingSpot\ParkingSpot_Id.cs" />
     <Compile Include="Interfaces\IEMP2HubjectService.cs" />
@@ -91,7 +91,7 @@
     <Compile Include="CommonTypes\AEntity.cs" />
     <Compile Include="CommonTypes\IId.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationUIFeatures.cs" />
-    <Compile Include="Entities\EVSE\EVSERealTimeStatus.cs" />
+    <Compile Include="Entities\EVSE\EVSEStatusType.cs" />
     <Compile Include="Entities\SocketOutlet\SocketOutletExceptions.cs" />
     <Compile Include="Entities\SocketOutlet\PlugType.cs" />
     <Compile Include="Entities\SocketOutlet\CableType.cs" />
