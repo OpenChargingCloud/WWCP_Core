@@ -7,7 +7,7 @@
     <ProjectGuid>{33836742-AF1D-4AA4-963F-B0A8E60E6480}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>de.eMI3</RootNamespace>
+    <RootNamespace>com.graphdefined.eMI3</RootNamespace>
     <AssemblyName>eMI3_Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

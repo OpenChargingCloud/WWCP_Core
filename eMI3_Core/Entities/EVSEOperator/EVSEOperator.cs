@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@graphdefined.com>
- * This file is part of eMI3 Core <http://www.github.com/eMI3/Core>
+ * Copyright (c) 2014 Achim Friedland <achim.friedland@graphdefined.com>
+ * This file is part of eMI3 Core <http://www.github.com/GraphDefined/eMI3>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ using eu.Vanaheimr.Styx.Arrows;
 
 #endregion
 
-namespace org.emi3group
+namespace com.graphdefined.eMI3
 {
 
     /// <summary>
@@ -264,7 +264,6 @@ namespace org.emi3group
         #endregion
 
 
-
         #region ChargingPools
 
         /// <summary>
@@ -283,22 +282,6 @@ namespace org.emi3group
         #endregion
 
         #region Constructor(s)
-
-        #region (internal) EVSEOperator(RoamingNetwork)
-
-        /// <summary>
-        /// Create a new Electric Vehicle Supply Equipment Operator (EVSEOP) to manage
-        /// multiple Electric Vehicle Supply Equipments (EVSEs)
-        /// and having the given EVSE operator identification.
-        /// </summary>
-        /// <param name="RoamingNetwork">The parent roaming network.</param>
-        internal EVSEOperator(RoamingNetwork  RoamingNetwork)
-            : this(EVSEOperator_Id.New, RoamingNetwork)
-        { }
-
-        #endregion
-
-        #region (internal) EVSEOperator(Id, RoamingNetwork)
 
         /// <summary>
         /// Create a new Electric Vehicle Supply Equipment Operator (EVSEOP) to manage
@@ -369,8 +352,6 @@ namespace org.emi3group
             #endregion
 
         }
-
-        #endregion
 
         #endregion
 

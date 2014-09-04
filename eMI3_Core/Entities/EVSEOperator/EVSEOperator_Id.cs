@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@graphdefined.com>
- * This file is part of eMI3 Core <http://www.github.com/eMI3/Core>
+ * Copyright (c) 2014 Achim Friedland <achim.friedland@graphdefined.com>
+ * This file is part of eMI3 Core <http://www.github.com/GraphDefined/eMI3>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,11 @@
 #region Usings
 
 using System;
+using System.Text.RegularExpressions;
 
 #endregion
 
-namespace org.emi3group
+namespace com.graphdefined.eMI3
 {
 
     /// <summary>
@@ -36,9 +37,14 @@ namespace org.emi3group
         #region Data
 
         /// <summary>
-        /// The internal identification.
+        /// The regular expression for parsing an EVSE Operator identification.
         /// </summary>
-        protected readonly String _Id;
+        public  const    String   OperatorId_RegEx            = @"^[A-Z0-9]{3}$";
+
+        /// <summary>
+        /// The regular expression for parsing an Alpha-2-CountryCode and an EVSE Operator identification.
+        /// </summary>
+        public  const    String   CountryAndOperatorId_RegEx  = @"^([A-Z]{2})\*?([A-Z0-9]{3})$ | ^\+?([0-9]{1,5})\*([0-9]{3})$";
 
         #endregion
 
@@ -53,7 +59,56 @@ namespace org.emi3group
         {
             get
             {
-                return (UInt64) _Id.Length;
+                return (UInt64) (_CountryCode.Alpha2Code.Length + _OperatorId.Length);
+            }
+        }
+
+        #endregion
+
+        #region CountryCode
+
+        /// <summary>
+        /// The internal Alpha-2-CountryCode.
+        /// </summary>
+        private readonly Country _CountryCode;
+
+        public Country CountryCode
+        {
+            get
+            {
+                return _CountryCode;
+            }
+        }
+
+        #endregion
+
+        #region OperatorId
+
+        /// <summary>
+        /// The internal EVSE Operator identification.
+        /// </summary>
+        private readonly String _OperatorId;
+
+        public String OperatorId
+        {
+            get
+            {
+                return _OperatorId;
+            }
+        }
+
+        #endregion
+
+        #region Id2
+
+        /// <summary>
+        /// The EVSE Operator identification as e.g. "+49*822".
+        /// </summary>
+        public String Id2
+        {
+            get
+            {
+                return String.Concat("+", _CountryCode.TelefonCode, "*", _OperatorId);
             }
         }
 
@@ -63,78 +118,114 @@ namespace org.emi3group
 
         #region Constructor(s)
 
-        #region EVSEOperator_Id()
-
         /// <summary>
-        /// Generate a new Electric Vehicle Supply Equipment Operator (EVSE Op) identification.
+        /// Create a new Electric Vehicle Supply Equipment Operator (EVSE Op) identification.
         /// </summary>
-        public EVSEOperator_Id()
+        /// <param name="CountryCode">The Alpha-2-CountryCode.</param>
+        /// <param name="OperatorId">The EVSE Operator identification.</param>
+        public EVSEOperator_Id(Country  CountryCode,
+                               String   OperatorId)
         {
-            _Id = Guid.NewGuid().ToString();
+
+            var _MatchCollection = Regex.Matches(OperatorId.Trim().ToUpper(),
+                                                 OperatorId_RegEx,
+                                                 RegexOptions.IgnorePatternWhitespace);
+
+            if (_MatchCollection.Count != 1)
+                throw new ArgumentException("Illegal EVSE Operator identification!", "OperatorId");
+
+            _CountryCode  = CountryCode;
+            _OperatorId   = _MatchCollection[0].Value;
+
         }
 
         #endregion
 
-        #region EVSEOperator_Id(String)
 
-        /// <summary>
-        /// Generate a new Electric Vehicle Supply Equipment Operator (EVSE Op) identification.
-        /// based on the given string.
-        /// </summary>
-        public EVSEOperator_Id(String String)
-        {
-            _Id = String.Trim();
-        }
-
-        #endregion
-
-        #endregion
-
-
-        #region New
-
-        /// <summary>
-        /// Generate a new EVSEOperator_Id.
-        /// </summary>
-        public static EVSEOperator_Id New
-        {
-            get
-            {
-                return new EVSEOperator_Id(Guid.NewGuid().ToString());
-            }
-        }
-
-        #endregion
-
-        #region Parse(EVSEOperatorId)
+        #region Parse(CountryAndOperatorId)
 
         /// <summary>
         /// Parse the given string as an EVSE Operator identification.
         /// </summary>
-        public static EVSEOperator_Id Parse(String EVSEOperatorId)
+        /// <param name="CountryAndOperatorId">An EVSE Operator identification as string.</param>
+        public static EVSEOperator_Id Parse(String CountryAndOperatorId)
         {
-            return new EVSEOperator_Id(EVSEOperatorId);
+
+
+            var _MatchCollection = Regex.Matches(CountryAndOperatorId.Trim().ToUpper(),
+                                                 CountryAndOperatorId_RegEx,
+                                                 RegexOptions.IgnorePatternWhitespace);
+
+            if (_MatchCollection.Count != 1)
+                throw new ArgumentException("Illegal EVSE Operator identification!", "OperatorId");
+
+            Country __CountryCode;
+
+            if (Country.TryParseAlpha2Code(_MatchCollection[0].Groups[1].Value, out __CountryCode))
+                return new EVSEOperator_Id(__CountryCode,
+                                           _MatchCollection[0].Groups[2].Value);
+
+            if (Country.TryParseTelefonCode(_MatchCollection[0].Groups[3].Value, out __CountryCode))
+                return new EVSEOperator_Id(__CountryCode,
+                                           _MatchCollection[0].Groups[4].Value);
+
+            throw new ArgumentException("Illegal EVSE Operator identification!", "OperatorId");
+
         }
 
         #endregion
 
-        #region TryParse(Text, out EVSEOperatorId)
+        #region TryParse(CountryAndOperatorId, out EVSEOperatorId)
 
         /// <summary>
         /// Parse the given string as an EVSE Operator identification.
         /// </summary>
-        public static Boolean TryParse(String Text, out EVSEOperator_Id EVSEOperatorId)
+        /// <param name="CountryAndOperatorId">An EVSE Operator identification as string.</param>
+        /// <param name="EVSEOperatorId">The parsed EVSE Operator identification.</param>
+        public static Boolean TryParse(String CountryAndOperatorId, out EVSEOperator_Id EVSEOperatorId)
         {
+
             try
             {
-                EVSEOperatorId = new EVSEOperator_Id(Text);
-                return true;
+
+                var _MatchCollection = Regex.Matches(CountryAndOperatorId.Trim().ToUpper(),
+                                                     CountryAndOperatorId_RegEx,
+                                                     RegexOptions.IgnorePatternWhitespace);
+
+                if (_MatchCollection.Count != 1)
+                {
+                    EVSEOperatorId = null;
+                    return false;
+                }
+
+                Country __CountryCode;
+
+                if (Country.TryParseAlpha2Code(_MatchCollection[0].Groups[1].Value, out __CountryCode))
+                {
+                    EVSEOperatorId = new EVSEOperator_Id(__CountryCode,
+                                                         _MatchCollection[0].Groups[2].Value);
+                    return true;
+                }
+
+                if (Country.TryParseTelefonCode(_MatchCollection[0].Groups[3].Value, out __CountryCode))
+                {
+                    EVSEOperatorId = new EVSEOperator_Id(__CountryCode,
+                                                         _MatchCollection[0].Groups[4].Value);
+                    return true;
+                }
+
+                EVSEOperatorId = null;
+                return false;
+
             }
+
+
             catch (Exception e)
             {
                 EVSEOperatorId = null;
                 return false;
             }
+
         }
 
         #endregion
@@ -148,7 +239,10 @@ namespace org.emi3group
         {
             get
             {
-                return new EVSEOperator_Id(_Id);
+
+                return new EVSEOperator_Id(_CountryCode,
+                                           new String(_OperatorId.ToCharArray()));
+
             }
         }
 
@@ -309,9 +403,13 @@ namespace org.emi3group
             // Compare the length of the EVSEOperator_Ids
             var _Result = this.Length.CompareTo(EVSEOperator_Id.Length);
 
-            // If equal: Compare Ids
+            // If equal: Compare CountryIds
             if (_Result == 0)
-                _Result = _Id.CompareTo(EVSEOperator_Id._Id);
+                _Result = _CountryCode.CompareTo(EVSEOperator_Id._CountryCode);
+
+            // If equal: Compare OperatorIds
+            if (_Result == 0)
+                _Result = _OperatorId.CompareTo(EVSEOperator_Id._OperatorId);
 
             return _Result;
 
@@ -360,7 +458,8 @@ namespace org.emi3group
             if ((Object) EVSEOperator_Id == null)
                 return false;
 
-            return _Id.Equals(EVSEOperator_Id._Id);
+            return _CountryCode. Equals(EVSEOperator_Id._CountryCode ) &&
+                   _OperatorId.Equals(EVSEOperator_Id._OperatorId);
 
         }
 
@@ -376,7 +475,7 @@ namespace org.emi3group
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
         {
-            return _Id.GetHashCode();
+            return _CountryCode.Alpha2Code.GetHashCode() ^ _OperatorId.GetHashCode();
         }
 
         #endregion
@@ -388,7 +487,7 @@ namespace org.emi3group
         /// </summary>
         public override String ToString()
         {
-            return _Id.ToString();
+            return _CountryCode.Alpha2Code + "*" + _OperatorId.ToString();
         }
 
         #endregion

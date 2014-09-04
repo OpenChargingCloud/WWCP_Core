@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@graphdefined.com>
- * This file is part of eMI3 Core <http://www.github.com/eMI3/Core>
+ * Copyright (c) 2014 Achim Friedland <achim.friedland@graphdefined.com>
+ * This file is part of eMI3 Core <http://www.github.com/GraphDefined/eMI3>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,11 +25,11 @@ using eu.Vanaheimr.Illias.Commons;
 using eu.Vanaheimr.Illias.Commons.Votes;
 using eu.Vanaheimr.Styx.Arrows;
 
-using org.emi3group.LocalService;
+using com.graphdefined.eMI3.LocalService;
 
 #endregion
 
-namespace org.emi3group
+namespace com.graphdefined.eMI3
 {
 
     /// <summary>

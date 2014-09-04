@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("eMI3 Core Classes")]
 [assembly: AssemblyDescription("eMI3 Core Classes")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("BELECTRIC IT Solutions GmbH")]
+[assembly: AssemblyCompany("GraphDefined GmbH")]
 [assembly: AssemblyProduct("eMI3 Core Classes")]
-[assembly: AssemblyCopyright("Copyright © 2013 BELECTRIC IT Solutions GmbH")]
+[assembly: AssemblyCopyright("Copyright © 2014 GraphDefined GmbH")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

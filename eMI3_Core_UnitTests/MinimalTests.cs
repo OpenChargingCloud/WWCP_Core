@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2013 Achim Friedland <achim.friedland@graphdefined.com>
- * This file is part of eMI3 Mockup <http://www.github.com/eMI3/Mockup>
+ * This file is part of eMI3 <http://www.github.com/GraphDefined/eMI3>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,11 @@ using System.Collections.Generic;
 
 using NUnit.Framework;
 
-using org.emi3group;
+using com.graphdefined.eMI3;
 
 #endregion
 
-namespace org.emi3group.UnitTests
+namespace com.graphdefined.eMI3.UnitTests
 {
 
     /// <summary>
@@ -54,21 +54,23 @@ namespace org.emi3group.UnitTests
             Assert.AreEqual(0,                             RoamingNetwork.EVSEOperators.Count(), "The number of EVSE operators within the roaming network must be 0!");
 
             var BelectricDriveOperator = RoamingNetwork.CreateNewEVSEOperator(
-                                                            new EVSEOperator_Id("822"),
+                                                            new EVSEOperator_Id(Country.Germany, "822"),
                                                             Operator => {
                                                                 Operator.Name.Add(Languages.de, "Belectric Drive");
                                                             }
                                                         );
 
             Assert.IsNotNull(BelectricDriveOperator);
-            Assert.AreEqual(new EVSEOperator_Id("822"), BelectricDriveOperator.Id);
-            Assert.AreEqual("822",                      BelectricDriveOperator.Id.ToString());
-            Assert.AreEqual(0,                          BelectricDriveOperator.Count(),       "The number of EVSPools registered with the EVSE operator must be 0!");
+            Assert.AreEqual(new EVSEOperator_Id(Country.Germany, "822"), BelectricDriveOperator.Id);
+            Assert.AreEqual("822",                                       BelectricDriveOperator.Id.ToString());
+            Assert.AreEqual(0,                                           BelectricDriveOperator.Count(),       "The number of EVSPools registered with the EVSE operator must be 0!");
 
-            Assert.AreEqual(1,                          RoamingNetwork.Count(),               "The number of entities within the roaming network must be 1 now!");
-            Assert.AreEqual(1,                          RoamingNetwork.EVSEOperators.Count(), "The number of EVSE operators within the roaming network must be 1 now!");
+            Assert.AreEqual(1,                                           RoamingNetwork.Count(),               "The number of entities within the roaming network must be 1 now!");
+            Assert.AreEqual(1,                                           RoamingNetwork.EVSEOperators.Count(), "The number of EVSE operators within the roaming network must be 1 now!");
 
             #endregion
+
+            var BelectricDriveEVSEOperatorId = new EVSEOperator_Id(Country.Germany, "822");
 
             #region Create an EVSE pool
 
@@ -107,7 +109,7 @@ namespace org.emi3group.UnitTests
                                                                     station.ServiceProviderComment.Add(Languages.en, "Hello World (1)!");
 
                                                                     station.CreateNewEVSE(
-                                                                        new EVSE_Id("49*822*4201*1"),
+                                                                        new EVSE_Id(BelectricDriveEVSEOperatorId, "4201*1"),
                                                                         EVSE => {
                                                                             EVSE.CreateNewSocketOutlet(new SocketOutlet_Id("1"),
                                                                                 socket => {
@@ -118,7 +120,7 @@ namespace org.emi3group.UnitTests
                                                                         });
 
                                                                     station.CreateNewEVSE(
-                                                                        new EVSE_Id("49*822*4201*2"),
+                                                                        new EVSE_Id(BelectricDriveEVSEOperatorId, "4201*2"),
                                                                         EVSE => {
                                                                             EVSE.CreateNewSocketOutlet(new SocketOutlet_Id("1"),
                                                                                 socket => {
@@ -143,7 +145,7 @@ namespace org.emi3group.UnitTests
                                                                     station.ServiceProviderComment.Add(Languages.en, "Hello World (2)!");
 
                                                                     station.CreateNewEVSE(
-                                                                        new EVSE_Id("49*822*4202*1"),
+                                                                        new EVSE_Id(BelectricDriveEVSEOperatorId, "4202*1"),
                                                                         EVSE => {
                                                                             EVSE.CreateNewSocketOutlet(new SocketOutlet_Id("1"),
                                                                                 socket => {
@@ -154,7 +156,7 @@ namespace org.emi3group.UnitTests
                                                                         });
 
                                                                     station.CreateNewEVSE(
-                                                                        new EVSE_Id("49*822*4202*2"),
+                                                                        new EVSE_Id(BelectricDriveEVSEOperatorId, "4202*2"),
                                                                         EVSE => {
                                                                             EVSE.CreateNewSocketOutlet(new SocketOutlet_Id("1"),
                                                                                 socket => {
