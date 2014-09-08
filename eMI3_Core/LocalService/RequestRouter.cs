@@ -84,7 +84,7 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region FrontendHTTPServer
 
-        public URLMapping FrontendHTTPServer { get; set; }
+        public HTTPServer FrontendHTTPServer { get; set; }
 
         #endregion
 
@@ -375,7 +375,7 @@ namespace com.graphdefined.eMI3.LocalService
 
                 #region (HTTP) Logging
 
-                FrontendHTTPServer.EventSource(Semantics.DebugLog).
+                FrontendHTTPServer.GetEventSource(Semantics.DebugLog).
                     SubmitSubEvent("REMOTESTARTRequest",
                                    new JObject(
                                        new JProperty("Timestamp",       DateTime.Now.ToIso8601()),
@@ -496,7 +496,7 @@ namespace com.graphdefined.eMI3.LocalService
 
                 #region (HTTP) Logging
 
-                FrontendHTTPServer.EventSource(Semantics.DebugLog).
+                FrontendHTTPServer.GetEventSource(Semantics.DebugLog).
                     SubmitSubEvent("REMOTESTOPRequest",
                                    new JObject(
                                        new JProperty("Timestamp",       DateTime.Now.ToIso8601()),
