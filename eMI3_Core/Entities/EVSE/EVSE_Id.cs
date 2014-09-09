@@ -39,7 +39,7 @@ namespace com.graphdefined.eMI3
         /// <summary>
         /// The regular expression for parsing an EVSE identification.
         /// </summary>
-        public  const    String             EVSEId_RegEx        = @"^([A-Z]{2}\*?[A-Z0-9]{3})\*?E([A-Z0-9][A-Z0-9\*]{0,30})$ | ^\+?([0-9]{1,3}\*?[0-9]{3})\*?([A-Z0-9][A-Z0-9\*]{0,30})$";
+        public  const    String             EVSEId_RegEx        = @"^([A-Z]{2}\*?[A-Z0-9]{3})\*?E([A-Z0-9][A-Z0-9\*]{0,30})$ | ^(\+?[0-9]{1,3}\*?[0-9]{3})\*?([A-Z0-9][A-Z0-9\*]{0,30})$";
 
         /// <summary>
         /// The regular expression for parsing an EVSE identification.
@@ -75,6 +75,8 @@ namespace com.graphdefined.eMI3
 
         #endregion
 
+        #region OldEVSEId
+
         public String OldEVSEId
         {
             get
@@ -82,6 +84,8 @@ namespace com.graphdefined.eMI3
                 return String.Concat(_OperatorId.Id2, "*", _EVSEIdSuffix);
             }
         }
+
+        #endregion
 
         #endregion
 
@@ -164,20 +168,34 @@ namespace com.graphdefined.eMI3
 
                 EVSEOperator_Id __EVSEOperatorId = null;
 
-                if (!EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
-                    throw new ArgumentException("Illegal EVSE Operator identification!", "EVSEId");
+                // New format...
+                if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
+                {
 
-                EVSE_Id = new EVSE_Id(__EVSEOperatorId,
-                                      _MatchCollection[0].Groups[2].Value);
+                    EVSE_Id = new EVSE_Id(__EVSEOperatorId,
+                                          _MatchCollection[0].Groups[2].Value);
 
-                return true;
+                    return true;
+
+                }
+
+                // Old format...
+                else if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
+                {
+
+                    EVSE_Id = new EVSE_Id(__EVSEOperatorId,
+                                          _MatchCollection[0].Groups[4].Value);
+
+                    return true;
+
+                }
 
             }
             catch (Exception e)
-            {
-                EVSE_Id = null;
-                return false;
-            }
+            { }
+
+            EVSE_Id = null;
+            return false;
 
         }
 

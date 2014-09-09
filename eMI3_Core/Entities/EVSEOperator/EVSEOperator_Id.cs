@@ -44,7 +44,7 @@ namespace com.graphdefined.eMI3
         /// <summary>
         /// The regular expression for parsing an Alpha-2-CountryCode and an EVSE Operator identification.
         /// </summary>
-        public  const    String   CountryAndOperatorId_RegEx  = @"^([A-Z]{2})\*?([A-Z0-9]{3})$ | ^\+?([0-9]{1,5})\*([0-9]{3})$";
+        public  const    String   CountryAndOperatorId_RegEx  = @"^([A-Z]{2})\*?([A-Z0-9]{3})$ | ^\+?([0-9]{1,5})\*([0-9]{3})$ | ^([0-9]{3})$";
 
         #endregion
 
@@ -169,7 +169,9 @@ namespace com.graphdefined.eMI3
                 return new EVSEOperator_Id(__CountryCode,
                                            _MatchCollection[0].Groups[4].Value);
 
-            throw new ArgumentException("Illegal EVSE Operator identification!", "OperatorId");
+            // Just e.g. "882"...
+            return new EVSEOperator_Id(Country.Germany,
+                                       _MatchCollection[0].Groups[5].Value);
 
         }
 
@@ -214,8 +216,11 @@ namespace com.graphdefined.eMI3
                     return true;
                 }
 
-                EVSEOperatorId = null;
-                return false;
+                // Just e.g. "882"...
+                EVSEOperatorId = new EVSEOperator_Id(Country.Germany,
+                                                     _MatchCollection[0].Groups[5].Value);
+
+                return true;
 
             }
 

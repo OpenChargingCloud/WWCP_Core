@@ -102,33 +102,33 @@ namespace com.graphdefined.eMI3
 
         #endregion
 
-        #region Parse(EVSEOperatorId)
+        #region Parse(_Token)
 
         /// <summary>
         /// Parse the given string as a token.
         /// </summary>
-        public static Token Parse(String EVSEOperatorId)
+        public static Token Parse(String _Token)
         {
-            return new Token(EVSEOperatorId);
+            return new Token(_Token);
         }
 
         #endregion
 
-        #region TryParse(Text, out EVSEOperatorId)
+        #region TryParse(Text, out _Token)
 
         /// <summary>
         /// Parse the given string as a token.
         /// </summary>
-        public static Boolean TryParse(String Text, out Token EVSEOperatorId)
+        public static Boolean TryParse(String Text, out Token _Token)
         {
             try
             {
-                EVSEOperatorId = new Token(Text);
+                _Token = new Token(Text);
                 return true;
             }
             catch (Exception e)
             {
-                EVSEOperatorId = null;
+                _Token = null;
                 return false;
             }
         }
