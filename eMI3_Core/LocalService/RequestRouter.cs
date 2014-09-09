@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 using eu.Vanaheimr.Illias.Commons;
+using eu.Vanaheimr.Illias.Commons.ConsoleLog;
 using eu.Vanaheimr.Hermod;
 using eu.Vanaheimr.Hermod.HTTP;
 using eu.Vanaheimr.Hermod.Services.DNS;
@@ -437,9 +438,9 @@ namespace com.graphdefined.eMI3.LocalService
                     {
 
                         JSONResponse = JObject.Parse(Task01.Content.ToUTF8String());
-                        var ReturnCode   = JSONResponse["code"].ToString();
+                        Log.WriteLine(JSONResponse.ToString());
 
-                        switch (ReturnCode)
+                        switch (JSONResponse["code"].ToString())
                         {
 
                             case "EVSE_AlreadyInUse":
@@ -475,6 +476,8 @@ namespace com.graphdefined.eMI3.LocalService
                     }
 
                 }
+
+                Log.WriteLine(Result.ToString());
 
                 return Result;
 
@@ -546,6 +549,7 @@ namespace com.graphdefined.eMI3.LocalService
                     {
 
                         JSONResponse = JObject.Parse(Task01.Content.ToUTF8String());
+                        Log.WriteLine(JSONResponse.ToString());
 
                         switch (JSONResponse["code"].ToString())
                         {
@@ -583,6 +587,8 @@ namespace com.graphdefined.eMI3.LocalService
                     }
 
                 }
+
+                Log.WriteLine(Result.ToString());
 
                 return Result;
 
