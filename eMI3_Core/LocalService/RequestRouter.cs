@@ -421,6 +421,7 @@ namespace com.graphdefined.eMI3.LocalService
                     var Task01 = HTTPClient1.Execute_Synced(HTTPRequestBuilder, Timeout: 60000);
 
                     ResponsePDU = Task01.EntirePDU;
+                    Log.WriteLine(ResponsePDU.ToString());
 
                     // HTTP/1.1 200 OK
                     // Date: Fri, 28 Mar 2014 13:31:27 GMT
@@ -438,7 +439,6 @@ namespace com.graphdefined.eMI3.LocalService
                     {
 
                         JSONResponse = JObject.Parse(Task01.Content.ToUTF8String());
-                        Log.WriteLine(JSONResponse.ToString());
 
                         switch (JSONResponse["code"].ToString())
                         {
@@ -542,6 +542,7 @@ namespace com.graphdefined.eMI3.LocalService
                     var Task01 = HTTPClient1.Execute_Synced(HTTPRequestBuilder, Timeout: 60000);
 
                     ResponsePDU = Task01.EntirePDU;
+                    Log.WriteLine(ResponsePDU.ToString());
 
                     JObject  JSONResponse = null;
 
@@ -549,7 +550,6 @@ namespace com.graphdefined.eMI3.LocalService
                     {
 
                         JSONResponse = JObject.Parse(Task01.Content.ToUTF8String());
-                        Log.WriteLine(JSONResponse.ToString());
 
                         switch (JSONResponse["code"].ToString())
                         {
@@ -578,7 +578,6 @@ namespace com.graphdefined.eMI3.LocalService
                                 break;
 
                         }
-
 
                     }
                     catch (Exception)
