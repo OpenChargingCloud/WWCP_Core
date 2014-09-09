@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@graphdefined.com>
- * This file is part of eMI3 Core <http://www.github.com/eMI3/Core>
+ * Copyright (c) 2014 Achim Friedland <achim.friedland@graphdefined.com>
+ * This file is part of eMI3 Core <http://www.github.com/GraphDefined/eMI3>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,15 +21,15 @@ using System;
 
 #endregion
 
-namespace org.emi3group
+namespace com.graphdefined.eMI3
 {
 
     public interface IId : IComparable
     {
 
-        //global::org.emi3group.EVSPool_Id Clone { get; }
-        //int CompareTo(global::org.emi3group.EVSPool_Id EVP_Id);
-        //bool Equals(global::org.emi3group.EVSPool_Id EVP_Id);
+        //global::com.graphdefined.eMI3.EVSPool_Id Clone { get; }
+        //int CompareTo(global::com.graphdefined.eMI3.EVSPool_Id EVP_Id);
+        //bool Equals(global::com.graphdefined.eMI3.EVSPool_Id EVP_Id);
         //int GetHashCode();
         //ulong Length { get; }
         //string ToString();

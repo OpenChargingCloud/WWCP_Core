@@ -24,11 +24,11 @@ using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
-using org.emi3group;
+using com.graphdefined.eMI3;
 
 #endregion
 
-namespace org.emi3group.IO.GeoJSON
+namespace com.graphdefined.eMI3.IO.GeoJSON
 {
 
     // {

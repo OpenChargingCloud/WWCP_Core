@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@graphdefined.com>
- * This file is part of eMI3 Core <http://www.github.com/eMI3/Core>
+ * Copyright (c) 2014 Achim Friedland <achim.friedland@graphdefined.com>
+ * This file is part of eMI3 Core <http://www.github.com/GraphDefined/eMI3>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ using eu.Vanaheimr.Styx.Arrows;
 
 #endregion
 
-namespace org.emi3group
+namespace com.graphdefined.eMI3
 {
 
     /// <summary>
@@ -159,21 +159,6 @@ namespace org.emi3group
 
         #region Constructor(s)
 
-        #region (internal) EVSE(Pool)
-
-        /// <summary>
-        /// Create a new Electric Vehicle Supply Equipment (EVSE)
-        /// having a random EVSE_Id.
-        /// </summary>
-        /// <param name="ChargingStation">The parent EVS pool.</param>
-        public EVSE(ChargingStation ChargingStation)
-            : this(EVSE_Id.New, ChargingStation)
-        { }
-
-        #endregion
-
-        #region (internal) EVSE(Id, Pool)
-
         /// <summary>
         /// Create a new Electric Vehicle Supply Equipment (EVSE)
         /// having the given EVSE_Id.
@@ -213,8 +198,6 @@ namespace org.emi3group
             #endregion
 
         }
-
-        #endregion
 
         #endregion
 

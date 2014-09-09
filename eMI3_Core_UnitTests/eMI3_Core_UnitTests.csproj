@@ -7,7 +7,7 @@
     <ProjectGuid>{C07EA868-FCF7-4919-AC03-7B6D97F81040}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>de.eMI3.Core.UnitTests</RootNamespace>
+    <RootNamespace>com.graphdefined.eMI3.Core.UnitTests</RootNamespace>
     <AssemblyName>eMI3_Core_UnitTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

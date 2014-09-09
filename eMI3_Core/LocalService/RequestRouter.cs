@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 HTTP <http://www.github.com/eMI3/HTTP>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -32,7 +32,7 @@ using eu.Vanaheimr.Hermod.Services.DNS;
 
 #endregion
 
-namespace org.emi3group.LocalService
+namespace com.graphdefined.eMI3.LocalService
 {
 
     /// <summary>

@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2013-2014 Achim Friedland <achim.friedland@graphdefined.com>
- * This file is part of eMI3 Core <http://www.github.com/eMI3/Core>
+ * Copyright (c) 2014 Achim Friedland <achim.friedland@graphdefined.com>
+ * This file is part of eMI3 Core <http://www.github.com/GraphDefined/eMI3>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,11 @@
 #region Usings
 
 using System;
+using System.Text.RegularExpressions;
 
 #endregion
 
-namespace org.emi3group
+namespace com.graphdefined.eMI3
 {
 
     /// <summary>
@@ -36,9 +37,24 @@ namespace org.emi3group
         #region Data
 
         /// <summary>
+        /// The regular expression for parsing an EVSE identification.
+        /// </summary>
+        public  const    String             EVSEId_RegEx        = @"^([A-Z]{2}\*?[A-Z0-9]{3})\*?E([A-Z0-9][A-Z0-9\*]{0,30})$ | ^\+?([0-9]{1,3}\*?[0-9]{3})\*?([A-Z0-9][A-Z0-9\*]{0,30})$";
+
+        /// <summary>
+        /// The regular expression for parsing an EVSE identification.
+        /// </summary>
+        public  const    String             EVSEIdSuffix_RegEx  = @"^[A-Z0-9][A-Z0-9\*]{0,30}$";
+
+        /// <summary>
         /// The internal identification.
         /// </summary>
-        protected readonly String _Id;
+        protected readonly EVSEOperator_Id  _OperatorId;
+
+        /// <summary>
+        /// The internal identification.
+        /// </summary>
+        protected readonly String           _EVSEIdSuffix;
 
         #endregion
 
@@ -53,58 +69,49 @@ namespace org.emi3group
         {
             get
             {
-                return (UInt64) _Id.Length;
+                return _OperatorId.Length + (UInt64) _EVSEIdSuffix.Length;
             }
         }
 
         #endregion
+
+        public String OldEVSEId
+        {
+            get
+            {
+                return String.Concat(_OperatorId.Id2, "*", _EVSEIdSuffix);
+            }
+        }
 
         #endregion
 
         #region Constructor(s)
 
-        #region EVSE_Id()
-
-        /// <summary>
-        /// Generate a new Electric Vehicle Supply Equipment (EVSE) identification (EVSE_Id).
-        /// </summary>
-        public EVSE_Id()
-        {
-            _Id = Guid.NewGuid().ToString();
-        }
-
-        #endregion
-
-        #region EVSE_Id(String)
-
         /// <summary>
         /// Generate a new Electric Vehicle Supply Equipment (EVSE) identification (EVSE_Id)
         /// based on the given string.
         /// </summary>
-        public EVSE_Id(String String)
+        public EVSE_Id(EVSEOperator_Id  OperatorId,
+                       String           EVSEIdSuffix)
         {
-            _Id = String.Trim();
+
+            if (OperatorId == null)
+                throw new ArgumentNullException("OperatorId", "The OperatorId must not be null!");
+
+            var _MatchCollection = Regex.Matches(EVSEIdSuffix.Trim().ToUpper(),
+                                                 EVSEIdSuffix_RegEx,
+                                                 RegexOptions.IgnorePatternWhitespace);
+
+            if (_MatchCollection.Count != 1)
+                throw new ArgumentException("Illegal EVSE identification!", "EVSEIdSuffix");
+
+            _OperatorId    = OperatorId;
+            _EVSEIdSuffix  = _MatchCollection[0].Value;
+
         }
 
         #endregion
 
-        #endregion
-
-
-        #region New
-
-        /// <summary>
-        /// Generate a new EVSE_Id.
-        /// </summary>
-        public static EVSE_Id New
-        {
-            get
-            {
-                return new EVSE_Id(Guid.NewGuid().ToString());
-            }
-        }
-
-        #endregion
 
         #region Parse(EVSEId)
 
@@ -113,29 +120,65 @@ namespace org.emi3group
         /// </summary>
         public static EVSE_Id Parse(String EVSEId)
         {
-            return new EVSE_Id(EVSEId);
+
+            var _MatchCollection = Regex.Matches(EVSEId.Trim().ToUpper(),
+                                                 EVSEId_RegEx,
+                                                 RegexOptions.IgnorePatternWhitespace);
+
+            if (_MatchCollection.Count != 1)
+                throw new ArgumentException("Illegal EVSE identification!", "EVSEId");
+
+            EVSEOperator_Id __EVSEOperatorId = null;
+
+            if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
+                return new EVSE_Id(__EVSEOperatorId,
+                                   _MatchCollection[0].Groups[2].Value);
+
+            if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
+                return new EVSE_Id(__EVSEOperatorId,
+                                   _MatchCollection[0].Groups[4].Value);
+
+            throw new ArgumentException("Illegal EVSE identification!", "EVSEId");
+
         }
 
         #endregion
 
-        // Value '49*822*48P5*2' is not facet-valid with respect to pattern '\+?[0-9]{1,3}\*[0-9]{3,6}\*[0-9\*]{1,32}' for type 'EvseIDType'.
-        #region TryParse(Text, out EVSEId)
+        #region TryParse(EVSEId, out EVSE_Id)
 
         /// <summary>
         /// Parse the given string as an EVSE identification.
         /// </summary>
-        public static Boolean TryParse(String Text, out EVSE_Id EVSEId)
+        public static Boolean TryParse(String EVSEId, out EVSE_Id EVSE_Id)
         {
+
             try
             {
-                EVSEId = new EVSE_Id(Text);
+
+                var _MatchCollection = Regex.Matches(EVSEId.Trim().ToUpper(),
+                                                     EVSEId_RegEx,
+                                                     RegexOptions.IgnorePatternWhitespace);
+
+                if (_MatchCollection.Count != 1)
+                    throw new ArgumentException("Illegal EVSE identification!", "EVSEId");
+
+                EVSEOperator_Id __EVSEOperatorId = null;
+
+                if (!EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
+                    throw new ArgumentException("Illegal EVSE Operator identification!", "EVSEId");
+
+                EVSE_Id = new EVSE_Id(__EVSEOperatorId,
+                                      _MatchCollection[0].Groups[2].Value);
+
                 return true;
+
             }
             catch (Exception e)
             {
-                EVSEId = null;
+                EVSE_Id = null;
                 return false;
             }
+
         }
 
         #endregion
@@ -149,7 +192,8 @@ namespace org.emi3group
         {
             get
             {
-                return new EVSE_Id(_Id);
+                return new EVSE_Id(_OperatorId,
+                                   new String(_EVSEIdSuffix.ToCharArray()));
             }
         }
 
@@ -310,9 +354,13 @@ namespace org.emi3group
             // Compare the length of the EVSE_Ids
             var _Result = this.Length.CompareTo(EVSE_Id.Length);
 
-            // If equal: Compare Ids
+            // If equal: Compare OperatorIds
             if (_Result == 0)
-                _Result = _Id.CompareTo(EVSE_Id._Id);
+                _Result = _OperatorId.CompareTo(EVSE_Id._OperatorId);
+
+            // If equal: Compare EVSE Id suffix
+            if (_Result == 0)
+                _Result = _EVSEIdSuffix.CompareTo(EVSE_Id._EVSEIdSuffix);
 
             return _Result;
 
@@ -361,7 +409,8 @@ namespace org.emi3group
             if ((Object) EVSE_Id == null)
                 return false;
 
-            return _Id.Equals(EVSE_Id._Id);
+            return _OperatorId.  Equals(EVSE_Id._OperatorId) &&
+                   _EVSEIdSuffix.Equals(EVSE_Id._EVSEIdSuffix);
 
         }
 
@@ -377,7 +426,7 @@ namespace org.emi3group
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
         {
-            return _Id.GetHashCode();
+            return _OperatorId.GetHashCode() ^ _EVSEIdSuffix.GetHashCode();
         }
 
         #endregion
@@ -386,10 +435,11 @@ namespace org.emi3group
 
         /// <summary>
         /// Return a string represtentation of this object.
+        /// ISO-IEC-15118 – Annex H "Specification of Identifiers"
         /// </summary>
         public override String ToString()
         {
-            return _Id.ToString();
+            return String.Concat(_OperatorId.ToString(), "*E", _EVSEIdSuffix);
         }
 
         #endregion

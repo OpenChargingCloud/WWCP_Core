@@ -7,7 +7,7 @@
     <ProjectGuid>{33836742-AF1D-4AA4-963F-B0A8E60E6480}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>de.eMI3</RootNamespace>
+    <RootNamespace>com.graphdefined.eMI3</RootNamespace>
     <AssemblyName>eMI3_Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -132,6 +132,10 @@
     <ProjectReference Include="..\..\Hermod\HermodHTTPClient\HermodHTTPClient.csproj">
       <Project>{0ab343e8-aa69-4685-9676-bfa27e418a20}</Project>
       <Name>HermodHTTPClient</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hermod\HermodHTTP\HermodHTTP.csproj">
+      <Project>{9a00bd39-1385-4db4-8f38-363bb947ccb4}</Project>
+      <Name>HermodHTTP</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Hermod\Hermod\Hermod.csproj">
       <Project>{477efd16-3627-4473-957d-44ca9a9dfb79}</Project>

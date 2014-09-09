@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2013 Achim Friedland <achim.friedland@graphdefined.com>
- * This file is part of eMI3 Mockup <http://www.github.com/eMI3/Mockup>
+ * This file is part of eMI3 <http://www.github.com/GraphDefined/eMI3>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,11 @@ using System.Collections.Generic;
 
 using NUnit.Framework;
 
-using org.emi3group;
+using com.graphdefined.eMI3;
 
 #endregion
 
-namespace org.emi3group.UnitTests
+namespace com.graphdefined.eMI3.UnitTests
 {
 
     /// <summary>

@@ -23,7 +23,7 @@ using Newtonsoft.Json.Linq;
 
 #endregion
 
-namespace org.emi3group.IO.GeoJSON
+namespace com.graphdefined.eMI3.IO.GeoJSON
 {
 
     /// <summary>
