@@ -390,98 +390,79 @@ namespace com.graphdefined.eMI3.LocalService
 
                 #endregion
 
-                var RequestPDU   = "";
-                var ResponsePDU  = "";
-                var Result       = RemoteStartResult.Error;
-
-                var _DNSClient = new DNSClient();
-                var IPv4Addresses  = _DNSClient.Query<A>("portal.belectric-drive.de").Select(a => a.IPv4Address).ToArray();
-
-                using (var HTTPClient1 = new HTTPClient(IPv4Addresses.First(), new IPPort(80))) //20080
+                try
                 {
 
-                    var HTTPRequestBuilder = HTTPClient1.CreateRequest(new HTTPMethod("REMOTESTART"),
-                                                                       "/ps/rest/hubject/RNs/" + RoamingNetwork.ToString() + "/EVSEs/" + EVSEId.OldEVSEId.Replace("+", ""),
-                                                                       HTTPReqBuilder => {
-                                                                           HTTPReqBuilder.Host         = "portal.belectric-drive.de";
-                                                                           HTTPReqBuilder.ContentType  = HTTPContentType.JSON_UTF8;
-                                                                           HTTPReqBuilder.Content      = new JObject(
-                                                                                                             new JProperty("@context",   "http://emi3group.org/contexts/REMOTESTART-request.jsonld"),
-                                                                                                             new JProperty("@id",        SessionId),
-                                                                                                             new JProperty("ProviderId", ProviderId.ToString()),
-                                                                                                             new JProperty("eMAId",      eMAId.ToString())
-                                                                                                         ).ToString().
-                                                                                                           ToUTF8Bytes();
-                                                                           HTTPReqBuilder.Accept.Add(HTTPContentType.JSON_UTF8);
-                                                                       });
+                    var _DNSClient = new DNSClient();
+                    var IPv4Addresses  = _DNSClient.Query<A>("portal.belectric-drive.de").Select(a => a.IPv4Address).ToArray();
 
-
-                    RequestPDU = HTTPRequestBuilder.AsImmutable().EntirePDU;
-                    Log.WriteLine(RequestPDU.ToString());
-                    Log.WriteLine("------>");
-
-                    var Task01 = HTTPClient1.Execute_Synced(HTTPRequestBuilder, Timeout: 60000);
-
-                    ResponsePDU = Task01.EntirePDU;
-                    Log.WriteLine(ResponsePDU.ToString());
-
-                    // HTTP/1.1 200 OK
-                    // Date: Fri, 28 Mar 2014 13:31:27 GMT
-                    // Server: Apache/2.2.9 (Debian) mod_jk/1.2.26
-                    // Content-Length: 34
-                    // Content-Type: application/json
-                    // 
-                    // {
-                    //   "code" : "EVSE_AlreadyInUse"
-                    // }
-
-                    JObject  JSONResponse = null;
-
-                    try
+                    using (var HTTPClient1 = new HTTPClient(IPv4Addresses.First(), new IPPort(80))) //20080
                     {
 
-                        JSONResponse = JObject.Parse(Task01.Content.ToUTF8String());
+                        var HTTPRequestBuilder = HTTPClient1.CreateRequest(new HTTPMethod("REMOTESTART"),
+                                                                           "/ps/rest/hubject/RNs/" + RoamingNetwork.ToString() + "/EVSEs/" + EVSEId.OldEVSEId.Replace("+", ""),
+                                                                           HTTPReqBuilder =>
+                                                                           {
+                                                                               HTTPReqBuilder.Host = "portal.belectric-drive.de";
+                                                                               HTTPReqBuilder.ContentType = HTTPContentType.JSON_UTF8;
+                                                                               HTTPReqBuilder.Content = new JObject(
+                                                                                                                 new JProperty("@context", "http://emi3group.org/contexts/REMOTESTART-request.jsonld"),
+                                                                                                                 new JProperty("@id", SessionId),
+                                                                                                                 new JProperty("ProviderId", ProviderId.ToString()),
+                                                                                                                 new JProperty("eMAId", eMAId.ToString())
+                                                                                                             ).ToString().
+                                                                                                               ToUTF8Bytes();
+                                                                               HTTPReqBuilder.Accept.Add(HTTPContentType.JSON_UTF8);
+                                                                           });
+
+                        Log.WriteLine(HTTPRequestBuilder.AsImmutable().EntirePDU.ToString());
+                        Log.WriteLine("------>");
+
+                        var Task01 = HTTPClient1.Execute_Synced(HTTPRequestBuilder, Timeout: 60000);
+                        Log.WriteLine(Task01.EntirePDU.ToString());
+
+                        // HTTP/1.1 200 OK
+                        // Date: Fri, 28 Mar 2014 13:31:27 GMT
+                        // Server: Apache/2.2.9 (Debian) mod_jk/1.2.26
+                        // Content-Length: 34
+                        // Content-Type: application/json
+                        // 
+                        // {
+                        //   "code" : "EVSE_AlreadyInUse"
+                        // }
+
+                        var JSONResponse = JObject.Parse(Task01.Content.ToUTF8String());
 
                         switch (JSONResponse["code"].ToString())
                         {
 
                             case "EVSE_AlreadyInUse":
-                                Result = RemoteStartResult.EVSE_AlreadyInUse;
-                                break;
+                                return RemoteStartResult.EVSE_AlreadyInUse;
 
                             case "SessionId_AlreadyInUse":
-                                Result = RemoteStartResult.SessionId_AlreadyInUse;
-                                break;
+                                return RemoteStartResult.SessionId_AlreadyInUse;
 
                             case "EVSE_NotReachable":
-                                Result = RemoteStartResult.EVSE_NotReachable;
-                                break;
+                                return RemoteStartResult.EVSE_NotReachable;
 
                             case "Start_Timeout":
-                                Result = RemoteStartResult.Start_Timeout;
-                                break;
+                                return RemoteStartResult.Start_Timeout;
 
                             case "Success":
-                                Result = RemoteStartResult.Success;
-                                break;
+                                return RemoteStartResult.Success;
 
                             default:
-                                Result = RemoteStartResult.Error;
-                                break;
+                                return RemoteStartResult.Error;
 
                         }
 
                     }
-                    catch (Exception)
-                    {
-                        Result = RemoteStartResult.Error;
-                    }
 
                 }
-
-                Log.WriteLine(Result.ToString());
-
-                return Result;
+                catch (Exception)
+                {
+                    return RemoteStartResult.Error;
+                }
 
             }
 
@@ -514,46 +495,41 @@ namespace com.graphdefined.eMI3.LocalService
 
                 #endregion
 
-                var RequestPDU   = "";
-                var ResponsePDU  = "";
-                var Result       = RemoteStopResult.Error;
-
-                var _DNSClient     = new DNSClient();
-                var IPv4Addresses  = _DNSClient.Query<A>("portal.belectric-drive.de").Select(a => a.IPv4Address).ToArray();
-
-                using (var HTTPClient1 = new HTTPClient(IPv4Addresses.First(), new IPPort(80))) //20080
+                try
                 {
 
-                    var HTTPRequestBuilder = HTTPClient1.CreateRequest(new HTTPMethod("REMOTESTOP"),
-                                                                       "/ps/rest/hubject/RNs/" + RoamingNetwork.ToString() + "/EVSEs/" + EVSEId.OldEVSEId.Replace("+", ""),
-                                                                       HTTPReqBuilder => {
-                                                                           HTTPReqBuilder.Host         = "portal.belectric-drive.de";
-                                                                           HTTPReqBuilder.ContentType  = HTTPContentType.JSON_UTF8;
-                                                                           HTTPReqBuilder.Accept.Add(HTTPContentType.JSON_UTF8);
-                                                                           HTTPReqBuilder.Content      = new JObject(
-                                                                                                              new JProperty("@context",   "http://emi3group.org/contexts/REMOTESTOP-request.jsonld"),
-                                                                                                              new JProperty("@id",        SessionId),
-                                                                                                              new JProperty("ProviderId", ProviderId.ToString())
-                                                                                                         ).ToString().
-                                                                                                           ToUTF8Bytes();
-                                                                       });
+                    var _DNSClient     = new DNSClient();
+                    var IPv4Addresses  = _DNSClient.Query<A>("portal.belectric-drive.de").Select(a => a.IPv4Address).ToArray();
 
-
-                    RequestPDU = HTTPRequestBuilder.AsImmutable().EntirePDU;
-                    Log.WriteLine(RequestPDU.ToString());
-                    Log.WriteLine("------>");
-
-                    var Task01 = HTTPClient1.Execute_Synced(HTTPRequestBuilder, Timeout: 60000);
-
-                    ResponsePDU = Task01.EntirePDU;
-                    Log.WriteLine(ResponsePDU.ToString());
-
-                    JObject  JSONResponse = null;
-
-                    try
+                    using (var HTTPClient1 = new HTTPClient(IPv4Addresses.First(), new IPPort(80))) //20080
                     {
 
-                        JSONResponse = JObject.Parse(Task01.Content.ToUTF8String());
+                        var HTTPRequestBuilder = HTTPClient1.CreateRequest(new HTTPMethod("REMOTESTOP"),
+                                                                           "/ps/rest/hubject/RNs/" + RoamingNetwork.ToString() + "/EVSEs/" + EVSEId.OldEVSEId.Replace("+", ""),
+                                                                           HTTPReqBuilder =>
+                                                                           {
+                                                                               HTTPReqBuilder.Host = "portal.belectric-drive.de";
+                                                                               HTTPReqBuilder.ContentType = HTTPContentType.JSON_UTF8;
+                                                                               HTTPReqBuilder.Accept.Add(HTTPContentType.JSON_UTF8);
+                                                                               HTTPReqBuilder.Content = new JObject(
+                                                                                                                  new JProperty("@context", "http://emi3group.org/contexts/REMOTESTOP-request.jsonld"),
+                                                                                                                  new JProperty("@id", SessionId),
+                                                                                                                  new JProperty("ProviderId", ProviderId.ToString())
+                                                                                                             ).ToString().
+                                                                                                               ToUTF8Bytes();
+                                                                           });
+
+                        Log.WriteLine(HTTPRequestBuilder.AsImmutable().EntirePDU.ToString());
+                        Log.WriteLine("------>");
+
+                        var HTTPResponse = HTTPClient1.Execute_Synced(HTTPRequestBuilder, Timeout: 60000);
+                        Log.WriteLine(HTTPResponse.EntirePDU.ToString());
+
+                        if (HTTPResponse.HTTPStatusCode != HTTPStatusCode.OK)
+                            return RemoteStopResult.Error;
+
+
+                        var JSONResponse = JObject.Parse(HTTPResponse.Content.ToUTF8String());
 
                         switch (JSONResponse["code"].ToString())
                         {
@@ -574,26 +550,20 @@ namespace com.graphdefined.eMI3.LocalService
                             //    break;
 
                             case "Success":
-                                Result = RemoteStopResult.Success;
-                                break;
+                                return RemoteStopResult.Success;
 
                             default:
-                                Result = RemoteStopResult.Error;
-                                break;
+                                return RemoteStopResult.Error;
 
                         }
 
                     }
-                    catch (Exception)
-                    {
-                        Result = RemoteStopResult.Error;
-                    }
 
                 }
-
-                Log.WriteLine(Result.ToString());
-
-                return Result;
+                catch (Exception)
+                {
+                    return RemoteStopResult.Error;
+                }
 
             }
 
