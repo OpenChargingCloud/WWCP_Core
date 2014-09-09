@@ -417,6 +417,8 @@ namespace com.graphdefined.eMI3.LocalService
 
 
                     RequestPDU = HTTPRequestBuilder.AsImmutable().EntirePDU;
+                    Log.WriteLine(RequestPDU.ToString());
+                    Log.WriteLine("------>");
 
                     var Task01 = HTTPClient1.Execute_Synced(HTTPRequestBuilder, Timeout: 60000);
 
@@ -538,6 +540,8 @@ namespace com.graphdefined.eMI3.LocalService
 
 
                     RequestPDU = HTTPRequestBuilder.AsImmutable().EntirePDU;
+                    Log.WriteLine(RequestPDU.ToString());
+                    Log.WriteLine("------>");
 
                     var Task01 = HTTPClient1.Execute_Synced(HTTPRequestBuilder, Timeout: 60000);
 
