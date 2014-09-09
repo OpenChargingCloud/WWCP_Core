@@ -64,21 +64,6 @@
     <Compile Include="Entities\EVSE\EVSEStatusDiff.cs" />
     <Compile Include="Entities\ParkingSpot\ParkingSpot.cs" />
     <Compile Include="Entities\ParkingSpot\ParkingSpot_Id.cs" />
-    <Compile Include="Interfaces\IEMP2HubjectService.cs" />
-    <Compile Include="Interfaces\IHubject2EMPService.cs" />
-    <Compile Include="Responses\AResult.cs" />
-    <Compile Include="Responses\AUTHResult.cs" />
-    <Compile Include="Responses\AUTHSTARTResult.cs" />
-    <Compile Include="Responses\AUTHSTOPResult.cs" />
-    <Compile Include="Interfaces\IEVSEOperator2HubjectService.cs" />
-    <Compile Include="Responses\MobileRemoteStopResult.cs" />
-    <Compile Include="Responses\MobileRemoteStartResult.cs" />
-    <Compile Include="Interfaces\IHubject2EVSEOperatorService.cs" />
-    <Compile Include="LocalService\LocalEMobilityService.cs" />
-    <Compile Include="LocalService\RequestRouter.cs" />
-    <Compile Include="Responses\SENDCDRResult.cs" />
-    <Compile Include="LocalService\AuthorizatorId.cs" />
-    <Compile Include="LocalService\SessionInfo.cs" />
     <Compile Include="Entities\ChargingGroup\ChargingGroupExceptions.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationExceptions.cs" />
     <Compile Include="Entities\ChargingGroup\ChargingGroup.cs" />
@@ -118,11 +103,26 @@
     <Compile Include="Entities\EVSE\EVSE.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork.cs" />
+    <Compile Include="Interfaces\IEMP2HubjectService.cs" />
+    <Compile Include="Interfaces\IEVSEOperator2HubjectService.cs" />
+    <Compile Include="Interfaces\IHubject2EMPService.cs" />
+    <Compile Include="Interfaces\IHubject2EVSEOperatorService.cs" />
+    <Compile Include="LocalService\AuthorizatorId.cs" />
+    <Compile Include="LocalService\LocalEMobilityService.cs" />
+    <Compile Include="LocalService\RequestRouter.cs" />
+    <Compile Include="LocalService\SessionInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Entities\RoamingProvider\RoamingProvider.cs" />
     <Compile Include="Entities\RoamingProvider\RoamingProvider_Id.cs" />
     <Compile Include="Entities\NavigationServiceProvider\NavigationServiceProvider.cs" />
     <Compile Include="Entities\NavigationServiceProvider\NavigationServiceProvider_Id.cs" />
+    <Compile Include="Responses\AResult.cs" />
+    <Compile Include="Responses\AUTHResult.cs" />
+    <Compile Include="Responses\AUTHSTARTResult.cs" />
+    <Compile Include="Responses\AUTHSTOPResult.cs" />
+    <Compile Include="Responses\MobileRemoteStartResult.cs" />
+    <Compile Include="Responses\MobileRemoteStopResult.cs" />
+    <Compile Include="Responses\SENDCDRResult.cs" />
     <Compile Include="Semantics.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -132,14 +132,6 @@
     <ProjectReference Include="..\..\Hermod\HermodHTTPClient\HermodHTTPClient.csproj">
       <Project>{0ab343e8-aa69-4685-9676-bfa27e418a20}</Project>
       <Name>HermodHTTPClient</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Hermod\HermodHTTPServer\HermodHTTPServer.csproj">
-      <Project>{9ce48dac-0512-4947-942b-ef4c42c52b47}</Project>
-      <Name>HermodHTTPServer</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Hermod\HermodHTTP\HermodHTTP.csproj">
-      <Project>{9a00bd39-1385-4db4-8f38-363bb947ccb4}</Project>
-      <Name>HermodHTTP</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Hermod\Hermod\Hermod.csproj">
       <Project>{477efd16-3627-4473-957d-44ca9a9dfb79}</Project>

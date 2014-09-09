@@ -106,6 +106,39 @@ namespace org.emi3group
 
         #endregion
 
+        #region Parse(RoamingNetworkId)
+
+        /// <summary>
+        /// Parse the given string as an Roaming Network identification.
+        /// </summary>
+        public static RoamingNetwork_Id Parse(String RoamingNetworkId)
+        {
+            return new RoamingNetwork_Id(RoamingNetworkId);
+        }
+
+        #endregion
+
+        #region TryParse(Text, out RoamingNetworkId)
+
+        /// <summary>
+        /// Parse the given string as an Roaming Network identification.
+        /// </summary>
+        public static Boolean TryParse(String Text, out RoamingNetwork_Id RoamingNetworkId)
+        {
+            try
+            {
+                RoamingNetworkId = new RoamingNetwork_Id(Text);
+                return true;
+            }
+            catch (Exception e)
+            {
+                RoamingNetworkId = null;
+                return false;
+            }
+        }
+
+        #endregion
+
         #region Clone
 
         /// <summary>

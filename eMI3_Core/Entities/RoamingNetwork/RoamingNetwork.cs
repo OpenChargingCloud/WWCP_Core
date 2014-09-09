@@ -47,10 +47,10 @@ namespace org.emi3group
 
         #region Data
 
-        private  readonly ConcurrentDictionary<EVSEOperator_Id,      EVSEOperator>      _EVSEOperators;
-        private  readonly ConcurrentDictionary<EVServiceProvider_Id, EVServiceProvider> _EVServiceProviders;
-        private  readonly ConcurrentDictionary<RoamingProvider_Id,   RoamingProvider>   _RoamingProviders;
-        private  readonly ConcurrentDictionary<NavigationServiceProvider_Id,    NavigationServiceProvider>    _SearchProviders;
+        private  readonly ConcurrentDictionary<EVSEOperator_Id,               EVSEOperator>               _EVSEOperators;
+        private  readonly ConcurrentDictionary<EVServiceProvider_Id,          EVServiceProvider>          _EVServiceProviders;
+        private  readonly ConcurrentDictionary<RoamingProvider_Id,            RoamingProvider>            _RoamingProviders;
+        private  readonly ConcurrentDictionary<NavigationServiceProvider_Id,  NavigationServiceProvider>  _SearchProviders;
 
         #endregion
 
