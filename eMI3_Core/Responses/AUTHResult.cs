@@ -39,7 +39,7 @@ namespace com.graphdefined.eMI3.LocalService
         #region Properties
 
         public AuthorizationResult   AuthorizationResult   { get; set; }
-        public ChargingSessionId             SessionId             { get; set; }
+        public ChargingSessionId     SessionId             { get; set; }
         public EVServiceProvider_Id  ProviderId            { get; set; }
 
         #endregion
@@ -49,6 +49,16 @@ namespace com.graphdefined.eMI3.LocalService
         public AUTHResult(AuthorizatorId AuthorizatorId)
             : base(AuthorizatorId)
         { }
+
+        #endregion
+
+
+        #region ToString()
+
+        public override String ToString()
+        {
+            return String.Concat(AuthorizationResult.ToString(), ", ", ProviderId);
+        }
 
         #endregion
 

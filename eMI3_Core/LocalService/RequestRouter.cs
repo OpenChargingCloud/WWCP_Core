@@ -110,7 +110,7 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region RegisterService(Priority, AuthenticationService)
 
-        public Boolean RegisterService(UInt32             Priority,
+        public Boolean RegisterService(UInt32                        Priority,
                                        IEVSEOperator2HubjectService  AuthenticationService)
         {
 
@@ -134,10 +134,10 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region AuthorizeStart(OperatorId, EVSEId, PartnerSessionId, UID)
 
-        public AUTHSTARTResult AuthorizeStart(EVSEOperator_Id  OperatorId,
-                                              EVSE_Id          EVSEId,
-                                              ChargingSessionId        PartnerSessionId,
-                                              Token            UID)
+        public AUTHSTARTResult AuthorizeStart(EVSEOperator_Id    OperatorId,
+                                              EVSE_Id            EVSEId,
+                                              ChargingSessionId  PartnerSessionId,
+                                              Token              UID)
         {
 
             // Will store the SessionId in order to contact the right authenticator at later requests!
@@ -196,11 +196,11 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region AuthorizeStop(OperatorId, EVSEId, SessionId, PartnerSessionId, UID)
 
-        public AUTHSTOPResult AuthorizeStop(EVSEOperator_Id  OperatorId,
-                                            EVSE_Id          EVSEId,
-                                            ChargingSessionId        SessionId,
-                                            ChargingSessionId        PartnerSessionId,
-                                            Token            UID)
+        public AUTHSTOPResult AuthorizeStop(EVSEOperator_Id    OperatorId,
+                                            EVSE_Id            EVSEId,
+                                            ChargingSessionId  SessionId,
+                                            ChargingSessionId  PartnerSessionId,
+                                            Token              UID)
         {
 
             lock (AuthenticationServices)
@@ -260,18 +260,18 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region SendCDR(EVSEId, SessionId, PartnerSessionId, PartnerProductId, UID, eMAId, ChargeStart, ChargeEnd, SessionStart = null, SessionEnd = null, MeterValueStart = null, MeterValueEnd = null)
 
-        public SENDCDRResult SendCDR(EVSE_Id     EVSEId,
-                                     ChargingSessionId   SessionId,
-                                     ChargingSessionId   PartnerSessionId,
-                                     String      PartnerProductId,
-                                     Token       UID,
-                                     eMA_Id      eMAId,
-                                     DateTime    ChargeStart,
-                                     DateTime    ChargeEnd,
-                                     DateTime?   SessionStart    = null,
-                                     DateTime?   SessionEnd      = null,
-                                     Double?     MeterValueStart = null,
-                                     Double?     MeterValueEnd   = null)
+        public SENDCDRResult SendCDR(EVSE_Id            EVSEId,
+                                     ChargingSessionId  SessionId,
+                                     ChargingSessionId  PartnerSessionId,
+                                     String             PartnerProductId,
+                                     Token              UID,
+                                     eMA_Id             eMAId,
+                                     DateTime           ChargeStart,
+                                     DateTime           ChargeEnd,
+                                     DateTime?          SessionStart    = null,
+                                     DateTime?          SessionEnd      = null,
+                                     Double?            MeterValueStart = null,
+                                     Double?            MeterValueEnd   = null)
         {
 
             lock (AuthenticationServices)
