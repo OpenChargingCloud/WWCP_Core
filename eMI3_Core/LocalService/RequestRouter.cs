@@ -401,7 +401,7 @@ namespace com.graphdefined.eMI3.LocalService
                 {
 
                     var HTTPRequestBuilder = HTTPClient1.CreateRequest(new HTTPMethod("REMOTESTART"),
-                                                                       "/ps/rest/hubject/RNs/QA1/EVSEs/" + EVSEId.ToString().Replace("+", ""),
+                                                                       "/ps/rest/hubject/RNs/QA1/EVSEs/" + EVSEId.OldEVSEId.Replace("+", ""),
                                                                        HTTPReqBuilder => {
                                                                            HTTPReqBuilder.Host         = "portal.belectric-drive.de";
                                                                            HTTPReqBuilder.ContentType  = HTTPContentType.JSON_UTF8;
@@ -525,7 +525,7 @@ namespace com.graphdefined.eMI3.LocalService
                 {
 
                     var HTTPRequestBuilder = HTTPClient1.CreateRequest(new HTTPMethod("REMOTESTOP"),
-                                                                       "/ps/rest/hubject/RNs/QA1/EVSEs/" + EVSEId.ToString().Replace("+", ""),
+                                                                       "/ps/rest/hubject/RNs/QA1/EVSEs/" + EVSEId.OldEVSEId.Replace("+", ""),
                                                                        HTTPReqBuilder => {
                                                                            HTTPReqBuilder.Host         = "portal.belectric-drive.de";
                                                                            HTTPReqBuilder.ContentType  = HTTPContentType.JSON_UTF8;
