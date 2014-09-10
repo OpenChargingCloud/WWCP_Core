@@ -48,7 +48,7 @@ namespace com.graphdefined.eMI3
         #region Data
 
         private  readonly ConcurrentDictionary<EVSEOperator_Id,               EVSEOperator>               _EVSEOperators;
-        private  readonly ConcurrentDictionary<EVServiceProvider_Id,          EVServiceProvider>          _EVServiceProviders;
+        private  readonly ConcurrentDictionary<EVSP_Id,          EVServiceProvider>          _EVServiceProviders;
         private  readonly ConcurrentDictionary<RoamingProvider_Id,            RoamingProvider>            _RoamingProviders;
         private  readonly ConcurrentDictionary<NavigationServiceProvider_Id,  NavigationServiceProvider>  _SearchProviders;
 
@@ -373,7 +373,7 @@ namespace com.graphdefined.eMI3
             #region Init data and properties
 
             this._EVSEOperators             = new ConcurrentDictionary<EVSEOperator_Id,      EVSEOperator>();
-            this._EVServiceProviders        = new ConcurrentDictionary<EVServiceProvider_Id, EVServiceProvider>();
+            this._EVServiceProviders        = new ConcurrentDictionary<EVSP_Id, EVServiceProvider>();
             this._RoamingProviders          = new ConcurrentDictionary<RoamingProvider_Id,   RoamingProvider>();
             this._SearchProviders           = new ConcurrentDictionary<NavigationServiceProvider_Id,    NavigationServiceProvider>();
             this._RequestRouter             = new RequestRouter(Id);
@@ -460,7 +460,7 @@ namespace com.graphdefined.eMI3
         /// </summary>
         /// <param name="EVServiceProvider_Id">The unique identification of the new roaming provider.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
-        public EVServiceProvider CreateNewEVServiceProvider(EVServiceProvider_Id       EVServiceProvider_Id,
+        public EVServiceProvider CreateNewEVServiceProvider(EVSP_Id       EVServiceProvider_Id,
                                                             Action<EVServiceProvider>  Action  = null)
         {
 
@@ -502,8 +502,8 @@ namespace com.graphdefined.eMI3
         /// <param name="EVServiceProvider_Id">The unique identification of the new roaming provider.</param>
         /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
-        public EVServiceProvider CreateNewEVServiceProvider(EVServiceProvider_Id       EVServiceProvider_Id,
-                                                            IEVSEOperator2HubjectService          EMobilityService,
+        public EVServiceProvider CreateNewEVServiceProvider(EVSP_Id       EVServiceProvider_Id,
+                                                            IRoamingProviderProvided_EVSEOperatorServices          EMobilityService,
                                                             Action<EVServiceProvider>  Action  = null)
         {
 
@@ -545,7 +545,7 @@ namespace com.graphdefined.eMI3
         /// <param name="RoamingProvider_Id">The unique identification of the new roaming provider.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
         public RoamingProvider CreateNewRoamingProvider(RoamingProvider_Id       RoamingProvider_Id,
-                                                        IEVSEOperator2HubjectService        EMobilityService,
+                                                        IRoamingProviderProvided_EVSEOperatorServices        EMobilityService,
                                                         Action<RoamingProvider>  Action = null)
         {
 

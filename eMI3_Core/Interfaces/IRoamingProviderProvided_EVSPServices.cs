@@ -26,26 +26,11 @@ namespace com.graphdefined.eMI3.LocalService
 {
 
     /// <summary>
-    /// The common interface for all E-Mobility services between
-    /// Hubject -and-> an EVSE operator.
+    /// The EV Roaming Provider provided EVSP services interface.
     /// </summary>
-    public interface IHubject2EVSEOperatorService
+    public interface IRoamingProviderProvided_EVSPServices
     {
 
-        #region Properties
-
-        AuthorizatorId AuthorizatorId { get; }
-
-        #endregion
-
-        RemoteStartResult RemoteStart(EVSE_Id               EVSEId,
-                                      String                SessionId,
-                                      EVServiceProvider_Id  EVServiceProviderId,
-                                      eMA_Id                eMAId);
-
-        RemoteStopResult  RemoteStop (EVSE_Id               EVSEId,
-                                      String                SessionId,
-                                      EVServiceProvider_Id  EVServiceProviderId);
 
     }
 

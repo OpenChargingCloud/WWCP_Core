@@ -25,11 +25,11 @@ namespace com.graphdefined.eMI3
 {
 
     /// <summary>
-    /// The unique identification of an Electric Vehicle Roaming Provider (EVRP Id).
+    /// The unique identification of an Electric Vehicle Service Provider (EVSP Id).
     /// </summary>
-    public class RoamingProvider_Id : IId,
-                                      IEquatable<RoamingProvider_Id>,
-                                      IComparable<RoamingProvider_Id>
+    public class EVSP_Id : IId,
+                           IEquatable<EVSP_Id>,
+                           IComparable<EVSP_Id>
 
     {
 
@@ -47,13 +47,13 @@ namespace com.graphdefined.eMI3
         #region New
 
         /// <summary>
-        /// Generate a new unique identification of an Electric Vehicle Roaming Provider (EVCP Id).
+        /// Generate a new unique identification of an Electric Vehicle Service Provider (EVSP Id).
         /// </summary>
-        public static RoamingProvider_Id New
+        public static EVSP_Id New
         {
             get
             {
-                return new RoamingProvider_Id(Guid.NewGuid().ToString());
+                return new EVSP_Id(Guid.NewGuid().ToString());
             }
         }
 
@@ -79,10 +79,10 @@ namespace com.graphdefined.eMI3
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new Electric Vehicle Roaming Provider identification (EVRP Id)
+        /// Generate a new Electric Vehicle Service Provider (EVSP Id)
         /// based on the given string.
         /// </summary>
-        private RoamingProvider_Id(String String)
+        public EVSP_Id(String String)
         {
             _Id = String.Trim();
         }
@@ -93,33 +93,33 @@ namespace com.graphdefined.eMI3
         #region Parse(Text)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle Roaming Provider (EVRP Id).
+        /// Parse the given string as an Electric Vehicle Service Provider (EVSP Id).
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Vehicle Roaming Provider identification.</param>
-        public static RoamingProvider_Id Parse(String Text)
+        /// <param name="Text">A text representation of an Electric Vehicle Service Provider identification.</param>
+        public static EVSP_Id Parse(String Text)
         {
-            return new RoamingProvider_Id(Text);
+            return new EVSP_Id(Text);
         }
 
         #endregion
 
-        #region TryParse(Text, out RoamingProviderId)
+        #region TryParse(Text, out ChargingPoolId)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle Roaming Provider (EVRP Id).
+        /// Parse the given string as an Electric Vehicle Service Provider (EVSP Id).
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Vehicle Roaming Provider identification.</param>
-        /// <param name="RoamingProviderId">The parsed Electric Vehicle Roaming Provider identification.</param>
-        public static Boolean TryParse(String Text, out RoamingProvider_Id RoamingProviderId)
+        /// <param name="Text">A text representation of an Electric Vehicle Service Provider identification.</param>
+        /// <param name="ChargingPoolId">The parsed Electric Vehicle Service Provider identification.</param>
+        public static Boolean TryParse(String Text, out EVSP_Id ChargingPoolId)
         {
             try
             {
-                RoamingProviderId = new RoamingProvider_Id(Text);
+                ChargingPoolId = new EVSP_Id(Text);
                 return true;
             }
             catch (Exception)
             {
-                RoamingProviderId = null;
+                ChargingPoolId = null;
                 return false;
             }
         }
@@ -129,13 +129,13 @@ namespace com.graphdefined.eMI3
         #region Clone
 
         /// <summary>
-        /// Clone this Electric Vehicle Roaming Provider identification.
+        /// Clone this Electric Vehicle Service Provider identification.
         /// </summary>
-        public RoamingProvider_Id Clone
+        public EVSP_Id Clone
         {
             get
             {
-                return new RoamingProvider_Id(_Id);
+                return new EVSP_Id(_Id);
             }
         }
 
@@ -144,112 +144,112 @@ namespace com.graphdefined.eMI3
 
         #region Operator overloading
 
-        #region Operator == (EVSP_Id1, EVSP_Id2)
+        #region Operator == (EVSPId1, EVSPId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSP_Id1">A EVSP_Id.</param>
-        /// <param name="EVSP_Id2">Another EVSP_Id.</param>
+        /// <param name="EVSPId1">A EVSPId.</param>
+        /// <param name="EVSPId2">Another EVSPId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (RoamingProvider_Id EVSP_Id1, RoamingProvider_Id EVSP_Id2)
+        public static Boolean operator == (EVSP_Id EVSPId1, EVSP_Id EVSPId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(EVSP_Id1, EVSP_Id2))
+            if (Object.ReferenceEquals(EVSPId1, EVSPId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) EVSP_Id1 == null) || ((Object) EVSP_Id2 == null))
+            if (((Object) EVSPId1 == null) || ((Object) EVSPId2 == null))
                 return false;
 
-            return EVSP_Id1.Equals(EVSP_Id2);
+            return EVSPId1.Equals(EVSPId2);
 
         }
 
         #endregion
 
-        #region Operator != (EVSP_Id1, EVSP_Id2)
+        #region Operator != (EVSPId1, EVSPId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSP_Id1">A EVSP_Id.</param>
-        /// <param name="EVSP_Id2">Another EVSP_Id.</param>
+        /// <param name="EVSPId1">A EVSPId.</param>
+        /// <param name="EVSPId2">Another EVSPId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (RoamingProvider_Id EVSP_Id1, RoamingProvider_Id EVSP_Id2)
+        public static Boolean operator != (EVSP_Id EVSPId1, EVSP_Id EVSPId2)
         {
-            return !(EVSP_Id1 == EVSP_Id2);
+            return !(EVSPId1 == EVSPId2);
         }
 
         #endregion
 
-        #region Operator <  (EVSP_Id1, EVSP_Id2)
+        #region Operator <  (EVSPId1, EVSPId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSP_Id1">A EVSP_Id.</param>
-        /// <param name="EVSP_Id2">Another EVSP_Id.</param>
+        /// <param name="EVSPId1">A EVSPId.</param>
+        /// <param name="EVSPId2">Another EVSPId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (RoamingProvider_Id EVSP_Id1, RoamingProvider_Id EVSP_Id2)
+        public static Boolean operator < (EVSP_Id EVSPId1, EVSP_Id EVSPId2)
         {
 
-            if ((Object) EVSP_Id1 == null)
-                throw new ArgumentNullException("The given EVSP_Id1 must not be null!");
+            if ((Object) EVSPId1 == null)
+                throw new ArgumentNullException("The given EVSPId1 must not be null!");
 
-            return EVSP_Id1.CompareTo(EVSP_Id2) < 0;
-
-        }
-
-        #endregion
-
-        #region Operator <= (EVSP_Id1, EVSP_Id2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="EVSP_Id1">A EVSP_Id.</param>
-        /// <param name="EVSP_Id2">Another EVSP_Id.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator <= (RoamingProvider_Id EVSP_Id1, RoamingProvider_Id EVSP_Id2)
-        {
-            return !(EVSP_Id1 > EVSP_Id2);
-        }
-
-        #endregion
-
-        #region Operator >  (EVSP_Id1, EVSP_Id2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="EVSP_Id1">A EVSP_Id.</param>
-        /// <param name="EVSP_Id2">Another EVSP_Id.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator > (RoamingProvider_Id EVSP_Id1, RoamingProvider_Id EVSP_Id2)
-        {
-
-            if ((Object) EVSP_Id1 == null)
-                throw new ArgumentNullException("The given EVSP_Id1 must not be null!");
-
-            return EVSP_Id1.CompareTo(EVSP_Id2) > 0;
+            return EVSPId1.CompareTo(EVSPId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator >= (EVSP_Id1, EVSP_Id2)
+        #region Operator <= (EVSPId1, EVSPId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSP_Id1">A EVSP_Id.</param>
-        /// <param name="EVSP_Id2">Another EVSP_Id.</param>
+        /// <param name="EVSPId1">A EVSPId.</param>
+        /// <param name="EVSPId2">Another EVSPId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (RoamingProvider_Id EVSP_Id1, RoamingProvider_Id EVSP_Id2)
+        public static Boolean operator <= (EVSP_Id EVSPId1, EVSP_Id EVSPId2)
         {
-            return !(EVSP_Id1 < EVSP_Id2);
+            return !(EVSPId1 > EVSPId2);
+        }
+
+        #endregion
+
+        #region Operator >  (EVSPId1, EVSPId2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EVSPId1">A EVSPId.</param>
+        /// <param name="EVSPId2">Another EVSPId.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (EVSP_Id EVSPId1, EVSP_Id EVSPId2)
+        {
+
+            if ((Object) EVSPId1 == null)
+                throw new ArgumentNullException("The given EVSPId1 must not be null!");
+
+            return EVSPId1.CompareTo(EVSPId2) > 0;
+
+        }
+
+        #endregion
+
+        #region Operator >= (EVSPId1, EVSPId2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EVSPId1">A EVSPId.</param>
+        /// <param name="EVSPId2">Another EVSPId.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (EVSP_Id EVSPId1, EVSP_Id EVSPId2)
+        {
+            return !(EVSPId1 < EVSPId2);
         }
 
         #endregion
@@ -270,35 +270,35 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an EVSP_Id.
-            var EVSP_Id = Object as RoamingProvider_Id;
-            if ((Object) EVSP_Id == null)
-                throw new ArgumentException("The given object is not a EVSP_Id!");
+            // Check if the given object is an EVSPId.
+            var EVSPId = Object as EVSP_Id;
+            if ((Object) EVSPId == null)
+                throw new ArgumentException("The given object is not a EVSPId!");
 
-            return CompareTo(EVSP_Id);
+            return CompareTo(EVSPId);
 
         }
 
         #endregion
 
-        #region CompareTo(EVSP_Id)
+        #region CompareTo(EVSPId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSP_Id">An object to compare with.</param>
-        public Int32 CompareTo(RoamingProvider_Id EVSP_Id)
+        /// <param name="EVSPId">An object to compare with.</param>
+        public Int32 CompareTo(EVSP_Id EVSPId)
         {
 
-            if ((Object) EVSP_Id == null)
-                throw new ArgumentNullException("The given EVSP_Id must not be null!");
+            if ((Object) EVSPId == null)
+                throw new ArgumentNullException("The given EVSPId must not be null!");
 
-            // Compare the length of the EVSP_Ids
-            var _Result = this.Length.CompareTo(EVSP_Id.Length);
+            // Compare the length of the EVSPIds
+            var _Result = this.Length.CompareTo(EVSPId.Length);
 
             // If equal: Compare Ids
             if (_Result == 0)
-                _Result = _Id.CompareTo(EVSP_Id._Id);
+                _Result = _Id.CompareTo(EVSPId._Id);
 
             return _Result;
 
@@ -323,31 +323,31 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 return false;
 
-            // Check if the given object is an EVSP_Id.
-            var EVSP_Id = Object as RoamingProvider_Id;
-            if ((Object) EVSP_Id == null)
+            // Check if the given object is an EVSPId.
+            var EVSPId = Object as EVSP_Id;
+            if ((Object) EVSPId == null)
                 return false;
 
-            return this.Equals(EVSP_Id);
+            return this.Equals(EVSPId);
 
         }
 
         #endregion
 
-        #region Equals(EVSP_Id)
+        #region Equals(EVSPId)
 
         /// <summary>
-        /// Compares two EVSP_Ids for equality.
+        /// Compares two EVSPIds for equality.
         /// </summary>
-        /// <param name="EVSP_Id">A EVSP_Id to compare with.</param>
+        /// <param name="EVSPId">A EVSPId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(RoamingProvider_Id EVSP_Id)
+        public Boolean Equals(EVSP_Id EVSPId)
         {
 
-            if ((Object) EVSP_Id == null)
+            if ((Object) EVSPId == null)
                 return false;
 
-            return _Id.Equals(EVSP_Id._Id);
+            return _Id.Equals(EVSPId._Id);
 
         }
 

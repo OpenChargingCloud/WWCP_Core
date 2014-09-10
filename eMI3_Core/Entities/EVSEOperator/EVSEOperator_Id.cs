@@ -123,20 +123,11 @@ namespace com.graphdefined.eMI3
         /// </summary>
         /// <param name="CountryCode">The Alpha-2-CountryCode.</param>
         /// <param name="OperatorId">The EVSE Operator identification.</param>
-        public EVSEOperator_Id(Country  CountryCode,
-                               String   OperatorId)
+        private EVSEOperator_Id(Country  CountryCode,
+                                String   OperatorId)
         {
-
-            var _MatchCollection = Regex.Matches(OperatorId.Trim().ToUpper(),
-                                                 OperatorId_RegEx,
-                                                 RegexOptions.IgnorePatternWhitespace);
-
-            if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal EVSE Operator identification!", "OperatorId");
-
             _CountryCode  = CountryCode;
-            _OperatorId   = _MatchCollection[0].Value;
-
+            _OperatorId   = OperatorId;
         }
 
         #endregion
@@ -172,6 +163,28 @@ namespace com.graphdefined.eMI3
             // Just e.g. "882"...
             return new EVSEOperator_Id(Country.Germany,
                                        _MatchCollection[0].Groups[5].Value);
+
+        }
+
+        #endregion
+
+        #region Parse(CountryCode, OperatorId)
+
+        /// <summary>
+        /// Parse the given string as an EVSE Operator identification.
+        /// </summary>
+        /// <param name="CountryAndOperatorId">An EVSE Operator identification as string.</param>
+        public static EVSEOperator_Id Parse(Country CountryCode, String OperatorId)
+        {
+
+            var _MatchCollection = Regex.Matches(OperatorId.Trim().ToUpper(),
+                                                 OperatorId_RegEx,
+                                                 RegexOptions.IgnorePatternWhitespace);
+
+            if (_MatchCollection.Count != 1)
+                throw new ArgumentException("Illegal EVSE Operator identification!", "OperatorId");
+
+            return new EVSEOperator_Id(CountryCode, _MatchCollection[0].Value);
 
         }
 
@@ -224,6 +237,44 @@ namespace com.graphdefined.eMI3
 
             }
 
+
+            catch (Exception e)
+            {
+                EVSEOperatorId = null;
+                return false;
+            }
+
+        }
+
+        #endregion
+
+        #region TryParse(CountryAndOperatorId, out EVSEOperatorId)
+
+        /// <summary>
+        /// Parse the given string as an EVSE Operator identification.
+        /// </summary>
+        /// <param name="CountryAndOperatorId">An EVSE Operator identification as string.</param>
+        /// <param name="EVSEOperatorId">The parsed EVSE Operator identification.</param>
+        public static Boolean TryParse(Country CountryCode, String OperatorId, out EVSEOperator_Id EVSEOperatorId)
+        {
+
+            try
+            {
+
+                var _MatchCollection = Regex.Matches(OperatorId.Trim().ToUpper(),
+                                                 OperatorId_RegEx,
+                                                 RegexOptions.IgnorePatternWhitespace);
+
+                if (_MatchCollection.Count != 1)
+                {
+                    EVSEOperatorId = null;
+                    return false;
+                }
+
+                EVSEOperatorId = new EVSEOperator_Id(CountryCode, _MatchCollection[0].Value);
+                return true;
+
+            }
 
             catch (Exception e)
             {

@@ -29,13 +29,13 @@ namespace com.graphdefined.eMI3.LocalService
     /// <summary>
     /// A local E-Mobility service implementation.
     /// </summary>
-    public class LocalEMobilityService : IEVSEOperator2HubjectService
+    public class LocalEMobilityService : IRoamingProviderProvided_EVSEOperatorServices
     {
 
         #region Data
 
         private readonly Dictionary<Token,     AuthorizationResult>  AuthorizationDatabase;
-        private readonly Dictionary<ChargingSessionId, SessionInfo>          SessionDatabase;
+        private readonly Dictionary<ChargingSession_Id, SessionInfo>          SessionDatabase;
 
         #endregion
 
@@ -43,9 +43,9 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region EVSPId
 
-        private readonly EVServiceProvider_Id _EVSPId;
+        private readonly EVSP_Id _EVSPId;
 
-        public EVServiceProvider_Id EVSPId
+        public EVSP_Id EVSPId
         {
             get
             {
@@ -57,9 +57,9 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region AuthorizatorId
 
-        private readonly AuthorizatorId _AuthorizatorId;
+        private readonly Authorizator_Id _AuthorizatorId;
 
-        public AuthorizatorId AuthorizatorId
+        public Authorizator_Id AuthorizatorId
         {
             get
             {
@@ -73,13 +73,13 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region Constructor(s)
 
-        public LocalEMobilityService(EVServiceProvider_Id  EVSPId,
-                                     AuthorizatorId        AuthorizatorId = null)
+        public LocalEMobilityService(EVSP_Id  EVSPId,
+                                     Authorizator_Id        AuthorizatorId = null)
         {
             this._EVSPId                = EVSPId;
-            this._AuthorizatorId        = (AuthorizatorId == null) ? AuthorizatorId.Parse("Belectric Drive EV Gateway Database") : AuthorizatorId;
+            this._AuthorizatorId        = (AuthorizatorId == null) ? Authorizator_Id.Parse("Belectric Drive EV Gateway Database") : AuthorizatorId;
             this.AuthorizationDatabase  = new Dictionary<Token,     AuthorizationResult>();
-            this.SessionDatabase        = new Dictionary<ChargingSessionId, SessionInfo>();
+            this.SessionDatabase        = new Dictionary<ChargingSession_Id, SessionInfo>();
         }
 
         #endregion
@@ -115,10 +115,10 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region AuthorizeStart(OperatorId, EVSEId, PartnerSessionId, Token)
 
-        public AUTHSTARTResult AuthorizeStart(EVSEOperator_Id  OperatorId,
-                                              EVSE_Id          EVSEId,
-                                              ChargingSessionId        PartnerSessionId,
-                                              Token            Token)
+        public AUTHSTARTResult AuthorizeStart(EVSEOperator_Id     OperatorId,
+                                              EVSE_Id             EVSEId,
+                                              ChargingSession_Id  PartnerSessionId,
+                                              Token               Token)
 
         {
 
@@ -135,7 +135,7 @@ namespace com.graphdefined.eMI3.LocalService
                     if (AuthenticationResult == AuthorizationResult.Authorized)
                     {
 
-                        var _SessionId = ChargingSessionId.New;
+                        var _SessionId = ChargingSession_Id.New;
 
                         SessionDatabase.Add(_SessionId, new SessionInfo(Token));
 
@@ -197,8 +197,8 @@ namespace com.graphdefined.eMI3.LocalService
 
         public AUTHSTOPResult AuthorizeStop(EVSEOperator_Id  OperatorId,
                                             EVSE_Id          EVSEId,
-                                            ChargingSessionId        SessionId,
-                                            ChargingSessionId        PartnerSessionId,
+                                            ChargingSession_Id        SessionId,
+                                            ChargingSession_Id        PartnerSessionId,
                                             Token            Token)
 
         {
@@ -306,20 +306,21 @@ namespace com.graphdefined.eMI3.LocalService
 
         #endregion
 
-        #region SendCDR(EVSEId, SessionId, PartnerSessionId, PartnerProductId, Token, eMAId, ChargeStart, ChargeEnd, SessionStart = null, SessionEnd = null, MeterValueStart = null, MeterValueEnd = null)
+        #region SendCDR(EVSEId, SessionId, PartnerSessionId, PartnerProductId, ChargeStart, ChargeEnd, Token = null, eMAId = null, SessionStart = null, SessionEnd = null, MeterValueStart = null, MeterValueEnd = null)
 
-        public SENDCDRResult SendCDR(EVSE_Id    EVSEId,
-                                     ChargingSessionId  SessionId,
-                                     ChargingSessionId  PartnerSessionId,
-                                     String     PartnerProductId,
-                                     Token      Token,
-                                     eMA_Id     eMAId,
-                                     DateTime   ChargeStart,
-                                     DateTime   ChargeEnd,
-                                     DateTime?  SessionStart    = null,
-                                     DateTime?  SessionEnd      = null,
-                                     Double?    MeterValueStart = null,
-                                     Double?    MeterValueEnd   = null)
+        public SENDCDRResult SendCDR(EVSE_Id             EVSEId,
+                                     ChargingSession_Id  SessionId,
+                                     ChargingSession_Id  PartnerSessionId,
+                                     String              PartnerProductId,
+                                     DateTime            ChargeStart,
+                                     DateTime            ChargeEnd,
+                                     Token               Token           = null,
+                                     eMA_Id              eMAId           = null,
+                                     DateTime?           SessionStart    = null,
+                                     DateTime?           SessionEnd      = null,
+                                     Double?             MeterValueStart = null,
+                                     Double?             MeterValueEnd   = null)
+
         {
 
             lock (AuthorizationDatabase)

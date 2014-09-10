@@ -25,7 +25,7 @@ namespace com.graphdefined.eMI3
 {
 
     /// <summary>
-    /// The unique identification of an Electric Vehicle Supply Equipment (ChargingStation_Id)
+    /// The unique identification of an Electric Vehicle Charging Station (EVCS Id).
     /// </summary>
     public class ChargingStation_Id : IId,
                                       IEquatable<ChargingStation_Id>,
@@ -43,6 +43,21 @@ namespace com.graphdefined.eMI3
         #endregion
 
         #region Properties
+
+        #region New
+
+        /// <summary>
+        /// Generate a new unique identification of an Electric Vehicle Charging Station (EVCS Id).
+        /// </summary>
+        public static ChargingStation_Id New
+        {
+            get
+            {
+                return new ChargingStation_Id(Guid.NewGuid().ToString());
+            }
+        }
+
+        #endregion
 
         #region Length
 
@@ -63,44 +78,49 @@ namespace com.graphdefined.eMI3
 
         #region Constructor(s)
 
-        #region ChargingStation_Id()
-
         /// <summary>
-        /// Generate a new Electric Vehicle Supply Equipment (EVSE) identification (ChargingStation_Id).
-        /// </summary>
-        public ChargingStation_Id()
-        {
-            _Id = Guid.NewGuid().ToString();
-        }
-
-        #endregion
-
-        #region ChargingStation_Id(String)
-
-        /// <summary>
-        /// Generate a new Electric Vehicle Supply Equipment (EVSE) identification (ChargingStation_Id)
+        /// Generate a new Electric Vehicle Charging Station identification (EVCS Id)
         /// based on the given string.
         /// </summary>
-        public ChargingStation_Id(String String)
+        private ChargingStation_Id(String String)
         {
             _Id = String.Trim();
         }
 
         #endregion
 
-        #endregion
 
-
-        #region New
+        #region Parse(Text)
 
         /// <summary>
-        /// Generate a new ChargingStation_Id.
+        /// Parse the given string as an Electric Vehicle Charging Station identification (EVCS Id).
         /// </summary>
-        public static ChargingStation_Id New
+        /// <param name="Text">A text representation of an Electric Vehicle Charging Station identification.</param>
+        public static ChargingStation_Id Parse(String Text)
         {
-            get
+            return new ChargingStation_Id(Text);
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ChargingStationId)
+
+        /// <summary>
+        /// Parse the given string as an Electric Vehicle Charging Station identification (EVCS Id).
+        /// </summary>
+        /// <param name="Text">A text representation of an Electric Vehicle Charging Station identification.</param>
+        /// <param name="ChargingStationId">The parsed Electric Vehicle Charging Station identification.</param>
+        public static Boolean TryParse(String Text, out ChargingStation_Id ChargingStationId)
+        {
+            try
             {
-                return new ChargingStation_Id(Guid.NewGuid().ToString());
+                ChargingStationId = new ChargingStation_Id(Text);
+                return true;
+            }
+            catch (Exception)
+            {
+                ChargingStationId = null;
+                return false;
             }
         }
 
@@ -109,7 +129,7 @@ namespace com.graphdefined.eMI3
         #region Clone
 
         /// <summary>
-        /// Clone an ChargingStation_Id.
+        /// Clone this Electric Vehicle Charging Station identification.
         /// </summary>
         public ChargingStation_Id Clone
         {
@@ -251,34 +271,34 @@ namespace com.graphdefined.eMI3
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an ChargingStation_Id.
-            var ChargingStation_Id = Object as ChargingStation_Id;
-            if ((Object) ChargingStation_Id == null)
-                throw new ArgumentException("The given object is not a ChargingStation_Id!");
+            var ChargingStationId = Object as ChargingStation_Id;
+            if ((Object) ChargingStationId == null)
+                throw new ArgumentException("The given object is not a ChargingStationId!");
 
-            return CompareTo(ChargingStation_Id);
+            return CompareTo(ChargingStationId);
 
         }
 
         #endregion
 
-        #region CompareTo(ChargingStation_Id)
+        #region CompareTo(ChargingStationId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStation_Id">An object to compare with.</param>
-        public Int32 CompareTo(ChargingStation_Id ChargingStation_Id)
+        /// <param name="ChargingStationId">An object to compare with.</param>
+        public Int32 CompareTo(ChargingStation_Id ChargingStationId)
         {
 
-            if ((Object) ChargingStation_Id == null)
-                throw new ArgumentNullException("The given ChargingStation_Id must not be null!");
+            if ((Object) ChargingStationId == null)
+                throw new ArgumentNullException("The given ChargingStationId must not be null!");
 
-            // Compare the length of the ChargingStation_Ids
-            var _Result = this.Length.CompareTo(ChargingStation_Id.Length);
+            // Compare the length of the ChargingStationIds
+            var _Result = this.Length.CompareTo(ChargingStationId.Length);
 
             // If equal: Compare Ids
             if (_Result == 0)
-                _Result = _Id.CompareTo(ChargingStation_Id._Id);
+                _Result = _Id.CompareTo(ChargingStationId._Id);
 
             return _Result;
 
@@ -303,12 +323,12 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 return false;
 
-            // Check if the given object is an ChargingStation_Id.
-            var ChargingStation_Id = Object as ChargingStation_Id;
-            if ((Object) ChargingStation_Id == null)
+            // Check if the given object is an ChargingStationId.
+            var ChargingStationId = Object as ChargingStation_Id;
+            if ((Object) ChargingStationId == null)
                 return false;
 
-            return this.Equals(ChargingStation_Id);
+            return this.Equals(ChargingStationId);
 
         }
 
@@ -317,17 +337,17 @@ namespace com.graphdefined.eMI3
         #region Equals(ChargingStation_Id)
 
         /// <summary>
-        /// Compares two ChargingStation_Ids for equality.
+        /// Compares two ChargingStationIds for equality.
         /// </summary>
-        /// <param name="ChargingStation_Id">A ChargingStation_Id to compare with.</param>
+        /// <param name="ChargingStationId">A ChargingStationId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingStation_Id ChargingStation_Id)
+        public Boolean Equals(ChargingStation_Id ChargingStationId)
         {
 
-            if ((Object) ChargingStation_Id == null)
+            if ((Object) ChargingStationId == null)
                 return false;
 
-            return _Id.Equals(ChargingStation_Id._Id);
+            return _Id.Equals(ChargingStationId._Id);
 
         }
 

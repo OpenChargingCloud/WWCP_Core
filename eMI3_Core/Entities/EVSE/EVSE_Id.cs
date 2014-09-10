@@ -95,8 +95,8 @@ namespace com.graphdefined.eMI3
         /// Generate a new Electric Vehicle Supply Equipment (EVSE) identification (EVSE_Id)
         /// based on the given string.
         /// </summary>
-        public EVSE_Id(EVSEOperator_Id  OperatorId,
-                       String           EVSEIdSuffix)
+        private EVSE_Id(EVSEOperator_Id  OperatorId,
+                        String           EVSEIdSuffix)
         {
 
             if (OperatorId == null)
@@ -144,6 +144,18 @@ namespace com.graphdefined.eMI3
 
             throw new ArgumentException("Illegal EVSE identification!", "EVSEId");
 
+        }
+
+        #endregion
+
+        #region Parse(OperatorId, EVSEIdSuffix)
+
+        /// <summary>
+        /// Parse the given string as an EVSE identification.
+        /// </summary>
+        public static EVSE_Id Parse(EVSEOperator_Id OperatorId, String EVSEIdSuffix)
+        {
+            return new EVSE_Id(OperatorId, EVSEIdSuffix);
         }
 
         #endregion
@@ -201,6 +213,29 @@ namespace com.graphdefined.eMI3
 
         #endregion
 
+        #region TryParse(EVSEId, out EVSE_Id)
+
+        /// <summary>
+        /// Parse the given string as an EVSE identification.
+        /// </summary>
+        public static Boolean TryParse(EVSEOperator_Id OperatorId, String EVSEIdSuffix, out EVSE_Id EVSE_Id)
+        {
+
+            try
+            {
+                EVSE_Id = new EVSE_Id(OperatorId, EVSEIdSuffix);
+                return true;
+            }
+            catch (Exception e)
+            { }
+
+            EVSE_Id = null;
+            return false;
+
+        }
+
+        #endregion
+
         #region Clone
 
         /// <summary>
@@ -220,112 +255,112 @@ namespace com.graphdefined.eMI3
 
         #region Operator overloading
 
-        #region Operator == (EVSE_Id1, EVSE_Id2)
+        #region Operator == (EVSEId1, EVSEId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSE_Id1">A EVSE_Id.</param>
-        /// <param name="EVSE_Id2">Another EVSE_Id.</param>
+        /// <param name="EVSEId1">A EVSE_Id.</param>
+        /// <param name="EVSEId2">Another EVSE_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (EVSE_Id EVSE_Id1, EVSE_Id EVSE_Id2)
+        public static Boolean operator == (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(EVSE_Id1, EVSE_Id2))
+            if (Object.ReferenceEquals(EVSEId1, EVSEId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) EVSE_Id1 == null) || ((Object) EVSE_Id2 == null))
+            if (((Object) EVSEId1 == null) || ((Object) EVSEId2 == null))
                 return false;
 
-            return EVSE_Id1.Equals(EVSE_Id2);
+            return EVSEId1.Equals(EVSEId2);
 
         }
 
         #endregion
 
-        #region Operator != (EVSE_Id1, EVSE_Id2)
+        #region Operator != (EVSEId1, EVSEId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSE_Id1">A EVSE_Id.</param>
-        /// <param name="EVSE_Id2">Another EVSE_Id.</param>
+        /// <param name="EVSEId1">A EVSE_Id.</param>
+        /// <param name="EVSEId2">Another EVSE_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (EVSE_Id EVSE_Id1, EVSE_Id EVSE_Id2)
+        public static Boolean operator != (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
         {
-            return !(EVSE_Id1 == EVSE_Id2);
+            return !(EVSEId1 == EVSEId2);
         }
 
         #endregion
 
-        #region Operator <  (EVSE_Id1, EVSE_Id2)
+        #region Operator <  (EVSEId1, EVSEId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSE_Id1">A EVSE_Id.</param>
-        /// <param name="EVSE_Id2">Another EVSE_Id.</param>
+        /// <param name="EVSEId1">A EVSE_Id.</param>
+        /// <param name="EVSEId2">Another EVSE_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (EVSE_Id EVSE_Id1, EVSE_Id EVSE_Id2)
+        public static Boolean operator < (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
         {
 
-            if ((Object) EVSE_Id1 == null)
-                throw new ArgumentNullException("The given EVSE_Id1 must not be null!");
+            if ((Object) EVSEId1 == null)
+                throw new ArgumentNullException("The given EVSEId1 must not be null!");
 
-            return EVSE_Id1.CompareTo(EVSE_Id2) < 0;
-
-        }
-
-        #endregion
-
-        #region Operator <= (EVSE_Id1, EVSE_Id2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="EVSE_Id1">A EVSE_Id.</param>
-        /// <param name="EVSE_Id2">Another EVSE_Id.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator <= (EVSE_Id EVSE_Id1, EVSE_Id EVSE_Id2)
-        {
-            return !(EVSE_Id1 > EVSE_Id2);
-        }
-
-        #endregion
-
-        #region Operator >  (EVSE_Id1, EVSE_Id2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="EVSE_Id1">A EVSE_Id.</param>
-        /// <param name="EVSE_Id2">Another EVSE_Id.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator > (EVSE_Id EVSE_Id1, EVSE_Id EVSE_Id2)
-        {
-
-            if ((Object) EVSE_Id1 == null)
-                throw new ArgumentNullException("The given EVSE_Id1 must not be null!");
-
-            return EVSE_Id1.CompareTo(EVSE_Id2) > 0;
+            return EVSEId1.CompareTo(EVSEId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator >= (EVSE_Id1, EVSE_Id2)
+        #region Operator <= (EVSEId1, EVSEId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSE_Id1">A EVSE_Id.</param>
-        /// <param name="EVSE_Id2">Another EVSE_Id.</param>
+        /// <param name="EVSEId1">A EVSE_Id.</param>
+        /// <param name="EVSEId2">Another EVSE_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (EVSE_Id EVSE_Id1, EVSE_Id EVSE_Id2)
+        public static Boolean operator <= (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
         {
-            return !(EVSE_Id1 < EVSE_Id2);
+            return !(EVSEId1 > EVSEId2);
+        }
+
+        #endregion
+
+        #region Operator >  (EVSEId1, EVSEId2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EVSEId1">A EVSE_Id.</param>
+        /// <param name="EVSEId2">Another EVSE_Id.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
+        {
+
+            if ((Object) EVSEId1 == null)
+                throw new ArgumentNullException("The given EVSEId1 must not be null!");
+
+            return EVSEId1.CompareTo(EVSEId2) > 0;
+
+        }
+
+        #endregion
+
+        #region Operator >= (EVSEId1, EVSEId2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EVSEId1">A EVSE_Id.</param>
+        /// <param name="EVSEId2">Another EVSE_Id.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
+        {
+            return !(EVSEId1 < EVSEId2);
         }
 
         #endregion
@@ -346,39 +381,39 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an EVSE_Id.
-            var EVSE_Id = Object as EVSE_Id;
-            if ((Object) EVSE_Id == null)
-                throw new ArgumentException("The given object is not a EVSE_Id!");
+            // Check if the given object is an EVSEId.
+            var EVSEId = Object as EVSE_Id;
+            if ((Object) EVSEId == null)
+                throw new ArgumentException("The given object is not a EVSEId!");
 
-            return CompareTo(EVSE_Id);
+            return CompareTo(EVSEId);
 
         }
 
         #endregion
 
-        #region CompareTo(EVSE_Id)
+        #region CompareTo(EVSEId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSE_Id">An object to compare with.</param>
-        public Int32 CompareTo(EVSE_Id EVSE_Id)
+        /// <param name="EVSEId">An object to compare with.</param>
+        public Int32 CompareTo(EVSE_Id EVSEId)
         {
 
-            if ((Object) EVSE_Id == null)
-                throw new ArgumentNullException("The given EVSE_Id must not be null!");
+            if ((Object) EVSEId == null)
+                throw new ArgumentNullException("The given EVSEId must not be null!");
 
-            // Compare the length of the EVSE_Ids
-            var _Result = this.Length.CompareTo(EVSE_Id.Length);
+            // Compare the length of the EVSEIds
+            var _Result = this.Length.CompareTo(EVSEId.Length);
 
             // If equal: Compare OperatorIds
             if (_Result == 0)
-                _Result = _OperatorId.CompareTo(EVSE_Id._OperatorId);
+                _Result = _OperatorId.CompareTo(EVSEId._OperatorId);
 
-            // If equal: Compare EVSE Id suffix
+            // If equal: Compare EVSEId suffix
             if (_Result == 0)
-                _Result = _EVSEIdSuffix.CompareTo(EVSE_Id._EVSEIdSuffix);
+                _Result = _EVSEIdSuffix.CompareTo(EVSEId._EVSEIdSuffix);
 
             return _Result;
 
@@ -403,32 +438,32 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 return false;
 
-            // Check if the given object is an EVSE_Id.
-            var EVSE_Id = Object as EVSE_Id;
-            if ((Object) EVSE_Id == null)
+            // Check if the given object is an EVSEId.
+            var EVSEId = Object as EVSE_Id;
+            if ((Object) EVSEId == null)
                 return false;
 
-            return this.Equals(EVSE_Id);
+            return this.Equals(EVSEId);
 
         }
 
         #endregion
 
-        #region Equals(EVSE_Id)
+        #region Equals(EVSEId)
 
         /// <summary>
         /// Compares two EVSE_Ids for equality.
         /// </summary>
-        /// <param name="EVSE_Id">A EVSE_Id to compare with.</param>
+        /// <param name="EVSEId">A EVSE_Id to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EVSE_Id EVSE_Id)
+        public Boolean Equals(EVSE_Id EVSEId)
         {
 
-            if ((Object) EVSE_Id == null)
+            if ((Object) EVSEId == null)
                 return false;
 
-            return _OperatorId.  Equals(EVSE_Id._OperatorId) &&
-                   _EVSEIdSuffix.Equals(EVSE_Id._EVSEIdSuffix);
+            return _OperatorId.  Equals(EVSEId._OperatorId) &&
+                   _EVSEIdSuffix.Equals(EVSEId._EVSEIdSuffix);
 
         }
 

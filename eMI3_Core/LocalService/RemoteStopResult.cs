@@ -18,35 +18,28 @@
 #region Usings
 
 using System;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+
+using Newtonsoft.Json.Linq;
+
+using eu.Vanaheimr.Illias.Commons;
+using eu.Vanaheimr.Illias.Commons.ConsoleLog;
+using eu.Vanaheimr.Hermod;
+using eu.Vanaheimr.Hermod.HTTP;
+using eu.Vanaheimr.Hermod.Services.DNS;
 
 #endregion
 
 namespace com.graphdefined.eMI3.LocalService
 {
 
-    /// <summary>
-    /// The common interface for all E-Mobility services between
-    /// Hubject -and-> an EVSE operator.
-    /// </summary>
-    public interface IHubject2EMPService
+    public enum RemoteStopResult
     {
-
-        //#region Properties
-
-        //AuthorizatorId AuthorizatorId { get; }
-
-        //#endregion
-
-        //RemoteStartResult RemoteStart(EVSE_Id               EVSEId,
-        //                              String                SessionId,
-        //                              EVServiceProvider_Id  EVServiceProviderId,
-        //                              eMA_Id                eMAId);
-
-        //RemoteStopResult  RemoteStop (EVSE_Id               EVSEId,
-        //                              String                SessionId,
-        //                              EVServiceProvider_Id  EVServiceProviderId);
-
+        Error,
+        Success
     }
 
 }

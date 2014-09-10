@@ -44,6 +44,21 @@ namespace com.graphdefined.eMI3
 
         #region Properties
 
+        #region New
+
+        /// <summary>
+        /// Generate a new unique identification of an Electric Vehicle Charging Group Identification (EVCGId).
+        /// </summary>
+        public static ChargingGroup_Id New
+        {
+            get
+            {
+                return new ChargingGroup_Id(Guid.NewGuid().ToString());
+            }
+        }
+
+        #endregion
+
         #region Length
 
         /// <summary>
@@ -63,44 +78,49 @@ namespace com.graphdefined.eMI3
 
         #region Constructor(s)
 
-        #region ChargingGroup_Id()
-
-        /// <summary>
-        /// Generate a new Electric Vehicle Charging Group Identification (EVCG Id).
-        /// </summary>
-        public ChargingGroup_Id()
-        {
-            _Id = Guid.NewGuid().ToString();
-        }
-
-        #endregion
-
-        #region ChargingGroup_Id(String)
-
         /// <summary>
         /// Generate a new Electric Vehicle Charging Group Identification (EVCG Id)
         /// based on the given string.
         /// </summary>
-        public ChargingGroup_Id(String String)
+        private ChargingGroup_Id(String String)
         {
             _Id = String.Trim();
         }
 
         #endregion
 
-        #endregion
 
-
-        #region New
+        #region Parse(Text)
 
         /// <summary>
-        /// Generate a new EVP_Id.
+        /// Parse the given string as an Electric Vehicle Charging Group Identification (EVCG Id)
         /// </summary>
-        public static ChargingGroup_Id New
+        /// <param name="Text">A text representation of an Electric Vehicle Charging Group identification.</param>
+        public static ChargingGroup_Id Parse(String Text)
         {
-            get
+            return new ChargingGroup_Id(Text);
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ChargingGroupId)
+
+        /// <summary>
+        /// Parse the given string as an Electric Vehicle Charging Group Identification (EVCG Id)
+        /// </summary>
+        /// <param name="Text">A text representation of an Electric Vehicle Charging Group identification.</param>
+        /// <param name="ChargingGroupId">The parsed Electric Vehicle Charging Group identification.</param>
+        public static Boolean TryParse(String Text, out ChargingGroup_Id ChargingGroupId)
+        {
+            try
             {
-                return new ChargingGroup_Id(Guid.NewGuid().ToString());
+                ChargingGroupId = new ChargingGroup_Id(Text);
+                return true;
+            }
+            catch (Exception)
+            {
+                ChargingGroupId = null;
+                return false;
             }
         }
 
@@ -109,7 +129,7 @@ namespace com.graphdefined.eMI3
         #region Clone
 
         /// <summary>
-        /// Clone an EVP_Id.
+        /// Clone this Electric Vehicle Charging Group identification.
         /// </summary>
         public ChargingGroup_Id Clone
         {
@@ -124,119 +144,119 @@ namespace com.graphdefined.eMI3
 
         #region Operator overloading
 
-        #region Operator == (EVP_Id1, EVP_Id2)
+        #region Operator == (ChargingGroup_Id1, ChargingGroup_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVP_Id1">A EVP_Id.</param>
-        /// <param name="EVP_Id2">Another EVP_Id.</param>
+        /// <param name="ChargingGroup_Id1">A ChargingGroup_Id.</param>
+        /// <param name="ChargingGroup_Id2">Another ChargingGroup_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingGroup_Id EVP_Id1, ChargingGroup_Id EVP_Id2)
+        public static Boolean operator == (ChargingGroup_Id ChargingGroup_Id1, ChargingGroup_Id ChargingGroup_Id2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(EVP_Id1, EVP_Id2))
+            if (Object.ReferenceEquals(ChargingGroup_Id1, ChargingGroup_Id2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) EVP_Id1 == null) || ((Object) EVP_Id2 == null))
+            if (((Object) ChargingGroup_Id1 == null) || ((Object) ChargingGroup_Id2 == null))
                 return false;
 
-            return EVP_Id1.Equals(EVP_Id2);
+            return ChargingGroup_Id1.Equals(ChargingGroup_Id2);
 
         }
 
         #endregion
 
-        #region Operator != (EVP_Id1, EVP_Id2)
+        #region Operator != (ChargingGroup_Id1, ChargingGroup_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVP_Id1">A EVP_Id.</param>
-        /// <param name="EVP_Id2">Another EVP_Id.</param>
+        /// <param name="ChargingGroup_Id1">A ChargingGroup_Id.</param>
+        /// <param name="ChargingGroup_Id2">Another ChargingGroup_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingGroup_Id EVP_Id1, ChargingGroup_Id EVP_Id2)
+        public static Boolean operator != (ChargingGroup_Id ChargingGroup_Id1, ChargingGroup_Id ChargingGroup_Id2)
         {
-            return !(EVP_Id1 == EVP_Id2);
+            return !(ChargingGroup_Id1 == ChargingGroup_Id2);
         }
 
         #endregion
 
-        #region Operator <  (EVP_Id1, EVP_Id2)
+        #region Operator <  (ChargingGroup_Id1, ChargingGroup_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVP_Id1">A EVP_Id.</param>
-        /// <param name="EVP_Id2">Another EVP_Id.</param>
+        /// <param name="ChargingGroup_Id1">A ChargingGroup_Id.</param>
+        /// <param name="ChargingGroup_Id2">Another ChargingGroup_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingGroup_Id EVP_Id1, ChargingGroup_Id EVP_Id2)
+        public static Boolean operator < (ChargingGroup_Id ChargingGroup_Id1, ChargingGroup_Id ChargingGroup_Id2)
         {
 
-            if ((Object) EVP_Id1 == null)
-                throw new ArgumentNullException("The given EVP_Id1 must not be null!");
+            if ((Object) ChargingGroup_Id1 == null)
+                throw new ArgumentNullException("The given ChargingGroup_Id1 must not be null!");
 
-            return EVP_Id1.CompareTo(EVP_Id2) < 0;
+            return ChargingGroup_Id1.CompareTo(ChargingGroup_Id2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (EVP_Id1, EVP_Id2)
+        #region Operator <= (ChargingGroup_Id1, ChargingGroup_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVP_Id1">A EVP_Id.</param>
-        /// <param name="EVP_Id2">Another EVP_Id.</param>
+        /// <param name="ChargingGroup_Id1">A ChargingGroup_Id.</param>
+        /// <param name="ChargingGroup_Id2">Another ChargingGroup_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingGroup_Id EVP_Id1, ChargingGroup_Id EVP_Id2)
+        public static Boolean operator <= (ChargingGroup_Id ChargingGroup_Id1, ChargingGroup_Id ChargingGroup_Id2)
         {
-            return !(EVP_Id1 > EVP_Id2);
+            return !(ChargingGroup_Id1 > ChargingGroup_Id2);
         }
 
         #endregion
 
-        #region Operator >  (EVP_Id1, EVP_Id2)
+        #region Operator >  (ChargingGroup_Id1, ChargingGroup_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVP_Id1">A EVP_Id.</param>
-        /// <param name="EVP_Id2">Another EVP_Id.</param>
+        /// <param name="ChargingGroup_Id1">A ChargingGroup_Id.</param>
+        /// <param name="ChargingGroup_Id2">Another ChargingGroup_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingGroup_Id EVP_Id1, ChargingGroup_Id EVP_Id2)
+        public static Boolean operator > (ChargingGroup_Id ChargingGroup_Id1, ChargingGroup_Id ChargingGroup_Id2)
         {
 
-            if ((Object) EVP_Id1 == null)
-                throw new ArgumentNullException("The given EVP_Id1 must not be null!");
+            if ((Object) ChargingGroup_Id1 == null)
+                throw new ArgumentNullException("The given ChargingGroup_Id1 must not be null!");
 
-            return EVP_Id1.CompareTo(EVP_Id2) > 0;
+            return ChargingGroup_Id1.CompareTo(ChargingGroup_Id2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (EVP_Id1, EVP_Id2)
+        #region Operator >= (ChargingGroup_Id1, ChargingGroup_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVP_Id1">A EVP_Id.</param>
-        /// <param name="EVP_Id2">Another EVP_Id.</param>
+        /// <param name="ChargingGroup_Id1">A ChargingGroup_Id.</param>
+        /// <param name="ChargingGroup_Id2">Another ChargingGroup_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingGroup_Id EVP_Id1, ChargingGroup_Id EVP_Id2)
+        public static Boolean operator >= (ChargingGroup_Id ChargingGroup_Id1, ChargingGroup_Id ChargingGroup_Id2)
         {
-            return !(EVP_Id1 < EVP_Id2);
+            return !(ChargingGroup_Id1 < ChargingGroup_Id2);
         }
 
         #endregion
 
         #endregion
 
-        #region IComparable<EVP_Id> Members
+        #region IComparable<ChargingGroup_Id> Members
 
         #region CompareTo(Object)
 
@@ -250,35 +270,35 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an EVP_Id.
-            var EVP_Id = Object as ChargingGroup_Id;
-            if ((Object) EVP_Id == null)
-                throw new ArgumentException("The given object is not a EVP_Id!");
+            // Check if the given object is an ChargingGroup_Id.
+            var ChargingGroupId = Object as ChargingGroup_Id;
+            if ((Object) ChargingGroupId == null)
+                throw new ArgumentException("The given object is not a ChargingGroup_Id!");
 
-            return CompareTo(EVP_Id);
+            return CompareTo(ChargingGroupId);
 
         }
 
         #endregion
 
-        #region CompareTo(EVP_Id)
+        #region CompareTo(ChargingGroupId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVP_Id">An object to compare with.</param>
-        public Int32 CompareTo(ChargingGroup_Id EVP_Id)
+        /// <param name="ChargingGroup_Id">An object to compare with.</param>
+        public Int32 CompareTo(ChargingGroup_Id ChargingGroupId)
         {
 
-            if ((Object) EVP_Id == null)
-                throw new ArgumentNullException("The given EVP_Id must not be null!");
+            if ((Object) ChargingGroupId == null)
+                throw new ArgumentNullException("The given ChargingGroupId must not be null!");
 
-            // Compare the length of the EVP_Ids
-            var _Result = this.Length.CompareTo(EVP_Id.Length);
+            // Compare the length of the ChargingGroupIds
+            var _Result = this.Length.CompareTo(ChargingGroupId.Length);
 
             // If equal: Compare Ids
             if (_Result == 0)
-                _Result = _Id.CompareTo(EVP_Id._Id);
+                _Result = _Id.CompareTo(ChargingGroupId._Id);
 
             return _Result;
 
@@ -288,7 +308,7 @@ namespace com.graphdefined.eMI3
 
         #endregion
 
-        #region IEquatable<EVP_Id> Members
+        #region IEquatable<ChargingGroup_Id> Members
 
         #region Equals(Object)
 
@@ -303,31 +323,31 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 return false;
 
-            // Check if the given object is an EVP_Id.
-            var EVP_Id = Object as ChargingGroup_Id;
-            if ((Object) EVP_Id == null)
+            // Check if the given object is an ChargingGroupId.
+            var ChargingGroupId = Object as ChargingGroup_Id;
+            if ((Object) ChargingGroupId == null)
                 return false;
 
-            return this.Equals(EVP_Id);
+            return this.Equals(ChargingGroupId);
 
         }
 
         #endregion
 
-        #region Equals(EVP_Id)
+        #region Equals(ChargingGroupId)
 
         /// <summary>
-        /// Compares two EVP_Ids for equality.
+        /// Compares two ChargingGroup_Ids for equality.
         /// </summary>
-        /// <param name="EVP_Id">A EVP_Id to compare with.</param>
+        /// <param name="ChargingGroupId">A ChargingGroup_Id to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingGroup_Id EVP_Id)
+        public Boolean Equals(ChargingGroup_Id ChargingGroupId)
         {
 
-            if ((Object) EVP_Id == null)
+            if ((Object) ChargingGroupId == null)
                 return false;
 
-            return _Id.Equals(EVP_Id._Id);
+            return _Id.Equals(ChargingGroupId._Id);
 
         }
 

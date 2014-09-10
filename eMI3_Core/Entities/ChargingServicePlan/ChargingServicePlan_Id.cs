@@ -25,7 +25,7 @@ namespace com.graphdefined.eMI3
 {
 
     /// <summary>
-    /// The unique identification of an electric vehicle charging service plan (EVCSP Id).
+    /// The unique identification of an Electric Vehicle Charging Service Plan (EVCSP Id).
     /// </summary>
     public class ChargingServicePlan_Id : IId,
                                           IEquatable<ChargingServicePlan_Id>,
@@ -43,6 +43,21 @@ namespace com.graphdefined.eMI3
         #endregion
 
         #region Properties
+
+        #region New
+
+        /// <summary>
+        /// Generate a new unique identification of an Electric Vehicle Charging Service Plan (EVCSP Id).
+        /// </summary>
+        public static ChargingServicePlan_Id New
+        {
+            get
+            {
+                return new ChargingServicePlan_Id(Guid.NewGuid().ToString());
+            }
+        }
+
+        #endregion
 
         #region Length
 
@@ -63,44 +78,49 @@ namespace com.graphdefined.eMI3
 
         #region Constructor(s)
 
-        #region ServicePlan_Id()
-
         /// <summary>
-        /// Generate a new electric vehicle service plan identification (EVSP Id).
-        /// </summary>
-        public ChargingServicePlan_Id()
-        {
-            _Id = Guid.NewGuid().ToString();
-        }
-
-        #endregion
-
-        #region ServicePlan_Id(String)
-
-        /// <summary>
-        /// Generate a new electric vehicle service plan identification (EVSP Id)
+        /// Generate a new Electric Vehicle Charging Service Plan identification (EVSP Id)
         /// based on the given string.
         /// </summary>
-        public ChargingServicePlan_Id(String String)
+        private ChargingServicePlan_Id(String String)
         {
             _Id = String.Trim();
         }
 
         #endregion
 
-        #endregion
 
-
-        #region New
+        #region Parse(Text)
 
         /// <summary>
-        /// Generate a new EVCSP_Id.
+        /// Parse the given string as an Electric Vehicle Charging Service Plan (EVCSP Id).
         /// </summary>
-        public static ChargingServicePlan_Id New
+        /// <param name="Text">A text representation of an Electric Vehicle Charging Group identification.</param>
+        public static ChargingServicePlan_Id Parse(String Text)
         {
-            get
+            return new ChargingServicePlan_Id(Text);
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ChargingServicePlanId)
+
+        /// <summary>
+        /// Parse the given string as an Electric Vehicle Charging Service Plan (EVCSP Id).
+        /// </summary>
+        /// <param name="Text">A text representation of an Electric Vehicle Charging Service Plan identification.</param>
+        /// <param name="ChargingServicePlanId">The parsed Electric Vehicle Charging Service Plan identification.</param>
+        public static Boolean TryParse(String Text, out ChargingServicePlan_Id ChargingServicePlanId)
+        {
+            try
             {
-                return new ChargingServicePlan_Id(Guid.NewGuid().ToString());
+                ChargingServicePlanId = new ChargingServicePlan_Id(Text);
+                return true;
+            }
+            catch (Exception)
+            {
+                ChargingServicePlanId = null;
+                return false;
             }
         }
 
@@ -109,7 +129,7 @@ namespace com.graphdefined.eMI3
         #region Clone
 
         /// <summary>
-        /// Clone an EVCSP_Id.
+        /// Clone this Electric Vehicle Charging Service Plan identification.
         /// </summary>
         public ChargingServicePlan_Id Clone
         {

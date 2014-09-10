@@ -74,9 +74,9 @@ namespace com.graphdefined.eMI3
 
         #region EMobilityService
 
-        private readonly IEVSEOperator2HubjectService _EMobilityService;
+        private readonly IRoamingProviderProvided_EVSEOperatorServices _EMobilityService;
 
-        public IEVSEOperator2HubjectService EMobilityService
+        public IRoamingProviderProvided_EVSEOperatorServices EMobilityService
         {
             get
             {
@@ -123,7 +123,7 @@ namespace com.graphdefined.eMI3
         /// <param name="Id">The EVSPool Id.</param>
         internal RoamingProvider(RoamingProvider_Id             Id,
                                  RoamingNetwork                 RoamingNetwork,
-                                 IEVSEOperator2HubjectService   EMobilityService)
+                                 IRoamingProviderProvided_EVSEOperatorServices   EMobilityService)
             : base(Id)
         {
 

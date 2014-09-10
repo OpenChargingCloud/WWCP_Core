@@ -18,29 +18,32 @@
 #region Usings
 
 using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+
+using Newtonsoft.Json.Linq;
+
+using eu.Vanaheimr.Illias.Commons;
+using eu.Vanaheimr.Illias.Commons.ConsoleLog;
+using eu.Vanaheimr.Hermod;
+using eu.Vanaheimr.Hermod.HTTP;
+using eu.Vanaheimr.Hermod.Services.DNS;
 
 #endregion
 
 namespace com.graphdefined.eMI3.LocalService
 {
 
-    public class SENDCDRResult : AResult
+    public enum RemoteStartResult
     {
-
-        #region Properties
-
-        public Boolean State   { get; set; }
-
-        #endregion
-
-        #region Constructor(s)
-
-        public SENDCDRResult(Authorizator_Id AuthorizatorId)
-            : base(AuthorizatorId)
-        { }
-
-        #endregion
-
+        Error,
+        Success,
+        EVSE_NotReachable,
+        SessionId_AlreadyInUse,
+        EVSE_AlreadyInUse,
+        Start_Timeout
     }
 
 }

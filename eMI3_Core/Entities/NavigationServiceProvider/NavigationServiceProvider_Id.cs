@@ -44,6 +44,21 @@ namespace com.graphdefined.eMI3
 
         #region Properties
 
+        #region New
+
+        /// <summary>
+        /// Generate a new unique identification of a Navigation Service Provider (NSP Id).
+        /// </summary>
+        public static NavigationServiceProvider_Id New
+        {
+            get
+            {
+                return new NavigationServiceProvider_Id(Guid.NewGuid().ToString());
+            }
+        }
+
+        #endregion
+
         #region Length
 
         /// <summary>
@@ -63,44 +78,49 @@ namespace com.graphdefined.eMI3
 
         #region Constructor(s)
 
-        #region NavigationServiceProvider_Id()
-
-        /// <summary>
-        /// Generate a new Navigation Service Provider identification (NSP Id).
-        /// </summary>
-        public NavigationServiceProvider_Id()
-        {
-            _Id = Guid.NewGuid().ToString();
-        }
-
-        #endregion
-
-        #region NavigationServiceProvider_Id(String)
-
         /// <summary>
         /// Generate a new Navigation Service Provider identification (NSP Id)
         /// based on the given string.
         /// </summary>
-        public NavigationServiceProvider_Id(String String)
+        private NavigationServiceProvider_Id(String String)
         {
             _Id = String.Trim();
         }
 
         #endregion
 
-        #endregion
 
-
-        #region New
+        #region Parse(Text)
 
         /// <summary>
-        /// Generate a new EVSP_Id.
+        /// Parse the given string as a Navigation Service Provider (NSP Id).
         /// </summary>
-        public static NavigationServiceProvider_Id New
+        /// <param name="Text">A text representation of a Navigation Service Provider identification.</param>
+        public static NavigationServiceProvider_Id Parse(String Text)
         {
-            get
+            return new NavigationServiceProvider_Id(Text);
+        }
+
+        #endregion
+
+        #region TryParse(Text, out NSPId)
+
+        /// <summary>
+        /// Parse the given string as a Navigation Service Provider (NSP Id).
+        /// </summary>
+        /// <param name="Text">A text representation of a Navigation Service Provider identification.</param>
+        /// <param name="NSPId">The parsed Electric Vehicle Charging Pool identification.</param>
+        public static Boolean TryParse(String Text, out NavigationServiceProvider_Id NSPId)
+        {
+            try
             {
-                return new NavigationServiceProvider_Id(Guid.NewGuid().ToString());
+                NSPId = new NavigationServiceProvider_Id(Text);
+                return true;
+            }
+            catch (Exception)
+            {
+                NSPId = null;
+                return false;
             }
         }
 
@@ -109,7 +129,7 @@ namespace com.graphdefined.eMI3
         #region Clone
 
         /// <summary>
-        /// Clone an EVSP_Id.
+        /// Clone this Electric Vehicle Charging Pool identification.
         /// </summary>
         public NavigationServiceProvider_Id Clone
         {
@@ -124,119 +144,119 @@ namespace com.graphdefined.eMI3
 
         #region Operator overloading
 
-        #region Operator == (EVSP_Id1, EVSP_Id2)
+        #region Operator == (NSPId1, NSPId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSP_Id1">A EVSP_Id.</param>
-        /// <param name="EVSP_Id2">Another EVSP_Id.</param>
+        /// <param name="NSPId1">A NSPId.</param>
+        /// <param name="NSPId2">Another NSPId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (NavigationServiceProvider_Id EVSP_Id1, NavigationServiceProvider_Id EVSP_Id2)
+        public static Boolean operator == (NavigationServiceProvider_Id NSPId1, NavigationServiceProvider_Id NSPId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(EVSP_Id1, EVSP_Id2))
+            if (Object.ReferenceEquals(NSPId1, NSPId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) EVSP_Id1 == null) || ((Object) EVSP_Id2 == null))
+            if (((Object) NSPId1 == null) || ((Object) NSPId2 == null))
                 return false;
 
-            return EVSP_Id1.Equals(EVSP_Id2);
+            return NSPId1.Equals(NSPId2);
 
         }
 
         #endregion
 
-        #region Operator != (EVSP_Id1, EVSP_Id2)
+        #region Operator != (NSPId1, NSPId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSP_Id1">A EVSP_Id.</param>
-        /// <param name="EVSP_Id2">Another EVSP_Id.</param>
+        /// <param name="NSPId1">A NSPId.</param>
+        /// <param name="NSPId2">Another NSPId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (NavigationServiceProvider_Id EVSP_Id1, NavigationServiceProvider_Id EVSP_Id2)
+        public static Boolean operator != (NavigationServiceProvider_Id NSPId1, NavigationServiceProvider_Id NSPId2)
         {
-            return !(EVSP_Id1 == EVSP_Id2);
+            return !(NSPId1 == NSPId2);
         }
 
         #endregion
 
-        #region Operator <  (EVSP_Id1, EVSP_Id2)
+        #region Operator <  (NSPId1, NSPId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSP_Id1">A EVSP_Id.</param>
-        /// <param name="EVSP_Id2">Another EVSP_Id.</param>
+        /// <param name="NSPId1">A NSPId.</param>
+        /// <param name="NSPId2">Another NSPId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (NavigationServiceProvider_Id EVSP_Id1, NavigationServiceProvider_Id EVSP_Id2)
+        public static Boolean operator < (NavigationServiceProvider_Id NSPId1, NavigationServiceProvider_Id NSPId2)
         {
 
-            if ((Object) EVSP_Id1 == null)
-                throw new ArgumentNullException("The given EVSP_Id1 must not be null!");
+            if ((Object) NSPId1 == null)
+                throw new ArgumentNullException("The given NSPId1 must not be null!");
 
-            return EVSP_Id1.CompareTo(EVSP_Id2) < 0;
+            return NSPId1.CompareTo(NSPId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (EVSP_Id1, EVSP_Id2)
+        #region Operator <= (NSPId1, NSPId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSP_Id1">A EVSP_Id.</param>
-        /// <param name="EVSP_Id2">Another EVSP_Id.</param>
+        /// <param name="NSPId1">A NSPId.</param>
+        /// <param name="NSPId2">Another NSPId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (NavigationServiceProvider_Id EVSP_Id1, NavigationServiceProvider_Id EVSP_Id2)
+        public static Boolean operator <= (NavigationServiceProvider_Id NSPId1, NavigationServiceProvider_Id NSPId2)
         {
-            return !(EVSP_Id1 > EVSP_Id2);
+            return !(NSPId1 > NSPId2);
         }
 
         #endregion
 
-        #region Operator >  (EVSP_Id1, EVSP_Id2)
+        #region Operator >  (NSPId1, NSPId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSP_Id1">A EVSP_Id.</param>
-        /// <param name="EVSP_Id2">Another EVSP_Id.</param>
+        /// <param name="NSPId1">A NSPId.</param>
+        /// <param name="NSPId2">Another NSPId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (NavigationServiceProvider_Id EVSP_Id1, NavigationServiceProvider_Id EVSP_Id2)
+        public static Boolean operator > (NavigationServiceProvider_Id NSPId1, NavigationServiceProvider_Id NSPId2)
         {
 
-            if ((Object) EVSP_Id1 == null)
-                throw new ArgumentNullException("The given EVSP_Id1 must not be null!");
+            if ((Object) NSPId1 == null)
+                throw new ArgumentNullException("The given NSPId1 must not be null!");
 
-            return EVSP_Id1.CompareTo(EVSP_Id2) > 0;
+            return NSPId1.CompareTo(NSPId2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (EVSP_Id1, EVSP_Id2)
+        #region Operator >= (NSPId1, NSPId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSP_Id1">A EVSP_Id.</param>
-        /// <param name="EVSP_Id2">Another EVSP_Id.</param>
+        /// <param name="NSPId1">A NSPId.</param>
+        /// <param name="NSPId2">Another NSPId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (NavigationServiceProvider_Id EVSP_Id1, NavigationServiceProvider_Id EVSP_Id2)
+        public static Boolean operator >= (NavigationServiceProvider_Id NSPId1, NavigationServiceProvider_Id NSPId2)
         {
-            return !(EVSP_Id1 < EVSP_Id2);
+            return !(NSPId1 < NSPId2);
         }
 
         #endregion
 
         #endregion
 
-        #region IComparable<EVSP_Id> Members
+        #region IComparable<NSPId> Members
 
         #region CompareTo(Object)
 
@@ -250,35 +270,35 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an EVSP_Id.
-            var EVSP_Id = Object as NavigationServiceProvider_Id;
-            if ((Object) EVSP_Id == null)
-                throw new ArgumentException("The given object is not a EVSP_Id!");
+            // Check if the given object is an NSPId.
+            var NSPId = Object as NavigationServiceProvider_Id;
+            if ((Object) NSPId == null)
+                throw new ArgumentException("The given object is not a NSPId!");
 
-            return CompareTo(EVSP_Id);
+            return CompareTo(NSPId);
 
         }
 
         #endregion
 
-        #region CompareTo(EVSP_Id)
+        #region CompareTo(NSPId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSP_Id">An object to compare with.</param>
-        public Int32 CompareTo(NavigationServiceProvider_Id EVSP_Id)
+        /// <param name="NSPId">An object to compare with.</param>
+        public Int32 CompareTo(NavigationServiceProvider_Id NSPId)
         {
 
-            if ((Object) EVSP_Id == null)
-                throw new ArgumentNullException("The given EVSP_Id must not be null!");
+            if ((Object) NSPId == null)
+                throw new ArgumentNullException("The given NSPId must not be null!");
 
-            // Compare the length of the EVSP_Ids
-            var _Result = this.Length.CompareTo(EVSP_Id.Length);
+            // Compare the length of the NSPIds
+            var _Result = this.Length.CompareTo(NSPId.Length);
 
             // If equal: Compare Ids
             if (_Result == 0)
-                _Result = _Id.CompareTo(EVSP_Id._Id);
+                _Result = _Id.CompareTo(NSPId._Id);
 
             return _Result;
 
@@ -288,7 +308,7 @@ namespace com.graphdefined.eMI3
 
         #endregion
 
-        #region IEquatable<EVSP_Id> Members
+        #region IEquatable<NSPId> Members
 
         #region Equals(Object)
 
@@ -303,31 +323,31 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 return false;
 
-            // Check if the given object is an EVSP_Id.
-            var EVSP_Id = Object as NavigationServiceProvider_Id;
-            if ((Object) EVSP_Id == null)
+            // Check if the given object is an NSPId.
+            var NSPId = Object as NavigationServiceProvider_Id;
+            if ((Object) NSPId == null)
                 return false;
 
-            return this.Equals(EVSP_Id);
+            return this.Equals(NSPId);
 
         }
 
         #endregion
 
-        #region Equals(EVSP_Id)
+        #region Equals(NSPId)
 
         /// <summary>
-        /// Compares two EVSP_Ids for equality.
+        /// Compares two NSPIds for equality.
         /// </summary>
-        /// <param name="EVSP_Id">A EVSP_Id to compare with.</param>
+        /// <param name="NSPId">A NSPId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(NavigationServiceProvider_Id EVSP_Id)
+        public Boolean Equals(NavigationServiceProvider_Id NSPId)
         {
 
-            if ((Object) EVSP_Id == null)
+            if ((Object) NSPId == null)
                 return false;
 
-            return _Id.Equals(EVSP_Id._Id);
+            return _Id.Equals(NSPId._Id);
 
         }
 

@@ -41,7 +41,7 @@ namespace com.graphdefined.eMI3
     /// by any entity in the ev charging process to track the ev driver or its
     /// behaviour.
     /// </summary>
-    public class EVServiceProvider : AEntity<EVServiceProvider_Id>,
+    public class EVServiceProvider : AEntity<EVSP_Id>,
                                      IEquatable<EVServiceProvider>, IComparable<EVServiceProvider>, IComparable
     {
 
@@ -121,9 +121,9 @@ namespace com.graphdefined.eMI3
 
         #region EMobilityService
 
-        private readonly IEVSEOperator2HubjectService _EMobilityService;
+        private readonly IRoamingProviderProvided_EVSEOperatorServices _EMobilityService;
 
-        public IEVSEOperator2HubjectService EMobilityService
+        public IRoamingProviderProvided_EVSEOperatorServices EMobilityService
         {
             get
             {
@@ -145,10 +145,10 @@ namespace com.graphdefined.eMI3
         /// </summary>
         /// <param name="Id">The EVSPool Id.</param>
         /// <param name="RoamingNetwork">The corresponding roaming network.</param>
-        internal EVServiceProvider(EVServiceProvider_Id  Id,
+        internal EVServiceProvider(EVSP_Id  Id,
                                    RoamingNetwork        RoamingNetwork)
 
-            : this(Id, RoamingNetwork, new LocalEMobilityService(Id, AuthorizatorId.Parse(Id.ToString() + " Local Authorizator")))
+            : this(Id, RoamingNetwork, new LocalEMobilityService(Id, Authorizator_Id.Parse(Id.ToString() + " Local Authorizator")))
 
         { }
 
@@ -163,9 +163,9 @@ namespace com.graphdefined.eMI3
         /// <param name="Id">The EVSPool Id.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
-        internal EVServiceProvider(EVServiceProvider_Id          Id,
+        internal EVServiceProvider(EVSP_Id          Id,
                                    RoamingNetwork                RoamingNetwork,
-                                   IEVSEOperator2HubjectService  EMobilityService)
+                                   IRoamingProviderProvided_EVSEOperatorServices  EMobilityService)
 
             : base(Id)
 

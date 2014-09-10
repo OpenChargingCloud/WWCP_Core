@@ -44,6 +44,21 @@ namespace com.graphdefined.eMI3
 
         #region Properties
 
+        #region New
+
+        /// <summary>
+        /// Generate a new unique identification of an Electric Vehicle Charging Pool (EVCP Id).
+        /// </summary>
+        public static ChargingPool_Id New
+        {
+            get
+            {
+                return new ChargingPool_Id(Guid.NewGuid().ToString());
+            }
+        }
+
+        #endregion
+
         #region Length
 
         /// <summary>
@@ -63,44 +78,49 @@ namespace com.graphdefined.eMI3
 
         #region Constructor(s)
 
-        #region ChargingPool_Id()
-
-        /// <summary>
-        /// Generate a new Electric Vehicle Charging Pool identification (EVCP Id).
-        /// </summary>
-        public ChargingPool_Id()
-        {
-            _Id = Guid.NewGuid().ToString();
-        }
-
-        #endregion
-
-        #region ChargingPool_Id(String)
-
         /// <summary>
         /// Generate a new Electric Vehicle Charging Pool identification (EVCP Id)
         /// based on the given string.
         /// </summary>
-        public ChargingPool_Id(String String)
+        private ChargingPool_Id(String String)
         {
             _Id = String.Trim();
         }
 
         #endregion
 
-        #endregion
 
-
-        #region New
+        #region Parse(Text)
 
         /// <summary>
-        /// Generate a new EVP_Id.
+        /// Parse the given string as an Electric Vehicle Charging Pool identification (EVCP Id).
         /// </summary>
-        public static ChargingPool_Id New
+        /// <param name="Text">A text representation of an Electric Vehicle Charging Pool identification.</param>
+        public static ChargingPool_Id Parse(String Text)
         {
-            get
+            return new ChargingPool_Id(Text);
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ChargingPoolId)
+
+        /// <summary>
+        /// Parse the given string as an Electric Vehicle Charging Pool identification (EVCP Id).
+        /// </summary>
+        /// <param name="Text">A text representation of an Electric Vehicle Charging Pool identification.</param>
+        /// <param name="ChargingPoolId">The parsed Electric Vehicle Charging Pool identification.</param>
+        public static Boolean TryParse(String Text, out ChargingPool_Id ChargingPoolId)
+        {
+            try
             {
-                return new ChargingPool_Id(Guid.NewGuid().ToString());
+                ChargingPoolId = new ChargingPool_Id(Text);
+                return true;
+            }
+            catch (Exception)
+            {
+                ChargingPoolId = null;
+                return false;
             }
         }
 
@@ -109,7 +129,7 @@ namespace com.graphdefined.eMI3
         #region Clone
 
         /// <summary>
-        /// Clone an EVP_Id.
+        /// Clone this Electric Vehicle Charging Pool identification.
         /// </summary>
         public ChargingPool_Id Clone
         {
@@ -124,119 +144,119 @@ namespace com.graphdefined.eMI3
 
         #region Operator overloading
 
-        #region Operator == (EVP_Id1, EVP_Id2)
+        #region Operator == (ChargingPoolId1, ChargingPoolId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVP_Id1">A EVP_Id.</param>
-        /// <param name="EVP_Id2">Another EVP_Id.</param>
+        /// <param name="ChargingPoolId1">A ChargingPoolId.</param>
+        /// <param name="ChargingPoolId2">Another ChargingPoolId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingPool_Id EVP_Id1, ChargingPool_Id EVP_Id2)
+        public static Boolean operator == (ChargingPool_Id ChargingPoolId1, ChargingPool_Id ChargingPoolId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(EVP_Id1, EVP_Id2))
+            if (Object.ReferenceEquals(ChargingPoolId1, ChargingPoolId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) EVP_Id1 == null) || ((Object) EVP_Id2 == null))
+            if (((Object) ChargingPoolId1 == null) || ((Object) ChargingPoolId2 == null))
                 return false;
 
-            return EVP_Id1.Equals(EVP_Id2);
+            return ChargingPoolId1.Equals(ChargingPoolId2);
 
         }
 
         #endregion
 
-        #region Operator != (EVP_Id1, EVP_Id2)
+        #region Operator != (ChargingPoolId1, ChargingPoolId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVP_Id1">A EVP_Id.</param>
-        /// <param name="EVP_Id2">Another EVP_Id.</param>
+        /// <param name="ChargingPoolId1">A ChargingPoolId.</param>
+        /// <param name="ChargingPoolId2">Another ChargingPoolId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingPool_Id EVP_Id1, ChargingPool_Id EVP_Id2)
+        public static Boolean operator != (ChargingPool_Id ChargingPoolId1, ChargingPool_Id ChargingPoolId2)
         {
-            return !(EVP_Id1 == EVP_Id2);
+            return !(ChargingPoolId1 == ChargingPoolId2);
         }
 
         #endregion
 
-        #region Operator <  (EVP_Id1, EVP_Id2)
+        #region Operator <  (ChargingPoolId1, ChargingPoolId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVP_Id1">A EVP_Id.</param>
-        /// <param name="EVP_Id2">Another EVP_Id.</param>
+        /// <param name="ChargingPoolId1">A ChargingPoolId.</param>
+        /// <param name="ChargingPoolId2">Another ChargingPoolId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingPool_Id EVP_Id1, ChargingPool_Id EVP_Id2)
+        public static Boolean operator < (ChargingPool_Id ChargingPoolId1, ChargingPool_Id ChargingPoolId2)
         {
 
-            if ((Object) EVP_Id1 == null)
-                throw new ArgumentNullException("The given EVP_Id1 must not be null!");
+            if ((Object) ChargingPoolId1 == null)
+                throw new ArgumentNullException("The given ChargingPoolId1 must not be null!");
 
-            return EVP_Id1.CompareTo(EVP_Id2) < 0;
+            return ChargingPoolId1.CompareTo(ChargingPoolId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (EVP_Id1, EVP_Id2)
+        #region Operator <= (ChargingPoolId1, ChargingPoolId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVP_Id1">A EVP_Id.</param>
-        /// <param name="EVP_Id2">Another EVP_Id.</param>
+        /// <param name="ChargingPoolId1">A ChargingPoolId.</param>
+        /// <param name="ChargingPoolId2">Another ChargingPoolId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingPool_Id EVP_Id1, ChargingPool_Id EVP_Id2)
+        public static Boolean operator <= (ChargingPool_Id ChargingPoolId1, ChargingPool_Id ChargingPoolId2)
         {
-            return !(EVP_Id1 > EVP_Id2);
+            return !(ChargingPoolId1 > ChargingPoolId2);
         }
 
         #endregion
 
-        #region Operator >  (EVP_Id1, EVP_Id2)
+        #region Operator >  (ChargingPoolId1, ChargingPoolId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVP_Id1">A EVP_Id.</param>
-        /// <param name="EVP_Id2">Another EVP_Id.</param>
+        /// <param name="ChargingPoolId1">A ChargingPoolId.</param>
+        /// <param name="ChargingPoolId2">Another ChargingPoolId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingPool_Id EVP_Id1, ChargingPool_Id EVP_Id2)
+        public static Boolean operator > (ChargingPool_Id ChargingPoolId1, ChargingPool_Id ChargingPoolId2)
         {
 
-            if ((Object) EVP_Id1 == null)
-                throw new ArgumentNullException("The given EVP_Id1 must not be null!");
+            if ((Object) ChargingPoolId1 == null)
+                throw new ArgumentNullException("The given ChargingPoolId1 must not be null!");
 
-            return EVP_Id1.CompareTo(EVP_Id2) > 0;
+            return ChargingPoolId1.CompareTo(ChargingPoolId2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (EVP_Id1, EVP_Id2)
+        #region Operator >= (ChargingPoolId1, ChargingPoolId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVP_Id1">A EVP_Id.</param>
-        /// <param name="EVP_Id2">Another EVP_Id.</param>
+        /// <param name="ChargingPoolId1">A ChargingPoolId.</param>
+        /// <param name="ChargingPoolId2">Another ChargingPoolId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingPool_Id EVP_Id1, ChargingPool_Id EVP_Id2)
+        public static Boolean operator >= (ChargingPool_Id ChargingPoolId1, ChargingPool_Id ChargingPoolId2)
         {
-            return !(EVP_Id1 < EVP_Id2);
+            return !(ChargingPoolId1 < ChargingPoolId2);
         }
 
         #endregion
 
         #endregion
 
-        #region IComparable<EVP_Id> Members
+        #region IComparable<ChargingPool_Id> Members
 
         #region CompareTo(Object)
 
@@ -250,35 +270,35 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an EVP_Id.
-            var EVP_Id = Object as ChargingPool_Id;
-            if ((Object) EVP_Id == null)
-                throw new ArgumentException("The given object is not a EVP_Id!");
+            // Check if the given object is an ChargingPoolId.
+            var ChargingPoolId = Object as ChargingPool_Id;
+            if ((Object) ChargingPoolId == null)
+                throw new ArgumentException("The given object is not a ChargingPoolId!");
 
-            return CompareTo(EVP_Id);
+            return CompareTo(ChargingPoolId);
 
         }
 
         #endregion
 
-        #region CompareTo(EVP_Id)
+        #region CompareTo(ChargingPoolId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVP_Id">An object to compare with.</param>
-        public Int32 CompareTo(ChargingPool_Id EVP_Id)
+        /// <param name="ChargingPoolId">An object to compare with.</param>
+        public Int32 CompareTo(ChargingPool_Id ChargingPoolId)
         {
 
-            if ((Object) EVP_Id == null)
-                throw new ArgumentNullException("The given EVP_Id must not be null!");
+            if ((Object) ChargingPoolId == null)
+                throw new ArgumentNullException("The given ChargingPoolId must not be null!");
 
-            // Compare the length of the EVP_Ids
-            var _Result = this.Length.CompareTo(EVP_Id.Length);
+            // Compare the length of the ChargingPoolIds
+            var _Result = this.Length.CompareTo(ChargingPoolId.Length);
 
             // If equal: Compare Ids
             if (_Result == 0)
-                _Result = _Id.CompareTo(EVP_Id._Id);
+                _Result = _Id.CompareTo(ChargingPoolId._Id);
 
             return _Result;
 
@@ -288,7 +308,7 @@ namespace com.graphdefined.eMI3
 
         #endregion
 
-        #region IEquatable<EVP_Id> Members
+        #region IEquatable<ChargingPool_Id> Members
 
         #region Equals(Object)
 
@@ -303,31 +323,31 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 return false;
 
-            // Check if the given object is an EVP_Id.
-            var EVP_Id = Object as ChargingPool_Id;
-            if ((Object) EVP_Id == null)
+            // Check if the given object is an ChargingPoolId.
+            var ChargingPoolId = Object as ChargingPool_Id;
+            if ((Object) ChargingPoolId == null)
                 return false;
 
-            return this.Equals(EVP_Id);
+            return this.Equals(ChargingPoolId);
 
         }
 
         #endregion
 
-        #region Equals(EVP_Id)
+        #region Equals(ChargingPoolId)
 
         /// <summary>
-        /// Compares two EVP_Ids for equality.
+        /// Compares two ChargingPoolIds for equality.
         /// </summary>
-        /// <param name="EVP_Id">A EVP_Id to compare with.</param>
+        /// <param name="ChargingPoolId">A ChargingPoolId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingPool_Id EVP_Id)
+        public Boolean Equals(ChargingPool_Id ChargingPoolId)
         {
 
-            if ((Object) EVP_Id == null)
+            if ((Object) ChargingPoolId == null)
                 return false;
 
-            return _Id.Equals(EVP_Id._Id);
+            return _Id.Equals(ChargingPoolId._Id);
 
         }
 

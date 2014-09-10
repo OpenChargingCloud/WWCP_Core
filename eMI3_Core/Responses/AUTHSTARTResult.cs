@@ -27,7 +27,7 @@ namespace com.graphdefined.eMI3.LocalService
     public class AUTHSTARTResult : AUTHResult
     {
 
-        public AUTHSTARTResult(AuthorizatorId AuthorizatorId)
+        public AUTHSTARTResult(Authorizator_Id AuthorizatorId)
             : base(AuthorizatorId)
         { }
 

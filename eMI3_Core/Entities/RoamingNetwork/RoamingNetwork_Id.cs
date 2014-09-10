@@ -25,7 +25,7 @@ namespace com.graphdefined.eMI3
 {
 
     /// <summary>
-    /// The unique identification of a playground.
+    /// The unique identification of an Electric Vehicle Roaming Network (EVRN Id).
     /// </summary>
     public class RoamingNetwork_Id : IId,
                                      IEquatable<RoamingNetwork_Id>,
@@ -43,6 +43,21 @@ namespace com.graphdefined.eMI3
         #endregion
 
         #region Properties
+
+        #region New
+
+        /// <summary>
+        /// Generate a new unique identification of an Electric Vehicle Roaming Network (EVRN Id).
+        /// </summary>
+        public static RoamingNetwork_Id New
+        {
+            get
+            {
+                return new RoamingNetwork_Id(Guid.NewGuid().ToString());
+            }
+        }
+
+        #endregion
 
         #region Length
 
@@ -63,22 +78,8 @@ namespace com.graphdefined.eMI3
 
         #region Constructor(s)
 
-        #region RoamingNetwork_Id()
-
         /// <summary>
-        /// Generate a new Electric Vehicle Supply Equipment Operator (EVSE Op) identification.
-        /// </summary>
-        public RoamingNetwork_Id()
-        {
-            _Id = Guid.NewGuid().ToString();
-        }
-
-        #endregion
-
-        #region RoamingNetwork_Id(String)
-
-        /// <summary>
-        /// Generate a new Electric Vehicle Supply Equipment Operator (EVSE Op) identification.
+        /// Generate a new Electric Vehicle Roaming Network (EVRN Id) identification.
         /// based on the given string.
         /// </summary>
         public RoamingNetwork_Id(String String)
@@ -88,32 +89,16 @@ namespace com.graphdefined.eMI3
 
         #endregion
 
-        #endregion
 
-
-        #region New
+        #region Parse(Text)
 
         /// <summary>
-        /// Generate a new RoamingNetwork_Id.
+        /// Parse the given string as an Electric Vehicle Roaming Network (EVRN Id).
         /// </summary>
-        public static RoamingNetwork_Id New
+        /// <param name="Text">A text representation of an Electric Vehicle Roaming Network identification.</param>
+        public static RoamingNetwork_Id Parse(String Text)
         {
-            get
-            {
-                return new RoamingNetwork_Id(Guid.NewGuid().ToString());
-            }
-        }
-
-        #endregion
-
-        #region Parse(RoamingNetworkId)
-
-        /// <summary>
-        /// Parse the given string as an Roaming Network identification.
-        /// </summary>
-        public static RoamingNetwork_Id Parse(String RoamingNetworkId)
-        {
-            return new RoamingNetwork_Id(RoamingNetworkId);
+            return new RoamingNetwork_Id(Text);
         }
 
         #endregion
@@ -121,8 +106,10 @@ namespace com.graphdefined.eMI3
         #region TryParse(Text, out RoamingNetworkId)
 
         /// <summary>
-        /// Parse the given string as an Roaming Network identification.
+        /// Parse the given string as an Electric Vehicle Roaming Network (EVRN Id).
         /// </summary>
+        /// <param name="Text">A text representation of an Electric Vehicle Roaming Network identification.</param>
+        /// <param name="RoamingNetworkId">The parsed Electric Vehicle Roaming Network identification.</param>
         public static Boolean TryParse(String Text, out RoamingNetwork_Id RoamingNetworkId)
         {
             try
@@ -130,7 +117,7 @@ namespace com.graphdefined.eMI3
                 RoamingNetworkId = new RoamingNetwork_Id(Text);
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 RoamingNetworkId = null;
                 return false;
@@ -142,7 +129,7 @@ namespace com.graphdefined.eMI3
         #region Clone
 
         /// <summary>
-        /// Clone an RoamingNetwork_Id.
+        /// Clone this Electric Vehicle Roaming Network identification.
         /// </summary>
         public RoamingNetwork_Id Clone
         {
@@ -157,112 +144,112 @@ namespace com.graphdefined.eMI3
 
         #region Operator overloading
 
-        #region Operator == (RoamingNetwork_Id1, RoamingNetwork_Id2)
+        #region Operator == (RoamingNetworkId1, RoamingNetworkId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetwork_Id1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetwork_Id2">Another RoamingNetwork_Id.</param>
+        /// <param name="RoamingNetworkId1">A RoamingNetwork_Id.</param>
+        /// <param name="RoamingNetworkId2">Another RoamingNetwork_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (RoamingNetwork_Id RoamingNetwork_Id1, RoamingNetwork_Id RoamingNetwork_Id2)
+        public static Boolean operator == (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(RoamingNetwork_Id1, RoamingNetwork_Id2))
+            if (Object.ReferenceEquals(RoamingNetworkId1, RoamingNetworkId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) RoamingNetwork_Id1 == null) || ((Object) RoamingNetwork_Id2 == null))
+            if (((Object) RoamingNetworkId1 == null) || ((Object) RoamingNetworkId2 == null))
                 return false;
 
-            return RoamingNetwork_Id1.Equals(RoamingNetwork_Id2);
+            return RoamingNetworkId1.Equals(RoamingNetworkId2);
 
         }
 
         #endregion
 
-        #region Operator != (RoamingNetwork_Id1, RoamingNetwork_Id2)
+        #region Operator != (RoamingNetworkId1, RoamingNetworkId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetwork_Id1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetwork_Id2">Another RoamingNetwork_Id.</param>
+        /// <param name="RoamingNetworkId1">A RoamingNetwork_Id.</param>
+        /// <param name="RoamingNetworkId2">Another RoamingNetwork_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (RoamingNetwork_Id RoamingNetwork_Id1, RoamingNetwork_Id RoamingNetwork_Id2)
+        public static Boolean operator != (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
         {
-            return !(RoamingNetwork_Id1 == RoamingNetwork_Id2);
+            return !(RoamingNetworkId1 == RoamingNetworkId2);
         }
 
         #endregion
 
-        #region Operator <  (RoamingNetwork_Id1, RoamingNetwork_Id2)
+        #region Operator <  (RoamingNetworkId1, RoamingNetworkId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetwork_Id1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetwork_Id2">Another RoamingNetwork_Id.</param>
+        /// <param name="RoamingNetworkId1">A RoamingNetwork_Id.</param>
+        /// <param name="RoamingNetworkId2">Another RoamingNetwork_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (RoamingNetwork_Id RoamingNetwork_Id1, RoamingNetwork_Id RoamingNetwork_Id2)
+        public static Boolean operator < (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
         {
 
-            if ((Object) RoamingNetwork_Id1 == null)
-                throw new ArgumentNullException("The given RoamingNetwork_Id1 must not be null!");
+            if ((Object) RoamingNetworkId1 == null)
+                throw new ArgumentNullException("The given RoamingNetworkId1 must not be null!");
 
-            return RoamingNetwork_Id1.CompareTo(RoamingNetwork_Id2) < 0;
-
-        }
-
-        #endregion
-
-        #region Operator <= (RoamingNetwork_Id1, RoamingNetwork_Id2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="RoamingNetwork_Id1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetwork_Id2">Another RoamingNetwork_Id.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator <= (RoamingNetwork_Id RoamingNetwork_Id1, RoamingNetwork_Id RoamingNetwork_Id2)
-        {
-            return !(RoamingNetwork_Id1 > RoamingNetwork_Id2);
-        }
-
-        #endregion
-
-        #region Operator >  (RoamingNetwork_Id1, RoamingNetwork_Id2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="RoamingNetwork_Id1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetwork_Id2">Another RoamingNetwork_Id.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator > (RoamingNetwork_Id RoamingNetwork_Id1, RoamingNetwork_Id RoamingNetwork_Id2)
-        {
-
-            if ((Object) RoamingNetwork_Id1 == null)
-                throw new ArgumentNullException("The given RoamingNetwork_Id1 must not be null!");
-
-            return RoamingNetwork_Id1.CompareTo(RoamingNetwork_Id2) > 0;
+            return RoamingNetworkId1.CompareTo(RoamingNetworkId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator >= (RoamingNetwork_Id1, RoamingNetwork_Id2)
+        #region Operator <= (RoamingNetworkId1, RoamingNetworkId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetwork_Id1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetwork_Id2">Another RoamingNetwork_Id.</param>
+        /// <param name="RoamingNetworkId1">A RoamingNetwork_Id.</param>
+        /// <param name="RoamingNetworkId2">Another RoamingNetwork_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (RoamingNetwork_Id RoamingNetwork_Id1, RoamingNetwork_Id RoamingNetwork_Id2)
+        public static Boolean operator <= (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
         {
-            return !(RoamingNetwork_Id1 < RoamingNetwork_Id2);
+            return !(RoamingNetworkId1 > RoamingNetworkId2);
+        }
+
+        #endregion
+
+        #region Operator >  (RoamingNetworkId1, RoamingNetworkId2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="RoamingNetworkId1">A RoamingNetwork_Id.</param>
+        /// <param name="RoamingNetworkId2">Another RoamingNetwork_Id.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
+        {
+
+            if ((Object) RoamingNetworkId1 == null)
+                throw new ArgumentNullException("The given RoamingNetworkId1 must not be null!");
+
+            return RoamingNetworkId1.CompareTo(RoamingNetworkId2) > 0;
+
+        }
+
+        #endregion
+
+        #region Operator >= (RoamingNetworkId1, RoamingNetworkId2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="RoamingNetworkId1">A RoamingNetwork_Id.</param>
+        /// <param name="RoamingNetworkId2">Another RoamingNetwork_Id.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
+        {
+            return !(RoamingNetworkId1 < RoamingNetworkId2);
         }
 
         #endregion
@@ -283,37 +270,30 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an RoamingNetwork_Id.
-            var RoamingNetwork_Id = Object as RoamingNetwork_Id;
-            if ((Object) RoamingNetwork_Id == null)
-                throw new ArgumentException("The given object is not a RoamingNetwork_Id!");
+            // Check if the given object is an RoamingNetworkId.
+            var RoamingNetworkId = Object as RoamingNetwork_Id;
+            if ((Object) RoamingNetworkId == null)
+                throw new ArgumentException("The given object is not a RoamingNetworkId!");
 
-            return CompareTo(RoamingNetwork_Id);
+            return CompareTo(RoamingNetworkId);
 
         }
 
         #endregion
 
-        #region CompareTo(RoamingNetwork_Id)
+        #region CompareTo(RoamingNetworkId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetwork_Id">An object to compare with.</param>
-        public Int32 CompareTo(RoamingNetwork_Id RoamingNetwork_Id)
+        /// <param name="RoamingNetworkId">An object to compare with.</param>
+        public Int32 CompareTo(RoamingNetwork_Id RoamingNetworkId)
         {
 
-            if ((Object) RoamingNetwork_Id == null)
-                throw new ArgumentNullException("The given RoamingNetwork_Id must not be null!");
+            if ((Object) RoamingNetworkId == null)
+                throw new ArgumentNullException("The given RoamingNetworkId must not be null!");
 
-            // Compare the length of the RoamingNetwork_Ids
-            var _Result = this.Length.CompareTo(RoamingNetwork_Id.Length);
-
-            // If equal: Compare Ids
-            if (_Result == 0)
-                _Result = _Id.CompareTo(RoamingNetwork_Id._Id);
-
-            return _Result;
+            return _Id.CompareTo(RoamingNetworkId._Id);
 
         }
 
@@ -336,31 +316,31 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 return false;
 
-            // Check if the given object is an RoamingNetwork_Id.
-            var RoamingNetwork_Id = Object as RoamingNetwork_Id;
-            if ((Object) RoamingNetwork_Id == null)
+            // Check if the given object is an RoamingNetworkId.
+            var RoamingNetworkId = Object as RoamingNetwork_Id;
+            if ((Object) RoamingNetworkId == null)
                 return false;
 
-            return this.Equals(RoamingNetwork_Id);
+            return this.Equals(RoamingNetworkId);
 
         }
 
         #endregion
 
-        #region Equals(RoamingNetwork_Id)
+        #region Equals(RoamingNetworkId)
 
         /// <summary>
-        /// Compares two RoamingNetwork_Ids for equality.
+        /// Compares two RoamingNetworkIds for equality.
         /// </summary>
-        /// <param name="RoamingNetwork_Id">A RoamingNetwork_Id to compare with.</param>
+        /// <param name="RoamingNetworkId">A RoamingNetworkId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(RoamingNetwork_Id RoamingNetwork_Id)
+        public Boolean Equals(RoamingNetwork_Id RoamingNetworkId)
         {
 
-            if ((Object) RoamingNetwork_Id == null)
+            if ((Object) RoamingNetworkId == null)
                 return false;
 
-            return _Id.Equals(RoamingNetwork_Id._Id);
+            return _Id.Equals(RoamingNetworkId._Id);
 
         }
 

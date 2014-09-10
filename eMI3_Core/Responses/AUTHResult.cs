@@ -39,14 +39,14 @@ namespace com.graphdefined.eMI3.LocalService
         #region Properties
 
         public AuthorizationResult   AuthorizationResult   { get; set; }
-        public ChargingSessionId     SessionId             { get; set; }
-        public EVServiceProvider_Id  ProviderId            { get; set; }
+        public ChargingSession_Id     SessionId             { get; set; }
+        public EVSP_Id  ProviderId            { get; set; }
 
         #endregion
 
         #region Constructor(s)
 
-        public AUTHResult(AuthorizatorId AuthorizatorId)
+        public AUTHResult(Authorizator_Id AuthorizatorId)
             : base(AuthorizatorId)
         { }
 

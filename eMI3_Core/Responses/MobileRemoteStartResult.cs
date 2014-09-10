@@ -35,7 +35,7 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region Constructor(s)
 
-        public MobileRemoteStartResult(AuthorizatorId AuthorizatorId)
+        public MobileRemoteStartResult(Authorizator_Id AuthorizatorId)
             : base(AuthorizatorId)
         { }
 

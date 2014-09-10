@@ -60,57 +60,27 @@ namespace com.graphdefined.eMI3
 
         #region Constructor(s)
 
-        #region eMA_Id()
-
-        /// <summary>
-        /// Generate a new Electric Vehicle Mobility Account (driver contract) identification (eMA_Id).
-        /// </summary>
-        public eMA_Id()
-        {
-            _Id = Guid.NewGuid().ToString();
-        }
-
-        #endregion
-
-        #region eMA_Id(String)
-
         /// <summary>
         /// Generate a new Electric Vehicle Mobility Account (driver contract) identification (eMA_Id)
         /// based on the given string.
         /// </summary>
-        public eMA_Id(String String)
+        private eMA_Id(String String)
         {
             _Id = String.Trim();
         }
 
         #endregion
 
-        #endregion
 
-
-        #region New
+        #region Parse(Text)
 
         /// <summary>
-        /// Generate a new eMA_Id.
+        /// Parse the given string as an Electric Mobility Account (driver contract) (eMA_Id).
         /// </summary>
-        public static eMA_Id New
+        /// <param name="Text">A text representation of an Electric Mobility Account (driver contract) identification.</param>
+        public static eMA_Id Parse(String Text)
         {
-            get
-            {
-                return new eMA_Id(Guid.NewGuid().ToString());
-            }
-        }
-
-        #endregion
-
-        #region Parse(eMAId)
-
-        /// <summary>
-        /// Parse the given string as an eMA identification.
-        /// </summary>
-        public static eMA_Id Parse(String eMAId)
-        {
-            return new eMA_Id(eMAId);
+            return new eMA_Id(Text);
         }
 
         #endregion
@@ -118,8 +88,10 @@ namespace com.graphdefined.eMI3
         #region TryParse(Text, out eMAId)
 
         /// <summary>
-        /// Parse the given string as an eMA identification.
+        /// Parse the given string as an Electric Mobility Account (driver contract) (eMA_Id).
         /// </summary>
+        /// <param name="Text">A text representation of an Electric Mobility Account (driver contract) identification.</param>
+        /// <param name="eMAId">The parsed Electric Mobility Account (driver contract) identification.</param>
         public static Boolean TryParse(String Text, out eMA_Id eMAId)
         {
             try
@@ -127,7 +99,7 @@ namespace com.graphdefined.eMI3
                 eMAId = new eMA_Id(Text);
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 eMAId = null;
                 return false;
@@ -139,7 +111,7 @@ namespace com.graphdefined.eMI3
         #region Clone
 
         /// <summary>
-        /// Clone an eMA_Id.
+        /// Clone this Electric Mobility Account (driver contract) identification.
         /// </summary>
         public eMA_Id Clone
         {
@@ -280,35 +252,35 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an eMA_Id.
-            var eMA_Id = Object as eMA_Id;
-            if ((Object) eMA_Id == null)
-                throw new ArgumentException("The given object is not a eMA_Id!");
+            // Check if the given object is an eMAId.
+            var eMAId = Object as eMA_Id;
+            if ((Object) eMAId == null)
+                throw new ArgumentException("The given object is not a eMAId!");
 
-            return CompareTo(eMA_Id);
+            return CompareTo(eMAId);
 
         }
 
         #endregion
 
-        #region CompareTo(eMA_Id)
+        #region CompareTo(eMAId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id">An object to compare with.</param>
-        public Int32 CompareTo(eMA_Id eMA_Id)
+        /// <param name="eMAId">An object to compare with.</param>
+        public Int32 CompareTo(eMA_Id eMAId)
         {
 
-            if ((Object) eMA_Id == null)
-                throw new ArgumentNullException("The given eMA_Id must not be null!");
+            if ((Object) eMAId == null)
+                throw new ArgumentNullException("The given eMAId must not be null!");
 
-            // Compare the length of the eMA_Ids
-            var _Result = this.Length.CompareTo(eMA_Id.Length);
+            // Compare the length of the eMAIds
+            var _Result = this.Length.CompareTo(eMAId.Length);
 
             // If equal: Compare Ids
             if (_Result == 0)
-                _Result = _Id.CompareTo(eMA_Id._Id);
+                _Result = _Id.CompareTo(eMAId._Id);
 
             return _Result;
 
@@ -333,31 +305,31 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 return false;
 
-            // Check if the given object is an eMA_Id.
-            var eMA_Id = Object as eMA_Id;
-            if ((Object) eMA_Id == null)
+            // Check if the given object is an eMAId.
+            var eMAId = Object as eMA_Id;
+            if ((Object) eMAId == null)
                 return false;
 
-            return this.Equals(eMA_Id);
+            return this.Equals(eMAId);
 
         }
 
         #endregion
 
-        #region Equals(eMA_Id)
+        #region Equals(eMAId)
 
         /// <summary>
-        /// Compares two eMA_Ids for equality.
+        /// Compares two eMAIds for equality.
         /// </summary>
-        /// <param name="eMA_Id">A eMA_Id to compare with.</param>
+        /// <param name="eMAId">A eMAId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(eMA_Id eMA_Id)
+        public Boolean Equals(eMA_Id eMAId)
         {
 
-            if ((Object) eMA_Id == null)
+            if ((Object) eMAId == null)
                 return false;
 
-            return _Id.Equals(eMA_Id._Id);
+            return _Id.Equals(eMAId._Id);
 
         }
 

@@ -41,15 +41,15 @@ namespace com.graphdefined.eMI3.LocalService
     /// implementations. The SessionId is used as a minimal state and routing
     /// key to avoid flooding.
     /// </summary>
-    public class RequestRouter : IEVSEOperator2HubjectService,
-                                 IHubject2EVSEOperatorService
+    public class RequestRouter : IRoamingProviderProvided_EVSEOperatorServices,
+                                 IEVSEOperatorProvidedServices
     {
 
         #region Data
 
-        private readonly Dictionary<UInt32,            IEVSEOperator2HubjectService>  AuthenticationServices;
-        private readonly Dictionary<ChargingSessionId, IEVSEOperator2HubjectService>  SessionIdAuthenticatorCache;
-        private readonly Dictionary<EVSEOperator_Id,   IHubject2EVSEOperatorService>  EVSEOperatorLookup;
+        private readonly Dictionary<UInt32,             IRoamingProviderProvided_EVSEOperatorServices>   AuthenticationServices;
+        private readonly Dictionary<ChargingSession_Id, IRoamingProviderProvided_EVSEOperatorServices>   SessionIdAuthenticatorCache;
+        private readonly Dictionary<EVSEOperator_Id,    IEVSEOperatorProvidedServices>  EVSEOperatorLookup;
 
         #endregion
 
@@ -71,9 +71,9 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region AuthorizatorId
 
-        private readonly AuthorizatorId _AuthorizatorId;
+        private readonly Authorizator_Id _AuthorizatorId;
 
-        public AuthorizatorId AuthorizatorId
+        public Authorizator_Id AuthorizatorId
         {
             get
             {
@@ -94,14 +94,14 @@ namespace com.graphdefined.eMI3.LocalService
         #region Constructor(s)
 
         public RequestRouter(RoamingNetwork_Id  RoamingNetwork,
-                             AuthorizatorId     AuthorizatorId = null)
+                             Authorizator_Id     AuthorizatorId = null)
         {
 
             this._RoamingNetwork              = RoamingNetwork;
-            this._AuthorizatorId              = (AuthorizatorId == null) ? AuthorizatorId.Parse("Belectric Drive EV Gateway") : AuthorizatorId;
-            this.AuthenticationServices       = new Dictionary<UInt32,            IEVSEOperator2HubjectService>();
-            this.SessionIdAuthenticatorCache  = new Dictionary<ChargingSessionId, IEVSEOperator2HubjectService>();
-            this.EVSEOperatorLookup           = new Dictionary<EVSEOperator_Id,   IHubject2EVSEOperatorService>();
+            this._AuthorizatorId              = (AuthorizatorId == null) ? Authorizator_Id.Parse("Belectric Drive EV Gateway") : AuthorizatorId;
+            this.AuthenticationServices       = new Dictionary<UInt32,            IRoamingProviderProvided_EVSEOperatorServices>();
+            this.SessionIdAuthenticatorCache  = new Dictionary<ChargingSession_Id, IRoamingProviderProvided_EVSEOperatorServices>();
+            this.EVSEOperatorLookup           = new Dictionary<EVSEOperator_Id,   IEVSEOperatorProvidedServices>();
 
         }
 
@@ -111,7 +111,7 @@ namespace com.graphdefined.eMI3.LocalService
         #region RegisterService(Priority, AuthenticationService)
 
         public Boolean RegisterService(UInt32                        Priority,
-                                       IEVSEOperator2HubjectService  AuthenticationService)
+                                       IRoamingProviderProvided_EVSEOperatorServices  AuthenticationService)
         {
 
             lock (AuthenticationServices)
@@ -136,7 +136,7 @@ namespace com.graphdefined.eMI3.LocalService
 
         public AUTHSTARTResult AuthorizeStart(EVSEOperator_Id    OperatorId,
                                               EVSE_Id            EVSEId,
-                                              ChargingSessionId  PartnerSessionId,
+                                              ChargingSession_Id  PartnerSessionId,
                                               Token              UID)
         {
 
@@ -198,8 +198,8 @@ namespace com.graphdefined.eMI3.LocalService
 
         public AUTHSTOPResult AuthorizeStop(EVSEOperator_Id    OperatorId,
                                             EVSE_Id            EVSEId,
-                                            ChargingSessionId  SessionId,
-                                            ChargingSessionId  PartnerSessionId,
+                                            ChargingSession_Id  SessionId,
+                                            ChargingSession_Id  PartnerSessionId,
                                             Token              UID)
         {
 
@@ -207,7 +207,7 @@ namespace com.graphdefined.eMI3.LocalService
             {
 
                 AUTHSTOPResult         AuthStopResult;
-                IEVSEOperator2HubjectService  AuthenticationService;
+                IRoamingProviderProvided_EVSEOperatorServices  AuthenticationService;
 
                 #region An authenticator was found for the upstream SessionId!
 
@@ -258,27 +258,28 @@ namespace com.graphdefined.eMI3.LocalService
 
         #endregion
 
-        #region SendCDR(EVSEId, SessionId, PartnerSessionId, PartnerProductId, UID, eMAId, ChargeStart, ChargeEnd, SessionStart = null, SessionEnd = null, MeterValueStart = null, MeterValueEnd = null)
+        #region SendCDR(EVSEId, SessionId, PartnerSessionId, PartnerProductId, ChargeStart, ChargeEnd, UID = null, eMAId = null, SessionStart = null, SessionEnd = null, MeterValueStart = null, MeterValueEnd = null)
 
-        public SENDCDRResult SendCDR(EVSE_Id            EVSEId,
-                                     ChargingSessionId  SessionId,
-                                     ChargingSessionId  PartnerSessionId,
-                                     String             PartnerProductId,
-                                     Token              UID,
-                                     eMA_Id             eMAId,
-                                     DateTime           ChargeStart,
-                                     DateTime           ChargeEnd,
-                                     DateTime?          SessionStart    = null,
-                                     DateTime?          SessionEnd      = null,
-                                     Double?            MeterValueStart = null,
-                                     Double?            MeterValueEnd   = null)
+        public SENDCDRResult SendCDR(EVSE_Id             EVSEId,
+                                     ChargingSession_Id  SessionId,
+                                     ChargingSession_Id  PartnerSessionId,
+                                     String              PartnerProductId,
+                                     DateTime            ChargeStart,
+                                     DateTime            ChargeEnd,
+                                     Token               UID             = null,
+                                     eMA_Id              eMAId           = null,
+                                     DateTime?           SessionStart    = null,
+                                     DateTime?           SessionEnd      = null,
+                                     Double?             MeterValueStart = null,
+                                     Double?             MeterValueEnd   = null)
+
         {
 
             lock (AuthenticationServices)
             {
 
-                SENDCDRResult              SENDCDRResult;
-                IEVSEOperator2HubjectService  AuthenticationService;
+                SENDCDRResult                                  SENDCDRResult;
+                IRoamingProviderProvided_EVSEOperatorServices  AuthenticationService;
 
                 #region An authenticator was found for the upstream SessionId!
 
@@ -289,10 +290,10 @@ namespace com.graphdefined.eMI3.LocalService
                                                                   SessionId,
                                                                   PartnerSessionId,
                                                                   PartnerProductId,
-                                                                  UID,
-                                                                  eMAId,
                                                                   ChargeStart,
                                                                   ChargeEnd,
+                                                                  UID,
+                                                                  eMAId,
                                                                   SessionStart,
                                                                   SessionEnd,
                                                                   MeterValueStart,
@@ -323,10 +324,10 @@ namespace com.graphdefined.eMI3.LocalService
                                                                        SessionId,
                                                                        PartnerSessionId,
                                                                        PartnerProductId,
-                                                                       UID,
-                                                                       eMAId,
                                                                        ChargeStart,
                                                                        ChargeEnd,
+                                                                       UID,
+                                                                       eMAId,
                                                                        SessionStart,
                                                                        SessionEnd,
                                                                        MeterValueStart,
@@ -348,9 +349,9 @@ namespace com.graphdefined.eMI3.LocalService
                 #region ...else fail!
 
                 return new SENDCDRResult(AuthorizatorId) {
-                    State                = false,
-                    PartnerSessionId     = PartnerSessionId,
-                    Description          = "No authorization service returned a positiv result!"
+                    State             = false,
+                    PartnerSessionId  = PartnerSessionId,
+                    Description       = "No authorization service returned a positiv result!"
                 };
 
                 #endregion
@@ -362,13 +363,21 @@ namespace com.graphdefined.eMI3.LocalService
         #endregion
 
 
+        #region RemoteStart(EVSEId, SessionId, ProviderId, eMAId, EventTrackingId = null)
 
-        #region RemoteStart(EVSEId, SessionId, ProviderId, eMAId)
-
+        /// <summary>
+        /// Initiate a remote start of a charging station socket outlet.
+        /// </summary>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <param name="EventTrackingId">An optional unique identification for tracking related events.</param>
         public RemoteStartResult RemoteStart(EVSE_Id               EVSEId,
                                              String                SessionId,
-                                             EVServiceProvider_Id  ProviderId,
-                                             eMA_Id                eMAId)
+                                             EVSP_Id  ProviderId,
+                                             eMA_Id                eMAId,
+                                             EventTracking_Id      EventTrackingId = null)
         {
 
             lock (AuthenticationServices)
@@ -470,11 +479,19 @@ namespace com.graphdefined.eMI3.LocalService
 
         #endregion
 
-        #region RemoteStop(EVSEId, SessionId, ProviderId)
+        #region RemoteStop(EVSEId, SessionId, ProviderId, EventTrackingId = null)
 
+        /// <summary>
+        /// Initiate a remote stop of a charging station socket outlet.
+        /// </summary>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <param name="EventTrackingId">An optional unique identification for tracking related events.</param>
         public RemoteStopResult RemoteStop(EVSE_Id               EVSEId,
                                            String                SessionId,
-                                           EVServiceProvider_Id  ProviderId)
+                                           EVSP_Id  ProviderId,
+                                           EventTracking_Id      EventTrackingId  = null)
         {
 
             lock (AuthenticationServices)
@@ -571,23 +588,6 @@ namespace com.graphdefined.eMI3.LocalService
 
         #endregion
 
-    }
-
-
-    public enum RemoteStartResult
-    {
-        Error,
-        Success,
-        EVSE_NotReachable,
-        SessionId_AlreadyInUse,
-        EVSE_AlreadyInUse,
-        Start_Timeout
-    }
-
-    public enum RemoteStopResult
-    {
-        Error,
-        Success
     }
 
 }

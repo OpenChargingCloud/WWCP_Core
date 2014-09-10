@@ -27,9 +27,9 @@ namespace com.graphdefined.eMI3
     /// <summary>
     /// The unique identification of an authorizator.
     /// </summary>
-    public class AuthorizatorId : IId,
-                                  IEquatable<AuthorizatorId>,
-                                  IComparable<AuthorizatorId>
+    public class Authorizator_Id : IId,
+                                  IEquatable<Authorizator_Id>,
+                                  IComparable<Authorizator_Id>
 
     {
 
@@ -68,7 +68,7 @@ namespace com.graphdefined.eMI3
         /// <summary>
         /// Generate a new authorizator identification.
         /// </summary>
-        public AuthorizatorId()
+        public Authorizator_Id()
         {
             _Id = Guid.NewGuid().ToString();
         }
@@ -81,7 +81,7 @@ namespace com.graphdefined.eMI3
         /// Generate a new authorizator identification.
         /// based on the given string.
         /// </summary>
-        public AuthorizatorId(String String)
+        public Authorizator_Id(String String)
         {
             _Id = String.Trim();
         }
@@ -96,11 +96,11 @@ namespace com.graphdefined.eMI3
         /// <summary>
         /// Generate a new authorizator identification.
         /// </summary>
-        public static AuthorizatorId New
+        public static Authorizator_Id New
         {
             get
             {
-                return new AuthorizatorId(Guid.NewGuid().ToString());
+                return new Authorizator_Id(Guid.NewGuid().ToString());
             }
         }
 
@@ -111,9 +111,9 @@ namespace com.graphdefined.eMI3
         /// <summary>
         /// Parse the given string as an authorizator identification.
         /// </summary>
-        public static AuthorizatorId Parse(String EVSEOperatorId)
+        public static Authorizator_Id Parse(String EVSEOperatorId)
         {
-            return new AuthorizatorId(EVSEOperatorId);
+            return new Authorizator_Id(EVSEOperatorId);
         }
 
         #endregion
@@ -123,11 +123,11 @@ namespace com.graphdefined.eMI3
         /// <summary>
         /// Parse the given string as an authorizator identification.
         /// </summary>
-        public static Boolean TryParse(String Text, out AuthorizatorId EVSEOperatorId)
+        public static Boolean TryParse(String Text, out Authorizator_Id EVSEOperatorId)
         {
             try
             {
-                EVSEOperatorId = new AuthorizatorId(Text);
+                EVSEOperatorId = new Authorizator_Id(Text);
                 return true;
             }
             catch (Exception e)
@@ -144,11 +144,11 @@ namespace com.graphdefined.eMI3
         /// <summary>
         /// Clone an authorizator identification.
         /// </summary>
-        public AuthorizatorId Clone
+        public Authorizator_Id Clone
         {
             get
             {
-                return new AuthorizatorId(_Id);
+                return new Authorizator_Id(_Id);
             }
         }
 
@@ -165,7 +165,7 @@ namespace com.graphdefined.eMI3
         /// <param name="AuthorizatorId1">A AuthorizatorId.</param>
         /// <param name="AuthorizatorId2">Another AuthorizatorId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (AuthorizatorId AuthorizatorId1, AuthorizatorId AuthorizatorId2)
+        public static Boolean operator == (Authorizator_Id AuthorizatorId1, Authorizator_Id AuthorizatorId2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -190,7 +190,7 @@ namespace com.graphdefined.eMI3
         /// <param name="AuthorizatorId1">A AuthorizatorId.</param>
         /// <param name="AuthorizatorId2">Another AuthorizatorId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (AuthorizatorId AuthorizatorId1, AuthorizatorId AuthorizatorId2)
+        public static Boolean operator != (Authorizator_Id AuthorizatorId1, Authorizator_Id AuthorizatorId2)
         {
             return !(AuthorizatorId1 == AuthorizatorId2);
         }
@@ -205,7 +205,7 @@ namespace com.graphdefined.eMI3
         /// <param name="AuthorizatorId1">A AuthorizatorId.</param>
         /// <param name="AuthorizatorId2">Another AuthorizatorId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (AuthorizatorId AuthorizatorId1, AuthorizatorId AuthorizatorId2)
+        public static Boolean operator < (Authorizator_Id AuthorizatorId1, Authorizator_Id AuthorizatorId2)
         {
 
             if ((Object) AuthorizatorId1 == null)
@@ -225,7 +225,7 @@ namespace com.graphdefined.eMI3
         /// <param name="AuthorizatorId1">A AuthorizatorId.</param>
         /// <param name="AuthorizatorId2">Another AuthorizatorId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (AuthorizatorId AuthorizatorId1, AuthorizatorId AuthorizatorId2)
+        public static Boolean operator <= (Authorizator_Id AuthorizatorId1, Authorizator_Id AuthorizatorId2)
         {
             return !(AuthorizatorId1 > AuthorizatorId2);
         }
@@ -240,7 +240,7 @@ namespace com.graphdefined.eMI3
         /// <param name="AuthorizatorId1">A AuthorizatorId.</param>
         /// <param name="AuthorizatorId2">Another AuthorizatorId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (AuthorizatorId AuthorizatorId1, AuthorizatorId AuthorizatorId2)
+        public static Boolean operator > (Authorizator_Id AuthorizatorId1, Authorizator_Id AuthorizatorId2)
         {
 
             if ((Object) AuthorizatorId1 == null)
@@ -260,7 +260,7 @@ namespace com.graphdefined.eMI3
         /// <param name="AuthorizatorId1">A AuthorizatorId.</param>
         /// <param name="AuthorizatorId2">Another AuthorizatorId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (AuthorizatorId AuthorizatorId1, AuthorizatorId AuthorizatorId2)
+        public static Boolean operator >= (Authorizator_Id AuthorizatorId1, Authorizator_Id AuthorizatorId2)
         {
             return !(AuthorizatorId1 < AuthorizatorId2);
         }
@@ -284,7 +284,7 @@ namespace com.graphdefined.eMI3
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an AuthorizatorId.
-            var AuthorizatorId = Object as AuthorizatorId;
+            var AuthorizatorId = Object as Authorizator_Id;
             if ((Object) AuthorizatorId == null)
                 throw new ArgumentException("The given object is not a AuthorizatorId!");
 
@@ -300,7 +300,7 @@ namespace com.graphdefined.eMI3
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="AuthorizatorId">An object to compare with.</param>
-        public Int32 CompareTo(AuthorizatorId AuthorizatorId)
+        public Int32 CompareTo(Authorizator_Id AuthorizatorId)
         {
 
             if ((Object) AuthorizatorId == null)
@@ -337,7 +337,7 @@ namespace com.graphdefined.eMI3
                 return false;
 
             // Check if the given object is an AuthorizatorId.
-            var AuthorizatorId = Object as AuthorizatorId;
+            var AuthorizatorId = Object as Authorizator_Id;
             if ((Object) AuthorizatorId == null)
                 return false;
 
@@ -354,7 +354,7 @@ namespace com.graphdefined.eMI3
         /// </summary>
         /// <param name="AuthorizatorId">A AuthorizatorId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(AuthorizatorId AuthorizatorId)
+        public Boolean Equals(Authorizator_Id AuthorizatorId)
         {
 
             if ((Object) AuthorizatorId == null)

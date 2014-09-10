@@ -44,7 +44,7 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void EVSE_IdStringConstructorTest()
         {
-            var _EVSE_Id = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "123");
+            var _EVSE_Id = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "123");
             Assert.AreEqual("123", _EVSE_Id.ToString());
             Assert.AreEqual(3,     _EVSE_Id.Length);
         }
@@ -75,8 +75,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_Equality_Equals_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
             Assert.IsTrue(_EVSE_Id1 == _EVSE_Id2);
         }
 
@@ -90,8 +90,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_Equality_NotEquals_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "2");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "2");
             Assert.IsFalse(_EVSE_Id1 == _EVSE_Id2);
         }
 
@@ -121,8 +121,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_Inequality_Equals_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
             Assert.IsFalse(_EVSE_Id1 != _EVSE_Id2);
         }
 
@@ -136,8 +136,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_Inequality_NotEquals1_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "2");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "2");
             Assert.IsTrue(_EVSE_Id1 != _EVSE_Id2);
         }
 
@@ -151,8 +151,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_Inequality_NotEquals2_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "5");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "23");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "5");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "23");
             Assert.IsTrue(_EVSE_Id1 != _EVSE_Id2);
         }
 
@@ -183,8 +183,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_Smaller_Equals_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
             Assert.IsFalse(_EVSE_Id1 < _EVSE_Id2);
         }
 
@@ -198,8 +198,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_Smaller_Smaller1_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "2");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "2");
             Assert.IsTrue(_EVSE_Id1 < _EVSE_Id2);
         }
 
@@ -213,8 +213,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_Smaller_Smaller2_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "5");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "23");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "5");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "23");
             Assert.IsTrue(_EVSE_Id1 < _EVSE_Id2);
         }
 
@@ -228,8 +228,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_Smaller_Bigger1_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "2");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "2");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
             Assert.IsFalse(_EVSE_Id1 < _EVSE_Id2);
         }
 
@@ -243,8 +243,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_Smaller_Bigger2_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "23");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "5");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "23");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "5");
             Assert.IsFalse(_EVSE_Id1 < _EVSE_Id2);
         }
 
@@ -275,8 +275,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_SmallerOrEqual_Equals_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
             Assert.IsTrue(_EVSE_Id1 <= _EVSE_Id2);
         }
 
@@ -290,8 +290,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_SmallerOrEqual_SmallerThan1_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "2");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "2");
             Assert.IsTrue(_EVSE_Id1 <= _EVSE_Id2);
         }
 
@@ -305,8 +305,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_SmallerOrEqual_SmallerThan2_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "5");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "23");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "5");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "23");
             Assert.IsTrue(_EVSE_Id1 <= _EVSE_Id2);
         }
 
@@ -320,8 +320,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_SmallerOrEqual_Bigger1_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "2");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "2");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
             Assert.IsFalse(_EVSE_Id1 <= _EVSE_Id2);
         }
 
@@ -335,8 +335,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_SmallerOrEqual_Bigger2_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "23");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "5");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "23");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "5");
             Assert.IsFalse(_EVSE_Id1 <= _EVSE_Id2);
         }
 
@@ -367,8 +367,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_Bigger_Equals_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
             Assert.IsFalse(_EVSE_Id1 > _EVSE_Id2);
         }
 
@@ -382,8 +382,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_Bigger_Smaller1_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "2");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "2");
             Assert.IsFalse(_EVSE_Id1 > _EVSE_Id2);
         }
 
@@ -397,8 +397,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_Bigger_Smaller2_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "5");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "23");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "5");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "23");
             Assert.IsFalse(_EVSE_Id1 > _EVSE_Id2);
         }
 
@@ -412,8 +412,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_Bigger_Bigger1_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "2");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "2");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
             Assert.IsTrue(_EVSE_Id1 > _EVSE_Id2);
         }
 
@@ -427,8 +427,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_Bigger_Bigger2_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "23");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "5");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "23");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "5");
             Assert.IsTrue(_EVSE_Id1 > _EVSE_Id2);
         }
 
@@ -459,8 +459,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_BiggerOrEqual_Equals_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
             Assert.IsTrue(_EVSE_Id1 >= _EVSE_Id2);
         }
 
@@ -474,8 +474,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_BiggerOrEqual_SmallerThan1_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "2");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "2");
             Assert.IsFalse(_EVSE_Id1 >= _EVSE_Id2);
         }
 
@@ -489,8 +489,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_BiggerOrEqual_SmallerThan2_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "5");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "23");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "5");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "23");
             Assert.IsFalse(_EVSE_Id1 >= _EVSE_Id2);
         }
 
@@ -504,8 +504,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_BiggerOrEqual_Bigger1_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "2");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "2");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
             Assert.IsTrue(_EVSE_Id1 >= _EVSE_Id2);
         }
 
@@ -519,8 +519,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void op_BiggerOrEqual_Bigger2_Test()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "23");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "5");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "23");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "5");
             Assert.IsTrue(_EVSE_Id1 >= _EVSE_Id2);
         }
 
@@ -535,8 +535,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void CompareToSmallerTest1()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "2");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "2");
             Assert.IsTrue(_EVSE_Id1.CompareTo(_EVSE_Id2) < 0);
         }
 
@@ -550,8 +550,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void CompareToSmallerTest2()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "5");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "23");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "5");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "23");
             Assert.IsTrue(_EVSE_Id1.CompareTo(_EVSE_Id2) < 0);
         }
 
@@ -565,8 +565,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void CompareToEqualsTest()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
             Assert.IsTrue(_EVSE_Id1.CompareTo(_EVSE_Id2) == 0);
         }
 
@@ -580,8 +580,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void CompareToBiggerTest()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "2");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "2");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
             Assert.IsTrue(_EVSE_Id1.CompareTo(_EVSE_Id2) > 0);
         }
 
@@ -596,8 +596,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void EqualsEqualsTest()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
             Assert.IsTrue(_EVSE_Id1.Equals(_EVSE_Id2));
         }
 
@@ -611,8 +611,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void EqualsNotEqualsTest()
         {
-            var _EVSE_Id1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var _EVSE_Id2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "2");
+            var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "2");
             Assert.IsFalse(_EVSE_Id1.Equals(_EVSE_Id2));
         }
 
@@ -627,8 +627,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void GetHashCodeEqualTest()
         {
-            var _SensorHashCode1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "5").GetHashCode();
-            var _SensorHashCode2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "5").GetHashCode();
+            var _SensorHashCode1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "5").GetHashCode();
+            var _SensorHashCode2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "5").GetHashCode();
             Assert.AreEqual(_SensorHashCode1, _SensorHashCode2);
         }
 
@@ -642,8 +642,8 @@ namespace com.graphdefined.eMI3.UnitTests
         [Test]
         public void GetHashCodeNotEqualTest()
         {
-            var _SensorHashCode1 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1").GetHashCode();
-            var _SensorHashCode2 = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "2").GetHashCode();
+            var _SensorHashCode1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1").GetHashCode();
+            var _SensorHashCode2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "2").GetHashCode();
             Assert.AreNotEqual(_SensorHashCode1, _SensorHashCode2);
         }
 
@@ -659,9 +659,9 @@ namespace com.graphdefined.eMI3.UnitTests
         public void EVSE_IdsAndNUnitTest()
         {
 
-            var a = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var b = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "2");
-            var c = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
+            var a = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var b = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "2");
+            var c = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
 
             Assert.AreEqual(a, a);
             Assert.AreEqual(b, b);
@@ -684,9 +684,9 @@ namespace com.graphdefined.eMI3.UnitTests
         public void EVSE_IdsInHashSetTest()
         {
 
-            var a = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
-            var b = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "2");
-            var c = new EVSE_Id(new EVSEOperator_Id(Country.Germany, "822"), "1");
+            var a = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
+            var b = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "2");
+            var c = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
 
             var _HashSet = new HashSet<EVSE_Id>();
             Assert.AreEqual(0, _HashSet.Count);

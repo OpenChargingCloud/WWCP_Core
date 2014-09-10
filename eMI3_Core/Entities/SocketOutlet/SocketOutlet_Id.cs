@@ -25,7 +25,7 @@ namespace com.graphdefined.eMI3
 {
 
     /// <summary>
-    /// The unique identification of an Electric Vehicle Supply Equipment Connector (EVSEConnector_Id)
+    /// The unique identification of an Electric Vehicle Supply Equipment Socket Outlet (EVSESO_Id).
     /// </summary>
     public class SocketOutlet_Id : IId,
                                    IEquatable<SocketOutlet_Id>,
@@ -43,6 +43,21 @@ namespace com.graphdefined.eMI3
         #endregion
 
         #region Properties
+
+        #region New
+
+        /// <summary>
+        /// Generate a new unique identification of an Electric Vehicle Supply Equipment Socket Outlet (EVSESO_Id).
+        /// </summary>
+        public static SocketOutlet_Id New
+        {
+            get
+            {
+                return SocketOutlet_Id.Parse(Guid.NewGuid().ToString());
+            }
+        }
+
+        #endregion
 
         #region Length
 
@@ -63,44 +78,49 @@ namespace com.graphdefined.eMI3
 
         #region Constructor(s)
 
-        #region EVSEConnector_Id()
-
         /// <summary>
-        /// Generate a new Electric Vehicle Supply Equipment Connector identification (EVSEConnector_Id).
-        /// </summary>
-        public SocketOutlet_Id()
-        {
-            _Id = Guid.NewGuid().ToString();
-        }
-
-        #endregion
-
-        #region EVSEConnector_Id(String)
-
-        /// <summary>
-        /// Generate a new Electric Vehicle Supply Equipment Connector identification (EVSEConnector_Id)
+        /// Generate a new Electric Vehicle Supply Equipment Socket Outlet (EVSESO_Id)
         /// based on the given string.
         /// </summary>
-        public SocketOutlet_Id(String String)
+        private SocketOutlet_Id(String String)
         {
             _Id = String.Trim();
         }
 
         #endregion
 
-        #endregion
 
-
-        #region New
+        #region Parse(Text)
 
         /// <summary>
-        /// Generate a new EVSEConnector_Id.
+        /// Parse the given string as an Electric Vehicle Supply Equipment Socket Outlet (EVSESO_Id).
         /// </summary>
-        public static SocketOutlet_Id New
+        /// <param name="Text">A text representation of an Electric Vehicle Supply Equipment Socket Outlet identification.</param>
+        public static SocketOutlet_Id Parse(String Text)
         {
-            get
+            return new SocketOutlet_Id(Text);
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ChargingPoolId)
+
+        /// <summary>
+        /// Parse the given string as an Electric Vehicle Supply Equipment Socket Outlet (EVSESO_Id).
+        /// </summary>
+        /// <param name="Text">A text representation of an Electric Vehicle Supply Equipment Socket Outlet identification.</param>
+        /// <param name="ChargingPoolId">The parsed Electric Vehicle Supply Equipment Socket Outlet identification.</param>
+        public static Boolean TryParse(String Text, out SocketOutlet_Id ChargingPoolId)
+        {
+            try
             {
-                return new SocketOutlet_Id(Guid.NewGuid().ToString());
+                ChargingPoolId = new SocketOutlet_Id(Text);
+                return true;
+            }
+            catch (Exception)
+            {
+                ChargingPoolId = null;
+                return false;
             }
         }
 
@@ -109,13 +129,13 @@ namespace com.graphdefined.eMI3
         #region Clone
 
         /// <summary>
-        /// Clone an EVSEConnector_Id.
+        /// Clone this Electric Vehicle Supply Equipment Socket Outlet identification.
         /// </summary>
         public SocketOutlet_Id Clone
         {
             get
             {
-                return new SocketOutlet_Id(_Id);
+                return SocketOutlet_Id.Parse(_Id);
             }
         }
 
@@ -124,119 +144,119 @@ namespace com.graphdefined.eMI3
 
         #region Operator overloading
 
-        #region Operator == (EVSEConnector_Id1, EVSEConnector_Id2)
+        #region Operator == (SocketOutletId1, SocketOutletId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEConnector_Id1">A EVSEConnector_Id.</param>
-        /// <param name="EVSEConnector_Id2">Another EVSEConnector_Id.</param>
+        /// <param name="SocketOutletId1">A SocketOutletId.</param>
+        /// <param name="SocketOutletId2">Another SocketOutletId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (SocketOutlet_Id EVSEConnector_Id1, SocketOutlet_Id EVSEConnector_Id2)
+        public static Boolean operator == (SocketOutlet_Id SocketOutletId1, SocketOutlet_Id SocketOutletId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(EVSEConnector_Id1, EVSEConnector_Id2))
+            if (Object.ReferenceEquals(SocketOutletId1, SocketOutletId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) EVSEConnector_Id1 == null) || ((Object) EVSEConnector_Id2 == null))
+            if (((Object) SocketOutletId1 == null) || ((Object) SocketOutletId2 == null))
                 return false;
 
-            return EVSEConnector_Id1.Equals(EVSEConnector_Id2);
+            return SocketOutletId1.Equals(SocketOutletId2);
 
         }
 
         #endregion
 
-        #region Operator != (EVSEConnector_Id1, EVSEConnector_Id2)
+        #region Operator != (SocketOutletId1, SocketOutletId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEConnector_Id1">A EVSEConnector_Id.</param>
-        /// <param name="EVSEConnector_Id2">Another EVSEConnector_Id.</param>
+        /// <param name="SocketOutletId1">A SocketOutletId.</param>
+        /// <param name="SocketOutletId2">Another SocketOutletId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (SocketOutlet_Id EVSEConnector_Id1, SocketOutlet_Id EVSEConnector_Id2)
+        public static Boolean operator != (SocketOutlet_Id SocketOutletId1, SocketOutlet_Id SocketOutletId2)
         {
-            return !(EVSEConnector_Id1 == EVSEConnector_Id2);
+            return !(SocketOutletId1 == SocketOutletId2);
         }
 
         #endregion
 
-        #region Operator <  (EVSEConnector_Id1, EVSEConnector_Id2)
+        #region Operator <  (SocketOutletId1, SocketOutletId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEConnector_Id1">A EVSEConnector_Id.</param>
-        /// <param name="EVSEConnector_Id2">Another EVSEConnector_Id.</param>
+        /// <param name="SocketOutletId1">A SocketOutletId.</param>
+        /// <param name="SocketOutletId2">Another SocketOutletId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (SocketOutlet_Id EVSEConnector_Id1, SocketOutlet_Id EVSEConnector_Id2)
+        public static Boolean operator < (SocketOutlet_Id SocketOutletId1, SocketOutlet_Id SocketOutletId2)
         {
 
-            if ((Object) EVSEConnector_Id1 == null)
-                throw new ArgumentNullException("The given EVSEConnector_Id1 must not be null!");
+            if ((Object) SocketOutletId1 == null)
+                throw new ArgumentNullException("The given SocketOutletId1 must not be null!");
 
-            return EVSEConnector_Id1.CompareTo(EVSEConnector_Id2) < 0;
+            return SocketOutletId1.CompareTo(SocketOutletId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (EVSEConnector_Id1, EVSEConnector_Id2)
+        #region Operator <= (SocketOutletId1, SocketOutletId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEConnector_Id1">A EVSEConnector_Id.</param>
-        /// <param name="EVSEConnector_Id2">Another EVSEConnector_Id.</param>
+        /// <param name="SocketOutletId1">A SocketOutletId.</param>
+        /// <param name="SocketOutletId2">Another SocketOutletId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (SocketOutlet_Id EVSEConnector_Id1, SocketOutlet_Id EVSEConnector_Id2)
+        public static Boolean operator <= (SocketOutlet_Id SocketOutletId1, SocketOutlet_Id SocketOutletId2)
         {
-            return !(EVSEConnector_Id1 > EVSEConnector_Id2);
+            return !(SocketOutletId1 > SocketOutletId2);
         }
 
         #endregion
 
-        #region Operator >  (EVSEConnector_Id1, EVSEConnector_Id2)
+        #region Operator >  (SocketOutletId1, SocketOutletId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEConnector_Id1">A EVSEConnector_Id.</param>
-        /// <param name="EVSEConnector_Id2">Another EVSEConnector_Id.</param>
+        /// <param name="SocketOutletId1">A SocketOutletId.</param>
+        /// <param name="SocketOutletId2">Another SocketOutletId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (SocketOutlet_Id EVSEConnector_Id1, SocketOutlet_Id EVSEConnector_Id2)
+        public static Boolean operator > (SocketOutlet_Id SocketOutletId1, SocketOutlet_Id SocketOutletId2)
         {
 
-            if ((Object) EVSEConnector_Id1 == null)
-                throw new ArgumentNullException("The given EVSEConnector_Id1 must not be null!");
+            if ((Object) SocketOutletId1 == null)
+                throw new ArgumentNullException("The given SocketOutletId1 must not be null!");
 
-            return EVSEConnector_Id1.CompareTo(EVSEConnector_Id2) > 0;
+            return SocketOutletId1.CompareTo(SocketOutletId2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (EVSEConnector_Id1, EVSEConnector_Id2)
+        #region Operator >= (SocketOutletId1, SocketOutletId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEConnector_Id1">A EVSEConnector_Id.</param>
-        /// <param name="EVSEConnector_Id2">Another EVSEConnector_Id.</param>
+        /// <param name="SocketOutletId1">A SocketOutletId.</param>
+        /// <param name="SocketOutletId2">Another SocketOutletId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (SocketOutlet_Id EVSEConnector_Id1, SocketOutlet_Id EVSEConnector_Id2)
+        public static Boolean operator >= (SocketOutlet_Id SocketOutletId1, SocketOutlet_Id SocketOutletId2)
         {
-            return !(EVSEConnector_Id1 < EVSEConnector_Id2);
+            return !(SocketOutletId1 < SocketOutletId2);
         }
 
         #endregion
 
         #endregion
 
-        #region IComparable<EVSEConnector_Id> Members
+        #region IComparable<SocketOutlet_Id> Members
 
         #region CompareTo(Object)
 
@@ -250,35 +270,35 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an EVSEConnector_Id.
-            var EVSEConnector_Id = Object as SocketOutlet_Id;
-            if ((Object) EVSEConnector_Id == null)
-                throw new ArgumentException("The given object is not a EVSEConnector_Id!");
+            // Check if the given object is an SocketOutletId.
+            var SocketOutletId = Object as SocketOutlet_Id;
+            if ((Object) SocketOutletId == null)
+                throw new ArgumentException("The given object is not a SocketOutletId!");
 
-            return CompareTo(EVSEConnector_Id);
+            return CompareTo(SocketOutletId);
 
         }
 
         #endregion
 
-        #region CompareTo(EVSEConnector_Id)
+        #region CompareTo(SocketOutletId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEConnector_Id">An object to compare with.</param>
-        public Int32 CompareTo(SocketOutlet_Id EVSEConnector_Id)
+        /// <param name="SocketOutletId">An object to compare with.</param>
+        public Int32 CompareTo(SocketOutlet_Id SocketOutletId)
         {
 
-            if ((Object) EVSEConnector_Id == null)
-                throw new ArgumentNullException("The given EVSEConnector_Id must not be null!");
+            if ((Object) SocketOutletId == null)
+                throw new ArgumentNullException("The given SocketOutletId must not be null!");
 
-            // Compare the length of the EVSEConnector_Ids
-            var _Result = this.Length.CompareTo(EVSEConnector_Id.Length);
+            // Compare the length of the SocketOutletIds
+            var _Result = this.Length.CompareTo(SocketOutletId.Length);
 
             // If equal: Compare Ids
             if (_Result == 0)
-                _Result = _Id.CompareTo(EVSEConnector_Id._Id);
+                _Result = _Id.CompareTo(SocketOutletId._Id);
 
             return _Result;
 
@@ -288,7 +308,7 @@ namespace com.graphdefined.eMI3
 
         #endregion
 
-        #region IEquatable<EVSEConnector_Id> Members
+        #region IEquatable<SocketOutlet_Id> Members
 
         #region Equals(Object)
 
@@ -303,31 +323,31 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 return false;
 
-            // Check if the given object is an EVSEConnector_Id.
-            var EVSEConnector_Id = Object as SocketOutlet_Id;
-            if ((Object) EVSEConnector_Id == null)
+            // Check if the given object is an SocketOutletId.
+            var SocketOutletId = Object as SocketOutlet_Id;
+            if ((Object) SocketOutletId == null)
                 return false;
 
-            return this.Equals(EVSEConnector_Id);
+            return this.Equals(SocketOutletId);
 
         }
 
         #endregion
 
-        #region Equals(EVSEConnector_Id)
+        #region Equals(SocketOutletId)
 
         /// <summary>
-        /// Compares two EVSEConnector_Ids for equality.
+        /// Compares two SocketOutletIds for equality.
         /// </summary>
-        /// <param name="EVSEConnector_Id">A EVSEConnector_Id to compare with.</param>
+        /// <param name="SocketOutletId">A SocketOutletId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(SocketOutlet_Id EVSEConnector_Id)
+        public Boolean Equals(SocketOutlet_Id SocketOutletId)
         {
 
-            if ((Object) EVSEConnector_Id == null)
+            if ((Object) SocketOutletId == null)
                 return false;
 
-            return _Id.Equals(EVSEConnector_Id._Id);
+            return _Id.Equals(SocketOutletId._Id);
 
         }
 

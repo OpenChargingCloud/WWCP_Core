@@ -25,7 +25,7 @@ namespace com.graphdefined.eMI3
 {
 
     /// <summary>
-    /// The unique identification of an electric vehicle parking sport (EVPS Id).
+    /// The unique identification of an Electric Vehicle Parking Spot (EVPS Id).
     /// </summary>
     public class ParkingSpot_Id : IId,
                                   IEquatable<ParkingSpot_Id>,
@@ -43,6 +43,21 @@ namespace com.graphdefined.eMI3
         #endregion
 
         #region Properties
+
+        #region New
+
+        /// <summary>
+        /// Generate a new unique identification of an Electric Vehicle Parking Spot (EVPS Id).
+        /// </summary>
+        public static ParkingSpot_Id New
+        {
+            get
+            {
+                return new ParkingSpot_Id(Guid.NewGuid().ToString());
+            }
+        }
+
+        #endregion
 
         #region Length
 
@@ -63,44 +78,49 @@ namespace com.graphdefined.eMI3
 
         #region Constructor(s)
 
-        #region ServicePlan_Id()
-
         /// <summary>
-        /// Generate a new electric vehicle service plan identification (EVSP Id).
-        /// </summary>
-        public ParkingSpot_Id()
-        {
-            _Id = Guid.NewGuid().ToString();
-        }
-
-        #endregion
-
-        #region ServicePlan_Id(String)
-
-        /// <summary>
-        /// Generate a new electric vehicle service plan identification (EVSP Id)
+        /// Generate a new Electric Vehicle Parking Spot (EVPS Id)
         /// based on the given string.
         /// </summary>
-        public ParkingSpot_Id(String String)
+        private ParkingSpot_Id(String String)
         {
             _Id = String.Trim();
         }
 
         #endregion
 
-        #endregion
 
-
-        #region New
+        #region Parse(Text)
 
         /// <summary>
-        /// Generate a new EVPS_Id.
+        /// Parse the given string as an Electric Vehicle Parking Spot identification (EVPS Id).
         /// </summary>
-        public static ParkingSpot_Id New
+        /// <param name="Text">A text representation of an Electric Vehicle Parking Spot identification.</param>
+        public static ParkingSpot_Id Parse(String Text)
         {
-            get
+            return new ParkingSpot_Id(Text);
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ChargingPoolId)
+
+        /// <summary>
+        /// Parse the given string as an Electric Vehicle Parking Spot identification (EVPS Id).
+        /// </summary>
+        /// <param name="Text">A text representation of an Electric Vehicle Parking Spot identification.</param>
+        /// <param name="ParkingSpotId">The parsed Electric Vehicle Parking Spot identification.</param>
+        public static Boolean TryParse(String Text, out ParkingSpot_Id ParkingSpotId)
+        {
+            try
             {
-                return new ParkingSpot_Id(Guid.NewGuid().ToString());
+                ParkingSpotId = new ParkingSpot_Id(Text);
+                return true;
+            }
+            catch (Exception)
+            {
+                ParkingSpotId = null;
+                return false;
             }
         }
 
@@ -109,7 +129,7 @@ namespace com.graphdefined.eMI3
         #region Clone
 
         /// <summary>
-        /// Clone an EVPS_Id.
+        /// Clone this Electric Vehicle Parking Spot identification.
         /// </summary>
         public ParkingSpot_Id Clone
         {

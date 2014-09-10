@@ -31,9 +31,9 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region AuthorizatorId
 
-        private readonly AuthorizatorId _AuthorizatorId;
+        private readonly Authorizator_Id _AuthorizatorId;
 
-        public AuthorizatorId AuthorizatorId
+        public Authorizator_Id AuthorizatorId
         {
             get
             {
@@ -45,7 +45,7 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region PartnerSessionId
 
-        public ChargingSessionId  PartnerSessionId         { get; set; }
+        public ChargingSession_Id  PartnerSessionId         { get; set; }
 
         #endregion
 
@@ -59,7 +59,7 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region Constructor(s)
 
-        public AResult(AuthorizatorId AuthorizatorId)
+        public AResult(Authorizator_Id AuthorizatorId)
         {
             this._AuthorizatorId = AuthorizatorId;
         }
