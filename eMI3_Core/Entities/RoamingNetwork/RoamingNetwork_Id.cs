@@ -82,7 +82,7 @@ namespace com.graphdefined.eMI3
         /// Generate a new Electric Vehicle Roaming Network (EVRN Id) identification.
         /// based on the given string.
         /// </summary>
-        public RoamingNetwork_Id(String String)
+        private RoamingNetwork_Id(String String)
         {
             _Id = String.Trim();
         }

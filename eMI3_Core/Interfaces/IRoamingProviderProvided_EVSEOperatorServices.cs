@@ -38,13 +38,13 @@ namespace com.graphdefined.eMI3.LocalService
         AUTHSTARTResult AuthorizeStart(EVSEOperator_Id      OperatorId,
                                        EVSE_Id              EVSEId,
                                        ChargingSession_Id   PartnerSessionId,
-                                       Token                UID);
+                                       Auth_Token                UID);
 
         AUTHSTOPResult  AuthorizeStop (EVSEOperator_Id      OperatorId,
                                        EVSE_Id              EVSEId,
                                        ChargingSession_Id   SessionId,
                                        ChargingSession_Id   PartnerSessionId,
-                                       Token                UID);
+                                       Auth_Token                UID);
 
         SENDCDRResult   SendCDR       (EVSE_Id              EVSEId,
                                        ChargingSession_Id   SessionId,
@@ -52,7 +52,7 @@ namespace com.graphdefined.eMI3.LocalService
                                        String               PartnerProductId,
                                        DateTime             ChargeStart,
                                        DateTime             ChargeEnd,
-                                       Token                UID             = null,
+                                       Auth_Token                UID             = null,
                                        eMA_Id               eMAId           = null,
                                        DateTime?            SessionStart    = null,
                                        DateTime?            SessionEnd      = null,

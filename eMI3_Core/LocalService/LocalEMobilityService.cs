@@ -34,7 +34,7 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region Data
 
-        private readonly Dictionary<Token,     AuthorizationResult>  AuthorizationDatabase;
+        private readonly Dictionary<Auth_Token,     AuthorizationResult>  AuthorizationDatabase;
         private readonly Dictionary<ChargingSession_Id, SessionInfo>          SessionDatabase;
 
         #endregion
@@ -78,7 +78,7 @@ namespace com.graphdefined.eMI3.LocalService
         {
             this._EVSPId                = EVSPId;
             this._AuthorizatorId        = (AuthorizatorId == null) ? Authorizator_Id.Parse("Belectric Drive EV Gateway Database") : AuthorizatorId;
-            this.AuthorizationDatabase  = new Dictionary<Token,     AuthorizationResult>();
+            this.AuthorizationDatabase  = new Dictionary<Auth_Token,     AuthorizationResult>();
             this.SessionDatabase        = new Dictionary<ChargingSession_Id, SessionInfo>();
         }
 
@@ -87,7 +87,7 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region AddToken(Token, AuthenticationResult = AuthenticationResult.Allowed)
 
-        public Boolean AddToken(Token                Token,
+        public Boolean AddToken(Auth_Token                Token,
                                 AuthorizationResult  AuthenticationResult = AuthorizationResult.Authorized)
         {
 
@@ -105,7 +105,7 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region RemoveToken(Token)
 
-        public Boolean RemoveToken(Token Token)
+        public Boolean RemoveToken(Auth_Token Token)
         {
             return AuthorizationDatabase.Remove(Token);
         }
@@ -118,7 +118,7 @@ namespace com.graphdefined.eMI3.LocalService
         public AUTHSTARTResult AuthorizeStart(EVSEOperator_Id     OperatorId,
                                               EVSE_Id             EVSEId,
                                               ChargingSession_Id  PartnerSessionId,
-                                              Token               Token)
+                                              Auth_Token               Token)
 
         {
 
@@ -199,7 +199,7 @@ namespace com.graphdefined.eMI3.LocalService
                                             EVSE_Id          EVSEId,
                                             ChargingSession_Id        SessionId,
                                             ChargingSession_Id        PartnerSessionId,
-                                            Token            Token)
+                                            Auth_Token            Token)
 
         {
 
@@ -314,7 +314,7 @@ namespace com.graphdefined.eMI3.LocalService
                                      String              PartnerProductId,
                                      DateTime            ChargeStart,
                                      DateTime            ChargeEnd,
-                                     Token               Token           = null,
+                                     Auth_Token               Token           = null,
                                      eMA_Id              eMAId           = null,
                                      DateTime?           SessionStart    = null,
                                      DateTime?           SessionEnd      = null,

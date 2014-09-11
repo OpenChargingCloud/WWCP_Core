@@ -48,9 +48,9 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region Token
 
-        private readonly Token _Token;
+        private readonly Auth_Token _Token;
 
-        public Token Token
+        public Auth_Token Token
         {
             get
             {
@@ -66,7 +66,7 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region Constructor(s)
 
-        public SessionInfo(Token Token)
+        public SessionInfo(Auth_Token Token)
         {
             this._Created   = DateTime.Now;
             this._Token     = Token;

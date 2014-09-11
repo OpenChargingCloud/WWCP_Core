@@ -25,21 +25,36 @@ namespace com.graphdefined.eMI3
 {
 
     /// <summary>
-    /// The unique identification of a token.
+    /// A unique authentication token.
     /// </summary>
-    public class Token : IId, IEquatable<Token>, IComparable<Token>
+    public class Auth_Token : IId, IEquatable<Auth_Token>, IComparable<Auth_Token>
     {
 
         #region Data
 
         /// <summary>
-        /// The internal identification.
+        /// The internal value.
         /// </summary>
-        protected readonly String _Id;
+        protected readonly String _Value;
 
         #endregion
 
         #region Properties
+
+        #region New
+
+        /// <summary>
+        /// Generate a new token.
+        /// </summary>
+        public static Auth_Token New
+        {
+            get
+            {
+                return new Auth_Token(Guid.NewGuid().ToString());
+            }
+        }
+
+        #endregion
 
         #region Length
 
@@ -50,7 +65,7 @@ namespace com.graphdefined.eMI3
         {
             get
             {
-                return (UInt64) _Id.Length;
+                return (UInt64) _Value.Length;
             }
         }
 
@@ -60,75 +75,47 @@ namespace com.graphdefined.eMI3
 
         #region Constructor(s)
 
-        #region TokenId()
-
-        /// <summary>
-        /// Generate a new token.
-        /// </summary>
-        public Token()
-        {
-            _Id = Guid.NewGuid().ToString();
-        }
-
-        #endregion
-
-        #region TokenId(String)
-
         /// <summary>
         /// Generate a new token based on the given string.
         /// </summary>
-        public Token(String String)
+        private Auth_Token(String String)
         {
-            _Id = String.Trim();
+            _Value = String.Trim();
         }
 
         #endregion
 
-        #endregion
 
-
-        #region New
+        #region Parse(Text)
 
         /// <summary>
-        /// Generate a new token.
+        /// Parse the given string as an authentication token.
         /// </summary>
-        public static Token New
+        /// <param name="Text">A text representation of an authentication token.</param>
+        public static Auth_Token Parse(String Text)
         {
-            get
-            {
-                return new Token(Guid.NewGuid().ToString());
-            }
+            return new Auth_Token(Text);
         }
 
         #endregion
 
-        #region Parse(_Token)
+        #region TryParse(Text, out Token)
 
         /// <summary>
-        /// Parse the given string as a token.
+        /// Parse the given string as an authentication token.
         /// </summary>
-        public static Token Parse(String _Token)
-        {
-            return new Token(_Token);
-        }
-
-        #endregion
-
-        #region TryParse(Text, out _Token)
-
-        /// <summary>
-        /// Parse the given string as a token.
-        /// </summary>
-        public static Boolean TryParse(String Text, out Token _Token)
+        /// <param name="Text">A text representation of an authentication token.</param>
+        /// <param name="Token">The parsed authentication token.</param>
+        public static Boolean TryParse(String Text, out Auth_Token Token)
         {
             try
             {
-                _Token = new Token(Text);
+                Token = new Auth_Token(Text);
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                _Token = null;
+                Token = null;
                 return false;
             }
         }
@@ -138,13 +125,13 @@ namespace com.graphdefined.eMI3
         #region Clone
 
         /// <summary>
-        /// Clone a token.
+        /// Clone this authentication token.
         /// </summary>
-        public Token Clone
+        public Auth_Token Clone
         {
             get
             {
-                return new Token(_Id);
+                return new Auth_Token(_Value);
             }
         }
 
@@ -161,7 +148,7 @@ namespace com.graphdefined.eMI3
         /// <param name="TokenId1">A TokenId.</param>
         /// <param name="TokenId2">Another TokenId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Token TokenId1, Token TokenId2)
+        public static Boolean operator == (Auth_Token TokenId1, Auth_Token TokenId2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -186,7 +173,7 @@ namespace com.graphdefined.eMI3
         /// <param name="TokenId1">A TokenId.</param>
         /// <param name="TokenId2">Another TokenId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Token TokenId1, Token TokenId2)
+        public static Boolean operator != (Auth_Token TokenId1, Auth_Token TokenId2)
         {
             return !(TokenId1 == TokenId2);
         }
@@ -201,7 +188,7 @@ namespace com.graphdefined.eMI3
         /// <param name="TokenId1">A TokenId.</param>
         /// <param name="TokenId2">Another TokenId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Token TokenId1, Token TokenId2)
+        public static Boolean operator < (Auth_Token TokenId1, Auth_Token TokenId2)
         {
 
             if ((Object) TokenId1 == null)
@@ -221,7 +208,7 @@ namespace com.graphdefined.eMI3
         /// <param name="TokenId1">A TokenId.</param>
         /// <param name="TokenId2">Another TokenId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Token TokenId1, Token TokenId2)
+        public static Boolean operator <= (Auth_Token TokenId1, Auth_Token TokenId2)
         {
             return !(TokenId1 > TokenId2);
         }
@@ -236,7 +223,7 @@ namespace com.graphdefined.eMI3
         /// <param name="TokenId1">A TokenId.</param>
         /// <param name="TokenId2">Another TokenId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Token TokenId1, Token TokenId2)
+        public static Boolean operator > (Auth_Token TokenId1, Auth_Token TokenId2)
         {
 
             if ((Object) TokenId1 == null)
@@ -256,7 +243,7 @@ namespace com.graphdefined.eMI3
         /// <param name="TokenId1">A TokenId.</param>
         /// <param name="TokenId2">Another TokenId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Token TokenId1, Token TokenId2)
+        public static Boolean operator >= (Auth_Token TokenId1, Auth_Token TokenId2)
         {
             return !(TokenId1 < TokenId2);
         }
@@ -265,7 +252,7 @@ namespace com.graphdefined.eMI3
 
         #endregion
 
-        #region IComparable<TokenId> Members
+        #region IComparable<Auth_Token> Members
 
         #region CompareTo(Object)
 
@@ -280,36 +267,29 @@ namespace com.graphdefined.eMI3
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an TokenId.
-            var TokenId = Object as Token;
-            if ((Object) TokenId == null)
-                throw new ArgumentException("The given object is not a TokenId!");
+            var Token = Object as Auth_Token;
+            if ((Object) Token == null)
+                throw new ArgumentException("The given object is not an authentication token!");
 
-            return CompareTo(TokenId);
+            return CompareTo(Token);
 
         }
 
         #endregion
 
-        #region CompareTo(TokenId)
+        #region CompareTo(Token)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TokenId">An object to compare with.</param>
-        public Int32 CompareTo(Token TokenId)
+        /// <param name="Token">An object to compare with.</param>
+        public Int32 CompareTo(Auth_Token Token)
         {
 
-            if ((Object) TokenId == null)
-                throw new ArgumentNullException("The given TokenId must not be null!");
+            if ((Object) Token == null)
+                throw new ArgumentNullException("The given AuthToken must not be null!");
 
-            // Compare the length of the TokenIds
-            var _Result = this.Length.CompareTo(TokenId.Length);
-
-            // If equal: Compare Ids
-            if (_Result == 0)
-                _Result = _Id.CompareTo(TokenId._Id);
-
-            return _Result;
+            return _Value.CompareTo(Token._Value);
 
         }
 
@@ -317,7 +297,7 @@ namespace com.graphdefined.eMI3
 
         #endregion
 
-        #region IEquatable<TokenId> Members
+        #region IEquatable<Auth_Token> Members
 
         #region Equals(Object)
 
@@ -332,31 +312,31 @@ namespace com.graphdefined.eMI3
             if (Object == null)
                 return false;
 
-            // Check if the given object is an TokenId.
-            var TokenId = Object as Token;
-            if ((Object) TokenId == null)
+            // Check if the given object is an Token.
+            var Token = Object as Auth_Token;
+            if ((Object) Token == null)
                 return false;
 
-            return this.Equals(TokenId);
+            return this.Equals(Token);
 
         }
 
         #endregion
 
-        #region Equals(TokenId)
+        #region Equals(Token)
 
         /// <summary>
         /// Compares two TokenIds for equality.
         /// </summary>
-        /// <param name="TokenId">A TokenId to compare with.</param>
+        /// <param name="Token">A TokenId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(Token TokenId)
+        public Boolean Equals(Auth_Token Token)
         {
 
-            if ((Object) TokenId == null)
+            if ((Object) Token == null)
                 return false;
 
-            return _Id.Equals(TokenId._Id);
+            return _Value.Equals(Token._Value);
 
         }
 
@@ -372,7 +352,7 @@ namespace com.graphdefined.eMI3
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
         {
-            return _Id.GetHashCode();
+            return _Value.GetHashCode();
         }
 
         #endregion
@@ -384,7 +364,7 @@ namespace com.graphdefined.eMI3
         /// </summary>
         public override String ToString()
         {
-            return _Id.ToString();
+            return _Value.ToString();
         }
 
         #endregion

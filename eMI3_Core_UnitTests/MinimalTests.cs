@@ -45,13 +45,13 @@ namespace com.graphdefined.eMI3.UnitTests
 
             #region Create a new roaming network and an EVSE operator
 
-            var RoamingNetwork = new RoamingNetwork(new RoamingNetwork_Id("eMI3"));
+            var RoamingNetwork = new RoamingNetwork(RoamingNetwork_Id.Parse("eMI3"));
 
             Assert.IsNotNull(RoamingNetwork);
-            Assert.AreEqual(new RoamingNetwork_Id("eMI3"), RoamingNetwork.Id);
-            Assert.AreEqual("eMI3",                        RoamingNetwork.Id.ToString());
-            Assert.AreEqual(0,                             RoamingNetwork.Count(),               "The number of entities within the roaming network must be 0!");
-            Assert.AreEqual(0,                             RoamingNetwork.EVSEOperators.Count(), "The number of EVSE operators within the roaming network must be 0!");
+            Assert.AreEqual(RoamingNetwork_Id.Parse("eMI3"), RoamingNetwork.Id);
+            Assert.AreEqual("eMI3",                          RoamingNetwork.Id.ToString());
+            Assert.AreEqual(0,                               RoamingNetwork.Count(),               "The number of entities within the roaming network must be 0!");
+            Assert.AreEqual(0,                               RoamingNetwork.EVSEOperators.Count(), "The number of EVSE operators within the roaming network must be 0!");
 
             var BelectricDriveOperator = RoamingNetwork.CreateNewEVSEOperator(
                                                             EVSEOperator_Id.Parse(Country.Germany, "822"),

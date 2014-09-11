@@ -85,7 +85,7 @@
     <Compile Include="Entities\ChargingStation\AddEVSEResult.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPool.cs" />
     <Compile Include="Entities\ChargingStation\RegisterEVSEResult.cs" />
-    <Compile Include="CommonTypes\Token.cs" />
+    <Compile Include="CommonTypes\Auth_Token.cs" />
     <Compile Include="Entities\ChargingSession\ChargingSession_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="Entities\EVSEOperator\EVSEOperatorExceptions.cs" />

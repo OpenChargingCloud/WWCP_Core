@@ -137,7 +137,7 @@ namespace com.graphdefined.eMI3.LocalService
         public AUTHSTARTResult AuthorizeStart(EVSEOperator_Id    OperatorId,
                                               EVSE_Id            EVSEId,
                                               ChargingSession_Id  PartnerSessionId,
-                                              Token              UID)
+                                              Auth_Token              UID)
         {
 
             // Will store the SessionId in order to contact the right authenticator at later requests!
@@ -200,7 +200,7 @@ namespace com.graphdefined.eMI3.LocalService
                                             EVSE_Id            EVSEId,
                                             ChargingSession_Id  SessionId,
                                             ChargingSession_Id  PartnerSessionId,
-                                            Token              UID)
+                                            Auth_Token              UID)
         {
 
             lock (AuthenticationServices)
@@ -266,7 +266,7 @@ namespace com.graphdefined.eMI3.LocalService
                                      String              PartnerProductId,
                                      DateTime            ChargeStart,
                                      DateTime            ChargeEnd,
-                                     Token               UID             = null,
+                                     Auth_Token               UID             = null,
                                      eMA_Id              eMAId           = null,
                                      DateTime?           SessionStart    = null,
                                      DateTime?           SessionEnd      = null,
