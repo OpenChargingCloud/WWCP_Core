@@ -279,13 +279,13 @@ namespace com.graphdefined.eMI3
 
         #region EVSEOperator
 
-        private String _EVSEOperator;
+        private EVSEOperator_Id _EVSEOperator;
 
         /// <summary>
         /// The EVSE operator of this EVSPool.
         /// </summary>
         [Optional]
-        public String EVSEOperator
+        public EVSEOperator_Id EVSEOperator
         {
 
             get
@@ -295,7 +295,7 @@ namespace com.graphdefined.eMI3
 
             set
             {
-                SetProperty<String>(ref _EVSEOperator, value);
+                SetProperty<EVSEOperator_Id>(ref _EVSEOperator, value);
             }
 
         }

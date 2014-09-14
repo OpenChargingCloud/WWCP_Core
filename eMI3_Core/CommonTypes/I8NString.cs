@@ -73,6 +73,14 @@ namespace com.graphdefined.eMI3
             }
         }
 
+        public Boolean IsNotEmpty
+        {
+            get
+            {
+                return I8NStrings.Count > 0;
+            }
+        }
+
         #endregion
 
         #region Constructor(s)

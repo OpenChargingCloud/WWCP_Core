@@ -229,19 +229,19 @@ namespace com.graphdefined.eMI3
 
         #endregion
 
-        #region PhotoURL
+        #region PhotoURIs
 
-        private readonly List<String> _Photos;
+        private readonly List<String> _PhotoURIs;
 
         /// <summary>
-        /// A photo of the charging station.
+        /// URIs of photos of this charging station.
         /// </summary>
         [Optional, Not_eMI3defined]
-        public List<String> Photos
+        public List<String> PhotoURIs
         {
             get
             {
-                return _Photos;
+                return _PhotoURIs;
             }
         }
 
@@ -367,7 +367,7 @@ namespace com.graphdefined.eMI3
 
             this._EVSEs                  = new ConcurrentDictionary<EVSE_Id, EVSE>();
 
-            this._Photos                 = new List<String>();
+            this._PhotoURIs                 = new List<String>();
             this.UserComment             = new I8NString();
             this.ServiceProviderComment  = new I8NString();
             this.GeoLocation             = new GeoLocation();

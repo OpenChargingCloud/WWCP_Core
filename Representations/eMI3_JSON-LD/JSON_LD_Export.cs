@@ -22,8 +22,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-using com.graphdefined.eMI3;
 using Newtonsoft.Json.Linq;
+
+using eu.Vanaheimr.Illias.Commons;
+using com.graphdefined.eMI3;
 
 #endregion
 
@@ -121,21 +123,147 @@ namespace com.graphdefined.eMI3.IO.JSON_LD
         #endregion
 
 
-        #region ToJSON(this Pool)
 
-        public static JObject ToJSON(this ChargingPool Pool)
+        #region ToJSON(this I8NString)
+
+        public static JObject ToJSON(this I8NString I8NString)
+        {
+            return new JObject(I8NString.SafeSelect(v => new JProperty(v.Language.ToString(), v.Value.ToString())));
+        }
+
+        #endregion
+
+        #region ToJSON(this GeoLocation)
+
+        public static JObject ToJSON(this GeoLocation GeoLocation)
         {
 
-            return JSON.Create(Pool.Id.              ToJSON("Id"),
-                               Pool.LastChange.      ToJSON("Timestamp"),
-                               Pool.Name.            ToJSON("Name"),
-                               (!Pool.Description.IsEmpty)
-                                   ? Pool.Description.ToJSON("Description")
+            return new JObject(new JProperty("lat",             GeoLocation.Latitude.ToString()),
+                               new JProperty("lng",             GeoLocation.Longitude.ToString()),
+                               new JProperty("projection",      "WGS84"));
+
+        }
+
+        #endregion
+
+        #region ToJSON(this Address)
+
+        public static JObject ToJSON(this Address Address)
+        {
+
+            return new JObject(new JProperty("floorLevel",      Address.FloorLevel),
+                               new JProperty("houseNumber",     Address.HouseNumber),
+                               new JProperty("street",          Address.Street),
+                               new JProperty("postalCode",      Address.PostalCode),
+                               new JProperty("postalCodeSub",   Address.PostalCodeSub),
+                               new JProperty("city",            Address.City),
+                               new JProperty("country",         Address.Country.CountryName.ToJSON()));
+
+        }
+
+        #endregion
+
+        #region ToJSON(this OpeningTime)
+
+        public static JObject ToJSON(this OpeningTime OpeningTime)
+        {
+
+            return new JObject(new JProperty("OpeningTime", OpeningTime.ToString()));
+
+        }
+
+        #endregion
+
+        #region ToJSON(this GridConnection)
+
+        public static JObject ToJSON(this GridConnection GridConnection)
+        {
+
+            return new JObject(new JProperty("GridConnection", GridConnection.ToString()));
+
+        }
+
+        #endregion
+
+        #region ToJSON(this ChargingStationUIFeatures)
+
+        public static JObject ToJSON(this ChargingStationUIFeatures ChargingStationUIFeatures)
+        {
+
+            return new JObject(new JProperty("ChargingStationUIFeatures", ChargingStationUIFeatures.ToString()));
+
+        }
+
+        #endregion
+
+        #region ToJSON(this ChargingStationUIFeatures)
+
+        public static JObject ToJSON(this AuthorizationOptions AuthorizationOptions)
+        {
+
+            return new JObject(new JProperty("AuthorizationOptions", AuthorizationOptions.ToString()));
+
+        }
+
+        #endregion
+
+
+
+        // -----
+
+        #region ToJSON(this ChargingPool)
+
+        public static JObject ToJSON(this ChargingPool EVChargingPool)
+        {
+
+            return JSON.Create(EVChargingPool.Id.               ToJSON("@id"),
+                               new JProperty("@context",        "http://eMI3"),
+                               EVChargingPool.LastChange.       ToJSON("lastChange"),
+                               EVChargingPool.Name.             ToJSON("name"),
+                               (EVChargingPool.Description.IsNotEmpty)
+                                   ? EVChargingPool.Description.ToJSON("description")
                                    : null,
-                               Pool.LocationLanguage.ToJSON("LocationLanguage"),
-                               Pool.PoolLocation.    ToJSON("PoolLocation"),
-                               Pool.EntranceLocation.ToJSON("EntranceLocation")
-                              );
+                               EVChargingPool.LocationLanguage. ToJSON("locationLanguage"),
+                               EVChargingPool.PoolLocation.     ToJSON("poolLocation"),
+                               EVChargingPool.EntranceLocation. ToJSON("entranceLocation"),
+                               EVChargingPool.Address.          ToJSON("address"),
+                               EVChargingPool.EntranceAddress.  ToJSON("entranceAddress"),
+                               EVChargingPool.PoolOwner.        ToJSON("poolOwner"),
+                               EVChargingPool.LocationOwner.    ToJSON("locationOwner"),
+                               EVChargingPool.EVSEOperator.     ToJSON("EVSEOperator"),
+                               EVChargingPool.OpeningTime.      ToJSON("openingTime"),
+                               new JProperty("chargingStations",    EVChargingPool.ChargingStations.SafeSelect(v => v.ToJSON())));
+
+        }
+
+        #endregion
+
+        #region ToJSON(this ChargingStation)
+
+        public static JObject ToJSON(this ChargingStation ChargingStation)
+        {
+
+            return new JObject(new JProperty("serviceIdentification",       ChargingStation.ServiceIdentification),
+                               new JProperty("userComment",                 ChargingStation.UserComment.ToJSON()),
+                               new JProperty("serviceProviderComment",      ChargingStation.ServiceProviderComment.ToJSON()),
+                               new JProperty("geoLocation",                 ChargingStation.GeoLocation.ToJSON()),
+                               new JProperty("gridConnection",              ChargingStation.GridConnection.ToJSON()),
+                               new JProperty("chargingStationUIFeatures",   ChargingStation.Features.ToJSON()),
+                               new JProperty("authorizationOptions",        ChargingStation.AuthorizationOptions.ToJSON()),
+                               new JProperty("photoURIs",                   new JArray(ChargingStation.PhotoURIs.Select(v => v.ToString())),
+                               new JProperty("pointOfDelivery",             ChargingStation.PointOfDelivery),
+                               new JProperty("EVSEs",                       ChargingStation.EVSEs.SafeSelect(v => v.ToJSON()))));
+
+        }
+
+        #endregion
+
+        #region ToJSON(this EVSE)
+
+        public static JObject ToJSON(this EVSE EVSE)
+        {
+
+            return new JObject(new JProperty("EVSE", EVSE.ToString()));
 
         }
 
