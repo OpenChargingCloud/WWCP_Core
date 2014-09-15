@@ -51,7 +51,7 @@ namespace com.graphdefined.eMI3
         /// <summary>
         /// The gravitational model.
         /// </summary>
-        public GravitationalModel   Model       { get; set; }
+        public GravitationalModel   Projection       { get; set; }
 
         /// <summary>
         /// The latitude.
@@ -79,7 +79,7 @@ namespace com.graphdefined.eMI3
         /// </summary>
         public GeoLocation()
         {
-            this.Model     = GravitationalModel.WGS84;
+            this.Projection     = GravitationalModel.WGS84;
             this.Altitude  = 0.0;
         }
 
@@ -106,7 +106,7 @@ namespace com.graphdefined.eMI3
         public GeoLocation SetModel(GravitationalModel Value)
         {
 
-            this.Model = Value;
+            this.Projection = Value;
 
             return this;
 

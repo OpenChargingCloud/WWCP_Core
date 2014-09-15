@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
@@ -162,6 +163,21 @@ namespace com.graphdefined.eMI3
             get
             {
                 return _SearchProviders.Values;
+            }
+        }
+
+        #endregion
+
+        #region ChargingPools
+
+        /// <summary>
+        /// Return all search providers registered within this roaming network.
+        /// </summary>
+        public IEnumerable<ChargingPool> ChargingPools
+        {
+            get
+            {
+                return _EVSEOperators.SelectMany(v => v.Value);
             }
         }
 

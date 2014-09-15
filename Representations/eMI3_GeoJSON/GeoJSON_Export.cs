@@ -142,7 +142,7 @@ namespace com.graphdefined.eMI3.IO.GeoJSON
 
             return new JProperty(JPropertyKey,
                                  GeoJSON.Create(
-                                        (Location.Model != GravitationalModel.EGM2008) ? new JProperty("Model",    Location.Model)    : null,
+                                        (Location.Projection != GravitationalModel.EGM2008) ? new JProperty("Model",    Location.Projection)    : null,
                                         new JProperty("Latitude",  Location.Latitude),
                                         new JProperty("Longitude", Location.Longitude),
                                         (Location.Altitude != 0.0)                     ? new JProperty("Altitude", Location.Altitude) : null)

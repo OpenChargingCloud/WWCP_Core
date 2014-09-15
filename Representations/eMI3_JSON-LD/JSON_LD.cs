@@ -35,9 +35,11 @@ namespace com.graphdefined.eMI3.IO.JSON_LD
         public static JObject Create(params JProperty[] Properties)
         {
 
-            return new JObject(Properties.
-                                   Where(p => p != null).
-                                   ToArray());
+            var FilteredData = Properties.Where(p => p != null).ToArray();
+
+            return (FilteredData.Length > 0)
+                       ? new JObject(FilteredData)
+                       : null;
 
         }
 

@@ -58,14 +58,14 @@ namespace com.graphdefined.eMI3
 
         #region Events
 
-        #region EVSPoolAddition
+        #region ChargingPoolAddition
 
         private readonly IVotingNotificator<EVSEOperator, ChargingPool, Boolean> ChargingPoolAddition;
 
         /// <summary>
-        /// Called whenever an EVS pool will be or was added.
+        /// Called whenever a charging pool will be or was added.
         /// </summary>
-        public IVotingSender<EVSEOperator, ChargingPool, Boolean> OnEVSPoolAddition
+        public IVotingSender<EVSEOperator, ChargingPool, Boolean> OnChargingPoolAddition
         {
             get
             {
@@ -325,8 +325,8 @@ namespace com.graphdefined.eMI3
             // EVSEOperator events
             this.ChargingPoolAddition          = new VotingNotificator<EVSEOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
 
-            this.OnEVSPoolAddition.        OnVoting       += (evseoperator, evspool, vote) => RoamingNetwork.EVSPoolAddition.SendVoting      (evseoperator, evspool, vote);
-            this.OnEVSPoolAddition.        OnNotification += (evseoperator, evspool)       => RoamingNetwork.EVSPoolAddition.SendNotification(evseoperator, evspool);
+            this.OnChargingPoolAddition.        OnVoting       += (evseoperator, evspool, vote) => RoamingNetwork.EVSPoolAddition.SendVoting      (evseoperator, evspool, vote);
+            this.OnChargingPoolAddition.        OnNotification += (evseoperator, evspool)       => RoamingNetwork.EVSPoolAddition.SendNotification(evseoperator, evspool);
 
 
             // EVS pool events
@@ -366,8 +366,9 @@ namespace com.graphdefined.eMI3
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
         public ChargingPool CreateNewEVSPool(ChargingPool_Id                        ChargingPoolId,
-                                             Action<ChargingPool>                   OnSuccess,
-                                             Action<EVSEOperator, ChargingPool_Id>  OnError = null)
+                                             Action<ChargingPool>                   Configure,
+                                             Action<ChargingPool>                   OnSuccess  = null,
+                                             Action<EVSEOperator, ChargingPool_Id>  OnError    = null)
         {
 
             #region Initial checks
@@ -388,6 +389,9 @@ namespace com.graphdefined.eMI3
 
             var _ChargingPool = new ChargingPool(ChargingPoolId, this);
 
+            if (Configure != null)
+                Configure(_ChargingPool);
+
             if (ChargingPoolAddition.SendVoting(this, _ChargingPool))
             {
                 if (_RegisteredChargingPools.TryAdd(ChargingPoolId, _ChargingPool))
@@ -398,7 +402,7 @@ namespace com.graphdefined.eMI3
                 }
             }
 
-            throw new Exception();
+            return null;
 
         }
 

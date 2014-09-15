@@ -111,7 +111,7 @@ namespace com.graphdefined.eMI3.IO.XML
                 return null;
 
             return new XElement(Namespace + ElementName,
-                       (Location.Model != GravitationalModel.WGS84) ? new XAttribute(NS_eMI3 + Geo_Model,    Location.Model)    : null,
+                       (Location.Projection != GravitationalModel.WGS84) ? new XAttribute(NS_eMI3 + Geo_Model,    Location.Projection)    : null,
                        new XElement(NS_eMI3 + Geo_Latitude,  Location.Latitude),
                        new XElement(NS_eMI3 + Geo_Longitude, Location.Longitude),
                        (Location.Altitude != 0.0)                   ? new XElement  (NS_eMI3 + Geo_Altitude, Location.Altitude) : null
