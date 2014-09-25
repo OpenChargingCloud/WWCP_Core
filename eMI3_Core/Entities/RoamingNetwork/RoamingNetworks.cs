@@ -21,9 +21,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
-using eu.Vanaheimr.Illias.Commons;
-using eu.Vanaheimr.Illias.Commons.Votes;
-using eu.Vanaheimr.Styx.Arrows;
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Illias.Votes;
+using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using com.graphdefined.eMI3.LocalService;
 
