@@ -373,6 +373,11 @@ namespace com.graphdefined.eMI3
 
         #endregion
 
+        public static implicit operator String(RoamingNetwork_Id d)
+        {
+            return d.ToString();
+        }
+
     }
 
 }
