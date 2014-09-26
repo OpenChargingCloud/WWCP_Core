@@ -49,7 +49,7 @@ namespace com.graphdefined.eMI3.LocalService
 
         private readonly Dictionary<UInt32,             IRoamingProviderProvided_EVSEOperatorServices>   AuthenticationServices;
         private readonly Dictionary<ChargingSession_Id, IRoamingProviderProvided_EVSEOperatorServices>   SessionIdAuthenticatorCache;
-        private readonly Dictionary<EVSEOperator_Id,    IEVSEOperatorProvidedServices>  EVSEOperatorLookup;
+        private readonly Dictionary<EVSEOperator_Id,    IEVSEOperatorProvidedServices>                   EVSEOperatorLookup;
 
         #endregion
 
@@ -89,6 +89,40 @@ namespace com.graphdefined.eMI3.LocalService
 
         #endregion
 
+
+
+        public IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> AllTokens
+        {
+            get
+            {
+                return AuthenticationServices.SelectMany(vv => vv.Value.AllTokens);
+            }
+        }
+
+        public IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> AuthorizedTokens
+        {
+            get
+            {
+                return AuthenticationServices.SelectMany(vv => vv.Value.AuthorizedTokens);
+            }
+        }
+
+        public IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> NotAuthorizedTokens
+        {
+            get
+            {
+                return AuthenticationServices.SelectMany(vv => vv.Value.NotAuthorizedTokens);
+            }
+        }
+
+        public IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> BlockedTokens
+        {
+            get
+            {
+                return AuthenticationServices.SelectMany(vv => vv.Value.BlockedTokens);
+            }
+        }
+
         #endregion
 
         #region Constructor(s)
@@ -99,9 +133,9 @@ namespace com.graphdefined.eMI3.LocalService
 
             this._RoamingNetwork              = RoamingNetwork;
             this._AuthorizatorId              = (AuthorizatorId == null) ? Authorizator_Id.Parse("Belectric Drive EV Gateway") : AuthorizatorId;
-            this.AuthenticationServices       = new Dictionary<UInt32,            IRoamingProviderProvided_EVSEOperatorServices>();
+            this.AuthenticationServices       = new Dictionary<UInt32,             IRoamingProviderProvided_EVSEOperatorServices>();
             this.SessionIdAuthenticatorCache  = new Dictionary<ChargingSession_Id, IRoamingProviderProvided_EVSEOperatorServices>();
-            this.EVSEOperatorLookup           = new Dictionary<EVSEOperator_Id,   IEVSEOperatorProvidedServices>();
+            this.EVSEOperatorLookup           = new Dictionary<EVSEOperator_Id,    IEVSEOperatorProvidedServices>();
 
         }
 
@@ -110,7 +144,7 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region RegisterService(Priority, AuthenticationService)
 
-        public Boolean RegisterService(UInt32                        Priority,
+        public Boolean RegisterService(UInt32                                         Priority,
                                        IRoamingProviderProvided_EVSEOperatorServices  AuthenticationService)
         {
 

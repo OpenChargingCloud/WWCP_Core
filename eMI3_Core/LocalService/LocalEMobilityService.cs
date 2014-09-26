@@ -34,7 +34,7 @@ namespace com.graphdefined.eMI3.LocalService
 
         #region Data
 
-        private readonly Dictionary<Auth_Token,     AuthorizationResult>  AuthorizationDatabase;
+        private readonly Dictionary<Auth_Token,         AuthorizationResult>  AuthorizationDatabase;
         private readonly Dictionary<ChargingSession_Id, SessionInfo>          SessionDatabase;
 
         #endregion
@@ -102,6 +102,38 @@ namespace com.graphdefined.eMI3.LocalService
         }
 
         #endregion
+
+        public IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> AllTokens
+        {
+            get
+            {
+                return AuthorizationDatabase;
+            }
+        }
+
+        public IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> AuthorizedTokens
+        {
+            get
+            {
+                return AuthorizationDatabase.Where(v => v.Value == AuthorizationResult.Authorized);
+            }
+        }
+
+        public IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> NotAuthorizedTokens
+        {
+            get
+            {
+                return AuthorizationDatabase.Where(v => v.Value == AuthorizationResult.NotAuthorized);
+            }
+        }
+
+        public IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> BlockedTokens
+        {
+            get
+            {
+                return AuthorizationDatabase.Where(v => v.Value == AuthorizationResult.Blocked);
+            }
+        }
 
         #region RemoveToken(Token)
 

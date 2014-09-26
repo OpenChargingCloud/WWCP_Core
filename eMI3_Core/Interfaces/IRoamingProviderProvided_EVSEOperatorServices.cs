@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 #endregion
@@ -33,6 +34,10 @@ namespace com.graphdefined.eMI3.LocalService
 
         Authorizator_Id AuthorizatorId { get; }
 
+        IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> AllTokens            { get; }
+        IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> AuthorizedTokens     { get; }
+        IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> NotAuthorizedTokens  { get; }
+        IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> BlockedTokens        { get; }
 
 
         AUTHSTARTResult AuthorizeStart(EVSEOperator_Id      OperatorId,
