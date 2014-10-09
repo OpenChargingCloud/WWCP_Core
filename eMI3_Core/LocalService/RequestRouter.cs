@@ -300,7 +300,7 @@ namespace com.graphdefined.eMI3.LocalService
                                      String              PartnerProductId,
                                      DateTime            ChargeStart,
                                      DateTime            ChargeEnd,
-                                     Auth_Token               UID             = null,
+                                     Auth_Token          UID             = null,
                                      eMA_Id              eMAId           = null,
                                      DateTime?           SessionStart    = null,
                                      DateTime?           SessionEnd      = null,
@@ -311,6 +311,28 @@ namespace com.graphdefined.eMI3.LocalService
 
             lock (AuthenticationServices)
             {
+
+                #region Filter ChargeNow/BMW CDRecords
+
+                if (UID.ToString() == "5C037451" ||
+                    UID.ToString() == "5ABCC451" ||
+                    UID.ToString() == "5AC18451" ||
+                    UID.ToString() == "54266451" ||
+                    UID.ToString() == "5C8AC451" ||
+
+                    eMAId.ToString() == "DE-1500359-8" ||
+                    eMAId.ToString() == "DE-1500358-7" ||
+                    eMAId.ToString() == "DE-1500357-6" ||
+                    eMAId.ToString() == "DE-1500356-5" ||
+                    eMAId.ToString() == "DE-1500355-4")
+
+                    return new SENDCDRResult(AuthorizatorId) {
+                        State             = SENDCDRState.NotForwared,
+                        PartnerSessionId  = PartnerSessionId,
+                        Description       = "This ChargeDetailRecord will not be forwarded because of administrative filter rules!"
+                    };
+
+                #endregion
 
                 SENDCDRResult                                  SENDCDRResult;
                 IRoamingProviderProvided_EVSEOperatorServices  AuthenticationService;
@@ -333,7 +355,7 @@ namespace com.graphdefined.eMI3.LocalService
                                                                   MeterValueStart,
                                                                   MeterValueEnd);
 
-                    if (SENDCDRResult.State)
+                    if (SENDCDRResult.State == SENDCDRState.True)
                     {
 
                         SessionIdAuthenticatorCache.Remove(SessionId);
@@ -367,7 +389,7 @@ namespace com.graphdefined.eMI3.LocalService
                                                                        MeterValueStart,
                                                                        MeterValueEnd);
 
-                    if (SENDCDRResult.State)
+                    if (SENDCDRResult.State == SENDCDRState.True)
                     {
 
                         SessionIdAuthenticatorCache.Remove(SessionId);
@@ -383,7 +405,7 @@ namespace com.graphdefined.eMI3.LocalService
                 #region ...else fail!
 
                 return new SENDCDRResult(AuthorizatorId) {
-                    State             = false,
+                    State             = SENDCDRState.False,
                     PartnerSessionId  = PartnerSessionId,
                     Description       = "No authorization service returned a positiv result!"
                 };

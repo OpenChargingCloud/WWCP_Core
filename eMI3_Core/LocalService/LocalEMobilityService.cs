@@ -371,7 +371,7 @@ namespace com.graphdefined.eMI3.LocalService
                         SessionDatabase.Remove(SessionId);
 
                         return new SENDCDRResult(AuthorizatorId) {
-                            State             = true,
+                            State             = SENDCDRState.True,
                             PartnerSessionId  = PartnerSessionId
                         };
 
@@ -383,7 +383,7 @@ namespace com.graphdefined.eMI3.LocalService
 
                     else
                         return new SENDCDRResult(AuthorizatorId) {
-                                       State             = false,
+                                       State             = SENDCDRState.False,
                                        PartnerSessionId  = PartnerSessionId,
                                        Description       = "Invalid token for given session identification!"
                                    };
@@ -396,7 +396,7 @@ namespace com.graphdefined.eMI3.LocalService
 
                 else
                     return new SENDCDRResult(AuthorizatorId) {
-                                   State             = false,
+                                   State             = SENDCDRState.False,
                                    PartnerSessionId  = PartnerSessionId,
                                    Description       = "Invalid session identification!"
                                };

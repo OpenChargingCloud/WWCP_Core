@@ -24,12 +24,19 @@ using System;
 namespace com.graphdefined.eMI3.LocalService
 {
 
+    public enum SENDCDRState
+    {
+        True,
+        False,
+        NotForwared
+    }
+
     public class SENDCDRResult : AResult
     {
 
         #region Properties
 
-        public Boolean State   { get; set; }
+        public SENDCDRState State { get; set; }
 
         #endregion
 
