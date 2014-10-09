@@ -320,11 +320,11 @@ namespace com.graphdefined.eMI3.LocalService
                     UID.ToString() == "54266451" ||
                     UID.ToString() == "5C8AC451" ||
 
-                    eMAId.ToString() == "DE-1500359-8" ||
-                    eMAId.ToString() == "DE-1500358-7" ||
-                    eMAId.ToString() == "DE-1500357-6" ||
-                    eMAId.ToString() == "DE-1500356-5" ||
-                    eMAId.ToString() == "DE-1500355-4")
+                    eMAId.ToString() == "DE*BMW*0010LT*7" ||
+                    eMAId.ToString() == "DE*BMW*0010LX*7" ||
+                    eMAId.ToString() == "DE*BMW*0010LY*3" ||
+                    eMAId.ToString() == "DE*BMW*0010LZ*X" ||
+                    eMAId.ToString() == "DE*BMW*0010M0*2")
 
                     return new SENDCDRResult(AuthorizatorId) {
                         State             = SENDCDRState.NotForwared,
