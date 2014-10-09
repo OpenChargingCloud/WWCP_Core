@@ -314,17 +314,17 @@ namespace com.graphdefined.eMI3.LocalService
 
                 #region Filter ChargeNow/BMW CDRecords
 
-                if (UID.ToString() == "5C037451" ||
-                    UID.ToString() == "5ABCC451" ||
-                    UID.ToString() == "5AC18451" ||
-                    UID.ToString() == "54266451" ||
-                    UID.ToString() == "5C8AC451" ||
+                if ((UID   != null && (UID.ToString() == "5C037451" ||
+                                       UID.ToString() == "5ABCC451" ||
+                                       UID.ToString() == "5AC18451" ||
+                                       UID.ToString() == "54266451" ||
+                                       UID.ToString() == "5C8AC451")) ||
 
-                    eMAId.ToString() == "DE*BMW*0010LT*7" ||
-                    eMAId.ToString() == "DE*BMW*0010LX*7" ||
-                    eMAId.ToString() == "DE*BMW*0010LY*3" ||
-                    eMAId.ToString() == "DE*BMW*0010LZ*X" ||
-                    eMAId.ToString() == "DE*BMW*0010M0*2")
+                    (eMAId != null && (eMAId.ToString() == "DE*BMW*0010LT*7" ||
+                                       eMAId.ToString() == "DE*BMW*0010LX*7" ||
+                                       eMAId.ToString() == "DE*BMW*0010LY*3" ||
+                                       eMAId.ToString() == "DE*BMW*0010LZ*X" ||
+                                       eMAId.ToString() == "DE*BMW*0010M0*2")))
 
                     return new SENDCDRResult(AuthorizatorId) {
                         State             = SENDCDRState.NotForwared,
@@ -355,7 +355,7 @@ namespace com.graphdefined.eMI3.LocalService
                                                                   MeterValueStart,
                                                                   MeterValueEnd);
 
-                    if (SENDCDRResult.State == SENDCDRState.True)
+                    if (SENDCDRResult.State == SENDCDRState.Forwarded)
                     {
 
                         SessionIdAuthenticatorCache.Remove(SessionId);
@@ -389,7 +389,7 @@ namespace com.graphdefined.eMI3.LocalService
                                                                        MeterValueStart,
                                                                        MeterValueEnd);
 
-                    if (SENDCDRResult.State == SENDCDRState.True)
+                    if (SENDCDRResult.State == SENDCDRState.Forwarded)
                     {
 
                         SessionIdAuthenticatorCache.Remove(SessionId);

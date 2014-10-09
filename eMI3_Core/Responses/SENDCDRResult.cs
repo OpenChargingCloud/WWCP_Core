@@ -26,7 +26,7 @@ namespace com.graphdefined.eMI3.LocalService
 
     public enum SENDCDRState
     {
-        True,
+        Forwarded,
         False,
         NotForwared
     }

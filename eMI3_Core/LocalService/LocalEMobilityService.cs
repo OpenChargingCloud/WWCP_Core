@@ -371,7 +371,7 @@ namespace com.graphdefined.eMI3.LocalService
                         SessionDatabase.Remove(SessionId);
 
                         return new SENDCDRResult(AuthorizatorId) {
-                            State             = SENDCDRState.True,
+                            State             = SENDCDRState.Forwarded,
                             PartnerSessionId  = PartnerSessionId
                         };
 
