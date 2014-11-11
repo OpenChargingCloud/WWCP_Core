@@ -241,6 +241,23 @@ namespace com.graphdefined.eMI3
 
         #endregion
 
+        #region ManualEVSEIds
+
+        private List<EVSE_Id> _ManualEVSEIds;
+
+        /// <summary>
+        /// A list of manual EVSE Ids which will not be touched automagically.
+        /// </summary>
+        public List<EVSE_Id> ManualEVSEIds
+        {
+            get
+            {
+                return _ManualEVSEIds;
+            }
+        }
+
+        #endregion
+
 
         #region AllEVSEStatus
 
@@ -315,6 +332,7 @@ namespace com.graphdefined.eMI3
             this._Description               = new I8NString();
             this._ValidEVSEIds              = new List<EVSE_Id>();
             this._InvalidEVSEIds            = new List<EVSE_Id>();
+            this._ManualEVSEIds             = new List<EVSE_Id>();
 
             this._RegisteredChargingPools   = new ConcurrentDictionary<ChargingPool_Id, ChargingPool>();
 
