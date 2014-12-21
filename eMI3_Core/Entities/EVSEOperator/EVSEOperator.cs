@@ -259,13 +259,16 @@ namespace com.graphdefined.eMI3
         #endregion
 
 
-        #region AllEVSEStatus
+        #region AllEVSEIds
 
-        public IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>> AllEVSEStates
+        public IEnumerable<EVSE_Id> AllEVSEIds
         {
             get
             {
-                return _RegisteredChargingPools.Values.SelectMany(v => v.ChargingStations).SelectMany(v => v.EVSEs).Select(v => new KeyValuePair<EVSE_Id, EVSEStatusType>(v.Id, v.Status));
+                return _RegisteredChargingPools.Values.
+                           SelectMany(v => v.ChargingStations).
+                           SelectMany(v => v.EVSEs).
+                           Select    (v => v.Id);
             }
         }
 
@@ -273,9 +276,15 @@ namespace com.graphdefined.eMI3
 
         #region AllEVSEStatus
 
-        public EVSE EVSE(EVSE_Id EVSEId)
+        public IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>> AllEVSEStates
         {
-            return _RegisteredChargingPools.Values.SelectMany(v => v.ChargingStations).SelectMany(v => v.EVSEs).Where(EVSE => EVSE.Id == EVSEId).FirstOrDefault();
+            get
+            {
+                return _RegisteredChargingPools.Values.
+                           SelectMany(v => v.ChargingStations).
+                           SelectMany(v => v.EVSEs).
+                           Select    (v => new KeyValuePair<EVSE_Id, EVSEStatusType>(v.Id, v.Status));
+            }
         }
 
         #endregion
@@ -440,16 +449,44 @@ namespace com.graphdefined.eMI3
         #endregion
 
 
+        #region GetEVSEbyId(EVSEId)
+
+        public EVSE GetEVSEbyId(EVSE_Id EVSEId)
+        {
+            return _RegisteredChargingPools.Values.
+                       SelectMany(v => v.ChargingStations).
+                       SelectMany(v => v.EVSEs).
+                       Where     (EVSE => EVSE.Id == EVSEId).
+                       FirstOrDefault();
+        }
+
+        #endregion
+
+        #region TryGetEVSEbyId(EVSEId)
+
+        public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
+        {
+
+            EVSE = _RegisteredChargingPools.Values.
+                       SelectMany(v     => v.ChargingStations).
+                       SelectMany(v     => v.EVSEs).
+                       Where     (_EVSE => _EVSE.Id == EVSEId).
+                       FirstOrDefault();
+
+            return EVSE != null;
+
+        }
+
+        #endregion
+
         public void SetEVSEStatus(EVSE_Id EVSEId, EVSEStatusType Status, Action<EVSE_Id, EVSEStatusType> OnSuccess = null)
         {
 
             if (InvalidEVSEIds.Contains(EVSEId))
                 return;
 
-            var TmpLookup = ChargingPools.SelectMany(v => v.ChargingStations).SelectMany(v => v.EVSEs).ToDictionary(v => v.Id, v => v);
-
             EVSE _EVSE = null;
-            if (TmpLookup.TryGetValue(EVSEId, out _EVSE))
+            if (TryGetEVSEbyId(EVSEId, out _EVSE))
             {
                 _EVSE.Status = Status;
                 OnSuccess(EVSEId, Status);

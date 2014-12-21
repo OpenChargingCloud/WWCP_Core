@@ -18,6 +18,8 @@
 #region Usings
 
 using System;
+using System.Linq;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
@@ -524,12 +526,42 @@ namespace com.graphdefined.eMI3
                 }
             }
 
-            throw new Exception();
+            Debug.WriteLine("ChargingStation '" + ChargingStation_Id + "' was not created!");
+            return null;
 
         }
 
         #endregion
  
+
+        #region GetEVSEbyId(EVSEId)
+
+        public EVSE GetEVSEbyId(EVSE_Id EVSEId)
+        {
+            return _ChargingStations.Values.
+                       SelectMany(v => v.EVSEs).
+                       Where     (EVSE => EVSE.Id == EVSEId).
+                       FirstOrDefault();
+        }
+
+        #endregion
+
+        #region TryGetEVSEbyId(EVSEId)
+
+        public Boolean GetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
+        {
+
+            EVSE = _ChargingStations.Values.
+                       SelectMany(v     => v.EVSEs).
+                       Where     (_EVSE => _EVSE.Id == EVSEId).
+                       FirstOrDefault();
+
+            return EVSE != null;
+
+        }
+
+        #endregion
+
 
         #region IEnumerable<ChargingStation> Members
 
