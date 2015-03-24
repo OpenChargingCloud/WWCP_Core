@@ -34,13 +34,21 @@ namespace com.graphdefined.eMI3
 
     {
 
+        public enum OriginFormatType
+        {
+            OLD,
+            NEW
+        }
+
+
         #region Data
 
         /// <summary>
         /// The regular expression for parsing an EVSE identification.
         /// </summary>
-        public  const    String             EVSEId_RegEx        = @"^([A-Z]{2}\*?[A-Z0-9]{3})\*?E([A-Z0-9][A-Z0-9\*]{0,30})$ | ^(\+?[0-9]{1,3}\*?[0-9]{3})\*?([A-Z0-9][A-Z0-9\*]{0,30})$";
-
+        public  const    String             EVSEId_RegEx        = @"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?E([A-Z0-9][A-Z0-9\*]{0,30})$ | ^(\+?[0-9]{1,3}\*?[0-9]{3})\*?([A-Z0-9][A-Z0-9\*]{0,30})$";
+                                                          // Hubject ([A-Za-z]{2}\*?[A-Za-z0-9]{3}\*?E[A-Za-z0-9\*]{1,30})  |  (\+?[0-9]{1,3}\*[0-9]{3,6}\*[0-9\*]{1,32})
+                                                          // OCHP.eu                                                           /^\+[0-9]{1,3}\*?[A-Z0-9]{3}\*?[A-Z0-9\*]{0,40}(?=$)/i;                                                          // var valid_evse_warning= /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9\*]*/; // look ahead: at least one upper and one lower case letter
         /// <summary>
         /// The regular expression for parsing an EVSE identification.
         /// </summary>
@@ -87,6 +95,34 @@ namespace com.graphdefined.eMI3
 
         #endregion
 
+        #region OriginFormat
+
+        private readonly OriginFormatType _OriginFormat;
+
+        public OriginFormatType OriginFormat
+        {
+            get
+            {
+                return _OriginFormat;
+            }
+        }
+
+        #endregion
+
+        #region OriginEVSEId
+
+        public String OriginEVSEId
+        {
+            get
+            {
+                return (_OriginFormat == EVSE_Id.OriginFormatType.NEW)
+                          ? String.Concat(_OperatorId.ToString(), "*E", _EVSEIdSuffix)
+                          : String.Concat(_OperatorId.Id2,        "*",  _EVSEIdSuffix);
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
@@ -95,8 +131,9 @@ namespace com.graphdefined.eMI3
         /// Generate a new Electric Vehicle Supply Equipment (EVSE) identification (EVSE_Id)
         /// based on the given string.
         /// </summary>
-        private EVSE_Id(EVSEOperator_Id  OperatorId,
-                        String           EVSEIdSuffix)
+        private EVSE_Id(EVSEOperator_Id   OperatorId,
+                        String            EVSEIdSuffix,
+                        OriginFormatType  OriginFormat)
         {
 
             if (OperatorId == null)
@@ -111,6 +148,7 @@ namespace com.graphdefined.eMI3
 
             _OperatorId    = OperatorId;
             _EVSEIdSuffix  = _MatchCollection[0].Value;
+            _OriginFormat  = OriginFormat;
 
         }
 
@@ -136,11 +174,13 @@ namespace com.graphdefined.eMI3
 
             if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
                 return new EVSE_Id(__EVSEOperatorId,
-                                   _MatchCollection[0].Groups[2].Value);
+                                   _MatchCollection[0].Groups[2].Value,
+                                   OriginFormatType.NEW);
 
             if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
                 return new EVSE_Id(__EVSEOperatorId,
-                                   _MatchCollection[0].Groups[4].Value);
+                                   _MatchCollection[0].Groups[4].Value,
+                                   OriginFormatType.OLD);
 
             throw new ArgumentException("Illegal EVSE identification!", "EVSEId");
 
@@ -150,13 +190,13 @@ namespace com.graphdefined.eMI3
 
         #region Parse(OperatorId, EVSEIdSuffix)
 
-        /// <summary>
-        /// Parse the given string as an EVSE identification.
-        /// </summary>
-        public static EVSE_Id Parse(EVSEOperator_Id OperatorId, String EVSEIdSuffix)
-        {
-            return new EVSE_Id(OperatorId, EVSEIdSuffix);
-        }
+        ///// <summary>
+        ///// Parse the given string as an EVSE identification.
+        ///// </summary>
+        //public static EVSE_Id Parse(EVSEOperator_Id OperatorId, String EVSEIdSuffix)
+        //{
+        //    return new EVSE_Id(OperatorId, EVSEIdSuffix);
+        //}
 
         #endregion
 
@@ -185,7 +225,8 @@ namespace com.graphdefined.eMI3
                 {
 
                     EVSE_Id = new EVSE_Id(__EVSEOperatorId,
-                                          _MatchCollection[0].Groups[2].Value);
+                                          _MatchCollection[0].Groups[2].Value,
+                                          OriginFormatType.NEW);
 
                     return true;
 
@@ -196,7 +237,8 @@ namespace com.graphdefined.eMI3
                 {
 
                     EVSE_Id = new EVSE_Id(__EVSEOperatorId,
-                                          _MatchCollection[0].Groups[4].Value);
+                                          _MatchCollection[0].Groups[4].Value,
+                                          OriginFormatType.OLD);
 
                     return true;
 
@@ -213,26 +255,26 @@ namespace com.graphdefined.eMI3
 
         #endregion
 
-        #region TryParse(EVSEId, out EVSE_Id)
+        #region TryParse(OperatorId, EVSEIdSuffix, out EVSE_Id)
 
-        /// <summary>
-        /// Parse the given string as an EVSE identification.
-        /// </summary>
-        public static Boolean TryParse(EVSEOperator_Id OperatorId, String EVSEIdSuffix, out EVSE_Id EVSE_Id)
-        {
+        ///// <summary>
+        ///// Parse the given string as an EVSE identification.
+        ///// </summary>
+        //public static Boolean TryParse(EVSEOperator_Id OperatorId, String EVSEIdSuffix, out EVSE_Id EVSE_Id)
+        //{
 
-            try
-            {
-                EVSE_Id = new EVSE_Id(OperatorId, EVSEIdSuffix);
-                return true;
-            }
-            catch (Exception e)
-            { }
+        //    try
+        //    {
+        //        EVSE_Id = new EVSE_Id(OperatorId, EVSEIdSuffix);
+        //        return true;
+        //    }
+        //    catch (Exception e)
+        //    { }
 
-            EVSE_Id = null;
-            return false;
+        //    EVSE_Id = null;
+        //    return false;
 
-        }
+        //}
 
         #endregion
 
@@ -246,7 +288,8 @@ namespace com.graphdefined.eMI3
             get
             {
                 return new EVSE_Id(_OperatorId,
-                                   new String(_EVSEIdSuffix.ToCharArray()));
+                                   new String(_EVSEIdSuffix.ToCharArray()),
+                                   _OriginFormat);
             }
         }
 
