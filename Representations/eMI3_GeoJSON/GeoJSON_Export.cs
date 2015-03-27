@@ -24,11 +24,12 @@ using System.Collections.Generic;
 
 using Newtonsoft.Json.Linq;
 
-using com.graphdefined.eMI3;
+using org.GraphDefined.eMI3;
+using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
-namespace com.graphdefined.eMI3.IO.GeoJSON
+namespace org.GraphDefined.eMI3.IO.GeoJSON
 {
 
     // {
@@ -134,18 +135,18 @@ namespace com.graphdefined.eMI3.IO.GeoJSON
         /// </summary>
         /// <param name="Location">A GeoLocation.</param>
         /// <param name="JPropertyKey">The name of the JSON property key.</param>
-        public static JProperty ToJSON(this GeoLocation Location, String JPropertyKey)
+        public static JProperty ToJSON(this GeoCoordinate Location, String JPropertyKey)
         {
 
-            if (Location.Longitude == 0 && Location.Latitude == 0)
+            if (Location.Longitude.Value == 0 && Location.Latitude.Value == 0)
                 return null;
 
             return new JProperty(JPropertyKey,
                                  GeoJSON.Create(
-                                        (Location.Projection != GravitationalModel.EGM2008) ? new JProperty("Model",    Location.Projection)    : null,
-                                        new JProperty("Latitude",  Location.Latitude),
-                                        new JProperty("Longitude", Location.Longitude),
-                                        (Location.Altitude != 0.0)                     ? new JProperty("Altitude", Location.Altitude) : null)
+                                     (Location.Projection != GravitationalModel.EGM2008) ? new JProperty("Model",    Location.Projection)    : null,
+                                     new JProperty("Latitude",  Location.Latitude),
+                                     new JProperty("Longitude", Location.Longitude),
+                                     (Location.Altitude.Value != 0.0)                    ? new JProperty("Altitude", Location.Altitude) : null)
                                 );
 
         }

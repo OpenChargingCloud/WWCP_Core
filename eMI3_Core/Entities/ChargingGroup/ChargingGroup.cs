@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014 Achim Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 Core <http://www.github.com/GraphDefined/eMI3>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -24,10 +24,11 @@ using System.Collections.Concurrent;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
-namespace com.graphdefined.eMI3
+namespace org.GraphDefined.eMI3
 {
 
     /// <summary>
@@ -127,13 +128,13 @@ namespace com.graphdefined.eMI3
 
         #region PoolLocation
 
-        private GeoLocation _PoolLocation;
+        private GeoCoordinate _PoolLocation;
 
         /// <summary>
         /// The geographical location of this ChargingGroup.
         /// </summary>
         [Optional]
-        public GeoLocation PoolLocation
+        public GeoCoordinate PoolLocation
         {
 
             get
@@ -143,7 +144,7 @@ namespace com.graphdefined.eMI3
 
             set
             {
-                SetProperty<GeoLocation>(ref _PoolLocation, value);
+                SetProperty<GeoCoordinate>(ref _PoolLocation, value);
             }
 
         }
@@ -152,14 +153,14 @@ namespace com.graphdefined.eMI3
 
         #region EntranceLocation
 
-        private GeoLocation _EntranceLocation;
+        private GeoCoordinate _EntranceLocation;
 
         /// <summary>
         /// The geographical location of the entrance of this ChargingGroup.
         /// (If different from 'PoolLocation').
         /// </summary>
         [Optional]
-        public GeoLocation EntranceLocation
+        public GeoCoordinate EntranceLocation
         {
 
             get
@@ -169,7 +170,7 @@ namespace com.graphdefined.eMI3
 
             set
             {
-                SetProperty<GeoLocation>(ref _EntranceLocation, value);
+                SetProperty<GeoCoordinate>(ref _EntranceLocation, value);
             }
 
         }
@@ -452,9 +453,9 @@ namespace com.graphdefined.eMI3
             this.Description        = new I8NString();
             this.LocationLanguage   = Languages.undef;
 
-            this.PoolLocation       = new GeoLocation();
+            //this.PoolLocation       = new GeoCoordinate();
             this.Address            = new Address();
-            this.EntranceLocation   = new GeoLocation();
+            //this.EntranceLocation   = new GeoCoordinate();
             this.EntranceAddress    = new Address();
 
             #endregion

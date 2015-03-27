@@ -22,11 +22,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-using com.graphdefined.eMI3;
+using org.GraphDefined.eMI3;
+using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
-namespace com.graphdefined.eMI3.IO.XML
+namespace org.GraphDefined.eMI3.IO.XML
 {
 
     public static class XMLExport
@@ -104,17 +105,17 @@ namespace com.graphdefined.eMI3.IO.XML
         public static readonly String Geo_Longitude = "longitude";
         public static readonly String Geo_Altitude  = "altitude";
 
-        public static XElement ToXML(this GeoLocation Location, XNamespace Namespace, String ElementName)
+        public static XElement ToXML(this GeoCoordinate Location, XNamespace Namespace, String ElementName)
         {
 
-            if (Location.Longitude == 0 && Location.Latitude == 0)
+            if (Location.Longitude.Value == 0 && Location.Latitude.Value == 0)
                 return null;
 
             return new XElement(Namespace + ElementName,
                        (Location.Projection != GravitationalModel.WGS84) ? new XAttribute(NS_eMI3 + Geo_Model,    Location.Projection)    : null,
                        new XElement(NS_eMI3 + Geo_Latitude,  Location.Latitude),
                        new XElement(NS_eMI3 + Geo_Longitude, Location.Longitude),
-                       (Location.Altitude != 0.0)                   ? new XElement  (NS_eMI3 + Geo_Altitude, Location.Altitude) : null
+                       (Location.Altitude.Value != 0.0)                  ? new XElement  (NS_eMI3 + Geo_Altitude, Location.Altitude) : null
                    );
 
         }

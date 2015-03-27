@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014 Achim Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 Core <http://www.github.com/GraphDefined/eMI3>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -27,7 +27,7 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
-namespace com.graphdefined.eMI3
+namespace org.GraphDefined.eMI3
 {
 
     /// <summary>
@@ -159,26 +159,23 @@ namespace com.graphdefined.eMI3
 
         #region Constructor(s)
 
+        #region (internal) EVSE(Id)
+
         /// <summary>
         /// Create a new Electric Vehicle Supply Equipment (EVSE)
         /// having the given EVSE_Id.
         /// </summary>
         /// <param name="Id">The unique identification of the EVSE.</param>
-        /// <param name="ChargingStation">The parent EVS pool.</param>
-        internal EVSE(EVSE_Id          Id,
-                      ChargingStation  ChargingStation)
+        internal EVSE(EVSE_Id  Id)
+
             : base(Id)
+
         {
 
             #region Initial checks
 
             if (Id == null)
                 throw new ArgumentNullException("Id", "The unique identification of the EVSE must not be null!");
-
-            if (ChargingStation == null)
-                throw new ArgumentNullException("ChargingStation", "The charging station must not be null!");
-
-            this.ChargingStation = ChargingStation;
 
             #endregion
 
@@ -192,11 +189,52 @@ namespace com.graphdefined.eMI3
 
             this.SocketOutletAddition = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
 
+            #endregion
+
+        }
+
+        #endregion
+
+        #region (internal) EVSE(Id, ChargingStation)
+
+        /// <summary>
+        /// Create a new Electric Vehicle Supply Equipment (EVSE)
+        /// having the given EVSE_Id.
+        /// </summary>
+        /// <param name="Id">The unique identification of the EVSE.</param>
+        /// <param name="ChargingStation">The parent EVS pool.</param>
+        internal EVSE(EVSE_Id          Id,
+                      ChargingStation  ChargingStation)
+
+            : this(Id)
+
+        {
+
+            if (ChargingStation == null)
+                throw new ArgumentNullException("ChargingStation", "The charging station must not be null!");
+
+            this.ChargingStation = ChargingStation;
+
+
             this.OnSocketOutletAddition.OnVoting       += (evse, socketoutlet, vote) => ChargingStation.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
             this.OnSocketOutletAddition.OnNotification += (evse, socketoutlet)       => ChargingStation.SocketOutletAddition.SendNotification(evse, socketoutlet);
 
-            #endregion
+        }
 
+        #endregion
+
+        #endregion
+
+
+        #region CreateNew(Id)
+
+        /// <summary>
+        /// Create a new Electric Vehicle Supply Equipment (EVSE) having the given identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the Electric Vehicle Supply Equipment (EVSE).</param>
+        public static EVSE CreateNew(EVSE_Id Id)
+        {
+            return new EVSE(Id);
         }
 
         #endregion

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014 Achim Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 Core <http://www.github.com/GraphDefined/eMI3>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -26,11 +26,11 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
-using com.graphdefined.eMI3.LocalService;
+using org.GraphDefined.eMI3.LocalService;
 
 #endregion
 
-namespace com.graphdefined.eMI3
+namespace org.GraphDefined.eMI3
 {
 
     /// <summary>
@@ -476,7 +476,7 @@ namespace com.graphdefined.eMI3
         /// </summary>
         /// <param name="EVServiceProvider_Id">The unique identification of the new roaming provider.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
-        public EVServiceProvider CreateNewEVServiceProvider(EVSP_Id       EVServiceProvider_Id,
+        public EVServiceProvider CreateNewEVServiceProvider(EVSP_Id                    EVServiceProvider_Id,
                                                             Action<EVServiceProvider>  Action  = null)
         {
 

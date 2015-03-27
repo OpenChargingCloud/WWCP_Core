@@ -26,11 +26,12 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using com.graphdefined.eMI3;
+using org.GraphDefined.eMI3;
+using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
-namespace com.graphdefined.eMI3.IO.JSON_LD
+namespace org.GraphDefined.eMI3.IO.JSON_LD
 {
 
     /// <summary>
@@ -123,10 +124,10 @@ namespace com.graphdefined.eMI3.IO.JSON_LD
         /// </summary>
         /// <param name="Location">A GeoLocation.</param>
         /// <param name="JPropertyKey">The name of the JSON property key.</param>
-        public static JProperty ToJSON(this GeoLocation Location, String JPropertyKey)
+        public static JProperty ToJSON(this GeoCoordinate Location, String JPropertyKey)
         {
 
-            if (Location.Longitude == 0 && Location.Latitude == 0)
+            if (Location.Longitude.Value == 0 && Location.Latitude.Value == 0)
                 return null;
 
             return new JProperty(JPropertyKey,
@@ -134,7 +135,7 @@ namespace com.graphdefined.eMI3.IO.JSON_LD
                                      (Location.Projection != GravitationalModel.EGM2008) ? new JProperty("projection", Location.Projection)    : null,
                                      new JProperty("latitude",  Location.Latitude),
                                      new JProperty("longitude", Location.Longitude),
-                                     (Location.Altitude != 0.0)                     ? new JProperty("altitude", Location.Altitude) : null)
+                                     (Location.Altitude.Value != 0.0)                    ? new JProperty("altitude", Location.Altitude) : null)
                                 );
 
         }

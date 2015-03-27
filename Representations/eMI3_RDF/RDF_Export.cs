@@ -21,11 +21,11 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-using com.graphdefined.eMI3;
+using org.GraphDefined.eMI3;
 
 #endregion
 
-namespace com.graphdefined.eMI3.IO.RDF
+namespace org.GraphDefined.eMI3.IO.RDF
 {
 
 

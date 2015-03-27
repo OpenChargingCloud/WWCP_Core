@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014 Achim Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 Core <http://www.github.com/GraphDefined/eMI3>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -23,7 +23,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace com.graphdefined.eMI3
+namespace org.GraphDefined.eMI3
 {
 
     public enum Languages
@@ -31,7 +31,8 @@ namespace com.graphdefined.eMI3
         undef,
         de,
         en,
-        fr
+        fr,
+        dk
     }
 
     public struct I8NPair
@@ -179,6 +180,27 @@ namespace com.graphdefined.eMI3
             I8NStrings.Clear();
 
             return this;
+
+        }
+
+
+        public Boolean Is(Languages Language, String Value)
+        {
+
+            if (!I8NStrings.ContainsKey(Language))
+                return false;
+
+            return I8NStrings[Language].Equals(Value);
+
+        }
+
+        public Boolean IsNot(Languages Language, String Value)
+        {
+
+            if (!I8NStrings.ContainsKey(Language))
+                return true;
+
+            return !I8NStrings[Language].Equals(Value);
 
         }
 

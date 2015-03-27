@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014 Achim Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 HTTP <http://www.github.com/eMI3/HTTP>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -22,7 +22,7 @@ using System.Text;
 
 #endregion
 
-namespace com.graphdefined.eMI3.LocalService
+namespace org.GraphDefined.eMI3.LocalService
 {
 
     /// <summary>

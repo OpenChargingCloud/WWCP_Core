@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014 Achim Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 Core <http://www.github.com/GraphDefined/eMI3>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -26,10 +26,11 @@ using System.Collections.Concurrent;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
-namespace com.graphdefined.eMI3
+namespace org.GraphDefined.eMI3
 {
 
     /// <summary>
@@ -45,7 +46,6 @@ namespace com.graphdefined.eMI3
 
         #region Data
 
-        public  readonly EVSEOperator                                               Operator;
         private readonly ConcurrentDictionary<ChargingStation_Id, ChargingStation>  _ChargingStations;
 
         #endregion
@@ -129,13 +129,13 @@ namespace com.graphdefined.eMI3
 
         #region PoolLocation
 
-        private GeoLocation _PoolLocation;
+        private GeoCoordinate _PoolLocation;
 
         /// <summary>
         /// The geographical location of this EVSPool.
         /// </summary>
         [Optional]
-        public GeoLocation PoolLocation
+        public GeoCoordinate PoolLocation
         {
 
             get
@@ -145,7 +145,7 @@ namespace com.graphdefined.eMI3
 
             set
             {
-                SetProperty<GeoLocation>(ref _PoolLocation, value);
+                SetProperty<GeoCoordinate>(ref _PoolLocation, value);
             }
 
         }
@@ -154,14 +154,14 @@ namespace com.graphdefined.eMI3
 
         #region EntranceLocation
 
-        private GeoLocation _EntranceLocation;
+        private GeoCoordinate _EntranceLocation;
 
         /// <summary>
         /// The geographical location of the entrance of this EVSPool.
         /// (If different from 'PoolLocation').
         /// </summary>
         [Optional]
-        public GeoLocation EntranceLocation
+        public GeoCoordinate EntranceLocation
         {
 
             get
@@ -171,7 +171,7 @@ namespace com.graphdefined.eMI3
 
             set
             {
-                SetProperty<GeoLocation>(ref _EntranceLocation, value);
+                SetProperty<GeoCoordinate>(ref _EntranceLocation, value);
             }
 
         }
@@ -281,13 +281,13 @@ namespace com.graphdefined.eMI3
 
         #region EVSEOperator
 
-        private EVSEOperator_Id _EVSEOperator;
+        private EVSEOperator _EVSEOperator;
 
         /// <summary>
         /// The EVSE operator of this EVSPool.
         /// </summary>
         [Optional]
-        public EVSEOperator_Id EVSEOperator
+        public EVSEOperator EVSEOperator
         {
 
             get
@@ -297,7 +297,7 @@ namespace com.graphdefined.eMI3
 
             set
             {
-                SetProperty<EVSEOperator_Id>(ref _EVSEOperator, value);
+                SetProperty<EVSEOperator>(ref _EVSEOperator, value);
             }
 
         }
@@ -410,7 +410,7 @@ namespace com.graphdefined.eMI3
 
         #region Constructor(s)
 
-        #region (internal) EVSPool(Operator)
+        #region (internal) ChargingPool(Operator)
 
         /// <summary>
         /// Create a new group/pool of charging stations having a random identification.
@@ -422,15 +422,15 @@ namespace com.graphdefined.eMI3
 
         #endregion
 
-        #region (internal) EVSPool(Id, EVSEOperator)
+        #region (internal) ChargingPool(Id, EVSEOperator)
 
         /// <summary>
         /// Create a new group/pool of charging stations having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the EVS pool.</param>
         /// <param name="EVSEOperator">The parent EVSE operator.</param>
-        internal ChargingPool(ChargingPool_Id    Id,
-                         EVSEOperator  EVSEOperator)
+        internal ChargingPool(ChargingPool_Id  Id,
+                              EVSEOperator     EVSEOperator = null)
             : base(Id)
         {
 
@@ -439,10 +439,10 @@ namespace com.graphdefined.eMI3
             if (Id == null)
                 throw new ArgumentNullException("Id", "The unique identification of the EVS pool must not be null!");
 
-            if (EVSEOperator == null)
-                throw new ArgumentNullException("EVSEOperator", "The EVSE operator must not be null!");
+            //if (EVSEOperator == null)
+            //    throw new ArgumentNullException("EVSEOperator", "The EVSE operator must not be null!");
 
-            this.Operator = EVSEOperator;
+            this.EVSEOperator = EVSEOperator;
 
             #endregion
 
@@ -454,9 +454,9 @@ namespace com.graphdefined.eMI3
             this.Description        = new I8NString();
             this.LocationLanguage   = Languages.undef;
 
-            this.PoolLocation       = new GeoLocation();
+            //this.PoolLocation       = new GeoCoordinate();
             this.Address            = new Address();
-            this.EntranceLocation   = new GeoLocation();
+            //this.EntranceLocation   = new GeoCoordinate();
             this.EntranceAddress    = new Address();
 
             #endregion
@@ -466,22 +466,31 @@ namespace com.graphdefined.eMI3
             // EVS pool events
             this.ChargingStationAddition    = new VotingNotificator<ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
 
-            this.OnChargingStationAddition.OnVoting       += (evseoperator, evspool, vote) => Operator.ChargingStationAddition.SendVoting      (evseoperator, evspool, vote);
-            this.OnChargingStationAddition.OnNotification += (evseoperator, evspool)       => Operator.ChargingStationAddition.SendNotification(evseoperator, evspool);
+            if (EVSEOperator != null)
+            {
+                this.OnChargingStationAddition.OnVoting       += (evseoperator, evspool, vote) => EVSEOperator.ChargingStationAddition.SendVoting      (evseoperator, evspool, vote);
+                this.OnChargingStationAddition.OnNotification += (evseoperator, evspool)       => EVSEOperator.ChargingStationAddition.SendNotification(evseoperator, evspool);
+            }
 
 
             // Charging station events
             this.EVSEAddition               = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
 
-            this.OnEVSEAddition.OnVoting                  += (chargingstation, evse, vote) => EVSEOperator.EVSEAddition.SendVoting      (chargingstation, evse, vote);
-            this.OnEVSEAddition.OnNotification            += (chargingstation, evse)       => EVSEOperator.EVSEAddition.SendNotification(chargingstation, evse);
+            if (EVSEOperator != null)
+            {
+                this.OnEVSEAddition.OnVoting                  += (chargingstation, evse, vote) => EVSEOperator.EVSEAddition.SendVoting      (chargingstation, evse, vote);
+                this.OnEVSEAddition.OnNotification            += (chargingstation, evse)       => EVSEOperator.EVSEAddition.SendNotification(chargingstation, evse);
+            }
 
 
             // EVSE events
             this.SocketOutletAddition       = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
 
-            this.SocketOutletAddition.OnVoting            += (evse, socketoutlet , vote) => EVSEOperator.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
-            this.SocketOutletAddition.OnNotification      += (evse, socketoutlet)        => EVSEOperator.SocketOutletAddition.SendNotification(evse, socketoutlet);
+            if (EVSEOperator != null)
+            {
+                this.SocketOutletAddition.OnVoting            += (evse, socketoutlet , vote) => EVSEOperator.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
+                this.SocketOutletAddition.OnNotification      += (evse, socketoutlet)        => EVSEOperator.SocketOutletAddition.SendNotification(evse, socketoutlet);
+            }
 
             #endregion
 
@@ -492,41 +501,64 @@ namespace com.graphdefined.eMI3
         #endregion
 
 
-        #region CreateNewStation(ChargingStation_Id, Action = null)
+        #region CreateNew(Id)
+
+        /// <summary>
+        /// Create a new charging pool having a random identification.
+        /// </summary>
+        public static ChargingPool CreateNew(ChargingPool_Id Id)
+        {
+            return new ChargingPool(Id);
+        }
+
+        #endregion
+
+
+        #region CreateNewStation(ChargingStationId = null, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging station having the given
         /// unique charging station identification.
         /// </summary>
-        /// <param name="ChargingStation_Id">The unique identification of the new charging station.</param>
-        /// <param name="Action">An optional delegate to configure the new charging station after its creation.</param>
-        public ChargingStation CreateNewStation(ChargingStation_Id ChargingStation_Id, Action<ChargingStation> Action = null)
+        /// <param name="ChargingStationId">The unique identification of the new charging station.</param>
+        /// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
+        public ChargingStation CreateNewStation(ChargingStation_Id                        ChargingStationId  = null,
+                                                Action<ChargingStation>                   Configurator       = null,
+                                                Action<ChargingStation>                   OnSuccess          = null,
+                                                Action<ChargingPool, ChargingStation_Id>  OnError            = null)
         {
 
             #region Initial checks
 
-            if (ChargingStation_Id == null)
-                throw new ArgumentNullException("ChargingStation_Id", "The given charging station identification must not be null!");
+            if (ChargingStationId == null)
+                ChargingStationId = ChargingStation_Id.New;
 
-            if (_ChargingStations.ContainsKey(ChargingStation_Id))
-                throw new ChargingStationAlreadyExistsInPool(ChargingStation_Id, this.Id);
+            if (_ChargingStations.ContainsKey(ChargingStationId))
+            {
+                if (OnError == null)
+                    throw new ChargingStationAlreadyExistsInPool(ChargingStationId, this.Id);
+                else
+                    OnError.FailSafeInvoke(this, ChargingStationId);
+            }
 
             #endregion
 
-            var _ChargingStation = new ChargingStation(ChargingStation_Id, this);
+            var _ChargingStation = new ChargingStation(ChargingStationId, this);
 
-            Action.FailSafeInvoke(_ChargingStation);
+            Configurator.FailSafeInvoke(_ChargingStation);
 
             if (ChargingStationAddition.SendVoting(this, _ChargingStation))
             {
-                if (_ChargingStations.TryAdd(ChargingStation_Id, _ChargingStation))
+                if (_ChargingStations.TryAdd(ChargingStationId, _ChargingStation))
                 {
                     ChargingStationAddition.SendNotification(this, _ChargingStation);
                     return _ChargingStation;
                 }
             }
 
-            Debug.WriteLine("ChargingStation '" + ChargingStation_Id + "' was not created!");
+            Debug.WriteLine("ChargingStation '" + ChargingStationId + "' was not created!");
             return null;
 
         }

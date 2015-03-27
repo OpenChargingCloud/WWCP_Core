@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014 Achim Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 Core <http://www.github.com/GraphDefined/eMI3>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -30,7 +30,7 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
-namespace com.graphdefined.eMI3
+namespace org.GraphDefined.eMI3
 {
 
     /// <summary>
@@ -317,7 +317,7 @@ namespace com.graphdefined.eMI3
         /// <param name="Id">The unique identification of the EVSE operator.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         internal EVSEOperator(EVSEOperator_Id  Id,
-                              RoamingNetwork   RoamingNetwork)
+                              RoamingNetwork   RoamingNetwork = null)
 
             : base(Id)
 
@@ -328,8 +328,8 @@ namespace com.graphdefined.eMI3
             if (Id == null)
                 throw new ArgumentNullException("Id", "The unique identification of the roaming network must not be null!");
 
-            if (RoamingNetwork == null)
-                throw new ArgumentNullException("RoamingNetwork", "The roaming network must not be null!");
+            //if (RoamingNetwork == null)
+            //    throw new ArgumentNullException("RoamingNetwork", "The roaming network must not be null!");
 
             #endregion
 
@@ -352,29 +352,41 @@ namespace com.graphdefined.eMI3
             // EVSEOperator events
             this.ChargingPoolAddition          = new VotingNotificator<EVSEOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
 
-            this.OnChargingPoolAddition.        OnVoting       += (evseoperator, evspool, vote) => RoamingNetwork.EVSPoolAddition.SendVoting      (evseoperator, evspool, vote);
-            this.OnChargingPoolAddition.        OnNotification += (evseoperator, evspool)       => RoamingNetwork.EVSPoolAddition.SendNotification(evseoperator, evspool);
+            if (RoamingNetwork != null)
+            {
+                this.OnChargingPoolAddition.OnVoting       += (evseoperator, evspool, vote) => RoamingNetwork.EVSPoolAddition.SendVoting      (evseoperator, evspool, vote);
+                this.OnChargingPoolAddition.OnNotification += (evseoperator, evspool)       => RoamingNetwork.EVSPoolAddition.SendNotification(evseoperator, evspool);
+            }
 
 
             // EVS pool events
             this.ChargingStationAddition  = new VotingNotificator<ChargingPool,         ChargingStation, Boolean>(() => new VetoVote(), true);
 
-            this.OnChargingStationAddition.OnVoting       += (evseoperator, evspool, vote) => RoamingNetwork.ChargingStationAddition.SendVoting      (evseoperator, evspool, vote);
-            this.OnChargingStationAddition.OnNotification += (evseoperator, evspool)       => RoamingNetwork.ChargingStationAddition.SendNotification(evseoperator, evspool);
+            if (RoamingNetwork != null)
+            {
+                this.OnChargingStationAddition.OnVoting       += (evseoperator, evspool, vote) => RoamingNetwork.ChargingStationAddition.SendVoting      (evseoperator, evspool, vote);
+                this.OnChargingStationAddition.OnNotification += (evseoperator, evspool)       => RoamingNetwork.ChargingStationAddition.SendNotification(evseoperator, evspool);
+            }
 
 
             // Charging station events
             this.EVSEAddition             = new VotingNotificator<ChargingStation, EVSE,            Boolean>(() => new VetoVote(), true);
 
-            this.OnEVSEAddition.           OnVoting       += (chargingstation, evse, vote) => RoamingNetwork.EVSEAddition.SendVoting      (chargingstation, evse, vote);
-            this.OnEVSEAddition.           OnNotification += (chargingstation, evse)       => RoamingNetwork.EVSEAddition.SendNotification(chargingstation, evse);
+            if (RoamingNetwork != null)
+            {
+                this.OnEVSEAddition.OnVoting       += (chargingstation, evse, vote) => RoamingNetwork.EVSEAddition.SendVoting      (chargingstation, evse, vote);
+                this.OnEVSEAddition.OnNotification += (chargingstation, evse)       => RoamingNetwork.EVSEAddition.SendNotification(chargingstation, evse);
+            }
 
 
             // EVSE events
             this.SocketOutletAddition     = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
 
-            this.SocketOutletAddition.OnVoting            += (evse, socketoutlet , vote)   => RoamingNetwork.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
-            this.SocketOutletAddition.OnNotification      += (evse, socketoutlet)          => RoamingNetwork.SocketOutletAddition.SendNotification(evse, socketoutlet);
+            if (RoamingNetwork != null)
+            {
+                this.SocketOutletAddition.OnVoting            += (evse, socketoutlet , vote)   => RoamingNetwork.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
+                this.SocketOutletAddition.OnNotification      += (evse, socketoutlet)          => RoamingNetwork.SocketOutletAddition.SendNotification(evse, socketoutlet);
+            }
 
             #endregion
 
@@ -383,25 +395,39 @@ namespace com.graphdefined.eMI3
         #endregion
 
 
-        #region CreateNewEVSPool(ChargingPoolId, OnSuccess, OnError = null)
+        #region CreateNew(Id)
+
+        /// <summary>
+        /// Create a new EVSE operator having a random identification.
+        /// </summary>
+        public static EVSEOperator CreateNew(EVSEOperator_Id Id)
+        {
+            return new EVSEOperator(Id);
+        }
+
+        #endregion
+
+
+        #region CreateNewEVSPool(ChargingPoolId = null, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new EVS pool having the given
         /// unique EVS pool identification.
         /// </summary>
         /// <param name="ChargingPoolId">The unique identification of the new charging pool.</param>
+        /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public ChargingPool CreateNewEVSPool(ChargingPool_Id                        ChargingPoolId,
-                                             Action<ChargingPool>                   Configure,
-                                             Action<ChargingPool>                   OnSuccess  = null,
-                                             Action<EVSEOperator, ChargingPool_Id>  OnError    = null)
+        public ChargingPool CreateNewChargingPool(ChargingPool_Id                        ChargingPoolId  = null,
+                                                  Action<ChargingPool>                   Configurator    = null,
+                                                  Action<ChargingPool>                   OnSuccess       = null,
+                                                  Action<EVSEOperator, ChargingPool_Id>  OnError         = null)
         {
 
             #region Initial checks
 
             if (ChargingPoolId == null)
-                throw new ArgumentNullException("ChargingPoolId", "The given ChargingPoolId must not be null!");
+                ChargingPoolId = ChargingPool_Id.New;
 
             // Do not throw an exception when an OnError delegate was given!
             if (_RegisteredChargingPools.ContainsKey(ChargingPoolId))
@@ -416,8 +442,8 @@ namespace com.graphdefined.eMI3
 
             var _ChargingPool = new ChargingPool(ChargingPoolId, this);
 
-            if (Configure != null)
-                Configure(_ChargingPool);
+            if (Configurator != null)
+                Configurator(_ChargingPool);
 
             if (ChargingPoolAddition.SendVoting(this, _ChargingPool))
             {

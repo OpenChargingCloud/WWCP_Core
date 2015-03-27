@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014 Achim Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 HTTP <http://www.github.com/eMI3/HTTP>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -33,7 +33,7 @@ using org.GraphDefined.Vanaheimr.Hermod.Services.DNS;
 
 #endregion
 
-namespace com.graphdefined.eMI3.LocalService
+namespace org.GraphDefined.eMI3.LocalService
 {
 
     /// <summary>
@@ -483,7 +483,7 @@ namespace com.graphdefined.eMI3.LocalService
                         Log.WriteLine(HTTPRequestBuilder.AsImmutable().EntirePDU.ToString());
                         Log.WriteLine("------>");
 
-                        var Task01 = HTTPClient1.Execute_Synced(HTTPRequestBuilder, Timeout: 60000);
+                        var Task01 = HTTPClient1.Execute_Synced(HTTPRequestBuilder, TimeoutMSec: 60000);
                         Log.WriteLine(Task01.EntirePDU.ToString());
 
                         // HTTP/1.1 200 OK
@@ -595,7 +595,7 @@ namespace com.graphdefined.eMI3.LocalService
                         Log.WriteLine(HTTPRequestBuilder.AsImmutable().EntirePDU.ToString());
                         Log.WriteLine("------>");
 
-                        var HTTPResponse = HTTPClient1.Execute_Synced(HTTPRequestBuilder, Timeout: 60000);
+                        var HTTPResponse = HTTPClient1.Execute_Synced(HTTPRequestBuilder, TimeoutMSec: 60000);
                         Log.WriteLine(HTTPResponse.EntirePDU.ToString());
 
                         if (HTTPResponse.HTTPStatusCode != HTTPStatusCode.OK)

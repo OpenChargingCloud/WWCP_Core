@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014 Achim Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of eMI3 Core <http://www.github.com/GraphDefined/eMI3>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +22,7 @@ using System.Text.RegularExpressions;
 
 #endregion
 
-namespace com.graphdefined.eMI3
+namespace org.GraphDefined.eMI3
 {
 
     /// <summary>
@@ -57,16 +57,28 @@ namespace com.graphdefined.eMI3
         /// <summary>
         /// The internal identification.
         /// </summary>
-        protected readonly EVSEOperator_Id  _OperatorId;
-
-        /// <summary>
-        /// The internal identification.
-        /// </summary>
         protected readonly String           _EVSEIdSuffix;
 
         #endregion
 
         #region Properties
+
+        #region OldEVSEId
+
+        private readonly EVSEOperator_Id _OperatorId;
+
+        /// <summary>
+        /// The internal identification.
+        /// </summary>
+        public EVSEOperator_Id OperatorId
+        {
+            get
+            {
+                return _OperatorId;
+            }
+        }
+
+        #endregion
 
         #region Length
 
@@ -160,10 +172,10 @@ namespace com.graphdefined.eMI3
         /// <summary>
         /// Parse the given string as an EVSE identification.
         /// </summary>
-        public static EVSE_Id Parse(String EVSEId)
+        public static EVSE_Id Parse(String Text)
         {
 
-            var _MatchCollection = Regex.Matches(EVSEId.Trim().ToUpper(),
+            var _MatchCollection = Regex.Matches(Text.Trim().ToUpper(),
                                                  EVSEId_RegEx,
                                                  RegexOptions.IgnorePatternWhitespace);
 
@@ -200,23 +212,25 @@ namespace com.graphdefined.eMI3
 
         #endregion
 
-        #region TryParse(EVSEId, out EVSE_Id)
+        #region TryParse(Text, out EVSE_Id)
 
         /// <summary>
         /// Parse the given string as an EVSE identification.
         /// </summary>
-        public static Boolean TryParse(String EVSEId, out EVSE_Id EVSE_Id)
+        public static Boolean TryParse(String Text, out EVSE_Id EVSEId)
         {
 
             try
             {
 
-                var _MatchCollection = Regex.Matches(EVSEId.Trim().ToUpper(),
+                EVSEId = null;
+
+                var _MatchCollection = Regex.Matches(Text.Trim().ToUpper(),
                                                      EVSEId_RegEx,
                                                      RegexOptions.IgnorePatternWhitespace);
 
                 if (_MatchCollection.Count != 1)
-                    throw new ArgumentException("Illegal EVSE identification!", "EVSEId");
+                    return false;
 
                 EVSEOperator_Id __EVSEOperatorId = null;
 
@@ -224,9 +238,9 @@ namespace com.graphdefined.eMI3
                 if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
                 {
 
-                    EVSE_Id = new EVSE_Id(__EVSEOperatorId,
-                                          _MatchCollection[0].Groups[2].Value,
-                                          OriginFormatType.NEW);
+                    EVSEId = new EVSE_Id(__EVSEOperatorId,
+                                         _MatchCollection[0].Groups[2].Value,
+                                         OriginFormatType.NEW);
 
                     return true;
 
@@ -236,9 +250,9 @@ namespace com.graphdefined.eMI3
                 else if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
                 {
 
-                    EVSE_Id = new EVSE_Id(__EVSEOperatorId,
-                                          _MatchCollection[0].Groups[4].Value,
-                                          OriginFormatType.OLD);
+                    EVSEId = new EVSE_Id(__EVSEOperatorId,
+                                         _MatchCollection[0].Groups[4].Value,
+                                         OriginFormatType.OLD);
 
                     return true;
 
@@ -248,7 +262,7 @@ namespace com.graphdefined.eMI3
             catch (Exception e)
             { }
 
-            EVSE_Id = null;
+            EVSEId = null;
             return false;
 
         }
