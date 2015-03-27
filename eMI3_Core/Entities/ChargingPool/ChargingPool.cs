@@ -553,6 +553,7 @@ namespace org.GraphDefined.eMI3
             {
                 if (_ChargingStations.TryAdd(ChargingStationId, _ChargingStation))
                 {
+                    OnSuccess.FailSafeInvoke(_ChargingStation);
                     ChargingStationAddition.SendNotification(this, _ChargingStation);
                     return _ChargingStation;
                 }

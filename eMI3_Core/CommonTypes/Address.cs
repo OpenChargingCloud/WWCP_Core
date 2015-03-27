@@ -27,7 +27,7 @@ namespace org.GraphDefined.eMI3
     /// <summary>
     /// An address.
     /// </summary>
-    public class Address
+    public class Address : IEquatable<Address>
     {
 
         #region Properties
@@ -87,6 +87,131 @@ namespace org.GraphDefined.eMI3
         #endregion
 
         #endregion
+
+
+        #region Operator overloading
+
+        #region Operator == (Address1, Address2)
+
+        /// <summary>
+        /// Compares two addresses for equality.
+        /// </summary>
+        /// <param name="Address1">A geo coordinate.</param>
+        /// <param name="Address2">Another address.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public static Boolean operator == (Address Address1, Address Address2)
+        {
+
+            // If both are null, or both are same instance, return true.
+            if (Object.ReferenceEquals(Address1, Address2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (((Object) Address1 == null) || ((Object) Address2 == null))
+                return false;
+
+            return Address1.Equals(Address2);
+
+        }
+
+        #endregion
+
+        #region Operator != (Address1, Address2)
+
+        /// <summary>
+        /// Compares two addresses for inequality.
+        /// </summary>
+        /// <param name="Address1">A geo coordinate.</param>
+        /// <param name="Address2">Another address.</param>
+        /// <returns>False if both match; True otherwise.</returns>
+        public static Boolean operator != (Address Address1, Address Address2)
+        {
+            return !(Address1 == Address2);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region IEquatable<Address> Members
+
+        #region Equals(Object)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Object">An object to compare with.</param>
+        /// <returns>true|false</returns>
+        public override Boolean Equals(Object Object)
+        {
+
+            if (Object == null)
+                return false;
+
+            // Check if the given object is an Address.
+            var Address = Object as Address;
+            if ((Object) Address == null)
+                return false;
+
+            return this.Equals(Address);
+
+        }
+
+        #endregion
+
+        #region Equals(Address)
+
+        /// <summary>
+        /// Compares two EVSE_Ids for equality.
+        /// </summary>
+        /// <param name="Address">An address to compare with.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public Boolean Equals(Address Address)
+        {
+
+            if ((Object) Address == null)
+                return false;
+
+            if (Country             == null ||
+                City                == null ||
+                Street              == null ||
+                HouseNumber         == null ||
+                Address.Country     == null ||
+                Address.City        == null ||
+                Address.Street      == null ||
+                Address.HouseNumber == null)
+
+                return false;
+
+            return Country.    Equals(Address.Country) &&
+                   City.       Equals(Address.City)    &&
+                   Street.     Equals(Address.Street)  &&
+                   HouseNumber.Equals(Address.HouseNumber);
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region GetHashCode()
+
+        /// <summary>
+        /// Return the HashCode of this object.
+        /// </summary>
+        /// <returns>The HashCode of this object.</returns>
+        public override Int32 GetHashCode()
+        {
+
+            return Country.    GetHashCode() ^
+                   City.       GetHashCode() ^
+                   Street.     GetHashCode() ^
+                   HouseNumber.GetHashCode();
+
+        }
+
+        #endregion
+
 
     }
 
