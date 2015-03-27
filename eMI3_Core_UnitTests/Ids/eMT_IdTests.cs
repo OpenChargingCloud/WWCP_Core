@@ -22,11 +22,11 @@
 
 //using NUnit.Framework;
 
-//using com.graphdefined.eMI3;
+//using org.GraphDefined.eMI3;
 
 //#endregion
 
-//namespace com.graphdefined.eMI3.UnitTests
+//namespace org.GraphDefined.eMI3.UnitTests
 //{
 
 //    /// <summary>

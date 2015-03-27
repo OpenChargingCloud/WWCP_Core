@@ -276,7 +276,7 @@ namespace org.GraphDefined.eMI3
 
         #region AllEVSEStatus
 
-        public IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>> AllEVSEStates
+        public IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>> AllEVSEStatus
         {
             get
             {

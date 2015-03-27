@@ -23,18 +23,19 @@ using System.Collections.Generic;
 
 using NUnit.Framework;
 
-using com.graphdefined.eMI3;
+using org.GraphDefined.eMI3;
+using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
-namespace com.graphdefined.eMI3.UnitTests
+namespace org.GraphDefined.eMI3.UnitTests
 {
 
     /// <summary>
     /// Minimal Unit tests.
     /// </summary>
     [TestFixture]
-    public class MiniomalTests
+    public class MinimalTests
     {
 
         #region Test1()
@@ -74,7 +75,7 @@ namespace com.graphdefined.eMI3.UnitTests
 
             #region Create an EVSE pool
 
-            var BITSPool = BelectricDriveOperator.CreateNewEVSPool(
+            var BITSPool = BelectricDriveOperator.CreateNewChargingPool(
                                       ChargingPool_Id.Parse("BITS"),
                                       pool => {
 
@@ -86,8 +87,7 @@ namespace com.graphdefined.eMI3.UnitTests
 
                                           pool.LocationLanguage         = Languages.de;
 
-                                          pool.PoolLocation.Latitude    = 50.916887;
-                                          pool.PoolLocation.Longitude   = 11.580169;
+                                          pool.PoolLocation             = new GeoCoordinate(new Latitude (50.916887), new Longitude(11.580169));
 
                                           pool.Address.Street           = "Leutragraben";
                                           pool.Address.HouseNumber      = "1";
@@ -103,8 +103,7 @@ namespace com.graphdefined.eMI3.UnitTests
                                           pool.CreateNewStation(ChargingStation_Id.Parse("vStation01"),
                                                                 station => {
 
-                                                                    station.GeoLocation.Latitude   = 50.92;
-                                                                    station.GeoLocation.Longitude  = 11.59;
+                                                                    station.GeoLocation  = new GeoCoordinate(new Latitude(50.92), new Longitude(11.59));
 
                                                                     station.ServiceProviderComment.Add(Languages.en, "Hello World (1)!");
 
@@ -139,8 +138,7 @@ namespace com.graphdefined.eMI3.UnitTests
                                           pool.CreateNewStation(ChargingStation_Id.Parse("vStation02"),
                                                                 station => {
 
-                                                                    station.GeoLocation.Latitude   = 50.91;
-                                                                    station.GeoLocation.Longitude  = 11.58;
+                                                                    station.GeoLocation = new GeoCoordinate(new Latitude(50.91), new Longitude(11.58));
 
                                                                     station.ServiceProviderComment.Add(Languages.en, "Hello World (2)!");
 

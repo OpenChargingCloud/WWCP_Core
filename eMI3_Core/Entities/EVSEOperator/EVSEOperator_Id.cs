@@ -506,16 +506,16 @@ namespace org.GraphDefined.eMI3
         /// <summary>
         /// Compares two EVSEOperator_Ids for equality.
         /// </summary>
-        /// <param name="EVSEOperator_Id">A EVSEOperator_Id to compare with.</param>
+        /// <param name="EVSEOperatorId">A EVSEOperator_Id to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EVSEOperator_Id EVSEOperator_Id)
+        public Boolean Equals(EVSEOperator_Id EVSEOperatorId)
         {
 
-            if ((Object) EVSEOperator_Id == null)
+            if ((Object) EVSEOperatorId == null)
                 return false;
 
-            return _CountryCode. Equals(EVSEOperator_Id._CountryCode ) &&
-                   _OperatorId.Equals(EVSEOperator_Id._OperatorId);
+            return _CountryCode.Equals(EVSEOperatorId._CountryCode) &&
+                   _OperatorId. Equals(EVSEOperatorId._OperatorId);
 
         }
 

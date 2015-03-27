@@ -63,7 +63,7 @@ namespace org.GraphDefined.eMI3
 
         #region Properties
 
-        #region OldEVSEId
+        #region OperatorId
 
         private readonly EVSEOperator_Id _OperatorId;
 
@@ -202,13 +202,13 @@ namespace org.GraphDefined.eMI3
 
         #region Parse(OperatorId, EVSEIdSuffix)
 
-        ///// <summary>
-        ///// Parse the given string as an EVSE identification.
-        ///// </summary>
-        //public static EVSE_Id Parse(EVSEOperator_Id OperatorId, String EVSEIdSuffix)
-        //{
-        //    return new EVSE_Id(OperatorId, EVSEIdSuffix);
-        //}
+        /// <summary>
+        /// Parse the given string as an EVSE identification.
+        /// </summary>
+        public static EVSE_Id Parse(EVSEOperator_Id OperatorId, String EVSEIdSuffix)
+        {
+            return EVSE_Id.Parse(OperatorId.ToString() + "*" + EVSEIdSuffix);
+        }
 
         #endregion
 
