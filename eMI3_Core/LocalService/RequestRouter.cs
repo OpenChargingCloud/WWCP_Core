@@ -123,12 +123,30 @@ namespace org.GraphDefined.eMI3.LocalService
             }
         }
 
+        #region DNSClient
+
+        private readonly DNSClient _DNSClient;
+
+        /// <summary>
+        /// The default server name.
+        /// </summary>
+        public DNSClient DNSClient
+        {
+            get
+            {
+                return _DNSClient;
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
 
         public RequestRouter(RoamingNetwork_Id  RoamingNetwork,
-                             Authorizator_Id     AuthorizatorId = null)
+                             Authorizator_Id    AuthorizatorId  = null,
+                             DNSClient          DNSClient       = null)
         {
 
             this._RoamingNetwork              = RoamingNetwork;
@@ -136,6 +154,7 @@ namespace org.GraphDefined.eMI3.LocalService
             this.AuthenticationServices       = new Dictionary<UInt32,             IRoamingProviderProvided_EVSEOperatorServices>();
             this.SessionIdAuthenticatorCache  = new Dictionary<ChargingSession_Id, IRoamingProviderProvided_EVSEOperatorServices>();
             this.EVSEOperatorLookup           = new Dictionary<EVSEOperator_Id,    IEVSEOperatorProvidedServices>();
+            this._DNSClient                   = DNSClient != null ? DNSClient : new DNSClient();
 
         }
 
@@ -458,10 +477,7 @@ namespace org.GraphDefined.eMI3.LocalService
                 try
                 {
 
-                    var _DNSClient = new DNSClient();
-                    var IPv4Addresses  = _DNSClient.Query<A>("portal.belectric-drive.de").Select(a => a.IPv4Address).ToArray();
-
-                    using (var HTTPClient1 = new HTTPClient(IPv4Addresses.First(), new IPPort(80))) //20080
+                    using (var HTTPClient1 = new HTTPClient("portal.belectric-drive.de", new IPPort(80), _DNSClient)) //20080
                     {
 
                         var HTTPRequestBuilder = HTTPClient1.CreateRequest(new HTTPMethod("REMOTESTART"),
@@ -544,10 +560,10 @@ namespace org.GraphDefined.eMI3.LocalService
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
         /// <param name="EventTrackingId">An optional unique identification for tracking related events.</param>
-        public RemoteStopResult RemoteStop(EVSE_Id               EVSEId,
-                                           String                SessionId,
-                                           EVSP_Id  ProviderId,
-                                           EventTracking_Id      EventTrackingId  = null)
+        public RemoteStopResult RemoteStop(EVSE_Id           EVSEId,
+                                           String            SessionId,
+                                           EVSP_Id           ProviderId,
+                                           EventTracking_Id  EventTrackingId  = null)
         {
 
             lock (AuthenticationServices)
@@ -571,10 +587,7 @@ namespace org.GraphDefined.eMI3.LocalService
                 try
                 {
 
-                    var _DNSClient     = new DNSClient();
-                    var IPv4Addresses  = _DNSClient.Query<A>("portal.belectric-drive.de").Select(a => a.IPv4Address).ToArray();
-
-                    using (var HTTPClient1 = new HTTPClient(IPv4Addresses.First(), new IPPort(80))) //20080
+                    using (var HTTPClient1 = new HTTPClient("portal.belectric-drive.de", new IPPort(80), _DNSClient)) //20080
                     {
 
                         var HTTPRequestBuilder = HTTPClient1.CreateRequest(new HTTPMethod("REMOTESTOP"),
