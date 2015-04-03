@@ -499,7 +499,7 @@ namespace org.GraphDefined.eMI3.LocalService
                         Log.WriteLine(HTTPRequestBuilder.AsImmutable().EntirePDU.ToString());
                         Log.WriteLine("------>");
 
-                        var Task01 = HTTPClient1.Execute_Synced(HTTPRequestBuilder, TimeoutMSec: 60000);
+                        var Task01 = HTTPClient1.Execute_Synced(HTTPRequestBuilder, Timeout: TimeSpan.FromSeconds(60));
                         Log.WriteLine(Task01.EntirePDU.ToString());
 
                         // HTTP/1.1 200 OK
@@ -608,7 +608,7 @@ namespace org.GraphDefined.eMI3.LocalService
                         Log.WriteLine(HTTPRequestBuilder.AsImmutable().EntirePDU.ToString());
                         Log.WriteLine("------>");
 
-                        var HTTPResponse = HTTPClient1.Execute_Synced(HTTPRequestBuilder, TimeoutMSec: 60000);
+                        var HTTPResponse = HTTPClient1.Execute_Synced(HTTPRequestBuilder, Timeout: TimeSpan.FromSeconds(60));
                         Log.WriteLine(HTTPResponse.EntirePDU.ToString());
 
                         if (HTTPResponse.HTTPStatusCode != HTTPStatusCode.OK)
