@@ -158,50 +158,36 @@ namespace org.GraphDefined.eMI3
 
         #region Name
 
-        private I8NString _Name;
+        private readonly I8NString _Name;
 
         /// <summary>
-        /// The offical (multi-language) name of the Electric Vehicle Supply Equipment Operator.
+        /// The offical (multi-language) name of the EVSE Operator.
         /// </summary>
         [Mandatory]
         public I8NString Name
         {
-
             get
             {
                 return _Name;
             }
-
-            set
-            {
-                SetProperty<I8NString>(ref _Name, value);
-            }
-
         }
 
         #endregion
 
         #region Description
 
-        private I8NString _Description;
+        private readonly I8NString _Description;
 
         /// <summary>
-        /// An optional additional (multi-language) description of the Electric Vehicle Supply Equipment Operator.
+        /// An optional (multi-language) description of the EVSE Operator.
         /// </summary>
         [Optional]
         public I8NString Description
         {
-
             get
             {
                 return _Description;
             }
-
-            set
-            {
-                SetProperty<I8NString>(ref _Description, value);
-            }
-
         }
 
         #endregion
@@ -315,8 +301,12 @@ namespace org.GraphDefined.eMI3
         /// and having the given EVSE operator identification.
         /// </summary>
         /// <param name="Id">The unique identification of the EVSE operator.</param>
+        /// <param name="Name">The offical (multi-language) name of the EVSE Operator.</param>
+        /// <param name="Description">An optional (multi-language) description of the EVSE Operator.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         internal EVSEOperator(EVSEOperator_Id  Id,
+                              I8NString        Name           = null,
+                              I8NString        Description    = null,
                               RoamingNetwork   RoamingNetwork = null)
 
             : base(Id)
@@ -337,8 +327,8 @@ namespace org.GraphDefined.eMI3
 
             this._RoamingNetwork            = RoamingNetwork;
 
-            this._Name                      = new I8NString();
-            this._Description               = new I8NString();
+            this._Name                      = Name        != null ? Name        : new I8NString();
+            this._Description               = Description != null ? Description : new I8NString();
             this._ValidEVSEIds              = new List<EVSE_Id>();
             this._InvalidEVSEIds            = new List<EVSE_Id>();
             this._ManualEVSEIds             = new List<EVSE_Id>();
@@ -395,14 +385,23 @@ namespace org.GraphDefined.eMI3
         #endregion
 
 
-        #region CreateNew(Id)
+        #region CreateNew(Id, Name = null, Description = null, RoamingNetwork = null)
 
         /// <summary>
         /// Create a new EVSE operator having a random identification.
         /// </summary>
-        public static EVSEOperator CreateNew(EVSEOperator_Id Id)
+        /// <param name="Id">The unique identification of the EVSE operator.</param>
+        /// <param name="Name">The offical (multi-language) name of the EVSE Operator.</param>
+        /// <param name="Description">An optional (multi-language) description of the EVSE Operator.</param>
+        /// <param name="RoamingNetwork">The associated roaming network.</param>
+        public static EVSEOperator CreateNew(EVSEOperator_Id  Id,
+                                             I8NString        Name           = null,
+                                             I8NString        Description    = null,
+                                             RoamingNetwork   RoamingNetwork = null)
         {
-            return new EVSEOperator(Id);
+
+            return new EVSEOperator(Id, Name, Description, RoamingNetwork);
+
         }
 
         #endregion

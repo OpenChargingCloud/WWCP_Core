@@ -154,7 +154,14 @@ namespace org.GraphDefined.eMI3
 
             get
             {
-                return I8NStrings[Language];
+
+                String Text;
+
+                if (I8NStrings.TryGetValue(Language, out Text))
+                    return Text;
+
+                return String.Empty;
+
             }
 
             set

@@ -262,8 +262,8 @@ namespace org.GraphDefined.eMI3
             {
 
                 var _MatchCollection = Regex.Matches(OperatorId.Trim().ToUpper(),
-                                                 OperatorId_RegEx,
-                                                 RegexOptions.IgnorePatternWhitespace);
+                                                     OperatorId_RegEx,
+                                                     RegexOptions.IgnorePatternWhitespace);
 
                 if (_MatchCollection.Count != 1)
                 {

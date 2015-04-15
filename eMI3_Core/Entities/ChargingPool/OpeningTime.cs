@@ -30,6 +30,72 @@ namespace org.GraphDefined.eMI3
     public class OpeningTime
     {
 
+        #region Properties
+
+        #region IsOpen24Hours
+
+        private readonly Boolean _IsOpen24Hours;
+
+        public Boolean IsOpen24Hours
+        {
+            get
+            {
+                return _IsOpen24Hours;
+            }
+        }
+
+        #endregion
+
+        #region Simple
+
+        private readonly String _Simple;
+
+        public String Simple
+        {
+            get
+            {
+                return _Simple;
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Constructor(s)
+
+        #region OpeningTime(IsOpen24Hours = true)
+
+        public OpeningTime(Boolean IsOpen24Hours = true)
+        {
+            this._IsOpen24Hours  = IsOpen24Hours;
+            this._Simple         = "Mon-Sun, 24 hours";
+        }
+
+        #endregion
+
+        #region OpeningTime(Simple)
+
+        public OpeningTime(String Simple)
+        {
+            this._IsOpen24Hours  = false;
+            this._Simple         = Simple;
+        }
+
+        #endregion
+
+        #endregion
+
+
+        public static OpeningTime Is24Hours
+        {
+            get
+            {
+                return new OpeningTime(true);
+            }
+        }
+
+
     }
 
 }

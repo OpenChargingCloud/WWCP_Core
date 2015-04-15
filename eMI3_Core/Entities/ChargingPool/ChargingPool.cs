@@ -329,6 +329,24 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
+        #region PhotoURIs
+
+        private readonly List<String> _PhotoURIs;
+
+        /// <summary>
+        /// URIs of photos of this charging pool.
+        /// </summary>
+        [Optional, Not_eMI3defined]
+        public List<String> PhotoURIs
+        {
+            get
+            {
+                return _PhotoURIs;
+            }
+        }
+
+        #endregion
+
 
         #region ChargingStations
 

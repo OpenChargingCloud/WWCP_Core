@@ -427,16 +427,20 @@ namespace org.GraphDefined.eMI3
         #endregion
 
 
-        #region CreateNewEVSEOperator(EVSEOperator_Id, Action = null)
+        #region CreateNewEVSEOperator(EVSEOperator_Id, Name = null, Description = null, Action = null)
 
         /// <summary>
         /// Create and register a new EVSE operator having the given
         /// unique EVSE operator identification.
         /// </summary>
         /// <param name="EVSEOperator_Id">The unique identification of the new EVSE operator.</param>
+        /// <param name="Name">The offical (multi-language) name of the EVSE Operator.</param>
+        /// <param name="Description">An optional (multi-language) description of the EVSE Operator.</param>
         /// <param name="Action">An optional delegate to configure the new EVSE operator after its creation.</param>
         public EVSEOperator CreateNewEVSEOperator(EVSEOperator_Id       EVSEOperator_Id,
-                                                  Action<EVSEOperator>  Action = null)
+                                                  I8NString             Name           = null,
+                                                  I8NString             Description    = null,
+                                                  Action<EVSEOperator>  Action         = null)
         {
 
             #region Initial checks
@@ -449,7 +453,7 @@ namespace org.GraphDefined.eMI3
 
             #endregion
 
-            var _EVSEOperator = new EVSEOperator(EVSEOperator_Id, this);
+            var _EVSEOperator = new EVSEOperator(EVSEOperator_Id, Name, Description, this);
 
             Action.FailSafeInvoke(_EVSEOperator);
 
