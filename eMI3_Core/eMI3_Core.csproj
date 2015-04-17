@@ -49,7 +49,6 @@
     <Compile Include="CommonTypes\Attributes\Not_eMI3defined.cs" />
     <Compile Include="CommonTypes\EventTracking_Id.cs" />
     <Compile Include="CommonTypes\GridConnection.cs" />
-    <Compile Include="CommonTypes\Country.cs" />
     <Compile Include="CommonTypes\IEntity.cs" />
     <Compile Include="CommonTypes\Attributes\ChargeWithContract.cs" />
     <Compile Include="CommonTypes\Attributes\ChargeWithoutContract.cs" />
@@ -72,14 +71,14 @@
     <Compile Include="Entities\EVSE\EVSEExceptions.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolExceptions.cs" />
     <Compile Include="Entities\ChargingPool\OpeningTime.cs" />
-    <Compile Include="CommonTypes\I8NString.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStation.cs" />
     <Compile Include="CommonTypes\AEntity.cs" />
     <Compile Include="CommonTypes\IId.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationUIFeatures.cs" />
     <Compile Include="Entities\EVSE\EVSEStatusType.cs" />
-    <Compile Include="Entities\SocketOutlet\SocketOutletExceptions.cs" />
     <Compile Include="Entities\SocketOutlet\PlugType.cs" />
+    <Compile Include="Entities\SocketOutlet\SocketOutletExceptions.cs" />
+    <Compile Include="Entities\SocketOutlet\_PlugType.cs" />
     <Compile Include="Entities\SocketOutlet\CableType.cs" />
     <Compile Include="Entities\SocketOutlet\SocketOutlet.cs" />
     <Compile Include="Entities\ChargingStation\AddEVSEResult.cs" />

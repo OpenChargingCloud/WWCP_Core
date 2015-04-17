@@ -18,11 +18,9 @@
 #region Usings
 
 using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
+
+using org.GraphDefined.Vanaheimr.Illias;
+
 using org.GraphDefined.eMI3.LocalService;
 
 #endregion
@@ -70,13 +68,13 @@ namespace org.GraphDefined.eMI3
 
         #region Name
 
-        private I8NString _Name;
+        private I18NString _Name;
 
         /// <summary>
         /// The offical (multi-language) name of the Electric Vehicle Service Provider.
         /// </summary>
         [Mandatory]
-        public I8NString Name
+        public I18NString Name
         {
 
             get
@@ -86,7 +84,7 @@ namespace org.GraphDefined.eMI3
 
             set
             {
-                SetProperty<I8NString>(ref _Name, value);
+                SetProperty<I18NString>(ref _Name, value);
             }
 
         }
@@ -95,13 +93,13 @@ namespace org.GraphDefined.eMI3
 
         #region Description
 
-        private I8NString _Description;
+        private I18NString _Description;
 
         /// <summary>
         /// An optional additional (multi-language) description of the Electric Vehicle Service Provider.
         /// </summary>
         [Optional]
-        public I8NString Description
+        public I18NString Description
         {
 
             get
@@ -111,7 +109,7 @@ namespace org.GraphDefined.eMI3
 
             set
             {
-                SetProperty<I8NString>(ref _Description, value);
+                SetProperty<I18NString>(ref _Description, value);
             }
 
         }
@@ -181,8 +179,8 @@ namespace org.GraphDefined.eMI3
 
             #endregion
 
-            this.Name                   = new I8NString();
-            this.Description            = new I8NString();
+            this.Name                   = new I18NString();
+            this.Description            = new I18NString();
 
             this._RoamingNetwork        = RoamingNetwork;
             this._EMobilityService      = EMobilityService;

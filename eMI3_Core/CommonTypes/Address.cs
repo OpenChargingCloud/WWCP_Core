@@ -19,6 +19,8 @@
 
 using System;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 #endregion
 
 namespace org.GraphDefined.eMI3
@@ -32,45 +34,141 @@ namespace org.GraphDefined.eMI3
 
         #region Properties
 
-        /// <summary>
-        /// The FloorLevel.
-        /// </summary>
-        public String    FloorLevel         { get; set; }
+        #region Street
+
+        private readonly String _Street;
 
         /// <summary>
-        /// The HouseNumber.
+        /// The name of the street.
         /// </summary>
-        public String    HouseNumber        { get; set; }
+        public String Street
+        {
+            get
+            {
+                return _Street;
+            }
+        }
+
+        #endregion
+
+        #region HouseNumber
+
+        private readonly String _HouseNumber;
 
         /// <summary>
-        /// The Street.
+        /// The house number.
         /// </summary>
-        public String    Street             { get; set; }
+        public String HouseNumber
+        {
+            get
+            {
+                return _HouseNumber;
+            }
+        }
+
+        #endregion
+
+        #region FloorLevel
+
+        private readonly String _FloorLevel;
 
         /// <summary>
-        /// The PostalCode.
+        /// The floor level.
         /// </summary>
-        public String    PostalCode         { get; set; }
+        public String FloorLevel
+        {
+            get
+            {
+                return _FloorLevel;
+            }
+        }
+
+        #endregion
+
+        #region PostalCode
+
+        private readonly String _PostalCode;
 
         /// <summary>
-        /// The PostalCodeSub.
+        /// The postal code.
         /// </summary>
-        public String    PostalCodeSub      { get; set; }
+        public String PostalCode
+        {
+            get
+            {
+                return _PostalCode;
+            }
+        }
+
+        #endregion
+
+        #region PostalCodeSub
+
+        private readonly String _PostalCodeSub;
 
         /// <summary>
-        /// The City.
+        /// The postal code sub.
         /// </summary>
-        public String    City               { get; set; }
+        public String PostalCodeSub
+        {
+            get
+            {
+                return _PostalCodeSub;
+            }
+        }
+
+        #endregion
+
+        #region City
+
+        private readonly String _City;
 
         /// <summary>
-        /// The Country.
+        /// The city.
         /// </summary>
-        public Country   Country            { get; set; }
+        public String City
+        {
+            get
+            {
+                return _City;
+            }
+        }
+
+        #endregion
+
+        #region Country
+
+        private readonly Country _Country;
+
+        /// <summary>
+        /// The city.
+        /// </summary>
+        public Country Country
+        {
+            get
+            {
+                return _Country;
+            }
+        }
+
+        #endregion
+
+        #region FreeText
+
+        private readonly I18NString _FreeText;
 
         /// <summary>
         /// Additional text to describe the address.
         /// </summary>
-        public I8NString FreeText           { get; set; }
+        public I18NString FreeText
+        {
+            get
+            {
+                return _FreeText;
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -79,10 +177,58 @@ namespace org.GraphDefined.eMI3
         #region Address()
 
         /// <summary>
-        /// Generate a new address.
+        /// Create a new address.
         /// </summary>
         public Address()
-        { }
+        {
+
+            this._FloorLevel     = "";
+            this._HouseNumber    = "";
+            this._Street         = "";
+            this._PostalCode     = "";
+            this._PostalCodeSub  = "";
+            this._City           = "";
+            this._Country        = Country.unknown;
+            this._FreeText       = new I18NString();
+
+        }
+
+        #endregion
+
+        #region Address(Street, HouseNumber, FloorLevel, PostalCode, PostalCodeSub, City, Country, FreeText = null)
+
+        /// <summary>
+        /// Create a new address.
+        /// </summary>
+        /// <param name="Street">The name of the street.</param>
+        /// <param name="HouseNumber">The house number.</param>
+        /// <param name="FloorLevel">The floor level.</param>
+        /// <param name="PostalCode">The postal code</param>
+        /// <param name="PostalCodeSub">The postal code sub</param>
+        /// <param name="City">The city.</param>
+        /// <param name="Country">The country.</param>
+        /// <param name="FreeText">Additional text to describe the address.</param>
+        public Address(String     Street,
+                       String     HouseNumber,
+                       String     FloorLevel,
+                       String     PostalCode,
+                       String     PostalCodeSub,
+                       String     City,
+                       Country    Country,
+                       I18NString  FreeText = null)
+
+        {
+
+            this._Street         = Street;
+            this._HouseNumber    = HouseNumber;
+            this._FloorLevel     = FloorLevel;
+            this._PostalCode     = PostalCode;
+            this._PostalCodeSub  = PostalCodeSub;
+            this._City           = City;
+            this._Country        = Country;
+            this._FreeText       = FreeText != null ? FreeText : new I18NString();
+
+        }
 
         #endregion
 
@@ -172,21 +318,13 @@ namespace org.GraphDefined.eMI3
             if ((Object) Address == null)
                 return false;
 
-            if (Country             == null ||
-                City                == null ||
-                Street              == null ||
-                HouseNumber         == null ||
-                Address.Country     == null ||
-                Address.City        == null ||
-                Address.Street      == null ||
-                Address.HouseNumber == null)
-
-                return false;
-
-            return Country.    Equals(Address.Country) &&
-                   City.       Equals(Address.City)    &&
-                   Street.     Equals(Address.Street)  &&
-                   HouseNumber.Equals(Address.HouseNumber);
+            return _Street.        Equals(Address.Street) &&
+                   _HouseNumber.   Equals(Address.HouseNumber) &&
+                   _FloorLevel.    Equals(Address.FloorLevel) &&
+                   _PostalCode.    Equals(Address.PostalCode) &&
+                   _PostalCodeSub. Equals(Address.PostalCodeSub) &&
+                   _City.          Equals(Address.City) &&
+                   _Country.       Equals(Address.Country);
 
         }
 
@@ -203,15 +341,38 @@ namespace org.GraphDefined.eMI3
         public override Int32 GetHashCode()
         {
 
-            return Country.    GetHashCode() ^
-                   City.       GetHashCode() ^
-                   Street.     GetHashCode() ^
-                   HouseNumber.GetHashCode();
+            return _Street.       GetHashCode() ^
+                   _HouseNumber.  GetHashCode() ^
+                   _FloorLevel.   GetHashCode() ^
+                   _PostalCode.   GetHashCode() ^
+                   _PostalCodeSub.GetHashCode() ^
+                   _City.         GetHashCode() ^
+                   _Country.      GetHashCode();
 
         }
 
         #endregion
 
+        #region (override) ToString()
+
+        /// <summary>
+        /// Get a string representation of this object.
+        /// </summary>
+        public override String ToString()
+        {
+
+            return Street                         + " " +
+                   HouseNumber                    + " " +
+                   FloorLevel                     + ", " +
+                   PostalCode                     + " " +
+                   PostalCodeSub                  + " " +
+                   City                           + ", " +
+                   Country.CountryName.ToString() + " / " +
+                   FreeText.ToString();
+
+        }
+
+        #endregion
 
     }
 

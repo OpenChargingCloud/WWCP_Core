@@ -90,7 +90,7 @@ namespace org.GraphDefined.eMI3
         /// <param name="Description">A multilanguage description of the roaming network.</param>
         /// <param name="Action">An optional delegate to configure the new EVSE operator after its creation.</param>
         public RoamingNetwork CreateNewRoamingNetwork(RoamingNetwork_Id       RoamingNetwork_Id,
-                                                      I8NString               Description,
+                                                      I18NString               Description,
                                                       Action<RoamingNetwork>  Action = null)
         {
 

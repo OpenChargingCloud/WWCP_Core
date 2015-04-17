@@ -122,6 +122,12 @@ namespace org.GraphDefined.eMI3
         #endregion
 
 
+        public IEnumerable<String> ChargingFacilities   { get; set; }
+        public IEnumerable<String> ChargingModes        { get; set; }
+        public IEnumerable<String> AuthenticationModes  { get; set; }
+        public Double              MaxCapacity_kWh      { get; set; }
+
+
         #region SocketOutlets
 
         public IEnumerable<SocketOutlet> SocketOutlets
@@ -275,6 +281,20 @@ namespace org.GraphDefined.eMI3
             }
 
             throw new Exception();
+
+        }
+
+        #endregion
+
+        #region SetSocketOutlets(SocketOutlets)
+
+        public EVSE SetSocketOutlets(IEnumerable<SocketOutlet> SocketOutlets)
+        {
+
+            foreach (var SocketOutlet in SocketOutlets)
+                this._SocketOutlets.TryAdd(SocketOutlet.Id, SocketOutlet);
+
+            return this;
 
         }
 

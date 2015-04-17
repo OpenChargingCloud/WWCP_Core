@@ -59,13 +59,13 @@ namespace org.GraphDefined.eMI3
 
         #region Name
 
-        private I8NString _Name;
+        private I18NString _Name;
 
         /// <summary>
         /// The offical (multi-language) name of the RoamingNetwork.
         /// </summary>
         [Mandatory]
-        public I8NString Name
+        public I18NString Name
         {
 
             get
@@ -75,7 +75,7 @@ namespace org.GraphDefined.eMI3
 
             set
             {
-                SetProperty<I8NString>(ref _Name, value);
+                SetProperty<I18NString>(ref _Name, value);
             }
 
         }
@@ -84,13 +84,13 @@ namespace org.GraphDefined.eMI3
 
         #region Description
 
-        private I8NString _Description;
+        private I18NString _Description;
 
         /// <summary>
         /// An optional additional (multi-language) description of the RoamingNetwork.
         /// </summary>
         [Optional]
-        public I8NString Description
+        public I18NString Description
         {
 
             get
@@ -100,7 +100,7 @@ namespace org.GraphDefined.eMI3
 
             set
             {
-                SetProperty<I8NString>(ref _Description, value);
+                SetProperty<I18NString>(ref _Description, value);
             }
 
         }
@@ -394,8 +394,8 @@ namespace org.GraphDefined.eMI3
             this._SearchProviders           = new ConcurrentDictionary<NavigationServiceProvider_Id,    NavigationServiceProvider>();
             this._RequestRouter             = new RequestRouter(Id);
 
-            this.Name                       = new I8NString(Languages.en, Id.ToString());
-            this.Description                = new I8NString();
+            this.Name                       = new I18NString(Languages.en, Id.ToString());
+            this.Description                = new I18NString();
 
             #endregion
 
@@ -438,8 +438,8 @@ namespace org.GraphDefined.eMI3
         /// <param name="Description">An optional (multi-language) description of the EVSE Operator.</param>
         /// <param name="Action">An optional delegate to configure the new EVSE operator after its creation.</param>
         public EVSEOperator CreateNewEVSEOperator(EVSEOperator_Id       EVSEOperator_Id,
-                                                  I8NString             Name           = null,
-                                                  I8NString             Description    = null,
+                                                  I18NString             Name           = null,
+                                                  I18NString             Description    = null,
                                                   Action<EVSEOperator>  Action         = null)
         {
 

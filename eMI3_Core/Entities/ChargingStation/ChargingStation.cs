@@ -76,13 +76,13 @@ namespace org.GraphDefined.eMI3
 
         #region UserComment
 
-        private I8NString _UserComment;
+        private I18NString _UserComment;
 
         /// <summary>
         /// A comment from the users.
         /// </summary>
         [Optional]
-        public I8NString UserComment
+        public I18NString UserComment
         {
 
             get
@@ -101,13 +101,13 @@ namespace org.GraphDefined.eMI3
 
         #region ServiceProviderComment
 
-        private I8NString _ServiceProviderComment;
+        private I18NString _ServiceProviderComment;
 
         /// <summary>
         /// A comment from the service provider.
         /// </summary>
         [Optional]
-        public I8NString ServiceProviderComment
+        public I18NString ServiceProviderComment
         {
 
             get
@@ -268,6 +268,13 @@ namespace org.GraphDefined.eMI3
         #endregion
 
 
+        public I18NString           Name           { get; set; }
+
+        public IEnumerable<String> PaymentOptions { get; set; }
+        public String              Accessibility  { get; set; }
+        public I18NString           AdditionalInfo { get; set; }
+
+
         #region EVSEs
 
         /// <summary>
@@ -390,9 +397,12 @@ namespace org.GraphDefined.eMI3
 
             this._EVSEs                   = new ConcurrentDictionary<EVSE_Id, EVSE>();
 
+            this.Name                     = new I18NString();
+            this.AdditionalInfo           = new I18NString();
+
             this._PhotoURIs               = new List<String>();
-            this._UserComment             = new I8NString();
-            this._ServiceProviderComment  = new I8NString();
+            this._UserComment             = new I18NString();
+            this._ServiceProviderComment  = new I18NString();
             //this.GeoLocation             = new GeoCoordinate();
 
             #endregion

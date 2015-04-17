@@ -53,13 +53,13 @@ namespace org.GraphDefined.eMI3
 
         #region Name
 
-        private I8NString _Name;
+        private I18NString _Name;
 
         /// <summary>
         /// The offical (multi-language) name of the ChargingGroup.
         /// </summary>
         [Mandatory]
-        public I8NString Name
+        public I18NString Name
         {
 
             get
@@ -69,7 +69,7 @@ namespace org.GraphDefined.eMI3
 
             set
             {
-                SetProperty<I8NString>(ref _Name, value);
+                SetProperty<I18NString>(ref _Name, value);
             }
 
         }
@@ -78,13 +78,13 @@ namespace org.GraphDefined.eMI3
 
         #region Description
 
-        private I8NString _Description;
+        private I18NString _Description;
 
         /// <summary>
         /// An optional additional (multi-language) description of the ChargingGroup.
         /// </summary>
         [Optional]
-        public I8NString Description
+        public I18NString Description
         {
 
             get
@@ -94,7 +94,7 @@ namespace org.GraphDefined.eMI3
 
             set
             {
-                SetProperty<I8NString>(ref _Description, value);
+                SetProperty<I18NString>(ref _Description, value);
             }
 
         }
@@ -449,8 +449,8 @@ namespace org.GraphDefined.eMI3
 
             this._ChargingStations  = new ConcurrentDictionary<ChargingStation_Id, ChargingStation>();
 
-            this.Name               = new I8NString(Languages.en, Id.ToString());
-            this.Description        = new I8NString();
+            this.Name               = new I18NString(Languages.en, Id.ToString());
+            this.Description        = new I18NString();
             this.LocationLanguage   = Languages.undef;
 
             //this.PoolLocation       = new GeoCoordinate();

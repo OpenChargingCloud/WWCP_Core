@@ -105,12 +105,12 @@ namespace org.GraphDefined.eMI3.IO.JSON_LD
         /// </summary>
         /// <param name="I8N">An internationalized string.</param>
         /// <param name="JPropertyKey">The name of the JSON property key.</param>
-        public static JProperty ToJSON(this I8NString I8N, String JPropertyKey)
+        public static JProperty ToJSON(this I18NString I8N, String JPropertyKey)
         {
 
             return new JProperty(JPropertyKey,
                                  new JObject(I8N.Select(v =>
-                                     new JProperty(v.Language.ToString(), v.Value)
+                                     new JProperty(v.Language.ToString(), v.Text)
                                  )));
 
         }

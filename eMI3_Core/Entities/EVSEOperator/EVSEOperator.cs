@@ -158,13 +158,13 @@ namespace org.GraphDefined.eMI3
 
         #region Name
 
-        private readonly I8NString _Name;
+        private readonly I18NString _Name;
 
         /// <summary>
         /// The offical (multi-language) name of the EVSE Operator.
         /// </summary>
         [Mandatory]
-        public I8NString Name
+        public I18NString Name
         {
             get
             {
@@ -176,13 +176,13 @@ namespace org.GraphDefined.eMI3
 
         #region Description
 
-        private readonly I8NString _Description;
+        private readonly I18NString _Description;
 
         /// <summary>
         /// An optional (multi-language) description of the EVSE Operator.
         /// </summary>
         [Optional]
-        public I8NString Description
+        public I18NString Description
         {
             get
             {
@@ -305,8 +305,8 @@ namespace org.GraphDefined.eMI3
         /// <param name="Description">An optional (multi-language) description of the EVSE Operator.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         internal EVSEOperator(EVSEOperator_Id  Id,
-                              I8NString        Name           = null,
-                              I8NString        Description    = null,
+                              I18NString        Name           = null,
+                              I18NString        Description    = null,
                               RoamingNetwork   RoamingNetwork = null)
 
             : base(Id)
@@ -327,8 +327,8 @@ namespace org.GraphDefined.eMI3
 
             this._RoamingNetwork            = RoamingNetwork;
 
-            this._Name                      = Name        != null ? Name        : new I8NString();
-            this._Description               = Description != null ? Description : new I8NString();
+            this._Name                      = Name        != null ? Name        : new I18NString();
+            this._Description               = Description != null ? Description : new I18NString();
             this._ValidEVSEIds              = new List<EVSE_Id>();
             this._InvalidEVSEIds            = new List<EVSE_Id>();
             this._ManualEVSEIds             = new List<EVSE_Id>();
@@ -395,8 +395,8 @@ namespace org.GraphDefined.eMI3
         /// <param name="Description">An optional (multi-language) description of the EVSE Operator.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         public static EVSEOperator CreateNew(EVSEOperator_Id  Id,
-                                             I8NString        Name           = null,
-                                             I8NString        Description    = null,
+                                             I18NString        Name           = null,
+                                             I18NString        Description    = null,
                                              RoamingNetwork   RoamingNetwork = null)
         {
 

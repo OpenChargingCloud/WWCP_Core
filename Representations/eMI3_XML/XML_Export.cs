@@ -18,11 +18,10 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-using org.GraphDefined.eMI3;
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
@@ -86,13 +85,13 @@ namespace org.GraphDefined.eMI3.IO.XML
         public static readonly String I8N_Root      = "I8N";
         public static readonly String I8N_Language  = "lang";
 
-        public static XElement ToXML(this I8NString I8N, XNamespace Namespace, String ElementName)
+        public static XElement ToXML(this I18NString I8N, XNamespace Namespace, String ElementName)
         {
 
             return new XElement(Namespace + ElementName,
                                 I8N.Select(v => new XElement(NS_eMI3 + I8N_Root,
                                      new XAttribute(NS_eMI3 + I8N_Language, v.Language),
-                                     v.Value)));
+                                     v.Text)));
 
         }
 
