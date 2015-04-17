@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
@@ -42,6 +43,7 @@ namespace org.GraphDefined.eMI3
 
         #region Data
 
+        public  const    UInt32                                               DefaultStatusHistorySize = 50;
         public  readonly ChargingStation                                      ChargingStation;
         private readonly ConcurrentDictionary<SocketOutlet_Id, SocketOutlet>  _SocketOutlets;
 
@@ -99,28 +101,40 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
-        #region EVSEStatus
+        #region Status
 
-        private EVSEStatusType _Status = EVSEStatusType.OutOfService;
-
+        /// <summary>
+        /// The current EVSE status.
+        /// </summary>
         [Mandatory, Not_eMI3defined]
-        public EVSEStatusType Status
+        public Timestamped<EVSEStatusType> Status
         {
-
             get
             {
-                return _Status;
-            }
 
-            set
-            {
-                SetProperty<EVSEStatusType>(ref _Status, value);
-            }
+                if (_StatusHistory.Count == 0)
+                    return new Timestamped<EVSEStatusType>(EVSEStatusType.EvseNotFound);
 
+                return _StatusHistory.Peek();
+
+            }
         }
 
         #endregion
 
+        #region StatusHistory
+
+        private Queue<Timestamped<EVSEStatusType>> _StatusHistory;
+
+        public IEnumerable<Timestamped<EVSEStatusType>> StatusHistory
+        {
+            get
+            {
+                return _StatusHistory.OrderByDescending(v => v.Timestamp);
+            }
+        }
+
+        #endregion
 
         public IEnumerable<String> ChargingFacilities   { get; set; }
         public IEnumerable<String> ChargingModes        { get; set; }
@@ -201,7 +215,7 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
-        #region (internal) EVSE(Id, ChargingStation)
+        #region (internal) EVSE(Id, ChargingStation, StatusHistorySize = DefaultStatusHistorySize)
 
         /// <summary>
         /// Create a new Electric Vehicle Supply Equipment (EVSE)
@@ -209,8 +223,10 @@ namespace org.GraphDefined.eMI3
         /// </summary>
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="ChargingStation">The parent EVS pool.</param>
+        /// <param name="StatusHistorySize">The default size of the EVSE status history.</param>
         internal EVSE(EVSE_Id          Id,
-                      ChargingStation  ChargingStation)
+                      ChargingStation  ChargingStation,
+                      UInt32           StatusHistorySize = DefaultStatusHistorySize)
 
             : this(Id)
 
@@ -221,6 +237,7 @@ namespace org.GraphDefined.eMI3
 
             this.ChargingStation = ChargingStation;
 
+            this._StatusHistory = new Queue<Timestamped<EVSEStatusType>>((Int32) StatusHistorySize);
 
             this.OnSocketOutletAddition.OnVoting       += (evse, socketoutlet, vote) => ChargingStation.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
             this.OnSocketOutletAddition.OnNotification += (evse, socketoutlet)       => ChargingStation.SocketOutletAddition.SendNotification(evse, socketoutlet);
@@ -296,6 +313,47 @@ namespace org.GraphDefined.eMI3
 
             return this;
 
+        }
+
+        #endregion
+
+
+        public Boolean StatusIs(EVSEStatusType Status)
+        {
+
+            if (_StatusHistory.Count == 0)
+                return false;
+
+            if (_StatusHistory.Peek().Value == Status)
+                return true;
+
+            return false;
+
+        }
+
+        public Boolean StatusIsNot(EVSEStatusType Status)
+        {
+
+            if (_StatusHistory.Count == 0)
+                return true;
+
+            if (_StatusHistory.Peek().Value != Status)
+                return true;
+
+            return false;
+
+        }
+
+        #region SetStatus(Status)
+
+        /// <summary>
+        /// Set the current EVSE status.
+        /// </summary>
+        /// <param name="Status">The EVSE status.</param>
+        public EVSE SetStatus(Timestamped<EVSEStatusType> Status)
+        {
+            _StatusHistory.Enqueue(Status);
+            return this;
         }
 
         #endregion

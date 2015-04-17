@@ -44,7 +44,7 @@ namespace org.GraphDefined.eMI3
         /// <summary>
         /// A charging session is still open (a car is connected)
         /// </summary>
-        Charging        = 3,
+        Occupied        = 3,
 
         /// <summary>
         /// A car is connected and an error has occured during charge (this status appeared while charging).
@@ -80,6 +80,9 @@ namespace org.GraphDefined.eMI3
         /// No status is sent by the pole.
         /// </summary>
         Unknown         = 10,
+
+
+        EvseNotFound    = 11
 
     }
 

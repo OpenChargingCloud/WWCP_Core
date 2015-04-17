@@ -269,7 +269,7 @@ namespace org.GraphDefined.eMI3
                 return _RegisteredChargingPools.Values.
                            SelectMany(v => v.ChargingStations).
                            SelectMany(v => v.EVSEs).
-                           Select    (v => new KeyValuePair<EVSE_Id, EVSEStatusType>(v.Id, v.Status));
+                           Select    (v => new KeyValuePair<EVSE_Id, EVSEStatusType>(v.Id, v.Status.Value));
             }
         }
 
@@ -513,7 +513,7 @@ namespace org.GraphDefined.eMI3
             EVSE _EVSE = null;
             if (TryGetEVSEbyId(EVSEId, out _EVSE))
             {
-                _EVSE.Status = Status;
+                _EVSE.SetStatus(new Timestamped<EVSEStatusType>(Status));
                 OnSuccess(EVSEId, Status);
             }
 
