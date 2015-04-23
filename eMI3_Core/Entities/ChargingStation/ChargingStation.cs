@@ -26,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
+using System.Diagnostics;
 
 #endregion
 
@@ -480,7 +481,7 @@ namespace org.GraphDefined.eMI3
         #endregion
 
 
-        #region CreateNewEVSE(EVSEId, Action = null)
+        #region CreateNewEVSE(EVSEId, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new EVSE having the given
@@ -488,7 +489,10 @@ namespace org.GraphDefined.eMI3
         /// </summary>
         /// <param name="EVSEId">The unique identification of the new EVSE.</param>
         /// <param name="Action">An optional delegate to configure the new EVSE after its creation.</param>
-        public EVSE CreateNewEVSE(EVSE_Id EVSEId, Action<EVSE> Action = null)
+        public EVSE CreateNewEVSE(EVSE_Id                           EVSEId,
+                                  Action<EVSE>                      Configurator  = null,
+                                  Action<EVSE>                      OnSuccess     = null,
+                                  Action<ChargingStation, EVSE_Id>  OnError       = null)
         {
 
             #region Initial checks
@@ -497,24 +501,31 @@ namespace org.GraphDefined.eMI3
                 throw new ArgumentNullException("EVSE_Id", "The given EVSE identification must not be null!");
 
             if (_EVSEs.ContainsKey(EVSEId))
-                throw new EVSEAlreadyExists(EVSEId, this.Id);
+            {
+                if (OnError == null)
+                    throw new EVSEAlreadyExistsInStation(EVSEId, this.Id);
+                else
+                    OnError.FailSafeInvoke(this, EVSEId);
+            }
 
             #endregion
 
             var _EVSE = new EVSE(EVSEId, this);
 
-            Action.FailSafeInvoke(_EVSE);
+            Configurator.FailSafeInvoke(_EVSE);
 
             if (EVSEAddition.SendVoting(this, _EVSE))
             {
                 if (_EVSEs.TryAdd(EVSEId, _EVSE))
                 {
+                    OnSuccess.FailSafeInvoke(_EVSE);
                     EVSEAddition.SendNotification(this, _EVSE);
                     return _EVSE;
                 }
             }
 
-            throw new Exception();
+            Debug.WriteLine("EVSE '" + EVSEId + "' was not created!");
+            return null;
 
         }
 

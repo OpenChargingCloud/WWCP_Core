@@ -43,16 +43,16 @@ namespace org.GraphDefined.eMI3
     }
 
 
-    #region EVSEAlreadyExists
+    #region EVSEAlreadyExistsInStation
 
     /// <summary>
     /// An exception thrown whenever an EVSE already exists within the given charging station.
     /// </summary>
-    public class EVSEAlreadyExists : ChargingStationException
+    public class EVSEAlreadyExistsInStation : ChargingStationException
     {
 
-        public EVSEAlreadyExists(EVSE_Id             EVSE_Id,
-                                 ChargingStation_Id  ChargingStation_Id)
+        public EVSEAlreadyExistsInStation(EVSE_Id             EVSE_Id,
+                                          ChargingStation_Id  ChargingStation_Id)
             : base("The given EVSE identification '" + EVSE_Id + "' already exists within the given '" + ChargingStation_Id + "' charging station!")
         { }
 
