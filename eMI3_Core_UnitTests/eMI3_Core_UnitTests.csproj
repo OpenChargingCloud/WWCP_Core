@@ -61,6 +61,14 @@
       <Project>{4d8ffccd-738d-41aa-a527-8cfdfe0a681d}</Project>
       <Name>Aegir</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Illias\Illias.NET4.5\Illias.NET4.5.csproj">
+      <Project>{23d37453-2d4e-4bd8-b40f-3e731fee7712}</Project>
+      <Name>Illias.NET4.5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Illias\Illias\Illias.csproj">
+      <Project>{e156f18d-d41c-4529-9bcc-9962e6ee25da}</Project>
+      <Name>Illias</Name>
+    </ProjectReference>
     <ProjectReference Include="..\eMI3_Core\eMI3_Core.csproj">
       <Project>{33836742-af1d-4aa4-963f-b0a8e60e6480}</Project>
       <Name>eMI3_Core</Name>

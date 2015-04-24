@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 
 using org.GraphDefined.eMI3;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 

@@ -356,9 +356,23 @@ namespace org.GraphDefined.eMI3
         /// Set the current EVSE status.
         /// </summary>
         /// <param name="Status">The EVSE status.</param>
-        public EVSE SetStatus(Timestamped<EVSEStatusType> Status)
+        public EVSE SetStatus(EVSEStatusType Status)
         {
-            _StatusHistory.Enqueue(Status);
+            _StatusHistory.Enqueue(new Timestamped<EVSEStatusType>(Status));
+            return this;
+        }
+
+        #endregion
+
+        #region SetStatus(TimestampedStatus)
+
+        /// <summary>
+        /// Set the current EVSE status.
+        /// </summary>
+        /// <param name="TimestampedStatus">The EVSE status.</param>
+        public EVSE SetStatus(Timestamped<EVSEStatusType> TimestampedStatus)
+        {
+            _StatusHistory.Enqueue(TimestampedStatus);
             return this;
         }
 
