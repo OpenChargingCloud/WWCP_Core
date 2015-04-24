@@ -77,7 +77,7 @@ namespace org.GraphDefined.eMI3.LocalService
                                      Authorizator_Id  AuthorizatorId = null)
         {
             this._EVSPId                = EVSPId;
-            this._AuthorizatorId        = (AuthorizatorId == null) ? Authorizator_Id.Parse("eMI3 OICP Gateway Database") : AuthorizatorId;
+            this._AuthorizatorId        = (AuthorizatorId == null) ? Authorizator_Id.Parse("eMI3 Local E-Mobility Database") : AuthorizatorId;
             this.AuthorizationDatabase  = new Dictionary<Auth_Token,     AuthorizationResult>();
             this.SessionDatabase        = new Dictionary<ChargingSession_Id, SessionInfo>();
         }

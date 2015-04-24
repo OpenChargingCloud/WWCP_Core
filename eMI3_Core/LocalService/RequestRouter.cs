@@ -140,6 +140,32 @@ namespace org.GraphDefined.eMI3.LocalService
 
         #endregion
 
+        #region Events
+
+        #region OnRemoteStart
+
+        public delegate RemoteStartResult OnRemoteStartDelegate(EVSE_Id EVSEId, String SessionId, EVSP_Id ProviderId, eMA_Id eMAId, EventTracking_Id EventTrackingId = null);
+
+        /// <summary>
+        /// An event fired whenever a remote start command was received.
+        /// </summary>
+        public event OnRemoteStartDelegate OnRemoteStart;
+
+        #endregion
+
+        #region OnRemoteStop
+
+        public delegate RemoteStopResult OnRemoteStopDelegate(EVSE_Id EVSEId, String SessionId, EVSP_Id ProviderId, EventTracking_Id EventTrackingId = null);
+
+        /// <summary>
+        /// An event fired whenever a remote stop command was received.
+        /// </summary>
+        public event OnRemoteStopDelegate OnRemoteStop;
+
+        #endregion
+
+        #endregion
+
         #region Constructor(s)
 
         public RequestRouter(RoamingNetwork_Id  RoamingNetwork,
@@ -148,7 +174,7 @@ namespace org.GraphDefined.eMI3.LocalService
         {
 
             this._RoamingNetwork              = RoamingNetwork;
-            this._AuthorizatorId              = (AuthorizatorId == null) ? Authorizator_Id.Parse("eMI3 OICP EV Gateway") : AuthorizatorId;
+            this._AuthorizatorId              = (AuthorizatorId == null) ? Authorizator_Id.Parse("eMI3 Local E-Mobility Gateway") : AuthorizatorId;
             this.AuthenticationServices       = new Dictionary<UInt32,             IRoamingProviderProvided_EVSEOperatorServices>();
             this.SessionIdAuthenticatorCache  = new Dictionary<ChargingSession_Id, IRoamingProviderProvided_EVSEOperatorServices>();
             this.EVSEOperatorLookup           = new Dictionary<EVSEOperator_Id,    IEVSEOperatorProvidedServices>();
@@ -472,76 +498,11 @@ namespace org.GraphDefined.eMI3.LocalService
 
                 #endregion
 
-                try
-                {
+                var OnRemoteStartLocal = OnRemoteStart;
+                if (OnRemoteStartLocal != null)
+                    return OnRemoteStartLocal(EVSEId, SessionId, ProviderId, eMAId, EventTrackingId);
 
-                    using (var HTTPClient1 = new HTTPClient("portal.belectric-drive.de", new IPPort(80), _DNSClient)) //20080
-                    {
-
-                        var HTTPRequestBuilder = HTTPClient1.CreateRequest(new HTTPMethod("REMOTESTART"),
-                                                                           "/ps/rest/hubject/RNs/" + RoamingNetwork.ToString() + "/EVSEs/" + EVSEId.OldEVSEId.Replace("+", ""),
-                                                                           HTTPReqBuilder =>
-                                                                           {
-                                                                               HTTPReqBuilder.Host         = "portal.belectric-drive.de";
-                                                                               HTTPReqBuilder.ContentType  = HTTPContentType.JSON_UTF8;
-                                                                               HTTPReqBuilder.Content      = new JObject(
-                                                                                                                      new JProperty("@context", "http://emi3group.org/contexts/REMOTESTART-request.jsonld"),
-                                                                                                                      new JProperty("@id", SessionId),
-                                                                                                                      new JProperty("ProviderId", ProviderId.ToString()),
-                                                                                                                      new JProperty("eMAId", eMAId.ToString())
-                                                                                                                  ).ToString().
-                                                                                                                    ToUTF8Bytes();
-                                                                               HTTPReqBuilder.Accept.Add(HTTPContentType.JSON_UTF8);
-                                                                           });
-
-                        Log.WriteLine(HTTPRequestBuilder.AsImmutable().EntirePDU.ToString());
-                        Log.WriteLine("------>");
-
-                        var Task01 = HTTPClient1.Execute_Synced(HTTPRequestBuilder, Timeout: TimeSpan.FromSeconds(60));
-                        Log.WriteLine(Task01.EntirePDU.ToString());
-
-                        // HTTP/1.1 200 OK
-                        // Date: Fri, 28 Mar 2014 13:31:27 GMT
-                        // Server: Apache/2.2.9 (Debian) mod_jk/1.2.26
-                        // Content-Length: 34
-                        // Content-Type: application/json
-                        // 
-                        // {
-                        //   "code" : "EVSE_AlreadyInUse"
-                        // }
-
-                        var JSONResponse = JObject.Parse(Task01.Content.ToUTF8String());
-
-                        switch (JSONResponse["code"].ToString())
-                        {
-
-                            case "EVSE_AlreadyInUse":
-                                return RemoteStartResult.EVSE_AlreadyInUse;
-
-                            case "SessionId_AlreadyInUse":
-                                return RemoteStartResult.SessionId_AlreadyInUse;
-
-                            case "EVSE_NotReachable":
-                                return RemoteStartResult.EVSE_NotReachable;
-
-                            case "Start_Timeout":
-                                return RemoteStartResult.Start_Timeout;
-
-                            case "Success":
-                                return RemoteStartResult.Success;
-
-                            default:
-                                return RemoteStartResult.Error;
-
-                        }
-
-                    }
-
-                }
-                catch (Exception)
-                {
-                    return RemoteStartResult.Error;
-                }
+                return RemoteStartResult.EVSE_NotReachable;
 
             }
 
@@ -572,88 +533,28 @@ namespace org.GraphDefined.eMI3.LocalService
                 FrontendHTTPServer.GetEventSource(Semantics.DebugLog).
                     SubmitSubEvent("REMOTESTOPRequest",
                                    new JObject(
-                                       new JProperty("Timestamp",       DateTime.Now.ToIso8601()),
-                                       new JProperty("RoamingNetwork",  RoamingNetwork.ToString()),
-                                       new JProperty("SessionId",       SessionId),
-                                       new JProperty("ProviderId",      ProviderId.ToString()),
-                                       new JProperty("EVSEId",          EVSEId.ToString())
+                                       new JProperty("Timestamp", DateTime.Now.ToIso8601()),
+                                       new JProperty("RoamingNetwork", RoamingNetwork.ToString()),
+                                       new JProperty("SessionId", SessionId),
+                                       new JProperty("ProviderId", ProviderId.ToString()),
+                                       new JProperty("EVSEId", EVSEId.ToString())
                                    ).ToString().
                                      Replace(Environment.NewLine, ""));
 
                 #endregion
 
-                try
-                {
+                var OnRemoteStopLocal = OnRemoteStop;
+                if (OnRemoteStopLocal != null)
+                    return OnRemoteStopLocal(EVSEId, SessionId, ProviderId, EventTrackingId);
 
-                    using (var HTTPClient1 = new HTTPClient("portal.belectric-drive.de", new IPPort(80), _DNSClient)) //20080
-                    {
-
-                        var HTTPRequestBuilder = HTTPClient1.CreateRequest(new HTTPMethod("REMOTESTOP"),
-                                                                           "/ps/rest/hubject/RNs/" + RoamingNetwork.ToString() + "/EVSEs/" + EVSEId.OldEVSEId.Replace("+", ""),
-                                                                           HTTPReqBuilder => {
-
-                                                                               HTTPReqBuilder.Host         = "portal.belectric-drive.de";
-                                                                               HTTPReqBuilder.ContentType  = HTTPContentType.JSON_UTF8;
-                                                                               HTTPReqBuilder.Accept.Add(HTTPContentType.JSON_UTF8);
-                                                                               HTTPReqBuilder.Content      = new JObject(
-                                                                                                                       new JProperty("@context", "http://emi3group.org/contexts/REMOTESTOP-request.jsonld"),
-                                                                                                                       new JProperty("@id", SessionId),
-                                                                                                                       new JProperty("ProviderId", ProviderId.ToString())
-                                                                                                                  ).ToString().
-                                                                                                                    ToUTF8Bytes();
-                                                                           });
-
-                        Log.WriteLine(HTTPRequestBuilder.AsImmutable().EntirePDU.ToString());
-                        Log.WriteLine("------>");
-
-                        var HTTPResponse = HTTPClient1.Execute_Synced(HTTPRequestBuilder, Timeout: TimeSpan.FromSeconds(60));
-                        Log.WriteLine(HTTPResponse.EntirePDU.ToString());
-
-                        if (HTTPResponse.HTTPStatusCode != HTTPStatusCode.OK)
-                            return RemoteStopResult.Error;
-
-
-                        var JSONResponse = JObject.Parse(HTTPResponse.Content.ToUTF8String());
-
-                        switch (JSONResponse["code"].ToString())
-                        {
-
-                            //case "EVSE_AlreadyInUse":
-                            //    HubjectCode         = "602";
-                            //    HubjectDescription  = "EVSE is already in use!";
-                            //    break;
-
-                            //case "SessionId_AlreadyInUse":
-                            //    HubjectCode         = "400";
-                            //    HubjectDescription  = "Session is invalid";
-                            //    break;
-
-                            //case "EVSE_NotReachable":
-                            //    HubjectCode         = "501";
-                            //    HubjectDescription  = "Communication to EVSE failed!";
-                            //    break;
-
-                            case "Success":
-                                return RemoteStopResult.Success;
-
-                            default:
-                                return RemoteStopResult.Error;
-
-                        }
-
-                    }
-
-                }
-                catch (Exception)
-                {
-                    return RemoteStopResult.Error;
-                }
+                return RemoteStopResult.Error;
 
             }
 
         }
 
         #endregion
+
 
     }
 
