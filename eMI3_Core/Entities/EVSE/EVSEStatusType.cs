@@ -34,55 +34,55 @@ namespace org.GraphDefined.eMI3
         /// <summary>
         /// The pole is not fully operational yet.
         /// </summary>
-        InDeployment    = 1,
+        InDeployment    = 2,
 
         /// <summary>
         /// No car connected to EVSE, ready to charge.
         /// </summary>
-        Available       = 2,
+        Available       = 3,
 
         /// <summary>
         /// A charging session is still open (a car is connected)
         /// </summary>
-        Occupied        = 3,
+        Occupied        = 4,
 
         /// <summary>
         /// A car is connected and an error has occured during charge (this status appeared while charging).
         /// </summary>
-        Faulted         = 4,
+        Faulted         = 5,
 
         /// <summary>
         /// No car is connected but the pole is not ready to charge.
         /// </summary>
-        Unavailable     = 5,
+        Unavailable     = 6,
 
         /// <summary>
         /// No car is connected, the pole is not ready to charge because under maintenance.
         /// </summary>
-        OutOfService    = 6,
+        OutOfService    = 7,
 
         /// <summary>
         /// The platform has lost connection with the pole (may be used by customer depending on its ability to handle offline mode).
         /// </summary>
-        Offline         = 7,
+        Offline         = 8,
 
         /// <summary>
         /// No car is connected but no car can connect except the one that has booked this EVSE.
         /// </summary>
-        Reserved        = 8,
+        Reserved        = 9,
 
         /// <summary>
         /// Private internal use.
         /// </summary>
-        Other           = 9,
+        Other           = 10,
 
         /// <summary>
         /// No status is sent by the pole.
         /// </summary>
-        Unknown         = 10,
+        Unknown         = 11,
 
 
-        EvseNotFound    = 11
+        EvseNotFound    = 12
 
     }
 

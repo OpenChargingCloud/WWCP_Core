@@ -69,11 +69,11 @@ namespace org.GraphDefined.eMI3
 
         #region CountryCode
 
+        private readonly Country _CountryCode;
+
         /// <summary>
         /// The internal Alpha-2-CountryCode.
         /// </summary>
-        private readonly Country _CountryCode;
-
         public Country CountryCode
         {
             get
@@ -86,11 +86,11 @@ namespace org.GraphDefined.eMI3
 
         #region OperatorId
 
+        private readonly String _OperatorId;
+
         /// <summary>
         /// The internal EVSE Operator identification.
         /// </summary>
-        private readonly String _OperatorId;
-
         public String OperatorId
         {
             get
@@ -101,12 +101,12 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
-        #region Id2
+        #region IdOld
 
         /// <summary>
         /// The EVSE Operator identification as e.g. "+49*822".
         /// </summary>
-        public String Id2
+        public String IdOld
         {
             get
             {

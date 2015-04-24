@@ -103,7 +103,7 @@ namespace org.GraphDefined.eMI3
         {
             get
             {
-                return String.Concat(_OperatorId.Id2, "*", _EVSEIdSuffix);
+                return String.Concat(_OperatorId.IdOld, "*", _EVSEIdSuffix);
             }
         }
 
@@ -131,7 +131,7 @@ namespace org.GraphDefined.eMI3
             {
                 return (_OriginFormat == EVSE_Id.OriginFormatType.NEW)
                           ? String.Concat(_OperatorId.ToString(), "*E", _EVSEIdSuffix)
-                          : String.Concat(_OperatorId.Id2,        "*",  _EVSEIdSuffix);
+                          : String.Concat(_OperatorId.IdOld,        "*",  _EVSEIdSuffix);
             }
         }
 

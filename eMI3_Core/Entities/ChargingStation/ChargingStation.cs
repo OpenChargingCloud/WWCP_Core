@@ -269,11 +269,70 @@ namespace org.GraphDefined.eMI3
         #endregion
 
 
-        public I18NString           Name           { get; set; }
+        public I18NString           Name                    { get; set; }
 
-        public IEnumerable<String> PaymentOptions { get; set; }
-        public String              Accessibility  { get; set; }
-        public I18NString           AdditionalInfo { get; set; }
+        public String               EVSEIdPrefix            { get; set; }
+
+
+        #region AuthenticationModes
+
+        private IEnumerable<String> _AuthenticationModes;
+
+        public IEnumerable<String>  AuthenticationModes
+        {
+
+            get
+            {
+
+                if (_AuthenticationModes == null)
+                    return Pool.DefaultAuthenticationModes;
+
+                return _AuthenticationModes;
+
+            }
+
+            set
+            {
+
+                if (value == null)
+                    _AuthenticationModes = Pool.DefaultAuthenticationModes;
+
+                else
+                {
+
+                    if (Pool.DefaultAuthenticationModes.Count() != value.Count())
+                        _AuthenticationModes = value;
+
+                    else
+                    {
+                        foreach (var AuthenticationMode in value)
+                        {
+                            if (!Pool.DefaultAuthenticationModes.Contains(AuthenticationMode))
+                                _AuthenticationModes = value;
+                        }
+                    }
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+
+        public IEnumerable<String>  PaymentOptions          { get; set; }
+
+        public String               Accessibility           { get; set; }
+
+        public String               HotlinePhoneNum         { get; set; }
+
+        public I18NString           AdditionalInfo          { get; set; }
+
+        public Boolean?             IsHubjectCompatible     { get; set; }
+
+        public Boolean?             DynamicInfoAvailable    { get; set; }
+
 
 
         #region EVSEs

@@ -136,10 +136,16 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
-        public IEnumerable<String> ChargingFacilities   { get; set; }
-        public IEnumerable<String> ChargingModes        { get; set; }
-        public IEnumerable<String> AuthenticationModes  { get; set; }
-        public Double              MaxCapacity_kWh      { get; set; }
+
+        public IEnumerable<String>  ChargingModes           { get; set; }
+
+        public IEnumerable<String>  ChargingFacilities      { get; set; }
+
+        public Double               MaxCapacity_kWh         { get; set; }
+
+        public I18NString           AdditionalInfo          { get; set; }
+
+
 
 
         #region SocketOutlets

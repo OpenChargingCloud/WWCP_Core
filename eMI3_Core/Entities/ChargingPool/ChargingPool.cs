@@ -304,6 +304,78 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
+        #region PhotoURIs
+
+        private readonly List<String> _PhotoURIs;
+
+        /// <summary>
+        /// URIs of photos of this charging pool.
+        /// </summary>
+        [Optional, Not_eMI3defined]
+        public List<String> PhotoURIs
+        {
+            get
+            {
+                return _PhotoURIs;
+            }
+        }
+
+        #endregion
+
+
+        #region AuthenticationModes
+
+        internal IEnumerable<String> DefaultAuthenticationModes;
+
+        public IEnumerable<String> AuthenticationModes
+        {
+
+            get
+            {
+
+                if (_ChargingStations.Count() == 0)
+                    return DefaultAuthenticationModes;
+
+                var _AuthenticationModes = _ChargingStations.First().Value.AuthenticationModes.ToArray();
+
+                foreach (var station in _ChargingStations.Values.Skip(1))
+                {
+
+                    if (station.AuthenticationModes.Count() != _AuthenticationModes.Length)
+                        return new String[0];
+
+                    foreach (var AuthenticationMode in station.AuthenticationModes)
+                        if (!_AuthenticationModes.Contains(AuthenticationMode))
+                            return new String[0];
+
+                }
+
+                return _AuthenticationModes;
+
+            }
+
+            set
+            {
+
+                var Value = value;
+
+                if (value == null)
+                    Value = new String[0];
+
+                DefaultAuthenticationModes = Value;
+
+                _ChargingStations.Values.ForEach(station => station.AuthenticationModes = Value);
+
+            }
+
+        }
+
+        #endregion
+
+        public IEnumerable<String>  PaymentOptions          { get; set; }
+
+        public String               Accessibility           { get; set; }
+
         #region OpeningTime
 
         private OpeningTime _OpeningTime;
@@ -329,25 +401,12 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
-        #region PhotoURIs
+        public String               HotlinePhoneNum         { get; set; }
 
-        private readonly List<String> _PhotoURIs;
+        public I18NString           AdditionalInfo          { get; set; }
 
-        /// <summary>
-        /// URIs of photos of this charging pool.
-        /// </summary>
-        [Optional, Not_eMI3defined]
-        public List<String> PhotoURIs
-        {
-            get
-            {
-                return _PhotoURIs;
-            }
-        }
+        public Boolean?             DynamicInfoAvailable    { get; set; }
 
-        #endregion
-
-        public String HotlinePhoneNum { get; set; }
 
 
 
@@ -471,14 +530,13 @@ namespace org.GraphDefined.eMI3
 
             this._ChargingStations  = new ConcurrentDictionary<ChargingStation_Id, ChargingStation>();
 
-            this.Name               = new I18NString(Languages.en, Id.ToString());
-            this.Description        = new I18NString();
             this.LocationLanguage   = Languages.undef;
-
-            //this.PoolLocation       = new GeoCoordinate();
+            this.Name               = new I18NString();
+            this.Description        = new I18NString();
             this.Address            = new Address();
-            //this.EntranceLocation   = new GeoCoordinate();
             this.EntranceAddress    = new Address();
+
+            this.DefaultAuthenticationModes = new String[0];
 
             #endregion
 
