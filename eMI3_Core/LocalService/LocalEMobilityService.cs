@@ -73,11 +73,11 @@ namespace org.GraphDefined.eMI3.LocalService
 
         #region Constructor(s)
 
-        public LocalEMobilityService(EVSP_Id  EVSPId,
-                                     Authorizator_Id        AuthorizatorId = null)
+        public LocalEMobilityService(EVSP_Id          EVSPId,
+                                     Authorizator_Id  AuthorizatorId = null)
         {
             this._EVSPId                = EVSPId;
-            this._AuthorizatorId        = (AuthorizatorId == null) ? Authorizator_Id.Parse("Belectric Drive EV Gateway Database") : AuthorizatorId;
+            this._AuthorizatorId        = (AuthorizatorId == null) ? Authorizator_Id.Parse("eMI3 OICP Gateway Database") : AuthorizatorId;
             this.AuthorizationDatabase  = new Dictionary<Auth_Token,     AuthorizationResult>();
             this.SessionDatabase        = new Dictionary<ChargingSession_Id, SessionInfo>();
         }
