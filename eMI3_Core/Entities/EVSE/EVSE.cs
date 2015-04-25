@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
- * This file is part of eMI3 Core <http://www.github.com/GraphDefined/eMI3>
+ * This file is part of eMI3 Core <http://www.github.com/GraphDefined/eMI3_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,7 +124,7 @@ namespace org.GraphDefined.eMI3
 
         #region StatusHistory
 
-        private Queue<Timestamped<EVSEStatusType>> _StatusHistory;
+        private Stack<Timestamped<EVSEStatusType>> _StatusHistory;
 
         public IEnumerable<Timestamped<EVSEStatusType>> StatusHistory
         {
@@ -144,8 +144,6 @@ namespace org.GraphDefined.eMI3
         public Double               MaxCapacity_kWh         { get; set; }
 
         public I18NString           AdditionalInfo          { get; set; }
-
-
 
 
         #region SocketOutlets
@@ -243,7 +241,7 @@ namespace org.GraphDefined.eMI3
 
             this.ChargingStation = ChargingStation;
 
-            this._StatusHistory = new Queue<Timestamped<EVSEStatusType>>((Int32) StatusHistorySize);
+            this._StatusHistory = new Stack<Timestamped<EVSEStatusType>>((Int32) StatusHistorySize);
 
             this.OnSocketOutletAddition.OnVoting       += (evse, socketoutlet, vote) => ChargingStation.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
             this.OnSocketOutletAddition.OnNotification += (evse, socketoutlet)       => ChargingStation.SocketOutletAddition.SendNotification(evse, socketoutlet);
@@ -324,6 +322,12 @@ namespace org.GraphDefined.eMI3
         #endregion
 
 
+        #region StatusIs(Status)
+
+        /// <summary>
+        /// Checks wether the current status of the EVSE is equals to the given status.
+        /// </summary>
+        /// <param name="Status">An EVSE status.</param>
         public Boolean StatusIs(EVSEStatusType Status)
         {
 
@@ -337,6 +341,14 @@ namespace org.GraphDefined.eMI3
 
         }
 
+        #endregion
+
+        #region StatusIsNot(Status)
+
+        /// <summary>
+        /// Checks wether the current status of the EVSE is not equals to the given status.
+        /// </summary>
+        /// <param name="Status">An EVSE status.</param>
         public Boolean StatusIsNot(EVSEStatusType Status)
         {
 
@@ -350,6 +362,8 @@ namespace org.GraphDefined.eMI3
 
         }
 
+        #endregion
+
         #region SetStatus(Status)
 
         /// <summary>
@@ -358,7 +372,7 @@ namespace org.GraphDefined.eMI3
         /// <param name="Status">The EVSE status.</param>
         public EVSE SetStatus(EVSEStatusType Status)
         {
-            _StatusHistory.Enqueue(new Timestamped<EVSEStatusType>(Status));
+            _StatusHistory.Push(new Timestamped<EVSEStatusType>(Status));
             return this;
         }
 
@@ -372,7 +386,7 @@ namespace org.GraphDefined.eMI3
         /// <param name="TimestampedStatus">The EVSE status.</param>
         public EVSE SetStatus(Timestamped<EVSEStatusType> TimestampedStatus)
         {
-            _StatusHistory.Enqueue(TimestampedStatus);
+            _StatusHistory.Push(TimestampedStatus);
             return this;
         }
 
