@@ -406,7 +406,6 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
-
         #region CreateNewEVSPool(ChargingPoolId = null, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
@@ -460,6 +459,7 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
+
         #region ContainsChargingPool(ChargingPoolId)
 
         /// <summary>
@@ -504,6 +504,7 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
+
         public void SetEVSEStatus(EVSE_Id EVSEId, EVSEStatusType Status, Action<EVSE_Id, EVSEStatusType> OnSuccess = null)
         {
 
@@ -513,7 +514,7 @@ namespace org.GraphDefined.eMI3
             EVSE _EVSE = null;
             if (TryGetEVSEbyId(EVSEId, out _EVSE))
             {
-                _EVSE.SetStatus(new Timestamped<EVSEStatusType>(Status));
+                _EVSE.Status = new Timestamped<EVSEStatusType>(Status);
                 OnSuccess(EVSEId, Status);
             }
 

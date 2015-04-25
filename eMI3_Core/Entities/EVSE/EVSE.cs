@@ -43,9 +43,10 @@ namespace org.GraphDefined.eMI3
 
         #region Data
 
-        public  const    UInt32                                               DefaultStatusHistorySize = 50;
-        public  readonly ChargingStation                                      ChargingStation;
-        private readonly ConcurrentDictionary<SocketOutlet_Id, SocketOutlet>  _SocketOutlets;
+        /// <summary>
+        /// The default max size of the status history.
+        /// </summary>
+        public const UInt16 DefaultStatusHistorySize = 50;
 
         #endregion
 
@@ -109,15 +110,21 @@ namespace org.GraphDefined.eMI3
         [Mandatory, Not_eMI3defined]
         public Timestamped<EVSEStatusType> Status
         {
+
             get
             {
-
-                if (_StatusHistory.Count == 0)
-                    return new Timestamped<EVSEStatusType>(EVSEStatusType.EvseNotFound);
-
                 return _StatusHistory.Peek();
-
             }
+
+            set
+            {
+                if (_StatusHistory.Peek().Value != value.Value)
+                {
+                    _StatusHistory.Push(value);
+                    ChargingStation.UpdateStatus();
+                }
+            }
+
         }
 
         #endregion
@@ -126,6 +133,9 @@ namespace org.GraphDefined.eMI3
 
         private Stack<Timestamped<EVSEStatusType>> _StatusHistory;
 
+        /// <summary>
+        /// The EVSE status history.
+        /// </summary>
         public IEnumerable<Timestamped<EVSEStatusType>> StatusHistory
         {
             get
@@ -148,11 +158,30 @@ namespace org.GraphDefined.eMI3
 
         #region SocketOutlets
 
+        private readonly ConcurrentDictionary<SocketOutlet_Id, SocketOutlet> _SocketOutlets;
+
         public IEnumerable<SocketOutlet> SocketOutlets
         {
             get
             {
                 return _SocketOutlets.Values;
+            }
+        }
+
+        #endregion
+
+        #region ChargingStation
+
+        private readonly ChargingStation _ChargingStation;
+
+        /// <summary>
+        /// The charging station of this EVSE.
+        /// </summary>
+        public ChargingStation ChargingStation
+        {
+            get
+            {
+                return _ChargingStation;
             }
         }
 
@@ -179,18 +208,35 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
+
+        #region OnAggregatedStatusChanged
+
+        /// <summary>
+        /// A delegate called whenever the dynamic status of the EVSE changed.
+        /// </summary>
+        public delegate void OnStatusChangedDelegate(EVSE EVSE, Timestamped<EVSEStatusType> OldEVSEStatus, Timestamped<EVSEStatusType> NewEVSEStatus);
+
+        /// <summary>
+        /// An event fired whenever the dynamic status of the EVSE changed.
+        /// </summary>
+        public event OnStatusChangedDelegate OnStatusChanged;
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
 
-        #region (internal) EVSE(Id)
+        #region (internal) EVSE(Id, StatusHistorySize = DefaultStatusHistorySize)  // Main Constructor
 
         /// <summary>
         /// Create a new Electric Vehicle Supply Equipment (EVSE)
         /// having the given EVSE_Id.
         /// </summary>
         /// <param name="Id">The unique identification of the EVSE.</param>
-        internal EVSE(EVSE_Id  Id)
+        /// <param name="StatusHistorySize">The default size of the EVSE status history.</param>
+        internal EVSE(EVSE_Id  Id,
+                      UInt16   StatusHistorySize = DefaultStatusHistorySize)
 
             : base(Id)
 
@@ -204,6 +250,9 @@ namespace org.GraphDefined.eMI3
             #endregion
 
             #region Init data and properties
+
+            this._StatusHistory          = new Stack<Timestamped<EVSEStatusType>>((Int32) StatusHistorySize);
+            this._StatusHistory.Push(new Timestamped<EVSEStatusType>(EVSEStatusType.Unknown));
 
             this._SocketOutlets          = new ConcurrentDictionary<SocketOutlet_Id, SocketOutlet>();
 
@@ -230,21 +279,19 @@ namespace org.GraphDefined.eMI3
         /// <param name="StatusHistorySize">The default size of the EVSE status history.</param>
         internal EVSE(EVSE_Id          Id,
                       ChargingStation  ChargingStation,
-                      UInt32           StatusHistorySize = DefaultStatusHistorySize)
+                      UInt16           StatusHistorySize = DefaultStatusHistorySize)
 
-            : this(Id)
+            : this(Id, StatusHistorySize)
 
         {
 
             if (ChargingStation == null)
                 throw new ArgumentNullException("ChargingStation", "The charging station must not be null!");
 
-            this.ChargingStation = ChargingStation;
+            this._ChargingStation  = ChargingStation;
 
-            this._StatusHistory = new Stack<Timestamped<EVSEStatusType>>((Int32) StatusHistorySize);
-
-            this.OnSocketOutletAddition.OnVoting       += (evse, socketoutlet, vote) => ChargingStation.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
-            this.OnSocketOutletAddition.OnNotification += (evse, socketoutlet)       => ChargingStation.SocketOutletAddition.SendNotification(evse, socketoutlet);
+            this.OnSocketOutletAddition.OnVoting       += (evse, socketoutlet, vote) => _ChargingStation.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
+            this.OnSocketOutletAddition.OnNotification += (evse, socketoutlet)       => _ChargingStation.SocketOutletAddition.SendNotification(evse, socketoutlet);
 
         }
 
@@ -265,7 +312,6 @@ namespace org.GraphDefined.eMI3
         }
 
         #endregion
-
 
         #region CreateNewSocketOutlet(SocketOutlet_Id, Action = null)
 
@@ -317,77 +363,6 @@ namespace org.GraphDefined.eMI3
 
             return this;
 
-        }
-
-        #endregion
-
-
-        #region StatusIs(Status)
-
-        /// <summary>
-        /// Checks wether the current status of the EVSE is equals to the given status.
-        /// </summary>
-        /// <param name="Status">An EVSE status.</param>
-        public Boolean StatusIs(EVSEStatusType Status)
-        {
-
-            if (_StatusHistory.Count == 0)
-                return false;
-
-            if (_StatusHistory.Peek().Value == Status)
-                return true;
-
-            return false;
-
-        }
-
-        #endregion
-
-        #region StatusIsNot(Status)
-
-        /// <summary>
-        /// Checks wether the current status of the EVSE is not equals to the given status.
-        /// </summary>
-        /// <param name="Status">An EVSE status.</param>
-        public Boolean StatusIsNot(EVSEStatusType Status)
-        {
-
-            if (_StatusHistory.Count == 0)
-                return true;
-
-            if (_StatusHistory.Peek().Value != Status)
-                return true;
-
-            return false;
-
-        }
-
-        #endregion
-
-        #region SetStatus(Status)
-
-        /// <summary>
-        /// Set the current EVSE status.
-        /// </summary>
-        /// <param name="Status">The EVSE status.</param>
-        public EVSE SetStatus(EVSEStatusType Status)
-        {
-            _StatusHistory.Push(new Timestamped<EVSEStatusType>(Status));
-            return this;
-        }
-
-        #endregion
-
-        #region SetStatus(TimestampedStatus)
-
-        /// <summary>
-        /// Set the current EVSE status.
-        /// </summary>
-        /// <param name="TimestampedStatus">The EVSE status.</param>
-        public EVSE SetStatus(Timestamped<EVSEStatusType> TimestampedStatus)
-        {
-            _StatusHistory.Push(TimestampedStatus);
-            return this;
         }
 
         #endregion

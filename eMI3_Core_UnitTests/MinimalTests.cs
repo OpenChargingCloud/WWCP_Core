@@ -38,6 +38,57 @@ namespace org.GraphDefined.eMI3.UnitTests
     public class MinimalTests
     {
 
+
+        public void Test0()
+        {
+
+            var _rn  = new RoamingNetwork();
+            var _op  = _rn.CreateNewEVSEOperator(EVSEOperator_Id.Parse("DE*822"));
+            var _cp  = _op.CreateNewChargingPool();
+            _cp.StatusAggregationDelegate = report => {
+                                                          var max   = report.Overview.Max(v => v.Value);
+                                                          var max_n = report.Overview.Where(o => o.Value == max);
+                                                          return (AggregatedStatusType) max_n.OrderBy(o => o.Key).First().Key;
+                                                      };
+            _cp.OnAggregatedStatusChanged += (pool, os, ns) => { Console.WriteLine("New pool state: " + ns.Value); };
+
+            var s1  = _cp.CreateNewStation();
+            s1.StatusAggregationDelegate = report => {
+                                                          var max   = report.Overview.Max(v => v.Value);
+                                                          var max_n = report.Overview.Where(o => o.Value == max);
+                                                          return (AggregatedStatusType) max_n.OrderBy(o => o.Key).First().Key;
+                                                      };
+            s1.OnAggregatedStatusChanged += (sta, os, ns) => { Console.WriteLine("New station #1 state: " + ns.Value); };
+
+            var e1 = s1.CreateNewEVSE(EVSE_Id.Parse("DE*822*E1111*1"));
+            var e2 = s1.CreateNewEVSE(EVSE_Id.Parse("DE*822*E1111*2"));
+            var e3 = s1.CreateNewEVSE(EVSE_Id.Parse("DE*822*E1111*3"));
+            var s2 = _cp.CreateNewStation();
+            s2.StatusAggregationDelegate = report => {
+                                                          var max   = report.Overview.Max(v => v.Value);
+                                                          var max_n = report.Overview.Where(o => o.Value == max);
+                                                          return (AggregatedStatusType) max_n.OrderBy(o => o.Key).First().Key;
+                                                      };
+            s2.OnAggregatedStatusChanged += (sta, os, ns) => { Console.WriteLine("New station #2 state: " + ns.Value); };
+
+            var f1 = s2.CreateNewEVSE(EVSE_Id.Parse("DE*822*E2222*1"));
+            var f2 = s2.CreateNewEVSE(EVSE_Id.Parse("DE*822*E2222*2"));
+            var f3 = s2.CreateNewEVSE(EVSE_Id.Parse("DE*822*E2222*3"));
+
+
+            e1.Status = EVSEStatusType.Available;
+            e2.Status = EVSEStatusType.Available;
+            e3.Status = EVSEStatusType.Available;
+
+            f1.Status = EVSEStatusType.Available;
+            f2.Status = EVSEStatusType.Available;
+            f3.Status = EVSEStatusType.Available;
+
+            e2.Status = EVSEStatusType.Occupied;
+            e3.Status = EVSEStatusType.Occupied;
+
+        }
+
         #region Test1()
 
         [Test]

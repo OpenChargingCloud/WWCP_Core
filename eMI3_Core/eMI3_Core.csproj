@@ -46,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entities\Delegates.cs" />
+    <Compile Include="Entities\EVSE\EVSEStatusReport.cs" />
     <Compile Include="CommonTypes\Attributes\Not_eMI3defined.cs" />
     <Compile Include="CommonTypes\EventTracking_Id.cs" />
     <Compile Include="CommonTypes\GridConnection.cs" />
@@ -62,6 +64,7 @@
     <Compile Include="Entities\ChargingServicePlan\ChargingServicePlan_Id.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationState.cs" />
     <Compile Include="Entities\EVSE\EVSEStatusDiff.cs" />
+    <Compile Include="CommonTypes\AggregatedStatusType.cs" />
     <Compile Include="Entities\ParkingSpot\ParkingSpot.cs" />
     <Compile Include="Entities\ParkingSpot\ParkingSpot_Id.cs" />
     <Compile Include="Entities\ChargingGroup\ChargingGroupExceptions.cs" />

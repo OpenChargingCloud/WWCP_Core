@@ -43,8 +43,10 @@ namespace org.GraphDefined.eMI3
 
         #region Data
 
-        public  readonly ChargingPool                          Pool;
-        private readonly ConcurrentDictionary<EVSE_Id, EVSE>  _EVSEs;
+        /// <summary>
+        /// The default max size of the aggregated EVSE status history.
+        /// </summary>
+        public const UInt16 DefaultStatusHistorySize = 50;
 
         #endregion
 
@@ -144,7 +146,7 @@ namespace org.GraphDefined.eMI3
                     return _GeoLocation;
 
                 else
-                    return Pool.PoolLocation;
+                    return ChargingPool.PoolLocation;
 
             }
 
@@ -285,7 +287,7 @@ namespace org.GraphDefined.eMI3
             {
 
                 if (_AuthenticationModes == null)
-                    return Pool.DefaultAuthenticationModes;
+                    return ChargingPool.DefaultAuthenticationModes;
 
                 return _AuthenticationModes;
 
@@ -295,19 +297,19 @@ namespace org.GraphDefined.eMI3
             {
 
                 if (value == null)
-                    _AuthenticationModes = Pool.DefaultAuthenticationModes;
+                    _AuthenticationModes = ChargingPool.DefaultAuthenticationModes;
 
                 else
                 {
 
-                    if (Pool.DefaultAuthenticationModes.Count() != value.Count())
+                    if (ChargingPool.DefaultAuthenticationModes.Count() != value.Count())
                         _AuthenticationModes = value;
 
                     else
                     {
                         foreach (var AuthenticationMode in value)
                         {
-                            if (!Pool.DefaultAuthenticationModes.Contains(AuthenticationMode))
+                            if (!ChargingPool.DefaultAuthenticationModes.Contains(AuthenticationMode))
                                 _AuthenticationModes = value;
                         }
                     }
@@ -331,11 +333,88 @@ namespace org.GraphDefined.eMI3
 
         public Boolean?             IsHubjectCompatible     { get; set; }
 
-        public Boolean?             DynamicInfoAvailable    { get; set; }
+        public Boolean              DynamicInfoAvailable    { get; set; }
 
 
+        #region Status
+
+        /// <summary>
+        /// The current charging station status.
+        /// </summary>
+        [Optional, Not_eMI3defined]
+        public Timestamped<AggregatedStatusType> Status
+        {
+            get
+            {
+                return _StatusHistory.Peek();
+            }
+        }
+
+        #endregion
+
+        #region StatusHistory
+
+        private Stack<Timestamped<AggregatedStatusType>> _StatusHistory;
+
+        /// <summary>
+        /// The charging station status history.
+        /// </summary>
+        [Optional, Not_eMI3defined]
+        public IEnumerable<Timestamped<AggregatedStatusType>> StatusHistory
+        {
+            get
+            {
+                return _StatusHistory.OrderByDescending(v => v.Timestamp);
+            }
+        }
+
+        #endregion
+
+        #region StatusAggregationDelegate
+
+        private Func<EVSEStatusReport, AggregatedStatusType> _StatusAggregationDelegate;
+
+        /// <summary>
+        /// A delegate called to aggregate the dynamic status of all subordinated EVSEs.
+        /// </summary>
+        public Func<EVSEStatusReport, AggregatedStatusType> StatusAggregationDelegate
+        {
+
+            get
+            {
+                return _StatusAggregationDelegate;
+            }
+
+            set
+            {
+                _StatusAggregationDelegate = value;
+            }
+
+        }
+
+        #endregion
+
+
+        #region ChargingPool
+
+        private readonly ChargingPool _ChargingPool;
+
+        /// <summary>
+        /// The charging pool.
+        /// </summary>
+        public ChargingPool ChargingPool
+        {
+            get
+            {
+                return _ChargingPool;
+            }
+        }
+
+        #endregion
 
         #region EVSEs
+
+        private readonly ConcurrentDictionary<EVSE_Id, EVSE> _EVSEs;
 
         /// <summary>
         /// All Electric Vehicle Supply Equipments (EVSE) present
@@ -388,7 +467,6 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
-
         // EVSE events
 
         #region SocketOutletAddition
@@ -408,6 +486,21 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
+
+        #region OnAggregatedStatusChanged
+
+        /// <summary>
+        /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// </summary>
+        public delegate void OnAggregatedStatusChangedDelegate(ChargingStation ChargingStation, Timestamped<AggregatedStatusType> OldChargingStationStatus, Timestamped<AggregatedStatusType> NewChargingStationStatus);
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// </summary>
+        public event OnAggregatedStatusChangedDelegate OnAggregatedStatusChanged;
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
@@ -417,33 +510,37 @@ namespace org.GraphDefined.eMI3
         /// <summary>
         /// Create a new charging station having a random identification.
         /// </summary>
-        public ChargingStation()
+        internal ChargingStation()
             : this(ChargingStation_Id.New)
         { }
 
         #endregion
 
-        #region (internal) ChargingStation(EVSPool)
+        #region (internal) ChargingStation(ChargingPool)
 
         /// <summary>
-        /// Create a new charging station having a random identification.
+        /// Create a new charging station having a random identification
+        /// and the given charging pool.
         /// </summary>
-        /// <param name="EVSPool">The parent EVS pool.</param>
-        public ChargingStation(ChargingPool EVSPool)
-            : this(ChargingStation_Id.New, EVSPool)
+        /// <param name="ChargingPool">The parent charging pool.</param>
+        internal ChargingStation(ChargingPool ChargingPool)
+            : this(ChargingStation_Id.New, ChargingPool)
         { }
 
         #endregion
 
-        #region (internal) ChargingStation(Id)
+        #region (internal) ChargingStation(Id, StatusHistorySize = DefaultStatusHistorySize)  // Main Constructor
 
         /// <summary>
         /// Create a new charging station having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charging station pool.</param>
-        /// <param name="EVSPool">The parent EVS pool.</param>
-        internal ChargingStation(ChargingStation_Id  Id)
+        /// <param name="StatusHistorySize">The default size of the aggregated EVSE status history.</param>
+        internal ChargingStation(ChargingStation_Id  Id,
+                                 UInt16              StatusHistorySize = DefaultStatusHistorySize)
+
             : base(Id)
+
         {
 
             #region Initial checks
@@ -465,21 +562,23 @@ namespace org.GraphDefined.eMI3
             this._ServiceProviderComment  = new I18NString();
             //this.GeoLocation             = new GeoCoordinate();
 
+            this._StatusHistory           = new Stack<Timestamped<AggregatedStatusType>>((Int32) StatusHistorySize);
+            this._StatusHistory.Push(new Timestamped<AggregatedStatusType>(AggregatedStatusType.Unknown));
+
             #endregion
 
             #region Init and link events
 
-            this.EVSEAddition               = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSEAddition          = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
 
-            if (Pool != null)
+            if (ChargingPool != null)
             {
-                this.OnEVSEAddition.OnVoting                  += (chargingstation, evse, vote) => Pool.EVSEAddition.SendVoting      (chargingstation, evse, vote);
-                this.OnEVSEAddition.OnNotification            += (chargingstation, evse)       => Pool.EVSEAddition.SendNotification(chargingstation, evse);
+                this.OnEVSEAddition.OnVoting        += (chargingstation, evse, vote) => ChargingPool.EVSEAddition.SendVoting      (chargingstation, evse, vote);
+                this.OnEVSEAddition.OnNotification  += (chargingstation, evse)       => ChargingPool.EVSEAddition.SendNotification(chargingstation, evse);
             }
 
             // EVSE events
-            this.SocketOutletAddition       = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
-
+            this.SocketOutletAddition  = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
 
             #endregion
 
@@ -487,25 +586,29 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
-        #region (internal) ChargingStation(Id, EVSPool)
+        #region (internal) ChargingStation(Id, ChargingPool, StatusHistorySize = DefaultStatusHistorySize)
 
         /// <summary>
         /// Create a new charging station having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charging station pool.</param>
-        /// <param name="EVSPool">The parent EVS pool.</param>
+        /// <param name="ChargingPool">The parent charging pool.</param>
+        /// <param name="StatusHistorySize">The default size of the aggregated EVSE status history.</param>
         internal ChargingStation(ChargingStation_Id  Id,
-                                 ChargingPool        EVSPool)
-            : this(Id)
+                                 ChargingPool        ChargingPool,
+                                 UInt16              StatusHistorySize = DefaultStatusHistorySize)
+
+            : this(Id, StatusHistorySize)
+
         {
 
-            if (EVSPool == null)
+            if (ChargingPool == null)
                 throw new ArgumentNullException("EVSPool", "The EVS pool must not be null!");
 
-            this.Pool = EVSPool;
+            this._ChargingPool = ChargingPool;
 
-            this.SocketOutletAddition.OnVoting            += (evse, socketoutlet , vote) => EVSPool.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
-            this.SocketOutletAddition.OnNotification      += (evse, socketoutlet)        => EVSPool.SocketOutletAddition.SendNotification(evse, socketoutlet);
+            this.SocketOutletAddition.OnVoting        += (evse, socketoutlet , vote) => ChargingPool.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
+            this.SocketOutletAddition.OnNotification  += (evse, socketoutlet)        => ChargingPool.SocketOutletAddition.SendNotification(evse, socketoutlet);
 
         }
 
@@ -538,7 +641,6 @@ namespace org.GraphDefined.eMI3
         }
 
         #endregion
-
 
         #region CreateNewEVSE(EVSEId, Configurator = null, OnSuccess = null, OnError = null)
 
@@ -585,6 +687,39 @@ namespace org.GraphDefined.eMI3
 
             Debug.WriteLine("EVSE '" + EVSEId + "' was not created!");
             return null;
+
+        }
+
+        #endregion
+
+
+        #region (internal) UpdateStatus()
+
+        /// <summary>
+        /// Update the current charging station status.
+        /// </summary>
+        internal void UpdateStatus()
+        {
+
+            if (StatusAggregationDelegate != null)
+            {
+
+                var NewStatus = new Timestamped<AggregatedStatusType>(StatusAggregationDelegate(new EVSEStatusReport(EVSEs)));
+
+                if (NewStatus.Value != _StatusHistory.Peek().Value)
+                {
+
+                    var OnAggregatedStatusChangedLocal = OnAggregatedStatusChanged;
+                    if (OnAggregatedStatusChangedLocal != null)
+                        OnAggregatedStatusChangedLocal(this, _StatusHistory.Peek(), NewStatus);
+
+                    _StatusHistory.Push(NewStatus);
+
+                    ChargingPool.UpdateStatus();
+
+                }
+
+            }
 
         }
 
