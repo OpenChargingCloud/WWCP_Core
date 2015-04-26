@@ -425,7 +425,7 @@ namespace org.GraphDefined.eMI3
             #region Initial checks
 
             if (ChargingPoolId == null)
-                ChargingPoolId = ChargingPool_Id.New;
+                ChargingPoolId = ChargingPool_Id.New();
 
             // Do not throw an exception when an OnError delegate was given!
             if (_RegisteredChargingPools.ContainsKey(ChargingPoolId))
@@ -505,7 +505,10 @@ namespace org.GraphDefined.eMI3
         #endregion
 
 
-        public void SetEVSEStatus(EVSE_Id EVSEId, EVSEStatusType Status, Action<EVSE_Id, EVSEStatusType> OnSuccess = null)
+        public void SetEVSEStatus(DateTime                                      Timestamp,
+                                  EVSE_Id                                       EVSEId,
+                                  Timestamped<EVSEStatusType>                   NewStatus,
+                                  Action<EVSE_Id, Timestamped<EVSEStatusType>>  OnSuccess = null)
         {
 
             if (InvalidEVSEIds.Contains(EVSEId))
@@ -514,8 +517,8 @@ namespace org.GraphDefined.eMI3
             EVSE _EVSE = null;
             if (TryGetEVSEbyId(EVSEId, out _EVSE))
             {
-                _EVSE.Status = new Timestamped<EVSEStatusType>(Status);
-                OnSuccess(EVSEId, Status);
+                _EVSE.SetStatus(Timestamp, NewStatus);
+                OnSuccess(EVSEId, NewStatus);
             }
 
         }

@@ -618,7 +618,7 @@ namespace org.GraphDefined.eMI3
         /// Create a new charging pool having a random identification.
         /// </summary>
         internal ChargingPool()
-            : this(ChargingPool_Id.New)
+            : this(ChargingPool_Id.New())
         { }
 
         #endregion
@@ -631,7 +631,7 @@ namespace org.GraphDefined.eMI3
         /// </summary>
         /// <param name="EVSEOperator">The parent EVSE operator.</param>
         internal ChargingPool(EVSEOperator EVSEOperator)
-            : this(ChargingPool_Id.New, EVSEOperator)
+            : this(ChargingPool_Id.New(), EVSEOperator)
         { }
 
         #endregion
@@ -778,7 +778,7 @@ namespace org.GraphDefined.eMI3
             #region Initial checks
 
             if (ChargingStationId == null)
-                ChargingStationId = ChargingStation_Id.New;
+                ChargingStationId = ChargingStation_Id.New();
 
             if (_ChargingStations.ContainsKey(ChargingStationId))
             {

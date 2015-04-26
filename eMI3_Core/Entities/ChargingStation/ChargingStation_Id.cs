@@ -44,21 +44,6 @@ namespace org.GraphDefined.eMI3
 
         #region Properties
 
-        #region New
-
-        /// <summary>
-        /// Generate a new unique identification of an Electric Vehicle Charging Station (EVCS Id).
-        /// </summary>
-        public static ChargingStation_Id New
-        {
-            get
-            {
-                return new ChargingStation_Id(Guid.NewGuid().ToString());
-            }
-        }
-
-        #endregion
-
         #region Length
 
         /// <summary>
@@ -89,6 +74,19 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
+
+        #region New(Mapper = null)
+
+        /// <summary>
+        /// Generate a new unique identification of an Electric Vehicle Charging Station (EVCS Id).
+        /// </summary>
+        /// <param name="Mapper">A delegate to modify the newly generated charging station identification.</param>
+        public static ChargingStation_Id New(Func<String, String> Mapper = null)
+        {
+            return new ChargingStation_Id(Mapper != null ? Mapper(Guid.NewGuid().ToString()) : Guid.NewGuid().ToString());
+        }
+
+        #endregion
 
         #region Parse(Text)
 

@@ -515,7 +515,7 @@ namespace org.GraphDefined.eMI3
         /// Create a new charging station having a random identification.
         /// </summary>
         internal ChargingStation()
-            : this(ChargingStation_Id.New)
+            : this(ChargingStation_Id.New())
         { }
 
         #endregion
@@ -528,7 +528,7 @@ namespace org.GraphDefined.eMI3
         /// </summary>
         /// <param name="ChargingPool">The parent charging pool.</param>
         internal ChargingStation(ChargingPool ChargingPool)
-            : this(ChargingStation_Id.New, ChargingPool)
+            : this(ChargingStation_Id.New(), ChargingPool)
         { }
 
         #endregion

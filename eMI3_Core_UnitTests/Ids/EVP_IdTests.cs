@@ -44,8 +44,8 @@ namespace org.GraphDefined.eMI3.UnitTests
         [Test]
         public void EVP_IdEmptyConstructorTest()
         {
-            var _EVP_Id1 = ChargingPool_Id.New;
-            var _EVP_Id2 = ChargingPool_Id.New;
+            var _EVP_Id1 = ChargingPool_Id.New();
+            var _EVP_Id2 = ChargingPool_Id.New();
             Assert.IsTrue(_EVP_Id1.Length > 0);
             Assert.IsTrue(_EVP_Id2.Length > 0);
             Assert.AreNotEqual(_EVP_Id1, _EVP_Id2);
@@ -76,7 +76,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [Test]
         public void EVP_IdEVP_IdConstructorTest()
         {
-            var _EVP_Id1 = ChargingPool_Id.New;
+            var _EVP_Id1 = ChargingPool_Id.New();
             var _EVP_Id2 = _EVP_Id1.Clone;
             Assert.AreEqual(_EVP_Id1.ToString(), _EVP_Id2.ToString());
             Assert.AreEqual(_EVP_Id1.Length,     _EVP_Id2.Length);
@@ -94,8 +94,8 @@ namespace org.GraphDefined.eMI3.UnitTests
         [Test]
         public void NewEVP_IdMethodTest()
         {
-            var _EVP_Id1 = ChargingPool_Id.New;
-            var _EVP_Id2 = ChargingPool_Id.New;
+            var _EVP_Id1 = ChargingPool_Id.New();
+            var _EVP_Id2 = ChargingPool_Id.New();
             Assert.AreNotEqual(_EVP_Id1, _EVP_Id2);
         }
 
@@ -110,7 +110,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [Test]
         public void op_Equality_Null_Test1()
         {
-            var      _EVP_Id1 = ChargingPool_Id.New;
+            var      _EVP_Id1 = ChargingPool_Id.New();
             ChargingPool_Id _EVP_Id2 = null;
             Assert.IsFalse(_EVP_Id1 == _EVP_Id2);
         }
@@ -126,7 +126,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         public void op_Equality_Null_Test2()
         {
             ChargingPool_Id _EVP_Id1 = null;
-            var      _EVP_Id2 = ChargingPool_Id.New;
+            var      _EVP_Id2 = ChargingPool_Id.New();
             Assert.IsFalse(_EVP_Id1 == _EVP_Id2);
         }
 
@@ -156,7 +156,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         
         public void op_Equality_SameReference_Test()
         {
-            var _EVP_Id1 = ChargingPool_Id.New;
+            var _EVP_Id1 = ChargingPool_Id.New();
             #pragma warning disable
             Assert.IsTrue(_EVP_Id1 == _EVP_Id1);
             #pragma warning restore
@@ -203,7 +203,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [Test]
         public void op_Inequality_Null_Test1()
         {
-            var      _EVP_Id1 = ChargingPool_Id.New;
+            var      _EVP_Id1 = ChargingPool_Id.New();
             ChargingPool_Id _EVP_Id2 = null;
             Assert.IsTrue(_EVP_Id1 != _EVP_Id2);
         }
@@ -219,7 +219,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         public void op_Inequality_Null_Test2()
         {
             ChargingPool_Id _EVP_Id1 = null;
-            var      _EVP_Id2 = ChargingPool_Id.New;
+            var      _EVP_Id2 = ChargingPool_Id.New();
             Assert.IsTrue(_EVP_Id1 != _EVP_Id2);
         }
 
@@ -248,7 +248,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [Test]
         public void op_Inequality_SameReference_Test()
         {
-            var _EVP_Id1 = ChargingPool_Id.New;
+            var _EVP_Id1 = ChargingPool_Id.New();
             #pragma warning disable
             Assert.IsFalse(_EVP_Id1 != _EVP_Id1);
             #pragma warning restore
@@ -311,7 +311,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void op_Smaller_Null_Test1()
         {
-            var      _EVP_Id1 = ChargingPool_Id.New;
+            var      _EVP_Id1 = ChargingPool_Id.New();
             ChargingPool_Id _EVP_Id2 = null;
             Assert.IsTrue(_EVP_Id1 < _EVP_Id2);
         }
@@ -328,7 +328,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         public void op_Smaller_Null_Test2()
         {
             ChargingPool_Id _EVP_Id1 = null;
-            var      _EVP_Id2 = ChargingPool_Id.New;
+            var      _EVP_Id2 = ChargingPool_Id.New();
             Assert.IsTrue(_EVP_Id1 < _EVP_Id2);
         }
 
@@ -358,7 +358,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [Test]
         public void op_Smaller_SameReference_Test()
         {
-            var _EVP_Id1 = ChargingPool_Id.New;
+            var _EVP_Id1 = ChargingPool_Id.New();
             #pragma warning disable
             Assert.IsFalse(_EVP_Id1 < _EVP_Id1);
             #pragma warning restore
@@ -451,7 +451,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void op_SmallerOrEqual_Null_Test1()
         {
-            var      _EVP_Id1 = ChargingPool_Id.New;
+            var      _EVP_Id1 = ChargingPool_Id.New();
             ChargingPool_Id _EVP_Id2 = null;
             Assert.IsTrue(_EVP_Id1 <= _EVP_Id2);
         }
@@ -468,7 +468,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         public void op_SmallerOrEqual_Null_Test2()
         {
             ChargingPool_Id _EVP_Id1 = null;
-            var      _EVP_Id2 = ChargingPool_Id.New;
+            var      _EVP_Id2 = ChargingPool_Id.New();
             Assert.IsTrue(_EVP_Id1 <= _EVP_Id2);
         }
 
@@ -498,7 +498,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [Test]
         public void op_SmallerOrEqual_SameReference_Test()
         {
-            var _EVP_Id1 = ChargingPool_Id.New;
+            var _EVP_Id1 = ChargingPool_Id.New();
             #pragma warning disable
             Assert.IsTrue(_EVP_Id1 <= _EVP_Id1);
             #pragma warning restore
@@ -591,7 +591,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void op_Bigger_Null_Test1()
         {
-            var      _EVP_Id1 = ChargingPool_Id.New;
+            var      _EVP_Id1 = ChargingPool_Id.New();
             ChargingPool_Id _EVP_Id2 = null;
             Assert.IsTrue(_EVP_Id1 > _EVP_Id2);
         }
@@ -608,7 +608,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         public void op_Bigger_Null_Test2()
         {
             ChargingPool_Id _EVP_Id1 = null;
-            var      _EVP_Id2 = ChargingPool_Id.New;
+            var      _EVP_Id2 = ChargingPool_Id.New();
             Assert.IsTrue(_EVP_Id1 > _EVP_Id2);
         }
 
@@ -638,7 +638,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [Test]
         public void op_Bigger_SameReference_Test()
         {
-            var _EVP_Id1 = ChargingPool_Id.New;
+            var _EVP_Id1 = ChargingPool_Id.New();
             #pragma warning disable
             Assert.IsFalse(_EVP_Id1 > _EVP_Id1);
             #pragma warning restore
@@ -731,7 +731,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void op_BiggerOrEqual_Null_Test1()
         {
-            var      _EVP_Id1 = ChargingPool_Id.New;
+            var      _EVP_Id1 = ChargingPool_Id.New();
             ChargingPool_Id _EVP_Id2 = null;
             Assert.IsTrue(_EVP_Id1 >= _EVP_Id2);
         }
@@ -748,7 +748,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         public void op_BiggerOrEqual_Null_Test2()
         {
             ChargingPool_Id _EVP_Id1 = null;
-            var      _EVP_Id2 = ChargingPool_Id.New;
+            var      _EVP_Id2 = ChargingPool_Id.New();
             Assert.IsTrue(_EVP_Id1 >= _EVP_Id2);
         }
 
@@ -778,7 +778,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [Test]
         public void op_BiggerOrEqual_SameReference_Test()
         {
-            var _EVP_Id1 = ChargingPool_Id.New;
+            var _EVP_Id1 = ChargingPool_Id.New();
             #pragma warning disable
             Assert.IsTrue(_EVP_Id1 >= _EVP_Id1);
             #pragma warning restore
@@ -871,7 +871,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void CompareToNullTest1()
         {
-            var    _EVP_Id = ChargingPool_Id.New;
+            var    _EVP_Id = ChargingPool_Id.New();
             Object _Object   = null;
             _EVP_Id.CompareTo(_Object);
         }
@@ -887,7 +887,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void CompareToNullTest2()
         {
-            var      _EVP_Id = ChargingPool_Id.New;
+            var      _EVP_Id = ChargingPool_Id.New();
             ChargingPool_Id _Object   = null;
             _EVP_Id.CompareTo(_Object);
         }
@@ -903,7 +903,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [ExpectedException(typeof(ArgumentException))]
         public void CompareToNonEVP_IdTest()
         {
-            var _EVP_Id = ChargingPool_Id.New;
+            var _EVP_Id = ChargingPool_Id.New();
             var _Object   = "123";
             _EVP_Id.CompareTo(_Object);
         }
@@ -979,7 +979,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [Test]
         public void EqualsNullTest1()
         {
-            var    _EVP_Id = ChargingPool_Id.New;
+            var    _EVP_Id = ChargingPool_Id.New();
             Object _Object   = null;
             Assert.IsFalse(_EVP_Id.Equals(_Object));
         }
@@ -994,7 +994,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [Test]
         public void EqualsNullTest2()
         {
-            var      _EVP_Id = ChargingPool_Id.New;
+            var      _EVP_Id = ChargingPool_Id.New();
             ChargingPool_Id _Object   = null;
             Assert.IsFalse(_EVP_Id.Equals(_Object));
         }
@@ -1009,7 +1009,7 @@ namespace org.GraphDefined.eMI3.UnitTests
         [Test]
         public void EqualsNonEVP_IdTest()
         {
-            var _EVP_Id = ChargingPool_Id.New;
+            var _EVP_Id = ChargingPool_Id.New();
             var _Object   = "123";
             Assert.IsFalse(_EVP_Id.Equals(_Object));
         }

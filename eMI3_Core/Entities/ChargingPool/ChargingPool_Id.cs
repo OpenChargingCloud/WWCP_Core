@@ -44,21 +44,6 @@ namespace org.GraphDefined.eMI3
 
         #region Properties
 
-        #region New
-
-        /// <summary>
-        /// Generate a new unique identification of an Electric Vehicle Charging Pool (EVCP Id).
-        /// </summary>
-        public static ChargingPool_Id New
-        {
-            get
-            {
-                return new ChargingPool_Id(Guid.NewGuid().ToString());
-            }
-        }
-
-        #endregion
-
         #region Length
 
         /// <summary>
@@ -89,6 +74,19 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
+
+        #region New(Mapper = null)
+
+        /// <summary>
+        /// Generate a new unique identification of an Electric Vehicle Charging Pool (EVCP Id).
+        /// </summary>
+        /// <param name="Mapper">A delegate to modify the newly generated charging pool identification.</param>
+        public static ChargingPool_Id New(Func<String, String> Mapper = null)
+        {
+            return new ChargingPool_Id(Mapper != null ? Mapper(Guid.NewGuid().ToString()) : Guid.NewGuid().ToString());
+        }
+
+        #endregion
 
         #region Parse(Text)
 
