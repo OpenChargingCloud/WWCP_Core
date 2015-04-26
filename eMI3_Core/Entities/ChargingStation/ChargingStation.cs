@@ -19,6 +19,7 @@
 
 using System;
 using System.Linq;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
@@ -26,7 +27,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
-using System.Diagnostics;
 
 #endregion
 
@@ -492,7 +492,11 @@ namespace org.GraphDefined.eMI3
         /// <summary>
         /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
         /// </summary>
-        public delegate void OnAggregatedStatusChangedDelegate(ChargingStation ChargingStation, Timestamped<AggregatedStatusType> OldChargingStationStatus, Timestamped<AggregatedStatusType> NewChargingStationStatus);
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="ChargingStation">The charging station.</param>
+        /// <param name="OldChargingStationStatus">The old timestamped status of the charging station.</param>
+        /// <param name="NewChargingStationStatus">The new timestamped status of the charging station.</param>
+        public delegate void OnAggregatedStatusChangedDelegate(DateTime Timestamp, ChargingStation ChargingStation, Timestamped<AggregatedStatusType> OldChargingStationStatus, Timestamped<AggregatedStatusType> NewChargingStationStatus);
 
         /// <summary>
         /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
@@ -649,7 +653,9 @@ namespace org.GraphDefined.eMI3
         /// unique EVSE identification.
         /// </summary>
         /// <param name="EVSEId">The unique identification of the new EVSE.</param>
-        /// <param name="Action">An optional delegate to configure the new EVSE after its creation.</param>
+        /// <param name="Configurator">An optional delegate to configure the new EVSE after its creation.</param>
+        /// <param name="OnSuccess">An optional delegate called after successful creation of the EVSE.</param>
+        /// <param name="OnError">An optional delegate for signaling errors.</param>
         public EVSE CreateNewEVSE(EVSE_Id                           EVSEId,
                                   Action<EVSE>                      Configurator  = null,
                                   Action<EVSE>                      OnSuccess     = null,
@@ -679,9 +685,14 @@ namespace org.GraphDefined.eMI3
             {
                 if (_EVSEs.TryAdd(EVSEId, _EVSE))
                 {
+
+                    // Subscribe to EVSE status changes for aggregated status creation!
+                    _EVSE.OnStatusChanged += (Timestamp, EVSE, OldEVSEStatus, NewEVSEStatus) => UpdateStatus(Timestamp);
+
                     OnSuccess.FailSafeInvoke(_EVSE);
                     EVSEAddition.SendNotification(this, _EVSE);
                     return _EVSE;
+
                 }
             }
 
@@ -693,12 +704,13 @@ namespace org.GraphDefined.eMI3
         #endregion
 
 
-        #region (internal) UpdateStatus()
+        #region (internal) UpdateStatus(Timestamp)
 
         /// <summary>
         /// Update the current charging station status.
         /// </summary>
-        internal void UpdateStatus()
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        internal void UpdateStatus(DateTime Timestamp)
         {
 
             if (StatusAggregationDelegate != null)
@@ -709,13 +721,13 @@ namespace org.GraphDefined.eMI3
                 if (NewStatus.Value != _StatusHistory.Peek().Value)
                 {
 
-                    var OnAggregatedStatusChangedLocal = OnAggregatedStatusChanged;
-                    if (OnAggregatedStatusChangedLocal != null)
-                        OnAggregatedStatusChangedLocal(this, _StatusHistory.Peek(), NewStatus);
+                    var OldStatus = _StatusHistory.Peek();
 
                     _StatusHistory.Push(NewStatus);
 
-                    ChargingPool.UpdateStatus();
+                    var OnAggregatedStatusChangedLocal = OnAggregatedStatusChanged;
+                    if (OnAggregatedStatusChangedLocal != null)
+                        OnAggregatedStatusChangedLocal(Timestamp, this, OldStatus, NewStatus);
 
                 }
 

@@ -118,11 +118,7 @@ namespace org.GraphDefined.eMI3
 
             set
             {
-                if (_StatusHistory.Peek().Value != value.Value)
-                {
-                    _StatusHistory.Push(value);
-                    ChargingStation.UpdateStatus();
-                }
+                SetStatus(DateTime.Now, value);
             }
 
         }
@@ -209,12 +205,16 @@ namespace org.GraphDefined.eMI3
         #endregion
 
 
-        #region OnAggregatedStatusChanged
+        #region OnStatusChanged
 
         /// <summary>
         /// A delegate called whenever the dynamic status of the EVSE changed.
         /// </summary>
-        public delegate void OnStatusChangedDelegate(EVSE EVSE, Timestamped<EVSEStatusType> OldEVSEStatus, Timestamped<EVSEStatusType> NewEVSEStatus);
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EVSE">The EVSE.</param>
+        /// <param name="OldEVSEStatus">The old timestamped status of the EVSE.</param>
+        /// <param name="NewEVSEStatus">The new timestamped status of the EVSE.</param>
+        public delegate void OnStatusChangedDelegate(DateTime Timestamp, EVSE EVSE, Timestamped<EVSEStatusType> OldEVSEStatus, Timestamped<EVSEStatusType> NewEVSEStatus);
 
         /// <summary>
         /// An event fired whenever the dynamic status of the EVSE changed.
@@ -362,6 +362,35 @@ namespace org.GraphDefined.eMI3
                 this._SocketOutlets.TryAdd(SocketOutlet.Id, SocketOutlet);
 
             return this;
+
+        }
+
+        #endregion
+
+
+        #region SetStatus(Timestamp, NewStatus)
+
+        /// <summary>
+        /// Set the timestamped status of the EVSE.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="NewStatus">The new timestamped status of this EVSE.</param>
+        public void SetStatus(DateTime                     Timestamp,
+                              Timestamped<EVSEStatusType>  NewStatus)
+        {
+
+            if (_StatusHistory.Peek().Value != NewStatus.Value)
+            {
+
+                var OldStatus = _StatusHistory.Peek();
+
+                _StatusHistory.Push(NewStatus);
+
+                var OnStatusChangedLocal = OnStatusChanged;
+                if (OnStatusChangedLocal != null)
+                    OnStatusChanged(Timestamp, this, OldStatus, NewStatus);
+
+            }
 
         }
 

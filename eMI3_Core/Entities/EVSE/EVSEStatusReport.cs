@@ -31,8 +31,14 @@ namespace org.GraphDefined.eMI3
     /// <summary>
     /// An EVSE status report.
     /// </summary>
-    public class EVSEStatusReport
+    public class EVSEStatusReport : IEnumerable<KeyValuePair<EVSEStatusType, Single>>
     {
+
+        #region Data
+
+        private readonly Dictionary<EVSEStatusType, Single> _Overview;
+
+        #endregion
 
         #region Properties
 
@@ -48,23 +54,6 @@ namespace org.GraphDefined.eMI3
             get
             {
                 return _EVSEs;
-            }
-        }
-
-        #endregion
-
-        #region Overview
-
-        private readonly Dictionary<EVSEStatusType, Single> _Overview;
-
-        /// <summary>
-        /// All EVSEs aggregated by their EVSE status.
-        /// </summary>
-        public Dictionary<EVSEStatusType, Single> Overview
-        {
-            get
-            {
-                return _Overview;
             }
         }
 
@@ -134,6 +123,26 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
+
+        #region IEnumerable Members
+
+        /// <summary>
+        /// Get an enumeration of all values.
+        /// </summary>
+        public IEnumerator<KeyValuePair<EVSEStatusType, Single>> GetEnumerator()
+        {
+            return _Overview.GetEnumerator();
+        }
+
+        /// <summary>
+        /// Get an enumeration of all values.
+        /// </summary>
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return _Overview.GetEnumerator();
+        }
+
+        #endregion
 
         #region ToString()
 

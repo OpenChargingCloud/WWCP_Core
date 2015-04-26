@@ -44,55 +44,60 @@ namespace org.GraphDefined.eMI3
         /// </summary>
         Available           = 3,
 
+                /// <summary>
+        /// Some cars connected to station or pool, but still ready to charge.
+        /// </summary>
+        MostlyAvailable     = 4,
+
         /// <summary>
         /// Some cars connected to station or pool, but still ready to charge.
         /// </summary>
-        PartialAvailable    = 4,
+        PartialAvailable    = 5,
 
         /// <summary>
         /// A charging session is still open (a car is connected)
         /// </summary>
-        Occupied            = 5,
+        Occupied            = 6,
 
         /// <summary>
         /// A car is connected and an error has occured during charge (this status appeared while charging).
         /// </summary>
-        Faulted             = 6,
+        Faulted             = 7,
 
         /// <summary>
         /// No car is connected but the pole is not ready to charge.
         /// </summary>
-        Unavailable         = 7,
+        Unavailable         = 8,
 
         /// <summary>
         /// No car is connected, the pole is not ready to charge because under maintenance.
         /// </summary>
-        OutOfService        = 8,
+        OutOfService        = 9,
 
         /// <summary>
         /// The platform has lost connection with the pole (may be used by customer depending on its ability to handle offline mode).
         /// </summary>
-        Offline             = 9,
+        Offline             = 10,
 
         /// <summary>
         /// No car is connected but no car can connect except the one that has booked this EVSE.
         /// </summary>
-        Reserved            = 10,
+        Reserved            = 11,
 
         /// <summary>
         /// Private internal use.
         /// </summary>
-        Other               = 11,
+        Other               = 12,
 
         /// <summary>
         /// No status is sent by the pole.
         /// </summary>
-        Unknown             = 12,
+        Unknown             = 13,
 
         /// <summary>
         /// The EVSE was not found!
         /// </summary>
-        EvseNotFound        = 13
+        EvseNotFound        = 14
 
     }
 

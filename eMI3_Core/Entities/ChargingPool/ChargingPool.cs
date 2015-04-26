@@ -595,7 +595,11 @@ namespace org.GraphDefined.eMI3
         /// <summary>
         /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
         /// </summary>
-        public delegate void OnAggregatedStatusChangedDelegate(ChargingPool ChargingPool, Timestamped<AggregatedStatusType> OldChargingPoolStatus, Timestamped<AggregatedStatusType> NewChargingPoolStatus);
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="ChargingPool">The charging pool.</param>
+        /// <param name="OldChargingPoolStatus">The old timestamped status of the charging pool.</param>
+        /// <param name="NewChargingPoolStatus">The new timestamped status of the charging pool.</param>
+        public delegate void OnAggregatedStatusChangedDelegate(DateTime Timestamp, ChargingPool ChargingPool, Timestamped<AggregatedStatusType> OldChargingPoolStatus, Timestamped<AggregatedStatusType> NewChargingPoolStatus);
 
         /// <summary>
         /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
@@ -637,7 +641,7 @@ namespace org.GraphDefined.eMI3
         /// <summary>
         /// Create a new group/pool of charging stations having a random identification.
         /// </summary>
-        /// <param name="EVSEOperator">The parent EVSE operator.</param>
+        /// <param name="Id">The iunique identification of the charging pool.</param>
         /// <param name="StatusHistorySize">The default size of the aggregated EVSE status history.</param>
         internal ChargingPool(ChargingPool_Id  Id,
                               UInt16           StatusHistorySize = DefaultStatusHistorySize)
@@ -794,9 +798,14 @@ namespace org.GraphDefined.eMI3
             {
                 if (_ChargingStations.TryAdd(ChargingStationId, _ChargingStation))
                 {
+
+                    // Subscribe to charging station status changes for aggregated status creation!
+                    _ChargingStation.OnAggregatedStatusChanged += (Timestamp, ChargingStation, OldChargingStationStatus, NewChargingStationStatus) => UpdateStatus(Timestamp);
+
                     OnSuccess.FailSafeInvoke(_ChargingStation);
                     ChargingStationAddition.SendNotification(this, _ChargingStation);
                     return _ChargingStation;
+
                 }
             }
 
@@ -808,12 +817,13 @@ namespace org.GraphDefined.eMI3
         #endregion
 
 
-        #region (internal) UpdateStatus()
+        #region (internal) UpdateStatus(Timestamp)
 
         /// <summary>
         /// Update the current charging pool status.
         /// </summary>
-        internal void UpdateStatus()
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        internal void UpdateStatus(DateTime Timestamp)
         {
 
             if (StatusAggregationDelegate != null)
@@ -824,11 +834,13 @@ namespace org.GraphDefined.eMI3
                 if (NewStatus.Value != _StatusHistory.Peek().Value)
                 {
 
-                    var OnAggregatedStatusChangedLocal = OnAggregatedStatusChanged;
-                    if (OnAggregatedStatusChangedLocal != null)
-                        OnAggregatedStatusChangedLocal(this, _StatusHistory.Peek(), NewStatus);
+                    var OldStatus = _StatusHistory.Peek();
 
                     _StatusHistory.Push(NewStatus);
+
+                    var OnAggregatedStatusChangedLocal = OnAggregatedStatusChanged;
+                    if (OnAggregatedStatusChangedLocal != null)
+                        OnAggregatedStatusChangedLocal(Timestamp, this, OldStatus, NewStatus);
 
                 }
 
@@ -837,7 +849,6 @@ namespace org.GraphDefined.eMI3
         }
 
         #endregion
-
 
 
         #region GetEVSEbyId(EVSEId)

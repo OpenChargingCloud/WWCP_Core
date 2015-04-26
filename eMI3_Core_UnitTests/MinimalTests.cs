@@ -46,30 +46,30 @@ namespace org.GraphDefined.eMI3.UnitTests
             var _op  = _rn.CreateNewEVSEOperator(EVSEOperator_Id.Parse("DE*822"));
             var _cp  = _op.CreateNewChargingPool();
             _cp.StatusAggregationDelegate = report => {
-                                                          var max   = report.Overview.Max(v => v.Value);
-                                                          var max_n = report.Overview.Where(o => o.Value == max);
+                                                          var max   = report.Max(v => v.Value);
+                                                          var max_n = report.Where(o => o.Value == max);
                                                           return (AggregatedStatusType) max_n.OrderBy(o => o.Key).First().Key;
                                                       };
-            _cp.OnAggregatedStatusChanged += (pool, os, ns) => { Console.WriteLine("New pool state: " + ns.Value); };
+            _cp.OnAggregatedStatusChanged += (ts, pool, os, ns) => { Console.WriteLine("New pool state: " + ns.Value); };
 
             var s1  = _cp.CreateNewStation();
             s1.StatusAggregationDelegate = report => {
-                                                          var max   = report.Overview.Max(v => v.Value);
-                                                          var max_n = report.Overview.Where(o => o.Value == max);
+                                                          var max   = report.Max(v => v.Value);
+                                                          var max_n = report.Where(o => o.Value == max);
                                                           return (AggregatedStatusType) max_n.OrderBy(o => o.Key).First().Key;
                                                       };
-            s1.OnAggregatedStatusChanged += (sta, os, ns) => { Console.WriteLine("New station #1 state: " + ns.Value); };
+            s1.OnAggregatedStatusChanged += (ts, sta, os, ns) => { Console.WriteLine("New station #1 state: " + ns.Value); };
 
             var e1 = s1.CreateNewEVSE(EVSE_Id.Parse("DE*822*E1111*1"));
             var e2 = s1.CreateNewEVSE(EVSE_Id.Parse("DE*822*E1111*2"));
             var e3 = s1.CreateNewEVSE(EVSE_Id.Parse("DE*822*E1111*3"));
             var s2 = _cp.CreateNewStation();
             s2.StatusAggregationDelegate = report => {
-                                                          var max   = report.Overview.Max(v => v.Value);
-                                                          var max_n = report.Overview.Where(o => o.Value == max);
+                                                          var max   = report.Max(v => v.Value);
+                                                          var max_n = report.Where(o => o.Value == max);
                                                           return (AggregatedStatusType) max_n.OrderBy(o => o.Key).First().Key;
                                                       };
-            s2.OnAggregatedStatusChanged += (sta, os, ns) => { Console.WriteLine("New station #2 state: " + ns.Value); };
+            s2.OnAggregatedStatusChanged += (ts, sta, os, ns) => { Console.WriteLine("New station #2 state: " + ns.Value); };
 
             var f1 = s2.CreateNewEVSE(EVSE_Id.Parse("DE*822*E2222*1"));
             var f2 = s2.CreateNewEVSE(EVSE_Id.Parse("DE*822*E2222*2"));
