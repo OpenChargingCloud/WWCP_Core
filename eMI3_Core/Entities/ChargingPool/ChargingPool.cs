@@ -707,6 +707,8 @@ namespace org.GraphDefined.eMI3
 
         {
 
+            this._EVSEOperator = EVSEOperator;
+
 
             // EVS pool events
             this.ChargingStationAddition    = new VotingNotificator<ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
