@@ -48,14 +48,21 @@ namespace org.GraphDefined.eMI3
 
         #region Simple
 
-        private readonly String _Simple;
+        private String _Simple;
 
         public String Simple
         {
+
             get
             {
                 return _Simple;
             }
+
+            set
+            {
+                _Simple = value;
+            }
+
         }
 
         #endregion

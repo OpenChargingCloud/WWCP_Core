@@ -451,7 +451,7 @@ namespace org.GraphDefined.eMI3
 
             this.Name               = new I18NString(Languages.en, Id.ToString());
             this.Description        = new I18NString();
-            this.LocationLanguage   = Languages.undef;
+            this.LocationLanguage   = Languages.unknown;
 
             //this.PoolLocation       = new GeoCoordinate();
             this.Address            = new Address();

@@ -661,7 +661,7 @@ namespace org.GraphDefined.eMI3
 
             this._ChargingStations           = new ConcurrentDictionary<ChargingStation_Id, ChargingStation>();
 
-            this.LocationLanguage            = Languages.undef;
+            this.LocationLanguage            = Languages.unknown;
             this.Name                        = new I18NString();
             this.Description                 = new I18NString();
             this.Address                     = new Address();
