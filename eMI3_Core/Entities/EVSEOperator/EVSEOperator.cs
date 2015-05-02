@@ -406,11 +406,11 @@ namespace org.GraphDefined.eMI3
 
         #endregion
 
-        #region CreateNewEVSPool(ChargingPoolId = null, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateNewChargingPool(ChargingPoolId = null, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
-        /// Create and register a new EVS pool having the given
-        /// unique EVS pool identification.
+        /// Create and register a new charging pool having the given
+        /// unique charging pool identification.
         /// </summary>
         /// <param name="ChargingPoolId">The unique identification of the new charging pool.</param>
         /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
