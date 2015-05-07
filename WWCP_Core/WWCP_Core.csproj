@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{33836742-AF1D-4AA4-963F-B0A8E60E6480}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>org.GraphDefined.WWCP</RootNamespace>
+    <AssemblyName>WWCP_Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Debug\WWCP_Core.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>
+    </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\WWCP_Core.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\Hermod\libs\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Entities\Delegates.cs" />
+    <Compile Include="Entities\EVSE\EVSEStatusReport.cs" />
+    <Compile Include="CommonTypes\Attributes\Not_eMI3defined.cs" />
+    <Compile Include="CommonTypes\EventTracking_Id.cs" />
+    <Compile Include="CommonTypes\GridConnection.cs" />
+    <Compile Include="CommonTypes\IEntity.cs" />
+    <Compile Include="CommonTypes\Attributes\ChargeWithContract.cs" />
+    <Compile Include="CommonTypes\Attributes\ChargeWithoutContract.cs" />
+    <Compile Include="CommonTypes\Attributes\FreeCharge.cs" />
+    <Compile Include="CommonTypes\Attributes\Mandatory.cs" />
+    <Compile Include="CommonTypes\Attributes\Optional.cs" />
+    <Compile Include="CommonTypes\Address.cs" />
+    <Compile Include="CommonTypes\AuthorizationOptions.cs" />
+    <Compile Include="CommonTypes\eMI3_Exception.cs" />
+    <Compile Include="Entities\ChargingServicePlan\ChargingServicePlan.cs" />
+    <Compile Include="Entities\ChargingServicePlan\ChargingServicePlan_Id.cs" />
+    <Compile Include="Entities\ChargingStation\ChargingStationState.cs" />
+    <Compile Include="Entities\EVSE\EVSEStatusDiff.cs" />
+    <Compile Include="CommonTypes\AggregatedStatusType.cs" />
+    <Compile Include="Entities\ParkingSpot\ParkingSpot.cs" />
+    <Compile Include="Entities\ParkingSpot\ParkingSpot_Id.cs" />
+    <Compile Include="Entities\ChargingGroup\ChargingGroupExceptions.cs" />
+    <Compile Include="Entities\ChargingStation\ChargingStationExceptions.cs" />
+    <Compile Include="Entities\ChargingGroup\ChargingGroup.cs" />
+    <Compile Include="Entities\ChargingGroup\ChargingGroup_Id.cs" />
+    <Compile Include="Entities\EVSE\EVSEExceptions.cs" />
+    <Compile Include="Entities\ChargingPool\ChargingPoolExceptions.cs" />
+    <Compile Include="Entities\ChargingPool\OpeningTime.cs" />
+    <Compile Include="Entities\ChargingStation\ChargingStation.cs" />
+    <Compile Include="CommonTypes\AEntity.cs" />
+    <Compile Include="CommonTypes\IId.cs" />
+    <Compile Include="Entities\ChargingStation\ChargingStationUIFeatures.cs" />
+    <Compile Include="Entities\EVSE\EVSEStatusType.cs" />
+    <Compile Include="Entities\SocketOutlet\PlugType.cs" />
+    <Compile Include="Entities\SocketOutlet\SocketOutletExceptions.cs" />
+    <Compile Include="Entities\SocketOutlet\_PlugType.cs" />
+    <Compile Include="Entities\SocketOutlet\CableType.cs" />
+    <Compile Include="Entities\SocketOutlet\SocketOutlet.cs" />
+    <Compile Include="Entities\ChargingStation\AddEVSEResult.cs" />
+    <Compile Include="Entities\ChargingPool\ChargingPool.cs" />
+    <Compile Include="Entities\ChargingStation\RegisterEVSEResult.cs" />
+    <Compile Include="CommonTypes\Auth_Token.cs" />
+    <Compile Include="Entities\ChargingSession\ChargingSession_Id.cs" />
+    <Compile Include="Entities\RoamingNetwork\RoamingNetworks.cs" />
+    <Compile Include="Entities\EVSEOperator\EVSEOperatorExceptions.cs" />
+    <Compile Include="Entities\RoamingNetwork\RoamingNetworkExceptions.cs" />
+    <Compile Include="Entities\EVSEOperator\EVSEOperator.cs" />
+    <Compile Include="CommonTypes\GeoLocation.cs" />
+    <Compile Include="Entities\ChargingStation\ChargingStation_Id.cs" />
+    <Compile Include="Entities\SocketOutlet\SocketOutlet_Id.cs" />
+    <Compile Include="Entities\ChargingPool\ChargingPool_Id.cs" />
+    <Compile Include="Entities\EVSP\EVServiceProvider.cs" />
+    <Compile Include="Entities\EVSP\EVServiceProvider_Id.cs" />
+    <Compile Include="Entities\EVSEOperator\EVSEOperator_Id.cs" />
+    <Compile Include="Entities\EMobilityAccount\eMA_Id.cs" />
+    <Compile Include="Entities\EVSE\EVSE_Id.cs" />
+    <Compile Include="Entities\EVSE\EVSE.cs" />
+    <Compile Include="Entities\RoamingNetwork\RoamingNetwork_Id.cs" />
+    <Compile Include="Entities\RoamingNetwork\RoamingNetwork.cs" />
+    <Compile Include="Interfaces\IRoamingProviderProvided_EVSPServices.cs" />
+    <Compile Include="Interfaces\IRoamingProviderProvided_EVSEOperatorServices.cs" />
+    <Compile Include="Interfaces\IEVSEOperatorProvidedServices.cs" />
+    <Compile Include="LocalService\AuthorizatorId.cs" />
+    <Compile Include="LocalService\RemoteStartResult.cs" />
+    <Compile Include="LocalService\RemoteStopResult.cs" />
+    <Compile Include="LocalService\LocalEMobilityService.cs" />
+    <Compile Include="LocalService\RequestRouter.cs" />
+    <Compile Include="LocalService\SessionInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Entities\RoamingProvider\RoamingProvider.cs" />
+    <Compile Include="Entities\RoamingProvider\RoamingProvider_Id.cs" />
+    <Compile Include="Entities\NavigationServiceProvider\NavigationServiceProvider.cs" />
+    <Compile Include="Entities\NavigationServiceProvider\NavigationServiceProvider_Id.cs" />
+    <Compile Include="Responses\AResult.cs" />
+    <Compile Include="Responses\AUTHResult.cs" />
+    <Compile Include="Responses\AUTHSTARTResult.cs" />
+    <Compile Include="Responses\AUTHSTOPResult.cs" />
+    <Compile Include="Responses\MobileRemoteStartResult.cs" />
+    <Compile Include="Responses\MobileRemoteStopResult.cs" />
+    <Compile Include="Responses\SENDCDRResult.cs" />
+    <Compile Include="Semantics.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Aegir\Aegir\Aegir.csproj">
+      <Project>{4d8ffccd-738d-41aa-a527-8cfdfe0a681d}</Project>
+      <Name>Aegir</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Hermod\Hermod\Hermod.csproj">
+      <Project>{477efd16-3627-4473-957d-44ca9a9dfb79}</Project>
+      <Name>Hermod</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Illias\Illias.NET4.5\Illias.NET4.5.csproj">
+      <Project>{23d37453-2d4e-4bd8-b40f-3e731fee7712}</Project>
+      <Name>Illias.NET4.5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Illias\Illias\Illias.csproj">
+      <Project>{e156f18d-d41c-4529-9bcc-9962e6ee25da}</Project>
+      <Name>Illias</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Styx\Styx.NET4.5\Styx.NET4.5.csproj">
+      <Project>{af76ecc0-2ca5-4cff-9e1e-ff5478c4b6e4}</Project>
+      <Name>Styx.NET4.5</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Styx\Styx\Styx.csproj">
+      <Project>{3949790d-8591-4101-9e4d-ce7a758e7409}</Project>
+      <Name>Styx</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
