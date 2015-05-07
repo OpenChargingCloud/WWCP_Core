@@ -1,13 +1,9 @@
-eMI3 Core
-=========
+# World Wide Charging Protocol Suite - Core
 
-Thank you for your interest in the Electro Mobility ICT Interoperability
-Initiative (eMI3) Open Source Implementation, which is currently being
-administered by the Belectric Group (Belectric Drive GmbH / Belectric IT
-Solutions GmbH). This software is maintained to support the requirements
-analysis in WG5 (Communication Protocols) and to ensure the practicability of
-the upcoming standard. Therefore it is _not_ intended for production use, but
-for reference and educational purpose only.
+The World Wide Charging Protocol Suite is a collection of protocols in order to
+connect market actors in the field of e-mobility solutions via scalable and secure
+Internet protocols. This repository defines the fundamental core concepts, entities
+and data structures.
 
 We appreciate your participation in this ongoing project, and your help to
 improve it. If you find bugs, want to request a feature or send us a pull
