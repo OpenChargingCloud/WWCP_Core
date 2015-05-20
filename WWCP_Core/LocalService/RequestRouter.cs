@@ -21,8 +21,6 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-using Newtonsoft.Json.Linq;
-
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.ConsoleLog;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -80,13 +78,6 @@ namespace org.GraphDefined.WWCP.LocalService
         }
 
         #endregion
-
-        #region FrontendHTTPServer
-
-        public HTTPServer FrontendHTTPServer { get; set; }
-
-        #endregion
-
 
 
         public IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> AllTokens
@@ -482,22 +473,6 @@ namespace org.GraphDefined.WWCP.LocalService
             lock (AuthenticationServices)
             {
 
-                #region (HTTP) Logging
-
-                FrontendHTTPServer.GetEventSource(Semantics.DebugLog).
-                    SubmitSubEvent("REMOTESTARTRequest",
-                                   new JObject(
-                                       new JProperty("Timestamp",       DateTime.Now.ToIso8601()),
-                                       new JProperty("RoamingNetwork",  RoamingNetwork.ToString()),
-                                       new JProperty("SessionId",       SessionId),
-                                       new JProperty("ProviderId",      ProviderId.ToString()),
-                                       new JProperty("EVSEId",          EVSEId.ToString()),
-                                       new JProperty("eMAId",           eMAId.ToString())
-                                   ).ToString().
-                                     Replace(Environment.NewLine, ""));
-
-                #endregion
-
                 var OnRemoteStartLocal = OnRemoteStart;
                 if (OnRemoteStartLocal != null)
                     return OnRemoteStartLocal(EVSEId, SessionId, ProviderId, eMAId, EventTrackingId);
@@ -527,21 +502,6 @@ namespace org.GraphDefined.WWCP.LocalService
 
             lock (AuthenticationServices)
             {
-
-                #region (HTTP) Logging
-
-                FrontendHTTPServer.GetEventSource(Semantics.DebugLog).
-                    SubmitSubEvent("REMOTESTOPRequest",
-                                   new JObject(
-                                       new JProperty("Timestamp", DateTime.Now.ToIso8601()),
-                                       new JProperty("RoamingNetwork", RoamingNetwork.ToString()),
-                                       new JProperty("SessionId", SessionId),
-                                       new JProperty("ProviderId", ProviderId.ToString()),
-                                       new JProperty("EVSEId", EVSEId.ToString())
-                                   ).ToString().
-                                     Replace(Environment.NewLine, ""));
-
-                #endregion
 
                 var OnRemoteStopLocal = OnRemoteStop;
                 if (OnRemoteStopLocal != null)
