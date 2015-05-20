@@ -7,8 +7,8 @@
     <ProjectGuid>{33836742-AF1D-4AA4-963F-B0A8E60E6480}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>org.GraphDefined.WWCP</RootNamespace>
-    <AssemblyName>WWCP_Core</AssemblyName>
+    <RootNamespace>org.GraphDefined.WWCP.Core</RootNamespace>
+    <AssemblyName>org.GraphDefined.WWCP.Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,7 +21,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>bin\Debug\WWCP_Core.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\org.GraphDefined.WWCP.Core.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,10 +31,11 @@
     </DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\WWCP_Core.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\org.GraphDefined.WWCP.Core.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Hermod\libs\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
