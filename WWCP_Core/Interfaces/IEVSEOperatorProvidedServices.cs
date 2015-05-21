@@ -42,11 +42,11 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
         /// <param name="eMAId">The unique identification of the e-mobility account.</param>
         /// <param name="EventTrackingId">An optional unique identification for tracking related events.</param>
-        RemoteStartResult RemoteStart(EVSE_Id               EVSEId,
-                                      String                SessionId,
-                                      EVSP_Id  ProviderId,
-                                      eMA_Id                eMAId,
-                                      EventTracking_Id      EventTrackingId  = null);
+        RemoteStartResult RemoteStart(EVSE_Id             EVSEId,
+                                      ChargingSession_Id  SessionId,
+                                      EVSP_Id             ProviderId,
+                                      eMA_Id              eMAId,
+                                      EventTracking_Id    EventTrackingId  = null);
 
         /// <summary>
         /// Initiate a remote stop of a charging station socket outlet.
@@ -55,10 +55,10 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
         /// <param name="EventTrackingId">An optional unique identification for tracking related events.</param>
-        RemoteStopResult  RemoteStop (EVSE_Id               EVSEId,
-                                      String                SessionId,
-                                      EVSP_Id  ProviderId,
-                                      EventTracking_Id      EventTrackingId  = null);
+        RemoteStopResult  RemoteStop (EVSE_Id             EVSEId,
+                                      ChargingSession_Id  SessionId,
+                                      EVSP_Id             ProviderId,
+                                      EventTracking_Id    EventTrackingId  = null);
 
     }
 
