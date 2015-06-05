@@ -505,10 +505,19 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        public void SetEVSEStatus(DateTime                                      Timestamp,
-                                  EVSE_Id                                       EVSEId,
-                                  Timestamped<EVSEStatusType>                   NewStatus,
-                                  Action<EVSE_Id, Timestamped<EVSEStatusType>>  OnSuccess = null)
+        #region SetEVSEStatus(EVSEId, NewStatus, SendUpstream = false)
+
+        public void SetEVSEStatus(EVSE_Id                      EVSEId,
+                                  Timestamped<EVSEStatusType>  NewStatus,
+                                  Boolean                      SendUpstream = false)
+        {
+            SetEVSEStatus(DateTime.Now, EVSEId, NewStatus);
+        }
+
+        public void SetEVSEStatus(DateTime                     Timestamp,
+                                  EVSE_Id                      EVSEId,
+                                  Timestamped<EVSEStatusType>  NewStatus,
+                                  Boolean                      SendUpstream = false)
         {
 
             if (InvalidEVSEIds.Contains(EVSEId))
@@ -517,11 +526,125 @@ namespace org.GraphDefined.WWCP
             EVSE _EVSE = null;
             if (TryGetEVSEbyId(EVSEId, out _EVSE))
             {
+
                 _EVSE.SetStatus(Timestamp, NewStatus);
-                OnSuccess(EVSEId, NewStatus);
+
+                if (SendUpstream)
+                {
+                    RoamingNetwork.
+                        RequestRouter.
+                        SendEVSEStatusDiff(new EVSEStatusDiff(new List<KeyValuePair<EVSE_Id, EVSEStatusType>>(),
+                                                               new List<KeyValuePair<EVSE_Id, EVSEStatusType>>() {
+                                                                   new KeyValuePair<EVSE_Id, EVSEStatusType>(EVSEId, NewStatus.Value)
+                                                               },
+                                                               new List<EVSE_Id>()));
+                }
+
             }
 
+            else
+                DebugX.Log("Could not set status for EVSE '" + EVSEId.OriginEVSEId.ToString() + "'!");
+
         }
+
+        #endregion
+
+        #region CalcEVSEStatusDiff(EVSEStatus, AutoApply = false)
+
+        public EVSEStatusDiff CalcEVSEStatusDiff(Dictionary<EVSE_Id, EVSEStatusType>  EVSEStatus,
+                                                 Boolean                              AutoApply = false)
+        {
+
+            #region Get data...
+
+            var EVSEStatusDiff     = new EVSEStatusDiff();
+
+            // Only ValidEVSEIds!
+            // Do nothing with manual EVSE Ids!
+            var CurrentEVSEStates  = AllEVSEStatus.
+                                     Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
+                                                 !ManualEVSEIds.Contains(KVP.Key)).
+                                     ToDictionary(v => v.Key, v => v.Value);
+
+            var OldEVSEIds         = new List<EVSE_Id>(CurrentEVSEStates.Keys);
+
+            #endregion
+
+            try
+            {
+
+                #region Find new and changed EVSE states
+
+                // Only for ValidEVSEIds!
+                // Do nothing with manual EVSE Ids!
+                foreach (var NewEVSEStatus in EVSEStatus.
+                                                  Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
+                                                              !ManualEVSEIds.Contains(KVP.Key)))
+                {
+
+                    // Add to NewEVSEStates, if new EVSE was found!
+                    if (!CurrentEVSEStates.ContainsKey(NewEVSEStatus.Key))
+                        EVSEStatusDiff.NewEVSEStates.Add(NewEVSEStatus);
+
+                    else
+                    {
+
+                        // Add to CHANGED, if state of known EVSE changed!
+                        if (CurrentEVSEStates[NewEVSEStatus.Key] != NewEVSEStatus.Value)
+                            EVSEStatusDiff.ChangedEVSEStates.Add(NewEVSEStatus);
+
+                        // Remove EVSEId, as it was processed...
+                        OldEVSEIds.Remove(NewEVSEStatus.Key);
+
+                    }
+
+                }
+
+                #endregion
+
+                #region Delete what is left in OldEVSEIds!
+
+                EVSEStatusDiff.RemovedEVSEIds.AddRange(OldEVSEIds);
+
+                #endregion
+
+                if (AutoApply)
+                    ApplyEVSEStatusDiff(EVSEStatusDiff);
+
+                return EVSEStatusDiff;
+
+            }
+
+            catch (Exception e)
+            {
+                DebugX.Log("GetEVSEStatusDiff lead to an exception: " + e.Message);
+            }
+
+            // empty!
+            return new EVSEStatusDiff();
+
+        }
+
+        #endregion
+
+        #region ApplyEVSEStatusDiff(StatusDiff)
+
+        public EVSEStatusDiff ApplyEVSEStatusDiff(EVSEStatusDiff StatusDiff)
+        {
+
+            foreach (var EVSEState in StatusDiff.NewEVSEStates)
+                SetEVSEStatus(EVSEState.Key, EVSEState.Value);
+
+            foreach (var EVSEState in StatusDiff.ChangedEVSEStates)
+                SetEVSEStatus(EVSEState.Key, EVSEState.Value);
+
+            RoamingNetwork.RequestRouter.SendEVSEStatusDiff(StatusDiff);
+
+            return StatusDiff;
+
+        }
+
+        #endregion
 
 
         #region IEnumerable<EVSPool> Members

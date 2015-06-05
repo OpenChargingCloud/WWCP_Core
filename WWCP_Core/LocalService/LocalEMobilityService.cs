@@ -29,7 +29,7 @@ namespace org.GraphDefined.WWCP.LocalService
     /// <summary>
     /// A local E-Mobility service implementation.
     /// </summary>
-    public class LocalEMobilityService : IRoamingProviderProvided_EVSEOperatorServices
+    public class LocalEMobilityService : IAuthServices
     {
 
         #region Data

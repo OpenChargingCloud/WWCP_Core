@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP.LocalService
     /// <summary>
     /// The EVSE operator provided E-Mobility services interface.
     /// </summary>
-    public interface IEVSEOperatorProvidedServices
+    public interface IRemoteStartStop
     {
 
         Authorizator_Id AuthorizatorId { get; }

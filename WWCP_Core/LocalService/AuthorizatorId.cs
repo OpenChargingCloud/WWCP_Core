@@ -28,8 +28,8 @@ namespace org.GraphDefined.WWCP
     /// The unique identification of an authorizator.
     /// </summary>
     public class Authorizator_Id : IId,
-                                  IEquatable<Authorizator_Id>,
-                                  IComparable<Authorizator_Id>
+                                   IEquatable<Authorizator_Id>,
+                                   IComparable<Authorizator_Id>
 
     {
 

@@ -103,8 +103,8 @@
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork.cs" />
     <Compile Include="Interfaces\IRoamingProviderProvided_EVSPServices.cs" />
-    <Compile Include="Interfaces\IRoamingProviderProvided_EVSEOperatorServices.cs" />
-    <Compile Include="Interfaces\IEVSEOperatorProvidedServices.cs" />
+    <Compile Include="Interfaces\IAuthServices.cs" />
+    <Compile Include="Interfaces\IRemoteStartStop.cs" />
     <Compile Include="LocalService\AuthorizatorId.cs" />
     <Compile Include="LocalService\RemoteStartResult.cs" />
     <Compile Include="LocalService\RemoteStopResult.cs" />

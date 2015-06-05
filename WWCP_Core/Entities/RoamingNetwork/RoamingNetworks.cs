@@ -80,17 +80,19 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CreateNewRoamingNetwork(RoamingNetwork_Id, Description, Action = null)
+        #region CreateNewRoamingNetwork(RoamingNetwork_Id, AuthorizatorId, Description, Action = null)
 
         /// <summary>
         /// Create and register a new roaming network having the given
         /// unique roaming network identification.
         /// </summary>
         /// <param name="RoamingNetwork_Id">The unique identification of the new roaming network.</param>
+        /// <param name="AuthorizatorId">The unique identification for the Auth service.</param>
         /// <param name="Description">A multilanguage description of the roaming network.</param>
         /// <param name="Action">An optional delegate to configure the new EVSE operator after its creation.</param>
         public RoamingNetwork CreateNewRoamingNetwork(RoamingNetwork_Id       RoamingNetwork_Id,
-                                                      I18NString               Description,
+                                                      Authorizator_Id         AuthorizatorId,
+                                                      I18NString              Description,
                                                       Action<RoamingNetwork>  Action = null)
         {
 
@@ -104,7 +106,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            var _RoamingNetwork = new RoamingNetwork(RoamingNetwork_Id) {
+            var _RoamingNetwork = new RoamingNetwork(RoamingNetwork_Id, AuthorizatorId) {
                                       Description = Description
                                   };
 

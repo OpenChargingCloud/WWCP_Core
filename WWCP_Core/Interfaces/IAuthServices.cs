@@ -29,7 +29,7 @@ namespace org.GraphDefined.WWCP.LocalService
     /// <summary>
     /// The EV Roaming Provider provided EVSE Operator services interface.
     /// </summary>
-    public interface IRoamingProviderProvided_EVSEOperatorServices
+    public interface IAuthServices
     {
 
         Authorizator_Id AuthorizatorId { get; }
@@ -43,13 +43,13 @@ namespace org.GraphDefined.WWCP.LocalService
         AUTHSTARTResult AuthorizeStart(EVSEOperator_Id      OperatorId,
                                        EVSE_Id              EVSEId,
                                        ChargingSession_Id   PartnerSessionId,
-                                       Auth_Token                UID);
+                                       Auth_Token           UID);
 
         AUTHSTOPResult  AuthorizeStop (EVSEOperator_Id      OperatorId,
                                        EVSE_Id              EVSEId,
                                        ChargingSession_Id   SessionId,
                                        ChargingSession_Id   PartnerSessionId,
-                                       Auth_Token                UID);
+                                       Auth_Token           UID);
 
         SENDCDRResult   SendCDR       (EVSE_Id              EVSEId,
                                        ChargingSession_Id   SessionId,
@@ -57,7 +57,7 @@ namespace org.GraphDefined.WWCP.LocalService
                                        String               PartnerProductId,
                                        DateTime             ChargeStart,
                                        DateTime             ChargeEnd,
-                                       Auth_Token                UID             = null,
+                                       Auth_Token           UID             = null,
                                        eMA_Id               eMAId           = null,
                                        DateTime?            SessionStart    = null,
                                        DateTime?            SessionEnd      = null,

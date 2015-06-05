@@ -46,6 +46,38 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
+        #region RoamingNetwork
+
+        private readonly RoamingNetwork _RoamingNetwork;
+
+        /// <summary>
+        /// The associated EV Roaming Network of the Electric Vehicle Supply Equipment Operator.
+        /// </summary>
+        public RoamingNetwork RoamingNetwork
+        {
+            get
+            {
+                return _RoamingNetwork;
+            }
+        }
+
+        #endregion
+
+        #region EMobilityService
+
+        private readonly IAuthServices _EMobilityService;
+
+        public IAuthServices EMobilityService
+        {
+            get
+            {
+                return _EMobilityService;
+            }
+        }
+
+        #endregion
+
+
         #region Name
 
         private I18NString _Name;
@@ -72,21 +104,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region EMobilityService
-
-        private readonly IRoamingProviderProvided_EVSEOperatorServices _EMobilityService;
-
-        public IRoamingProviderProvided_EVSEOperatorServices EMobilityService
-        {
-            get
-            {
-                return _EMobilityService;
-            }
-        }
-
-        #endregion
-
-
         #region EVSPools
 
         public IEnumerable<ChargingPool> EVSPools
@@ -103,17 +120,6 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (internal) RoamingProvider()
-
-        ///// <summary>
-        ///// Create a new Electric Vehicle Roaming Provider (EVRP).
-        ///// </summary>
-        //internal RoamingProvider(RoamingNetwork  RoamingNetwork)
-        //    : this(RoamingProvider_Id.New, RoamingNetwork)
-        //{ }
-
-        #endregion
-
         #region (internal) RoamingProvider(Id, RoamingNetwork, EMobilityService)
 
         /// <summary>
@@ -121,21 +127,28 @@ namespace org.GraphDefined.WWCP
         /// having the given RoamingProvider_Id.
         /// </summary>
         /// <param name="Id">The EVSPool Id.</param>
-        internal RoamingProvider(RoamingProvider_Id             Id,
-                                 RoamingNetwork                 RoamingNetwork,
-                                 IRoamingProviderProvided_EVSEOperatorServices   EMobilityService)
+        /// <param name="RoamingNetwork">The associated roaming network.</param>
+        /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
+        internal RoamingProvider(RoamingProvider_Id                             Id,
+                                 RoamingNetwork                                 RoamingNetwork,
+                                 IAuthServices  EMobilityService)
+
             : base(Id)
+
         {
 
             #region Initial Checks
+
+            if (RoamingNetwork == null)
+                throw new ArgumentNullException("RoamingNetwork", "The given roaming network must not be null!");
 
             if (EMobilityService == null)
                 throw new ArgumentNullException("EMobilityService", "The given e-mobility service must not be null!");
 
             #endregion
 
+            this._RoamingNetwork        = RoamingNetwork;
             this.Name                   = new I18NString();
-
             this._EMobilityService      = EMobilityService;
 
             this._RegisteredEVSPools    = new ConcurrentDictionary<ChargingPool_Id, ChargingPool>();

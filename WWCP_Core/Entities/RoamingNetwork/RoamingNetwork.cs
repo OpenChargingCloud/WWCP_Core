@@ -368,14 +368,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RoamingNetwork(Id)
+        #region RoamingNetwork(Id, AuthorizatorId = null)
 
         /// <summary>
         /// Create a new roaming network having the given
         /// unique roaming network identification.
         /// </summary>
         /// <param name="Id">The unique identification of the roaming network.</param>
-        public RoamingNetwork(RoamingNetwork_Id Id)
+        /// <param name="AuthorizatorId">The unique identification for the Auth service.</param>
+        public RoamingNetwork(RoamingNetwork_Id  Id,
+                              Authorizator_Id    AuthorizatorId = null)
             : base(Id)
         {
 
@@ -392,7 +394,7 @@ namespace org.GraphDefined.WWCP
             this._EVServiceProviders        = new ConcurrentDictionary<EVSP_Id, EVServiceProvider>();
             this._RoamingProviders          = new ConcurrentDictionary<RoamingProvider_Id,   RoamingProvider>();
             this._SearchProviders           = new ConcurrentDictionary<NavigationServiceProvider_Id,    NavigationServiceProvider>();
-            this._RequestRouter             = new RequestRouter(Id);
+            this._RequestRouter             = new RequestRouter(Id, AuthorizatorId);
 
             this.Name                       = new I18NString(Languages.en, Id.ToString());
             this.Description                = new I18NString();
@@ -523,7 +525,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
         public EVServiceProvider CreateNewEVServiceProvider(EVSP_Id       EVServiceProvider_Id,
-                                                            IRoamingProviderProvided_EVSEOperatorServices          EMobilityService,
+                                                            IAuthServices          EMobilityService,
                                                             Action<EVServiceProvider>  Action  = null)
         {
 
@@ -565,7 +567,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RoamingProvider_Id">The unique identification of the new roaming provider.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
         public RoamingProvider CreateNewRoamingProvider(RoamingProvider_Id                             RoamingProvider_Id,
-                                                        IRoamingProviderProvided_EVSEOperatorServices  EMobilityService,
+                                                        IAuthServices  EMobilityService,
                                                         Action<RoamingProvider>                        Action = null)
         {
 

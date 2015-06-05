@@ -119,9 +119,9 @@ namespace org.GraphDefined.WWCP
 
         #region EMobilityService
 
-        private readonly IRoamingProviderProvided_EVSEOperatorServices _EMobilityService;
+        private readonly IAuthServices _EMobilityService;
 
-        public IRoamingProviderProvided_EVSEOperatorServices EMobilityService
+        public IAuthServices EMobilityService
         {
             get
             {
@@ -143,8 +143,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The EVSPool Id.</param>
         /// <param name="RoamingNetwork">The corresponding roaming network.</param>
-        internal EVServiceProvider(EVSP_Id  Id,
-                                   RoamingNetwork        RoamingNetwork)
+        internal EVServiceProvider(EVSP_Id         Id,
+                                   RoamingNetwork  RoamingNetwork)
 
             : this(Id, RoamingNetwork, new LocalEMobilityService(Id, Authorizator_Id.Parse(Id.ToString() + " Local Authorizator")))
 
@@ -161,9 +161,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The EVSPool Id.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
-        internal EVServiceProvider(EVSP_Id          Id,
-                                   RoamingNetwork                RoamingNetwork,
-                                   IRoamingProviderProvided_EVSEOperatorServices  EMobilityService)
+        internal EVServiceProvider(EVSP_Id                                        Id,
+                                   RoamingNetwork                                 RoamingNetwork,
+                                   IAuthServices  EMobilityService)
 
             : base(Id)
 
@@ -190,7 +190,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
         #endregion
-
 
 
         #region IComparable<EVSE_Operator> Members

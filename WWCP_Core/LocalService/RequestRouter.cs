@@ -37,15 +37,15 @@ namespace org.GraphDefined.WWCP.LocalService
     /// implementations. The SessionId is used as a minimal state and routing
     /// key to avoid flooding.
     /// </summary>
-    public class RequestRouter : IRoamingProviderProvided_EVSEOperatorServices,
-                                 IEVSEOperatorProvidedServices
+    public class RequestRouter : IAuthServices,
+                                 IRemoteStartStop
     {
 
         #region Data
 
-        private readonly Dictionary<UInt32,             IRoamingProviderProvided_EVSEOperatorServices>   AuthenticationServices;
-        private readonly Dictionary<ChargingSession_Id, IRoamingProviderProvided_EVSEOperatorServices>   SessionIdAuthenticatorCache;
-        private readonly Dictionary<EVSEOperator_Id,    IEVSEOperatorProvidedServices>                   EVSEOperatorLookup;
+        private readonly Dictionary<UInt32,             IAuthServices>     AuthenticationServices;
+        private readonly Dictionary<ChargingSession_Id, IAuthServices>     SessionIdAuthenticatorCache;
+        private readonly Dictionary<EVSEOperator_Id,    IRemoteStartStop>  EVSEOperatorLookup;
 
         #endregion
 
@@ -112,23 +112,6 @@ namespace org.GraphDefined.WWCP.LocalService
             }
         }
 
-        #region DNSClient
-
-        private readonly DNSClient _DNSClient;
-
-        /// <summary>
-        /// The default server name.
-        /// </summary>
-        public DNSClient DNSClient
-        {
-            get
-            {
-                return _DNSClient;
-            }
-        }
-
-        #endregion
-
         #endregion
 
         #region Events
@@ -155,31 +138,40 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #endregion
 
+        #region OnFilterCDRRecords
+
+        public delegate SENDCDRResult OnFilterCDRRecordsDelegate(Authorizator_Id AuthorizatorId, Auth_Token UID, eMA_Id eMAId, ChargingSession_Id PartnerSessionId);
+
+        /// <summary>
+        /// An event fired whenever a CDR Record needs to be filtered.
+        /// </summary>
+        public event OnFilterCDRRecordsDelegate OnFilterCDRRecords;
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
 
         public RequestRouter(RoamingNetwork_Id  RoamingNetwork,
-                             Authorizator_Id    AuthorizatorId  = null,
-                             DNSClient          DNSClient       = null)
+                             Authorizator_Id    AuthorizatorId  = null)
         {
 
             this._RoamingNetwork              = RoamingNetwork;
-            this._AuthorizatorId              = (AuthorizatorId == null) ? Authorizator_Id.Parse("eMI3 Local E-Mobility Gateway") : AuthorizatorId;
-            this.AuthenticationServices       = new Dictionary<UInt32,             IRoamingProviderProvided_EVSEOperatorServices>();
-            this.SessionIdAuthenticatorCache  = new Dictionary<ChargingSession_Id, IRoamingProviderProvided_EVSEOperatorServices>();
-            this.EVSEOperatorLookup           = new Dictionary<EVSEOperator_Id,    IEVSEOperatorProvidedServices>();
-            this._DNSClient                   = DNSClient != null ? DNSClient : new DNSClient();
+            this._AuthorizatorId              = (AuthorizatorId == null) ? Authorizator_Id.Parse("GraphDefined E-Mobility Gateway") : AuthorizatorId;
+            this.AuthenticationServices       = new Dictionary<UInt32,             IAuthServices>();
+            this.SessionIdAuthenticatorCache  = new Dictionary<ChargingSession_Id, IAuthServices>();
+            this.EVSEOperatorLookup           = new Dictionary<EVSEOperator_Id,    IRemoteStartStop>();
 
         }
 
         #endregion
 
 
-        #region RegisterService(Priority, AuthenticationService)
+        #region RegisterAuthService(Priority, AuthenticationService)
 
-        public Boolean RegisterService(UInt32                                         Priority,
-                                       IRoamingProviderProvided_EVSEOperatorServices  AuthenticationService)
+        public Boolean RegisterAuthService(UInt32         Priority,
+                                           IAuthServices  AuthenticationService)
         {
 
             lock (AuthenticationServices)
@@ -202,10 +194,10 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #region AuthorizeStart(OperatorId, EVSEId, PartnerSessionId, UID)
 
-        public AUTHSTARTResult AuthorizeStart(EVSEOperator_Id    OperatorId,
-                                              EVSE_Id            EVSEId,
+        public AUTHSTARTResult AuthorizeStart(EVSEOperator_Id     OperatorId,
+                                              EVSE_Id             EVSEId,
                                               ChargingSession_Id  PartnerSessionId,
-                                              Auth_Token              UID)
+                                              Auth_Token          UID)
         {
 
             // Will store the SessionId in order to contact the right authenticator at later requests!
@@ -216,8 +208,8 @@ namespace org.GraphDefined.WWCP.LocalService
                 AUTHSTARTResult AuthStartResult;
 
                 foreach (var AuthenticationService in AuthenticationServices.
-                                                          OrderBy(v => v.Key).
-                                                          Select(v => v.Value))
+                                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+                                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
                 {
 
                     AuthStartResult = AuthenticationService.AuthorizeStart(OperatorId, EVSEId, PartnerSessionId, UID);
@@ -264,18 +256,18 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #region AuthorizeStop(OperatorId, EVSEId, SessionId, PartnerSessionId, UID)
 
-        public AUTHSTOPResult AuthorizeStop(EVSEOperator_Id    OperatorId,
-                                            EVSE_Id            EVSEId,
+        public AUTHSTOPResult AuthorizeStop(EVSEOperator_Id     OperatorId,
+                                            EVSE_Id             EVSEId,
                                             ChargingSession_Id  SessionId,
                                             ChargingSession_Id  PartnerSessionId,
-                                            Auth_Token              UID)
+                                            Auth_Token          UID)
         {
 
             lock (AuthenticationServices)
             {
 
                 AUTHSTOPResult         AuthStopResult;
-                IRoamingProviderProvided_EVSEOperatorServices  AuthenticationService;
+                IAuthServices  AuthenticationService;
 
                 #region An authenticator was found for the upstream SessionId!
 
@@ -295,8 +287,8 @@ namespace org.GraphDefined.WWCP.LocalService
                 #region Try to find anyone who might kown anything about the given SessionId!
 
                 foreach (var OtherAuthenticationService in AuthenticationServices.
-                                                               OrderBy(v => v.Key).
-                                                               Select(v => v.Value).
+                                                               OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+                                                               Select (AuthServiceWithPriority => AuthServiceWithPriority.Value).
                                                                ToArray())
                 {
 
@@ -346,30 +338,24 @@ namespace org.GraphDefined.WWCP.LocalService
             lock (AuthenticationServices)
             {
 
-                #region Filter ChargeNow/BMW CDRecords
+                #region Some CDRRecord should perhaps not be forwarded...
 
-                if ((UID   != null && (UID.ToString() == "5C037451" ||
-                                       UID.ToString() == "5ABCC451" ||
-                                       UID.ToString() == "5AC18451" ||
-                                       UID.ToString() == "54266451" ||
-                                       UID.ToString() == "5C8AC451")) ||
+                SENDCDRResult SENDCDRResult = null;
 
-                    (eMAId != null && (eMAId.ToString() == "DE*BMW*0010LT*7" ||
-                                       eMAId.ToString() == "DE*BMW*0010LX*7" ||
-                                       eMAId.ToString() == "DE*BMW*0010LY*3" ||
-                                       eMAId.ToString() == "DE*BMW*0010LZ*X" ||
-                                       eMAId.ToString() == "DE*BMW*0010M0*2")))
+                var OnFilterCDRRecordsLocal = OnFilterCDRRecords;
+                if (OnFilterCDRRecordsLocal != null)
+                {
 
-                    return new SENDCDRResult(AuthorizatorId) {
-                        State             = SENDCDRState.NotForwared,
-                        PartnerSessionId  = PartnerSessionId,
-                        Description       = "This ChargeDetailRecord will not be forwarded because of administrative filter rules!"
-                    };
+                    SENDCDRResult = OnFilterCDRRecordsLocal(AuthorizatorId, UID, eMAId, PartnerSessionId);
+
+                    if (SENDCDRResult != null)
+                        return SENDCDRResult;
+
+                }
 
                 #endregion
 
-                SENDCDRResult                                  SENDCDRResult;
-                IRoamingProviderProvided_EVSEOperatorServices  AuthenticationService;
+                IAuthServices  AuthenticationService;
 
                 #region An authenticator was found for the upstream SessionId!
 
@@ -515,6 +501,28 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #endregion
 
+
+        #region SendEVSEStatusDiff(StatusDiff)
+
+        public EVSEStatusDiff SendEVSEStatusDiff(EVSEStatusDiff StatusDiff)
+        {
+
+            //lock (AuthenticationServices)
+            //{
+
+            //    var OnRemoteStartLocal = OnRemoteStart;
+            //    if (OnRemoteStartLocal != null)
+            //        return OnRemoteStartLocal(EVSEId, SessionId, ProviderId, eMAId, EventTrackingId);
+
+            //    return RemoteStartResult.EVSE_NotReachable;
+
+            //}
+
+            return StatusDiff;
+
+        }
+
+        #endregion
 
     }
 
