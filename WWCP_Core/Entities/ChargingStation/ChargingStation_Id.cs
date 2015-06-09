@@ -18,6 +18,10 @@
 #region Usings
 
 using System;
+using System.Linq;
+using System.Collections.Generic;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -74,6 +78,32 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region Create(this EVSEIds)
+
+        /// <summary>
+        /// Create a ChargingStationId based on the given EVSEIds.
+        /// </summary>
+        /// <param name="EVSEIds">An enumeration of EVSEIds.</param>
+        public static ChargingStation_Id Create(IEnumerable<EVSE_Id> EVSEIds)
+        {
+
+            var EVSEIdPrefixStrings = EVSEIds.
+                                          Select(EVSEId => EVSEId.ToString().Split('*')).
+                                          Select(EVSEIdElements => EVSEIdElements.
+                                                                       Take(EVSEIdElements.Length - 1).
+                                                                       AggregateWith("*")).
+                                          Distinct().
+                                          ToArray();
+
+            if (EVSEIdPrefixStrings.Length == 1)
+                return ChargingStation_Id.Parse(EVSEIdPrefixStrings.First());
+
+            throw new ApplicationException("Could not create a common ChargingStationId based on the EVSEId prefixes " + EVSEIdPrefixStrings.Select(v => "'" + v + "'").AggregateWith(", ") + "!");
+
+        }
+
+        #endregion
 
         #region New(Mapper = null)
 
