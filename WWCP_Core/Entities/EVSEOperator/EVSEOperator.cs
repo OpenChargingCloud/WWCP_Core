@@ -50,12 +50,6 @@ namespace org.GraphDefined.WWCP
                                 IEnumerable<ChargingPool>
     {
 
-        #region Data
-
-        private readonly ConcurrentDictionary<ChargingPool_Id, ChargingPool>  _RegisteredChargingPools;
-
-        #endregion
-
         #region Events
 
         #region ChargingPoolAddition
@@ -251,7 +245,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _RegisteredChargingPools.Values.
+                return _ChargingPools.Values.
                            SelectMany(v => v.ChargingStations).
                            SelectMany(v => v.EVSEs).
                            Select    (v => v.Id);
@@ -266,7 +260,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _RegisteredChargingPools.Values.
+                return _ChargingPools.Values.
                            SelectMany(v => v.ChargingStations).
                            SelectMany(v => v.EVSEs).
                            Select    (v => new KeyValuePair<EVSE_Id, EVSEStatusType>(v.Id, v.Status.Value));
@@ -278,6 +272,8 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingPools
 
+        private readonly ConcurrentDictionary<ChargingPool_Id, ChargingPool> _ChargingPools;
+
         /// <summary>
         /// Return all EV Charging Pools registered within this EVSE operator.
         /// </summary>
@@ -285,7 +281,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _RegisteredChargingPools.Values;
+                return _ChargingPools.Values;
             }
         }
 
@@ -333,7 +329,7 @@ namespace org.GraphDefined.WWCP
             this._InvalidEVSEIds            = new List<EVSE_Id>();
             this._ManualEVSEIds             = new List<EVSE_Id>();
 
-            this._RegisteredChargingPools   = new ConcurrentDictionary<ChargingPool_Id, ChargingPool>();
+            this._ChargingPools   = new ConcurrentDictionary<ChargingPool_Id, ChargingPool>();
 
             #endregion
 
@@ -428,7 +424,7 @@ namespace org.GraphDefined.WWCP
                 ChargingPoolId = ChargingPool_Id.New();
 
             // Do not throw an exception when an OnError delegate was given!
-            if (_RegisteredChargingPools.ContainsKey(ChargingPoolId))
+            if (_ChargingPools.ContainsKey(ChargingPoolId))
             {
                 if (OnError == null)
                     throw new EVSPoolAlreadyExists(ChargingPoolId, this.Id);
@@ -445,7 +441,7 @@ namespace org.GraphDefined.WWCP
 
             if (ChargingPoolAddition.SendVoting(this, _ChargingPool))
             {
-                if (_RegisteredChargingPools.TryAdd(ChargingPoolId, _ChargingPool))
+                if (_ChargingPools.TryAdd(ChargingPoolId, _ChargingPool))
                 {
                     OnSuccess.FailSafeInvoke(_ChargingPool);
                     ChargingPoolAddition.SendNotification(this, _ChargingPool);
@@ -459,16 +455,88 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
-        #region ContainsChargingPool(ChargingPoolId)
+        #region ContainsChargingPoolId(ChargingPoolId)
 
         /// <summary>
         /// Check if the given ChargingPool identification is already present within the EVSE operator.
         /// </summary>
         /// <param name="ChargingPoolId">The unique identification of the charging pool.</param>
-        public Boolean ContainsChargingPool(ChargingPool_Id ChargingPoolId)
+        public Boolean ContainsChargingPoolId(ChargingPool_Id ChargingPoolId)
         {
-            return _RegisteredChargingPools.ContainsKey(ChargingPoolId);
+            return _ChargingPools.ContainsKey(ChargingPoolId);
+        }
+
+        #endregion
+
+        #region GetChargingPoolbyId(ChargingPoolId)
+
+        public ChargingPool GetChargingPoolbyId(ChargingPool_Id ChargingPoolId)
+        {
+
+            ChargingPool _ChargingPool = null;
+
+            if (_ChargingPools.TryGetValue(ChargingPoolId, out _ChargingPool))
+                return _ChargingPool;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryGetChargingPoolbyId(ChargingPoolId, out ChargingPool)
+
+        public Boolean TryGetChargingPoolbyId(ChargingPool_Id ChargingPoolId, out ChargingPool ChargingPool)
+        {
+            return _ChargingPools.TryGetValue(ChargingPoolId, out ChargingPool);
+        }
+
+        #endregion
+
+        public Boolean TryRemoveChargingPool(ChargingPool_Id ChargingPoolId, out ChargingPool ChargingPool)
+        {
+            return _ChargingPools.TryRemove(ChargingPoolId, out ChargingPool);
+        }
+
+
+
+        #region GetChargingStationbyId(ChargingStationId)
+
+        public ChargingStation GetChargingStationbyId(ChargingStation_Id ChargingStationId)
+        {
+            return _ChargingPools.Values.
+                       SelectMany(pool    => pool.ChargingStations).
+                       Where     (station => station.Id == ChargingStationId).
+                       FirstOrDefault();
+        }
+
+        #endregion
+
+        #region TryGetChargingStationbyId(ChargingStationId, out ChargingStation ChargingStation)
+
+        public Boolean TryGetChargingStationbyId(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
+        {
+
+            ChargingStation = _ChargingPools.Values.
+                                  SelectMany(pool    => pool.ChargingStations).
+                                  Where     (station => station.Id == ChargingStationId).
+                                  FirstOrDefault();
+
+            return ChargingStation != null;
+
+        }
+
+        #endregion
+
+        #region ContainsChargingStationId(ChargingStationId)
+
+        /// <summary>
+        /// Check if the given ChargingStation identification is already present within the EVSE operator.
+        /// </summary>
+        /// <param name="ChargingStationId">The unique identification of the charging station.</param>
+        public Boolean ContainsChargingStationId(ChargingStation_Id ChargingStationId)
+        {
+            return _ChargingPools.Any(v => v.Value.ContainsChargingStationId(ChargingStationId));
         }
 
         #endregion
@@ -478,24 +546,24 @@ namespace org.GraphDefined.WWCP
 
         public EVSE GetEVSEbyId(EVSE_Id EVSEId)
         {
-            return _RegisteredChargingPools.Values.
-                       SelectMany(v => v.ChargingStations).
-                       SelectMany(v => v.EVSEs).
-                       Where     (EVSE => EVSE.Id == EVSEId).
+            return _ChargingPools.Values.
+                       SelectMany(pool    => pool.   ChargingStations).
+                       SelectMany(station => station.EVSEs).
+                       Where     (evse    => evse.Id == EVSEId).
                        FirstOrDefault();
         }
 
         #endregion
 
-        #region TryGetEVSEbyId(EVSEId)
+        #region TryGetEVSEbyId(EVSEId, out EVSE)
 
         public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
         {
 
-            EVSE = _RegisteredChargingPools.Values.
-                       SelectMany(v     => v.ChargingStations).
-                       SelectMany(v     => v.EVSEs).
-                       Where     (_EVSE => _EVSE.Id == EVSEId).
+            EVSE = _ChargingPools.Values.
+                       SelectMany(pool    => pool.   ChargingStations).
+                       SelectMany(station => station.EVSEs).
+                       Where     (evse    => evse.Id == EVSEId).
                        FirstOrDefault();
 
             return EVSE != null;
@@ -503,6 +571,20 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+        #region ContainsEVSEId(EVSEId)
+
+        /// <summary>
+        /// Check if the given EVSE identification is already present within the EVSE operator.
+        /// </summary>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        public Boolean ContainsEVSEId(EVSE_Id EVSEId)
+        {
+            return _ChargingPools.Any(v => v.Value.ContainsEVSEId(EVSEId));
+        }
+
+        #endregion
+
 
 
         #region SetEVSEStatus(EVSEId, NewStatus, SendUpstream = false)
@@ -651,12 +733,12 @@ namespace org.GraphDefined.WWCP
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return _RegisteredChargingPools.Values.GetEnumerator();
+            return _ChargingPools.Values.GetEnumerator();
         }
 
         public IEnumerator<ChargingPool> GetEnumerator()
         {
-            return _RegisteredChargingPools.Values.GetEnumerator();
+            return _ChargingPools.Values.GetEnumerator();
         }
 
         #endregion

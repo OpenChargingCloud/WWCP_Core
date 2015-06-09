@@ -818,6 +818,65 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ContainsChargingStationId(ChargingStationId)
+
+        /// <summary>
+        /// Check if the given ChargingStation identification is already present within the charging pool.
+        /// </summary>
+        /// <param name="ChargingStationId">The unique identification of the charging station.</param>
+        public Boolean ContainsChargingStationId(ChargingStation_Id ChargingStationId)
+        {
+            return _ChargingStations.ContainsKey(ChargingStationId);
+        }
+
+        #endregion
+
+        #region GetChargingPoolbyId(ChargingPoolId)
+
+        public ChargingStation GetChargingStationbyId(ChargingStation_Id ChargingStationId)
+        {
+
+            ChargingStation _ChargingStation = null;
+
+            if (_ChargingStations.TryGetValue(ChargingStationId, out _ChargingStation))
+                return _ChargingStation;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryGetChargingStationbyId(ChargingStationId, out ChargingStation)
+
+        public Boolean TryGetChargingStationbyId(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
+        {
+            return _ChargingStations.TryGetValue(ChargingStationId, out ChargingStation);
+        }
+
+        #endregion
+
+
+        public Boolean TryRemoveChargingStation(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
+        {
+            return _ChargingStations.TryRemove(ChargingStationId, out ChargingStation);
+        }
+
+
+        #region ContainsEVSEId(EVSEId)
+
+        /// <summary>
+        /// Check if the given EVSE identification is already present within the charging pool.
+        /// </summary>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        public Boolean ContainsEVSEId(EVSE_Id EVSEId)
+        {
+            return _ChargingStations.Values.Any(ChargingStation => ChargingStation.EVSEIds.Contains(EVSEId));
+        }
+
+        #endregion
+
+
 
         #region (internal) UpdateStatus(Timestamp)
 

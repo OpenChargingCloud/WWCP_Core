@@ -703,6 +703,50 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ContainsEVSEId(EVSEId)
+
+        /// <summary>
+        /// Check if the given EVSE identification is already present within the charging station.
+        /// </summary>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        public Boolean ContainsEVSEId(EVSE_Id EVSEId)
+        {
+            return _EVSEs.ContainsKey(EVSEId);
+        }
+
+        #endregion
+
+        #region GetEVSEbyId(EVSEId)
+
+        public EVSE GetEVSEbyId(EVSE_Id EVSEId)
+        {
+
+            EVSE _EVSE = null;
+
+            if (_EVSEs.TryGetValue(EVSEId, out _EVSE))
+                return _EVSE;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryGetEVSEbyId(EVSEId, out EVSE)
+
+        public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
+        {
+            return _EVSEs.TryGetValue(EVSEId, out EVSE);
+        }
+
+        #endregion
+
+        public Boolean TryRemoveEVSE(EVSE_Id EVSEId, out EVSE EVSE)
+        {
+            return _EVSEs.TryRemove(EVSEId, out EVSE);
+        }
+
+
 
         #region (internal) UpdateStatus(Timestamp)
 
