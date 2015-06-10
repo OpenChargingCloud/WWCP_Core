@@ -79,7 +79,20 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Create(this EVSEIds)
+        #region Create(params EVSEIds)
+
+        /// <summary>
+        /// Create a ChargingStationId based on the given EVSEIds.
+        /// </summary>
+        /// <param name="EVSEIds">An array of EVSEIds.</param>
+        public static ChargingStation_Id Create(params EVSE_Id[] EVSEIds)
+        {
+            return Create((IEnumerable<EVSE_Id>) EVSEIds);
+        }
+
+        #endregion
+
+        #region Create(EVSEIds)
 
         /// <summary>
         /// Create a ChargingStationId based on the given EVSEIds.
@@ -97,7 +110,7 @@ namespace org.GraphDefined.WWCP
                                           ToArray();
 
             if (EVSEIdPrefixStrings.Length == 1)
-                return ChargingStation_Id.Parse(EVSEIdPrefixStrings.First());
+                return ChargingStation_Id.Parse(EVSEIdPrefixStrings.First().Replace("*E", "*S"));
 
             throw new ApplicationException("Could not create a common ChargingStationId based on the EVSEId prefixes " + EVSEIdPrefixStrings.Select(v => "'" + v + "'").AggregateWith(", ") + "!");
 

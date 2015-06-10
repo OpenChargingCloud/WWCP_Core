@@ -27,7 +27,8 @@ namespace org.GraphDefined.WWCP
     public static class Semantics
     {
 
-        public const String DebugLog = "/DebugLog";
+        public const String DebugLog         = "/DebugLog";
+        public const String ForwardingInfos  = "/ForwardingInfos";
 
     }
 
