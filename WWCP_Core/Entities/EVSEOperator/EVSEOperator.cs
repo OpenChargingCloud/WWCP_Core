@@ -50,86 +50,6 @@ namespace org.GraphDefined.WWCP
                                 IEnumerable<ChargingPool>
     {
 
-        #region Events
-
-        #region ChargingPoolAddition
-
-        private readonly IVotingNotificator<EVSEOperator, ChargingPool, Boolean> ChargingPoolAddition;
-
-        /// <summary>
-        /// Called whenever a charging pool will be or was added.
-        /// </summary>
-        public IVotingSender<EVSEOperator, ChargingPool, Boolean> OnChargingPoolAddition
-        {
-            get
-            {
-                return ChargingPoolAddition;
-            }
-        }
-
-        #endregion
-
-
-        // EVS pool events
-
-        #region ChargingStationAddition
-
-        internal readonly IVotingNotificator<ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
-
-        /// <summary>
-        /// Called whenever a charging station will be or was added.
-        /// </summary>
-        public IVotingSender<ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
-        {
-            get
-            {
-                return ChargingStationAddition;
-            }
-        }
-
-        #endregion
-
-
-        // Charging station events
-
-        #region EVSEAddition
-
-        internal readonly IVotingNotificator<ChargingStation, EVSE, Boolean> EVSEAddition;
-
-        /// <summary>
-        /// Called whenever an EVSE will be or was added.
-        /// </summary>
-        public IVotingSender<ChargingStation, EVSE, Boolean> OnEVSEAddition
-        {
-            get
-            {
-                return EVSEAddition;
-            }
-        }
-
-        #endregion
-
-
-        // EVSE events
-
-        #region SocketOutletAddition
-
-        internal readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletAddition;
-
-        /// <summary>
-        /// Called whenever a socket outlet will be or was added.
-        /// </summary>
-        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
-        {
-            get
-            {
-                return SocketOutletAddition;
-            }
-        }
-
-        #endregion
-
-        #endregion
 
         #region Properties
 
@@ -282,6 +202,87 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return _ChargingPools.Values;
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Events
+
+        #region ChargingPoolAddition
+
+        private readonly IVotingNotificator<EVSEOperator, ChargingPool, Boolean> ChargingPoolAddition;
+
+        /// <summary>
+        /// Called whenever a charging pool will be or was added.
+        /// </summary>
+        public IVotingSender<EVSEOperator, ChargingPool, Boolean> OnChargingPoolAddition
+        {
+            get
+            {
+                return ChargingPoolAddition;
+            }
+        }
+
+        #endregion
+
+
+        // EVS pool events
+
+        #region ChargingStationAddition
+
+        internal readonly IVotingNotificator<ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
+
+        /// <summary>
+        /// Called whenever a charging station will be or was added.
+        /// </summary>
+        public IVotingSender<ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
+        {
+            get
+            {
+                return ChargingStationAddition;
+            }
+        }
+
+        #endregion
+
+
+        // Charging station events
+
+        #region EVSEAddition
+
+        internal readonly IVotingNotificator<ChargingStation, EVSE, Boolean> EVSEAddition;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was added.
+        /// </summary>
+        public IVotingSender<ChargingStation, EVSE, Boolean> OnEVSEAddition
+        {
+            get
+            {
+                return EVSEAddition;
+            }
+        }
+
+        #endregion
+
+
+        // EVSE events
+
+        #region SocketOutletAddition
+
+        internal readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletAddition;
+
+        /// <summary>
+        /// Called whenever a socket outlet will be or was added.
+        /// </summary>
+        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
+        {
+            get
+            {
+                return SocketOutletAddition;
             }
         }
 
@@ -613,13 +614,17 @@ namespace org.GraphDefined.WWCP
 
                 if (SendUpstream)
                 {
+
                     RoamingNetwork.
                         RequestRouter.
-                        SendEVSEStatusDiff(new EVSEStatusDiff(new List<KeyValuePair<EVSE_Id, EVSEStatusType>>(),
-                                                               new List<KeyValuePair<EVSE_Id, EVSEStatusType>>() {
-                                                                   new KeyValuePair<EVSE_Id, EVSEStatusType>(EVSEId, NewStatus.Value)
-                                                               },
-                                                               new List<EVSE_Id>()));
+                        SendEVSEStatusDiff(new EVSEStatusDiff(EVSEOperatorId:     Id,
+                                                              EVSEOperatorName:   Name,
+                                                              NewEVSEStatus:      new List<KeyValuePair<EVSE_Id, EVSEStatusType>>(),
+                                                              ChangedEVSEStatus:  new List<KeyValuePair<EVSE_Id, EVSEStatusType>>() {
+                                                                                      new KeyValuePair<EVSE_Id, EVSEStatusType>(EVSEId, NewStatus.Value)
+                                                                                  },
+                                                              RemovedEVSEIds:     new List<EVSE_Id>()));
+
                 }
 
             }
@@ -639,7 +644,7 @@ namespace org.GraphDefined.WWCP
 
             #region Get data...
 
-            var EVSEStatusDiff     = new EVSEStatusDiff();
+            var EVSEStatusDiff     = new EVSEStatusDiff(Id, Name);
 
             // Only ValidEVSEIds!
             // Do nothing with manual EVSE Ids!
@@ -666,14 +671,14 @@ namespace org.GraphDefined.WWCP
 
                     // Add to NewEVSEStates, if new EVSE was found!
                     if (!CurrentEVSEStates.ContainsKey(NewEVSEStatus.Key))
-                        EVSEStatusDiff.NewEVSEStates.Add(NewEVSEStatus);
+                        EVSEStatusDiff.AddNewStatus(NewEVSEStatus);
 
                     else
                     {
 
                         // Add to CHANGED, if state of known EVSE changed!
                         if (CurrentEVSEStates[NewEVSEStatus.Key] != NewEVSEStatus.Value)
-                            EVSEStatusDiff.ChangedEVSEStates.Add(NewEVSEStatus);
+                            EVSEStatusDiff.AddChangedStatus(NewEVSEStatus);
 
                         // Remove EVSEId, as it was processed...
                         OldEVSEIds.Remove(NewEVSEStatus.Key);
@@ -686,11 +691,14 @@ namespace org.GraphDefined.WWCP
 
                 #region Delete what is left in OldEVSEIds!
 
-                EVSEStatusDiff.RemovedEVSEIds.AddRange(OldEVSEIds);
+                EVSEStatusDiff.AddRemovedEVSEId(OldEVSEIds);
 
                 #endregion
 
-                if (AutoApply)
+                if ((EVSEStatusDiff.NewEVSEStatus.    Any() ||
+                     EVSEStatusDiff.ChangedEVSEStatus.Any() ||
+                     EVSEStatusDiff.RemovedEVSEIds.   Any()) &&
+                     AutoApply)
                     ApplyEVSEStatusDiff(EVSEStatusDiff);
 
                 return EVSEStatusDiff;
@@ -703,7 +711,7 @@ namespace org.GraphDefined.WWCP
             }
 
             // empty!
-            return new EVSEStatusDiff();
+            return new EVSEStatusDiff(Id, Name);
 
         }
 
@@ -714,10 +722,10 @@ namespace org.GraphDefined.WWCP
         public EVSEStatusDiff ApplyEVSEStatusDiff(EVSEStatusDiff StatusDiff)
         {
 
-            foreach (var EVSEState in StatusDiff.NewEVSEStates)
+            foreach (var EVSEState in StatusDiff.NewEVSEStatus)
                 SetEVSEStatus(EVSEState.Key, EVSEState.Value);
 
-            foreach (var EVSEState in StatusDiff.ChangedEVSEStates)
+            foreach (var EVSEState in StatusDiff.ChangedEVSEStatus)
                 SetEVSEStatus(EVSEState.Key, EVSEState.Value);
 
             RoamingNetwork.RequestRouter.SendEVSEStatusDiff(StatusDiff);

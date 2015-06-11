@@ -17,6 +17,7 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Illias;
 using System.Collections.Generic;
 
 #endregion
@@ -24,30 +25,223 @@ using System.Collections.Generic;
 namespace org.GraphDefined.WWCP
 {
 
+    /// <summary>
+    /// An EVSE status diff.
+    /// </summary>
     public class EVSEStatusDiff
     {
 
-        public List<KeyValuePair<EVSE_Id, EVSEStatusType>> NewEVSEStates        { get; private set; }
-        public List<KeyValuePair<EVSE_Id, EVSEStatusType>> ChangedEVSEStates    { get; private set; }
-        public List<EVSE_Id>                               RemovedEVSEIds       { get; private set; }
+        #region Properties
 
-        public EVSEStatusDiff()
+        #region EVSEOperatorId
+
+        private readonly EVSEOperator_Id _EVSEOperatorId;
+
+        /// <summary>
+        /// The unique identification of the EVSE operator.
+        /// </summary>
+        public EVSEOperator_Id EVSEOperatorId
         {
-            NewEVSEStates      = new List<KeyValuePair<EVSE_Id, EVSEStatusType>>();
-            ChangedEVSEStates  = new List<KeyValuePair<EVSE_Id, EVSEStatusType>>();
-            RemovedEVSEIds     = new List<EVSE_Id>();
+            get
+            {
+                return _EVSEOperatorId;
+            }
         }
 
-        public EVSEStatusDiff(List<KeyValuePair<EVSE_Id, EVSEStatusType>> _NewEVSEStates,
-                              List<KeyValuePair<EVSE_Id, EVSEStatusType>> _ChangedEVSEStates,
-                              List<EVSE_Id>                               _RemovedEVSEIds)
+        #endregion
+
+        #region EVSEOperatorId
+
+        private readonly I18NString _EVSEOperatorName;
+
+        /// <summary>
+        /// The optional internationalized name of the EVSE operator.
+        /// </summary>
+        public I18NString EVSEOperatorName
+        {
+            get
+            {
+                return _EVSEOperatorName;
+            }
+        }
+
+        #endregion
+
+        #region NewEVSEStatus
+
+        private List<KeyValuePair<EVSE_Id, EVSEStatusType>> _NewEVSEStatus;
+
+        /// <summary>
+        /// All new EVSE status.
+        /// </summary>
+        public IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>> NewEVSEStatus
+        {
+            get
+            {
+                return _NewEVSEStatus;
+            }
+        }
+
+        #endregion
+
+        #region ChangedEVSEStatus
+
+        private List<KeyValuePair<EVSE_Id, EVSEStatusType>> _ChangedEVSEStatus;
+
+        /// <summary>
+        /// All changed EVSE status.
+        /// </summary>
+        public IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>> ChangedEVSEStatus
+        {
+            get
+            {
+                return _ChangedEVSEStatus;
+            }
+        }
+
+        #endregion
+
+        #region RemovedEVSEIds
+
+        private List<EVSE_Id> _RemovedEVSEIds;
+
+        /// <summary>
+        /// All removed EVSE status/Ids.
+        /// </summary>
+        public IEnumerable<EVSE_Id> RemovedEVSEIds
+        {
+            get
+            {
+                return _RemovedEVSEIds;
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Constructor(s)
+
+        #region EVSEStatusDiff(EVSEOperatorId, EVSEOperatorName = null)
+
+        /// <summary>
+        /// Create a new EVSE status diff.
+        /// </summary>
+        /// <param name="EVSEOperatorId">The unique identification of the EVSE operator.</param>
+        /// <param name="EVSEOperatorName">The optional internationalized name of the EVSE operator.</param>
+        public EVSEStatusDiff(EVSEOperator_Id  EVSEOperatorId,
+                              I18NString       EVSEOperatorName = null)
         {
 
-            NewEVSEStates      = _NewEVSEStates;
-            ChangedEVSEStates  = _ChangedEVSEStates;
-            RemovedEVSEIds     = _RemovedEVSEIds;
+            this._EVSEOperatorId     = EVSEOperatorId;
+            this._EVSEOperatorName   = EVSEOperatorName != null ? EVSEOperatorName : new I18NString();
+
+            this._NewEVSEStatus      = new List<KeyValuePair<EVSE_Id, EVSEStatusType>>();
+            this._ChangedEVSEStatus  = new List<KeyValuePair<EVSE_Id, EVSEStatusType>>();
+            this._RemovedEVSEIds     = new List<EVSE_Id>();
 
         }
+
+        #endregion
+
+        #region EVSEStatusDiff(EVSEOperatorId, NewEVSEStatus, ChangedEVSEStatus, RemovedEVSEIds, EVSEOperatorName = null)
+
+        /// <summary>
+        /// Create a new EVSE status diff.
+        /// </summary>
+        /// <param name="EVSEOperatorId">The unique identification of the EVSE operator.</param>
+        /// <param name="NewEVSEStatus">All new EVSE status.</param>
+        /// <param name="ChangedEVSEStatus">All changed EVSE status.</param>
+        /// <param name="RemovedEVSEIds">All removed EVSE status.</param>
+        /// <param name="EVSEOperatorName">The optional internationalized name of the EVSE operator.</param>
+        public EVSEStatusDiff(EVSEOperator_Id                                     EVSEOperatorId,
+                              IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>>  NewEVSEStatus,
+                              IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>>  ChangedEVSEStatus,
+                              IEnumerable<EVSE_Id>                                RemovedEVSEIds,
+                              I18NString                                          EVSEOperatorName = null)
+        {
+
+            this._EVSEOperatorId     = EVSEOperatorId;
+            this._EVSEOperatorName   = EVSEOperatorName != null ? EVSEOperatorName : new I18NString();
+
+            this._NewEVSEStatus      = new List<KeyValuePair<EVSE_Id, EVSEStatusType>>(NewEVSEStatus);
+            this._ChangedEVSEStatus  = new List<KeyValuePair<EVSE_Id, EVSEStatusType>>(ChangedEVSEStatus);
+            this._RemovedEVSEIds     = new List<EVSE_Id>(RemovedEVSEIds);
+
+        }
+
+        #endregion
+
+        #endregion
+
+
+        #region AddNewStatus(NewEVSEStatus)
+
+        /// <summary>
+        /// Add a new EVSE status.
+        /// </summary>
+        /// <param name="NewEVSEStatus">The new EVSE status</param>
+        public EVSEStatusDiff AddNewStatus(KeyValuePair<EVSE_Id, EVSEStatusType> NewEVSEStatus)
+        {
+
+            this._NewEVSEStatus.Add(NewEVSEStatus);
+
+            return this;
+
+        }
+
+        #endregion
+
+        #region AddChangedStatus(NewEVSEStatus)
+
+        /// <summary>
+        /// Add a changed EVSE status.
+        /// </summary>
+        /// <param name="ChangedEVSEStatus">The changed EVSE status</param>
+        public EVSEStatusDiff AddChangedStatus(KeyValuePair<EVSE_Id, EVSEStatusType> ChangedEVSEStatus)
+        {
+
+            this._ChangedEVSEStatus.Add(ChangedEVSEStatus);
+
+            return this;
+
+        }
+
+        #endregion
+
+        #region AddRemovedEVSEId(RemovedEVSEId)
+
+        /// <summary>
+        /// Remove the EVSE status/Id.
+        /// </summary>
+        /// <param name="RemovedEVSEId">The removed EVSE Id.</param>
+        public EVSEStatusDiff AddRemovedEVSEId(EVSE_Id RemovedEVSEId)
+        {
+
+            this._RemovedEVSEIds.Add(RemovedEVSEId);
+
+            return this;
+
+        }
+
+        #endregion
+
+        #region AddRemovedEVSEIds(RemovedEVSEIds)
+
+        /// <summary>
+        /// Remove the EVSE status/Ids.
+        /// </summary>
+        /// <param name="RemovedEVSEIds">The removed EVSE Ids.</param>
+        public EVSEStatusDiff AddRemovedEVSEId(IEnumerable<EVSE_Id> RemovedEVSEIds)
+        {
+
+            this._RemovedEVSEIds.AddRange(RemovedEVSEIds);
+
+            return this;
+
+        }
+
+        #endregion
 
     }
 

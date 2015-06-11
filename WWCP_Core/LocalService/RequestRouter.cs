@@ -149,6 +149,17 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #endregion
 
+        #region OnEVSEStatusDiff
+
+        public delegate void OnEVSEStatusDiffDelegate(EVSEStatusDiff StatusDiff);
+
+        /// <summary>
+        /// An event fired whenever a EVSE status diff was received.
+        /// </summary>
+        public event OnEVSEStatusDiffDelegate OnEVSEStatusDiff;
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
@@ -504,21 +515,21 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #region SendEVSEStatusDiff(StatusDiff)
 
-        public EVSEStatusDiff SendEVSEStatusDiff(EVSEStatusDiff StatusDiff)
+        public void SendEVSEStatusDiff(EVSEStatusDiff StatusDiff)
         {
 
-            //lock (AuthenticationServices)
-            //{
+            lock (AuthenticationServices)
+            {
 
-            //    var OnRemoteStartLocal = OnRemoteStart;
-            //    if (OnRemoteStartLocal != null)
-            //        return OnRemoteStartLocal(EVSEId, SessionId, ProviderId, eMAId, EventTrackingId);
+                var OnEVSEStatusDiffLocal = OnEVSEStatusDiff;
+                if (OnEVSEStatusDiffLocal != null)
+                    OnEVSEStatusDiffLocal(StatusDiff);
 
-            //    return RemoteStartResult.EVSE_NotReachable;
+                //return RemoteStartResult.Error;
 
-            //}
+            }
 
-            return StatusDiff;
+            //return StatusDiff;
 
         }
 

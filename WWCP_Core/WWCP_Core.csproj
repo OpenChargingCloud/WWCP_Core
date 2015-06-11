@@ -102,6 +102,7 @@
     <Compile Include="Entities\EVSE\EVSE.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork.cs" />
+    <Compile Include="Interfaces\IDataServices.cs" />
     <Compile Include="Interfaces\IRoamingProviderProvided_EVSPServices.cs" />
     <Compile Include="Interfaces\IAuthServices.cs" />
     <Compile Include="Interfaces\IRemoteStartStop.cs" />
