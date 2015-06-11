@@ -34,6 +34,10 @@
     <DocumentationFile>bin\Release\org.GraphDefined.WWCP.Core.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Hermod\libs\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -43,6 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RedirectedEVSEList.cs" />
+    <Compile Include="WWCPImporter.cs" />
+    <Compile Include="ImporterDefaults.cs" />
     <Compile Include="Entities\Delegates.cs" />
     <Compile Include="Entities\EVSE\EVSEStatusReport.cs" />
     <Compile Include="CommonTypes\Attributes\Not_eMI3defined.cs" />
@@ -102,6 +109,7 @@
     <Compile Include="Entities\EVSE\EVSE.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork.cs" />
+    <Compile Include="ImportForwardingInfo.cs" />
     <Compile Include="Interfaces\IDataServices.cs" />
     <Compile Include="Interfaces\IRoamingProviderProvided_EVSPServices.cs" />
     <Compile Include="Interfaces\IAuthServices.cs" />
