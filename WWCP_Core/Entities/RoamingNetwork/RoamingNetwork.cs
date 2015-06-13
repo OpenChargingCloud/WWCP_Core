@@ -580,6 +580,8 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region EVSEOperator
+
         #region CreateNewEVSEOperator(EVSEOperatorId, Name = null, Description = null, Action = null)
 
         /// <summary>
@@ -622,6 +624,84 @@ namespace org.GraphDefined.WWCP
             throw new Exception();
 
         }
+
+        #endregion
+
+        #region ContainsEVSEOperator(EVSEOperator)
+
+        /// <summary>
+        /// Check if the given EVSEOperator is already present within the roaming network.
+        /// </summary>
+        /// <param name="EVSEOperator">An EVSE operator.</param>
+        public Boolean ContainsEVSEOperator(EVSEOperator EVSEOperator)
+        {
+            return _EVSEOperators.ContainsKey(EVSEOperator.Id);
+        }
+
+        #endregion
+
+        #region ContainsEVSEOperator(EVSEOperatorId)
+
+        /// <summary>
+        /// Check if the given EVSEOperator identification is already present within the roaming network.
+        /// </summary>
+        /// <param name="EVSEOperatorId">The unique identification of the EVSE operator.</param>
+        public Boolean ContainsEVSEOperator(EVSEOperator_Id EVSEOperatorId)
+        {
+            return _EVSEOperators.ContainsKey(EVSEOperatorId);
+        }
+
+        #endregion
+
+        #region GetEVSEOperatorbyId(EVSEOperatorId)
+
+        public EVSEOperator GetEVSEOperatorbyId(EVSEOperator_Id EVSEOperatorId)
+        {
+
+            EVSEOperator _EVSEOperator = null;
+
+            if (_EVSEOperators.TryGetValue(EVSEOperatorId, out _EVSEOperator))
+                return _EVSEOperator;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryGetEVSEOperatorbyId(EVSEOperatorId, out EVSEOperator)
+
+        public Boolean TryGetEVSEOperatorbyId(EVSEOperator_Id EVSEOperatorId, out EVSEOperator EVSEOperator)
+        {
+            return _EVSEOperators.TryGetValue(EVSEOperatorId, out EVSEOperator);
+        }
+
+        #endregion
+
+        #region RemoveEVSEOperator(EVSEOperatorId)
+
+        public EVSEOperator RemoveEVSEOperator(EVSEOperator_Id EVSEOperatorId)
+        {
+
+            EVSEOperator _EVSEOperator = null;
+
+            if (_EVSEOperators.TryRemove(EVSEOperatorId, out _EVSEOperator))
+                return _EVSEOperator;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryRemoveEVSEOperator(EVSEOperatorId, out EVSEOperator)
+
+        public Boolean TryRemoveEVSEOperator(EVSEOperator_Id EVSEOperatorId, out EVSEOperator EVSEOperator)
+        {
+            return _EVSEOperators.TryRemove(EVSEOperatorId, out EVSEOperator);
+        }
+
+        #endregion
 
         #endregion
 
