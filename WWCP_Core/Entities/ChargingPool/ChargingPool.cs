@@ -532,9 +532,11 @@ namespace org.GraphDefined.WWCP
 
         #region Events
 
+        // ChargingPool events
+
         #region ChargingStationAddition
 
-        private readonly IVotingNotificator<ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
+        internal readonly IVotingNotificator<ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
 
         /// <summary>
         /// Called whenever a charging station will be or was added.
@@ -549,8 +551,43 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ChargingStationRemoval
 
-        // Charging station events
+        internal readonly IVotingNotificator<ChargingPool, ChargingStation, Boolean> ChargingStationRemoval;
+
+        /// <summary>
+        /// Called whenever a charging station will be or was removed.
+        /// </summary>
+        public IVotingSender<ChargingPool, ChargingStation, Boolean> OnChargingStationRemoval
+        {
+            get
+            {
+                return ChargingStationRemoval;
+            }
+        }
+
+        #endregion
+
+
+        // ChargingStation events
+
+        #region OnAggregatedStatusChanged
+
+        /// <summary>
+        /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="ChargingPool">The charging pool.</param>
+        /// <param name="OldChargingPoolStatus">The old timestamped status of the charging pool.</param>
+        /// <param name="NewChargingPoolStatus">The new timestamped status of the charging pool.</param>
+        public delegate void OnAggregatedStatusChangedDelegate(DateTime Timestamp, ChargingPool ChargingPool, Timestamped<AggregatedStatusType> OldChargingPoolStatus, Timestamped<AggregatedStatusType> NewChargingPoolStatus);
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// </summary>
+        public event OnAggregatedStatusChangedDelegate OnAggregatedStatusChanged;
+
+        #endregion
 
         #region EVSEAddition
 
@@ -564,6 +601,23 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return EVSEAddition;
+            }
+        }
+
+        #endregion
+
+        #region EVSERemoval
+
+        internal readonly IVotingNotificator<ChargingStation, EVSE, Boolean> EVSERemoval;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was removed.
+        /// </summary>
+        public IVotingSender<ChargingStation, EVSE, Boolean> OnEVSERemoval
+        {
+            get
+            {
+                return EVSERemoval;
             }
         }
 
@@ -589,39 +643,26 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region SocketOutletRemoval
 
-        #region OnAggregatedStatusChanged
-
-        /// <summary>
-        /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="ChargingPool">The charging pool.</param>
-        /// <param name="OldChargingPoolStatus">The old timestamped status of the charging pool.</param>
-        /// <param name="NewChargingPoolStatus">The new timestamped status of the charging pool.</param>
-        public delegate void OnAggregatedStatusChangedDelegate(DateTime Timestamp, ChargingPool ChargingPool, Timestamped<AggregatedStatusType> OldChargingPoolStatus, Timestamped<AggregatedStatusType> NewChargingPoolStatus);
+        internal readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletRemoval;
 
         /// <summary>
-        /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// Called whenever a socket outlet will be or was removed.
         /// </summary>
-        public event OnAggregatedStatusChangedDelegate OnAggregatedStatusChanged;
+        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletRemoval
+        {
+            get
+            {
+                return SocketOutletRemoval;
+            }
+        }
 
         #endregion
 
         #endregion
 
         #region Constructor(s)
-
-        #region (internal) ChargingPool()
-
-        /// <summary>
-        /// Create a new charging pool having a random identification.
-        /// </summary>
-        internal ChargingPool()
-            : this(ChargingPool_Id.New())
-        { }
-
-        #endregion
 
         #region (internal) ChargingPool(EVSEOperator)
 
@@ -636,12 +677,12 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (internal) ChargingPool(ChargingPool_Id, StatusHistorySize = DefaultStatusHistorySize)
+        #region (internal) ChargingPool(Id, StatusHistorySize = DefaultStatusHistorySize)
 
         /// <summary>
-        /// Create a new group/pool of charging stations having a random identification.
+        /// Create a new pool of charging stations having the given identification.
         /// </summary>
-        /// <param name="Id">The iunique identification of the charging pool.</param>
+        /// <param name="Id">The unique identification of the charging pool.</param>
         /// <param name="StatusHistorySize">The default size of the aggregated EVSE status history.</param>
         internal ChargingPool(ChargingPool_Id  Id,
                               UInt16           StatusHistorySize = DefaultStatusHistorySize)
@@ -674,16 +715,28 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region Init and link events
+            #region Init events
 
-            // EVSE events
-            this.SocketOutletAddition       = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            #region ChargingPool events
 
-            if (EVSEOperator != null)
-            {
-                this.SocketOutletAddition.OnVoting            += (evse, socketoutlet , vote) => EVSEOperator.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
-                this.SocketOutletAddition.OnNotification      += (evse, socketoutlet)        => EVSEOperator.SocketOutletAddition.SendNotification(evse, socketoutlet);
-            }
+            this.ChargingStationAddition  = new VotingNotificator<ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationRemoval   = new VotingNotificator<ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
+
+            #endregion
+
+            #region ChargingStation events
+
+            this.EVSEAddition  = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval   = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+
+            #endregion
+
+            #region EVSE events
+
+            this.SocketOutletAddition  = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            this.SocketOutletRemoval   = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+
+            #endregion
 
             #endregion
 
@@ -709,25 +762,30 @@ namespace org.GraphDefined.WWCP
 
             this._EVSEOperator = EVSEOperator;
 
+            #region Link events
 
-            // EVS pool events
-            this.ChargingStationAddition    = new VotingNotificator<ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
+            // ChargingPool events
+            this.OnChargingStationAddition.OnVoting       += (evseoperator, pool, vote) => EVSEOperator.ChargingStationAddition.SendVoting      (evseoperator, pool, vote);
+            this.OnChargingStationAddition.OnNotification += (evseoperator, pool)       => EVSEOperator.ChargingStationAddition.SendNotification(evseoperator, pool);
 
-            if (EVSEOperator != null)
-            {
-                this.OnChargingStationAddition.OnVoting       += (evseoperator, evspool, vote) => EVSEOperator.ChargingStationAddition.SendVoting      (evseoperator, evspool, vote);
-                this.OnChargingStationAddition.OnNotification += (evseoperator, evspool)       => EVSEOperator.ChargingStationAddition.SendNotification(evseoperator, evspool);
-            }
+            this.OnChargingStationRemoval. OnVoting       += (evseoperator, pool, vote) => EVSEOperator.ChargingStationRemoval. SendVoting      (evseoperator, pool, vote);
+            this.OnChargingStationRemoval. OnNotification += (evseoperator, pool)       => EVSEOperator.ChargingStationRemoval. SendNotification(evseoperator, pool);
 
+            // ChargingStation events
+            this.OnEVSEAddition.           OnVoting       += (station, evse, vote)      => EVSEOperator.EVSEAddition.           SendVoting      (station, evse, vote);
+            this.OnEVSEAddition.           OnNotification += (station, evse)            => EVSEOperator.EVSEAddition.           SendNotification(station, evse);
 
-            // Charging station events
-            this.EVSEAddition               = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.OnEVSERemoval.            OnVoting       += (station, evse, vote)      => EVSEOperator.EVSERemoval .           SendVoting      (station, evse, vote);
+            this.OnEVSERemoval.            OnNotification += (station, evse)            => EVSEOperator.EVSERemoval .           SendNotification(station, evse);
 
-            if (EVSEOperator != null)
-            {
-                this.OnEVSEAddition.OnVoting                  += (chargingstation, evse, vote) => EVSEOperator.EVSEAddition.SendVoting      (chargingstation, evse, vote);
-                this.OnEVSEAddition.OnNotification            += (chargingstation, evse)       => EVSEOperator.EVSEAddition.SendNotification(chargingstation, evse);
-            }
+            // EVSE events
+            this.SocketOutletAddition.     OnVoting       += (evse, outlet, vote)       => EVSEOperator.SocketOutletAddition.   SendVoting      (evse, outlet, vote);
+            this.SocketOutletAddition.     OnNotification += (evse, outlet)             => EVSEOperator.SocketOutletAddition.   SendNotification(evse, outlet);
+
+            this.SocketOutletRemoval.      OnVoting       += (evse, outlet, vote)       => EVSEOperator.SocketOutletRemoval.    SendVoting      (evse, outlet, vote);
+            this.SocketOutletRemoval.      OnNotification += (evse, outlet)             => EVSEOperator.SocketOutletRemoval.    SendNotification(evse, outlet);
+
+            #endregion
 
         }
 
@@ -743,7 +801,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static ChargingPool CreateNew()
         {
-            return new ChargingPool();
+            return new ChargingPool(ChargingPool_Id.New());
         }
 
         #endregion
@@ -818,6 +876,19 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ContainsChargingStation(ChargingStation)
+
+        /// <summary>
+        /// Check if the given ChargingStation is already present within the charging pool.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        public Boolean ContainsChargingStationId(ChargingStation ChargingStation)
+        {
+            return _ChargingStations.ContainsKey(ChargingStation.Id);
+        }
+
+        #endregion
+
         #region ContainsChargingStationId(ChargingStationId)
 
         /// <summary>
@@ -831,9 +902,9 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region GetChargingPoolbyId(ChargingPoolId)
+        #region GetChargingStationById(ChargingStationId)
 
-        public ChargingStation GetChargingStationbyId(ChargingStation_Id ChargingStationId)
+        public ChargingStation GetChargingStationById(ChargingStation_Id ChargingStationId)
         {
 
             ChargingStation _ChargingStation = null;
@@ -860,6 +931,18 @@ namespace org.GraphDefined.WWCP
         public Boolean TryRemoveChargingStation(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
         {
             return _ChargingStations.TryRemove(ChargingStationId, out ChargingStation);
+        }
+
+        public ChargingStation RemoveChargingStation(ChargingStation_Id ChargingStationId)
+        {
+
+            ChargingStation _ChargingStation = null;
+
+            if (_ChargingStations.TryRemove(ChargingStationId, out _ChargingStation))
+                return _ChargingStation;
+
+            return null;
+
         }
 
 

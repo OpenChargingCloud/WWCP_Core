@@ -64,6 +64,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region RoamingNetworkRemoval
+
+        private readonly IVotingNotificator<RoamingNetworks, RoamingNetwork, Boolean> RoamingNetworkRemoval;
+
+        /// <summary>
+        /// Called whenever a roaming network will be or was removed.
+        /// </summary>
+        public IVotingSender<RoamingNetworks, RoamingNetwork, Boolean> OnRoamingNetworkRemoval
+        {
+            get
+            {
+                return RoamingNetworkRemoval;
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
@@ -73,24 +90,32 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public RoamingNetworks()
         {
-            this._RoamingNetworks        = new ConcurrentDictionary<RoamingNetwork_Id, RoamingNetwork>();
+
+            this._RoamingNetworks = new ConcurrentDictionary<RoamingNetwork_Id, RoamingNetwork>();
+
+            #region Init events
+
             this.RoamingNetworkAddition  = new VotingNotificator<RoamingNetworks, RoamingNetwork, Boolean>(() => new VetoVote(), true);
+            this.RoamingNetworkRemoval   = new VotingNotificator<RoamingNetworks, RoamingNetwork, Boolean>(() => new VetoVote(), true);
+
+            #endregion
+
         }
 
         #endregion
 
 
-        #region CreateNewRoamingNetwork(RoamingNetwork_Id, AuthorizatorId, Description, Action = null)
+        #region CreateNewRoamingNetwork(RoamingNetworkId, AuthorizatorId, Description, Action = null)
 
         /// <summary>
         /// Create and register a new roaming network having the given
         /// unique roaming network identification.
         /// </summary>
-        /// <param name="RoamingNetwork_Id">The unique identification of the new roaming network.</param>
+        /// <param name="RoamingNetworkId">The unique identification of the new roaming network.</param>
         /// <param name="AuthorizatorId">The unique identification for the Auth service.</param>
         /// <param name="Description">A multilanguage description of the roaming network.</param>
         /// <param name="Action">An optional delegate to configure the new EVSE operator after its creation.</param>
-        public RoamingNetwork CreateNewRoamingNetwork(RoamingNetwork_Id       RoamingNetwork_Id,
+        public RoamingNetwork CreateNewRoamingNetwork(RoamingNetwork_Id       RoamingNetworkId,
                                                       Authorizator_Id         AuthorizatorId,
                                                       I18NString              Description,
                                                       Action<RoamingNetwork>  Action = null)
@@ -98,15 +123,15 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (RoamingNetwork_Id == null)
-                throw new ArgumentNullException("RoamingNetwork_Id", "The given roaming network identification must not be null!");
+            if (RoamingNetworkId == null)
+                throw new ArgumentNullException("RoamingNetworkId", "The given roaming network identification must not be null!");
 
-            if (_RoamingNetworks.ContainsKey(RoamingNetwork_Id))
-                throw new RoamingNetworkAlreadyExists(RoamingNetwork_Id);
+            if (_RoamingNetworks.ContainsKey(RoamingNetworkId))
+                throw new RoamingNetworkAlreadyExists(RoamingNetworkId);
 
             #endregion
 
-            var _RoamingNetwork = new RoamingNetwork(RoamingNetwork_Id, AuthorizatorId) {
+            var _RoamingNetwork = new RoamingNetwork(RoamingNetworkId, AuthorizatorId) {
                                       Description = Description
                                   };
 
@@ -114,7 +139,7 @@ namespace org.GraphDefined.WWCP
 
             if (RoamingNetworkAddition.SendVoting(this, _RoamingNetwork))
             {
-                if (_RoamingNetworks.TryAdd(RoamingNetwork_Id, _RoamingNetwork))
+                if (_RoamingNetworks.TryAdd(RoamingNetworkId, _RoamingNetwork))
                 {
                     RoamingNetworkAddition.SendNotification(this, _RoamingNetwork);
                     return _RoamingNetwork;
@@ -127,13 +152,15 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region GetRoamingNetwork(RoamingNetwork_Id)
+        #region GetRoamingNetwork(RoamingNetworkId)
 
-        public RoamingNetwork GetRoamingNetwork(RoamingNetwork_Id RoamingNetwork_Id)
+        public RoamingNetwork GetRoamingNetwork(RoamingNetwork_Id RoamingNetworkId)
         {
 
-            if (_RoamingNetworks.ContainsKey(RoamingNetwork_Id))
-                return _RoamingNetworks[RoamingNetwork_Id];
+            RoamingNetwork _RoamingNetwork = null;
+
+            if (_RoamingNetworks.TryGetValue(RoamingNetworkId, out _RoamingNetwork))
+                return _RoamingNetwork;
 
             return null;
 
@@ -141,11 +168,11 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region TryGetRoamingNetwork(RoamingNetwork_Id, out RoamingNetwork)
+        #region TryGetRoamingNetwork(RoamingNetworkId, out RoamingNetwork)
 
-        public Boolean TryGetRoamingNetwork(RoamingNetwork_Id RoamingNetwork_Id, out RoamingNetwork RoamingNetwork)
+        public Boolean TryGetRoamingNetwork(RoamingNetwork_Id RoamingNetworkId, out RoamingNetwork RoamingNetwork)
         {
-            return _RoamingNetworks.TryGetValue(RoamingNetwork_Id, out RoamingNetwork);
+            return _RoamingNetworks.TryGetValue(RoamingNetworkId, out RoamingNetwork);
         }
 
         #endregion

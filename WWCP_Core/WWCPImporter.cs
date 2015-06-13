@@ -687,7 +687,7 @@ namespace org.GraphDefined.WWCP.Importer
             if (Monitor.TryEnter(UpdateEVSEDataAndStatusLock))
             {
 
-                DebugX.Log("Thread " + Thread.CurrentThread.ManagedThreadId + ": Import started...");
+                //DebugX.Log("Thread " + Thread.CurrentThread.ManagedThreadId + ": Import started...");
 
                 try
                 {
@@ -726,7 +726,7 @@ namespace org.GraphDefined.WWCP.Importer
                     }).
                     Wait();
 
-                    DebugX.Log("Thread " + Thread.CurrentThread.ManagedThreadId + ": Import finished...");
+                    //DebugX.Log("Thread " + Thread.CurrentThread.ManagedThreadId + ": Import finished...");
 
                 }
                 catch (Exception e)
@@ -741,8 +741,8 @@ namespace org.GraphDefined.WWCP.Importer
 
             }
 
-            else
-                DebugX.Log("Thread " + Thread.CurrentThread.ManagedThreadId + ": Import skipped!");
+            //else
+            //    DebugX.Log("Thread " + Thread.CurrentThread.ManagedThreadId + ": Import skipped!");
 
         }
 

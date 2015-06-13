@@ -49,7 +49,7 @@ namespace org.GraphDefined.WWCP
         #region Data
 
         private  readonly ConcurrentDictionary<EVSEOperator_Id,               EVSEOperator>               _EVSEOperators;
-        private  readonly ConcurrentDictionary<EVSP_Id,          EVServiceProvider>          _EVServiceProviders;
+        private  readonly ConcurrentDictionary<EVSP_Id,                       EVServiceProvider>          _EVServiceProviders;
         private  readonly ConcurrentDictionary<RoamingProvider_Id,            RoamingProvider>            _RoamingProviders;
         private  readonly ConcurrentDictionary<NavigationServiceProvider_Id,  NavigationServiceProvider>  _SearchProviders;
 
@@ -202,7 +202,7 @@ namespace org.GraphDefined.WWCP
 
         #region Events
 
-        // Roaming network events
+        // RoamingNetwork events
 
         #region EVSEOperatorAddition
 
@@ -221,6 +221,24 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region EVSEOperatorRemoval
+
+        private readonly IVotingNotificator<RoamingNetwork, EVSEOperator, Boolean> EVSEOperatorRemoval;
+
+        /// <summary>
+        /// Called whenever an EVSEOperator will be or was removed.
+        /// </summary>
+        public IVotingSender<RoamingNetwork, EVSEOperator, Boolean> OnEVSEOperatorRemoval
+        {
+            get
+            {
+                return EVSEOperatorRemoval;
+            }
+        }
+
+        #endregion
+
+
         #region EVServiceProviderAddition
 
         private readonly IVotingNotificator<RoamingNetwork, EVServiceProvider, Boolean> EVServiceProviderAddition;
@@ -237,6 +255,24 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+        #region EVServiceProviderRemoval
+
+        private readonly IVotingNotificator<RoamingNetwork, EVServiceProvider, Boolean> EVServiceProviderRemoval;
+
+        /// <summary>
+        /// Called whenever an EVServiceProvider will be or was removed.
+        /// </summary>
+        public IVotingSender<RoamingNetwork, EVServiceProvider, Boolean> OnEVServiceProviderRemoval
+        {
+            get
+            {
+                return EVServiceProviderRemoval;
+            }
+        }
+
+        #endregion
+
 
         #region RoamingProviderAddition
 
@@ -255,6 +291,24 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region RoamingProviderRemoval
+
+        private readonly IVotingNotificator<RoamingNetwork, RoamingProvider, Boolean> RoamingProviderRemoval;
+
+        /// <summary>
+        /// Called whenever a RoamingProvider will be or was removed.
+        /// </summary>
+        public IVotingSender<RoamingNetwork, RoamingProvider, Boolean> OnRoamingProviderRemoval
+        {
+            get
+            {
+                return RoamingProviderRemoval;
+            }
+        }
+
+        #endregion
+
+
         #region SearchProviderAddition
 
         private readonly IVotingNotificator<RoamingNetwork, NavigationServiceProvider, Boolean> SearchProviderAddition;
@@ -272,28 +326,62 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region SearchProviderRemoval
 
-        // EVSE operator events
-
-        #region EVSPoolAddition
-
-        internal readonly IVotingNotificator<EVSEOperator, ChargingPool, Boolean> EVSPoolAddition;
+        private readonly IVotingNotificator<RoamingNetwork, NavigationServiceProvider, Boolean> SearchProviderRemoval;
 
         /// <summary>
-        /// Called whenever an EVS pool will be or was added.
+        /// Called whenever an SearchProvider will be or was removed.
         /// </summary>
-        public IVotingSender<EVSEOperator, ChargingPool, Boolean> OnEVSPoolAddition
+        public IVotingSender<RoamingNetwork, NavigationServiceProvider, Boolean> OnSearchProviderRemoval
         {
             get
             {
-                return EVSPoolAddition;
+                return SearchProviderRemoval;
             }
         }
 
         #endregion
 
 
-        // EVS pool events
+        // EVSEOperator events
+
+        #region ChargingPoolAddition
+
+        internal readonly IVotingNotificator<EVSEOperator, ChargingPool, Boolean> ChargingPoolAddition;
+
+        /// <summary>
+        /// Called whenever an EVS pool will be or was added.
+        /// </summary>
+        public IVotingSender<EVSEOperator, ChargingPool, Boolean> OnChargingPoolAddition
+        {
+            get
+            {
+                return ChargingPoolAddition;
+            }
+        }
+
+        #endregion
+
+        #region ChargingPoolRemoval
+
+        internal readonly IVotingNotificator<EVSEOperator, ChargingPool, Boolean> ChargingPoolRemoval;
+
+        /// <summary>
+        /// Called whenever an EVS pool will be or was removed.
+        /// </summary>
+        public IVotingSender<EVSEOperator, ChargingPool, Boolean> OnChargingPoolRemoval
+        {
+            get
+            {
+                return ChargingPoolRemoval;
+            }
+        }
+
+        #endregion
+
+
+        // ChargingPool events
 
         #region ChargingStationAddition
 
@@ -312,8 +400,25 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ChargingStationRemoval
 
-        // Charging station events
+        internal readonly IVotingNotificator<ChargingPool, ChargingStation, Boolean> ChargingStationRemoval;
+
+        /// <summary>
+        /// Called whenever a charging station will be or was removed.
+        /// </summary>
+        public IVotingSender<ChargingPool, ChargingStation, Boolean> OnChargingStationRemoval
+        {
+            get
+            {
+                return ChargingStationRemoval;
+            }
+        }
+
+        #endregion
+
+
+        // ChargingStation events
 
         #region EVSEAddition
 
@@ -327,6 +432,23 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return EVSEAddition;
+            }
+        }
+
+        #endregion
+
+        #region EVSERemoval
+
+        internal readonly IVotingNotificator<ChargingStation, EVSE, Boolean> EVSERemoval;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was removed.
+        /// </summary>
+        public IVotingSender<ChargingStation, EVSE, Boolean> OnEVSERemoval
+        {
+            get
+            {
+                return EVSERemoval;
             }
         }
 
@@ -347,6 +469,23 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return SocketOutletAddition;
+            }
+        }
+
+        #endregion
+
+        #region SocketOutletRemoval
+
+        internal readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletRemoval;
+
+        /// <summary>
+        /// Called whenever a socket outlet will be or was removed.
+        /// </summary>
+        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletRemoval
+        {
+            get
+            {
+                return SocketOutletRemoval;
             }
         }
 
@@ -390,10 +529,10 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this._EVSEOperators             = new ConcurrentDictionary<EVSEOperator_Id,      EVSEOperator>();
-            this._EVServiceProviders        = new ConcurrentDictionary<EVSP_Id, EVServiceProvider>();
-            this._RoamingProviders          = new ConcurrentDictionary<RoamingProvider_Id,   RoamingProvider>();
-            this._SearchProviders           = new ConcurrentDictionary<NavigationServiceProvider_Id,    NavigationServiceProvider>();
+            this._EVSEOperators             = new ConcurrentDictionary<EVSEOperator_Id,              EVSEOperator>();
+            this._EVServiceProviders        = new ConcurrentDictionary<EVSP_Id,                      EVServiceProvider>();
+            this._RoamingProviders          = new ConcurrentDictionary<RoamingProvider_Id,           RoamingProvider>();
+            this._SearchProviders           = new ConcurrentDictionary<NavigationServiceProvider_Id, NavigationServiceProvider>();
             this._RequestRouter             = new RequestRouter(Id, AuthorizatorId);
 
             this.Name                       = new I18NString(Languages.en, Id.ToString());
@@ -401,24 +540,36 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region Init and link events
+            #region Init events
 
-            this.EVSEOperatorAddition       = new VotingNotificator<RoamingNetwork,  EVSEOperator,      Boolean>(() => new VetoVote(), true);
-            this.EVServiceProviderAddition  = new VotingNotificator<RoamingNetwork,  EVServiceProvider, Boolean>(() => new VetoVote(), true);
-            this.RoamingProviderAddition    = new VotingNotificator<RoamingNetwork,  RoamingProvider,   Boolean>(() => new VetoVote(), true);
-            this.SearchProviderAddition     = new VotingNotificator<RoamingNetwork,  NavigationServiceProvider,    Boolean>(() => new VetoVote(), true);
+            // RoamingNetwork events
+            this.EVSEOperatorAddition       = new VotingNotificator<RoamingNetwork,  EVSEOperator,              Boolean>(() => new VetoVote(), true);
+            this.EVSEOperatorRemoval        = new VotingNotificator<RoamingNetwork,  EVSEOperator,              Boolean>(() => new VetoVote(), true);
 
-            // EVSE operator events
-            this.EVSPoolAddition            = new VotingNotificator<EVSEOperator,    ChargingPool,           Boolean>(() => new VetoVote(), true);
+            this.EVServiceProviderAddition  = new VotingNotificator<RoamingNetwork,  EVServiceProvider,         Boolean>(() => new VetoVote(), true);
+            this.EVServiceProviderRemoval   = new VotingNotificator<RoamingNetwork,  EVServiceProvider,         Boolean>(() => new VetoVote(), true);
 
-            // EVS pool events
-            this.ChargingStationAddition    = new VotingNotificator<ChargingPool,         ChargingStation,   Boolean>(() => new VetoVote(), true);
+            this.RoamingProviderAddition    = new VotingNotificator<RoamingNetwork,  RoamingProvider,           Boolean>(() => new VetoVote(), true);
+            this.RoamingProviderRemoval     = new VotingNotificator<RoamingNetwork,  RoamingProvider,           Boolean>(() => new VetoVote(), true);
 
-            // Charging station events
-            this.EVSEAddition               = new VotingNotificator<ChargingStation, EVSE,              Boolean>(() => new VetoVote(), true);
+            this.SearchProviderAddition     = new VotingNotificator<RoamingNetwork,  NavigationServiceProvider, Boolean>(() => new VetoVote(), true);
+            this.SearchProviderRemoval      = new VotingNotificator<RoamingNetwork,  NavigationServiceProvider, Boolean>(() => new VetoVote(), true);
+
+            // EVSEOperator events
+            this.ChargingPoolAddition       = new VotingNotificator<EVSEOperator,    ChargingPool,              Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolRemoval        = new VotingNotificator<EVSEOperator,    ChargingPool,              Boolean>(() => new VetoVote(), true);
+
+            // ChargingPool events
+            this.ChargingStationAddition    = new VotingNotificator<ChargingPool,    ChargingStation,           Boolean>(() => new VetoVote(), true);
+            this.ChargingStationRemoval     = new VotingNotificator<ChargingPool,    ChargingStation,           Boolean>(() => new VetoVote(), true);
+
+            // ChargingStation events
+            this.EVSEAddition               = new VotingNotificator<ChargingStation, EVSE,                      Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval                = new VotingNotificator<ChargingStation, EVSE,                      Boolean>(() => new VetoVote(), true);
 
             // EVSE events
-            this.SocketOutletAddition       = new VotingNotificator<EVSE,            SocketOutlet,      Boolean>(() => new VetoVote(), true);
+            this.SocketOutletAddition       = new VotingNotificator<EVSE,            SocketOutlet,              Boolean>(() => new VetoVote(), true);
+            this.SocketOutletRemoval        = new VotingNotificator<EVSE,            SocketOutlet,              Boolean>(() => new VetoVote(), true);
 
             #endregion
 
@@ -429,39 +580,39 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CreateNewEVSEOperator(EVSEOperator_Id, Name = null, Description = null, Action = null)
+        #region CreateNewEVSEOperator(EVSEOperatorId, Name = null, Description = null, Action = null)
 
         /// <summary>
         /// Create and register a new EVSE operator having the given
         /// unique EVSE operator identification.
         /// </summary>
-        /// <param name="EVSEOperator_Id">The unique identification of the new EVSE operator.</param>
+        /// <param name="EVSEOperatorId">The unique identification of the new EVSE operator.</param>
         /// <param name="Name">The offical (multi-language) name of the EVSE Operator.</param>
         /// <param name="Description">An optional (multi-language) description of the EVSE Operator.</param>
         /// <param name="Action">An optional delegate to configure the new EVSE operator after its creation.</param>
-        public EVSEOperator CreateNewEVSEOperator(EVSEOperator_Id       EVSEOperator_Id,
-                                                  I18NString             Name           = null,
-                                                  I18NString             Description    = null,
+        public EVSEOperator CreateNewEVSEOperator(EVSEOperator_Id       EVSEOperatorId,
+                                                  I18NString            Name           = null,
+                                                  I18NString            Description    = null,
                                                   Action<EVSEOperator>  Action         = null)
         {
 
             #region Initial checks
 
-            if (EVSEOperator_Id == null)
-                throw new ArgumentNullException("EVSEOperator_Id", "The given EVSE operator identification must not be null!");
+            if (EVSEOperatorId == null)
+                throw new ArgumentNullException("EVSEOperatorId", "The given EVSE operator identification must not be null!");
 
-            if (_EVSEOperators.ContainsKey(EVSEOperator_Id))
-                throw new EVSEOperatorAlreadyExists(EVSEOperator_Id, this.Id);
+            if (_EVSEOperators.ContainsKey(EVSEOperatorId))
+                throw new EVSEOperatorAlreadyExists(EVSEOperatorId, this.Id);
 
             #endregion
 
-            var _EVSEOperator = new EVSEOperator(EVSEOperator_Id, Name, Description, this);
+            var _EVSEOperator = new EVSEOperator(EVSEOperatorId, Name, Description, this);
 
             Action.FailSafeInvoke(_EVSEOperator);
 
             if (EVSEOperatorAddition.SendVoting(this, _EVSEOperator))
             {
-                if (_EVSEOperators.TryAdd(EVSEOperator_Id, _EVSEOperator))
+                if (_EVSEOperators.TryAdd(EVSEOperatorId, _EVSEOperator))
                 {
                     EVSEOperatorAddition.SendNotification(this, _EVSEOperator);
                     return _EVSEOperator;
@@ -474,35 +625,35 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CreateNewEVServiceProvider(EVServiceProvider_Id, Action = null)
+        #region CreateNewEVServiceProvider(EVServiceProviderId, Action = null)
 
         /// <summary>
         /// Create and register a new electric vehicle service provider having the given
         /// unique electric vehicle service provider identification.
         /// </summary>
-        /// <param name="EVServiceProvider_Id">The unique identification of the new roaming provider.</param>
+        /// <param name="EVServiceProviderId">The unique identification of the new roaming provider.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
-        public EVServiceProvider CreateNewEVServiceProvider(EVSP_Id                    EVServiceProvider_Id,
+        public EVServiceProvider CreateNewEVServiceProvider(EVSP_Id                    EVServiceProviderId,
                                                             Action<EVServiceProvider>  Action  = null)
         {
 
             #region Initial checks
 
-            if (EVServiceProvider_Id == null)
-                throw new ArgumentNullException("EVServiceProvider_Id", "The given electric vehicle service provider identification must not be null!");
+            if (EVServiceProviderId == null)
+                throw new ArgumentNullException("EVServiceProviderId", "The given electric vehicle service provider identification must not be null!");
 
-            if (_EVServiceProviders.ContainsKey(EVServiceProvider_Id))
-                throw new EVServiceProviderAlreadyExists(EVServiceProvider_Id, this.Id);
+            if (_EVServiceProviders.ContainsKey(EVServiceProviderId))
+                throw new EVServiceProviderAlreadyExists(EVServiceProviderId, this.Id);
 
             #endregion
 
-            var _EVServiceProvider = new EVServiceProvider(EVServiceProvider_Id, this);
+            var _EVServiceProvider = new EVServiceProvider(EVServiceProviderId, this);
 
             Action.FailSafeInvoke(_EVServiceProvider);
 
             if (EVServiceProviderAddition.SendVoting(this, _EVServiceProvider))
             {
-                if (_EVServiceProviders.TryAdd(EVServiceProvider_Id, _EVServiceProvider))
+                if (_EVServiceProviders.TryAdd(EVServiceProviderId, _EVServiceProvider))
                 {
                     EVServiceProviderAddition.SendNotification(this, _EVServiceProvider);
                     return _EVServiceProvider;
@@ -515,37 +666,37 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CreateNewEVServiceProvider(EVServiceProvider_Id, EMobilityService, Action = null)
+        #region CreateNewEVServiceProvider(EVServiceProviderId, EMobilityService, Action = null)
 
         /// <summary>
         /// Create and register a new electric vehicle service provider having the given
         /// unique electric vehicle service provider identification.
         /// </summary>
-        /// <param name="EVServiceProvider_Id">The unique identification of the new roaming provider.</param>
+        /// <param name="EVServiceProviderId">The unique identification of the new roaming provider.</param>
         /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
-        public EVServiceProvider CreateNewEVServiceProvider(EVSP_Id       EVServiceProvider_Id,
-                                                            IAuthServices          EMobilityService,
+        public EVServiceProvider CreateNewEVServiceProvider(EVSP_Id                    EVServiceProviderId,
+                                                            IAuthServices              EMobilityService,
                                                             Action<EVServiceProvider>  Action  = null)
         {
 
             #region Initial checks
 
-            if (EVServiceProvider_Id == null)
-                throw new ArgumentNullException("EVServiceProvider_Id", "The given electric vehicle service provider identification must not be null!");
+            if (EVServiceProviderId == null)
+                throw new ArgumentNullException("EVServiceProviderId", "The given electric vehicle service provider identification must not be null!");
 
-            if (_EVServiceProviders.ContainsKey(EVServiceProvider_Id))
-                throw new EVServiceProviderAlreadyExists(EVServiceProvider_Id, this.Id);
+            if (_EVServiceProviders.ContainsKey(EVServiceProviderId))
+                throw new EVServiceProviderAlreadyExists(EVServiceProviderId, this.Id);
 
             #endregion
 
-            var _EVServiceProvider = new EVServiceProvider(EVServiceProvider_Id, this, EMobilityService);
+            var _EVServiceProvider = new EVServiceProvider(EVServiceProviderId, this, EMobilityService);
 
             Action.FailSafeInvoke(_EVServiceProvider);
 
             if (EVServiceProviderAddition.SendVoting(this, _EVServiceProvider))
             {
-                if (_EVServiceProviders.TryAdd(EVServiceProvider_Id, _EVServiceProvider))
+                if (_EVServiceProviders.TryAdd(EVServiceProviderId, _EVServiceProvider))
                 {
                     EVServiceProviderAddition.SendNotification(this, _EVServiceProvider);
                     return _EVServiceProvider;
@@ -558,36 +709,37 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CreateNewRoamingProvider(RoamingProvider_Id, Action = null)
+        #region CreateNewRoamingProvider(RoamingProviderId, EMobilityService, Action = null)
 
         /// <summary>
         /// Create and register a new electric vehicle roaming provider having the given
         /// unique electric vehicle roaming provider identification.
         /// </summary>
-        /// <param name="RoamingProvider_Id">The unique identification of the new roaming provider.</param>
+        /// <param name="RoamingProviderId">The unique identification of the new roaming provider.</param>
+        /// <param name="EMobilityService">The attached E-Mobility service.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
-        public RoamingProvider CreateNewRoamingProvider(RoamingProvider_Id                             RoamingProvider_Id,
-                                                        IAuthServices  EMobilityService,
-                                                        Action<RoamingProvider>                        Action = null)
+        public RoamingProvider CreateNewRoamingProvider(RoamingProvider_Id       RoamingProviderId,
+                                                        IAuthServices            EMobilityService,
+                                                        Action<RoamingProvider>  Action = null)
         {
 
             #region Initial checks
 
-            if (RoamingProvider_Id == null)
-                throw new ArgumentNullException("RoamingProvider_Id", "The given roaming provider identification must not be null!");
+            if (RoamingProviderId == null)
+                throw new ArgumentNullException("RoamingProviderId", "The given roaming provider identification must not be null!");
 
-            if (_RoamingProviders.ContainsKey(RoamingProvider_Id))
-                throw new RoamingProviderAlreadyExists(RoamingProvider_Id, this.Id);
+            if (_RoamingProviders.ContainsKey(RoamingProviderId))
+                throw new RoamingProviderAlreadyExists(RoamingProviderId, this.Id);
 
             #endregion
 
-            var _RoamingProvider = new RoamingProvider(RoamingProvider_Id, this, EMobilityService);
+            var _RoamingProvider = new RoamingProvider(RoamingProviderId, this, EMobilityService);
 
             Action.FailSafeInvoke(_RoamingProvider);
 
             if (RoamingProviderAddition.SendVoting(this, _RoamingProvider))
             {
-                if (_RoamingProviders.TryAdd(RoamingProvider_Id, _RoamingProvider))
+                if (_RoamingProviders.TryAdd(RoamingProviderId, _RoamingProvider))
                 {
                     RoamingProviderAddition.SendNotification(this, _RoamingProvider);
                     return _RoamingProvider;
@@ -600,35 +752,35 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CreateNewSearchProvider(SearchProvider_Id, Action = null)
+        #region CreateNewSearchProvider(NavigationServiceProviderId, Action = null)
 
         /// <summary>
-        /// Create and register a new charging station search provider having the given
-        /// unique charging station search provider identification.
+        /// Create and register a new navigation service provider having the given
+        /// unique identification.
         /// </summary>
-        /// <param name="SearchProvider_Id">The unique identification of the new search provider.</param>
+        /// <param name="NavigationServiceProviderId">The unique identification of the new search provider.</param>
         /// <param name="Action">An optional delegate to configure the new search provider after its creation.</param>
-        public NavigationServiceProvider CreateNewSearchProvider(NavigationServiceProvider_Id       SearchProvider_Id,
-                                                      Action<NavigationServiceProvider>  Action = null)
+        public NavigationServiceProvider CreateNewSearchProvider(NavigationServiceProvider_Id       NavigationServiceProviderId,
+                                                                 Action<NavigationServiceProvider>  Action = null)
         {
 
             #region Initial checks
 
-            if (SearchProvider_Id == null)
-                throw new ArgumentNullException("SearchProvider_Id", "The given search provider identification must not be null!");
+            if (NavigationServiceProviderId == null)
+                throw new ArgumentNullException("NavigationServiceProviderId", "The given navigation service provider identification must not be null!");
 
-            if (_SearchProviders.ContainsKey(SearchProvider_Id))
-                throw new SearchProviderAlreadyExists(SearchProvider_Id, this.Id);
+            if (_SearchProviders.ContainsKey(NavigationServiceProviderId))
+                throw new SearchProviderAlreadyExists(NavigationServiceProviderId, this.Id);
 
             #endregion
 
-            var _SearchProvider = new NavigationServiceProvider(SearchProvider_Id, this);
+            var _SearchProvider = new NavigationServiceProvider(NavigationServiceProviderId, this);
 
             Action.FailSafeInvoke(_SearchProvider);
 
             if (SearchProviderAddition.SendVoting(this, _SearchProvider))
             {
-                if (_SearchProviders.TryAdd(SearchProvider_Id, _SearchProvider))
+                if (_SearchProviders.TryAdd(NavigationServiceProviderId, _SearchProvider))
                 {
                     SearchProviderAddition.SendNotification(this, _SearchProvider);
                     return _SearchProvider;
