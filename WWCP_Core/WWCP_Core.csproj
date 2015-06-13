@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonTypes\ChangeMethods.cs" />
     <Compile Include="RedirectedEVSEList.cs" />
     <Compile Include="WWCPImporter.cs" />
     <Compile Include="ImporterDefaults.cs" />

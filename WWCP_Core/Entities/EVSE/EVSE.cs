@@ -142,6 +142,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region PlannedStatusChanges
+
+        private List<Timestamped<EVSEStatusType>> _PlannedStatusChanges;
+
+        /// <summary>
+        /// A list of planned future EVSE status changes.
+        /// </summary>
+        public IEnumerable<Timestamped<EVSEStatusType>> PlannedStatusChanges
+        {
+            get
+            {
+                return _PlannedStatusChanges.OrderBy(v => v.Timestamp);
+            }
+        }
+
+        #endregion
+
 
         public IEnumerable<String>  ChargingModes           { get; set; }
 
@@ -374,7 +391,7 @@ namespace org.GraphDefined.WWCP
         /// Set the timestamped status of the EVSE.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="NewStatus">The new timestamped status of this EVSE.</param>
+        /// <param name="NewStatus">A list of new timestamped status for this EVSE.</param>
         public void SetStatus(DateTime                     Timestamp,
                               Timestamped<EVSEStatusType>  NewStatus)
         {
@@ -389,6 +406,60 @@ namespace org.GraphDefined.WWCP
                 var OnStatusChangedLocal = OnStatusChanged;
                 if (OnStatusChangedLocal != null)
                     OnStatusChanged(Timestamp, this, OldStatus, NewStatus);
+
+            }
+
+        }
+
+        #endregion
+
+        #region SetStatus(Timestamp, NewStatusList, ChangeMethod = ChangeMethods.Replace)
+
+        /// <summary>
+        /// Set the timestamped status of the EVSE.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="NewStatusList">A list of new timestamped status for this EVSE.</param>
+        /// <param name="ChangeMethod">The change mode.</param>
+        public void SetStatus(DateTime                                  Timestamp,
+                              IEnumerable<Timestamped<EVSEStatusType>>  NewStatusList,
+                              ChangeMethods                             ChangeMethod = ChangeMethods.Replace)
+        {
+
+            foreach (var NewStatus in NewStatusList)
+            {
+
+                if (NewStatus.Timestamp <= DateTime.Now)
+                {
+                    if (_StatusHistory.Peek().Value != NewStatus.Value)
+                    {
+
+                        var OldStatus = _StatusHistory.Peek();
+
+                        _StatusHistory.Push(NewStatus);
+
+                        var OnStatusChangedLocal = OnStatusChanged;
+                        if (OnStatusChangedLocal != null)
+                            OnStatusChanged(Timestamp, this, OldStatus, NewStatus);
+
+                    }
+                }
+
+                else
+                {
+
+                    if (ChangeMethod == ChangeMethods.Replace)
+                        _PlannedStatusChanges = NewStatusList.
+                                                    Where(TVP => TVP.Timestamp > DateTime.Now).
+                                                    ToList();
+
+                    else
+                        _PlannedStatusChanges = _PlannedStatusChanges.
+                                                    Concat(NewStatusList.Where(TVP => TVP.Timestamp > DateTime.Now)).
+                                                    Deduplicate().
+                                                    ToList();
+
+                }
 
             }
 
