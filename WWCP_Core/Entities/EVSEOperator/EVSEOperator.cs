@@ -559,13 +559,26 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ContainsChargingPoolId(ChargingPoolId)
+        #region ContainsChargingPool(ChargingPool)
+
+        /// <summary>
+        /// Check if the given ChargingPool is already present within the EVSE operator.
+        /// </summary>
+        /// <param name="ChargingPoolId">A charging pool.</param>
+        public Boolean ContainsChargingPool(ChargingPool ChargingPool)
+        {
+            return _ChargingPools.ContainsKey(ChargingPool.Id);
+        }
+
+        #endregion
+
+        #region ContainsChargingPool(ChargingPoolId)
 
         /// <summary>
         /// Check if the given ChargingPool identification is already present within the EVSE operator.
         /// </summary>
         /// <param name="ChargingPoolId">The unique identification of the charging pool.</param>
-        public Boolean ContainsChargingPoolId(ChargingPool_Id ChargingPoolId)
+        public Boolean ContainsChargingPool(ChargingPool_Id ChargingPoolId)
         {
             return _ChargingPools.ContainsKey(ChargingPoolId);
         }
