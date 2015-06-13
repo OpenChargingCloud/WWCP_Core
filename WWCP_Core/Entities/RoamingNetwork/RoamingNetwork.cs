@@ -580,7 +580,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region EVSEOperator
+        #region EVSE operator methods
 
         #region CreateNewEVSEOperator(EVSEOperatorId, Name = null, Description = null, Action = null)
 
