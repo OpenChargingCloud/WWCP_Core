@@ -50,25 +50,7 @@ namespace org.GraphDefined.WWCP
                                 IEnumerable<ChargingPool>
     {
 
-
         #region Properties
-
-        #region RoamingNetwork
-
-        private readonly RoamingNetwork _RoamingNetwork;
-
-        /// <summary>
-        /// The associated EV Roaming Network of the Electric Vehicle Supply Equipment Operator.
-        /// </summary>
-        public RoamingNetwork RoamingNetwork
-        {
-            get
-            {
-                return _RoamingNetwork;
-            }
-        }
-
-        #endregion
 
         #region Name
 
@@ -189,6 +171,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region RoamingNetwork
+
+        private readonly RoamingNetwork _RoamingNetwork;
+
+        /// <summary>
+        /// The associated EV Roaming Network of the Electric Vehicle Supply Equipment Operator.
+        /// </summary>
+        public RoamingNetwork RoamingNetwork
+        {
+            get
+            {
+                return _RoamingNetwork;
+            }
+        }
+
+        #endregion
 
         #region ChargingPools
 
@@ -382,11 +381,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (Id == null)
-                throw new ArgumentNullException("Id", "The unique identification of the roaming network must not be null!");
-
-            //if (RoamingNetwork == null)
-            //    throw new ArgumentNullException("RoamingNetwork", "The roaming network must not be null!");
+            if (RoamingNetwork == null)
+                throw new ArgumentNullException("RoamingNetwork", "The roaming network must not be null!");
 
             #endregion
 
@@ -485,27 +481,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CreateNew(Id, Name = null, Description = null, RoamingNetwork = null)
-
-        /// <summary>
-        /// Create a new EVSE operator having a random identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the EVSE operator.</param>
-        /// <param name="Name">The offical (multi-language) name of the EVSE Operator.</param>
-        /// <param name="Description">An optional (multi-language) description of the EVSE Operator.</param>
-        /// <param name="RoamingNetwork">The associated roaming network.</param>
-        public static EVSEOperator CreateNew(EVSEOperator_Id  Id,
-                                             I18NString       Name           = null,
-                                             I18NString       Description    = null,
-                                             RoamingNetwork   RoamingNetwork = null)
-        {
-
-            return new EVSEOperator(Id, Name, Description, RoamingNetwork);
-
-        }
-
-        #endregion
-
         #region CreateNewChargingPool(ChargingPoolId = null, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
@@ -559,12 +534,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
         #region ContainsChargingPool(ChargingPool)
 
         /// <summary>
         /// Check if the given ChargingPool is already present within the EVSE operator.
         /// </summary>
-        /// <param name="ChargingPoolId">A charging pool.</param>
+        /// <param name="ChargingPool">A charging pool.</param>
         public Boolean ContainsChargingPool(ChargingPool ChargingPool)
         {
             return _ChargingPools.ContainsKey(ChargingPool.Id);
@@ -610,12 +586,57 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region RemoveChargingPool(ChargingPoolId)
+
+        public ChargingPool RemoveChargingPool(ChargingPool_Id ChargingPoolId)
+        {
+
+            ChargingPool _ChargingPool = null;
+
+            if (_ChargingPools.TryRemove(ChargingPoolId, out _ChargingPool))
+                return _ChargingPool;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryRemoveChargingPool(ChargingPoolId, out ChargingPool)
+
         public Boolean TryRemoveChargingPool(ChargingPool_Id ChargingPoolId, out ChargingPool ChargingPool)
         {
             return _ChargingPools.TryRemove(ChargingPoolId, out ChargingPool);
         }
 
+        #endregion
 
+
+        #region ContainsChargingStation(ChargingStation)
+
+        /// <summary>
+        /// Check if the given ChargingStation is already present within the EVSE operator.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        public Boolean ContainsChargingStation(ChargingStation ChargingStation)
+        {
+            return _ChargingPools.Any(v => v.Value.ContainsChargingStation(ChargingStation.Id));
+        }
+
+        #endregion
+
+        #region ContainsChargingStation(ChargingStationId)
+
+        /// <summary>
+        /// Check if the given ChargingStation identification is already present within the EVSE operator.
+        /// </summary>
+        /// <param name="ChargingStationId">The unique identification of the charging station.</param>
+        public Boolean ContainsChargingStation(ChargingStation_Id ChargingStationId)
+        {
+            return _ChargingPools.Any(v => v.Value.ContainsChargingStation(ChargingStationId));
+        }
+
+        #endregion
 
         #region GetChargingStationbyId(ChargingStationId)
 
@@ -645,29 +666,44 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ContainsChargingStationId(ChargingStationId)
+
+        #region ContainsEVSE(EVSE)
 
         /// <summary>
-        /// Check if the given ChargingStation identification is already present within the EVSE operator.
+        /// Check if the given EVSE is already present within the EVSE operator.
         /// </summary>
-        /// <param name="ChargingStationId">The unique identification of the charging station.</param>
-        public Boolean ContainsChargingStationId(ChargingStation_Id ChargingStationId)
+        /// <param name="EVSE">An EVSE.</param>
+        public Boolean ContainsEVSE(EVSE EVSE)
         {
-            return _ChargingPools.Any(v => v.Value.ContainsChargingStationId(ChargingStationId));
+            return _ChargingPools.Any(v => v.Value.ContainsEVSE(EVSE.Id));
         }
 
         #endregion
 
+        #region ContainsEVSE(EVSEId)
+
+        /// <summary>
+        /// Check if the given EVSE identification is already present within the EVSE operator.
+        /// </summary>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        public Boolean ContainsEVSE(EVSE_Id EVSEId)
+        {
+            return _ChargingPools.Any(v => v.Value.ContainsEVSE(EVSEId));
+        }
+
+        #endregion
 
         #region GetEVSEbyId(EVSEId)
 
         public EVSE GetEVSEbyId(EVSE_Id EVSEId)
         {
+
             return _ChargingPools.Values.
                        SelectMany(pool    => pool.   ChargingStations).
                        SelectMany(station => station.EVSEs).
                        Where     (evse    => evse.Id == EVSEId).
                        FirstOrDefault();
+
         }
 
         #endregion
@@ -688,20 +724,6 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
-
-        #region ContainsEVSEId(EVSEId)
-
-        /// <summary>
-        /// Check if the given EVSE identification is already present within the EVSE operator.
-        /// </summary>
-        /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        public Boolean ContainsEVSEId(EVSE_Id EVSEId)
-        {
-            return _ChargingPools.Any(v => v.Value.ContainsEVSEId(EVSEId));
-        }
-
-        #endregion
-
 
 
         #region SetEVSEStatus(EVSEId, NewStatus, SendUpstream = false)

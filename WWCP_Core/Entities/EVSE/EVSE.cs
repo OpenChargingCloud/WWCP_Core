@@ -44,9 +44,9 @@ namespace org.GraphDefined.WWCP
         #region Data
 
         /// <summary>
-        /// The default max size of the status history.
+        /// The default max size of the EVSE status history.
         /// </summary>
-        public const UInt16 DefaultStatusHistorySize = 50;
+        public const UInt16 DefaultEVSEStatusHistorySize = 50;
 
         #endregion
 
@@ -169,20 +169,6 @@ namespace org.GraphDefined.WWCP
         public I18NString           AdditionalInfo          { get; set; }
 
 
-        #region SocketOutlets
-
-        private readonly ConcurrentDictionary<SocketOutlet_Id, SocketOutlet> _SocketOutlets;
-
-        public IEnumerable<SocketOutlet> SocketOutlets
-        {
-            get
-            {
-                return _SocketOutlets.Values;
-            }
-        }
-
-        #endregion
-
         #region ChargingStation
 
         private readonly ChargingStation _ChargingStation;
@@ -200,27 +186,25 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #endregion
+        #region SocketOutlets
 
-        #region Events
+        private readonly ConcurrentDictionary<SocketOutlet_Id, SocketOutlet> _SocketOutlets;
 
-        #region SocketOutletAddition
-
-        private readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletAddition;
-
-        /// <summary>
-        /// Called whenever a socket outlet will be or was added.
-        /// </summary>
-        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
+        public IEnumerable<SocketOutlet> SocketOutlets
         {
             get
             {
-                return SocketOutletAddition;
+                return _SocketOutlets.Values;
             }
         }
 
         #endregion
 
+        #endregion
+
+        #region Events
+
+        // EVSE events
 
         #region OnStatusChanged
 
@@ -240,52 +224,43 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #endregion
+        #region SocketOutletAddition
 
-        #region Constructor(s)
-
-        #region (internal) EVSE(Id, StatusHistorySize = DefaultStatusHistorySize)  // Main Constructor
+        internal readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletAddition;
 
         /// <summary>
-        /// Create a new Electric Vehicle Supply Equipment (EVSE)
-        /// having the given EVSE_Id.
+        /// Called whenever a socket outlet will be or was added.
         /// </summary>
-        /// <param name="Id">The unique identification of the EVSE.</param>
-        /// <param name="StatusHistorySize">The default size of the EVSE status history.</param>
-        internal EVSE(EVSE_Id  Id,
-                      UInt16   StatusHistorySize = DefaultStatusHistorySize)
-
-            : base(Id)
-
+        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
         {
-
-            #region Initial checks
-
-            if (Id == null)
-                throw new ArgumentNullException("Id", "The unique identification of the EVSE must not be null!");
-
-            #endregion
-
-            #region Init data and properties
-
-            this._StatusHistory          = new Stack<Timestamped<EVSEStatusType>>((Int32) StatusHistorySize);
-            this._StatusHistory.Push(new Timestamped<EVSEStatusType>(EVSEStatusType.Unknown));
-
-            this._SocketOutlets          = new ConcurrentDictionary<SocketOutlet_Id, SocketOutlet>();
-
-            #endregion
-
-            #region Init and link events
-
-            this.SocketOutletAddition = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
-
-            #endregion
-
+            get
+            {
+                return SocketOutletAddition;
+            }
         }
 
         #endregion
 
-        #region (internal) EVSE(Id, ChargingStation, StatusHistorySize = DefaultStatusHistorySize)
+        #region SocketOutletRemoval
+
+        internal readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletRemoval;
+
+        /// <summary>
+        /// Called whenever a socket outlet will be or was removed.
+        /// </summary>
+        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletRemoval
+        {
+            get
+            {
+                return SocketOutletRemoval;
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Constructor(s)
 
         /// <summary>
         /// Create a new Electric Vehicle Supply Equipment (EVSE)
@@ -293,42 +268,56 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="ChargingStation">The parent EVS pool.</param>
-        /// <param name="StatusHistorySize">The default size of the EVSE status history.</param>
+        /// <param name="EVSEStatusHistorySize">The default size of the EVSE status history.</param>
         internal EVSE(EVSE_Id          Id,
                       ChargingStation  ChargingStation,
-                      UInt16           StatusHistorySize = DefaultStatusHistorySize)
+                      UInt16           EVSEStatusHistorySize = DefaultEVSEStatusHistorySize)
 
-            : this(Id, StatusHistorySize)
+            : base(Id)
 
         {
+
+            #region Initial checks
 
             if (ChargingStation == null)
                 throw new ArgumentNullException("ChargingStation", "The charging station must not be null!");
 
-            this._ChargingStation  = ChargingStation;
+            #endregion
 
-            this.OnSocketOutletAddition.OnVoting       += (evse, socketoutlet, vote) => _ChargingStation.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
-            this.OnSocketOutletAddition.OnNotification += (evse, socketoutlet)       => _ChargingStation.SocketOutletAddition.SendNotification(evse, socketoutlet);
+            #region Init data and properties
+
+            this._ChargingStation        = ChargingStation;
+
+            this._StatusHistory          = new Stack<Timestamped<EVSEStatusType>>((Int32) EVSEStatusHistorySize);
+            this._StatusHistory.Push(new Timestamped<EVSEStatusType>(EVSEStatusType.Unknown));
+
+            this._SocketOutlets          = new ConcurrentDictionary<SocketOutlet_Id, SocketOutlet>();
+
+            #endregion
+
+            #region Init events
+
+            // EVSE events
+            this.SocketOutletAddition     = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            this.SocketOutletRemoval      = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+
+            #endregion
+
+            #region Link events
+
+            // EVSE events
+            this.SocketOutletAddition.     OnVoting       += (evse, outlet, vote)       => ChargingStation.SocketOutletAddition.   SendVoting      (evse, outlet, vote);
+            this.SocketOutletAddition.     OnNotification += (evse, outlet)             => ChargingStation.SocketOutletAddition.   SendNotification(evse, outlet);
+
+            this.SocketOutletRemoval.      OnVoting       += (evse, outlet, vote)       => ChargingStation.SocketOutletRemoval.    SendVoting      (evse, outlet, vote);
+            this.SocketOutletRemoval.      OnNotification += (evse, outlet)             => ChargingStation.SocketOutletRemoval.    SendNotification(evse, outlet);
+
+            #endregion
 
         }
 
         #endregion
 
-        #endregion
-
-
-        #region CreateNew(Id)
-
-        /// <summary>
-        /// Create a new Electric Vehicle Supply Equipment (EVSE) having the given identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the Electric Vehicle Supply Equipment (EVSE).</param>
-        public static EVSE CreateNew(EVSE_Id Id)
-        {
-            return new EVSE(Id);
-        }
-
-        #endregion
 
         #region CreateNewSocketOutlet(SocketOutlet_Id, Action = null)
 

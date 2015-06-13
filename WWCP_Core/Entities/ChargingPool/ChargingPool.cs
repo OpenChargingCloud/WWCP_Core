@@ -47,9 +47,9 @@ namespace org.GraphDefined.WWCP
         #region Data
 
         /// <summary>
-        /// The default max size of the aggregated EVSE status history.
+        /// The default max size of the aggregated charging pool status history.
         /// </summary>
-        public const UInt16 DefaultStatusHistorySize = 50;
+        public const UInt16 DefaultPoolStatusHistorySize = 50;
 
         #endregion
 
@@ -455,17 +455,10 @@ namespace org.GraphDefined.WWCP
         [Optional]
         public EVSEOperator EVSEOperator
         {
-
             get
             {
                 return _EVSEOperator;
             }
-
-            set
-            {
-                SetProperty<EVSEOperator>(ref _EVSEOperator, value);
-            }
-
         }
 
         #endregion
@@ -664,28 +657,15 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (internal) ChargingPool(EVSEOperator)
-
         /// <summary>
-        /// Create a new charging pool having a random identification
-        /// and the given EVSE operator.
+        /// Create a new group/pool of charging stations having the given identification.
         /// </summary>
+        /// <param name="Id">The unique identification of the EVS pool.</param>
         /// <param name="EVSEOperator">The parent EVSE operator.</param>
-        internal ChargingPool(EVSEOperator EVSEOperator)
-            : this(ChargingPool_Id.New(), EVSEOperator)
-        { }
-
-        #endregion
-
-        #region (internal) ChargingPool(Id, StatusHistorySize = DefaultStatusHistorySize)
-
-        /// <summary>
-        /// Create a new pool of charging stations having the given identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the charging pool.</param>
-        /// <param name="StatusHistorySize">The default size of the aggregated EVSE status history.</param>
+        /// <param name="PoolStatusHistorySize">The default size of the charging pool (aggregated EVSE) status history.</param>
         internal ChargingPool(ChargingPool_Id  Id,
-                              UInt16           StatusHistorySize = DefaultStatusHistorySize)
+                              EVSEOperator     EVSEOperator,
+                              UInt16           PoolStatusHistorySize  = DefaultPoolStatusHistorySize)
 
             : base(Id)
 
@@ -693,12 +673,14 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (Id == null)
-                throw new ArgumentNullException("Id", "The unique identification of the EVS pool must not be null!");
+            if (EVSEOperator == null)
+                throw new ArgumentNullException("EVSEOperator", "The EVSE operator must not be null!");
 
             #endregion
 
             #region Init data and properties
+
+            this._EVSEOperator               = EVSEOperator;
 
             this._ChargingStations           = new ConcurrentDictionary<ChargingStation_Id, ChargingStation>();
 
@@ -710,57 +692,26 @@ namespace org.GraphDefined.WWCP
 
             this.DefaultAuthenticationModes  = new String[0];
 
-            this._StatusHistory              = new Stack<Timestamped<AggregatedStatusType>>((Int32) StatusHistorySize);
+            this._StatusHistory              = new Stack<Timestamped<AggregatedStatusType>>((Int32) PoolStatusHistorySize);
             this._StatusHistory.Push(new Timestamped<AggregatedStatusType>(AggregatedStatusType.Unknown));
 
             #endregion
 
             #region Init events
 
-            #region ChargingPool events
-
+            // ChargingPool events
             this.ChargingStationAddition  = new VotingNotificator<ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
             this.ChargingStationRemoval   = new VotingNotificator<ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
 
-            #endregion
+            // ChargingStation events
+            this.EVSEAddition             = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval              = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
 
-            #region ChargingStation events
-
-            this.EVSEAddition  = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
-            this.EVSERemoval   = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
-
-            #endregion
-
-            #region EVSE events
-
-            this.SocketOutletAddition  = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
-            this.SocketOutletRemoval   = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            // EVSE events
+            this.SocketOutletAddition     = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            this.SocketOutletRemoval      = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
 
             #endregion
-
-            #endregion
-
-        }
-
-        #endregion
-
-        #region (internal) ChargingPool(Id, EVSEOperator, StatusHistorySize = DefaultStatusHistorySize)  // Main Constructor
-
-        /// <summary>
-        /// Create a new group/pool of charging stations having the given identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the EVS pool.</param>
-        /// <param name="EVSEOperator">The parent EVSE operator.</param>
-        /// <param name="StatusHistorySize">The default size of the aggregated EVSE status history.</param>
-        internal ChargingPool(ChargingPool_Id  Id,
-                              EVSEOperator     EVSEOperator,
-                              UInt16           StatusHistorySize  = DefaultStatusHistorySize)
-
-            : this(Id, StatusHistorySize)
-
-        {
-
-            this._EVSEOperator = EVSEOperator;
 
             #region Link events
 
@@ -791,33 +742,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #endregion
-
-
-        #region CreateNew()
-
-        /// <summary>
-        /// Create a new charging pool having a random identification.
-        /// </summary>
-        public static ChargingPool CreateNew()
-        {
-            return new ChargingPool(ChargingPool_Id.New());
-        }
-
-        #endregion
-
-        #region CreateNew(Id)
-
-        /// <summary>
-        /// Create a new charging pool having the given identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the charging pool.</param>
-        public static ChargingPool CreateNew(ChargingPool_Id Id)
-        {
-            return new ChargingPool(Id);
-        }
-
-        #endregion
 
         #region CreateNewStation(ChargingStationId = null, Configurator = null, OnSuccess = null, OnError = null)
 
@@ -876,6 +800,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
         #region ContainsChargingStation(ChargingStation)
 
         /// <summary>
@@ -889,13 +814,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ContainsChargingStationId(ChargingStationId)
+        #region ContainsChargingStation(ChargingStationId)
 
         /// <summary>
         /// Check if the given ChargingStation identification is already present within the charging pool.
         /// </summary>
         /// <param name="ChargingStationId">The unique identification of the charging station.</param>
-        public Boolean ContainsChargingStationId(ChargingStation_Id ChargingStationId)
+        public Boolean ContainsChargingStation(ChargingStation_Id ChargingStationId)
         {
             return _ChargingStations.ContainsKey(ChargingStationId);
         }
@@ -927,11 +852,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
-        public Boolean TryRemoveChargingStation(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
-        {
-            return _ChargingStations.TryRemove(ChargingStationId, out ChargingStation);
-        }
+        #region RemoveChargingStation(ChargingStationId)
 
         public ChargingStation RemoveChargingStation(ChargingStation_Id ChargingStationId)
         {
@@ -945,20 +866,73 @@ namespace org.GraphDefined.WWCP
 
         }
 
+        #endregion
 
-        #region ContainsEVSEId(EVSEId)
+        #region TryRemoveChargingStation(ChargingStationId, out ChargingStation)
+
+        public Boolean TryRemoveChargingStation(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
+        {
+            return _ChargingStations.TryRemove(ChargingStationId, out ChargingStation);
+        }
+
+        #endregion
+
+
+        #region ContainsEVSE(EVSE)
 
         /// <summary>
-        /// Check if the given EVSE identification is already present within the charging pool.
+        /// Check if the given EVSE is already present within the EVSE operator.
+        /// </summary>
+        /// <param name="EVSE">An EVSE.</param>
+        public Boolean ContainsEVSE(EVSE EVSE)
+        {
+            return _ChargingStations.Values.Any(ChargingStation => ChargingStation.EVSEIds.Contains(EVSE.Id));
+        }
+
+        #endregion
+
+        #region ContainsEVSE(EVSEId)
+
+        /// <summary>
+        /// Check if the given EVSE identification is already present within the EVSE operator.
         /// </summary>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        public Boolean ContainsEVSEId(EVSE_Id EVSEId)
+        public Boolean ContainsEVSE(EVSE_Id EVSEId)
         {
             return _ChargingStations.Values.Any(ChargingStation => ChargingStation.EVSEIds.Contains(EVSEId));
         }
 
         #endregion
 
+        #region GetEVSEbyId(EVSEId)
+
+        public EVSE GetEVSEbyId(EVSE_Id EVSEId)
+        {
+
+            return _ChargingStations.Values.
+                       SelectMany(station => station.EVSEs).
+                       Where     (EVSE    => EVSE.Id == EVSEId).
+                       FirstOrDefault();
+
+        }
+
+        #endregion
+
+        #region TryGetEVSEbyId(EVSEId, out EVSE)
+
+        public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
+        {
+
+            EVSE = _ChargingStations.Values.
+                       SelectMany(station => station.EVSEs).
+                       Where     (_EVSE   => _EVSE.Id == EVSEId).
+                       FirstOrDefault();
+
+            return EVSE != null;
+
+        }
+
+        #endregion
 
 
         #region (internal) UpdateStatus(Timestamp)
@@ -989,35 +963,6 @@ namespace org.GraphDefined.WWCP
                 }
 
             }
-
-        }
-
-        #endregion
-
-
-        #region GetEVSEbyId(EVSEId)
-
-        public EVSE GetEVSEbyId(EVSE_Id EVSEId)
-        {
-            return _ChargingStations.Values.
-                       SelectMany(v => v.EVSEs).
-                       Where     (EVSE => EVSE.Id == EVSEId).
-                       FirstOrDefault();
-        }
-
-        #endregion
-
-        #region TryGetEVSEbyId(EVSEId)
-
-        public Boolean GetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
-        {
-
-            EVSE = _ChargingStations.Values.
-                       SelectMany(v     => v.EVSEs).
-                       Where     (_EVSE => _EVSE.Id == EVSEId).
-                       FirstOrDefault();
-
-            return EVSE != null;
 
         }
 

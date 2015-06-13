@@ -89,8 +89,6 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region AEntity(Id)
-
         /// <summary>
         /// Create a new abstract entity.
         /// </summary>
@@ -108,8 +106,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #endregion
-
 
 
         //public PropertyChanged_EventHandler<T> OnChanged<T>(Func<EVSPool, T>                 PropertySelector,
@@ -124,6 +120,9 @@ namespace org.GraphDefined.WWCP
 
         protected void SetProperty<T>(ref T Field, T NewValue, [CallerMemberName] String PropertyName = "")
         {
+
+            if (NewValue == null)
+                return;
 
             if (!EqualityComparer<T>.Default.Equals(Field, NewValue))
             {

@@ -44,9 +44,9 @@ namespace org.GraphDefined.WWCP
         #region Data
 
         /// <summary>
-        /// The default max size of the aggregated EVSE status history.
+        /// The default max size of the charging station (aggregated EVSE) status history.
         /// </summary>
-        public const UInt16 DefaultStatusHistorySize = 50;
+        public const UInt16 DefaultStationStatusHistorySize = 50;
 
         #endregion
 
@@ -93,10 +93,10 @@ namespace org.GraphDefined.WWCP
                 return _UserComment;
             }
 
-            //set
-            //{
-            //    SetProperty<I8NString>(ref _UserComment, value);
-            //}
+            set
+            {
+                SetProperty<I18NString>(ref _UserComment, value);
+            }
 
         }
 
@@ -118,10 +118,10 @@ namespace org.GraphDefined.WWCP
                 return _ServiceProviderComment;
             }
 
-            //set
-            //{
-            //    SetProperty<I8NString>(ref _ServiceProviderComment, value);
-            //}
+            set
+            {
+                SetProperty<I18NString>(ref _ServiceProviderComment, value);
+            }
 
         }
 
@@ -236,7 +236,7 @@ namespace org.GraphDefined.WWCP
 
         #region PhotoURIs
 
-        private readonly List<String> _PhotoURIs;
+        private List<String> _PhotoURIs;
 
         /// <summary>
         /// URIs of photos of this charging station.
@@ -244,17 +244,24 @@ namespace org.GraphDefined.WWCP
         [Optional, Not_eMI3defined]
         public List<String> PhotoURIs
         {
+
             get
             {
                 return _PhotoURIs;
             }
+
+            set
+            {
+                SetProperty<List<String>>(ref _PhotoURIs, value);
+            }
+
         }
 
         #endregion
 
         #region PointOfDelivery // MeterId
 
-        private readonly String _PointOfDelivery;
+        private String _PointOfDelivery;
 
         /// <summary>
         /// Point of delivery or meter identification.
@@ -262,10 +269,17 @@ namespace org.GraphDefined.WWCP
         [Optional]
         public String PointOfDelivery
         {
+
             get
             {
                 return _PointOfDelivery;
             }
+
+            set
+            {
+                SetProperty<String>(ref _PointOfDelivery, value);
+            }
+
         }
 
         #endregion
@@ -450,9 +464,29 @@ namespace org.GraphDefined.WWCP
 
         #region Events
 
+        // ChargingStation events
+
+        #region OnAggregatedStatusChanged
+
+        /// <summary>
+        /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="ChargingStation">The charging station.</param>
+        /// <param name="OldChargingStationStatus">The old timestamped status of the charging station.</param>
+        /// <param name="NewChargingStationStatus">The new timestamped status of the charging station.</param>
+        public delegate void OnAggregatedStatusChangedDelegate(DateTime Timestamp, ChargingStation ChargingStation, Timestamped<AggregatedStatusType> OldChargingStationStatus, Timestamped<AggregatedStatusType> NewChargingStationStatus);
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// </summary>
+        public event OnAggregatedStatusChangedDelegate OnAggregatedStatusChanged;
+
+        #endregion
+
         #region EVSEAddition
 
-        private readonly IVotingNotificator<ChargingStation, EVSE, Boolean> EVSEAddition;
+        internal readonly IVotingNotificator<ChargingStation, EVSE, Boolean> EVSEAddition;
 
         /// <summary>
         /// Called whenever an EVSE will be or was added.
@@ -466,6 +500,24 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+        #region EVSERemoval
+
+        internal readonly IVotingNotificator<ChargingStation, EVSE, Boolean> EVSERemoval;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was removed.
+        /// </summary>
+        public IVotingSender<ChargingStation, EVSE, Boolean> OnEVSERemoval
+        {
+            get
+            {
+                return EVSERemoval;
+            }
+        }
+
+        #endregion
+
 
         // EVSE events
 
@@ -486,22 +538,20 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region SocketOutletRemoval
 
-        #region OnAggregatedStatusChanged
-
-        /// <summary>
-        /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="ChargingStation">The charging station.</param>
-        /// <param name="OldChargingStationStatus">The old timestamped status of the charging station.</param>
-        /// <param name="NewChargingStationStatus">The new timestamped status of the charging station.</param>
-        public delegate void OnAggregatedStatusChangedDelegate(DateTime Timestamp, ChargingStation ChargingStation, Timestamped<AggregatedStatusType> OldChargingStationStatus, Timestamped<AggregatedStatusType> NewChargingStationStatus);
+        internal readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletRemoval;
 
         /// <summary>
-        /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// Called whenever a socket outlet will be or was removed.
         /// </summary>
-        public event OnAggregatedStatusChangedDelegate OnAggregatedStatusChanged;
+        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletRemoval
+        {
+            get
+            {
+                return SocketOutletRemoval;
+            }
+        }
 
         #endregion
 
@@ -509,39 +559,15 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (internal) ChargingStation()
-
-        /// <summary>
-        /// Create a new charging station having a random identification.
-        /// </summary>
-        internal ChargingStation()
-            : this(ChargingStation_Id.New())
-        { }
-
-        #endregion
-
-        #region (internal) ChargingStation(ChargingPool)
-
-        /// <summary>
-        /// Create a new charging station having a random identification
-        /// and the given charging pool.
-        /// </summary>
-        /// <param name="ChargingPool">The parent charging pool.</param>
-        internal ChargingStation(ChargingPool ChargingPool)
-            : this(ChargingStation_Id.New(), ChargingPool)
-        { }
-
-        #endregion
-
-        #region (internal) ChargingStation(Id, StatusHistorySize = DefaultStatusHistorySize)  // Main Constructor
-
         /// <summary>
         /// Create a new charging station having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charging station pool.</param>
-        /// <param name="StatusHistorySize">The default size of the aggregated EVSE status history.</param>
+        /// <param name="ChargingPool">The parent charging pool.</param>
+        /// <param name="StationStatusHistorySize">The default size of the charging station (aggregated EVSE) status history.</param>
         internal ChargingStation(ChargingStation_Id  Id,
-                                 UInt16              StatusHistorySize = DefaultStatusHistorySize)
+                                 ChargingPool        ChargingPool,
+                                 UInt16              StationStatusHistorySize = DefaultStationStatusHistorySize)
 
             : base(Id)
 
@@ -549,12 +575,14 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (Id == null)
-                throw new ArgumentNullException("Id", "The unique identification of the charging station must not be null!");
+            if (ChargingPool == null)
+                throw new ArgumentNullException("ChargingPool", "The charging pool must not be null!");
 
             #endregion
 
             #region Init data and properties
+
+            this._ChargingPool            = ChargingPool;
 
             this._EVSEs                   = new ConcurrentDictionary<EVSE_Id, EVSE>();
 
@@ -566,23 +594,38 @@ namespace org.GraphDefined.WWCP
             this._ServiceProviderComment  = new I18NString();
             //this.GeoLocation             = new GeoCoordinate();
 
-            this._StatusHistory           = new Stack<Timestamped<AggregatedStatusType>>((Int32) StatusHistorySize);
+            this._StatusHistory           = new Stack<Timestamped<AggregatedStatusType>>((Int32) StationStatusHistorySize);
             this._StatusHistory.Push(new Timestamped<AggregatedStatusType>(AggregatedStatusType.Unknown));
 
             #endregion
 
-            #region Init and link events
+            #region Init events
 
-            this.EVSEAddition          = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
-
-            if (ChargingPool != null)
-            {
-                this.OnEVSEAddition.OnVoting        += (chargingstation, evse, vote) => ChargingPool.EVSEAddition.SendVoting      (chargingstation, evse, vote);
-                this.OnEVSEAddition.OnNotification  += (chargingstation, evse)       => ChargingPool.EVSEAddition.SendNotification(chargingstation, evse);
-            }
+            // ChargingStation events
+            this.EVSEAddition             = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval              = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
 
             // EVSE events
-            this.SocketOutletAddition  = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            this.SocketOutletAddition     = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            this.SocketOutletRemoval      = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+
+            #endregion
+
+            #region Link events
+
+            // ChargingStation events
+            this.OnEVSEAddition.           OnVoting       += (station, evse, vote)      => ChargingPool.EVSEAddition.           SendVoting      (station, evse, vote);
+            this.OnEVSEAddition.           OnNotification += (station, evse)            => ChargingPool.EVSEAddition.           SendNotification(station, evse);
+
+            this.OnEVSERemoval.            OnVoting       += (station, evse, vote)      => ChargingPool.EVSERemoval .           SendVoting      (station, evse, vote);
+            this.OnEVSERemoval.            OnNotification += (station, evse)            => ChargingPool.EVSERemoval .           SendNotification(station, evse);
+
+            // EVSE events
+            this.SocketOutletAddition.     OnVoting       += (evse, outlet, vote)       => ChargingPool.SocketOutletAddition.   SendVoting      (evse, outlet, vote);
+            this.SocketOutletAddition.     OnNotification += (evse, outlet)             => ChargingPool.SocketOutletAddition.   SendNotification(evse, outlet);
+
+            this.SocketOutletRemoval.      OnVoting       += (evse, outlet, vote)       => ChargingPool.SocketOutletRemoval.    SendVoting      (evse, outlet, vote);
+            this.SocketOutletRemoval.      OnNotification += (evse, outlet)             => ChargingPool.SocketOutletRemoval.    SendNotification(evse, outlet);
 
             #endregion
 
@@ -590,61 +633,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (internal) ChargingStation(Id, ChargingPool, StatusHistorySize = DefaultStatusHistorySize)
-
-        /// <summary>
-        /// Create a new charging station having the given identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the charging station pool.</param>
-        /// <param name="ChargingPool">The parent charging pool.</param>
-        /// <param name="StatusHistorySize">The default size of the aggregated EVSE status history.</param>
-        internal ChargingStation(ChargingStation_Id  Id,
-                                 ChargingPool        ChargingPool,
-                                 UInt16              StatusHistorySize = DefaultStatusHistorySize)
-
-            : this(Id, StatusHistorySize)
-
-        {
-
-            if (ChargingPool == null)
-                throw new ArgumentNullException("EVSPool", "The EVS pool must not be null!");
-
-            this._ChargingPool = ChargingPool;
-
-            this.SocketOutletAddition.OnVoting        += (evse, socketoutlet , vote) => ChargingPool.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
-            this.SocketOutletAddition.OnNotification  += (evse, socketoutlet)        => ChargingPool.SocketOutletAddition.SendNotification(evse, socketoutlet);
-
-        }
-
-        #endregion
-
-        #endregion
-
-
-        #region CreateNew()
-
-        /// <summary>
-        /// Create a new charging station having a random identification.
-        /// </summary>
-        public static ChargingStation CreateNew()
-        {
-            return new ChargingStation();
-        }
-
-        #endregion
-
-        #region CreateNew(Id)
-
-        /// <summary>
-        /// Create a new charging station having the given identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the charging station.</param>
-        public static ChargingStation CreateNew(ChargingStation_Id Id)
-        {
-            return new ChargingStation(Id);
-        }
-
-        #endregion
 
         #region CreateNewEVSE(EVSEId, Configurator = null, OnSuccess = null, OnError = null)
 
@@ -703,13 +691,27 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ContainsEVSEId(EVSEId)
+
+        #region ContainsEVSE(EVSE)
+
+        /// <summary>
+        /// Check if the given EVSE is already present within the charging station.
+        /// </summary>
+        /// <param name="EVSE">An EVSE.</param>
+        public Boolean ContainsEVSE(EVSE EVSE)
+        {
+            return _EVSEs.ContainsKey(EVSE.Id);
+        }
+
+        #endregion
+
+        #region ContainsEVSE(EVSEId)
 
         /// <summary>
         /// Check if the given EVSE identification is already present within the charging station.
         /// </summary>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        public Boolean ContainsEVSEId(EVSE_Id EVSEId)
+        public Boolean ContainsEVSE(EVSE_Id EVSEId)
         {
             return _EVSEs.ContainsKey(EVSEId);
         }
@@ -741,11 +743,30 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region RemoveEVSE(EVSEId)
+
+        public EVSE RemoveEVSE(EVSE_Id EVSEId)
+        {
+
+            EVSE _EVSE = null;
+
+            if (_EVSEs.TryRemove(EVSEId, out _EVSE))
+                return _EVSE;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryRemoveEVSE(EVSEId, out EVSE)
+
         public Boolean TryRemoveEVSE(EVSE_Id EVSEId, out EVSE EVSE)
         {
             return _EVSEs.TryRemove(EVSEId, out EVSE);
         }
 
+        #endregion
 
 
         #region (internal) UpdateStatus(Timestamp)
