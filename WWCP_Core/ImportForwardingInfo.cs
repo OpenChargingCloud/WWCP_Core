@@ -68,10 +68,7 @@ namespace org.GraphDefined.WWCP.Importer
                         if (OldEVSEOp != null)
                         {
                             foreach (var EVSEId in EVSEIds)
-                            {
-                                if (OldEVSEOp.ValidEVSEIds.Contains(EVSEId))
-                                    OldEVSEOp.ValidEVSEIds.Remove(EVSEId);
-                            }
+                                OldEVSEOp.ValidEVSEIds.Remove(EVSEId);
                         }
 
                     }
@@ -82,10 +79,7 @@ namespace org.GraphDefined.WWCP.Importer
                     if (NewEVSEOp != null)
                     {
                         foreach (var EVSEId in EVSEIds)
-                        {
-                            if (!NewEVSEOp.ValidEVSEIds.Contains(EVSEId))
-                                NewEVSEOp.ValidEVSEIds.Add(EVSEId);
-                        }
+                            NewEVSEOp.ValidEVSEIds.Add(EVSEId);
                     }
 
                 }

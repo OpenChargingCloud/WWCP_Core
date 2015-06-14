@@ -91,12 +91,12 @@ namespace org.GraphDefined.WWCP
 
         #region ValidEVSEIds
 
-        private List<EVSE_Id> _ValidEVSEIds;
+        private readonly ReactiveSet<EVSE_Id> _ValidEVSEIds;
 
         /// <summary>
         /// A list of valid EVSE Ids. All others will be filtered.
         /// </summary>
-        public List<EVSE_Id> ValidEVSEIds
+        public ReactiveSet<EVSE_Id> ValidEVSEIds
         {
             get
             {
@@ -108,12 +108,12 @@ namespace org.GraphDefined.WWCP
 
         #region InvalidEVSEIds
 
-        private List<EVSE_Id> _InvalidEVSEIds;
+        private readonly ReactiveSet<EVSE_Id> _InvalidEVSEIds;
 
         /// <summary>
         /// A list of invalid EVSE Ids.
         /// </summary>
-        public List<EVSE_Id> InvalidEVSEIds
+        public ReactiveSet<EVSE_Id> InvalidEVSEIds
         {
             get
             {
@@ -125,12 +125,12 @@ namespace org.GraphDefined.WWCP
 
         #region ManualEVSEIds
 
-        private List<EVSE_Id> _ManualEVSEIds;
+        private readonly ReactiveSet<EVSE_Id> _ManualEVSEIds;
 
         /// <summary>
         /// A list of manual EVSE Ids which will not be touched automagically.
         /// </summary>
-        public List<EVSE_Id> ManualEVSEIds
+        public ReactiveSet<EVSE_Id> ManualEVSEIds
         {
             get
             {
@@ -243,6 +243,66 @@ namespace org.GraphDefined.WWCP
                 return ChargingPoolRemoval;
             }
         }
+
+        #endregion
+
+        #region OnValidEVSEIdAdded
+
+        /// <summary>
+        /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        public delegate void OnValidEVSEIdAddedDelegate(DateTime Timestamp, EVSEOperator EVSEOperator, EVSE_Id EVSEId);
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// </summary>
+        public event OnValidEVSEIdAddedDelegate OnValidEVSEIdAdded;
+
+        #endregion
+
+        #region OnValidEVSEIdRemoved
+
+        /// <summary>
+        /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        public delegate void OnValidEVSEIdRemovedDelegate(DateTime Timestamp, EVSEOperator EVSEOperator, EVSE_Id EVSEId);
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// </summary>
+        public event OnValidEVSEIdRemovedDelegate OnValidEVSEIdRemoved;
+
+        #endregion
+
+        #region OnInvalidEVSEIdAdded
+
+        /// <summary>
+        /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        public delegate void OnInvalidEVSEIdAddedDelegate(DateTime Timestamp, EVSEOperator EVSEOperator, EVSE_Id EVSEId);
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// </summary>
+        public event OnInvalidEVSEIdAddedDelegate OnInvalidEVSEIdAdded;
+
+        #endregion
+
+        #region OnInvalidEVSEIdRemoved
+
+        /// <summary>
+        /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        public delegate void OnInvalidEVSEIdRemovedDelegate(DateTime Timestamp, EVSEOperator EVSEOperator, EVSE_Id EVSEId);
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// </summary>
+        public event OnInvalidEVSEIdRemovedDelegate OnInvalidEVSEIdRemoved;
 
         #endregion
 
@@ -392,87 +452,100 @@ namespace org.GraphDefined.WWCP
 
             this._Name                      = Name        != null ? Name        : new I18NString();
             this._Description               = Description != null ? Description : new I18NString();
-            this._ValidEVSEIds              = new List<EVSE_Id>();
-            this._InvalidEVSEIds            = new List<EVSE_Id>();
-            this._ManualEVSEIds             = new List<EVSE_Id>();
 
-            this._ChargingPools   = new ConcurrentDictionary<ChargingPool_Id, ChargingPool>();
+            #region ValidEVSEIds
+
+            this._ValidEVSEIds              = new ReactiveSet<EVSE_Id>();
+
+            _ValidEVSEIds.OnItemAdded += (Timestamp, Set, EVSEId) => {
+                var OnValidEVSEIdAddedLocal = OnValidEVSEIdAdded;
+                if (OnValidEVSEIdAddedLocal != null)
+                    OnValidEVSEIdAddedLocal(Timestamp, this, EVSEId);
+            };
+
+            _ValidEVSEIds.OnItemRemoved += (Timestamp, Set, EVSEId) => {
+                var OnValidEVSEIdRemovedLocal = OnValidEVSEIdRemoved;
+                if (OnValidEVSEIdRemovedLocal != null)
+                    OnValidEVSEIdRemovedLocal(Timestamp, this, EVSEId);
+            };
 
             #endregion
 
-            #region Init and link events
+            #region InvalidEVSEIds
 
-            #region EVSEOperator events
+            this._InvalidEVSEIds            = new ReactiveSet<EVSE_Id>();
 
-            this.ChargingPoolAddition  = new VotingNotificator<EVSEOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
-            this.ChargingPoolRemoval   = new VotingNotificator<EVSEOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
-
-            if (RoamingNetwork != null)
+            _InvalidEVSEIds.OnItemAdded += (Timestamp, Set, EVSEId) =>
             {
+                var OnInvalidEVSEIdAddedLocal = OnInvalidEVSEIdAdded;
+                if (OnInvalidEVSEIdAddedLocal != null)
+                    OnInvalidEVSEIdAddedLocal(Timestamp, this, EVSEId);
+            };
 
-                this.OnChargingPoolAddition.OnVoting       += (evseoperator, pool, vote) => RoamingNetwork.ChargingPoolAddition.SendVoting      (evseoperator, pool, vote);
-                this.OnChargingPoolAddition.OnNotification += (evseoperator, pool)       => RoamingNetwork.ChargingPoolAddition.SendNotification(evseoperator, pool);
-
-                this.OnChargingPoolRemoval .OnVoting       += (evseoperator, pool, vote) => RoamingNetwork.ChargingPoolRemoval .SendVoting      (evseoperator, pool, vote);
-                this.OnChargingPoolRemoval .OnNotification += (evseoperator, pool)       => RoamingNetwork.ChargingPoolRemoval .SendNotification(evseoperator, pool);
-
-            }
+            _InvalidEVSEIds.OnItemRemoved += (Timestamp, Set, EVSEId) =>
+            {
+                var OnInvalidEVSEIdRemovedLocal = OnInvalidEVSEIdRemoved;
+                if (OnInvalidEVSEIdRemovedLocal != null)
+                    OnInvalidEVSEIdRemovedLocal(Timestamp, this, EVSEId);
+            };
 
             #endregion
 
-            #region ChargingPool events
+            this._ManualEVSEIds             = new ReactiveSet<EVSE_Id>();
 
+            this._ChargingPools             = new ConcurrentDictionary<ChargingPool_Id, ChargingPool>();
+
+            #endregion
+
+            #region Init events
+
+            // EVSEOperator events
+            this.ChargingPoolAddition     = new VotingNotificator<EVSEOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolRemoval      = new VotingNotificator<EVSEOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
+
+            // ChargingPool events
             this.ChargingStationAddition  = new VotingNotificator<ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
             this.ChargingStationRemoval   = new VotingNotificator<ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
 
-            if (RoamingNetwork != null)
-            {
+            // ChargingStation events
+            this.EVSEAddition             = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval              = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
 
-                this.OnChargingStationAddition.OnVoting       += (evseoperator, pool, vote) => RoamingNetwork.ChargingStationAddition.SendVoting      (evseoperator, pool, vote);
-                this.OnChargingStationAddition.OnNotification += (evseoperator, pool)       => RoamingNetwork.ChargingStationAddition.SendNotification(evseoperator, pool);
-
-                this.OnChargingStationRemoval. OnVoting       += (evseoperator, pool, vote) => RoamingNetwork.ChargingStationRemoval. SendVoting      (evseoperator, pool, vote);
-                this.OnChargingStationRemoval. OnNotification += (evseoperator, pool)       => RoamingNetwork.ChargingStationRemoval. SendNotification(evseoperator, pool);
-
-            }
+            // EVSE events
+            this.SocketOutletAddition     = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            this.SocketOutletRemoval      = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
 
             #endregion
 
-            #region ChargingStation events
+            #region Link events
 
-            this.EVSEAddition  = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
-            this.EVSERemoval   = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            // EVSEOperator events
+            this.OnChargingPoolAddition.   OnVoting       += (evseoperator, pool, vote) => RoamingNetwork.ChargingPoolAddition.   SendVoting      (evseoperator, pool, vote);
+            this.OnChargingPoolAddition.   OnNotification += (evseoperator, pool)       => RoamingNetwork.ChargingPoolAddition.   SendNotification(evseoperator, pool);
 
-            if (RoamingNetwork != null)
-            {
+            this.OnChargingPoolRemoval.    OnVoting       += (evseoperator, pool, vote) => RoamingNetwork.ChargingPoolRemoval.    SendVoting      (evseoperator, pool, vote);
+            this.OnChargingPoolRemoval.    OnNotification += (evseoperator, pool)       => RoamingNetwork.ChargingPoolRemoval.    SendNotification(evseoperator, pool);
 
-                this.OnEVSEAddition.OnVoting       += (station, evse, vote) => RoamingNetwork.EVSEAddition.SendVoting      (station, evse, vote);
-                this.OnEVSEAddition.OnNotification += (station, evse)       => RoamingNetwork.EVSEAddition.SendNotification(station, evse);
+            // ChargingPool events
+            this.OnChargingStationAddition.OnVoting       += (evseoperator, pool, vote) => RoamingNetwork.ChargingStationAddition.SendVoting      (evseoperator, pool, vote);
+            this.OnChargingStationAddition.OnNotification += (evseoperator, pool)       => RoamingNetwork.ChargingStationAddition.SendNotification(evseoperator, pool);
 
-                this.OnEVSERemoval .OnVoting       += (station, evse, vote) => RoamingNetwork.EVSERemoval .SendVoting      (station, evse, vote);
-                this.OnEVSERemoval .OnNotification += (station, evse)       => RoamingNetwork.EVSERemoval .SendNotification(station, evse);
+            this.OnChargingStationRemoval. OnVoting       += (evseoperator, pool, vote) => RoamingNetwork.ChargingStationRemoval. SendVoting      (evseoperator, pool, vote);
+            this.OnChargingStationRemoval. OnNotification += (evseoperator, pool)       => RoamingNetwork.ChargingStationRemoval. SendNotification(evseoperator, pool);
 
-            }
+            // ChargingStation events
+            this.OnEVSEAddition.           OnVoting       += (station, evse, vote)      => RoamingNetwork.EVSEAddition.           SendVoting      (station, evse, vote);
+            this.OnEVSEAddition.           OnNotification += (station, evse)            => RoamingNetwork.EVSEAddition.           SendNotification(station, evse);
 
-            #endregion
+            this.OnEVSERemoval.            OnVoting       += (station, evse, vote)      => RoamingNetwork.EVSERemoval.            SendVoting      (station, evse, vote);
+            this.OnEVSERemoval.            OnNotification += (station, evse)            => RoamingNetwork.EVSERemoval.            SendNotification(station, evse);
 
-            #region EVSE events
+            // EVSE events
+            this.SocketOutletAddition.     OnVoting       += (evse, outlet, vote)       => RoamingNetwork.SocketOutletAddition.   SendVoting      (evse, outlet, vote);
+            this.SocketOutletAddition.     OnNotification += (evse, outlet)             => RoamingNetwork.SocketOutletAddition.   SendNotification(evse, outlet);
 
-            this.SocketOutletAddition  = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
-            this.SocketOutletRemoval   = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
-
-            if (RoamingNetwork != null)
-            {
-
-                this.SocketOutletAddition.OnVoting       += (evse, outlet, vote) => RoamingNetwork.SocketOutletAddition.SendVoting      (evse, outlet, vote);
-                this.SocketOutletAddition.OnNotification += (evse, outlet)       => RoamingNetwork.SocketOutletAddition.SendNotification(evse, outlet);
-
-                this.SocketOutletRemoval .OnVoting       += (evse, outlet, vote) => RoamingNetwork.SocketOutletRemoval. SendVoting      (evse, outlet, vote);
-                this.SocketOutletRemoval .OnNotification += (evse, outlet)       => RoamingNetwork.SocketOutletRemoval. SendNotification(evse, outlet);
-
-            }
-
-            #endregion
+            this.SocketOutletRemoval.      OnVoting       += (evse, outlet, vote)       => RoamingNetwork.SocketOutletRemoval.    SendVoting      (evse, outlet, vote);
+            this.SocketOutletRemoval.      OnNotification += (evse, outlet)             => RoamingNetwork.SocketOutletRemoval.    SendNotification(evse, outlet);
 
             #endregion
 
@@ -642,10 +715,12 @@ namespace org.GraphDefined.WWCP
 
         public ChargingStation GetChargingStationbyId(ChargingStation_Id ChargingStationId)
         {
+
             return _ChargingPools.Values.
                        SelectMany(pool    => pool.ChargingStations).
                        Where     (station => station.Id == ChargingStationId).
                        FirstOrDefault();
+
         }
 
         #endregion

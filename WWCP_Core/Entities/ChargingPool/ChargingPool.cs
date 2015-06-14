@@ -859,8 +859,24 @@ namespace org.GraphDefined.WWCP
 
             ChargingStation _ChargingStation = null;
 
-            if (_ChargingStations.TryRemove(ChargingStationId, out _ChargingStation))
-                return _ChargingStation;
+            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
+            {
+
+                if (ChargingStationRemoval.SendVoting(this, _ChargingStation))
+                {
+
+                    if (_ChargingStations.TryRemove(ChargingStationId, out _ChargingStation))
+                    {
+
+                        ChargingStationRemoval.SendNotification(this, _ChargingStation);
+
+                        return _ChargingStation;
+
+                    }
+
+                }
+
+            }
 
             return null;
 
@@ -872,7 +888,30 @@ namespace org.GraphDefined.WWCP
 
         public Boolean TryRemoveChargingStation(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
         {
-            return _ChargingStations.TryRemove(ChargingStationId, out ChargingStation);
+
+            if (TryGetChargingStationbyId(ChargingStationId, out ChargingStation))
+            {
+
+                if (ChargingStationRemoval.SendVoting(this, ChargingStation))
+                {
+
+                    if (_ChargingStations.TryRemove(ChargingStationId, out ChargingStation))
+                    {
+
+                        ChargingStationRemoval.SendNotification(this, ChargingStation);
+
+                        return true;
+
+                    }
+
+                }
+
+                return false;
+
+            }
+
+            return true;
+
         }
 
         #endregion
