@@ -474,7 +474,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _ChargingStations.Values;
+                return _ChargingStations.Select(KVP => KVP.Value);
             }
         }
 

@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Linq;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
@@ -128,7 +129,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _RegisteredChargingPools.Values;
+                return _RegisteredChargingPools.Select(KVP => KVP.Value);
             }
         }
 

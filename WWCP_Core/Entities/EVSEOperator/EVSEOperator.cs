@@ -200,7 +200,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _ChargingPools.Values;
+                return _ChargingPools.Select(KVP => KVP.Value);
             }
         }
 
@@ -693,7 +693,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStation">A charging station.</param>
         public Boolean ContainsChargingStation(ChargingStation ChargingStation)
         {
-            return _ChargingPools.Any(v => v.Value.ContainsChargingStation(ChargingStation.Id));
+            return _ChargingPools.Values.Any(pool => pool.ContainsChargingStation(ChargingStation.Id));
         }
 
         #endregion
@@ -706,7 +706,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationId">The unique identification of the charging station.</param>
         public Boolean ContainsChargingStation(ChargingStation_Id ChargingStationId)
         {
-            return _ChargingPools.Any(v => v.Value.ContainsChargingStation(ChargingStationId));
+            return _ChargingPools.Values.Any(pool => pool.ContainsChargingStation(ChargingStationId));
         }
 
         #endregion
@@ -750,7 +750,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">An EVSE.</param>
         public Boolean ContainsEVSE(EVSE EVSE)
         {
-            return _ChargingPools.Any(v => v.Value.ContainsEVSE(EVSE.Id));
+            return _ChargingPools.Values.Any(pool => pool.ContainsEVSE(EVSE.Id));
         }
 
         #endregion
@@ -763,7 +763,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         public Boolean ContainsEVSE(EVSE_Id EVSEId)
         {
-            return _ChargingPools.Any(v => v.Value.ContainsEVSE(EVSEId));
+            return _ChargingPools.Values.Any(pool => pool.ContainsEVSE(EVSEId));
         }
 
         #endregion

@@ -18,8 +18,9 @@
 #region Usings
 
 using System;
-using System.Collections.Concurrent;
+using System.Linq;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -110,7 +111,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _RegisteredEVSPools.Values;
+                return _RegisteredEVSPools.Select(KVP => KVP.Value);
             }
         }
 
@@ -293,3 +294,4 @@ namespace org.GraphDefined.WWCP
     }
 
 }
+

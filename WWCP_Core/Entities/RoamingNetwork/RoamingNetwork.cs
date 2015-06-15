@@ -117,7 +117,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _EVSEOperators.Values;
+                return _EVSEOperators.Select(KVP => KVP.Value);
             }
         }
 
@@ -132,7 +132,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _EVServiceProviders.Values;
+                return _EVServiceProviders.Select(KVP => KVP.Value);
             }
         }
 
@@ -162,7 +162,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _SearchProviders.Values;
+                return _SearchProviders.Select(KVP => KVP.Value);
             }
         }
 

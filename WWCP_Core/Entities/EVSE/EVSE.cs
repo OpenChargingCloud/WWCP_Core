@@ -194,7 +194,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _SocketOutlets.Values;
+                return _SocketOutlets.Select(KVP => KVP.Value);
             }
         }
 

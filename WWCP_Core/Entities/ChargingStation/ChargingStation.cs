@@ -438,7 +438,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _EVSEs.Values;
+                return _EVSEs.Select(KVP => KVP.Value);
             }
         }
 
