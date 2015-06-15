@@ -31,32 +31,51 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using org.GraphDefined.WWCP;
+using org.GraphDefined.Vanaheimr.Hermod.Services.DNS;
 
 #endregion
 
 namespace org.GraphDefined.WWCP.Importer
 {
 
+    /// <summary>
+    /// Import data into the WWCP in-memory datastructures.
+    /// </summary>
+    /// <typeparam name="T">The type of data which will be processed on every update run.</typeparam>
     public class WWCPImporter<T>
     {
 
         #region Data
 
-        private          Boolean                                     Started = false;
-        private readonly Object                                      UpdateEVSEDataAndStatusLock;
-        private readonly Timer                                       UpdateEVSEStatusTimer;
+        private                 Boolean                           Started = false;
+        private readonly        Object                            UpdateEVSEDataAndStatusLock;
+        private readonly        Timer                             UpdateEVSEStatusTimer;
 
-        private readonly Func<Task<T>>                               DownloadXMLData;
-        private readonly Action<WWCPImporter<T>, Task<T>>  OnFirstRun;
-        private readonly Action<WWCPImporter<T>, Task<T>>  OnEveryRun;
+        private readonly        Func<DNSClient, Task<T>>          DownloadXMLData;
+        private readonly        Action<WWCPImporter<T>, Task<T>>  OnFirstRun;
+        private readonly        Action<WWCPImporter<T>, Task<T>>  OnEveryRun;
 
-        private readonly static TimeSpan                             DefaultImportEvery  = TimeSpan.FromMinutes(1);
+        private readonly static TimeSpan                          DefaultImportEvery  = TimeSpan.FromMinutes(1);
 
-        public  const           UInt16                               DefaultMaxNumberOfCachedXMLExports = 100;
+        public  const           UInt16                            DefaultMaxNumberOfCachedXMLExports = 100;
 
         #endregion
 
         #region Properties
+
+        #region DNSClient
+
+        private readonly DNSClient _DNSClient;
+
+        public DNSClient DNSClient
+        {
+            get
+            {
+                return _DNSClient;
+            }
+        }
+
+        #endregion
 
         #region EVSEOperators
 
@@ -144,15 +163,15 @@ namespace org.GraphDefined.WWCP.Importer
 
         #endregion
 
-        #region ImportEvery
+        #region UpdateEvery
 
-        private readonly TimeSpan _ImportEvery;
+        private readonly TimeSpan _UpdateEvery;
 
-        public TimeSpan ImportEvery
+        public TimeSpan UpdateEvery
         {
             get
             {
-                return _ImportEvery;
+                return _UpdateEvery;
             }
         }
 
@@ -198,12 +217,16 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region Constructor(s)
 
-        public WWCPImporter(String                                      ConfigFilenamePrefix,
-                                      Func<Task<T>>                               GetXMLData,
-                                      Action<WWCPImporter<T>, Task<T>>  OnFirstRun,
-                                      Action<WWCPImporter<T>, Task<T>>  OnEveryRun,
-                                      TimeSpan?                                   ImportEvery,
-                                      UInt16                                      MaxNumberOfCachedXMLExports = DefaultMaxNumberOfCachedXMLExports)
+        public WWCPImporter(String                            ConfigFilenamePrefix,
+                            DNSClient                         DNSClient                    = null,
+                            TimeSpan?                         UpdateEvery                  = null,
+
+                            Func<DNSClient, Task<T>>          GetXMLData                   = null,
+                            Action<WWCPImporter<T>, Task<T>>  OnFirstRun                   = null,
+                            Action<WWCPImporter<T>, Task<T>>  OnEveryRun                   = null,
+
+                            UInt16                            MaxNumberOfCachedXMLExports  = DefaultMaxNumberOfCachedXMLExports)
+
         {
 
             #region Initial checks
@@ -222,21 +245,23 @@ namespace org.GraphDefined.WWCP.Importer
 
             #endregion
 
-            this._ConfigFilenamePrefix          = ConfigFilenamePrefix;
+            this._ConfigFilenamePrefix         = ConfigFilenamePrefix;
+            this._DNSClient                    = DNSClient   != null ? _DNSClient        : new DNSClient();
+            this._UpdateEvery                  = UpdateEvery != null ? UpdateEvery.Value : DefaultImportEvery;
 
-            this._EVSEOperators                 = new List<EVSEOperator>();
-            this._AllForwardingInfos            = new Dictionary<ChargingStation_Id, ImportForwardingInfo>();
-            this._ImportEvery                   = ImportEvery != null ? ImportEvery.Value : DefaultImportEvery;
-            this.DownloadXMLData                = GetXMLData;
-            this.OnFirstRun                     = OnFirstRun;
-            this.OnEveryRun                     = OnEveryRun;
+            this.DownloadXMLData               = GetXMLData;
+            this.OnFirstRun                    = OnFirstRun;
+            this.OnEveryRun                    = OnEveryRun;
 
-            this._XMLExports                    = new List<Timestamped<T>>();
-            this._MaxNumberOfCachedXMLExports   = MaxNumberOfCachedXMLExports;
+            this._MaxNumberOfCachedXMLExports  = MaxNumberOfCachedXMLExports;
+
+            this._EVSEOperators                = new List<EVSEOperator>();
+            this._AllForwardingInfos           = new Dictionary<ChargingStation_Id, ImportForwardingInfo>();
+            this._XMLExports                   = new List<Timestamped<T>>();
 
             // Start not now but veeeeery later!
-            UpdateEVSEDataAndStatusLock         = new Object();
-            UpdateEVSEStatusTimer               = new Timer(Run, null, TimeSpan.FromDays(30), _ImportEvery);
+            UpdateEVSEDataAndStatusLock        = new Object();
+            UpdateEVSEStatusTimer              = new Timer(Run, null, TimeSpan.FromDays(30), _UpdateEvery);
 
         }
 
@@ -648,11 +673,11 @@ namespace org.GraphDefined.WWCP.Importer
                     if (!Started)
                     {
 
-                        OnFirstRun(this, DownloadXMLData());
+                        OnFirstRun(this, DownloadXMLData(_DNSClient));
 
                         DebugX.Log("Initital XML import finished!");
 
-                        UpdateEVSEStatusTimer.Change(TimeSpan.FromSeconds(1), ImportEvery);
+                        UpdateEVSEStatusTimer.Change(TimeSpan.FromSeconds(1), UpdateEvery);
 
                         Started = true;
 
@@ -705,7 +730,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                     #endregion
 
-                    DownloadXMLData().
+                    DownloadXMLData(_DNSClient).
                         ContinueWith(XMLTask => {
 
                         // Save the XML Export for later review...
