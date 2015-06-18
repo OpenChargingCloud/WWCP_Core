@@ -52,7 +52,7 @@ namespace org.GraphDefined.WWCP.UnitTests
                                                       };
             _cp.OnAggregatedStatusChanged += (ts, pool, os, ns) => { Console.WriteLine("New pool state: " + ns.Value); };
 
-            var s1  = _cp.CreateNewStation();
+            var s1  = _cp.CreateNewStation(ChargingStation_Id.New(_op.Id));
             s1.StatusAggregationDelegate = report => {
                                                           var max   = report.Max(v => v.Value);
                                                           var max_n = report.Where(o => o.Value == max);
@@ -63,7 +63,7 @@ namespace org.GraphDefined.WWCP.UnitTests
             var e1 = s1.CreateNewEVSE(EVSE_Id.Parse("DE*822*E1111*1"));
             var e2 = s1.CreateNewEVSE(EVSE_Id.Parse("DE*822*E1111*2"));
             var e3 = s1.CreateNewEVSE(EVSE_Id.Parse("DE*822*E1111*3"));
-            var s2 = _cp.CreateNewStation();
+            var s2 = _cp.CreateNewStation(ChargingStation_Id.New(_op.Id));
             s2.StatusAggregationDelegate = report => {
                                                           var max   = report.Max(v => v.Value);
                                                           var max_n = report.Where(o => o.Value == max);

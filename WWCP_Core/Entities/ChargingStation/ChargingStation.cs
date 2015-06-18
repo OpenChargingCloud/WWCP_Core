@@ -653,7 +653,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (EVSEId == null)
-                throw new ArgumentNullException("EVSE_Id", "The given EVSE identification must not be null!");
+                throw new ArgumentNullException("EVSEId", "The given EVSE identification must not be null!");
 
             if (_EVSEs.ContainsKey(EVSEId))
             {

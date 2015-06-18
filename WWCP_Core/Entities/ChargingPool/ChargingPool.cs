@@ -762,7 +762,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (ChargingStationId == null)
-                ChargingStationId = ChargingStation_Id.New();
+                throw new ArgumentNullException("ChargingStationId", "The given charging station identification must not be null!");
 
             if (_ChargingStations.ContainsKey(ChargingStationId))
             {

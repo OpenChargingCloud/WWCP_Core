@@ -150,7 +150,7 @@ namespace org.GraphDefined.WWCP
                                                  RegexOptions.IgnorePatternWhitespace);
 
             if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal EVSE Operator identification!", "OperatorId");
+                throw new ArgumentException("Illegal EVSE Operator identification '" + CountryAndOperatorId + "'!", "OperatorId");
 
             Country __CountryCode;
 
@@ -184,7 +184,7 @@ namespace org.GraphDefined.WWCP
                                                  RegexOptions.IgnorePatternWhitespace);
 
             if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal EVSE Operator identification!", "OperatorId");
+                throw new ArgumentException("Illegal EVSE Operator identification '" + CountryCode + " / " + OperatorId + "'!", "OperatorId");
 
             return new EVSEOperator_Id(CountryCode, _MatchCollection[0].Value);
 
@@ -199,7 +199,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="CountryAndOperatorId">An EVSE Operator identification as string.</param>
         /// <param name="EVSEOperatorId">The parsed EVSE Operator identification.</param>
-        public static Boolean TryParse(String CountryAndOperatorId, out EVSEOperator_Id EVSEOperatorId)
+        public static Boolean TryParse(String               CountryAndOperatorId,
+                                       out EVSEOperator_Id  EVSEOperatorId)
         {
 
             try
@@ -250,14 +251,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region TryParse(CountryAndOperatorId, out EVSEOperatorId)
+        #region TryParse(CountryCode, OperatorId, out EVSEOperatorId)
 
         /// <summary>
         /// Parse the given string as an EVSE Operator identification.
         /// </summary>
         /// <param name="CountryAndOperatorId">An EVSE Operator identification as string.</param>
         /// <param name="EVSEOperatorId">The parsed EVSE Operator identification.</param>
-        public static Boolean TryParse(Country CountryCode, String OperatorId, out EVSEOperator_Id EVSEOperatorId)
+        public static Boolean TryParse(Country              CountryCode,
+                                       String               OperatorId,
+                                       out EVSEOperator_Id  EVSEOperatorId)
         {
 
             try

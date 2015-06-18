@@ -48,10 +48,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonTypes\ChangeMethods.cs" />
+    <Compile Include="Entities\OriginFormatType.cs" />
     <Compile Include="RedirectedEVSEList.cs" />
     <Compile Include="WWCPImporter.cs" />
     <Compile Include="ImporterDefaults.cs" />
-    <Compile Include="Entities\Delegates.cs" />
     <Compile Include="Entities\EVSE\EVSEStatusReport.cs" />
     <Compile Include="CommonTypes\Attributes\Not_eMI3defined.cs" />
     <Compile Include="CommonTypes\EventTracking_Id.cs" />

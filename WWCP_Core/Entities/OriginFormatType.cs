@@ -2,11 +2,11 @@
  * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/WorldWideCharging/WWCP_Core>
  *
- * Licensed under the Affero GPL license, Version 3.0 (the "License");
+ * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.gnu.org/licenses/agpl.html
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,23 +15,12 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Linq;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Votes;
-using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using org.GraphDefined.Vanaheimr.Aegir;
-
-#endregion
-
 namespace org.GraphDefined.WWCP
 {
-
+    public enum OriginFormatType
+    {
+        OLD,
+        NEW
+    }
 
 }

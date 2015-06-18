@@ -34,32 +34,25 @@ namespace org.GraphDefined.WWCP
 
     {
 
-        public enum OriginFormatType
-        {
-            OLD,
-            NEW
-        }
-
-
         #region Data
 
         /// <summary>
         /// The regular expression for parsing an EVSE identification.
         /// </summary>
-        public  const    String             EVSEId_RegEx        = @"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?E([A-Z0-9][A-Z0-9\*]{0,30})$ | ^(\+?[0-9]{1,3}\*?[0-9]{3})\*?([A-Z0-9][A-Z0-9\*]{0,30})$";
-                                                          // Hubject ([A-Za-z]{2}\*?[A-Za-z0-9]{3}\*?E[A-Za-z0-9\*]{1,30})  |  (\+?[0-9]{1,3}\*[0-9]{3,6}\*[0-9\*]{1,32})
-                                                          // OCHP.eu                                                           /^\+[0-9]{1,3}\*?[A-Z0-9]{3}\*?[A-Z0-9\*]{0,40}(?=$)/i;
-                                                          // var valid_evse_warning= /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9\*]*/; // look ahead: at least one upper and one lower case letter
+        public    const    String  EVSEId_RegEx    = @"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?E([A-Z0-9][A-Z0-9\*]{0,30})$ | ^(\+?[0-9]{1,3}\*?[0-9]{3})\*?([A-Z0-9][A-Z0-9\*]{0,30})$";
+                                             // Hubject ([A-Za-z]{2}\*?[A-Za-z0-9]{3}\*?E[A-Za-z0-9\*]{1,30})  |  (\+?[0-9]{1,3}\*[0-9]{3,6}\*[0-9\*]{1,32})
+                                             // OCHP.eu                                                           /^\+[0-9]{1,3}\*?[A-Z0-9]{3}\*?[A-Z0-9\*]{0,40}(?=$)/i;
+                                             // var valid_evse_warning= /^(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9\*]*/; // look ahead: at least one upper and one lower case letter
 
         /// <summary>
         /// The regular expression for parsing an EVSE identification.
         /// </summary>
-        public  const    String             EVSEIdSuffix_RegEx  = @"^[A-Z0-9][A-Z0-9\*]{0,30}$";
+        public    const    String  IdSuffix_RegEx  = @"^[A-Z0-9][A-Z0-9\*]{0,30}$";
 
         /// <summary>
         /// The internal identification.
         /// </summary>
-        protected readonly String           _EVSEIdSuffix;
+        protected readonly String  _IdSuffix;
 
         #endregion
 
@@ -91,7 +84,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _OperatorId.Length + (UInt64) _EVSEIdSuffix.Length;
+                return _OperatorId.Length + 2 + (UInt64) _IdSuffix.Length;
             }
         }
 
@@ -103,7 +96,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return String.Concat(_OperatorId.IdOld, "*", _EVSEIdSuffix);
+                return String.Concat(_OperatorId.IdOld, "*", _IdSuffix);
             }
         }
 
@@ -129,9 +122,9 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return (_OriginFormat == EVSE_Id.OriginFormatType.NEW)
-                          ? String.Concat(_OperatorId.ToString(), "*E", _EVSEIdSuffix)
-                          : String.Concat(_OperatorId.IdOld,        "*",  _EVSEIdSuffix);
+                return (_OriginFormat == OriginFormatType.NEW)
+                          ? String.Concat(_OperatorId.ToString(), "*E", _IdSuffix)
+                          : String.Concat(_OperatorId.IdOld,       "*", _IdSuffix);
             }
         }
 
@@ -146,22 +139,22 @@ namespace org.GraphDefined.WWCP
         /// based on the given string.
         /// </summary>
         private EVSE_Id(EVSEOperator_Id   OperatorId,
-                        String            EVSEIdSuffix,
+                        String            IdSuffix,
                         OriginFormatType  OriginFormat)
         {
 
             if (OperatorId == null)
                 throw new ArgumentNullException("OperatorId", "The OperatorId must not be null!");
 
-            var _MatchCollection = Regex.Matches(EVSEIdSuffix.Trim().ToUpper(),
-                                                 EVSEIdSuffix_RegEx,
+            var _MatchCollection = Regex.Matches(IdSuffix.Trim().ToUpper(),
+                                                 IdSuffix_RegEx,
                                                  RegexOptions.IgnorePatternWhitespace);
 
             if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal EVSE identification!", "EVSEIdSuffix");
+                throw new ArgumentException("Illegal EVSE identification!", "IdSuffix");
 
             _OperatorId    = OperatorId;
-            _EVSEIdSuffix  = _MatchCollection[0].Value;
+            _IdSuffix      = _MatchCollection[0].Value;
             _OriginFormat  = OriginFormat;
 
         }
@@ -196,20 +189,21 @@ namespace org.GraphDefined.WWCP
                                    _MatchCollection[0].Groups[4].Value,
                                    OriginFormatType.OLD);
 
+
             throw new ArgumentException("Illegal EVSE identification!", "EVSEId");
 
         }
 
         #endregion
 
-        #region Parse(OperatorId, EVSEIdSuffix)
+        #region Parse(OperatorId, IdSuffix)
 
         /// <summary>
         /// Parse the given string as an EVSE identification.
         /// </summary>
-        public static EVSE_Id Parse(EVSEOperator_Id OperatorId, String EVSEIdSuffix)
+        public static EVSE_Id Parse(EVSEOperator_Id OperatorId, String IdSuffix)
         {
-            return EVSE_Id.Parse(OperatorId.ToString() + "*" + EVSEIdSuffix);
+            return EVSE_Id.Parse(OperatorId.ToString() + "*" + IdSuffix);
         }
 
         #endregion
@@ -271,17 +265,17 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region TryParse(OperatorId, EVSEIdSuffix, out EVSE_Id)
+        #region TryParse(OperatorId, IdSuffix, out EVSEId)
 
         ///// <summary>
         ///// Parse the given string as an EVSE identification.
         ///// </summary>
-        //public static Boolean TryParse(EVSEOperator_Id OperatorId, String EVSEIdSuffix, out EVSE_Id EVSE_Id)
+        //public static Boolean TryParse(EVSEOperator_Id OperatorId, String IdSuffix, out EVSE_Id EVSE_Id)
         //{
 
         //    try
         //    {
-        //        EVSE_Id = new EVSE_Id(OperatorId, EVSEIdSuffix);
+        //        EVSE_Id = new EVSE_Id(OperatorId, IdSuffix);
         //        return true;
         //    }
         //    catch (Exception e)
@@ -303,8 +297,8 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return new EVSE_Id(_OperatorId,
-                                   new String(_EVSEIdSuffix.ToCharArray()),
+                return new EVSE_Id(_OperatorId.Clone,
+                                   new String(_IdSuffix.ToCharArray()),
                                    _OriginFormat);
             }
         }
@@ -472,7 +466,7 @@ namespace org.GraphDefined.WWCP
 
             // If equal: Compare EVSEId suffix
             if (_Result == 0)
-                _Result = _EVSEIdSuffix.CompareTo(EVSEId._EVSEIdSuffix);
+                _Result = _IdSuffix.CompareTo(EVSEId._IdSuffix);
 
             return _Result;
 
@@ -511,9 +505,9 @@ namespace org.GraphDefined.WWCP
         #region Equals(EVSEId)
 
         /// <summary>
-        /// Compares two EVSE_Ids for equality.
+        /// Compares two EVSE identifications for equality.
         /// </summary>
-        /// <param name="EVSEId">A EVSE_Id to compare with.</param>
+        /// <param name="EVSEId">An EVSE identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(EVSE_Id EVSEId)
         {
@@ -521,8 +515,8 @@ namespace org.GraphDefined.WWCP
             if ((Object) EVSEId == null)
                 return false;
 
-            return _OperatorId.  Equals(EVSEId._OperatorId) &&
-                   _EVSEIdSuffix.Equals(EVSEId._EVSEIdSuffix);
+            return _OperatorId.Equals(EVSEId._OperatorId) &&
+                   _IdSuffix.  Equals(EVSEId._IdSuffix);
 
         }
 
@@ -538,7 +532,7 @@ namespace org.GraphDefined.WWCP
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
         {
-            return _OperatorId.GetHashCode() ^ _EVSEIdSuffix.GetHashCode();
+            return _OperatorId.GetHashCode() ^ _IdSuffix.GetHashCode();
         }
 
         #endregion
@@ -551,7 +545,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return String.Concat(_OperatorId.ToString(), "*E", _EVSEIdSuffix);
+            return String.Concat(_OperatorId.ToString(), "*E", _IdSuffix);
         }
 
         #endregion
