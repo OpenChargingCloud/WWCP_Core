@@ -246,7 +246,7 @@ namespace org.GraphDefined.WWCP.Importer
             #endregion
 
             this._ConfigFilenamePrefix         = ConfigFilenamePrefix;
-            this._DNSClient                    = DNSClient   != null ? _DNSClient        : new DNSClient();
+            this._DNSClient                    = DNSClient   != null ? DNSClient         : new DNSClient();
             this._UpdateEvery                  = UpdateEvery != null ? UpdateEvery.Value : DefaultImportEvery;
 
             this.DownloadXMLData               = GetXMLData;

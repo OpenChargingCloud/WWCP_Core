@@ -165,6 +165,7 @@ namespace org.GraphDefined.WWCP
                 return _ChargingPools.Values.
                            SelectMany(v => v.ChargingStations).
                            SelectMany(v => v.EVSEs).
+                           OrderBy   (v => v.Id).
                            Select    (v => new KeyValuePair<EVSE_Id, EVSEStatusType>(v.Id, v.Status.Value));
             }
         }
@@ -862,9 +863,9 @@ namespace org.GraphDefined.WWCP
             // Only ValidEVSEIds!
             // Do nothing with manual EVSE Ids!
             var CurrentEVSEStates  = AllEVSEStatus.
-                                     Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
-                                                 !ManualEVSEIds.Contains(KVP.Key)).
-                                     ToDictionary(v => v.Key, v => v.Value);
+                                         Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
+                                                     !ManualEVSEIds.Contains(KVP.Key)).
+                                         ToDictionary(v => v.Key, v => v.Value);
 
             var OldEVSEIds         = new List<EVSE_Id>(CurrentEVSEStates.Keys);
 
