@@ -20,6 +20,8 @@
 using System;
 using System.Text.RegularExpressions;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 #endregion
 
 namespace org.GraphDefined.WWCP
@@ -90,41 +92,27 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region OldEVSEId
+        #region IdFormat
 
-        public String OldEVSEId
+        private readonly IdFormatType _IdFormat;
+
+        public IdFormatType IdFormat
         {
             get
             {
-                return String.Concat(_OperatorId.IdOld, "*", _IdSuffix);
+                return _IdFormat;
             }
         }
 
         #endregion
 
-        #region OriginFormat
+        #region OriginId
 
-        private readonly OriginFormatType _OriginFormat;
-
-        public OriginFormatType OriginFormat
+        public String OriginId
         {
             get
             {
-                return _OriginFormat;
-            }
-        }
-
-        #endregion
-
-        #region OriginEVSEId
-
-        public String OriginEVSEId
-        {
-            get
-            {
-                return (_OriginFormat == OriginFormatType.NEW)
-                          ? String.Concat(_OperatorId.ToString(), "*E", _IdSuffix)
-                          : String.Concat(_OperatorId.IdOld,       "*", _IdSuffix);
+                return ToFormat(_IdFormat);
             }
         }
 
@@ -140,11 +128,18 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         private EVSE_Id(EVSEOperator_Id   OperatorId,
                         String            IdSuffix,
-                        OriginFormatType  OriginFormat)
+                        IdFormatType      IdFormat = IdFormatType.NEW)
         {
 
+            #region Initial checks
+
             if (OperatorId == null)
-                throw new ArgumentNullException("OperatorId", "The OperatorId must not be null!");
+                throw new ArgumentNullException("OperatorId", "The parameter must not be null!");
+
+            if (IdSuffix.IsNullOrEmpty())
+                throw new ArgumentNullException("IdSuffix", "The parameter must not be null or empty!");
+
+            #endregion
 
             var _MatchCollection = Regex.Matches(IdSuffix.Trim().ToUpper(),
                                                  IdSuffix_RegEx,
@@ -153,9 +148,9 @@ namespace org.GraphDefined.WWCP
             if (_MatchCollection.Count != 1)
                 throw new ArgumentException("Illegal EVSE identification!", "IdSuffix");
 
-            _OperatorId    = OperatorId;
-            _IdSuffix      = _MatchCollection[0].Value;
-            _OriginFormat  = OriginFormat;
+            this._OperatorId  = OperatorId;
+            this._IdSuffix    = _MatchCollection[0].Value;
+            this._IdFormat    = IdFormat;
 
         }
 
@@ -170,6 +165,13 @@ namespace org.GraphDefined.WWCP
         public static EVSE_Id Parse(String Text)
         {
 
+            #region Initial checks
+
+            if (Text.IsNullOrEmpty())
+                throw new ArgumentException("The parameter must not be null or empty!", "Text");
+
+            #endregion
+
             var _MatchCollection = Regex.Matches(Text.Trim().ToUpper(),
                                                  EVSEId_RegEx,
                                                  RegexOptions.IgnorePatternWhitespace);
@@ -182,12 +184,12 @@ namespace org.GraphDefined.WWCP
             if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
                 return new EVSE_Id(__EVSEOperatorId,
                                    _MatchCollection[0].Groups[2].Value,
-                                   OriginFormatType.NEW);
+                                   IdFormatType.NEW);
 
             if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
                 return new EVSE_Id(__EVSEOperatorId,
                                    _MatchCollection[0].Groups[4].Value,
-                                   OriginFormatType.OLD);
+                                   IdFormatType.OLD);
 
 
             throw new ArgumentException("Illegal EVSE identification!", "EVSEId");
@@ -203,7 +205,19 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static EVSE_Id Parse(EVSEOperator_Id OperatorId, String IdSuffix)
         {
+
+            #region Initial checks
+
+            if (OperatorId == null)
+                throw new ArgumentException("The parameter must not be null or empty!", "OperatorId");
+
+            if (IdSuffix.IsNullOrEmpty())
+                throw new ArgumentException("The parameter must not be null or empty!", "IdSuffix");
+
+            #endregion
+
             return EVSE_Id.Parse(OperatorId.ToString() + "*" + IdSuffix);
+
         }
 
         #endregion
@@ -215,6 +229,16 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static Boolean TryParse(String Text, out EVSE_Id EVSEId)
         {
+
+            #region Initial checks
+
+            if (Text.IsNullOrEmpty())
+            {
+                EVSEId = null;
+                return false;
+            }
+
+            #endregion
 
             try
             {
@@ -236,7 +260,7 @@ namespace org.GraphDefined.WWCP
 
                     EVSEId = new EVSE_Id(__EVSEOperatorId,
                                          _MatchCollection[0].Groups[2].Value,
-                                         OriginFormatType.NEW);
+                                         IdFormatType.NEW);
 
                     return true;
 
@@ -248,7 +272,7 @@ namespace org.GraphDefined.WWCP
 
                     EVSEId = new EVSE_Id(__EVSEOperatorId,
                                          _MatchCollection[0].Groups[4].Value,
-                                         OriginFormatType.OLD);
+                                         IdFormatType.OLD);
 
                     return true;
 
@@ -299,8 +323,40 @@ namespace org.GraphDefined.WWCP
             {
                 return new EVSE_Id(_OperatorId.Clone,
                                    new String(_IdSuffix.ToCharArray()),
-                                   _OriginFormat);
+                                   _IdFormat);
             }
+        }
+
+        #endregion
+
+
+        #region ToFormat(IdFormat)
+
+        /// <summary>
+        /// Return the identification in the given format.
+        /// </summary>
+        /// <param name="IdFormat">The format.</param>
+        public String ToFormat(IdFormatType IdFormat)
+        {
+
+            return (IdFormat == IdFormatType.NEW)
+                       ? String.Concat(_OperatorId.ToFormat(IdFormat), "*E", _IdSuffix)
+                       : String.Concat(_OperatorId.ToFormat(IdFormat),  "*", _IdSuffix);
+
+        }
+
+        /// <summary>
+        /// Return the identification in the given format.
+        /// </summary>
+        /// <param name="IdFormat">The format.</param>
+        public String ToFormat(IdFormatType2 IdFormat)
+        {
+
+            if (IdFormat == IdFormatType2.Origin)
+                return ToFormat(this.IdFormat);
+
+            return ToFormat((IdFormatType) IdFormat);
+
         }
 
         #endregion
@@ -545,7 +601,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return String.Concat(_OperatorId.ToString(), "*E", _IdSuffix);
+            return String.Concat(_OperatorId, "*E", _IdSuffix);
         }
 
         #endregion

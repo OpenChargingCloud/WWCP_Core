@@ -17,10 +17,17 @@
 
 namespace org.GraphDefined.WWCP
 {
-    public enum OriginFormatType
+    public enum IdFormatType
     {
         OLD,
         NEW
+    }
+
+    public enum IdFormatType2
+    {
+        OLD,
+        NEW,
+        Origin
     }
 
 }

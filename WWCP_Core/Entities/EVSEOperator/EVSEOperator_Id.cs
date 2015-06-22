@@ -101,16 +101,27 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IdOld
+        #region IdFormat
 
-        /// <summary>
-        /// The EVSE Operator identification as e.g. "+49*822".
-        /// </summary>
-        public String IdOld
+        private readonly IdFormatType _IdFormat;
+
+        public IdFormatType IdFormat
         {
             get
             {
-                return String.Concat("+", _CountryCode.TelefonCode, "*", _OperatorId);
+                return _IdFormat;
+            }
+        }
+
+        #endregion
+
+        #region OriginId
+
+        public String OriginId
+        {
+            get
+            {
+                return ToFormat(_IdFormat);
             }
         }
 
@@ -121,15 +132,20 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new Electric Vehicle Supply Equipment Operator (EVSE Op) identification.
+        /// Create a new Electric Vehicle Supply Equipment Operator identification.
         /// </summary>
         /// <param name="CountryCode">The Alpha-2-CountryCode.</param>
         /// <param name="OperatorId">The EVSE Operator identification.</param>
-        private EVSEOperator_Id(Country  CountryCode,
-                                String   OperatorId)
+        /// <param name="IdFormat">The format of the EVSE operator identification [old|new].</param>
+        private EVSEOperator_Id(Country           CountryCode,
+                                String            OperatorId,
+                                IdFormatType  IdFormat)// = IdFormatType.NEW)
         {
-            _CountryCode  = CountryCode;
-            _OperatorId   = OperatorId;
+
+            this._CountryCode   = CountryCode;
+            this._OperatorId    = OperatorId;
+            this._IdFormat  = IdFormat;
+
         }
 
         #endregion
@@ -140,44 +156,64 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Parse the given string as an EVSE Operator identification.
         /// </summary>
-        /// <param name="CountryAndOperatorId">An EVSE Operator identification as string.</param>
+        /// <param name="CountryAndOperatorId">The country code and EVSE operator identification as a string.</param>
         public static EVSEOperator_Id Parse(String CountryAndOperatorId)
         {
 
+            #region Initial checks
+
+            if (CountryAndOperatorId.IsNullOrEmpty())
+                throw new ArgumentException("The parameter must not be null or empty!", "CountryAndOperatorId");
+
+            #endregion
 
             var _MatchCollection = Regex.Matches(CountryAndOperatorId.Trim().ToUpper(),
                                                  CountryAndOperatorId_RegEx,
                                                  RegexOptions.IgnorePatternWhitespace);
 
             if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal EVSE Operator identification '" + CountryAndOperatorId + "'!", "OperatorId");
+                throw new ArgumentException("Illegal EVSE Operator identification '" + CountryAndOperatorId + "'!", "CountryAndOperatorId");
 
             Country __CountryCode;
 
             if (Country.TryParseAlpha2Code(_MatchCollection[0].Groups[1].Value, out __CountryCode))
                 return new EVSEOperator_Id(__CountryCode,
-                                           _MatchCollection[0].Groups[2].Value);
+                                           _MatchCollection[0].Groups[2].Value,
+                                           IdFormatType.NEW);
 
             if (Country.TryParseTelefonCode(_MatchCollection[0].Groups[3].Value, out __CountryCode))
                 return new EVSEOperator_Id(__CountryCode,
-                                           _MatchCollection[0].Groups[4].Value);
+                                           _MatchCollection[0].Groups[4].Value,
+                                           IdFormatType.OLD);
 
-            // Just e.g. "882"...
-            return new EVSEOperator_Id(Country.Germany,
-                                       _MatchCollection[0].Groups[5].Value);
+            throw new ArgumentException("Illegal EVSE operator identification!", "EVSEId");
 
         }
 
         #endregion
 
-        #region Parse(CountryCode, OperatorId)
+        #region Parse(CountryCode, OperatorId, IdFormat = IdFormatType.NEW)
 
         /// <summary>
         /// Parse the given string as an EVSE Operator identification.
         /// </summary>
-        /// <param name="CountryAndOperatorId">An EVSE Operator identification as string.</param>
-        public static EVSEOperator_Id Parse(Country CountryCode, String OperatorId)
+        /// <param name="CountryCode">A country code.</param>
+        /// <param name="OperatorId">An EVSE operator identification as a string.</param>
+        /// <param name="IdFormat">The format of the EVSE operator identification [old|new].</param>
+        public static EVSEOperator_Id Parse(Country           CountryCode,
+                                            String            OperatorId,
+                                            IdFormatType  IdFormat = IdFormatType.NEW)
         {
+
+            #region Initial checks
+
+            if (CountryCode == null)
+                throw new ArgumentException("The parameter must not be null or empty!", "CountryCode");
+
+            if (OperatorId.IsNullOrEmpty())
+                throw new ArgumentException("The parameter must not be null or empty!", "OperatorId");
+
+            #endregion
 
             var _MatchCollection = Regex.Matches(OperatorId.Trim().ToUpper(),
                                                  OperatorId_RegEx,
@@ -186,7 +222,7 @@ namespace org.GraphDefined.WWCP
             if (_MatchCollection.Count != 1)
                 throw new ArgumentException("Illegal EVSE Operator identification '" + CountryCode + " / " + OperatorId + "'!", "OperatorId");
 
-            return new EVSEOperator_Id(CountryCode, _MatchCollection[0].Value);
+            return new EVSEOperator_Id(CountryCode, _MatchCollection[0].Value, IdFormat);
 
         }
 
@@ -197,11 +233,21 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Parse the given string as an EVSE Operator identification.
         /// </summary>
-        /// <param name="CountryAndOperatorId">An EVSE Operator identification as string.</param>
+        /// <param name="CountryAndOperatorId">The country code and EVSE operator identification as a string.</param>
         /// <param name="EVSEOperatorId">The parsed EVSE Operator identification.</param>
         public static Boolean TryParse(String               CountryAndOperatorId,
                                        out EVSEOperator_Id  EVSEOperatorId)
         {
+
+            #region Initial checks
+
+            if (CountryAndOperatorId.IsNullOrEmpty())
+            {
+                EVSEOperatorId = null;
+                return false;
+            }
+
+            #endregion
 
             try
             {
@@ -221,47 +267,55 @@ namespace org.GraphDefined.WWCP
                 if (Country.TryParseAlpha2Code(_MatchCollection[0].Groups[1].Value, out __CountryCode))
                 {
                     EVSEOperatorId = new EVSEOperator_Id(__CountryCode,
-                                                         _MatchCollection[0].Groups[2].Value);
+                                                         _MatchCollection[0].Groups[2].Value,
+                                                         IdFormatType.NEW);
                     return true;
                 }
 
                 if (Country.TryParseTelefonCode(_MatchCollection[0].Groups[3].Value, out __CountryCode))
                 {
                     EVSEOperatorId = new EVSEOperator_Id(__CountryCode,
-                                                         _MatchCollection[0].Groups[4].Value);
+                                                         _MatchCollection[0].Groups[4].Value,
+                                                         IdFormatType.OLD);
                     return true;
                 }
 
-                // Just e.g. "882"...
-                EVSEOperatorId = new EVSEOperator_Id(Country.Germany,
-                                                     _MatchCollection[0].Groups[5].Value);
-
-                return true;
-
             }
-
 
             catch (Exception e)
-            {
-                EVSEOperatorId = null;
-                return false;
-            }
+            { }
+
+            EVSEOperatorId = null;
+            return false;
 
         }
 
         #endregion
 
-        #region TryParse(CountryCode, OperatorId, out EVSEOperatorId)
+        #region TryParse(CountryCode, OperatorId, out EVSEOperatorId, IdFormat = IdFormatType.NEW)
 
         /// <summary>
         /// Parse the given string as an EVSE Operator identification.
         /// </summary>
-        /// <param name="CountryAndOperatorId">An EVSE Operator identification as string.</param>
+        /// <param name="CountryCode">A country code.</param>
+        /// <param name="OperatorId">An EVSE operator identification as a string.</param>
         /// <param name="EVSEOperatorId">The parsed EVSE Operator identification.</param>
+        /// <param name="IdFormat">The format of the EVSE operator identification [old|new].</param>
         public static Boolean TryParse(Country              CountryCode,
                                        String               OperatorId,
-                                       out EVSEOperator_Id  EVSEOperatorId)
+                                       out EVSEOperator_Id  EVSEOperatorId,
+                                       IdFormatType     IdFormat = IdFormatType.NEW)
         {
+
+            #region Initial checks
+
+            if (CountryCode == null || OperatorId.IsNullOrEmpty())
+            {
+                EVSEOperatorId = null;
+                return false;
+            }
+
+            #endregion
 
             try
             {
@@ -276,7 +330,7 @@ namespace org.GraphDefined.WWCP
                     return false;
                 }
 
-                EVSEOperatorId = new EVSEOperator_Id(CountryCode, _MatchCollection[0].Value);
+                EVSEOperatorId = new EVSEOperator_Id(CountryCode, _MatchCollection[0].Value, IdFormat);
                 return true;
 
             }
@@ -302,9 +356,42 @@ namespace org.GraphDefined.WWCP
             {
 
                 return new EVSEOperator_Id(_CountryCode,
-                                           new String(_OperatorId.ToCharArray()));
+                                           new String(_OperatorId.ToCharArray()),
+                                           _IdFormat);
 
             }
+        }
+
+        #endregion
+
+
+        #region ToFormat(IdFormat)
+
+        /// <summary>
+        /// Return the identification in the given format.
+        /// </summary>
+        /// <param name="IdFormat">The format.</param>
+        public String ToFormat(IdFormatType IdFormat)
+        {
+
+            return (IdFormat == IdFormatType.NEW)
+                       ? String.Concat(     _CountryCode.Alpha2Code,  "*", _OperatorId)
+                       : String.Concat("+", _CountryCode.TelefonCode, "*", _OperatorId);
+
+        }
+
+        /// <summary>
+        /// Return the identification in the given format.
+        /// </summary>
+        /// <param name="IdFormat">The format.</param>
+        public String ToFormat(IdFormatType2 IdFormat)
+        {
+
+            if (IdFormat == IdFormatType2.Origin)
+                return ToFormat(this.IdFormat);
+
+            return ToFormat((IdFormatType) IdFormat);
+
         }
 
         #endregion

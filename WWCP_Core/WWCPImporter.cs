@@ -484,7 +484,7 @@ namespace org.GraphDefined.WWCP.Importer
                 return ForwardToRoamingNetworkId.First();
 
             if (ForwardToRoamingNetworkId.Count > 1)
-                DebugX.Log("EVSE Ids '" + ForwardingInfo.EVSEIds.Select(EVSEId => EVSEId.OriginEVSEId.ToString()).AggregateWith(", ") +
+                DebugX.Log("EVSE Ids '" + ForwardingInfo.EVSEIds.Select(EVSEId => EVSEId.OriginId.ToString()).AggregateWith(", ") +
                            "' have multiple attached RoamingNetworks '" +
                            ForwardToRoamingNetworkId.Select(RNId => RNId.ToString()).AggregateWith(", ") + "'!");
 
@@ -503,7 +503,7 @@ namespace org.GraphDefined.WWCP.Importer
                 return Defaults.NoForwarding;
 
             if (InvalidAtEVSEOperators.Count > 1)
-                DebugX.Log("EVSE Ids '" + ForwardingInfo.EVSEIds.Select(EVSEId => EVSEId.OriginEVSEId.ToString()).AggregateWith(", ") +
+                DebugX.Log("EVSE Ids '" + ForwardingInfo.EVSEIds.Select(EVSEId => EVSEId.OriginId.ToString()).AggregateWith(", ") +
                            "' have multiple attached RoamingNetworks '" +
                            ForwardToRoamingNetworkId.Select(RNId => RNId.ToString()).AggregateWith(", ") + "'!");
 

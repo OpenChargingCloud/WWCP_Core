@@ -287,7 +287,8 @@ namespace org.GraphDefined.WWCP
 
         public I18NString           Name                    { get; set; }
 
-        public String               EVSEIdPrefix            { get; set; }
+  //      public String               EVSEIdPrefix            { get; set; }
+        public String               OwnerStationId          { get; set; }
 
 
         #region AuthenticationModes
@@ -928,7 +929,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return "eMI3 ChargingStation: " + Id.ToString();
+            return Id.ToString();
         }
 
         #endregion

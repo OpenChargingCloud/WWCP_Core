@@ -1133,7 +1133,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return "eMI3 EVSPool" + Id.ToString();
+            return Id.ToString();
         }
 
         #endregion

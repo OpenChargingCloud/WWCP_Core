@@ -19,6 +19,8 @@
 
 using System;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 #endregion
 
 namespace org.GraphDefined.WWCP
@@ -82,9 +84,18 @@ namespace org.GraphDefined.WWCP
         /// Generate a new Electric Vehicle Roaming Network (EVRN Id) identification.
         /// based on the given string.
         /// </summary>
-        private RoamingNetwork_Id(String String)
+        private RoamingNetwork_Id(String Text)
         {
-            _Id = String.Trim();
+
+            #region Initial checks
+
+            if (Text.IsNullOrEmpty())
+                throw new ArgumentException("The parameter must not be null or empty!", "Text");
+
+            #endregion
+
+            _Id = Text.Trim();
+
         }
 
         #endregion
@@ -112,6 +123,17 @@ namespace org.GraphDefined.WWCP
         /// <param name="RoamingNetworkId">The parsed Electric Vehicle Roaming Network identification.</param>
         public static Boolean TryParse(String Text, out RoamingNetwork_Id RoamingNetworkId)
         {
+
+            #region Initial checks
+
+            if (Text.IsNullOrEmpty())
+            {
+                RoamingNetworkId = null;
+                return false;
+            }
+
+            #endregion
+
             try
             {
                 RoamingNetworkId = new RoamingNetwork_Id(Text);
@@ -122,6 +144,7 @@ namespace org.GraphDefined.WWCP
                 RoamingNetworkId = null;
                 return false;
             }
+
         }
 
         #endregion
@@ -135,7 +158,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return new RoamingNetwork_Id(_Id);
+                return new RoamingNetwork_Id(new String(_Id.ToCharArray()));
             }
         }
 
@@ -373,10 +396,10 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        public static implicit operator String(RoamingNetwork_Id d)
-        {
-            return d.ToString();
-        }
+        //public static implicit operator String(RoamingNetwork_Id d)
+        //{
+        //    return d.ToString();
+        //}
 
     }
 

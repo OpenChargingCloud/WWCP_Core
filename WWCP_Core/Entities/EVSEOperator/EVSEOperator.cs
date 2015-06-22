@@ -573,7 +573,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (ChargingPoolId == null)
-                ChargingPoolId = ChargingPool_Id.New();
+                ChargingPoolId = ChargingPool_Id.Random(this.Id);
 
             // Do not throw an exception when an OnError delegate was given!
             if (_ChargingPools.ContainsKey(ChargingPoolId))
@@ -843,7 +843,7 @@ namespace org.GraphDefined.WWCP
             }
 
             else
-                DebugX.Log("Could not set status for EVSE '" + EVSEId.OriginEVSEId.ToString() + "'!");
+                DebugX.Log("Could not set status for EVSE '" + EVSEId.OriginId.ToString() + "'!");
 
         }
 
