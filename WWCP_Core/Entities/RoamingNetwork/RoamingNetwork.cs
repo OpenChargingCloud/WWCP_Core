@@ -872,7 +872,71 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
- 
+
+
+        #region EVSE methods
+
+        #region ContainsEVSE(EVSE)
+
+        /// <summary>
+        /// Check if the given EVSE is already present within the roaming network.
+        /// </summary>
+        /// <param name="EVSE">An EVSE.</param>
+        public Boolean ContainsEVSE(EVSE EVSE)
+        {
+            return _EVSEOperators.Values.Any(evseoperator => evseoperator.ContainsEVSE(EVSE.Id));
+        }
+
+        #endregion
+
+        #region ContainsEVSE(EVSEId)
+
+        /// <summary>
+        /// Check if the given EVSE identification is already present within the roaming network.
+        /// </summary>
+        /// <param name="EVSEId">An EVSE identification.</param>
+        public Boolean ContainsEVSE(EVSE_Id EVSEId)
+        {
+            return _EVSEOperators.Values.Any(evseoperator => evseoperator.ContainsEVSE(EVSEId));
+        }
+
+        #endregion
+
+        #region GetEVSEbyId(EVSEId)
+
+        public EVSE GetEVSEbyId(EVSE_Id EVSEId)
+        {
+
+            EVSE _EVSE = null;
+
+            foreach (var EVSEOperator in _EVSEOperators.Values)
+                if (EVSEOperator.TryGetEVSEbyId(EVSEId, out _EVSE))
+                    return _EVSE;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryGetEVSEbyId(EVSEId, out EVSE)
+
+        public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
+        {
+
+            foreach (var EVSEOperator in _EVSEOperators.Values)
+                if (EVSEOperator.TryGetEVSEbyId(EVSEId, out EVSE))
+                    return true;
+
+            EVSE = null;
+            return false;
+
+        }
+
+        #endregion
+
+        #endregion
+
 
         #region IEnumerable<IEntity> Members
 

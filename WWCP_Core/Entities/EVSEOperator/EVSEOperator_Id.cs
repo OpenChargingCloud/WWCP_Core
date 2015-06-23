@@ -200,8 +200,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="CountryCode">A country code.</param>
         /// <param name="OperatorId">An EVSE operator identification as a string.</param>
         /// <param name="IdFormat">The format of the EVSE operator identification [old|new].</param>
-        public static EVSEOperator_Id Parse(Country           CountryCode,
-                                            String            OperatorId,
+        public static EVSEOperator_Id Parse(Country       CountryCode,
+                                            String        OperatorId,
                                             IdFormatType  IdFormat = IdFormatType.NEW)
         {
 
@@ -279,6 +279,12 @@ namespace org.GraphDefined.WWCP
                                                          IdFormatType.OLD);
                     return true;
                 }
+
+
+                // Just e.g. "822"...
+                EVSEOperatorId = EVSEOperator_Id.Parse(Country.Germany,
+                                                       _MatchCollection[0].Groups[5].Value);
+                return true;
 
             }
 

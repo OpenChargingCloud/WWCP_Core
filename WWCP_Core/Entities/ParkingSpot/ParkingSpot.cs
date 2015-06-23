@@ -48,7 +48,7 @@ namespace org.GraphDefined.WWCP
         private I18NString _Name;
 
         /// <summary>
-        /// The offical (multi-language) name of the EVSPool.
+        /// The offical (multi-language) name of the ChargingPool.
         /// </summary>
         [Mandatory]
         public I18NString Name
@@ -73,7 +73,7 @@ namespace org.GraphDefined.WWCP
         private I18NString _Description;
 
         /// <summary>
-        /// An optional additional (multi-language) description of the EVSPool.
+        /// An optional additional (multi-language) description of the ChargingPool.
         /// </summary>
         [Optional]
         public I18NString Description

@@ -18,9 +18,12 @@
 #region Usings
 
 using System;
+using System.Text;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
@@ -44,7 +47,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The regular expression for parsing a charging pool identification.
         /// </summary>
-        public    const    String  ChargingPoolId_RegEx  = @"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?S([A-Z0-9][A-Z0-9\*]{0,30})$ | ^(\+?[0-9]{1,3}\*?[0-9]{3})\*?([A-Z0-9][A-Z0-9\*]{0,30})$";
+        public    const    String  ChargingPoolId_RegEx  = @"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?P([A-Z0-9][A-Z0-9\*]{0,30})$ | ^(\+?[0-9]{1,3}\*?[0-9]{3})\*?([A-Z0-9][A-Z0-9\*]{0,30})$";
 
         /// <summary>
         /// The regular expression for parsing an charging pool identification.
@@ -185,6 +188,36 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Generate(EVSEOperatorId, Address, GeoLocation, Lenght = 20, Mapper = null)
+
+        /// <summary>
+        /// Create a valid charging pool identification based on the given parameters.
+        /// </summary>
+        /// <param name="EVSEOperatorId">The identification of an EVSE operator.</param>
+        /// <param name="Address">The address of the charging pool.</param>
+        /// <param name="GeoLocation">The geo location of the charging pool.</param>
+        /// <param name="Length">The maximum size of the generated charging pool identification suffix.</param>
+        /// <param name="Mapper">A delegate to modify a generated charging pool identification suffix.</param>
+        public static ChargingPool_Id Generate(EVSEOperator_Id       EVSEOperatorId,
+                                               Address               Address,
+                                               GeoCoordinate         GeoLocation,
+                                               Byte                  Length = 20,
+                                               Func<String, String>  Mapper = null)
+        {
+
+            var Suffíx = new SHA1CryptoServiceProvider().
+                             ComputeHash(Encoding.UTF8.GetBytes(Address.    ToString() +
+                                                                GeoLocation.ToString())).
+                                         ToHexString().
+                                         Substring(0, Math.Min(40, (Int32) Length)).
+                                         ToUpper();
+
+            return ChargingPool_Id.Parse(EVSEOperatorId, Mapper != null ? Mapper(Suffíx) : Suffíx);
+
+        }
+
+        #endregion
+
         #region Parse(Text)
 
         /// <summary>
@@ -246,6 +279,9 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentException("The parameter must not be null or empty!", "IdSuffix");
 
             #endregion
+
+            if (OperatorId.IdFormat == IdFormatType.NEW)
+                return ChargingPool_Id.Parse(OperatorId.ToString() + "*P" + IdSuffix);
 
             return ChargingPool_Id.Parse(OperatorId.ToString() + "*" + IdSuffix);
 

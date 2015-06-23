@@ -115,7 +115,7 @@ namespace org.GraphDefined.WWCP.UnitTests
             //Assert.IsNotNull(BelectricDriveOperator);
             //Assert.AreEqual(EVSEOperator_Id.Parse(Country.Germany, "822"), BelectricDriveOperator.Id);
             //Assert.AreEqual("822",                                         BelectricDriveOperator.Id.ToString());
-            //Assert.AreEqual(0,                                             BelectricDriveOperator.Count(),       "The number of EVSPools registered with the EVSE operator must be 0!");
+            //Assert.AreEqual(0,                                             BelectricDriveOperator.Count(),       "The number of ChargingPools registered with the EVSE operator must be 0!");
 
             //Assert.AreEqual(1,                                             RoamingNetwork.Count(),               "The number of entities within the roaming network must be 1 now!");
             //Assert.AreEqual(1,                                             RoamingNetwork.EVSEOperators.Count(), "The number of EVSE operators within the roaming network must be 1 now!");

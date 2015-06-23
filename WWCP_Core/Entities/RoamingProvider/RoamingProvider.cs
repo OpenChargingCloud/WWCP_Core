@@ -41,7 +41,7 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private readonly ConcurrentDictionary<ChargingPool_Id, ChargingPool>  _RegisteredEVSPools;
+        private readonly ConcurrentDictionary<ChargingPool_Id, ChargingPool>  _RegisteredChargingPools;
 
         #endregion
 
@@ -105,13 +105,13 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region EVSPools
+        #region ChargingPools
 
-        public IEnumerable<ChargingPool> EVSPools
+        public IEnumerable<ChargingPool> ChargingPools
         {
             get
             {
-                return _RegisteredEVSPools.Select(KVP => KVP.Value);
+                return _RegisteredChargingPools.Select(KVP => KVP.Value);
             }
         }
 
@@ -127,7 +127,7 @@ namespace org.GraphDefined.WWCP
         /// Create a new Electric Vehicle Roaming Provider (EVRP)
         /// having the given RoamingProvider_Id.
         /// </summary>
-        /// <param name="Id">The EVSPool Id.</param>
+        /// <param name="Id">The ChargingPool Id.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
         internal RoamingProvider(RoamingProvider_Id                             Id,
@@ -152,7 +152,7 @@ namespace org.GraphDefined.WWCP
             this.Name                   = new I18NString();
             this._EMobilityService      = EMobilityService;
 
-            this._RegisteredEVSPools    = new ConcurrentDictionary<ChargingPool_Id, ChargingPool>();
+            this._RegisteredChargingPools    = new ConcurrentDictionary<ChargingPool_Id, ChargingPool>();
 
         }
 
@@ -161,16 +161,16 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region IEnumerable<EVSPool> Members
+        #region IEnumerable<ChargingPool> Members
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return _RegisteredEVSPools.Values.GetEnumerator();
+            return _RegisteredChargingPools.Values.GetEnumerator();
         }
 
         public IEnumerator<ChargingPool> GetEnumerator()
         {
-            return _RegisteredEVSPools.Values.GetEnumerator();
+            return _RegisteredChargingPools.Values.GetEnumerator();
         }
 
         #endregion

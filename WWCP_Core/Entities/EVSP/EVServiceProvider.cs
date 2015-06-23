@@ -141,7 +141,7 @@ namespace org.GraphDefined.WWCP
         /// Create a new Electric Vehicle Service Provider (EVSP)
         /// having the given EVSProvider_Id.
         /// </summary>
-        /// <param name="Id">The EVSPool Id.</param>
+        /// <param name="Id">The ChargingPool Id.</param>
         /// <param name="RoamingNetwork">The corresponding roaming network.</param>
         internal EVServiceProvider(EVSP_Id         Id,
                                    RoamingNetwork  RoamingNetwork)
@@ -158,7 +158,7 @@ namespace org.GraphDefined.WWCP
         /// Create a new Electric Vehicle Service Provider (EVSP)
         /// having the given EVSProvider_Id.
         /// </summary>
-        /// <param name="Id">The EVSPool Id.</param>
+        /// <param name="Id">The ChargingPool Id.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
         internal EVServiceProvider(EVSP_Id                                        Id,

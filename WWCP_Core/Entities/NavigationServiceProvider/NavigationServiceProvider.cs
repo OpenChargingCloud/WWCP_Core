@@ -193,7 +193,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region IEnumerable<EVSPool> Members
+        #region IEnumerable<ChargingPool> Members
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {

@@ -35,7 +35,7 @@ namespace org.GraphDefined.WWCP
 
     /// <summary>
     /// A pool of electric vehicle charging stations.
-    /// The geo locations of these charging stations will be close together and the EVSPool
+    /// The geo locations of these charging stations will be close together and the charging pool
     /// might provide a shared network access to aggregate and optimize communication
     /// with the EVSE Operator backend.
     /// </summary>
@@ -60,7 +60,7 @@ namespace org.GraphDefined.WWCP
         private I18NString _Name;
 
         /// <summary>
-        /// The offical (multi-language) name of the EVSPool.
+        /// The offical (multi-language) name of the charging pool.
         /// </summary>
         [Mandatory]
         public I18NString Name
@@ -85,7 +85,7 @@ namespace org.GraphDefined.WWCP
         private I18NString _Description;
 
         /// <summary>
-        /// An optional additional (multi-language) description of the EVSPool.
+        /// An optional additional (multi-language) description of the charging pool.
         /// </summary>
         [Optional]
         public I18NString Description
@@ -110,7 +110,7 @@ namespace org.GraphDefined.WWCP
         private Languages _LocationLanguage;
 
         /// <summary>
-        /// The official language at this EVSPool.
+        /// The official language at this charging pool.
         /// </summary>
         [Optional]
         public Languages LocationLanguage
@@ -130,25 +130,25 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region PoolLocation
+        #region GeoLocation
 
-        private GeoCoordinate _PoolLocation;
+        private GeoCoordinate _GeoLocation;
 
         /// <summary>
-        /// The geographical location of this EVSPool.
+        /// The geographical location of this charging pool.
         /// </summary>
         [Optional]
-        public GeoCoordinate PoolLocation
+        public GeoCoordinate GeoLocation
         {
 
             get
             {
-                return _PoolLocation;
+                return _GeoLocation;
             }
 
             set
             {
-                SetProperty<GeoCoordinate>(ref _PoolLocation, value);
+                SetProperty<GeoCoordinate>(ref _GeoLocation, value);
             }
 
         }
@@ -160,7 +160,7 @@ namespace org.GraphDefined.WWCP
         private GeoCoordinate _EntranceLocation;
 
         /// <summary>
-        /// The geographical location of the entrance of this EVSPool.
+        /// The geographical location of the entrance of this charging pool.
         /// (If different from 'PoolLocation').
         /// </summary>
         [Optional]
@@ -186,7 +186,7 @@ namespace org.GraphDefined.WWCP
         private Address _Address;
 
         /// <summary>
-        /// The address of this EVSPool.
+        /// The address of this charging pool.
         /// </summary>
         [Optional]
         public Address Address
@@ -211,7 +211,7 @@ namespace org.GraphDefined.WWCP
         private Address _EntranceAddress;
 
         /// <summary>
-        /// The address of the entrance of this EVSPool.
+        /// The address of the entrance of this charging pool.
         /// (If different from 'Address').
         /// </summary>
         [Optional]
@@ -237,7 +237,7 @@ namespace org.GraphDefined.WWCP
         private String _PoolOwner;
 
         /// <summary>
-        /// The owner of this EVSPool.
+        /// The owner of this charging pool.
         /// </summary>
         [Optional]
         public String PoolOwner
@@ -262,7 +262,7 @@ namespace org.GraphDefined.WWCP
         private String _LocationOwner;
 
         /// <summary>
-        /// The owner of the EVSPool location.
+        /// The owner of the charging pool location.
         /// </summary>
         [Optional]
         public String LocationOwner
@@ -359,7 +359,7 @@ namespace org.GraphDefined.WWCP
         private OpeningTime _OpeningTime;
 
         /// <summary>
-        /// The opening time of this EVSPool.
+        /// The opening time of this charging pool.
         /// </summary>
         [Optional]
         public OpeningTime OpeningTime
@@ -450,7 +450,7 @@ namespace org.GraphDefined.WWCP
         private EVSEOperator _EVSEOperator;
 
         /// <summary>
-        /// The EVSE operator of this EVSPool.
+        /// The EVSE operator of this charging pool.
         /// </summary>
         [Optional]
         public EVSEOperator EVSEOperator
@@ -1022,7 +1022,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IComparable<EVSPool> Members
+        #region IComparable<ChargingPool> Members
 
         #region CompareTo(Object)
 
@@ -1036,30 +1036,30 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an EVSPool.
-            var EVSPool = Object as ChargingPool;
-            if ((Object) EVSPool == null)
-                throw new ArgumentException("The given object is not an EVSPool!");
+            // Check if the given object is an charging pool.
+            var ChargingPool = Object as ChargingPool;
+            if ((Object) ChargingPool == null)
+                throw new ArgumentException("The given object is not an charging pool!");
 
-            return CompareTo(EVSPool);
+            return CompareTo(ChargingPool);
 
         }
 
         #endregion
 
-        #region CompareTo(EVSPool)
+        #region CompareTo(ChargingPool)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSPool">An EVSPool object to compare with.</param>
-        public Int32 CompareTo(ChargingPool EVSPool)
+        /// <param name="charging pool">An charging pool object to compare with.</param>
+        public Int32 CompareTo(ChargingPool ChargingPool)
         {
 
-            if ((Object) EVSPool == null)
-                throw new ArgumentNullException("The given EVSPool must not be null!");
+            if ((Object) ChargingPool == null)
+                throw new ArgumentNullException("The given charging pool must not be null!");
 
-            return Id.CompareTo(EVSPool.Id);
+            return Id.CompareTo(ChargingPool.Id);
 
         }
 
@@ -1067,7 +1067,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<EVSPool> Members
+        #region IEquatable<ChargingPool> Members
 
         #region Equals(Object)
 
@@ -1082,31 +1082,31 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an EVSPool.
-            var EVSPool = Object as ChargingPool;
-            if ((Object) EVSPool == null)
+            // Check if the given object is an charging pool.
+            var ChargingPool = Object as ChargingPool;
+            if ((Object) ChargingPool == null)
                 return false;
 
-            return this.Equals(EVSPool);
+            return this.Equals(ChargingPool);
 
         }
 
         #endregion
 
-        #region Equals(EVSPool)
+        #region Equals(ChargingPool)
 
         /// <summary>
-        /// Compares two EVSPool for equality.
+        /// Compares two charging pool for equality.
         /// </summary>
-        /// <param name="EVSPool">An EVSPool to compare with.</param>
+        /// <param name="charging pool">An charging pool to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingPool EVSPool)
+        public Boolean Equals(ChargingPool ChargingPool)
         {
 
-            if ((Object) EVSPool == null)
+            if ((Object) ChargingPool == null)
                 return false;
 
-            return Id.Equals(EVSPool.Id);
+            return Id.Equals(ChargingPool.Id);
 
         }
 

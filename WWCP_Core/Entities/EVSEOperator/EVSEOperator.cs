@@ -162,11 +162,13 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
+
                 return _ChargingPools.Values.
                            SelectMany(v => v.ChargingStations).
                            SelectMany(v => v.EVSEs).
                            OrderBy   (v => v.Id).
                            Select    (v => new KeyValuePair<EVSE_Id, EVSEStatusType>(v.Id, v.Status.Value));
+
             }
         }
 
@@ -580,7 +582,7 @@ namespace org.GraphDefined.WWCP
             if (_ChargingPools.ContainsKey(ChargingPoolId))
             {
                 if (OnError == null)
-                    throw new EVSPoolAlreadyExists(ChargingPoolId, this.Id);
+                    throw new ChargingPoolAlreadyExists(ChargingPoolId, this.Id);
                 else
                     OnError.FailSafeInvoke(this, ChargingPoolId);
             }
@@ -951,7 +953,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region IEnumerable<EVSPool> Members
+        #region IEnumerable<charging pool> Members
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {

@@ -133,7 +133,7 @@ namespace org.GraphDefined.WWCP
 
         /// <summary>
         /// The geographical location of the charging station.
-        /// If it is not set return the geographical location of its EVSPool.
+        /// If it is not set return the geographical location of its ChargingPool.
         /// </summary>
         [Optional]
         public GeoCoordinate GeoLocation
@@ -142,11 +142,11 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                if (_GeoLocation.IsValid)
+                if (_GeoLocation.IsValid())
                     return _GeoLocation;
 
                 else
-                    return ChargingPool.PoolLocation;
+                    return ChargingPool.GeoLocation;
 
             }
 
@@ -288,7 +288,7 @@ namespace org.GraphDefined.WWCP
         public I18NString           Name                    { get; set; }
 
   //      public String               EVSEIdPrefix            { get; set; }
-        public String               OwnerStationId          { get; set; }
+        public String               HubjectStationId          { get; set; }
 
 
         #region AuthenticationModes

@@ -192,7 +192,26 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AddChangedStatus(NewEVSEStatus)
+        #region AddNewStatus(EVSEId, NewEVSEStatus)
+
+        /// <summary>
+        /// Add a new EVSE status.
+        /// </summary>
+        /// <param name="EVSEId">The EVSE identification.</param>
+        /// <param name="NewEVSEStatus">The new EVSE status</param>
+        public EVSEStatusDiff AddNewStatus(EVSE_Id EVSEId, EVSEStatusType NewEVSEStatus)
+        {
+
+            this._NewEVSEStatus.Add(new KeyValuePair<EVSE_Id, EVSEStatusType>(EVSEId, NewEVSEStatus));
+
+            return this;
+
+        }
+
+        #endregion
+
+
+        #region AddChangedStatus(ChangedEVSEStatus)
 
         /// <summary>
         /// Add a changed EVSE status.
@@ -208,6 +227,25 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+        #region AddChangedStatus(EVSEId, ChangedEVSEStatus)
+
+        /// <summary>
+        /// Add a changed EVSE status.
+        /// </summary>
+        /// <param name="EVSEId">The EVSE identification.</param>
+        /// <param name="ChangedEVSEStatus">The changed EVSE status</param>
+        public EVSEStatusDiff AddChangedStatus(EVSE_Id EVSEId, EVSEStatusType ChangedEVSEStatus)
+        {
+
+            this._ChangedEVSEStatus.Add(new KeyValuePair<EVSE_Id, EVSEStatusType>(EVSEId, ChangedEVSEStatus));
+
+            return this;
+
+        }
+
+        #endregion
+
 
         #region AddRemovedEVSEId(RemovedEVSEId)
 

@@ -70,7 +70,7 @@ namespace org.GraphDefined.WWCP
         #region LastChange
 
         /// <summary>
-        /// The timestamp of the last changes within this EVSPool.
+        /// The timestamp of the last changes within this ChargingPool.
         /// Can be used as a HTTP ETag.
         /// </summary>
         [Mandatory]
@@ -108,7 +108,7 @@ namespace org.GraphDefined.WWCP
 
 
 
-        //public PropertyChanged_EventHandler<T> OnChanged<T>(Func<EVSPool, T>                 PropertySelector,
+        //public PropertyChanged_EventHandler<T> OnChanged<T>(Func<ChargingPool, T>                 PropertySelector,
         //                                                    PropertyChanged_EventHandler<T>  EventAction,
         //                                                    [CallerMemberName] String Name = null)
         //{

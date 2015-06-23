@@ -27,9 +27,9 @@ namespace org.GraphDefined.WWCP
     public interface IId : IComparable
     {
 
-        //global::org.GraphDefined.WWCP.EVSPool_Id Clone { get; }
-        //int CompareTo(global::org.GraphDefined.WWCP.EVSPool_Id EVP_Id);
-        //bool Equals(global::org.GraphDefined.WWCP.EVSPool_Id EVP_Id);
+        //global::org.GraphDefined.WWCP.ChargingPool_Id Clone { get; }
+        //int CompareTo(global::org.GraphDefined.WWCP.ChargingPool_Id EVP_Id);
+        //bool Equals(global::org.GraphDefined.WWCP.ChargingPool_Id EVP_Id);
         //int GetHashCode();
         //ulong Length { get; }
         //string ToString();
