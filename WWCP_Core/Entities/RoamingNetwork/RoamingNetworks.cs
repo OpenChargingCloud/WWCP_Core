@@ -105,7 +105,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CreateNewRoamingNetwork(RoamingNetworkId, AuthorizatorId, Description, Action = null)
+        #region CreateNewRoamingNetwork(RoamingNetworkId, AuthorizatorId = null, Description = null, Action = null)
 
         /// <summary>
         /// Create and register a new roaming network having the given
@@ -116,9 +116,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">A multilanguage description of the roaming network.</param>
         /// <param name="Action">An optional delegate to configure the new EVSE operator after its creation.</param>
         public RoamingNetwork CreateNewRoamingNetwork(RoamingNetwork_Id       RoamingNetworkId,
-                                                      Authorizator_Id         AuthorizatorId,
-                                                      I18NString              Description,
-                                                      Action<RoamingNetwork>  Action = null)
+                                                      Authorizator_Id         AuthorizatorId  = null,
+                                                      I18NString              Description     = null,
+                                                      Action<RoamingNetwork>  Action          = null)
         {
 
             #region Initial checks

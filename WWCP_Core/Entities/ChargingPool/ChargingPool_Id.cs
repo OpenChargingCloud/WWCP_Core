@@ -270,20 +270,12 @@ namespace org.GraphDefined.WWCP
         public static ChargingPool_Id Parse(EVSEOperator_Id OperatorId, String IdSuffix)
         {
 
-            #region Initial checks
+            ChargingPool_Id _ChargingPoolId = null;
 
-            if (OperatorId == null)
-                throw new ArgumentException("The parameter must not be null!", "OperatorId");
+            if (ChargingPool_Id.TryParse(OperatorId, IdSuffix, out _ChargingPoolId))
+                return _ChargingPoolId;
 
-            if (IdSuffix.IsNullOrEmpty())
-                throw new ArgumentException("The parameter must not be null or empty!", "IdSuffix");
-
-            #endregion
-
-            if (OperatorId.IdFormat == IdFormatType.NEW)
-                return ChargingPool_Id.Parse(OperatorId.ToString() + "*P" + IdSuffix);
-
-            return ChargingPool_Id.Parse(OperatorId.ToString() + "*" + IdSuffix);
+            return null;
 
         }
 
@@ -396,6 +388,8 @@ namespace org.GraphDefined.WWCP
                 ChargingPoolId = new ChargingPool_Id(OperatorId,
                                                      _MatchCollection[0].Groups[0].Value,
                                                      OperatorId.IdFormat);
+
+                return true;
 
             }
             catch (Exception e)
