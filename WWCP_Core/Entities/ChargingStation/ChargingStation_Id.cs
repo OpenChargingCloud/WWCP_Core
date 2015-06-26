@@ -187,7 +187,29 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return Create(new EVSE_Id[] { EVSEId });
+
+            var _Array = EVSEId.OriginId.Split('*', '-');
+
+            if (EVSEId.Format == IdFormatType.NEW)
+                if (_Array[2].StartsWith("E"))
+                    _Array[2] = "S" + _Array[2].Substring(1);
+
+            // e.g. "DE*822*E123456"
+            if (_Array.Length == 3)
+            {
+
+                if (EVSEId.OriginId.Contains('-'))
+                    return ChargingStation_Id.Parse(_Array.AggregateWith("-"));
+
+                return ChargingStation_Id.Parse(_Array.AggregateWith("*"));
+
+            }
+
+            // e.g. "DE*822*E123456*1" => "DE*822*S123456"
+            if (EVSEId.OriginId.Contains('-'))
+                return ChargingStation_Id.Parse(_Array.Take(_Array.Length - 1).AggregateWith("-"));
+
+            return ChargingStation_Id.Parse(_Array.Take(_Array.Length - 1).AggregateWith("*"));
 
         }
 
@@ -199,7 +221,7 @@ namespace org.GraphDefined.WWCP
         /// Create a ChargingStationId based on the given EVSEIds.
         /// </summary>
         /// <param name="EVSEIds">An enumeration of EVSEIds.</param>
-        public static ChargingStation_Id Create(IEnumerable<EVSE_Id>  EVSEIds)
+        public static ChargingStation_Id Create(IEnumerable<EVSE_Id> EVSEIds)
         {
 
             #region Initial checks
@@ -212,37 +234,9 @@ namespace org.GraphDefined.WWCP
             if (_EVSEIds.Length == 0)
                 return null;
 
-            #endregion
-
-            #region It is just a single EVSE Id...
-
+            // It is just a single EVSE Id...
             if (_EVSEIds.Length == 1)
-            {
-
-                var _Array = _EVSEIds[0].OriginId.Split('*', '-');
-
-                if (_EVSEIds[0].Format == IdFormatType.NEW)
-                    if (_Array[2].StartsWith("E"))
-                        _Array[2] = "S" + _Array[2].Substring(1);
-
-                // e.g. "DE*822*E123456"
-                if (_Array.Length == 3)
-                {
-
-                    if (_EVSEIds[0].OriginId.Contains('-'))
-                        return ChargingStation_Id.Parse(_Array.AggregateWith("-"));
-
-                    return ChargingStation_Id.Parse(_Array.AggregateWith("*"));
-
-                }
-
-                // e.g. "DE*822*E123456*1" => "DE*822*S123456"
-                if (_EVSEIds[0].OriginId.Contains('-'))
-                    return ChargingStation_Id.Parse(_Array.Take(_Array.Length - 1).AggregateWith("-"));
-
-                return ChargingStation_Id.Parse(_Array.Take(_Array.Length - 1).AggregateWith("*"));
-
-            }
+                return Create(_EVSEIds[0]);
 
             #endregion
 
@@ -251,6 +245,9 @@ namespace org.GraphDefined.WWCP
             var EVSEIdPrefixStrings = _EVSEIds.
                                           Select(EVSEId         => EVSEId.OriginId.Split('*', '-')).
                                           Select(EVSEIdElements => {
+
+                                              if (EVSEIdElements.Length < 4)
+                                                  return new String[] { "" };
 
                                               if (_EVSEIds[0].Format == IdFormatType.NEW)
                                                   if (EVSEIdElements[2].StartsWith("E"))
@@ -261,7 +258,8 @@ namespace org.GraphDefined.WWCP
                                           }).
                                           Select(EVSEIdElements => EVSEIdElements.
                                                                        Take(EVSEIdElements.Length - 1).
-                                                                       AggregateWith("*")).
+                                                                       AggregateWith("*", "")).
+                                          Where(v => v != "").
                                           Distinct().
                                           ToArray();
 
@@ -270,154 +268,15 @@ namespace org.GraphDefined.WWCP
 
                 var Id = EVSEIdPrefixStrings.First();
 
-                if (EVSEIdPrefixStrings.First().Contains('-'))
-                    Id = Id.Replace("*", "-");
+                if (Id.Contains('-'))
+                    Id = Id.Replace("-", "*");
 
                 try
                 {
                     return ChargingStation_Id.Parse(Id);
                 }
-                catch (Exception e)
-                {
-                    return null;
-                }
-
-            }
-
-            #endregion
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region Create(ChargingPoolId)
-
-        /// <summary>
-        /// Create a ChargingStationId based on the given EVSE identification.
-        /// </summary>
-        public static ChargingStation_Id Create(ChargingPool_Id  ChargingPoolId)
-        {
-
-            return Create(ChargingPoolId, new EVSE_Id[0]);
-
-        }
-
-        #endregion
-
-        #region Create(ChargingPoolId, EVSEId)
-
-        /// <summary>
-        /// Create a ChargingStationId based on the given EVSE identification.
-        /// </summary>
-        /// <param name="EVSEId">An EVSEId.</param>
-        public static ChargingStation_Id Create(ChargingPool_Id  ChargingPoolId,
-                                                EVSE_Id          EVSEId)
-        {
-
-            #region Initial checks
-
-            if (EVSEId == null)
-                throw new ArgumentException("The parameter must not be null or empty!", "EVSEId");
-
-            #endregion
-
-            return Create(ChargingPoolId, new EVSE_Id[] { EVSEId });
-
-        }
-
-        #endregion
-
-        #region Create(ChargingPoolId, EVSEIds)
-
-        /// <summary>
-        /// Create a ChargingStationId based on the given EVSEIds.
-        /// </summary>
-        /// <param name="EVSEIds">An enumeration of EVSEIds.</param>
-        public static ChargingStation_Id Create(ChargingPool_Id       ChargingPoolId,
-                                                IEnumerable<EVSE_Id>  EVSEIds)
-        {
-
-            #region Initial checks
-
-            if (EVSEIds == null)
-                return ChargingStation_Id.Parse(ChargingPoolId.OperatorId, ChargingPoolId.Suffix);
-
-            var _EVSEIds = EVSEIds.ToArray();
-
-            if (_EVSEIds.Length == 0)
-                return ChargingStation_Id.Parse(ChargingPoolId.OperatorId, ChargingPoolId.Suffix);
-
-            #endregion
-
-            #region It is just a single EVSE Id...
-
-            if (_EVSEIds.Length == 1)
-            {
-
-                var _Array = _EVSEIds[0].OriginId.Split('*', '-');
-
-                if (_EVSEIds[0].Format == IdFormatType.NEW)
-                    if (_Array[2].StartsWith("E"))
-                        _Array[2] = "S" + _Array[2].Substring(1);
-
-                // e.g. "DE*822*E123456"
-                if (_Array.Length == 3)
-                {
-
-                    if (_EVSEIds[0].OriginId.Contains('-'))
-                        return ChargingStation_Id.Parse(_Array.AggregateWith("-"));
-
-                    return ChargingStation_Id.Parse(_Array.AggregateWith("*"));
-
-                }
-
-                // e.g. "DE*822*E123456*1" => "DE*822*S123456"
-                if (_EVSEIds[0].OriginId.Contains('-'))
-                    return ChargingStation_Id.Parse(_Array.Take(_Array.Length - 1).AggregateWith("-"));
-
-                return ChargingStation_Id.Parse(_Array.Take(_Array.Length - 1).AggregateWith("*"));
-
-            }
-
-            #endregion
-
-            #region Multiple EVSE Ids...
-
-            var EVSEIdPrefixStrings = _EVSEIds.
-                                          Select(EVSEId         => EVSEId.OriginId.Split('*', '-')).
-                                          Select(EVSEIdElements => {
-
-                                              if (_EVSEIds[0].Format == IdFormatType.NEW)
-                                                  if (EVSEIdElements[2].StartsWith("E"))
-                                                      EVSEIdElements[2] = "S" + EVSEIdElements[2].Substring(1);
-
-                                              return EVSEIdElements;
-
-                                          }).
-                                          Select(EVSEIdElements => EVSEIdElements.
-                                                                       Take(EVSEIdElements.Length - 1).
-                                                                       AggregateWith("*")).
-                                          Distinct().
-                                          ToArray();
-
-            if (EVSEIdPrefixStrings.Length == 1)
-            {
-
-                var Id = EVSEIdPrefixStrings.First();
-
-                if (EVSEIdPrefixStrings.First().Contains('-'))
-                    Id = Id.Replace("*", "-");
-
-                try
-                {
-                    return ChargingStation_Id.Parse(Id);
-                }
-                catch (Exception e)
-                {
-                    return null;
-                }
+                catch (Exception)
+                { }
 
             }
 
@@ -919,7 +778,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
 
         /// <summary>
         /// Return the HashCode of this object.
@@ -932,7 +791,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ToString()
+        #region (override) ToString()
 
         /// <summary>
         /// Return a string represtentation of this object.

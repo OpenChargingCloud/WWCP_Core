@@ -51,11 +51,6 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public    const    String  IdSuffix_RegEx  = @"^[A-Z0-9][A-Z0-9\*]{0,30}$";
 
-        /// <summary>
-        /// The internal identification.
-        /// </summary>
-        protected readonly String  _IdSuffix;
-
         #endregion
 
         #region Properties
@@ -84,7 +79,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The suffix of the identification.
         /// </summary>
-        private String Suffix
+        public String Suffix
         {
             get
             {
@@ -103,7 +98,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _OperatorId.Length + 2 + (UInt64) _IdSuffix.Length;
+                return _OperatorId.Length + 2 + (UInt64) _Suffix.Length;
             }
         }
 
@@ -166,7 +161,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentException("Illegal EVSE identification!", "IdSuffix");
 
             this._OperatorId  = OperatorId;
-            this._IdSuffix    = _MatchCollection[0].Value;
+            this._Suffix    = _MatchCollection[0].Value;
             this._Format    = IdFormat;
 
         }
@@ -339,7 +334,7 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return new EVSE_Id(_OperatorId.Clone,
-                                   new String(_IdSuffix.ToCharArray()),
+                                   new String(_Suffix.ToCharArray()),
                                    _Format);
             }
         }
@@ -357,8 +352,8 @@ namespace org.GraphDefined.WWCP
         {
 
             return (IdFormat == IdFormatType.NEW)
-                       ? String.Concat(_OperatorId.ToFormat(IdFormat), "*E", _IdSuffix)
-                       : String.Concat(_OperatorId.ToFormat(IdFormat),  "*", _IdSuffix);
+                       ? String.Concat(_OperatorId.ToFormat(IdFormat), "*E", _Suffix)
+                       : String.Concat(_OperatorId.ToFormat(IdFormat),  "*", _Suffix);
 
         }
 
@@ -539,7 +534,7 @@ namespace org.GraphDefined.WWCP
 
             // If equal: Compare EVSEId suffix
             if (_Result == 0)
-                _Result = _IdSuffix.CompareTo(EVSEId._IdSuffix);
+                _Result = _Suffix.CompareTo(EVSEId._Suffix);
 
             return _Result;
 
@@ -589,7 +584,7 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             return _OperatorId.Equals(EVSEId._OperatorId) &&
-                   _IdSuffix.  Equals(EVSEId._IdSuffix);
+                   _Suffix.  Equals(EVSEId._Suffix);
 
         }
 
@@ -597,7 +592,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
 
         /// <summary>
         /// Return the HashCode of this object.
@@ -605,12 +600,12 @@ namespace org.GraphDefined.WWCP
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
         {
-            return _OperatorId.GetHashCode() ^ _IdSuffix.GetHashCode();
+            return _OperatorId.GetHashCode() ^ _Suffix.GetHashCode();
         }
 
         #endregion
 
-        #region ToString()
+        #region (override) ToString()
 
         /// <summary>
         /// Return a string represtentation of this object.
@@ -618,7 +613,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return String.Concat(_OperatorId, "*E", _IdSuffix);
+            return String.Concat(_OperatorId, "*E", _Suffix);
         }
 
         #endregion

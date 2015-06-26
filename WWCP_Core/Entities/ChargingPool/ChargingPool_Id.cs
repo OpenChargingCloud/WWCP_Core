@@ -682,7 +682,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
 
         /// <summary>
         /// Return the HashCode of this object.
@@ -695,7 +695,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ToString()
+        #region (override) ToString()
 
         /// <summary>
         /// Return a string represtentation of this object.
