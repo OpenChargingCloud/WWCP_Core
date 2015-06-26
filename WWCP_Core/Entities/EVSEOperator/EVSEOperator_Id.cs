@@ -137,14 +137,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="CountryCode">The Alpha-2-CountryCode.</param>
         /// <param name="OperatorId">The EVSE Operator identification.</param>
         /// <param name="IdFormat">The format of the EVSE operator identification [old|new].</param>
-        private EVSEOperator_Id(Country           CountryCode,
-                                String            OperatorId,
-                                IdFormatType  IdFormat)// = IdFormatType.NEW)
+        private EVSEOperator_Id(Country       CountryCode,
+                                String        OperatorId,
+                                IdFormatType  IdFormat = IdFormatType.NEW)
         {
 
-            this._CountryCode   = CountryCode;
-            this._OperatorId    = OperatorId;
-            this._IdFormat  = IdFormat;
+            this._CountryCode  = CountryCode;
+            this._OperatorId   = OperatorId;
+            this._IdFormat     = IdFormat;
 
         }
 

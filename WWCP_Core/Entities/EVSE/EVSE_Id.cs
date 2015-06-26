@@ -77,6 +77,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Suffix
+
+        private readonly String _Suffix;
+
+        /// <summary>
+        /// The suffix of the identification.
+        /// </summary>
+        private String Suffix
+        {
+            get
+            {
+                return _Suffix;
+            }
+        }
+
+        #endregion
+
         #region Length
 
         /// <summary>
@@ -92,15 +109,15 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IdFormat
+        #region Format
 
-        private readonly IdFormatType _IdFormat;
+        private readonly IdFormatType _Format;
 
-        public IdFormatType IdFormat
+        public IdFormatType Format
         {
             get
             {
-                return _IdFormat;
+                return _Format;
             }
         }
 
@@ -112,7 +129,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return ToFormat(_IdFormat);
+                return ToFormat(_Format);
             }
         }
 
@@ -150,7 +167,7 @@ namespace org.GraphDefined.WWCP
 
             this._OperatorId  = OperatorId;
             this._IdSuffix    = _MatchCollection[0].Value;
-            this._IdFormat    = IdFormat;
+            this._Format    = IdFormat;
 
         }
 
@@ -323,7 +340,7 @@ namespace org.GraphDefined.WWCP
             {
                 return new EVSE_Id(_OperatorId.Clone,
                                    new String(_IdSuffix.ToCharArray()),
-                                   _IdFormat);
+                                   _Format);
             }
         }
 
@@ -353,7 +370,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if (IdFormat == IdFormatType2.Origin)
-                return ToFormat(this.IdFormat);
+                return ToFormat(this.Format);
 
             return ToFormat((IdFormatType) IdFormat);
 

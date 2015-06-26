@@ -54,11 +54,6 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public    const    String  IdSuffix_RegEx        = @"^[A-Z0-9][A-Z0-9\*]{0,30}$";
 
-        /// <summary>
-        /// The internal identification.
-        /// </summary>
-        protected readonly String  _IdSuffix;
-
         #endregion
 
         #region Properties
@@ -80,6 +75,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Suffix
+
+        private readonly String _Suffix;
+
+        /// <summary>
+        /// The suffix of the identification.
+        /// </summary>
+        public String Suffix
+        {
+            get
+            {
+                return _Suffix;
+            }
+        }
+
+        #endregion
+
         #region Length
 
         /// <summary>
@@ -89,21 +101,21 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _OperatorId.Length + 2 + (UInt64) _IdSuffix.Length;
+                return _OperatorId.Length + 2 + (UInt64) _Suffix.Length;
             }
         }
 
         #endregion
 
-        #region IdFormat
+        #region Format
 
-        private readonly IdFormatType _IdFormat;
+        private readonly IdFormatType _Format;
 
-        public IdFormatType IdFormat
+        public IdFormatType Format
         {
             get
             {
-                return _IdFormat;
+                return _Format;
             }
         }
 
@@ -115,7 +127,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return ToFormat(_IdFormat);
+                return ToFormat(_Format);
             }
         }
 
@@ -130,8 +142,8 @@ namespace org.GraphDefined.WWCP
         /// based on the given string.
         /// </summary>
         private ChargingPool_Id(EVSEOperator_Id   OperatorId,
-                                String            IdSuffix,
-                                IdFormatType      IdFormat = IdFormatType.NEW)
+                                String            Suffix,
+                                IdFormatType      Format = IdFormatType.NEW)
         {
 
             #region Initial checks
@@ -139,21 +151,21 @@ namespace org.GraphDefined.WWCP
             if (OperatorId == null)
                 throw new ArgumentNullException("OperatorId", "The parameter must not be null!");
 
-            if (IdSuffix.IsNullOrEmpty())
+            if (Suffix.IsNullOrEmpty())
                 throw new ArgumentNullException("IdSuffix", "The parameter must not be null or empty!");
 
             #endregion
 
-            var _MatchCollection = Regex.Matches(IdSuffix.Trim().ToUpper(),
+            var _MatchCollection = Regex.Matches(Suffix.Trim().ToUpper(),
                                                  IdSuffix_RegEx,
                                                  RegexOptions.IgnorePatternWhitespace);
 
             if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal charging pool identification suffix '" + IdSuffix + "'!", "IdSuffix");
+                throw new ArgumentException("Illegal charging pool identification suffix '" + Suffix + "'!", "IdSuffix");
 
             this._OperatorId  = OperatorId;
-            this._IdSuffix    = _MatchCollection[0].Value;
-            this._IdFormat    = IdFormat;
+            this._Suffix      = _MatchCollection[0].Value;
+            this._Format      = Format;
 
         }
 
@@ -188,7 +200,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Generate(EVSEOperatorId, Address, GeoLocation, Lenght = 20, Mapper = null)
+        #region Generate(EVSEOperatorId, Address, GeoLocation, Lenght = 12, Mapper = null)
 
         /// <summary>
         /// Create a valid charging pool identification based on the given parameters.
@@ -201,7 +213,7 @@ namespace org.GraphDefined.WWCP
         public static ChargingPool_Id Generate(EVSEOperator_Id       EVSEOperatorId,
                                                Address               Address,
                                                GeoCoordinate         GeoLocation,
-                                               Byte                  Length = 20,
+                                               Byte                  Length = 12,
                                                Func<String, String>  Mapper = null)
         {
 
@@ -412,8 +424,8 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return new ChargingPool_Id(OperatorId.Clone,
-                                           new String(_IdSuffix.ToCharArray()),
-                                           IdFormat);
+                                           new String(_Suffix.ToCharArray()),
+                                           Format);
             }
         }
 
@@ -430,8 +442,8 @@ namespace org.GraphDefined.WWCP
         {
 
             return (IdFormat == IdFormatType.NEW)
-                       ? String.Concat(_OperatorId.ToFormat(IdFormat), "*P", _IdSuffix)
-                       : String.Concat(_OperatorId.ToFormat(IdFormat),  "*", _IdSuffix);
+                       ? String.Concat(_OperatorId.ToFormat(IdFormat), "*P", _Suffix)
+                       : String.Concat(_OperatorId.ToFormat(IdFormat),  "*", _Suffix);
 
         }
 
@@ -443,7 +455,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if (IdFormat == IdFormatType2.Origin)
-                return ToFormat(this.IdFormat);
+                return ToFormat(this.Format);
 
             return ToFormat((IdFormatType) IdFormat);
 
@@ -612,7 +624,7 @@ namespace org.GraphDefined.WWCP
 
             // If equal: Compare ChargingStationId suffix
             if (_Result == 0)
-                _Result = _IdSuffix.CompareTo(ChargingPoolId._IdSuffix);
+                _Result = _Suffix.CompareTo(ChargingPoolId._Suffix);
 
             return _Result;
 
@@ -662,7 +674,7 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             return _OperatorId.Equals(ChargingPoolId._OperatorId) &&
-                   _IdSuffix.  Equals(ChargingPoolId._IdSuffix);
+                   _Suffix.  Equals(ChargingPoolId._Suffix);
 
         }
 
@@ -678,7 +690,7 @@ namespace org.GraphDefined.WWCP
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
         {
-            return _OperatorId.GetHashCode() ^ _IdSuffix.GetHashCode();
+            return _OperatorId.GetHashCode() ^ _Suffix.GetHashCode();
         }
 
         #endregion
@@ -690,7 +702,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return String.Concat(_OperatorId, "*P", _IdSuffix);
+            return String.Concat(_OperatorId, "*P", _Suffix);
         }
 
         #endregion
