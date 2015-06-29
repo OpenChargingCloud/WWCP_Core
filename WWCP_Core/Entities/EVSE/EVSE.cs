@@ -38,7 +38,8 @@ namespace org.GraphDefined.WWCP
     /// </summary>
     public class EVSE : AEntity<EVSE_Id>,
                         IEquatable<EVSE>, IComparable<EVSE>, IComparable,
-                        IEnumerable<SocketOutlet>
+                        IEnumerable<SocketOutlet>,
+                        IStatus<EVSEStatusType>
     {
 
         #region Data
@@ -77,6 +78,31 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region MaxCapacity_kWh
+
+        private Double _MaxCapacity_kWh;
+
+        /// <summary>
+        /// Max power at connector [Watt].
+        /// </summary>
+        [Mandatory]
+        public Double MaxCapacity_kWh
+        {
+
+            get
+            {
+                return _MaxCapacity_kWh;
+            }
+
+            set
+            {
+                SetProperty<Double>(ref _MaxCapacity_kWh, value);
+            }
+
+        }
+
+        #endregion
+
         #region AverageVoltage
 
         private Double _AverageVoltage;
@@ -101,6 +127,15 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+
+        public IEnumerable<String> ChargingModes { get; set; }
+
+        public IEnumerable<String> ChargingFacilities { get; set; }
+
+        public I18NString AdditionalInfo { get; set; }
+
+
 
         #region Status
 
@@ -160,15 +195,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        public IEnumerable<String>  ChargingModes           { get; set; }
-
-        public IEnumerable<String>  ChargingFacilities      { get; set; }
-
-        public Double               MaxCapacity_kWh         { get; set; }
-
-        public I18NString           AdditionalInfo          { get; set; }
-
-
         #region ChargingStation
 
         private readonly ChargingStation _ChargingStation;
@@ -226,12 +252,12 @@ namespace org.GraphDefined.WWCP
 
         #region SocketOutletAddition
 
-        internal readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletAddition;
+        internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletAddition;
 
         /// <summary>
         /// Called whenever a socket outlet will be or was added.
         /// </summary>
-        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
+        public IVotingSender<DateTime, EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
         {
             get
             {
@@ -243,12 +269,12 @@ namespace org.GraphDefined.WWCP
 
         #region SocketOutletRemoval
 
-        internal readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletRemoval;
+        internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletRemoval;
 
         /// <summary>
         /// Called whenever a socket outlet will be or was removed.
         /// </summary>
-        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletRemoval
+        public IVotingSender<DateTime, EVSE, SocketOutlet, Boolean> OnSocketOutletRemoval
         {
             get
             {
@@ -298,19 +324,19 @@ namespace org.GraphDefined.WWCP
             #region Init events
 
             // EVSE events
-            this.SocketOutletAddition     = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
-            this.SocketOutletRemoval      = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            this.SocketOutletAddition     = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            this.SocketOutletRemoval      = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
 
             #endregion
 
             #region Link events
 
             // EVSE events
-            this.SocketOutletAddition.     OnVoting       += (evse, outlet, vote)       => ChargingStation.SocketOutletAddition.   SendVoting      (evse, outlet, vote);
-            this.SocketOutletAddition.     OnNotification += (evse, outlet)             => ChargingStation.SocketOutletAddition.   SendNotification(evse, outlet);
+            this.SocketOutletAddition.     OnVoting       += (timestamp, evse, outlet, vote)       => ChargingStation.SocketOutletAddition.   SendVoting      (timestamp, evse, outlet, vote);
+            this.SocketOutletAddition.     OnNotification += (timestamp, evse, outlet)             => ChargingStation.SocketOutletAddition.   SendNotification(timestamp, evse, outlet);
 
-            this.SocketOutletRemoval.      OnVoting       += (evse, outlet, vote)       => ChargingStation.SocketOutletRemoval.    SendVoting      (evse, outlet, vote);
-            this.SocketOutletRemoval.      OnNotification += (evse, outlet)             => ChargingStation.SocketOutletRemoval.    SendNotification(evse, outlet);
+            this.SocketOutletRemoval.      OnVoting       += (timestamp, evse, outlet, vote)       => ChargingStation.SocketOutletRemoval.    SendVoting      (timestamp, evse, outlet, vote);
+            this.SocketOutletRemoval.      OnNotification += (timestamp, evse, outlet)             => ChargingStation.SocketOutletRemoval.    SendNotification(timestamp, evse, outlet);
 
             #endregion
 
@@ -344,11 +370,11 @@ namespace org.GraphDefined.WWCP
 
             Action.FailSafeInvoke(_SocketOutlet);
 
-            if (SocketOutletAddition.SendVoting(this, _SocketOutlet))
+            if (SocketOutletAddition.SendVoting(DateTime.Now, this, _SocketOutlet))
             {
                 if (_SocketOutlets.TryAdd(SocketOutlet_Id, _SocketOutlet))
                 {
-                    SocketOutletAddition.SendNotification(this, _SocketOutlet);
+                    SocketOutletAddition.SendNotification(DateTime.Now, this, _SocketOutlet);
                     return _SocketOutlet;
                 }
             }

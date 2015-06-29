@@ -18,12 +18,7 @@
 #region Usings
 
 using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 #endregion
@@ -31,21 +26,15 @@ using System.Runtime.CompilerServices;
 namespace org.GraphDefined.WWCP
 {
 
-    public delegate void PropertyChanged_EventHandler   (Object Sender, String PropertyName, Object OldValue, Object NewValue);
-    public delegate void PropertyChanged_EventHandler<T>(Object Sender, String PropertyName, T      OldValue, T      NewValue);
+    public delegate void PropertyChanged_EventHandler   (DateTime Timestamp, Object Sender, String PropertyName, Object OldValue, Object NewValue);
+    public delegate void PropertyChanged_EventHandler<T>(DateTime Timestamp, Object Sender, String PropertyName, T      OldValue, T      NewValue);
 
     /// <summary>
-    /// An abstract ev entity.
+    /// An abstract entity.
     /// </summary>
     public abstract class AEntity<TId> : IEntity<TId>
         where TId : IId
     {
-
-        #region Data
-
-        private readonly ConcurrentDictionary<String, PropertyChanged_EventHandler> Events;
-
-        #endregion
 
         #region Properties
 
@@ -69,12 +58,20 @@ namespace org.GraphDefined.WWCP
 
         #region LastChange
 
+        private DateTime _LastChange;
+
         /// <summary>
         /// The timestamp of the last changes within this ChargingPool.
         /// Can be used as a HTTP ETag.
         /// </summary>
         [Mandatory]
-        public DateTime LastChange { get; private set; }
+        public DateTime LastChange
+        {
+            get
+            {
+                return _LastChange;
+            }
+        }
 
         #endregion
 
@@ -92,53 +89,83 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a new abstract entity.
         /// </summary>
-        /// <param name="Id">The entity Id.</param>
+        /// <param name="Id">The unique entity identification.</param>
         public AEntity(TId Id)
         {
+
+            #region Initial checks
 
             if (Id == null)
                 throw new ArgumentNullException("Id", "The given Id must not be null!");
 
-            this._Id            = Id;
-            this.LastChange     = DateTime.Now;
+            #endregion
+
+            this._Id          = Id;
+            this._LastChange  = DateTime.Now;
 
         }
 
         #endregion
 
 
+        #region (protected) SetProperty<T>(ref FieldToChange, NewValue, [CallerMemberName])
 
-        //public PropertyChanged_EventHandler<T> OnChanged<T>(Func<ChargingPool, T>                 PropertySelector,
-        //                                                    PropertyChanged_EventHandler<T>  EventAction,
-        //                                                    [CallerMemberName] String Name = null)
-        //{
-
-        //    return null;
-
-        //}
-
-
-        protected void SetProperty<T>(ref T Field, T NewValue, [CallerMemberName] String PropertyName = "")
+        /// <summary>
+        /// Change the given field and call the OnPropertyChanged event.
+        /// </summary>
+        /// <typeparam name="T">The type of the field to be changed.</typeparam>
+        /// <param name="FieldToChange">A reference to the field to be changed.</param>
+        /// <param name="NewValue">The new value of the field to be changed.</param>
+        /// <param name="PropertyName">The name of the property to be changed (set by the compiler!)</param>
+        protected void SetProperty<T>(ref                T       FieldToChange,
+                                                         T       NewValue,
+                                      [CallerMemberName] String  PropertyName = "")
         {
 
-            if (NewValue == null)
-                return;
-
-            if (!EqualityComparer<T>.Default.Equals(Field, NewValue))
+            if (!EqualityComparer<T>.Default.Equals(FieldToChange, NewValue))
             {
 
-                var OldValue  = Field;
-                    Field     = NewValue;
+                var OldValue       = FieldToChange;
+                    FieldToChange  = NewValue;
 
-                this.LastChange = DateTime.Now;
-
-                var OnPropertyChangedHandler = OnPropertyChanged;
-                if (OnPropertyChangedHandler != null)
-                    OnPropertyChangedHandler(this, PropertyName, OldValue, NewValue);
+                PropertyChanged(PropertyName, OldValue, NewValue);
 
             }
 
         }
+
+        #endregion
+
+        #region (protected) PropertyChanged<T>(PropertyName, OldValue, NewValue)
+
+        /// <summary>
+        /// Notify subscribers that a property has changed.
+        /// </summary>
+        /// <typeparam name="T">The type of the changed property.</typeparam>
+        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="OldValue">The old value of the changed property.</param>
+        /// <param name="NewValue">The new value of the changed property.</param>
+        protected void PropertyChanged<T>(String  PropertyName,
+                                          T       OldValue,
+                                          T       NewValue)
+        {
+
+            #region Initial checks
+
+            if (PropertyName == null)
+                throw new ArgumentNullException("PropertyName", "The given parameter must not be null!");
+
+            #endregion
+
+            this._LastChange = DateTime.Now;
+
+            var OnPropertyChangedLocal = OnPropertyChanged;
+            if (OnPropertyChangedLocal != null)
+                OnPropertyChangedLocal(_LastChange, this, PropertyName, OldValue, NewValue);
+
+        }
+
+        #endregion
 
 
     }

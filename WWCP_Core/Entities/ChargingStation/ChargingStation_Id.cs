@@ -242,7 +242,15 @@ namespace org.GraphDefined.WWCP
 
             #region Multiple EVSE Ids...
 
-            var EVSEIdPrefixStrings = _EVSEIds.
+            String[] EVSEIdPrefixStrings = null;
+
+            #region EVSEIdSuffix contains '*' or '-'...
+
+            if (_EVSEIds.Any(EVSEId => EVSEId.Suffix.Contains('*') ||
+                                       EVSEId.Suffix.Contains('-')))
+            {
+
+                EVSEIdPrefixStrings = _EVSEIds.
                                           Select(EVSEId         => EVSEId.OriginId.Split('*', '-')).
                                           Select(EVSEIdElements => {
 
@@ -262,6 +270,51 @@ namespace org.GraphDefined.WWCP
                                           Where(v => v != "").
                                           Distinct().
                                           ToArray();
+
+            }
+
+            #endregion
+
+            #region ...or use longest prefix!
+
+            else
+            {
+
+                var _Array      = _EVSEIds.Select(EVSEId => EVSEId.OriginId).ToArray();
+                var _MinLength  = _Array.Select(v => v.Length).Min();
+
+                var _Prefix     = "";
+
+                for (var i = 0; i < _MinLength; i++)
+                {
+                    if (_Array.All(v => v[i] == _Array[0][i]))
+                        _Prefix += _Array[0][i];
+                }
+
+                if (_Prefix.Length > _EVSEIds[0].OperatorId.OriginId.Length + 1)
+                {
+
+                    var TmpEVSEId = EVSE_Id.Parse(_Prefix);
+
+                    if (TmpEVSEId.Format == IdFormatType.NEW)
+                    {
+                        if (_Prefix.Length > _EVSEIds[0].OperatorId.OriginId.Length + 2)
+                            _Prefix = TmpEVSEId.OperatorId.OriginId + "*S" + TmpEVSEId.Suffix;
+                        else
+                            return null;
+                    }
+
+                    EVSEIdPrefixStrings = new String[1] { _Prefix };
+
+                }
+
+                else
+                    return null;
+
+            }
+
+            #endregion
+
 
             if (EVSEIdPrefixStrings.Length == 1)
             {

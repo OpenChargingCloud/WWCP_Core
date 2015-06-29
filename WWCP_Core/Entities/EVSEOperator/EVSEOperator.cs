@@ -47,14 +47,24 @@ namespace org.GraphDefined.WWCP
     /// </summary>
     public class EVSEOperator : AEntity<EVSEOperator_Id>,
                                 IEquatable<EVSEOperator>, IComparable<EVSEOperator>, IComparable,
-                                IEnumerable<ChargingPool>
+                                IEnumerable<ChargingPool>,
+                                IStatus<EVSEOperatorStatusType>
     {
+
+        #region Data
+
+        /// <summary>
+        /// The default max size of the aggregated EVSE operator status history.
+        /// </summary>
+        public const UInt16 DefaultEVSEOperatorStatusHistorySize = 50;
+
+        #endregion
 
         #region Properties
 
         #region Name
 
-        private readonly I18NString _Name;
+        private I18NString _Name;
 
         /// <summary>
         /// The offical (multi-language) name of the EVSE Operator.
@@ -62,10 +72,17 @@ namespace org.GraphDefined.WWCP
         [Mandatory]
         public I18NString Name
         {
+
             get
             {
                 return _Name;
             }
+
+            set
+            {
+                _Name = value;
+            }
+
         }
 
         #endregion
@@ -175,6 +192,65 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region Status
+
+        /// <summary>
+        /// The current EVSE operator status.
+        /// </summary>
+        [Optional, Not_eMI3defined]
+        public Timestamped<EVSEOperatorStatusType> Status
+        {
+            get
+            {
+                return _StatusHistory.Peek();
+            }
+        }
+
+        #endregion
+
+        #region StatusHistory
+
+        private Stack<Timestamped<EVSEOperatorStatusType>> _StatusHistory;
+
+        /// <summary>
+        /// The EVSE operator status history.
+        /// </summary>
+        [Optional, Not_eMI3defined]
+        public IEnumerable<Timestamped<EVSEOperatorStatusType>> StatusHistory
+        {
+            get
+            {
+                return _StatusHistory.OrderByDescending(v => v.Timestamp);
+            }
+        }
+
+        #endregion
+
+        #region StatusAggregationDelegate
+
+        private Func<ChargingPoolStatusReport, EVSEOperatorStatusType> _StatusAggregationDelegate;
+
+        /// <summary>
+        /// A delegate called to aggregate the dynamic status of all subordinated charging pools.
+        /// </summary>
+        public Func<ChargingPoolStatusReport, EVSEOperatorStatusType> StatusAggregationDelegate
+        {
+
+            get
+            {
+                return _StatusAggregationDelegate;
+            }
+
+            set
+            {
+                _StatusAggregationDelegate = value;
+            }
+
+        }
+
+        #endregion
+
+
         #region RoamingNetwork
 
         private readonly RoamingNetwork _RoamingNetwork;
@@ -215,14 +291,32 @@ namespace org.GraphDefined.WWCP
 
         // EVSEOperator events
 
+        #region OnAggregatedStatusChanged
+
+        /// <summary>
+        /// A delegate called whenever the aggregated dynamic status changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EVSEOperator">The updated EVSE operator.</param>
+        /// <param name="OldStatus">The old timestamped status of the EVSE operator.</param>
+        /// <param name="NewStatus">The new timestamped status of the EVSE operator.</param>
+        public delegate void OnAggregatedStatusChangedDelegate(DateTime Timestamp, EVSEOperator EVSEOperator, Timestamped<EVSEOperatorStatusType> OldStatus, Timestamped<EVSEOperatorStatusType> NewStatus);
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status changed.
+        /// </summary>
+        public event OnAggregatedStatusChangedDelegate OnAggregatedStatusChanged;
+
+        #endregion
+
         #region ChargingPoolAddition
 
-        internal readonly IVotingNotificator<EVSEOperator, ChargingPool, Boolean> ChargingPoolAddition;
+        internal readonly IVotingNotificator<DateTime, EVSEOperator, ChargingPool, Boolean> ChargingPoolAddition;
 
         /// <summary>
         /// Called whenever an EVS pool will be or was added.
         /// </summary>
-        public IVotingSender<EVSEOperator, ChargingPool, Boolean> OnChargingPoolAddition
+        public IVotingSender<DateTime, EVSEOperator, ChargingPool, Boolean> OnChargingPoolAddition
         {
             get
             {
@@ -234,12 +328,12 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingPoolRemoval
 
-        internal readonly IVotingNotificator<EVSEOperator, ChargingPool, Boolean> ChargingPoolRemoval;
+        internal readonly IVotingNotificator<DateTime, EVSEOperator, ChargingPool, Boolean> ChargingPoolRemoval;
 
         /// <summary>
         /// Called whenever an EVS pool will be or was removed.
         /// </summary>
-        public IVotingSender<EVSEOperator, ChargingPool, Boolean> OnChargingPoolRemoval
+        public IVotingSender<DateTime, EVSEOperator, ChargingPool, Boolean> OnChargingPoolRemoval
         {
             get
             {
@@ -312,14 +406,32 @@ namespace org.GraphDefined.WWCP
 
         // ChargingPool events
 
+        #region OnAggregatedChargingPoolStatusChanged
+
+        /// <summary>
+        /// A delegate called whenever the aggregated dynamic status of any subordinated charging pool changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="ChargingPool">The updated charging pool.</param>
+        /// <param name="OldStatus">The old timestamped status of the charging pool.</param>
+        /// <param name="NewStatus">The new timestamped status of the charging pool.</param>
+        public delegate void OnAggregatedChargingPoolStatusChangedDelegate(DateTime Timestamp, ChargingPool ChargingPool, Timestamped<ChargingPoolStatusType> OldStatus, Timestamped<ChargingPoolStatusType> NewStatus);
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of any subordinated charging pool changed.
+        /// </summary>
+        public event OnAggregatedChargingPoolStatusChangedDelegate OnAggregatedChargingPoolStatusChanged;
+
+        #endregion
+
         #region ChargingStationAddition
 
-        internal readonly IVotingNotificator<ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
+        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
 
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
-        public IVotingSender<ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
+        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
         {
             get
             {
@@ -331,12 +443,12 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingStationRemoval
 
-        internal readonly IVotingNotificator<ChargingPool, ChargingStation, Boolean> ChargingStationRemoval;
+        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationRemoval;
 
         /// <summary>
         /// Called whenever a charging station will be or was removed.
         /// </summary>
-        public IVotingSender<ChargingPool, ChargingStation, Boolean> OnChargingStationRemoval
+        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationRemoval
         {
             get
             {
@@ -349,14 +461,32 @@ namespace org.GraphDefined.WWCP
 
         // ChargingStation events
 
+        #region OnAggregatedChargingStationStatusChanged
+
+        /// <summary>
+        /// A delegate called whenever the aggregated dynamic status of any subordinated charging station changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="ChargingStation">The updated charging station.</param>
+        /// <param name="OldStatus">The old timestamped status of the charging station.</param>
+        /// <param name="NewStatus">The new timestamped status of the charging station.</param>
+        public delegate void OnAggregatedChargingStationStatusChangedDelegate(DateTime Timestamp, ChargingStation ChargingStation, Timestamped<ChargingStationStatusType> OldStatus, Timestamped<ChargingStationStatusType> NewStatus);
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of any subordinated charging station changed.
+        /// </summary>
+        public event OnAggregatedChargingStationStatusChangedDelegate OnAggregatedChargingStationStatusChanged;
+
+        #endregion
+
         #region EVSEAddition
 
-        internal readonly IVotingNotificator<ChargingStation, EVSE, Boolean> EVSEAddition;
+        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
 
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        public IVotingSender<ChargingStation, EVSE, Boolean> OnEVSEAddition
+        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
         {
             get
             {
@@ -368,12 +498,12 @@ namespace org.GraphDefined.WWCP
 
         #region EVSERemoval
 
-        internal readonly IVotingNotificator<ChargingStation, EVSE, Boolean> EVSERemoval;
+        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
 
         /// <summary>
         /// Called whenever an EVSE will be or was removed.
         /// </summary>
-        public IVotingSender<ChargingStation, EVSE, Boolean> OnEVSERemoval
+        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
         {
             get
             {
@@ -386,14 +516,32 @@ namespace org.GraphDefined.WWCP
 
         // EVSE events
 
+        #region OnEVSEStatusChanged
+
+        /// <summary>
+        /// A delegate called whenever the dynamic status of any subordinated EVSE changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EVSE">The updated EVSE.</param>
+        /// <param name="OldStatus">The old timestamped status of the EVSE.</param>
+        /// <param name="NewStatus">The new timestamped status of the EVSE.</param>
+        public delegate void OnEVSEStatusChangedDelegate(DateTime Timestamp, EVSE EVSE, Timestamped<EVSEStatusType> OldStatus, Timestamped<EVSEStatusType> NewStatus);
+
+        /// <summary>
+        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
+        /// </summary>
+        public event OnEVSEStatusChangedDelegate OnEVSEStatusChanged;
+
+        #endregion
+
         #region SocketOutletAddition
 
-        internal readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletAddition;
+        internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletAddition;
 
         /// <summary>
         /// Called whenever a socket outlet will be or was added.
         /// </summary>
-        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
+        public IVotingSender<DateTime, EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
         {
             get
             {
@@ -405,12 +553,12 @@ namespace org.GraphDefined.WWCP
 
         #region SocketOutletRemoval
 
-        internal readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletRemoval;
+        internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletRemoval;
 
         /// <summary>
         /// Called whenever a socket outlet will be or was removed.
         /// </summary>
-        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletRemoval
+        public IVotingSender<DateTime, EVSE, SocketOutlet, Boolean> OnSocketOutletRemoval
         {
             get
             {
@@ -503,52 +651,52 @@ namespace org.GraphDefined.WWCP
             #region Init events
 
             // EVSEOperator events
-            this.ChargingPoolAddition     = new VotingNotificator<EVSEOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
-            this.ChargingPoolRemoval      = new VotingNotificator<EVSEOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolAddition     = new VotingNotificator<DateTime, EVSEOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolRemoval      = new VotingNotificator<DateTime, EVSEOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
 
             // ChargingPool events
-            this.ChargingStationAddition  = new VotingNotificator<ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
-            this.ChargingStationRemoval   = new VotingNotificator<ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationAddition  = new VotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationRemoval   = new VotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
 
             // ChargingStation events
-            this.EVSEAddition             = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
-            this.EVSERemoval              = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSEAddition             = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval              = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
 
             // EVSE events
-            this.SocketOutletAddition     = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
-            this.SocketOutletRemoval      = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            this.SocketOutletAddition     = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            this.SocketOutletRemoval      = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
 
             #endregion
 
             #region Link events
 
             // EVSEOperator events
-            this.OnChargingPoolAddition.   OnVoting       += (evseoperator, pool, vote) => RoamingNetwork.ChargingPoolAddition.   SendVoting      (evseoperator, pool, vote);
-            this.OnChargingPoolAddition.   OnNotification += (evseoperator, pool)       => RoamingNetwork.ChargingPoolAddition.   SendNotification(evseoperator, pool);
+            this.OnChargingPoolAddition.   OnVoting       += (timestamp, evseoperator, pool, vote) => RoamingNetwork.ChargingPoolAddition.   SendVoting      (timestamp, evseoperator, pool, vote);
+            this.OnChargingPoolAddition.   OnNotification += (timestamp, evseoperator, pool)       => RoamingNetwork.ChargingPoolAddition.   SendNotification(timestamp, evseoperator, pool);
 
-            this.OnChargingPoolRemoval.    OnVoting       += (evseoperator, pool, vote) => RoamingNetwork.ChargingPoolRemoval.    SendVoting      (evseoperator, pool, vote);
-            this.OnChargingPoolRemoval.    OnNotification += (evseoperator, pool)       => RoamingNetwork.ChargingPoolRemoval.    SendNotification(evseoperator, pool);
+            this.OnChargingPoolRemoval.    OnVoting       += (timestamp, evseoperator, pool, vote) => RoamingNetwork.ChargingPoolRemoval.    SendVoting      (timestamp, evseoperator, pool, vote);
+            this.OnChargingPoolRemoval.    OnNotification += (timestamp, evseoperator, pool)       => RoamingNetwork.ChargingPoolRemoval.    SendNotification(timestamp, evseoperator, pool);
 
             // ChargingPool events
-            this.OnChargingStationAddition.OnVoting       += (evseoperator, pool, vote) => RoamingNetwork.ChargingStationAddition.SendVoting      (evseoperator, pool, vote);
-            this.OnChargingStationAddition.OnNotification += (evseoperator, pool)       => RoamingNetwork.ChargingStationAddition.SendNotification(evseoperator, pool);
+            this.OnChargingStationAddition.OnVoting       += (timestamp, evseoperator, pool, vote) => RoamingNetwork.ChargingStationAddition.SendVoting      (timestamp, evseoperator, pool, vote);
+            this.OnChargingStationAddition.OnNotification += (timestamp, evseoperator, pool)       => RoamingNetwork.ChargingStationAddition.SendNotification(timestamp, evseoperator, pool);
 
-            this.OnChargingStationRemoval. OnVoting       += (evseoperator, pool, vote) => RoamingNetwork.ChargingStationRemoval. SendVoting      (evseoperator, pool, vote);
-            this.OnChargingStationRemoval. OnNotification += (evseoperator, pool)       => RoamingNetwork.ChargingStationRemoval. SendNotification(evseoperator, pool);
+            this.OnChargingStationRemoval. OnVoting       += (timestamp, evseoperator, pool, vote) => RoamingNetwork.ChargingStationRemoval. SendVoting      (timestamp, evseoperator, pool, vote);
+            this.OnChargingStationRemoval. OnNotification += (timestamp, evseoperator, pool)       => RoamingNetwork.ChargingStationRemoval. SendNotification(timestamp, evseoperator, pool);
 
             // ChargingStation events
-            this.OnEVSEAddition.           OnVoting       += (station, evse, vote)      => RoamingNetwork.EVSEAddition.           SendVoting      (station, evse, vote);
-            this.OnEVSEAddition.           OnNotification += (station, evse)            => RoamingNetwork.EVSEAddition.           SendNotification(station, evse);
+            this.OnEVSEAddition.           OnVoting       += (timestamp, station, evse, vote)      => RoamingNetwork.EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
+            this.OnEVSEAddition.           OnNotification += (timestamp, station, evse)            => RoamingNetwork.EVSEAddition.           SendNotification(timestamp, station, evse);
 
-            this.OnEVSERemoval.            OnVoting       += (station, evse, vote)      => RoamingNetwork.EVSERemoval.            SendVoting      (station, evse, vote);
-            this.OnEVSERemoval.            OnNotification += (station, evse)            => RoamingNetwork.EVSERemoval.            SendNotification(station, evse);
+            this.OnEVSERemoval.            OnVoting       += (timestamp, station, evse, vote)      => RoamingNetwork.EVSERemoval.            SendVoting      (timestamp, station, evse, vote);
+            this.OnEVSERemoval.            OnNotification += (timestamp, station, evse)            => RoamingNetwork.EVSERemoval.            SendNotification(timestamp, station, evse);
 
             // EVSE events
-            this.SocketOutletAddition.     OnVoting       += (evse, outlet, vote)       => RoamingNetwork.SocketOutletAddition.   SendVoting      (evse, outlet, vote);
-            this.SocketOutletAddition.     OnNotification += (evse, outlet)             => RoamingNetwork.SocketOutletAddition.   SendNotification(evse, outlet);
+            this.SocketOutletAddition.     OnVoting       += (timestamp, evse, outlet, vote)       => RoamingNetwork.SocketOutletAddition.   SendVoting      (timestamp, evse, outlet, vote);
+            this.SocketOutletAddition.     OnNotification += (timestamp, evse, outlet)             => RoamingNetwork.SocketOutletAddition.   SendNotification(timestamp, evse, outlet);
 
-            this.SocketOutletRemoval.      OnVoting       += (evse, outlet, vote)       => RoamingNetwork.SocketOutletRemoval.    SendVoting      (evse, outlet, vote);
-            this.SocketOutletRemoval.      OnNotification += (evse, outlet)             => RoamingNetwork.SocketOutletRemoval.    SendNotification(evse, outlet);
+            this.SocketOutletRemoval.      OnVoting       += (timestamp, evse, outlet, vote)       => RoamingNetwork.SocketOutletRemoval.    SendVoting      (timestamp, evse, outlet, vote);
+            this.SocketOutletRemoval.      OnNotification += (timestamp, evse, outlet)             => RoamingNetwork.SocketOutletRemoval.    SendNotification(timestamp, evse, outlet);
 
             #endregion
 
@@ -594,13 +742,24 @@ namespace org.GraphDefined.WWCP
             if (Configurator != null)
                 Configurator(_ChargingPool);
 
-            if (ChargingPoolAddition.SendVoting(this, _ChargingPool))
+            if (ChargingPoolAddition.SendVoting(DateTime.Now, this, _ChargingPool))
             {
                 if (_ChargingPools.TryAdd(ChargingPoolId, _ChargingPool))
                 {
+
+                    _ChargingPool.OnEVSEStatusChanged                      += (Timestamp, EVSE, OldStatus, NewStatus)
+                                                                               => UpdateEVSEStatus(Timestamp, EVSE, OldStatus, NewStatus);
+
+                    _ChargingPool.OnAggregatedChargingStationStatusChanged += (Timestamp, ChargingStation, OldStatus, NewStatus)
+                                                                               => UpdateChargingStationStatus(Timestamp, ChargingStation, OldStatus, NewStatus);
+
+                    _ChargingPool.OnAggregatedStatusChanged                += (Timestamp, ChargingPool, OldStatus, NewStatus)
+                                                                               => UpdateStatus(Timestamp, ChargingPool, OldStatus, NewStatus);
+
                     OnSuccess.FailSafeInvoke(_ChargingPool);
-                    ChargingPoolAddition.SendNotification(this, _ChargingPool);
+                    ChargingPoolAddition.SendNotification(DateTime.Now, this, _ChargingPool);
                     return _ChargingPool;
+
                 }
             }
 
@@ -947,6 +1106,99 @@ namespace org.GraphDefined.WWCP
             RoamingNetwork.RequestRouter.SendEVSEStatusDiff(StatusDiff);
 
             return StatusDiff;
+
+        }
+
+        #endregion
+
+
+        #region (internal) UpdateEVSEStatus(Timestamp, EVSE, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update an EVSE status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EVSE">The updated EVSE.</param>
+        /// <param name="OldStatus">The old EVSE status.</param>
+        /// <param name="NewStatus">The new EVSE status.</param>
+        internal void UpdateEVSEStatus(DateTime                     Timestamp,
+                                       EVSE                         EVSE,
+                                       Timestamped<EVSEStatusType>  OldStatus,
+                                       Timestamped<EVSEStatusType>  NewStatus)
+        {
+
+            var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
+            if (OnEVSEStatusChangedLocal != null)
+                OnEVSEStatusChangedLocal(Timestamp, EVSE, OldStatus, NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateChargingStationStatus(Timestamp, ChargingStation, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update a charging station status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="ChargingStation">The updated charging station.</param>
+        /// <param name="OldStatus">The old aggregated charging station status.</param>
+        /// <param name="NewStatus">The new aggregated charging station status.</param>
+        internal void UpdateChargingStationStatus(DateTime                                Timestamp,
+                                                  ChargingStation                         ChargingStation,
+                                                  Timestamped<ChargingStationStatusType>  OldStatus,
+                                                  Timestamped<ChargingStationStatusType>  NewStatus)
+        {
+
+            var OnAggregatedChargingStationStatusChangedLocal = OnAggregatedChargingStationStatusChanged;
+            if (OnAggregatedChargingStationStatusChangedLocal != null)
+                OnAggregatedChargingStationStatusChangedLocal(Timestamp, ChargingStation, OldStatus, NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateStatus(Timestamp, ChargingPool, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the current charging pool status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="ChargingPool">The updated charging pool.</param>
+        /// <param name="OldStatus">The old aggreagted charging station status.</param>
+        /// <param name="NewStatus">The new aggreagted charging station status.</param>
+        internal void UpdateStatus(DateTime                             Timestamp,
+                                   ChargingPool                         ChargingPool,
+                                   Timestamped<ChargingPoolStatusType>  OldStatus,
+                                   Timestamped<ChargingPoolStatusType>  NewStatus)
+        {
+
+            // Send charging pool status change upstream
+            var OnAggregatedChargingPoolStatusChangedLocal = OnAggregatedChargingPoolStatusChanged;
+            if (OnAggregatedChargingPoolStatusChangedLocal != null)
+                OnAggregatedChargingPoolStatusChangedLocal(Timestamp, ChargingPool, OldStatus, NewStatus);
+
+
+            // Calculate new aggregated EVSE operator status and send upstream
+            if (StatusAggregationDelegate != null)
+            {
+
+                var NewAggregatedStatus = new Timestamped<EVSEOperatorStatusType>(StatusAggregationDelegate(new ChargingPoolStatusReport(_ChargingPools.Values)));
+
+                if (NewAggregatedStatus.Value != _StatusHistory.Peek().Value)
+                {
+
+                    var OldAggregatedStatus = _StatusHistory.Peek();
+
+                    _StatusHistory.Push(NewAggregatedStatus);
+
+                    var OnAggregatedStatusChangedLocal = OnAggregatedStatusChanged;
+                    if (OnAggregatedStatusChangedLocal != null)
+                        OnAggregatedStatusChangedLocal(Timestamp, this, OldAggregatedStatus, NewAggregatedStatus);
+
+                }
+
+            }
 
         }
 

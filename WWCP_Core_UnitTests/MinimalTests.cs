@@ -46,17 +46,17 @@ namespace org.GraphDefined.WWCP.UnitTests
             var _op  = _rn.CreateNewEVSEOperator(EVSEOperator_Id.Parse("DE*822"));
             var _cp  = _op.CreateNewChargingPool();
             _cp.StatusAggregationDelegate = report => {
-                                                          var max   = report.Max(v => v.Value);
+                                                          var max   = report.Max  (v => v.Value);
                                                           var max_n = report.Where(o => o.Value == max);
-                                                          return (AggregatedStatusType) max_n.OrderBy(o => o.Key).First().Key;
+                                                          return (ChargingPoolStatusType) max_n.OrderBy(o => o.Key).First().Key;
                                                       };
             _cp.OnAggregatedStatusChanged += (ts, pool, os, ns) => { Console.WriteLine("New pool state: " + ns.Value); };
 
             var s1  = _cp.CreateNewStation(ChargingStation_Id.Random(_op.Id));
             s1.StatusAggregationDelegate = report => {
-                                                          var max   = report.Max(v => v.Value);
+                                                          var max   = report.Max  (v => v.Value);
                                                           var max_n = report.Where(o => o.Value == max);
-                                                          return (AggregatedStatusType) max_n.OrderBy(o => o.Key).First().Key;
+                                                          return (ChargingStationStatusType) max_n.OrderBy(o => o.Key).First().Key;
                                                       };
             s1.OnAggregatedStatusChanged += (ts, sta, os, ns) => { Console.WriteLine("New station #1 state: " + ns.Value); };
 
@@ -65,9 +65,9 @@ namespace org.GraphDefined.WWCP.UnitTests
             var e3 = s1.CreateNewEVSE(EVSE_Id.Parse("DE*822*E1111*3"));
             var s2 = _cp.CreateNewStation(ChargingStation_Id.Random(_op.Id));
             s2.StatusAggregationDelegate = report => {
-                                                          var max   = report.Max(v => v.Value);
+                                                          var max   = report.Max  (v => v.Value);
                                                           var max_n = report.Where(o => o.Value == max);
-                                                          return (AggregatedStatusType) max_n.OrderBy(o => o.Key).First().Key;
+                                                          return (ChargingStationStatusType) max_n.OrderBy(o => o.Key).First().Key;
                                                       };
             s2.OnAggregatedStatusChanged += (ts, sta, os, ns) => { Console.WriteLine("New station #2 state: " + ns.Value); };
 

@@ -17,23 +17,16 @@
 
 #region Usings
 
-using System.Collections.Generic;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
-    /// <summary>
-    /// An EVSE status report.
-    /// </summary>
-    public class EVSEStatusReport : StatusReport<EVSE, EVSEStatusType>
+    public interface IStatus<TType>
     {
-
-        public EVSEStatusReport(IEnumerable<EVSE> EVSEs)
-            : base(EVSEs)
-        { }
-
+        Timestamped<TType> Status { get; }
     }
 
 }

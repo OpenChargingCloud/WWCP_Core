@@ -48,7 +48,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonTypes\ChangeMethods.cs" />
-    <Compile Include="Entities\OriginFormatType.cs" />
+    <Compile Include="CommonTypes\IStatus.cs" />
+    <Compile Include="CommonTypes\StatusReport.cs" />
+    <Compile Include="Entities\ChargingPool\ChargingPoolStatusReport.cs" />
+    <Compile Include="Entities\ChargingPool\ChargingPoolStatusType.cs" />
+    <Compile Include="Entities\ChargingStation\ChargingStationStatusReport.cs" />
+    <Compile Include="Entities\EVSEOperator\EVSEOperatorStatusReport.cs" />
+    <Compile Include="Entities\EVSEOperator\EVSEOperatorStatusType.cs" />
+    <Compile Include="CommonTypes\OriginFormatType.cs" />
+    <Compile Include="Entities\RoamingNetwork\RoamingNetworkStatusType.cs" />
     <Compile Include="RedirectedEVSEList.cs" />
     <Compile Include="WWCPImporter.cs" />
     <Compile Include="ImporterDefaults.cs" />
@@ -69,7 +77,7 @@
     <Compile Include="Entities\ChargingServicePlan\ChargingServicePlan_Id.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationState.cs" />
     <Compile Include="Entities\EVSE\EVSEStatusDiff.cs" />
-    <Compile Include="CommonTypes\AggregatedStatusType.cs" />
+    <Compile Include="Entities\ChargingStation\ChargingStationStatusType.cs" />
     <Compile Include="Entities\ParkingSpot\ParkingSpot.cs" />
     <Compile Include="Entities\ParkingSpot\ParkingSpot_Id.cs" />
     <Compile Include="Entities\ChargingGroup\ChargingGroupExceptions.cs" />

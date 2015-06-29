@@ -19,9 +19,9 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The aggregated status of multiple EVSEs.
+    /// The status of an EVSE operator.
     /// </summary>
-    public enum AggregatedStatusType
+    public enum EVSEOperatorStatusType
     {
 
         /// <summary>

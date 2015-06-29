@@ -351,12 +351,12 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingStationAddition
 
-        private readonly IVotingNotificator<ChargingGroup, ChargingStation, Boolean> ChargingStationAddition;
+        private readonly IVotingNotificator<DateTime, ChargingGroup, ChargingStation, Boolean> ChargingStationAddition;
 
         /// <summary>
         /// Called whenever a charging station will be or was added.
         /// </summary>
-        public IVotingSender<ChargingGroup, ChargingStation, Boolean> OnChargingStationAddition
+        public IVotingSender<DateTime, ChargingGroup, ChargingStation, Boolean> OnChargingStationAddition
         {
             get
             {
@@ -371,12 +371,12 @@ namespace org.GraphDefined.WWCP
 
         #region EVSEAddition
 
-        internal readonly IVotingNotificator<ChargingStation, EVSE, Boolean> EVSEAddition;
+        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
 
         /// <summary>
         /// Called whenever an EVSE will be or was added.
         /// </summary>
-        public IVotingSender<ChargingStation, EVSE, Boolean> OnEVSEAddition
+        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
         {
             get
             {
@@ -391,12 +391,12 @@ namespace org.GraphDefined.WWCP
 
         #region SocketOutletAddition
 
-        internal readonly IVotingNotificator<EVSE, SocketOutlet, Boolean> SocketOutletAddition;
+        internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletAddition;
 
         /// <summary>
         /// Called whenever a socket outlet will be or was added.
         /// </summary>
-        public IVotingSender<EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
+        public IVotingSender<DateTime, EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
         {
             get
             {
@@ -464,24 +464,24 @@ namespace org.GraphDefined.WWCP
             #region Init and link events
 
             // EVS pool events
-            this.ChargingStationAddition    = new VotingNotificator<ChargingGroup, ChargingStation, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationAddition    = new VotingNotificator<DateTime, ChargingGroup, ChargingStation, Boolean>(() => new VetoVote(), true);
 
             //this.OnChargingStationAddition.OnVoting       += (evseoperator, ChargingGroup, vote) => Operator.ChargingStationAddition.SendVoting      (evseoperator, ChargingGroup, vote);
             //this.OnChargingStationAddition.OnNotification += (evseoperator, ChargingGroup)       => Operator.ChargingStationAddition.SendNotification(evseoperator, ChargingGroup);
 
 
             // Charging station events
-            this.EVSEAddition               = new VotingNotificator<ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSEAddition               = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
 
-            this.OnEVSEAddition.OnVoting                  += (chargingstation, evse, vote) => EVSEOperator.EVSEAddition.SendVoting      (chargingstation, evse, vote);
-            this.OnEVSEAddition.OnNotification            += (chargingstation, evse)       => EVSEOperator.EVSEAddition.SendNotification(chargingstation, evse);
+            this.OnEVSEAddition.OnVoting                  += (timestamp, chargingstation, evse, vote) => EVSEOperator.EVSEAddition.SendVoting      (timestamp, chargingstation, evse, vote);
+            this.OnEVSEAddition.OnNotification            += (timestamp, chargingstation, evse)       => EVSEOperator.EVSEAddition.SendNotification(timestamp, chargingstation, evse);
 
 
             // EVSE events
-            this.SocketOutletAddition       = new VotingNotificator<EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            this.SocketOutletAddition       = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
 
-            this.SocketOutletAddition.OnVoting            += (evse, socketoutlet , vote) => EVSEOperator.SocketOutletAddition.SendVoting      (evse, socketoutlet, vote);
-            this.SocketOutletAddition.OnNotification      += (evse, socketoutlet)        => EVSEOperator.SocketOutletAddition.SendNotification(evse, socketoutlet);
+            this.SocketOutletAddition.OnVoting            += (timestamp, evse, socketoutlet , vote) => EVSEOperator.SocketOutletAddition.SendVoting      (timestamp, evse, socketoutlet, vote);
+            this.SocketOutletAddition.OnNotification      += (timestamp, evse, socketoutlet)        => EVSEOperator.SocketOutletAddition.SendNotification(timestamp, evse, socketoutlet);
 
             #endregion
 

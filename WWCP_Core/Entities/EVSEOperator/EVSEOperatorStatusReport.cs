@@ -27,11 +27,11 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// An EVSE status report.
     /// </summary>
-    public class EVSEStatusReport : StatusReport<EVSE, EVSEStatusType>
+    public class EVSEOperatorStatusReport : StatusReport<EVSEOperator, EVSEOperatorStatusType>
     {
 
-        public EVSEStatusReport(IEnumerable<EVSE> EVSEs)
-            : base(EVSEs)
+        public EVSEOperatorStatusReport(IEnumerable<EVSEOperator> EVSEOperators)
+            : base(EVSEOperators)
         { }
 
     }

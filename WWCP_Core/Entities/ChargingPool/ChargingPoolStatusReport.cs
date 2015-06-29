@@ -25,13 +25,13 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// An EVSE status report.
+    /// A charging pool status report.
     /// </summary>
-    public class EVSEStatusReport : StatusReport<EVSE, EVSEStatusType>
+    public class ChargingPoolStatusReport : StatusReport<ChargingPool, ChargingPoolStatusType>
     {
 
-        public EVSEStatusReport(IEnumerable<EVSE> EVSEs)
-            : base(EVSEs)
+        public ChargingPoolStatusReport(IEnumerable<ChargingPool> ChargingPools)
+            : base(ChargingPools)
         { }
 
     }
