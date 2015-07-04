@@ -523,6 +523,25 @@ namespace org.GraphDefined.WWCP
 
         // EVSE events
 
+        #region OnEVSEDataChanged
+
+        /// <summary>
+        /// A delegate called whenever the static data of any subordinated EVSE changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EVSE">The updated EVSE.</param>
+        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="OldValue">The old value of the changed property.</param>
+        /// <param name="NewValue">The new value of the changed property.</param>
+        public delegate void OnEVSEDataChangedDelegate(DateTime Timestamp, EVSE EVSE, String PropertyName, Object OldValue, Object NewValue);
+
+        /// <summary>
+        /// An event fired whenever the static data of any subordinated EVSE changed.
+        /// </summary>
+        public event OnEVSEDataChangedDelegate OnEVSEDataChanged;
+
+        #endregion
+
         #region OnEVSEStatusChanged
 
         /// <summary>
@@ -694,8 +713,11 @@ namespace org.GraphDefined.WWCP
                 if (_EVSEs.TryAdd(EVSEId, _EVSE))
                 {
 
-                    _EVSE.OnStatusChanged += (Timestamp, EVSE, OldEVSEStatus, NewEVSEStatus)
-                                              => UpdateStatus(Timestamp, EVSE, OldEVSEStatus, NewEVSEStatus);
+                    _EVSE.OnPropertyChanged += (Timestamp, Sender, PropertyName, OldValue, NewValue)
+                                                => UpdateEVSEData(Timestamp, Sender as EVSE, PropertyName, OldValue, NewValue);
+
+                    _EVSE.OnStatusChanged   += (Timestamp, EVSE, OldEVSEStatus, NewEVSEStatus)
+                                                => UpdateStatus(Timestamp, EVSE, OldEVSEStatus, NewEVSEStatus);
 
                     OnSuccess.FailSafeInvoke(_EVSE);
                     EVSEAddition.SendNotification(DateTime.Now, this, _EVSE);
@@ -788,6 +810,31 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region (internal) UpdateEVSEData(Timestamp, EVSE, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the data of an EVSE.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EVSE">The changed EVSE.</param>
+        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="OldValue">The old value of the changed property.</param>
+        /// <param name="NewValue">The new value of the changed property.</param>
+        internal void UpdateEVSEData(DateTime  Timestamp,
+                                     EVSE      EVSE,
+                                     String    PropertyName,
+                                     Object    OldValue,
+                                     Object    NewValue)
+        {
+
+            var OnEVSEDataChangedLocal = OnEVSEDataChanged;
+            if (OnEVSEDataChangedLocal != null)
+                OnEVSEDataChangedLocal(Timestamp, EVSE, PropertyName, OldValue, NewValue);
+
+        }
+
+        #endregion
 
         #region (internal) UpdateStatus(Timestamp, EVSE, OldStatus, NewStatus)
 

@@ -26,8 +26,7 @@ using System.Runtime.CompilerServices;
 namespace org.GraphDefined.WWCP
 {
 
-    public delegate void PropertyChanged_EventHandler   (DateTime Timestamp, Object Sender, String PropertyName, Object OldValue, Object NewValue);
-    public delegate void PropertyChanged_EventHandler<T>(DateTime Timestamp, Object Sender, String PropertyName, T      OldValue, T      NewValue);
+    public delegate void PropertyChanged_EventHandler(DateTime Timestamp, Object Sender, String PropertyName, Object OldValue, Object NewValue);
 
     /// <summary>
     /// An abstract entity.
@@ -79,8 +78,7 @@ namespace org.GraphDefined.WWCP
 
         #region Events
 
-        public event PropertyChanged_EventHandler           OnPropertyChanged;
-        public event PropertyChanged_EventHandler<String>   OnStringPropertyChanged;
+        public event PropertyChanged_EventHandler OnPropertyChanged;
 
         #endregion
 
@@ -166,7 +164,6 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
-
 
     }
 

@@ -583,6 +583,25 @@ namespace org.GraphDefined.WWCP
 
         // ChargingStation events
 
+        #region OnChargingStationDataChanged
+
+        /// <summary>
+        /// A delegate called whenever the static data of any subordinated charging station changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="ChargingStation">The updated charging station.</param>
+        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="OldValue">The old value of the changed property.</param>
+        /// <param name="NewValue">The new value of the changed property.</param>
+        public delegate void OnChargingStationDataChangedDelegate(DateTime Timestamp, ChargingStation ChargingStation, String PropertyName, Object OldValue, Object NewValue);
+
+        /// <summary>
+        /// An event fired whenever the static data of any subordinated charging station changed.
+        /// </summary>
+        public event OnChargingStationDataChangedDelegate OnChargingStationDataChanged;
+
+        #endregion
+
         #region OnAggregatedChargingStationStatusChanged
 
         /// <summary>
@@ -637,6 +656,25 @@ namespace org.GraphDefined.WWCP
 
 
         // EVSE events
+
+        #region OnEVSEDataChanged
+
+        /// <summary>
+        /// A delegate called whenever the static data of any subordinated EVSE changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EVSE">The updated EVSE.</param>
+        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="OldValue">The old value of the changed property.</param>
+        /// <param name="NewValue">The new value of the changed property.</param>
+        public delegate void OnEVSEDataChangedDelegate(DateTime Timestamp, EVSE EVSE, String PropertyName, Object OldValue, Object NewValue);
+
+        /// <summary>
+        /// An event fired whenever the static data of any subordinated EVSE changed.
+        /// </summary>
+        public event OnEVSEDataChangedDelegate OnEVSEDataChanged;
+
+        #endregion
 
         #region OnEVSEStatusChanged
 
@@ -820,8 +858,14 @@ namespace org.GraphDefined.WWCP
                 if (_ChargingStations.TryAdd(ChargingStationId, _ChargingStation))
                 {
 
+                    _ChargingStation.OnEVSEDataChanged         += (Timestamp, EVSE, PropertyName, OldValue, NewValue)
+                                                                   => UpdateEVSEData(Timestamp, EVSE, PropertyName, OldValue, NewValue);
+
                     _ChargingStation.OnEVSEStatusChanged       += (Timestamp, EVSE, OldStatus, NewStatus)
                                                                    => UpdateEVSEStatus(Timestamp, EVSE, OldStatus, NewStatus);
+
+                    _ChargingStation.OnPropertyChanged         += (Timestamp, Sender, PropertyName, OldValue, NewValue)
+                                                                   => UpdateChargingStationData(Timestamp, Sender as ChargingStation, PropertyName, OldValue, NewValue);
 
                     _ChargingStation.OnAggregatedStatusChanged += (Timestamp, ChargingStation, OldStatus, NewStatus)
                                                                    => UpdateStatus(Timestamp, ChargingStation, OldStatus, NewStatus);
@@ -1014,6 +1058,31 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region (internal) UpdateEVSEData(Timestamp, EVSE, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the data of an EVSE.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EVSE">The changed EVSE.</param>
+        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="OldValue">The old value of the changed property.</param>
+        /// <param name="NewValue">The new value of the changed property.</param>
+        internal void UpdateEVSEData(DateTime  Timestamp,
+                                     EVSE      EVSE,
+                                     String    PropertyName,
+                                     Object    OldValue,
+                                     Object    NewValue)
+        {
+
+            var OnEVSEDataChangedLocal = OnEVSEDataChanged;
+            if (OnEVSEDataChangedLocal != null)
+                OnEVSEDataChangedLocal(Timestamp, EVSE, PropertyName, OldValue, NewValue);
+
+        }
+
+        #endregion
+
         #region (internal) UpdateEVSEStatus(Timestamp, EVSE, OldStatus, NewStatus)
 
         /// <summary>
@@ -1032,6 +1101,31 @@ namespace org.GraphDefined.WWCP
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
             if (OnEVSEStatusChangedLocal != null)
                 OnEVSEStatusChangedLocal(Timestamp, EVSE, OldStatus, NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateChargingStationData(Timestamp, ChargingStation, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the data of an charging station.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="ChargingStation">The changed charging station.</param>
+        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="OldValue">The old value of the changed property.</param>
+        /// <param name="NewValue">The new value of the changed property.</param>
+        internal void UpdateChargingStationData(DateTime         Timestamp,
+                                                ChargingStation  ChargingStation,
+                                                String           PropertyName,
+                                                Object           OldValue,
+                                                Object           NewValue)
+        {
+
+            var OnChargingStationDataChangedLocal = OnChargingStationDataChanged;
+            if (OnChargingStationDataChangedLocal != null)
+                OnChargingStationDataChangedLocal(Timestamp, ChargingStation, PropertyName, OldValue, NewValue);
 
         }
 
