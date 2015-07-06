@@ -22,6 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
@@ -217,6 +218,16 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region Constructor(s)
 
+        /// <summary>
+        /// Create a new WWCP importer.
+        /// </summary>
+        /// <param name="ConfigFilenamePrefix"></param>
+        /// <param name="DNSClient"></param>
+        /// <param name="UpdateEvery"></param>
+        /// <param name="GetXMLData"></param>
+        /// <param name="OnFirstRun"></param>
+        /// <param name="OnEveryRun"></param>
+        /// <param name="MaxNumberOfCachedXMLExports"></param>
         public WWCPImporter(String                            ConfigFilenamePrefix,
                             DNSClient                         DNSClient                    = null,
                             TimeSpan?                         UpdateEvery                  = null,
@@ -261,7 +272,7 @@ namespace org.GraphDefined.WWCP.Importer
 
             // Start not now but veeeeery later!
             UpdateEVSEDataAndStatusLock        = new Object();
-            UpdateEVSEStatusTimer              = new Timer(Run, null, TimeSpan.FromDays(30), _UpdateEvery);
+            UpdateEVSEStatusTimer              = new Timer(ImportEvery, null, TimeSpan.FromDays(30), _UpdateEvery);
 
         }
 
@@ -469,6 +480,8 @@ namespace org.GraphDefined.WWCP.Importer
         #endregion
 
 
+        #region (private) CheckForwarding(ForwardingInfo)
+
         private RoamingNetwork_Id CheckForwarding(ImportForwardingInfo ForwardingInfo)
         {
 
@@ -513,6 +526,8 @@ namespace org.GraphDefined.WWCP.Importer
             return Defaults.UnknownForwarding;
 
         }
+
+        #endregion
 
         #region AddOrUpdateForwardingInfos(ForwardingInfos)
 
@@ -661,6 +676,9 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region Start()
 
+        /// <summary>
+        /// Start the WWCP importer.
+        /// </summary>
         public WWCPImporter<T> Start()
         {
 
@@ -686,7 +704,7 @@ namespace org.GraphDefined.WWCP.Importer
                 }
                 catch (Exception e)
                 {
-                    DebugX.Log("UpdateEVSEStatus lead to an exception: " + e.Message);
+                    DebugX.Log("Starting the WWCP Importer lead to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
                 }
 
                 finally
@@ -704,15 +722,28 @@ namespace org.GraphDefined.WWCP.Importer
         #endregion
 
 
-        #region (private, Timer) Run(Status)
+        #region (private, Timer) ImportEvery(Status)
 
-        private void Run(Object Status)
+        private void ImportEvery(Object Status)
         {
+
+            Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
 
             if (Monitor.TryEnter(UpdateEVSEDataAndStatusLock))
             {
 
-                //DebugX.Log("Thread " + Thread.CurrentThread.ManagedThreadId + ": Import started...");
+                #region Debug info
+
+                #if DEBUG
+
+                DebugX.Log(" Thread " + Thread.CurrentThread.ManagedThreadId + "] 'WWCPImporter' started");
+
+                var StopWatch = new Stopwatch();
+                StopWatch.Start();
+
+                #endif
+
+                #endregion
 
                 try
                 {
@@ -751,12 +782,22 @@ namespace org.GraphDefined.WWCP.Importer
                     }).
                     Wait();
 
-                    //DebugX.Log("Thread " + Thread.CurrentThread.ManagedThreadId + ": Import finished...");
+                    #region Debug info
+
+                    #if DEBUG
+
+                        StopWatch.Stop();
+
+                        DebugX.Log(" Thread " + Thread.CurrentThread.ManagedThreadId + "] 'WWCPImporter' finished after " + StopWatch.Elapsed.TotalSeconds + " seconds!");
+
+                    #endif
+
+                    #endregion
 
                 }
                 catch (Exception e)
                 {
-                    DebugX.Log("UpdateEVSEStatus lead to an exception: " + e.Message);
+                    DebugX.Log(" Thread " + Thread.CurrentThread.ManagedThreadId + "] 'WWCPImporter' lead to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
                 }
 
                 finally
@@ -766,8 +807,8 @@ namespace org.GraphDefined.WWCP.Importer
 
             }
 
-            //else
-            //    DebugX.Log("Thread " + Thread.CurrentThread.ManagedThreadId + ": Import skipped!");
+            else
+                DebugX.Log(" Thread " + Thread.CurrentThread.ManagedThreadId + "] 'WWCPImporter' skipped!");
 
         }
 
