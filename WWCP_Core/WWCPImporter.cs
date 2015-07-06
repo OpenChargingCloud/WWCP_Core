@@ -736,7 +736,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                 #if DEBUG
 
-                DebugX.Log(" Thread " + Thread.CurrentThread.ManagedThreadId + "] 'WWCPImporter' started");
+                DebugX.LogT("'WWCPImporter' started");
 
                 var StopWatch = new Stopwatch();
                 StopWatch.Start();
@@ -788,7 +788,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                         StopWatch.Stop();
 
-                        DebugX.Log(" Thread " + Thread.CurrentThread.ManagedThreadId + "] 'WWCPImporter' finished after " + StopWatch.Elapsed.TotalSeconds + " seconds!");
+                        DebugX.LogT("'WWCPImporter' finished after " + StopWatch.Elapsed.TotalSeconds + " seconds!");
 
                     #endif
 
@@ -797,7 +797,7 @@ namespace org.GraphDefined.WWCP.Importer
                 }
                 catch (Exception e)
                 {
-                    DebugX.Log(" Thread " + Thread.CurrentThread.ManagedThreadId + "] 'WWCPImporter' lead to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+                    DebugX.LogT("'WWCPImporter' lead to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
                 }
 
                 finally
@@ -808,7 +808,7 @@ namespace org.GraphDefined.WWCP.Importer
             }
 
             else
-                DebugX.Log(" Thread " + Thread.CurrentThread.ManagedThreadId + "] 'WWCPImporter' skipped!");
+                DebugX.LogT("'WWCPImporter' skipped!");
 
         }
 
