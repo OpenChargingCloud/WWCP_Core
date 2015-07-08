@@ -1148,7 +1148,7 @@ namespace org.GraphDefined.WWCP
 
             catch (Exception e)
             {
-                DebugX.Log("GetEVSEStatusDiff lead to an exception: " + e.Message);
+                DebugX.Log("GetEVSEStatusDiff led to an exception: " + e.Message);
             }
 
             // empty!

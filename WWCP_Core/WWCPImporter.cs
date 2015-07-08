@@ -704,7 +704,7 @@ namespace org.GraphDefined.WWCP.Importer
                 }
                 catch (Exception e)
                 {
-                    DebugX.Log("Starting the WWCP Importer lead to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+                    DebugX.Log("Starting the WWCP Importer led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
                 }
 
                 finally
@@ -797,7 +797,7 @@ namespace org.GraphDefined.WWCP.Importer
                 }
                 catch (Exception e)
                 {
-                    DebugX.LogT("'WWCPImporter' lead to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+                    DebugX.LogT("'WWCPImporter' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
                 }
 
                 finally
