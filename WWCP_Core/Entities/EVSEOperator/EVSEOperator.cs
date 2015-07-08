@@ -810,17 +810,20 @@ namespace org.GraphDefined.WWCP
                     _ChargingPool.OnEVSEStatusChanged                      += (Timestamp, EVSE, OldStatus, NewStatus)
                                                                                => UpdateEVSEStatus(Timestamp, EVSE, OldStatus, NewStatus);
 
+
                     _ChargingPool.OnChargingStationDataChanged             += (Timestamp, ChargingStation, PropertyName, OldValue, NewValue)
                                                                                => UpdateChargingStationData(Timestamp, ChargingStation, PropertyName, OldValue, NewValue);
 
                     _ChargingPool.OnAggregatedChargingStationStatusChanged += (Timestamp, ChargingStation, OldStatus, NewStatus)
                                                                                => UpdateChargingStationStatus(Timestamp, ChargingStation, OldStatus, NewStatus);
 
+
                     _ChargingPool.OnPropertyChanged                        += (Timestamp, Sender, PropertyName, OldValue, NewValue)
                                                                                => UpdateChargingPoolData(Timestamp, Sender as ChargingPool, PropertyName, OldValue, NewValue);
 
                     _ChargingPool.OnAggregatedStatusChanged                += (Timestamp, ChargingPool, OldStatus, NewStatus)
                                                                                => UpdateStatus(Timestamp, ChargingPool, OldStatus, NewStatus);
+
 
                     OnSuccess.FailSafeInvoke(_ChargingPool);
                     ChargingPoolAddition.SendNotification(DateTime.Now, this, _ChargingPool);
@@ -1346,7 +1349,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region IEnumerable<charging pool> Members
+        #region IEnumerable<ChargingPool> Members
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
@@ -1360,7 +1363,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IComparable<EVSE_Operator> Members
+        #region IComparable<EVSEOperator> Members
 
         #region CompareTo(Object)
 
@@ -1385,19 +1388,19 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CompareTo(EVSE_Operator)
+        #region CompareTo(Operator)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSE_Operator">An EVSE_Operator object to compare with.</param>
-        public Int32 CompareTo(EVSEOperator EVSE_Operator)
+        /// <param name="Operator">An EVSE operator object to compare with.</param>
+        public Int32 CompareTo(EVSEOperator Operator)
         {
 
-            if ((Object) EVSE_Operator == null)
-                throw new ArgumentNullException("The given EVSE_Operator must not be null!");
+            if ((Object) Operator == null)
+                throw new ArgumentNullException("The given EVSE operator must not be null!");
 
-            return Id.CompareTo(EVSE_Operator.Id);
+            return Id.CompareTo(Operator.Id);
 
         }
 
@@ -1405,7 +1408,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<EVSE_Operator> Members
+        #region IEquatable<EVSEOperator> Members
 
         #region Equals(Object)
 
@@ -1420,7 +1423,7 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an EVSE_Operator.
+            // Check if the given object is an EVSEOperator.
             var EVSE_Operator = Object as EVSEOperator;
             if ((Object) EVSE_Operator == null)
                 return false;
@@ -1431,20 +1434,20 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Equals(EVSE_Operator)
+        #region Equals(Operator)
 
         /// <summary>
-        /// Compares two EVSE_Operator for equality.
+        /// Compares two EVSE operators for equality.
         /// </summary>
-        /// <param name="EVSE_Operator">An EVSE_Operator to compare with.</param>
+        /// <param name="Operator">An EVSE operator to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EVSEOperator EVSE_Operator)
+        public Boolean Equals(EVSEOperator Operator)
         {
 
-            if ((Object) EVSE_Operator == null)
+            if ((Object) Operator == null)
                 return false;
 
-            return Id.Equals(EVSE_Operator.Id);
+            return Id.Equals(Operator.Id);
 
         }
 

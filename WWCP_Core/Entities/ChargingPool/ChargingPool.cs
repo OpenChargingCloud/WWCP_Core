@@ -380,7 +380,31 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        public String               HotlinePhoneNum         { get; set; }
+        #region HotlinePhoneNum
+
+        private String _HotlinePhoneNum;
+
+        /// <summary>
+        /// The telephone number of the hotline.
+        /// </summary>
+        [Optional]
+        public String HotlinePhoneNum
+        {
+
+            get
+            {
+                return _HotlinePhoneNum;
+            }
+
+            set
+            {
+                SetProperty<String>(ref _HotlinePhoneNum, value);
+            }
+
+        }
+
+        #endregion
+
 
         public I18NString           AdditionalInfo          { get; set; }
 
@@ -864,11 +888,13 @@ namespace org.GraphDefined.WWCP
                     _ChargingStation.OnEVSEStatusChanged       += (Timestamp, EVSE, OldStatus, NewStatus)
                                                                    => UpdateEVSEStatus(Timestamp, EVSE, OldStatus, NewStatus);
 
+
                     _ChargingStation.OnPropertyChanged         += (Timestamp, Sender, PropertyName, OldValue, NewValue)
                                                                    => UpdateChargingStationData(Timestamp, Sender as ChargingStation, PropertyName, OldValue, NewValue);
 
                     _ChargingStation.OnAggregatedStatusChanged += (Timestamp, ChargingStation, OldStatus, NewStatus)
                                                                    => UpdateStatus(Timestamp, ChargingStation, OldStatus, NewStatus);
+
 
                     OnSuccess.FailSafeInvoke(_ChargingStation);
                     ChargingStationAddition.SendNotification(DateTime.Now, this, _ChargingStation);

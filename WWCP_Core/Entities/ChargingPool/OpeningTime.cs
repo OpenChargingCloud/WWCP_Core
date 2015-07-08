@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// An opening time.
     /// </summary>
-    public class OpeningTime
+    public class OpeningTime : IEquatable<OpeningTime>
     {
 
         #region Properties
@@ -94,6 +94,11 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region (static) Is24Hours
+
+        /// <summary>
+        /// Is open for 24 hours a day.
+        /// </summary>
         public static OpeningTime Is24Hours
         {
             get
@@ -102,6 +107,82 @@ namespace org.GraphDefined.WWCP
             }
         }
 
+        #endregion
+
+
+        #region IEquatable<OpeningTime> Members
+
+        #region Equals(Object)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Object">An object to compare with.</param>
+        /// <returns>true|false</returns>
+        public override Boolean Equals(Object Object)
+        {
+
+            if (Object == null)
+                return false;
+
+            // Check if the given object is an OpeningTime.
+            var OpenTime = Object as OpeningTime;
+            if ((Object) OpenTime == null)
+                return false;
+
+            return this.Equals(OpenTime);
+
+        }
+
+        #endregion
+
+        #region Equals(Operator)
+
+        /// <summary>
+        /// Compares two opening times for equality.
+        /// </summary>
+        /// <param name="Operator">An opening time to compare with.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public Boolean Equals(OpeningTime OpenTime)
+        {
+
+            if ((Object) OpenTime == null)
+                return false;
+
+            if (IsOpen24Hours && OpenTime.IsOpen24Hours)
+                return true;
+
+            return Simple.Equals(OpenTime.Simple);
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region GetHashCode()
+
+        /// <summary>
+        /// Get the hashcode of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+        {
+            return Simple.GetHashCode();
+        }
+
+        #endregion
+
+        #region ToString()
+
+        /// <summary>
+        /// Get a string representation of this object.
+        /// </summary>
+        public override String ToString()
+        {
+            return IsOpen24Hours ? "24 hours" : Simple;
+        }
+
+        #endregion
 
     }
 
