@@ -128,13 +128,99 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ChargingModes
 
-        public IEnumerable<String> ChargingModes { get; set; }
+        private ReactiveSet<String> _ChargingModes;
 
-        public IEnumerable<String> ChargingFacilities { get; set; }
+        [Mandatory]
+        public ReactiveSet<String> ChargingModes
+        {
 
-        public I18NString AdditionalInfo { get; set; }
+            get
+            {
+                return _ChargingModes;
+            }
 
+            set
+            {
+                SetProperty<ReactiveSet<String>>(ref _ChargingModes, value);
+            }
+
+        }
+
+        #endregion
+
+        #region ChargingFacilities
+
+        private ReactiveSet<String> _ChargingFacilities;
+
+        [Mandatory]
+        public ReactiveSet<String> ChargingFacilities
+        {
+
+            get
+            {
+                return _ChargingFacilities;
+            }
+
+            set
+            {
+                SetProperty<ReactiveSet<String>>(ref _ChargingFacilities, value);
+            }
+
+        }
+
+        #endregion
+
+        #region AdditionalInfo
+
+        private I18NString _AdditionalInfo;
+
+        /// <summary>
+        /// Average voltage at connector [Volt].
+        /// </summary>
+        [Mandatory]
+        public I18NString AdditionalInfo
+        {
+
+            get
+            {
+                return _AdditionalInfo;
+            }
+
+            set
+            {
+                SetProperty<I18NString>(ref _AdditionalInfo, value);
+            }
+
+        }
+
+        #endregion
+
+        #region PointOfDelivery // MeterId
+
+        private String _PointOfDelivery;
+
+        /// <summary>
+        /// Point of delivery or meter identification.
+        /// </summary>
+        [Optional]
+        public String PointOfDelivery
+        {
+
+            get
+            {
+                return _PointOfDelivery;
+            }
+
+            set
+            {
+                SetProperty<String>(ref _PointOfDelivery, value);
+            }
+
+        }
+
+        #endregion
 
 
         #region Status

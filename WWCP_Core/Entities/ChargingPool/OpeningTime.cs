@@ -46,21 +46,21 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Simple
+        #region Text
 
-        private String _Simple;
+        private String _Text;
 
-        public String Simple
+        public String Text
         {
 
             get
             {
-                return _Simple;
+                return _Text;
             }
 
             set
             {
-                _Simple = value;
+                _Text = value;
             }
 
         }
@@ -76,17 +76,17 @@ namespace org.GraphDefined.WWCP
         public OpeningTime(Boolean IsOpen24Hours = true)
         {
             this._IsOpen24Hours  = IsOpen24Hours;
-            this._Simple         = "Mon-Sun, 24 hours";
+            this._Text           = IsOpen24Hours ? "Mon-Sun, 24 hours" : "";
         }
 
         #endregion
 
-        #region OpeningTime(Simple)
+        #region OpeningTime(Text)
 
-        public OpeningTime(String Simple)
+        public OpeningTime(String Text)
         {
             this._IsOpen24Hours  = false;
-            this._Simple         = Simple;
+            this._Text           = Text;
         }
 
         #endregion
@@ -109,6 +109,50 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region Operator overloading
+
+        #region Operator == (OpeningTime1, OpeningTime2)
+
+        /// <summary>
+        /// Compares two opening times for equality.
+        /// </summary>
+        /// <param name="OpeningTime1">An opening time.</param>
+        /// <param name="OpeningTime2">Another opening time.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public static Boolean operator == (OpeningTime OpeningTime1, OpeningTime OpeningTime2)
+        {
+
+            // If both are null, or both are same instance, return true.
+            if (Object.ReferenceEquals(OpeningTime1, OpeningTime2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (((Object) OpeningTime1 == null) || ((Object) OpeningTime2 == null))
+                return false;
+
+            return OpeningTime1.Equals(OpeningTime2);
+
+        }
+
+        #endregion
+
+        #region Operator != (OpeningTime1, OpeningTime2)
+
+        /// <summary>
+        /// Compares two opening times for inequality.
+        /// </summary>
+        /// <param name="OpeningTime1">An opening time.</param>
+        /// <param name="OpeningTime2">Another opening time.</param>
+        /// <returns>False if both match; True otherwise.</returns>
+        public static Boolean operator != (OpeningTime OpeningTime1, OpeningTime OpeningTime2)
+        {
+            return !(OpeningTime1 == OpeningTime2);
+        }
+
+        #endregion
+
+        #endregion
 
         #region IEquatable<OpeningTime> Members
 
@@ -152,7 +196,7 @@ namespace org.GraphDefined.WWCP
             if (IsOpen24Hours && OpenTime.IsOpen24Hours)
                 return true;
 
-            return Simple.Equals(OpenTime.Simple);
+            return Text.Equals(OpenTime.Text);
 
         }
 
@@ -167,7 +211,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override Int32 GetHashCode()
         {
-            return Simple.GetHashCode();
+            return Text.GetHashCode();
         }
 
         #endregion
@@ -179,7 +223,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return IsOpen24Hours ? "24 hours" : Simple;
+            return IsOpen24Hours ? "24 hours" : Text;
         }
 
         #endregion

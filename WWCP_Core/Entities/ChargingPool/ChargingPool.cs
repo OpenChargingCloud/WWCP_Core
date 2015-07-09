@@ -285,28 +285,34 @@ namespace org.GraphDefined.WWCP
 
         #region PhotoURIs
 
-        private readonly List<String> _PhotoURIs;
+        private ReactiveSet<String> _PhotoURIs;
 
         /// <summary>
         /// URIs of photos of this charging pool.
         /// </summary>
         [Optional, Not_eMI3defined]
-        public List<String> PhotoURIs
+        public ReactiveSet<String> PhotoURIs
         {
+
             get
             {
                 return _PhotoURIs;
             }
+
+            set
+            {
+                SetProperty<ReactiveSet<String>>(ref _PhotoURIs, value);
+            }
+
         }
 
         #endregion
 
-
         #region AuthenticationModes
 
-        internal IEnumerable<String> DefaultAuthenticationModes;
+        internal ReactiveSet<String> DefaultAuthenticationModes;
 
-        public IEnumerable<String> AuthenticationModes
+        public ReactiveSet<String> AuthenticationModes
         {
 
             get
@@ -315,17 +321,17 @@ namespace org.GraphDefined.WWCP
                 if (_ChargingStations.Count() == 0)
                     return DefaultAuthenticationModes;
 
-                var _AuthenticationModes = _ChargingStations.First().Value.AuthenticationModes.ToArray();
+                var _AuthenticationModes = new ReactiveSet<String>(_ChargingStations.First().Value.AuthenticationModes);
 
                 foreach (var station in _ChargingStations.Values.Skip(1))
                 {
 
-                    if (station.AuthenticationModes.Count() != _AuthenticationModes.Length)
-                        return new String[0];
+                    if (station.AuthenticationModes.Count != _AuthenticationModes.Count)
+                        return new ReactiveSet<String>();
 
                     foreach (var AuthenticationMode in station.AuthenticationModes)
                         if (!_AuthenticationModes.Contains(AuthenticationMode))
-                            return new String[0];
+                            return new ReactiveSet<String>();
 
                 }
 
@@ -339,7 +345,7 @@ namespace org.GraphDefined.WWCP
                 var Value = value;
 
                 if (value == null)
-                    Value = new String[0];
+                    Value = new ReactiveSet<String>();
 
                 DefaultAuthenticationModes = Value;
 
@@ -351,9 +357,49 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        public IEnumerable<String>  PaymentOptions          { get; set; }
+        #region ChargingFacilities
 
-        public String               Accessibility           { get; set; }
+        private ReactiveSet<String> _PaymentOptions;
+
+        [Mandatory]
+        public ReactiveSet<String> PaymentOptions
+        {
+
+            get
+            {
+                return _PaymentOptions;
+            }
+
+            set
+            {
+                SetProperty<ReactiveSet<String>>(ref _PaymentOptions, value);
+            }
+
+        }
+
+        #endregion
+
+        #region Accessibility
+
+        private String _Accessibility;
+
+        [Optional]
+        public String Accessibility
+        {
+
+            get
+            {
+                return _Accessibility;
+            }
+
+            set
+            {
+                SetProperty<String>(ref _Accessibility, value);
+            }
+
+        }
+
+        #endregion
 
         #region OpeningTime
 
@@ -405,10 +451,52 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region AdditionalInfo
 
-        public I18NString           AdditionalInfo          { get; set; }
+        private I18NString _AdditionalInfo;
 
-        public Boolean?             DynamicInfoAvailable    { get; set; }
+        /// <summary>
+        /// Average voltage at connector [Volt].
+        /// </summary>
+        [Mandatory]
+        public I18NString AdditionalInfo
+        {
+
+            get
+            {
+                return _AdditionalInfo;
+            }
+
+            set
+            {
+                SetProperty<I18NString>(ref _AdditionalInfo, value);
+            }
+
+        }
+
+        #endregion
+
+        #region DynamicInfoAvailable
+
+        private Boolean _DynamicInfoAvailable;
+
+        [Optional]
+        public Boolean DynamicInfoAvailable
+        {
+
+            get
+            {
+                return _DynamicInfoAvailable;
+            }
+
+            set
+            {
+                SetProperty<Boolean>(ref _DynamicInfoAvailable, value);
+            }
+
+        }
+
+        #endregion
 
 
         #region Status
@@ -789,7 +877,7 @@ namespace org.GraphDefined.WWCP
             this.Address                     = new Address();
             this.EntranceAddress             = new Address();
 
-            this.DefaultAuthenticationModes  = new String[0];
+            this.DefaultAuthenticationModes  = new ReactiveSet<String>();
 
             this._StatusHistory              = new Stack<Timestamped<ChargingPoolStatusType>>((Int32) PoolStatusHistorySize);
             this._StatusHistory.Push(new Timestamped<ChargingPoolStatusType>(ChargingPoolStatusType.Unknown));

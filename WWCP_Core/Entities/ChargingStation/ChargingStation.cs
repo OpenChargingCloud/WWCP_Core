@@ -237,13 +237,13 @@ namespace org.GraphDefined.WWCP
 
         #region PhotoURIs
 
-        private List<String> _PhotoURIs;
+        private ReactiveSet<String> _PhotoURIs;
 
         /// <summary>
         /// URIs of photos of this charging station.
         /// </summary>
         [Optional, Not_eMI3defined]
-        public List<String> PhotoURIs
+        public ReactiveSet<String> PhotoURIs
         {
 
             get
@@ -253,50 +253,62 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                SetProperty<List<String>>(ref _PhotoURIs, value);
+                SetProperty<ReactiveSet<String>>(ref _PhotoURIs, value);
             }
 
         }
 
         #endregion
 
-        #region PointOfDelivery // MeterId
+        #region Name
 
-        private String _PointOfDelivery;
+        private I18NString _Name;
 
-        /// <summary>
-        /// Point of delivery or meter identification.
-        /// </summary>
-        [Optional]
-        public String PointOfDelivery
+        [Mandatory]
+        public I18NString Name
         {
 
             get
             {
-                return _PointOfDelivery;
+                return _Name;
             }
 
             set
             {
-                SetProperty<String>(ref _PointOfDelivery, value);
+                SetProperty<I18NString>(ref _Name, value);
             }
 
         }
 
         #endregion
 
+        #region HubjectStationId
 
-        public I18NString           Name                    { get; set; }
+        private String _HubjectStationId;
 
-  //      public String               EVSEIdPrefix            { get; set; }
-        public String               HubjectStationId          { get; set; }
+        [Optional]
+        public String HubjectStationId
+        {
 
+            get
+            {
+                return _HubjectStationId;
+            }
+
+            set
+            {
+                SetProperty<String>(ref _HubjectStationId, value);
+            }
+
+        }
+
+        #endregion
 
         #region AuthenticationModes
 
-        private IEnumerable<String> _AuthenticationModes;
+        private ReactiveSet<String> _AuthenticationModes;
 
-        public IEnumerable<String>  AuthenticationModes
+        public ReactiveSet<String> AuthenticationModes
         {
 
             get
@@ -338,18 +350,154 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ChargingFacilities
 
-        public IEnumerable<String>  PaymentOptions          { get; set; }
+        private ReactiveSet<String> _PaymentOptions;
 
-        public String               Accessibility           { get; set; }
+        [Mandatory]
+        public ReactiveSet<String> PaymentOptions
+        {
 
-        public String               HotlinePhoneNum         { get; set; }
+            get
+            {
+                return _PaymentOptions;
+            }
 
-        public I18NString           AdditionalInfo          { get; set; }
+            set
+            {
+                SetProperty<ReactiveSet<String>>(ref _PaymentOptions, value);
+            }
 
-        public Boolean?             IsHubjectCompatible     { get; set; }
+        }
 
-        public Boolean              DynamicInfoAvailable    { get; set; }
+        #endregion
+
+        #region Accessibility
+
+        private String _Accessibility;
+
+        [Optional]
+        public String Accessibility
+        {
+
+            get
+            {
+                return _Accessibility;
+            }
+
+            set
+            {
+                SetProperty<String>(ref _Accessibility, value);
+            }
+
+        }
+
+        #endregion
+
+        #region HotlinePhoneNum
+
+        private String _HotlinePhoneNum;
+
+        /// <summary>
+        /// The telephone number of the hotline.
+        /// </summary>
+        [Optional]
+        public String HotlinePhoneNum
+        {
+
+            get
+            {
+
+                if (_HotlinePhoneNum.IsNotNullOrEmpty())
+                    return _HotlinePhoneNum;
+
+                else
+                    return ChargingPool.HotlinePhoneNum;
+
+            }
+
+            set
+            {
+
+                if (value == ChargingPool.HotlinePhoneNum)
+                    value = null;
+
+                SetProperty<String>(ref _HotlinePhoneNum, value);
+
+            }
+
+        }
+
+        #endregion
+
+        #region AdditionalInfo
+
+        private I18NString _AdditionalInfo;
+
+        /// <summary>
+        /// Average voltage at connector [Volt].
+        /// </summary>
+        [Mandatory]
+        public I18NString AdditionalInfo
+        {
+
+            get
+            {
+                return _AdditionalInfo;
+            }
+
+            set
+            {
+                SetProperty<I18NString>(ref _AdditionalInfo, value);
+            }
+
+        }
+
+        #endregion
+
+        #region IsHubjectCompatible
+
+        private Boolean? _IsHubjectCompatible;
+
+        [Optional]
+        public Boolean? IsHubjectCompatible
+        {
+
+            get
+            {
+                return _IsHubjectCompatible;
+            }
+
+            set
+            {
+                SetProperty<Boolean?>(ref _IsHubjectCompatible, value);
+            }
+
+        }
+
+        #endregion
+
+        #region DynamicInfoAvailable
+
+        private Boolean _DynamicInfoAvailable;
+
+        [Optional]
+        public Boolean DynamicInfoAvailable
+        {
+
+            get
+            {
+                return _DynamicInfoAvailable;
+            }
+
+            set
+            {
+                SetProperty<Boolean>(ref _DynamicInfoAvailable, value);
+            }
+
+        }
+
+        #endregion
 
 
         #region Status
@@ -628,7 +776,6 @@ namespace org.GraphDefined.WWCP
             this.Name                     = new I18NString();
             this.AdditionalInfo           = new I18NString();
 
-            this._PhotoURIs               = new List<String>();
             this._UserComment             = new I18NString();
             this._ServiceProviderComment  = new I18NString();
             //this.GeoLocation             = new GeoCoordinate();
