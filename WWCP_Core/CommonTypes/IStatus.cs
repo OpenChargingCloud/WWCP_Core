@@ -26,7 +26,9 @@ namespace org.GraphDefined.WWCP
 
     public interface IStatus<TType>
     {
+
         Timestamped<TType> Status { get; }
+
     }
 
 }
