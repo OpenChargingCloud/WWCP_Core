@@ -38,9 +38,9 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #region Properties
 
-        public AuthorizationResult   AuthorizationResult   { get; set; }
-        public ChargingSession_Id     SessionId             { get; set; }
-        public EVSP_Id  ProviderId            { get; set; }
+        public AuthorizationResult  AuthorizationResult   { get; set; }
+        public ChargingSession_Id   SessionId             { get; set; }
+        public EVSP_Id              ProviderId            { get; set; }
 
         #endregion
 
@@ -55,9 +55,17 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #region ToString()
 
+        /// <summary>
+        /// Get a string representation of this object.
+        /// </summary>
         public override String ToString()
         {
-            return String.Concat(AuthorizationResult.ToString(), ", ", ProviderId);
+
+            if (ProviderId != null)
+                return String.Concat(AuthorizationResult.ToString(), ", ", ProviderId);
+
+            return String.Concat(AuthorizationResult.ToString());
+
         }
 
         #endregion
