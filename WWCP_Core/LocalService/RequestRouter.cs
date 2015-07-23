@@ -206,9 +206,11 @@ namespace org.GraphDefined.WWCP.LocalService
         #region AuthorizeStart(OperatorId, EVSEId, PartnerSessionId, UID)
 
         public AUTHSTARTResult AuthorizeStart(EVSEOperator_Id     OperatorId,
-                                              EVSE_Id             EVSEId,
-                                              ChargingSession_Id  PartnerSessionId,
-                                              Auth_Token          UID)
+                                              Auth_Token          AuthToken,
+                                              EVSE_Id             EVSEId            = null,   // OICP v2.0: Optional
+                                              String              PartnerProductId  = null,   // OICP v2.0: Optional [100]
+                                              ChargingSession_Id  HubjectSessionId  = null,   // OICP v2.0: Optional
+                                              ChargingSession_Id  PartnerSessionId  = null)   // OICP v2.0: Optional [50]
         {
 
             // Will store the SessionId in order to contact the right authenticator at later requests!
@@ -223,7 +225,12 @@ namespace org.GraphDefined.WWCP.LocalService
                                                           Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
                 {
 
-                    AuthStartResult = AuthenticationService.AuthorizeStart(OperatorId, EVSEId, PartnerSessionId, UID);
+                    AuthStartResult = AuthenticationService.AuthorizeStart(OperatorId,
+                                                                           AuthToken,
+                                                                           EVSEId,
+                                                                           PartnerProductId,
+                                                                           HubjectSessionId,
+                                                                           PartnerSessionId);
 
                     #region Authorized
 

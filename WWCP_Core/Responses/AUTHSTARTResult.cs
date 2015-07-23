@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -26,6 +27,12 @@ namespace org.GraphDefined.WWCP.LocalService
 
     public class AUTHSTARTResult : AUTHResult
     {
+
+        #region Properties
+
+        public IEnumerable<Auth_Token>  AuthorizationStopIdentifications   { get; set; }
+
+        #endregion
 
         public AUTHSTARTResult(Authorizator_Id AuthorizatorId)
             : base(AuthorizatorId)

@@ -145,12 +145,23 @@ namespace org.GraphDefined.WWCP.LocalService
         #endregion
 
 
-        #region AuthorizeStart(OperatorId, EVSEId, PartnerSessionId, Token)
+        #region AuthorizeStart(OperatorId, AuthToken, EVSEId = null, PartnerProductId = null, HubjectSessionId = null, PartnerSessionId = null)
 
+        /// <summary>
+        /// Create an authorize start request.
+        /// </summary>
+        /// <param name="OperatorId">An EVSE Operator identification.</param>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="EVSEId">An optional EVSE identification.</param>
+        /// <param name="PartnerProductId">An optional partner product identification.</param>
+        /// <param name="HubjectSessionId">An optional Hubject session identification.</param>
+        /// <param name="PartnerSessionId">An optional partner session identification.</param>
         public AUTHSTARTResult AuthorizeStart(EVSEOperator_Id     OperatorId,
-                                              EVSE_Id             EVSEId,
-                                              ChargingSession_Id  PartnerSessionId,
-                                              Auth_Token               Token)
+                                              Auth_Token          AuthToken,
+                                              EVSE_Id             EVSEId            = null,   // OICP v1.2: Optional
+                                              String              PartnerProductId  = null,   // OICP v1.2: Optional [100]
+                                              ChargingSession_Id  HubjectSessionId  = null,   // OICP v1.2: Optional
+                                              ChargingSession_Id  PartnerSessionId  = null)   // OICP v1.2: Optional [50]
 
         {
 
@@ -159,7 +170,7 @@ namespace org.GraphDefined.WWCP.LocalService
 
                 AuthorizationResult AuthenticationResult;
 
-                if (AuthorizationDatabase.TryGetValue(Token, out AuthenticationResult))
+                if (AuthorizationDatabase.TryGetValue(AuthToken, out AuthenticationResult))
                 {
 
                     #region Authorized
@@ -169,7 +180,7 @@ namespace org.GraphDefined.WWCP.LocalService
 
                         var _SessionId = ChargingSession_Id.New;
 
-                        SessionDatabase.Add(_SessionId, new SessionInfo(Token));
+                        SessionDatabase.Add(_SessionId, new SessionInfo(AuthToken));
 
                         return new AUTHSTARTResult(AuthorizatorId) {
                                        AuthorizationResult  = AuthenticationResult,

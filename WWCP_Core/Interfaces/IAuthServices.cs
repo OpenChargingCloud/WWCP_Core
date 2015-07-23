@@ -41,9 +41,11 @@ namespace org.GraphDefined.WWCP.LocalService
 
 
         AUTHSTARTResult AuthorizeStart(EVSEOperator_Id      OperatorId,
-                                       EVSE_Id              EVSEId,
-                                       ChargingSession_Id   PartnerSessionId,
-                                       Auth_Token           UID);
+                                       Auth_Token           AuthToken,
+                                       EVSE_Id              EVSEId            = null,   // OICP v2.0: Optional
+                                       String               PartnerProductId  = null,   // OICP v2.0: Optional [100]
+                                       ChargingSession_Id   HubjectSessionId  = null,   // OICP v2.0: Optional
+                                       ChargingSession_Id   PartnerSessionId  = null);  // OICP v2.0: Optional [50]
 
         AUTHSTOPResult  AuthorizeStop (EVSEOperator_Id      OperatorId,
                                        EVSE_Id              EVSEId,
