@@ -1320,10 +1320,10 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an charging pool.
+            // Check if the given object is a charging pool.
             var ChargingPool = Object as ChargingPool;
             if ((Object) ChargingPool == null)
-                throw new ArgumentException("The given object is not an charging pool!");
+                throw new ArgumentException("The given object is not a charging pool!");
 
             return CompareTo(ChargingPool);
 
@@ -1336,7 +1336,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="charging pool">An charging pool object to compare with.</param>
+        /// <param name="ChargingPool">A charging pool object to compare with.</param>
         public Int32 CompareTo(ChargingPool ChargingPool)
         {
 
@@ -1366,7 +1366,7 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an charging pool.
+            // Check if the given object is a charging pool.
             var ChargingPool = Object as ChargingPool;
             if ((Object) ChargingPool == null)
                 return false;
@@ -1380,9 +1380,9 @@ namespace org.GraphDefined.WWCP
         #region Equals(ChargingPool)
 
         /// <summary>
-        /// Compares two charging pool for equality.
+        /// Compares two charging pools for equality.
         /// </summary>
-        /// <param name="charging pool">An charging pool to compare with.</param>
+        /// <param name="ChargingPool">A charging pool to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingPool ChargingPool)
         {

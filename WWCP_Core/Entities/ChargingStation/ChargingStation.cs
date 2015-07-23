@@ -1058,10 +1058,10 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an ChargingStation.
+            // Check if the given object is a charging station.
             var ChargingStation = Object as ChargingStation;
             if ((Object) ChargingStation == null)
-                throw new ArgumentException("The given object is not an ChargingStation!");
+                throw new ArgumentException("The given object is not a charging station!");
 
             return CompareTo(ChargingStation);
 
@@ -1074,12 +1074,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStation">An ChargingStation object to compare with.</param>
+        /// <param name="ChargingStation">A charging station object to compare with.</param>
         public Int32 CompareTo(ChargingStation ChargingStation)
         {
 
             if ((Object) ChargingStation == null)
-                throw new ArgumentNullException("The given ChargingStation must not be null!");
+                throw new ArgumentNullException("The given charging station must not be null!");
 
             return Id.CompareTo(ChargingStation.Id);
 
@@ -1104,7 +1104,7 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an ChargingStation.
+            // Check if the given object is a charging station.
             var ChargingStation = Object as ChargingStation;
             if ((Object) ChargingStation == null)
                 return false;
@@ -1118,9 +1118,9 @@ namespace org.GraphDefined.WWCP
         #region Equals(ChargingStation)
 
         /// <summary>
-        /// Compares two ChargingStation for equality.
+        /// Compares two charging stations for equality.
         /// </summary>
-        /// <param name="ChargingStation">An ChargingStation to compare with.</param>
+        /// <param name="ChargingStation">A charging station to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingStation ChargingStation)
         {

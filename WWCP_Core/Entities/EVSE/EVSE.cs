@@ -143,7 +143,12 @@ namespace org.GraphDefined.WWCP
 
             set
             {
+
                 SetProperty<ReactiveSet<String>>(ref _ChargingModes, value);
+
+                //value.OnItemAdded -= (Timestamp, ReactiveSet, Item) => PropertyChanged("ChargingModes", null, value);
+                //value.OnItemAdded += (Timestamp, ReactiveSet, Item) => PropertyChanged("ChargingModes", null, value);
+
             }
 
         }
@@ -613,7 +618,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSE">An EVSE object to compare with.</param>
+        /// <param name="EVSE">An EVSE to compare with.</param>
         public Int32 CompareTo(EVSE EVSE)
         {
 
@@ -657,7 +662,7 @@ namespace org.GraphDefined.WWCP
         #region Equals(EVSE)
 
         /// <summary>
-        /// Compares two EVSE for equality.
+        /// Compares two EVSEs for equality.
         /// </summary>
         /// <param name="EVSE">An EVSE to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
