@@ -33,7 +33,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A electric vehicle charging service plan (EVCSP).
     /// </summary>
-    public class ChargingServicePlan : AEntity<ChargingServicePlan_Id>,
+    public class ChargingServicePlan : AEMobilityEntity<ChargingServicePlan_Id>,
                                        IEquatable<ChargingServicePlan>, IComparable<ChargingServicePlan>, IComparable
     {
 

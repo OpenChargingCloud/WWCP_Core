@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
@@ -29,9 +30,9 @@ namespace org.GraphDefined.WWCP
     public delegate void PropertyChanged_EventHandler(DateTime Timestamp, Object Sender, String PropertyName, Object OldValue, Object NewValue);
 
     /// <summary>
-    /// An abstract entity.
+    /// An abstract e-mobility entity.
     /// </summary>
-    public abstract class AEntity<TId> : IEntity<TId>
+    public abstract class AEMobilityEntity<TId> : IEntity<TId>
         where TId : IId
     {
 
@@ -74,6 +75,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Unstructured
+
+        private ConcurrentDictionary<String, Object> _UserDefined;
+
+        /// <summary>
+        /// A lookup for user-defined properties.
+        /// </summary>
+        public ConcurrentDictionary<String, Object> UserDefined
+        {
+            get
+            {
+                return _UserDefined;
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Events
@@ -88,7 +106,7 @@ namespace org.GraphDefined.WWCP
         /// Create a new abstract entity.
         /// </summary>
         /// <param name="Id">The unique entity identification.</param>
-        public AEntity(TId Id)
+        public AEMobilityEntity(TId Id)
         {
 
             #region Initial checks
@@ -98,8 +116,9 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._Id          = Id;
-            this._LastChange  = DateTime.Now;
+            this._Id           = Id;
+            this._LastChange   = DateTime.Now;
+            this._UserDefined  = new ConcurrentDictionary<String, Object>();
 
         }
 
@@ -164,6 +183,31 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+
+        #region this[PropertyName]
+
+        /// <summary>
+        /// Return the user-defined property for the given property name.
+        /// </summary>
+        /// <param name="PropertyName">The name of the user-defined property.</param>
+        public Object this[String PropertyName]
+        {
+
+            get
+            {
+                return _UserDefined[PropertyName];
+            }
+
+            set
+            {
+                _UserDefined[PropertyName] = value;
+            }
+
+        }
+
+        #endregion
+
 
     }
 

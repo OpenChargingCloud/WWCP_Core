@@ -33,7 +33,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A electric vehicle parking spot (EVPS).
     /// </summary>
-    public class ParkingSpot : AEntity<ParkingSpot_Id>,
+    public class ParkingSpot : AEMobilityEntity<ParkingSpot_Id>,
                                IEquatable<ParkingSpot>, IComparable<ParkingSpot>, IComparable
     {
 

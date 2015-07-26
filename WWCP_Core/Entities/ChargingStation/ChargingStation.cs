@@ -36,7 +36,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// An Electric Vehicle Supply Equipment (EVSE) to charge an electric vehicle (EV).
     /// </summary>
-    public class ChargingStation : AEntity<ChargingStation_Id>,
+    public class ChargingStation : AEMobilityEntity<ChargingStation_Id>,
                                    IEquatable<ChargingStation>, IComparable<ChargingStation>, IComparable,
                                    IEnumerable<EVSE>,
                                    IStatus<ChargingStationStatusType>

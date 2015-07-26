@@ -44,11 +44,6 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         Available           = 3,
 
-                /// <summary>
-        /// Some cars connected to station or pool, but still ready to charge.
-        /// </summary>
-        MostlyAvailable     = 4,
-
         /// <summary>
         /// Some cars connected to station or pool, but still ready to charge.
         /// </summary>

@@ -31,7 +31,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// An Electric Vehicle Supply Equipment Connector to charge an electric vehicle (EV).
     /// </summary>
-    public class SocketOutlet : AEntity<SocketOutlet_Id>,
+    public class SocketOutlet : AEMobilityEntity<SocketOutlet_Id>,
                                 IEquatable<SocketOutlet>, IComparable<SocketOutlet>, IComparable
     {
 

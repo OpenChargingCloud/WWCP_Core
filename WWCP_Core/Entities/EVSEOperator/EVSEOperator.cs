@@ -45,7 +45,7 @@ namespace org.GraphDefined.WWCP
     /// NSPs or the public. Pricing information might be either public
     /// information or part of business-to-business contracts.
     /// </summary>
-    public class EVSEOperator : AEntity<EVSEOperator_Id>,
+    public class EVSEOperator : AEMobilityEntity<EVSEOperator_Id>,
                                 IEquatable<EVSEOperator>, IComparable<EVSEOperator>, IComparable,
                                 IEnumerable<ChargingPool>,
                                 IStatus<EVSEOperatorStatusType>

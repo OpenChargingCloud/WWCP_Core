@@ -42,7 +42,7 @@ namespace org.GraphDefined.WWCP
     /// provider (e.g. type of ev, battery capacity, special service offers,
     /// special pricing).
     /// </summary>
-    public class NavigationServiceProvider : AEntity<NavigationServiceProvider_Id>,
+    public class NavigationServiceProvider : AEMobilityEntity<NavigationServiceProvider_Id>,
                                              IEquatable<NavigationServiceProvider>, IComparable<NavigationServiceProvider>, IComparable,
                                              IEnumerable<ChargingPool>
     {

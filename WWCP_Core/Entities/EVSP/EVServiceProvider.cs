@@ -39,7 +39,7 @@ namespace org.GraphDefined.WWCP
     /// by any entity in the ev charging process to track the ev driver or its
     /// behaviour.
     /// </summary>
-    public class EVServiceProvider : AEntity<EVSP_Id>,
+    public class EVServiceProvider : AEMobilityEntity<EVSP_Id>,
                                      IEquatable<EVServiceProvider>, IComparable<EVServiceProvider>, IComparable
     {
 

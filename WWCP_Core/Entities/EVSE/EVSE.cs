@@ -36,7 +36,7 @@ namespace org.GraphDefined.WWCP
     /// This is meant to be one electrical circuit which can charge a electric vehicle
     /// independently. Thus there could be multiple interdependent power sockets.
     /// </summary>
-    public class EVSE : AEntity<EVSE_Id>,
+    public class EVSE : AEMobilityEntity<EVSE_Id>,
                         IEquatable<EVSE>, IComparable<EVSE>, IComparable,
                         IEnumerable<SocketOutlet>,
                         IStatus<EVSEStatusType>

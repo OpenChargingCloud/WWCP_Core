@@ -39,7 +39,7 @@ namespace org.GraphDefined.WWCP
     /// might provide a shared network access to aggregate and optimize communication
     /// with the EVSE Operator backend.
     /// </summary>
-    public class ChargingPool : AEntity<ChargingPool_Id>,
+    public class ChargingPool : AEMobilityEntity<ChargingPool_Id>,
                                 IEquatable<ChargingPool>, IComparable<ChargingPool>, IComparable,
                                 IEnumerable<ChargingStation>,
                                 IStatus<ChargingPoolStatusType>

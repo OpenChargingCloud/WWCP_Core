@@ -41,7 +41,7 @@ namespace org.GraphDefined.WWCP
     /// The RoamingNetwork class also provides access to all registered electric
     /// vehicle charging entities within an EV Roaming Network.
     /// </summary>
-    public class RoamingNetwork : AEntity<RoamingNetwork_Id>,
+    public class RoamingNetwork : AEMobilityEntity<RoamingNetwork_Id>,
                                   IEquatable<RoamingNetwork>, IComparable<RoamingNetwork>, IComparable,
                                   IEnumerable<IEntity>,
                                   IStatus<RoamingNetworkStatusType>

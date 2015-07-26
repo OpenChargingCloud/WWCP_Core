@@ -88,7 +88,7 @@
     <Compile Include="Entities\ChargingPool\ChargingPoolExceptions.cs" />
     <Compile Include="Entities\ChargingPool\OpeningTime.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStation.cs" />
-    <Compile Include="CommonTypes\AEntity.cs" />
+    <Compile Include="Entities\AEMobilityEntity.cs" />
     <Compile Include="CommonTypes\IId.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationUIFeatures.cs" />
     <Compile Include="Entities\EVSE\EVSEStatusType.cs" />

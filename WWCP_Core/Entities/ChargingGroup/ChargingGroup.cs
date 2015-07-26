@@ -38,7 +38,7 @@ namespace org.GraphDefined.WWCP
     /// might provide a shared network access to aggregate and optimize communication
     /// with the EVSE Operator backend.
     /// </summary>
-    public class ChargingGroup : AEntity<ChargingGroup_Id>,
+    public class ChargingGroup : AEMobilityEntity<ChargingGroup_Id>,
                                  IEquatable<ChargingGroup>, IComparable<ChargingGroup>, IComparable,
                                  IEnumerable<ChargingStation>
     {

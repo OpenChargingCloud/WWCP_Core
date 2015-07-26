@@ -25,79 +25,59 @@ namespace org.GraphDefined.WWCP
     {
 
         /// <summary>
-        /// Unspecified
+        /// Unknown/Unspecified
         /// </summary>
-        Unspecified         = 0,
+        Unknown             = 0,
 
         /// <summary>
-        /// The pole is not fully operational yet.
+        /// This charging station is just planned for the future.
         /// </summary>
         Planned             = 1,
 
         /// <summary>
-        /// The pole is not fully operational yet.
+        /// The charging station is currently in deployment.
         /// </summary>
         InDeployment        = 2,
 
         /// <summary>
-        /// No car connected to EVSE, ready to charge.
+        /// The charging station is ready to charge.
         /// </summary>
         Available           = 3,
 
-                /// <summary>
-        /// Some cars connected to station or pool, but still ready to charge.
+        /// <summary>
+        /// Some cars are connected to the charging station, but still ready to charge.
         /// </summary>
-        MostlyAvailable     = 4,
+        PartialAvailable    = 4,
 
         /// <summary>
-        /// Some cars connected to station or pool, but still ready to charge.
+        /// The charging station is occupied, no additional cars can be charged.
         /// </summary>
-        PartialAvailable    = 5,
+        Occupied            = 5,
 
         /// <summary>
-        /// A charging session is still open (a car is connected)
+        /// At least one car is connected and an error has occured during the charging process.
         /// </summary>
-        Occupied            = 6,
+        Faulted             = 6,
 
         /// <summary>
-        /// A car is connected and an error has occured during charge (this status appeared while charging).
+        /// No cars are connected, but the station is out of service.
         /// </summary>
-        Faulted             = 7,
+        OutOfService        = 7,
 
         /// <summary>
-        /// No car is connected but the pole is not ready to charge.
+        /// The management platform has lost connection with the charging station (may be used by customer depending on its ability to handle offline mode).
         /// </summary>
-        Unavailable         = 8,
+        Offline             = 8,
 
         /// <summary>
-        /// No car is connected, the pole is not ready to charge because under maintenance.
+        /// No cars are connected but no car can connect except the ones that are booked for this charging station.
         /// </summary>
-        OutOfService        = 9,
+        Reserved            = 9,
 
         /// <summary>
-        /// The platform has lost connection with the pole (may be used by customer depending on its ability to handle offline mode).
+        /// The charging station (identification) was not found!
         /// </summary>
-        Offline             = 10,
-
-        /// <summary>
-        /// No car is connected but no car can connect except the one that has booked this EVSE.
-        /// </summary>
-        Reserved            = 11,
-
-        /// <summary>
-        /// Private internal use.
-        /// </summary>
-        Other               = 12,
-
-        /// <summary>
-        /// No status is sent by the pole.
-        /// </summary>
-        Unknown             = 13,
-
-        /// <summary>
-        /// The EVSE was not found!
-        /// </summary>
-        EvseNotFound        = 14
+        StationNotFound     = 10
 
     }
 

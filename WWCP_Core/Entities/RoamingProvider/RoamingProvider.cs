@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A Electric Vehicle Roaming Provider (EVRP).
     /// </summary>
-    public class RoamingProvider : AEntity<RoamingProvider_Id>,
+    public class RoamingProvider : AEMobilityEntity<RoamingProvider_Id>,
                                    IEquatable<RoamingProvider>, IComparable<RoamingProvider>, IComparable,
                                    IEnumerable<ChargingPool>
     {
