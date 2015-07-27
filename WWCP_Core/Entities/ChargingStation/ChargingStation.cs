@@ -253,7 +253,7 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                SetProperty<ReactiveSet<String>>(ref _PhotoURIs, value);
+                SetProperty(ref _PhotoURIs, value);
             }
 
         }
@@ -314,33 +314,26 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                if (_AuthenticationModes == null)
-                    return ChargingPool.DefaultAuthenticationModes;
-
-                return _AuthenticationModes;
+                return _AuthenticationModes != null
+                    ? _AuthenticationModes
+                    : ChargingPool.AuthenticationModes;
 
             }
 
             set
             {
 
-                if (value == null)
-                    _AuthenticationModes = ChargingPool.DefaultAuthenticationModes;
+                if (value == ChargingPool.AuthenticationModes)
+                    value = null;
 
-                else
+                if (_AuthenticationModes != value)
                 {
 
-                    if (ChargingPool.DefaultAuthenticationModes.Count() != value.Count())
-                        _AuthenticationModes = value;
+                    if (value == null)
+                        DeleteProperty(ref _AuthenticationModes);
 
                     else
-                    {
-                        foreach (var AuthenticationMode in value)
-                        {
-                            if (!ChargingPool.DefaultAuthenticationModes.Contains(AuthenticationMode))
-                                _AuthenticationModes = value;
-                        }
-                    }
+                        SetProperty(ref _AuthenticationModes, value);
 
                 }
 
@@ -350,7 +343,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChargingFacilities
+        #region PaymentOptions
 
         private ReactiveSet<String> _PaymentOptions;
 
@@ -360,12 +353,30 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-                return _PaymentOptions;
+
+                return _PaymentOptions != null
+                    ? _PaymentOptions
+                    : ChargingPool.PaymentOptions;
+
             }
 
             set
             {
-                SetProperty<ReactiveSet<String>>(ref _PaymentOptions, value);
+
+                if (value == ChargingPool.PaymentOptions)
+                    value = null;
+
+                if (_PaymentOptions != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _PaymentOptions);
+
+                    else
+                        SetProperty(ref _PaymentOptions, value);
+
+                }
+
             }
 
         }

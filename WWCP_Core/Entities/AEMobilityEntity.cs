@@ -153,6 +153,32 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (protected) DeleteProperty<T>(ref FieldToChange, [CallerMemberName])
+
+        /// <summary>
+        /// Delete the given field and call the OnPropertyChanged event.
+        /// </summary>
+        /// <typeparam name="T">The type of the field to be deleted.</typeparam>
+        /// <param name="FieldToChange">A reference to the field to be deleted.</param>
+        /// <param name="PropertyName">The name of the property to be deleted (set by the compiler!)</param>
+        protected void DeleteProperty<T>(ref                T       FieldToChange,
+                                         [CallerMemberName] String  PropertyName = "")
+        {
+
+            if (FieldToChange != null)
+            {
+
+                var OldValue       = FieldToChange;
+                    FieldToChange  = default(T);
+
+                PropertyChanged(PropertyName, OldValue, default(T));
+
+            }
+
+        }
+
+        #endregion
+
         #region (protected) PropertyChanged<T>(PropertyName, OldValue, NewValue)
 
         /// <summary>

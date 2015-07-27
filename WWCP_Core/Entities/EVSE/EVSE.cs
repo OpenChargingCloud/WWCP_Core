@@ -144,7 +144,7 @@ namespace org.GraphDefined.WWCP
             set
             {
 
-                SetProperty<ReactiveSet<String>>(ref _ChargingModes, value);
+                SetProperty(ref _ChargingModes, value);
 
                 //value.OnItemAdded -= (Timestamp, ReactiveSet, Item) => PropertyChanged("ChargingModes", null, value);
                 //value.OnItemAdded += (Timestamp, ReactiveSet, Item) => PropertyChanged("ChargingModes", null, value);
@@ -170,7 +170,7 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                SetProperty<ReactiveSet<String>>(ref _ChargingFacilities, value);
+                SetProperty(ref _ChargingFacilities, value);
             }
 
         }

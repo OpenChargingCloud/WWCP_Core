@@ -301,7 +301,7 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                SetProperty<ReactiveSet<String>>(ref _PhotoURIs, value);
+                SetProperty(ref _PhotoURIs, value);
             }
 
         }
@@ -310,46 +310,30 @@ namespace org.GraphDefined.WWCP
 
         #region AuthenticationModes
 
-        internal ReactiveSet<String> DefaultAuthenticationModes;
+        private ReactiveSet<String> _AuthenticationModes;
 
         public ReactiveSet<String> AuthenticationModes
         {
 
             get
             {
-
-                if (_ChargingStations.Count() == 0)
-                    return DefaultAuthenticationModes;
-
-                var _AuthenticationModes = new ReactiveSet<String>(_ChargingStations.First().Value.AuthenticationModes);
-
-                foreach (var station in _ChargingStations.Values.Skip(1))
-                {
-
-                    if (station.AuthenticationModes.Count != _AuthenticationModes.Count)
-                        return new ReactiveSet<String>();
-
-                    foreach (var AuthenticationMode in station.AuthenticationModes)
-                        if (!_AuthenticationModes.Contains(AuthenticationMode))
-                            return new ReactiveSet<String>();
-
-                }
-
                 return _AuthenticationModes;
-
             }
 
             set
             {
 
-                var Value = value;
-
                 if (value == null)
-                    Value = new ReactiveSet<String>();
+                    value = new ReactiveSet<String>();
 
-                DefaultAuthenticationModes = Value;
+                if (_AuthenticationModes != value)
+                {
 
-                _ChargingStations.Values.ForEach(station => station.AuthenticationModes = Value);
+                    SetProperty(ref _AuthenticationModes, value);
+
+                    _ChargingStations.Values.ForEach(station => station.AuthenticationModes = null);
+
+                }
 
             }
 
@@ -372,7 +356,19 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                SetProperty<ReactiveSet<String>>(ref _PaymentOptions, value);
+
+                if (value == null)
+                    value = new ReactiveSet<String>();
+
+                if (_PaymentOptions != value)
+                {
+
+                    SetProperty(ref _PaymentOptions, value);
+
+                    _ChargingStations.Values.ForEach(station => station.PaymentOptions = null);
+
+                }
+
             }
 
         }
@@ -877,7 +873,7 @@ namespace org.GraphDefined.WWCP
             this.Address                     = new Address();
             this.EntranceAddress             = new Address();
 
-            this.DefaultAuthenticationModes  = new ReactiveSet<String>();
+            this._AuthenticationModes        = new ReactiveSet<String>();
 
             this._StatusHistory              = new Stack<Timestamped<ChargingPoolStatusType>>((Int32) PoolStatusHistorySize);
             this._StatusHistory.Push(new Timestamped<ChargingPoolStatusType>(ChargingPoolStatusType.Unknown));
