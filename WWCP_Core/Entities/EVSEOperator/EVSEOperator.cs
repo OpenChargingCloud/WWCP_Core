@@ -158,16 +158,34 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region AllEVSEs
+
+        public IEnumerable<EVSE> AllEVSEs
+        {
+            get
+            {
+
+                return _ChargingPools.Values.
+                           SelectMany(v => v.ChargingStations).
+                           SelectMany(v => v.EVSEs);
+
+            }
+        }
+
+        #endregion
+
         #region AllEVSEIds
 
         public IEnumerable<EVSE_Id> AllEVSEIds
         {
             get
             {
+
                 return _ChargingPools.Values.
                            SelectMany(v => v.ChargingStations).
                            SelectMany(v => v.EVSEs).
                            Select    (v => v.Id);
+
             }
         }
 
