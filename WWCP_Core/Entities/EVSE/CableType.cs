@@ -15,31 +15,14 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-
-#endregion
-
 namespace org.GraphDefined.WWCP
 {
 
-    /// <summary>
-    /// An EVSE exception.
-    /// </summary>
-    public class EVSEException : eMI3Exception
+    public enum CableType
     {
-
-        public EVSEException(String Message)
-            : base(Message)
-        { }
-
-        public EVSEException(String Message, Exception InnerException)
-            : base(Message, InnerException)
-        { }
-
+        unspecified,
+        none,
+        attached
     }
 
 }

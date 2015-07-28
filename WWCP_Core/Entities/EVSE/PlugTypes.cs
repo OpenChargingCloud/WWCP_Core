@@ -18,8 +18,6 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
 
 #endregion
 
@@ -27,18 +25,30 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// An EVSE exception.
+    /// The type of plugs.
     /// </summary>
-    public class EVSEException : eMI3Exception
+    public enum PlugTypes
     {
 
-        public EVSEException(String Message)
-            : base(Message)
-        { }
-
-        public EVSEException(String Message, Exception InnerException)
-            : base(Message, InnerException)
-        { }
+        Unspecified,
+        SmallPaddleInductive,
+        LargePaddleInductive,
+        AVCONConnector,
+        TeslaConnector,
+        NEMA5_20,
+        TypeEFrenchStandard,
+        TypeFSchuko,
+        TypeGBritishStandard,
+        TypeJSwissStandard,
+        Type1Connector_CableAttached,
+        Type2Outlet,
+        Type2Connector_CableAttached,
+        Type3Outlet,
+        IEC60309SinglePhase,
+        IEC60309ThreePhase,
+        CCSCombo2Plug_CableAttached,
+        CCSCombo1Plug_CableAttached,
+        CHAdeMO_DC_CHAdeMOConnector
 
     }
 

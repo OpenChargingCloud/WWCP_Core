@@ -125,7 +125,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (protected) SetProperty<T>(ref FieldToChange, NewValue, [CallerMemberName])
+        #region SetProperty<T>(ref FieldToChange, NewValue, [CallerMemberName])
 
         /// <summary>
         /// Change the given field and call the OnPropertyChanged event.
@@ -134,9 +134,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="FieldToChange">A reference to the field to be changed.</param>
         /// <param name="NewValue">The new value of the field to be changed.</param>
         /// <param name="PropertyName">The name of the property to be changed (set by the compiler!)</param>
-        protected void SetProperty<T>(ref                T       FieldToChange,
-                                                         T       NewValue,
-                                      [CallerMemberName] String  PropertyName = "")
+        public void SetProperty<T>(ref                T       FieldToChange,
+                                                      T       NewValue,
+                                   [CallerMemberName] String  PropertyName = "")
         {
 
             if (!EqualityComparer<T>.Default.Equals(FieldToChange, NewValue))
@@ -153,7 +153,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (protected) DeleteProperty<T>(ref FieldToChange, [CallerMemberName])
+        #region DeleteProperty<T>(ref FieldToChange, [CallerMemberName])
 
         /// <summary>
         /// Delete the given field and call the OnPropertyChanged event.
@@ -161,8 +161,8 @@ namespace org.GraphDefined.WWCP
         /// <typeparam name="T">The type of the field to be deleted.</typeparam>
         /// <param name="FieldToChange">A reference to the field to be deleted.</param>
         /// <param name="PropertyName">The name of the property to be deleted (set by the compiler!)</param>
-        protected void DeleteProperty<T>(ref                T       FieldToChange,
-                                         [CallerMemberName] String  PropertyName = "")
+        public void DeleteProperty<T>(ref                T       FieldToChange,
+                                      [CallerMemberName] String  PropertyName = "")
         {
 
             if (FieldToChange != null)
@@ -179,7 +179,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (protected) PropertyChanged<T>(PropertyName, OldValue, NewValue)
+        #region PropertyChanged<T>(PropertyName, OldValue, NewValue)
 
         /// <summary>
         /// Notify subscribers that a property has changed.
@@ -188,9 +188,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        protected void PropertyChanged<T>(String  PropertyName,
-                                          T       OldValue,
-                                          T       NewValue)
+        public void PropertyChanged<T>(String  PropertyName,
+                                       T       OldValue,
+                                       T       NewValue)
         {
 
             #region Initial checks
@@ -229,6 +229,23 @@ namespace org.GraphDefined.WWCP
             {
                 _UserDefined[PropertyName] = value;
             }
+
+        }
+
+        #endregion
+
+        #region RemoveUserDefinedProperty()
+
+        /// <summary>
+        /// Try to remove a user-defined property.
+        /// </summary>
+        /// <param name="PropertyName"></param>
+        public void RemoveUserDefinedProperty(String PropertyName)
+        {
+
+            Object Value;
+
+            _UserDefined.TryRemove(PropertyName, out Value);
 
         }
 

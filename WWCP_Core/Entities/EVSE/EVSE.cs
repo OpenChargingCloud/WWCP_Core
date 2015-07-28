@@ -53,6 +53,66 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
+        #region Description
+
+        private I18NString _Description;
+
+        [Mandatory]
+        public I18NString Description
+        {
+
+            get
+            {
+
+                return Description != null
+                    ? _Description
+                    : ChargingStation.Description;
+
+            }
+
+            set
+            {
+
+                if (value == ChargingStation.Description)
+                    value = null;
+
+                if (_Description != value)
+                    SetProperty<I18NString>(ref _Description, value);
+
+            }
+
+        }
+
+        #endregion
+
+        #region AverageVoltage
+
+        private Double _AverageVoltage;
+
+        /// <summary>
+        /// Average voltage at the connector [Volt].
+        /// </summary>
+        [Mandatory]
+        public Double AverageVoltage
+        {
+
+            get
+            {
+                return _AverageVoltage;
+            }
+
+            set
+            {
+
+                if (_AverageVoltage != value)
+                    SetProperty(ref _AverageVoltage, value);
+
+            }
+
+        }
+
+        #endregion
+
         #region MaxPower
 
         private Double _MaxPower;
@@ -71,7 +131,66 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                SetProperty<Double>(ref _MaxPower, value);
+
+                if (_MaxPower != value)
+                    SetProperty(ref _MaxPower, value);
+
+            }
+
+        }
+
+        #endregion
+
+        #region RealTimePower
+
+        private Double _RealTimePower;
+
+        /// <summary>
+        /// Real-time power at connector [Watt].
+        /// </summary>
+        [Mandatory]
+        public Double RealTimePower
+        {
+
+            get
+            {
+                return _RealTimePower;
+            }
+
+            set
+            {
+
+                if (_RealTimePower != value)
+                    SetProperty(ref _RealTimePower, value);
+
+            }
+
+        }
+
+        #endregion
+
+        #region GuranteedMinPower
+
+        private Double _GuranteedMinPower;
+
+        /// <summary>
+        /// Guranteed min power at connector [Watt].
+        /// </summary>
+        [Mandatory]
+        public Double GuranteedMinPower
+        {
+
+            get
+            {
+                return _GuranteedMinPower;
+            }
+
+            set
+            {
+
+                if (_MaxPower != value)
+                    SetProperty(ref _GuranteedMinPower, value);
+
             }
 
         }
@@ -83,7 +202,7 @@ namespace org.GraphDefined.WWCP
         private Double _MaxCapacity_kWh;
 
         /// <summary>
-        /// Max power at connector [Watt].
+        /// Max power capacity at the connector [kWh].
         /// </summary>
         [Mandatory]
         public Double MaxCapacity_kWh
@@ -96,32 +215,10 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                SetProperty<Double>(ref _MaxCapacity_kWh, value);
-            }
 
-        }
+                if (_MaxCapacity_kWh != value)
+                    SetProperty(ref _MaxCapacity_kWh, value);
 
-        #endregion
-
-        #region AverageVoltage
-
-        private Double _AverageVoltage;
-
-        /// <summary>
-        /// Average voltage at connector [Volt].
-        /// </summary>
-        [Mandatory]
-        public Double AverageVoltage
-        {
-
-            get
-            {
-                return _AverageVoltage;
-            }
-
-            set
-            {
-                SetProperty<Double>(ref _AverageVoltage, value);
             }
 
         }
@@ -130,10 +227,10 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingModes
 
-        private ReactiveSet<String> _ChargingModes;
+        private ReactiveSet<ChargingModes> _ChargingModes;
 
         [Mandatory]
-        public ReactiveSet<String> ChargingModes
+        public ReactiveSet<ChargingModes> ChargingModes
         {
 
             get
@@ -144,10 +241,8 @@ namespace org.GraphDefined.WWCP
             set
             {
 
-                SetProperty(ref _ChargingModes, value);
-
-                //value.OnItemAdded -= (Timestamp, ReactiveSet, Item) => PropertyChanged("ChargingModes", null, value);
-                //value.OnItemAdded += (Timestamp, ReactiveSet, Item) => PropertyChanged("ChargingModes", null, value);
+                if (_ChargingModes != value)
+                    SetProperty(ref _ChargingModes, value);
 
             }
 
@@ -157,10 +252,10 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingFacilities
 
-        private ReactiveSet<String> _ChargingFacilities;
+        private ReactiveSet<ChargingFacilities> _ChargingFacilities;
 
         [Mandatory]
-        public ReactiveSet<String> ChargingFacilities
+        public ReactiveSet<ChargingFacilities> ChargingFacilities
         {
 
             get
@@ -170,37 +265,40 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                SetProperty(ref _ChargingFacilities, value);
+
+                if (_ChargingFacilities != value)
+                    SetProperty(ref _ChargingFacilities, value);
+
             }
 
         }
 
         #endregion
 
-        #region AdditionalInfo
+        #region SocketOutlets
 
-        private I18NString _AdditionalInfo;
+        private ReactiveSet<SocketOutlet> _SocketOutlets;
 
-        /// <summary>
-        /// Average voltage at connector [Volt].
-        /// </summary>
-        [Mandatory]
-        public I18NString AdditionalInfo
+        public ReactiveSet<SocketOutlet> SocketOutlets
         {
 
             get
             {
-                return _AdditionalInfo;
+                return _SocketOutlets;
             }
 
             set
             {
-                SetProperty<I18NString>(ref _AdditionalInfo, value);
+
+                if (_SocketOutlets != value)
+                    SetProperty(ref _SocketOutlets, value);
+
             }
 
         }
 
         #endregion
+
 
         #region PointOfDelivery // MeterId
 
@@ -220,7 +318,10 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                SetProperty<String>(ref _PointOfDelivery, value);
+
+                if (_PointOfDelivery != value)
+                    SetProperty<String>(ref _PointOfDelivery, value);
+
             }
 
         }
@@ -298,20 +399,6 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return _ChargingStation;
-            }
-        }
-
-        #endregion
-
-        #region SocketOutlets
-
-        private readonly ConcurrentDictionary<SocketOutlet_Id, SocketOutlet> _SocketOutlets;
-
-        public IEnumerable<SocketOutlet> SocketOutlets
-        {
-            get
-            {
-                return _SocketOutlets.Select(KVP => KVP.Value);
             }
         }
 
@@ -408,8 +495,6 @@ namespace org.GraphDefined.WWCP
             this._StatusHistory          = new Stack<Timestamped<EVSEStatusType>>((Int32) EVSEStatusHistorySize);
             this._StatusHistory.Push(new Timestamped<EVSEStatusType>(EVSEStatusType.Unknown));
 
-            this._SocketOutlets          = new ConcurrentDictionary<SocketOutlet_Id, SocketOutlet>();
-
             #endregion
 
             #region Init events
@@ -430,61 +515,6 @@ namespace org.GraphDefined.WWCP
             this.SocketOutletRemoval.      OnNotification += (timestamp, evse, outlet)             => ChargingStation.SocketOutletRemoval.    SendNotification(timestamp, evse, outlet);
 
             #endregion
-
-        }
-
-        #endregion
-
-
-        #region CreateNewSocketOutlet(SocketOutlet_Id, Action = null)
-
-        /// <summary>
-        /// Create and register a new socket outlet having the given
-        /// unique socket outlet identification.
-        /// </summary>
-        /// <param name="SocketOutlet_Id">The unique identification of the new socket outlet.</param>
-        /// <param name="Action">An optional delegate to configure the new socket outlet after its creation.</param>
-        public SocketOutlet CreateNewSocketOutlet(SocketOutlet_Id SocketOutlet_Id, Action<SocketOutlet> Action = null)
-        {
-
-            #region Initial checks
-
-            if (SocketOutlet_Id == null)
-                throw new ArgumentNullException("SocketOutlet_Id", "The given socket outlet identification must not be null!");
-
-            if (_SocketOutlets.ContainsKey(SocketOutlet_Id))
-                throw new SocketOutletAlreadyExists(SocketOutlet_Id, this.Id);
-
-            #endregion
-
-            var _SocketOutlet = new SocketOutlet(SocketOutlet_Id, this);
-
-            Action.FailSafeInvoke(_SocketOutlet);
-
-            if (SocketOutletAddition.SendVoting(DateTime.Now, this, _SocketOutlet))
-            {
-                if (_SocketOutlets.TryAdd(SocketOutlet_Id, _SocketOutlet))
-                {
-                    SocketOutletAddition.SendNotification(DateTime.Now, this, _SocketOutlet);
-                    return _SocketOutlet;
-                }
-            }
-
-            throw new Exception();
-
-        }
-
-        #endregion
-
-        #region SetSocketOutlets(SocketOutlets)
-
-        public EVSE SetSocketOutlets(IEnumerable<SocketOutlet> SocketOutlets)
-        {
-
-            foreach (var SocketOutlet in SocketOutlets)
-                this._SocketOutlets.TryAdd(SocketOutlet.Id, SocketOutlet);
-
-            return this;
 
         }
 
@@ -578,12 +608,12 @@ namespace org.GraphDefined.WWCP
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return _SocketOutlets.Values.GetEnumerator();
+            return _SocketOutlets.GetEnumerator();
         }
 
         public IEnumerator<SocketOutlet> GetEnumerator()
         {
-            return _SocketOutlets.Values.GetEnumerator();
+            return _SocketOutlets.GetEnumerator();
         }
 
         #endregion

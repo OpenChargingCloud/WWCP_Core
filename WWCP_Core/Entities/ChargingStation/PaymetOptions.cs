@@ -15,40 +15,19 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.WWCP
 {
 
-    /// <summary>
-    /// The type of plugs.
-    /// </summary>
-    public enum PlugType
+    public enum PaymetOptions
     {
 
         Unspecified,
-        SmallPaddleInductive,
-        LargePaddleInductive,
-        AVCONConnector,
-        TeslaConnector,
-        NEMA5_20,
-        TypeEFrenchStandard,
-        TypeFSchuko,
-        TypeGBritishStandard,
-        TypeJSwissStandard,
-        Type1Connector_CableAttached,
-        Type2Outlet,
-        Type2Connector_CableAttached,
-        Type3Outlet,
-        IEC60309SinglePhase,
-        IEC60309ThreePhase,
-        CCSCombo2Plug_CableAttached,
-        CCSCombo1Plug_CableAttached,
-        CHAdeMO_DC_CHAdeMOConnector
+        NoPayment,
+        Direct,         // e.g. Cash, Card, SMS
+        SMS,
+        Cash,
+        CreditCard,
+        Contract
 
     }
 

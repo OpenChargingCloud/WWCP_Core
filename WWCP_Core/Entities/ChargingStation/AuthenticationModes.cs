@@ -15,30 +15,18 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-
-#endregion
-
 namespace org.GraphDefined.WWCP
 {
 
-    /// <summary>
-    /// A socket outlet exception.
-    /// </summary>
-    public class SocketOutletException : eMI3Exception
+    public enum AuthenticationModes
     {
 
-        public SocketOutletException(String Message)
-            : base(Message)
-        { }
-
-        public SocketOutletException(String Message, Exception InnerException)
-            : base(Message, InnerException)
-        { }
+        Unkown,
+        NFC_RFID_Classic,
+        NFC_RFID_DESFire,
+        PnC,                    //ISO/IEC 15118
+        REMOTE,                 // App, QR-Code, Phone
+        DirectPayment          // Remote use via direct payment. E.g. intercharge direct 
 
     }
 

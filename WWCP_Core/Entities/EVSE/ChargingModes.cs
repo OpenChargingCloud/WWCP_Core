@@ -15,30 +15,18 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-
-#endregion
-
 namespace org.GraphDefined.WWCP
 {
 
-    /// <summary>
-    /// An EVSE exception.
-    /// </summary>
-    public class EVSEException : eMI3Exception
+    public enum ChargingModes
     {
 
-        public EVSEException(String Message)
-            : base(Message)
-        { }
-
-        public EVSEException(String Message, Exception InnerException)
-            : base(Message, InnerException)
-        { }
+        Unspecified,
+        Mode_1,     // IEC 61851-1
+        Mode_2,     // IEC 61851-1
+        Mode_3,     // IEC 61851-1
+        Mode_4,     // IEC 61851-1
+        CHAdeMO,    // CHAdeMo Specification
 
     }
 

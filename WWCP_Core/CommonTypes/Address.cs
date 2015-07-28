@@ -153,18 +153,18 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region FreeText
+        #region Comment
 
-        private readonly I18NString _FreeText;
+        private readonly I18NString _Comment;
 
         /// <summary>
-        /// Additional text to describe the address.
+        /// An optional text/comment to describe the address.
         /// </summary>
-        public I18NString FreeText
+        public I18NString Comment
         {
             get
             {
-                return _FreeText;
+                return _Comment;
             }
         }
 
@@ -189,7 +189,7 @@ namespace org.GraphDefined.WWCP
             this._PostalCodeSub  = "";
             this._City           = "";
             this._Country        = Country.unknown;
-            this._FreeText       = new I18NString();
+            this._Comment        = new I18NString();
 
         }
 
@@ -207,15 +207,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="PostalCodeSub">The postal code sub</param>
         /// <param name="City">The city.</param>
         /// <param name="Country">The country.</param>
-        /// <param name="FreeText">Additional text to describe the address.</param>
-        public Address(String     Street,
-                       String     HouseNumber,
-                       String     FloorLevel,
-                       String     PostalCode,
-                       String     PostalCodeSub,
-                       String     City,
-                       Country    Country,
-                       I18NString  FreeText = null)
+        /// <param name="Comment">An optional text/comment to describe the address.</param>
+        public Address(String      Street,
+                       String      HouseNumber,
+                       String      FloorLevel,
+                       String      PostalCode,
+                       String      PostalCodeSub,
+                       String      City,
+                       Country     Country,
+                       I18NString  Comment = null)
 
         {
 
@@ -226,7 +226,7 @@ namespace org.GraphDefined.WWCP
             this._PostalCodeSub  = PostalCodeSub;
             this._City           = City;
             this._Country        = Country;
-            this._FreeText       = FreeText != null ? FreeText : new I18NString();
+            this._Comment        = Comment != null ? Comment : new I18NString();
 
         }
 
@@ -368,7 +368,7 @@ namespace org.GraphDefined.WWCP
                    PostalCodeSub                  + " " +
                    City                           + ", " +
                    Country.CountryName.ToString() + " / " +
-                   FreeText.ToString();
+                   Comment.ToString();
 
         }
 

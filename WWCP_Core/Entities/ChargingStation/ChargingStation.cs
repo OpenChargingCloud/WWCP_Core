@@ -71,12 +71,609 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                SetProperty<String>(ref _ServiceIdentification, value);
+
+                if (ServiceIdentification != value)
+                    SetProperty<String>(ref _ServiceIdentification, value);
+
             }
 
         }
 
         #endregion
+
+        #region HubjectStationId
+
+        private String _HubjectStationId;
+
+        [Optional]
+        public String HubjectStationId
+        {
+
+            get
+            {
+                return _HubjectStationId;
+            }
+
+            set
+            {
+
+                if (HubjectStationId != value)
+                    SetProperty<String>(ref _HubjectStationId, value);
+
+            }
+
+        }
+
+        #endregion
+
+        #region Name
+
+        private I18NString _Name;
+
+        /// <summary>
+        /// The offical (multi-language) name of this charging station.
+        /// </summary>
+        [Mandatory]
+        public I18NString Name
+        {
+
+            get
+            {
+                return _Name;
+            }
+
+            set
+            {
+
+                if (_Name != value)
+                    SetProperty<I18NString>(ref _Name, value);
+
+            }
+
+        }
+
+        #endregion
+
+        #region Description
+
+        internal I18NString _Description;
+
+        /// <summary>
+        /// An optional (multi-language) description of this charging station.
+        /// </summary>
+        [Optional]
+        public I18NString Description
+        {
+
+            get
+            {
+
+                return _Description != null
+                    ? _Description
+                    : ChargingPool.Description;
+
+            }
+
+            set
+            {
+
+                if (value == ChargingPool.Description)
+                    value = null;
+
+                if (Description != value)
+                    SetProperty<I18NString>(ref _Description, value);
+
+            }
+
+        }
+
+        #endregion
+
+        #region Address
+
+        internal Address _Address;
+
+        /// <summary>
+        /// The address of this charging station.
+        /// </summary>
+        [Optional]
+        public Address Address
+        {
+
+            get
+            {
+
+                return _Address != null
+                    ? _Address
+                    : ChargingPool.Address;
+
+            }
+
+            set
+            {
+
+                if (value == ChargingPool.Address)
+                    value = null;
+
+                if (Address != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _Address);
+
+                    else
+                        SetProperty(ref _Address, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region GeoLocation
+
+        internal GeoCoordinate _GeoLocation;
+
+        /// <summary>
+        /// The geographical location of this charging station.
+        /// </summary>
+        [Optional]
+        public GeoCoordinate GeoLocation
+        {
+
+            get
+            {
+
+                return _GeoLocation.IsValid()
+                    ? _GeoLocation
+                    : ChargingPool.GeoLocation;
+
+            }
+
+            set
+            {
+
+                if (value == ChargingPool.GeoLocation)
+                    value = null;
+
+                if (GeoLocation != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _GeoLocation);
+
+                    else
+                        SetProperty(ref _GeoLocation, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region EntranceAddress
+
+        internal Address _EntranceAddress;
+
+        /// <summary>
+        /// The address of the entrance to this charging station.
+        /// (If different from 'Address').
+        /// </summary>
+        [Optional]
+        public Address EntranceAddress
+        {
+
+            get
+            {
+
+                return _EntranceAddress != null
+                    ? _EntranceAddress
+                    : ChargingPool.EntranceAddress;
+
+            }
+
+            set
+            {
+
+                if (value == ChargingPool.EntranceAddress)
+                    value = null;
+
+                if (EntranceAddress != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _EntranceAddress);
+
+                    else
+                        SetProperty(ref _EntranceAddress, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region EntranceLocation
+
+        internal GeoCoordinate _EntranceLocation;
+
+        /// <summary>
+        /// The geographical location of the entrance to this charging station.
+        /// (If different from 'GeoLocation').
+        /// </summary>
+        [Optional]
+        public GeoCoordinate EntranceLocation
+        {
+
+            get
+            {
+
+                return _EntranceLocation.IsValid()
+                    ? _EntranceLocation
+                    : ChargingPool.EntranceLocation;
+
+            }
+
+            set
+            {
+
+                if (value == ChargingPool.EntranceLocation)
+                    value = null;
+
+                if (EntranceLocation != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _EntranceLocation);
+
+                    else
+                        SetProperty(ref _EntranceLocation, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region ExitAddress
+
+        internal Address _ExitAddress;
+
+        /// <summary>
+        /// The address of the exit of this charging station.
+        /// (If different from 'Address').
+        /// </summary>
+        [Optional]
+        public Address ExitAddress
+        {
+
+            get
+            {
+
+                return _ExitAddress != null
+                    ? _ExitAddress
+                    : ChargingPool.ExitAddress;
+
+            }
+
+            set
+            {
+
+                if (value == ChargingPool.ExitAddress)
+                    value = null;
+
+                if (ExitAddress != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _ExitAddress);
+
+                    else
+                        SetProperty(ref _ExitAddress, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region ExitLocation
+
+        internal GeoCoordinate _ExitLocation;
+
+        /// <summary>
+        /// The geographical location of the exit of this charging station.
+        /// (If different from 'GeoLocation').
+        /// </summary>
+        [Optional]
+        public GeoCoordinate ExitLocation
+        {
+
+            get
+            {
+
+                return _ExitLocation.IsValid()
+                    ? _ExitLocation
+                    : ChargingPool.ExitLocation;
+
+            }
+
+            set
+            {
+
+                if (value == ChargingPool.ExitLocation)
+                    value = null;
+
+                if (ExitLocation != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _ExitLocation);
+
+                    else
+                        SetProperty(ref _ExitLocation, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region OpeningTime
+
+        internal OpeningTime _OpeningTime;
+
+        /// <summary>
+        /// The opening time of this charging station.
+        /// </summary>
+        public OpeningTime OpeningTime
+        {
+
+            get
+            {
+
+                return _OpeningTime != null
+                    ? _OpeningTime
+                    : ChargingPool.OpeningTime;
+
+            }
+
+            set
+            {
+
+                if (value == ChargingPool.OpeningTime)
+                    value = null;
+
+                if (OpeningTime != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _OpeningTime);
+
+                    else
+                        SetProperty(ref _OpeningTime, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region AuthenticationModes
+
+        internal ReactiveSet<AuthenticationModes> _AuthenticationModes;
+
+        public ReactiveSet<AuthenticationModes> AuthenticationModes
+        {
+
+            get
+            {
+
+                return _AuthenticationModes != null
+                    ? _AuthenticationModes
+                    : ChargingPool.AuthenticationModes;
+
+            }
+
+            set
+            {
+
+                if (value == ChargingPool.AuthenticationModes)
+                    value = null;
+
+                if (AuthenticationModes != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _AuthenticationModes);
+
+                    else
+                        SetProperty(ref _AuthenticationModes, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region PaymentOptions
+
+        internal ReactiveSet<PaymetOptions> _PaymentOptions;
+
+        [Mandatory]
+        public ReactiveSet<PaymetOptions> PaymentOptions
+        {
+
+            get
+            {
+
+                return _PaymentOptions != null
+                    ? _PaymentOptions
+                    : ChargingPool.PaymentOptions;
+
+            }
+
+            set
+            {
+
+                if (value == ChargingPool.PaymentOptions)
+                    value = null;
+
+                if (PaymentOptions != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _PaymentOptions);
+
+                    else
+                        SetProperty(ref _PaymentOptions, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region Accessibility
+
+        internal AccessibilityTypes _Accessibility;
+
+        [Optional]
+        public AccessibilityTypes Accessibility
+        {
+
+            get
+            {
+
+                return _Accessibility != AccessibilityTypes.Unspecified
+                    ? _Accessibility
+                    : ChargingPool.Accessibility;
+
+            }
+
+            set
+            {
+
+                if (Accessibility != value)
+                    SetProperty(ref _Accessibility, value);
+
+            }
+
+        }
+
+        #endregion
+
+        #region HotlinePhoneNum
+
+        internal String _HotlinePhoneNum;
+
+        /// <summary>
+        /// The telephone number of the EVSE operator hotline.
+        /// </summary>
+        [Optional]
+        public String HotlinePhoneNum
+        {
+
+            get
+            {
+
+                return _HotlinePhoneNum != null
+                    ? _HotlinePhoneNum
+                    : ChargingPool.HotlinePhoneNum;
+
+            }
+
+            set
+            {
+
+                if (value == ChargingPool.HotlinePhoneNum)
+                    value = null;
+
+                if (HotlinePhoneNum != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _HotlinePhoneNum);
+
+                    else
+                        SetProperty(ref _HotlinePhoneNum, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region IsHubjectCompatible
+
+        private Boolean _IsHubjectCompatible;
+
+        [Optional]
+        public Boolean IsHubjectCompatible
+        {
+
+            get
+            {
+                return _IsHubjectCompatible;
+            }
+
+            set
+            {
+
+                if (_IsHubjectCompatible != value)
+                    SetProperty<Boolean>(ref _IsHubjectCompatible, value);
+
+            }
+
+        }
+
+        #endregion
+
+        #region DynamicInfoAvailable
+
+        private Boolean _DynamicInfoAvailable;
+
+        [Optional]
+        public Boolean DynamicInfoAvailable
+        {
+
+            get
+            {
+                return _DynamicInfoAvailable;
+            }
+
+            set
+            {
+
+                if (_DynamicInfoAvailable != value)
+                    SetProperty<Boolean>(ref _DynamicInfoAvailable, value);
+
+            }
+
+        }
+
+        #endregion
+
 
         #region UserComment
 
@@ -128,38 +725,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region GeoLocation
-
-        private GeoCoordinate _GeoLocation;
-
-        /// <summary>
-        /// The geographical location of the charging station.
-        /// If it is not set return the geographical location of its ChargingPool.
-        /// </summary>
-        [Optional]
-        public GeoCoordinate GeoLocation
-        {
-
-            get
-            {
-
-                if (_GeoLocation.IsValid())
-                    return _GeoLocation;
-
-                else
-                    return ChargingPool.GeoLocation;
-
-            }
-
-            set
-            {
-                SetProperty<GeoCoordinate>(ref _GeoLocation, value);
-            }
-
-        }
-
-        #endregion
-
         #region GridConnection
 
         private GridConnection _GridConnection;
@@ -185,25 +750,25 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Features
+        #region UIFeatures
 
-        private ChargingStationUIFeatures _Features;
+        private ChargingStationUIFeatures _UIFeatures;
 
         /// <summary>
         /// The features of the charging station.
         /// </summary>
         [Optional]
-        public ChargingStationUIFeatures Features
+        public ChargingStationUIFeatures UIFeatures
         {
 
             get
             {
-                return _Features;
+                return _UIFeatures;
             }
 
             set
             {
-                SetProperty<ChargingStationUIFeatures>(ref _Features, value);
+                SetProperty<ChargingStationUIFeatures>(ref _UIFeatures, value);
             }
 
         }
@@ -254,256 +819,6 @@ namespace org.GraphDefined.WWCP
             set
             {
                 SetProperty(ref _PhotoURIs, value);
-            }
-
-        }
-
-        #endregion
-
-        #region Name
-
-        private I18NString _Name;
-
-        [Mandatory]
-        public I18NString Name
-        {
-
-            get
-            {
-                return _Name;
-            }
-
-            set
-            {
-                SetProperty<I18NString>(ref _Name, value);
-            }
-
-        }
-
-        #endregion
-
-        #region HubjectStationId
-
-        private String _HubjectStationId;
-
-        [Optional]
-        public String HubjectStationId
-        {
-
-            get
-            {
-                return _HubjectStationId;
-            }
-
-            set
-            {
-                SetProperty<String>(ref _HubjectStationId, value);
-            }
-
-        }
-
-        #endregion
-
-        #region AuthenticationModes
-
-        private ReactiveSet<String> _AuthenticationModes;
-
-        public ReactiveSet<String> AuthenticationModes
-        {
-
-            get
-            {
-
-                return _AuthenticationModes != null
-                    ? _AuthenticationModes
-                    : ChargingPool.AuthenticationModes;
-
-            }
-
-            set
-            {
-
-                if (value == ChargingPool.AuthenticationModes)
-                    value = null;
-
-                if (_AuthenticationModes != value)
-                {
-
-                    if (value == null)
-                        DeleteProperty(ref _AuthenticationModes);
-
-                    else
-                        SetProperty(ref _AuthenticationModes, value);
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
-        #region PaymentOptions
-
-        private ReactiveSet<String> _PaymentOptions;
-
-        [Mandatory]
-        public ReactiveSet<String> PaymentOptions
-        {
-
-            get
-            {
-
-                return _PaymentOptions != null
-                    ? _PaymentOptions
-                    : ChargingPool.PaymentOptions;
-
-            }
-
-            set
-            {
-
-                if (value == ChargingPool.PaymentOptions)
-                    value = null;
-
-                if (_PaymentOptions != value)
-                {
-
-                    if (value == null)
-                        DeleteProperty(ref _PaymentOptions);
-
-                    else
-                        SetProperty(ref _PaymentOptions, value);
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
-        #region Accessibility
-
-        private String _Accessibility;
-
-        [Optional]
-        public String Accessibility
-        {
-
-            get
-            {
-                return _Accessibility;
-            }
-
-            set
-            {
-                SetProperty<String>(ref _Accessibility, value);
-            }
-
-        }
-
-        #endregion
-
-        #region HotlinePhoneNum
-
-        private String _HotlinePhoneNum;
-
-        /// <summary>
-        /// The telephone number of the hotline.
-        /// </summary>
-        [Optional]
-        public String HotlinePhoneNum
-        {
-
-            get
-            {
-
-                if (_HotlinePhoneNum.IsNotNullOrEmpty())
-                    return _HotlinePhoneNum;
-
-                else
-                    return ChargingPool.HotlinePhoneNum;
-
-            }
-
-            set
-            {
-
-                if (value == ChargingPool.HotlinePhoneNum)
-                    value = null;
-
-                SetProperty<String>(ref _HotlinePhoneNum, value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region AdditionalInfo
-
-        private I18NString _AdditionalInfo;
-
-        /// <summary>
-        /// Average voltage at connector [Volt].
-        /// </summary>
-        [Mandatory]
-        public I18NString AdditionalInfo
-        {
-
-            get
-            {
-                return _AdditionalInfo;
-            }
-
-            set
-            {
-                SetProperty<I18NString>(ref _AdditionalInfo, value);
-            }
-
-        }
-
-        #endregion
-
-        #region IsHubjectCompatible
-
-        private Boolean? _IsHubjectCompatible;
-
-        [Optional]
-        public Boolean? IsHubjectCompatible
-        {
-
-            get
-            {
-                return _IsHubjectCompatible;
-            }
-
-            set
-            {
-                SetProperty<Boolean?>(ref _IsHubjectCompatible, value);
-            }
-
-        }
-
-        #endregion
-
-        #region DynamicInfoAvailable
-
-        private Boolean _DynamicInfoAvailable;
-
-        [Optional]
-        public Boolean DynamicInfoAvailable
-        {
-
-            get
-            {
-                return _DynamicInfoAvailable;
-            }
-
-            set
-            {
-                SetProperty<Boolean>(ref _DynamicInfoAvailable, value);
             }
 
         }
@@ -785,7 +1100,7 @@ namespace org.GraphDefined.WWCP
             this._EVSEs                   = new ConcurrentDictionary<EVSE_Id, EVSE>();
 
             this.Name                     = new I18NString();
-            this.AdditionalInfo           = new I18NString();
+            this.Description              = new I18NString();
 
             this._UserComment             = new I18NString();
             this._ServiceProviderComment  = new I18NString();

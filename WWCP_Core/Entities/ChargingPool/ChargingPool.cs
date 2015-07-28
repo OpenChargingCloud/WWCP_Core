@@ -61,7 +61,7 @@ namespace org.GraphDefined.WWCP
         private I18NString _Name;
 
         /// <summary>
-        /// The offical (multi-language) name of the charging pool.
+        /// The offical (multi-language) name of this charging pool.
         /// </summary>
         [Mandatory]
         public I18NString Name
@@ -74,7 +74,13 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                SetProperty<I18NString>(ref _Name, value);
+
+                if (value == null)
+                    value = new I18NString();
+
+                if (_Name != value)
+                    SetProperty<I18NString>(ref _Name, value);
+
             }
 
         }
@@ -86,7 +92,7 @@ namespace org.GraphDefined.WWCP
         private I18NString _Description;
 
         /// <summary>
-        /// An optional additional (multi-language) description of the charging pool.
+        /// An optional (multi-language) description of this charging pool.
         /// </summary>
         [Optional]
         public I18NString Description
@@ -99,7 +105,13 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                SetProperty<I18NString>(ref _Description, value);
+
+                if (value == null)
+                    value = new I18NString();
+
+                if (_Description != value)
+                    SetProperty<I18NString>(ref _Description, value);
+
             }
 
         }
@@ -124,58 +136,20 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                SetProperty<Languages>(ref _LocationLanguage, value);
-            }
 
-        }
+                if (value == null)
+                    value = Languages.unknown;
 
-        #endregion
+                if (_LocationLanguage != value)
+                {
 
-        #region GeoLocation
+                    SetProperty(ref _LocationLanguage, value);
 
-        private GeoCoordinate _GeoLocation;
+                    // No downstream!
+                    //_ChargingStations.Values.ForEach(station => station.LocationLanguage = null);
 
-        /// <summary>
-        /// The geographical location of this charging pool.
-        /// </summary>
-        [Optional]
-        public GeoCoordinate GeoLocation
-        {
+                }
 
-            get
-            {
-                return _GeoLocation;
-            }
-
-            set
-            {
-                SetProperty<GeoCoordinate>(ref _GeoLocation, value);
-            }
-
-        }
-
-        #endregion
-
-        #region EntranceLocation
-
-        private GeoCoordinate _EntranceLocation;
-
-        /// <summary>
-        /// The geographical location of the entrance of this charging pool.
-        /// (If different from 'PoolLocation').
-        /// </summary>
-        [Optional]
-        public GeoCoordinate EntranceLocation
-        {
-
-            get
-            {
-                return _EntranceLocation;
-            }
-
-            set
-            {
-                SetProperty<GeoCoordinate>(ref _EntranceLocation, value);
             }
 
         }
@@ -200,7 +174,56 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                SetProperty<Address>(ref _Address, value);
+
+                if (value == null)
+                    value = new Address();
+
+                if (_Address != value)
+                {
+
+                    SetProperty<Address>(ref _Address, value);
+
+                    _ChargingStations.Values.ForEach(station => station._Address = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region GeoLocation
+
+        private GeoCoordinate _GeoLocation;
+
+        /// <summary>
+        /// The geographical location of this charging pool.
+        /// </summary>
+        [Optional]
+        public GeoCoordinate GeoLocation
+        {
+
+            get
+            {
+                return _GeoLocation;
+            }
+
+            set
+            {
+
+                if (value == null)
+                    value = new GeoCoordinate(new Latitude(0), new Longitude(0));
+
+                if (_GeoLocation != value)
+                {
+
+                    SetProperty(ref _GeoLocation, value);
+
+                    _ChargingStations.Values.ForEach(station => station._GeoLocation = null);
+
+                }
+
             }
 
         }
@@ -212,7 +235,7 @@ namespace org.GraphDefined.WWCP
         private Address _EntranceAddress;
 
         /// <summary>
-        /// The address of the entrance of this charging pool.
+        /// The address of the entrance to this charging pool.
         /// (If different from 'Address').
         /// </summary>
         [Optional]
@@ -226,12 +249,337 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                SetProperty<Address>(ref _EntranceAddress, value);
+
+                if (value == null)
+                    value = new Address();
+
+                if (_EntranceAddress != value)
+                {
+
+                    SetProperty<Address>(ref _EntranceAddress, value);
+
+                    _ChargingStations.Values.ForEach(station => station._EntranceAddress = null);
+
+                }
+
             }
 
         }
 
         #endregion
+
+        #region EntranceLocation
+
+        private GeoCoordinate _EntranceLocation;
+
+        /// <summary>
+        /// The geographical location of the entrance to this charging pool.
+        /// (If different from 'GeoLocation').
+        /// </summary>
+        [Optional]
+        public GeoCoordinate EntranceLocation
+        {
+
+            get
+            {
+                return _EntranceLocation;
+            }
+
+            set
+            {
+
+                if (value == null)
+                    value = new GeoCoordinate(new Latitude(0), new Longitude(0));
+
+                if (_EntranceLocation != value)
+                {
+
+                    SetProperty(ref _EntranceLocation, value);
+
+                    _ChargingStations.Values.ForEach(station => station._EntranceLocation = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region ExitAddress
+
+        private Address _ExitAddress;
+
+        /// <summary>
+        /// The address of the exit of this charging pool.
+        /// (If different from 'Address').
+        /// </summary>
+        [Optional]
+        public Address ExitAddress
+        {
+
+            get
+            {
+                return _ExitAddress;
+            }
+
+            set
+            {
+
+                if (value == null)
+                    value = new Address();
+
+                if (_ExitAddress != value)
+                {
+
+                    SetProperty<Address>(ref _ExitAddress, value);
+
+                    _ChargingStations.Values.ForEach(station => station._ExitAddress = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region ExitLocation
+
+        private GeoCoordinate _ExitLocation;
+
+        /// <summary>
+        /// The geographical location of the exit of this charging pool.
+        /// (If different from 'GeoLocation').
+        /// </summary>
+        [Optional]
+        public GeoCoordinate ExitLocation
+        {
+
+            get
+            {
+                return _ExitLocation;
+            }
+
+            set
+            {
+
+                if (value == null)
+                    value = new GeoCoordinate(new Latitude(0), new Longitude(0));
+
+                if (_ExitLocation != value)
+                {
+
+                    SetProperty(ref _ExitLocation, value);
+
+                    _ChargingStations.Values.ForEach(station => station._ExitLocation = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region OpeningTime
+
+        private OpeningTime _OpeningTime;
+
+        /// <summary>
+        /// The opening time of this charging pool.
+        /// </summary>
+        [Optional]
+        public OpeningTime OpeningTime
+        {
+
+            get
+            {
+                return _OpeningTime;
+            }
+
+            set
+            {
+
+                if (value == null)
+                    value = new OpeningTime();
+
+                if (_OpeningTime != value)
+                {
+
+                    SetProperty(ref _OpeningTime, value);
+
+                    _ChargingStations.Values.ForEach(station => station._OpeningTime = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region AuthenticationModes
+
+        private ReactiveSet<AuthenticationModes> _AuthenticationModes;
+
+        public ReactiveSet<AuthenticationModes> AuthenticationModes
+        {
+
+            get
+            {
+                return _AuthenticationModes;
+            }
+
+            set
+            {
+
+                if (value == null)
+                    value = new ReactiveSet<AuthenticationModes>();
+
+                if (_AuthenticationModes != value)
+                {
+
+                    SetProperty(ref _AuthenticationModes, value);
+
+                    _ChargingStations.Values.ForEach(station => station._AuthenticationModes = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region PaymentOptions
+
+        private ReactiveSet<PaymetOptions> _PaymentOptions;
+
+        [Mandatory]
+        public ReactiveSet<PaymetOptions> PaymentOptions
+        {
+
+            get
+            {
+                return _PaymentOptions;
+            }
+
+            set
+            {
+
+                if (value == null)
+                    value = new ReactiveSet<PaymetOptions>();
+
+                if (_PaymentOptions != value)
+                {
+
+                    SetProperty(ref _PaymentOptions, value);
+
+                    _ChargingStations.Values.ForEach(station => station._PaymentOptions = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region Accessibility
+
+        private AccessibilityTypes _Accessibility;
+
+        [Optional]
+        public AccessibilityTypes Accessibility
+        {
+
+            get
+            {
+                return _Accessibility;
+            }
+
+            set
+            {
+
+                if (_Accessibility != value)
+                {
+
+                    SetProperty(ref _Accessibility, value);
+
+                    _ChargingStations.Values.ForEach(station => station._Accessibility = value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region HotlinePhoneNum
+
+        private String _HotlinePhoneNum;
+
+        /// <summary>
+        /// The telephone number of the EVSE operator hotline.
+        /// </summary>
+        [Optional]
+        public String HotlinePhoneNum
+        {
+
+            get
+            {
+                return _HotlinePhoneNum;
+            }
+
+            set
+            {
+
+                if (value == null)
+                    value = "";
+
+                if (_HotlinePhoneNum != value)
+                {
+
+                    SetProperty(ref _HotlinePhoneNum, value);
+
+                    _ChargingStations.Values.ForEach(station => station._HotlinePhoneNum = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region IsHubjectCompatible
+
+        [Optional]
+        public Partly IsHubjectCompatible
+        {
+            get
+            {
+                return PartlyHelper.Generate(_ChargingStations.Select(station => station.Value.IsHubjectCompatible));
+            }
+        }
+
+        #endregion
+
+        #region DynamicInfoAvailable
+
+        [Optional]
+        public Partly DynamicInfoAvailable
+        {
+            get
+            {
+                return PartlyHelper.Generate(_ChargingStations.Select(station => station.Value.DynamicInfoAvailable));
+            }
+        }
+
+        #endregion
+
 
         #region PoolOwner
 
@@ -307,193 +655,6 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
-
-        #region AuthenticationModes
-
-        private ReactiveSet<String> _AuthenticationModes;
-
-        public ReactiveSet<String> AuthenticationModes
-        {
-
-            get
-            {
-                return _AuthenticationModes;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = new ReactiveSet<String>();
-
-                if (_AuthenticationModes != value)
-                {
-
-                    SetProperty(ref _AuthenticationModes, value);
-
-                    _ChargingStations.Values.ForEach(station => station.AuthenticationModes = null);
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
-        #region ChargingFacilities
-
-        private ReactiveSet<String> _PaymentOptions;
-
-        [Mandatory]
-        public ReactiveSet<String> PaymentOptions
-        {
-
-            get
-            {
-                return _PaymentOptions;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = new ReactiveSet<String>();
-
-                if (_PaymentOptions != value)
-                {
-
-                    SetProperty(ref _PaymentOptions, value);
-
-                    _ChargingStations.Values.ForEach(station => station.PaymentOptions = null);
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
-        #region Accessibility
-
-        private String _Accessibility;
-
-        [Optional]
-        public String Accessibility
-        {
-
-            get
-            {
-                return _Accessibility;
-            }
-
-            set
-            {
-                SetProperty<String>(ref _Accessibility, value);
-            }
-
-        }
-
-        #endregion
-
-        #region OpeningTime
-
-        private OpeningTime _OpeningTime;
-
-        /// <summary>
-        /// The opening time of this charging pool.
-        /// </summary>
-        [Optional]
-        public OpeningTime OpeningTime
-        {
-
-            get
-            {
-                return _OpeningTime;
-            }
-
-            set
-            {
-                SetProperty<OpeningTime>(ref _OpeningTime, value);
-            }
-
-        }
-
-        #endregion
-
-        #region HotlinePhoneNum
-
-        private String _HotlinePhoneNum;
-
-        /// <summary>
-        /// The telephone number of the hotline.
-        /// </summary>
-        [Optional]
-        public String HotlinePhoneNum
-        {
-
-            get
-            {
-                return _HotlinePhoneNum;
-            }
-
-            set
-            {
-                SetProperty<String>(ref _HotlinePhoneNum, value);
-            }
-
-        }
-
-        #endregion
-
-        #region AdditionalInfo
-
-        private I18NString _AdditionalInfo;
-
-        /// <summary>
-        /// Average voltage at connector [Volt].
-        /// </summary>
-        [Mandatory]
-        public I18NString AdditionalInfo
-        {
-
-            get
-            {
-                return _AdditionalInfo;
-            }
-
-            set
-            {
-                SetProperty<I18NString>(ref _AdditionalInfo, value);
-            }
-
-        }
-
-        #endregion
-
-        #region DynamicInfoAvailable
-
-        private Boolean _DynamicInfoAvailable;
-
-        [Optional]
-        public Boolean DynamicInfoAvailable
-        {
-
-            get
-            {
-                return _DynamicInfoAvailable;
-            }
-
-            set
-            {
-                SetProperty<Boolean>(ref _DynamicInfoAvailable, value);
-            }
-
-        }
-
-        #endregion
-
 
         #region Status
 
@@ -873,7 +1034,7 @@ namespace org.GraphDefined.WWCP
             this.Address                     = new Address();
             this.EntranceAddress             = new Address();
 
-            this._AuthenticationModes        = new ReactiveSet<String>();
+            this._AuthenticationModes        = new ReactiveSet<AuthenticationModes>();
 
             this._StatusHistory              = new Stack<Timestamped<ChargingPoolStatusType>>((Int32) PoolStatusHistorySize);
             this._StatusHistory.Push(new Timestamped<ChargingPoolStatusType>(ChargingPoolStatusType.Unknown));

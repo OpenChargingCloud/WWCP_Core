@@ -18,10 +18,14 @@
 namespace org.GraphDefined.WWCP
 {
 
-    public enum CableType
+    public enum AccessibilityTypes
     {
-        floating,
-        attached
+
+        Unspecified,
+        FreePubliclyAccessible,
+        RestrictedAccess,
+        PayingPubliclyAccessible
+
     }
 
 }
