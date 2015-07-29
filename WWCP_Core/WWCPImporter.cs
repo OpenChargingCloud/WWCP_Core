@@ -122,6 +122,20 @@ namespace org.GraphDefined.WWCP.Importer
 
         #endregion
 
+        #region ImporterId
+
+        private readonly String _ImporterId;
+
+        public String ImporterId
+        {
+            get
+            {
+                return _ImporterId;
+            }
+        }
+
+        #endregion
+
         #region ConfigFilenamePrefix
 
         private readonly String _ConfigFilenamePrefix;
@@ -221,6 +235,7 @@ namespace org.GraphDefined.WWCP.Importer
         /// <summary>
         /// Create a new WWCP importer.
         /// </summary>
+        /// <param name="ImporterId"></param>
         /// <param name="ConfigFilenamePrefix"></param>
         /// <param name="DNSClient"></param>
         /// <param name="UpdateEvery"></param>
@@ -228,7 +243,8 @@ namespace org.GraphDefined.WWCP.Importer
         /// <param name="OnFirstRun"></param>
         /// <param name="OnEveryRun"></param>
         /// <param name="MaxNumberOfCachedXMLExports"></param>
-        public WWCPImporter(String                            ConfigFilenamePrefix,
+        public WWCPImporter(String                            ImporterId,
+                            String                            ConfigFilenamePrefix,
                             DNSClient                         DNSClient                    = null,
                             TimeSpan?                         UpdateEvery                  = null,
 
@@ -242,20 +258,24 @@ namespace org.GraphDefined.WWCP.Importer
 
             #region Initial checks
 
+            if (ImporterId.IsNullOrEmpty())
+                throw new ArgumentNullException("ImporterId", "The given config file name must not be null or empty!");
+
             if (ConfigFilenamePrefix.IsNullOrEmpty())
-                throw new ArgumentNullException("The given config file name must not be null or empty!");
+                throw new ArgumentNullException("ConfigFilenamePrefix", "The given config file name must not be null or empty!");
 
             if (GetXMLData == null)
-                throw new ArgumentNullException("The given 'GetXMLData'-delegate must not be null or empty!");
+                throw new ArgumentNullException("GetXMLData", "The given delegate must not be null or empty!");
 
             if (OnFirstRun == null)
-                throw new ArgumentNullException("The given 'OnFirstRun'-delegate must not be null or empty!");
+                throw new ArgumentNullException("OnFirstRun", "The given delegate must not be null or empty!");
 
             if (OnEveryRun == null)
-                throw new ArgumentNullException("The given 'OnEveryRun'-delegate must not be null or empty!");
+                throw new ArgumentNullException("OnEveryRun", "The given delegate must not be null or empty!");
 
             #endregion
 
+            this._ImporterId                   = ImporterId;
             this._ConfigFilenamePrefix         = ConfigFilenamePrefix;
             this._DNSClient                    = DNSClient   != null ? DNSClient         : new DNSClient();
             this._UpdateEvery                  = UpdateEvery != null ? UpdateEvery.Value : DefaultImportEvery;
@@ -693,7 +713,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                         OnFirstRun(this, DownloadXMLData(_DNSClient));
 
-                        DebugX.Log("Initital XML import finished!");
+                        DebugX.Log("WWCP importer '" + ImporterId + "' Initital import finished!");
 
                         UpdateEVSEStatusTimer.Change(TimeSpan.FromSeconds(1), UpdateEvery);
 
@@ -704,7 +724,7 @@ namespace org.GraphDefined.WWCP.Importer
                 }
                 catch (Exception e)
                 {
-                    DebugX.Log("Starting the WWCP Importer led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+                    DebugX.Log("Starting the WWCP Importer '" + ImporterId + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
                 }
 
                 finally
@@ -736,7 +756,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                 #if DEBUG
 
-                DebugX.LogT("'WWCPImporter' started");
+                DebugX.LogT("WWCP importer '" + ImporterId + "' started!");
 
                 var StopWatch = new Stopwatch();
                 StopWatch.Start();
@@ -788,7 +808,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                         StopWatch.Stop();
 
-                        DebugX.LogT("'WWCPImporter' finished after " + StopWatch.Elapsed.TotalSeconds + " seconds!");
+                        DebugX.LogT("WWCP importer '" + ImporterId + "' finished after " + StopWatch.Elapsed.TotalSeconds + " seconds!");
 
                     #endif
 
@@ -797,7 +817,7 @@ namespace org.GraphDefined.WWCP.Importer
                 }
                 catch (Exception e)
                 {
-                    DebugX.LogT("'WWCPImporter' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+                    DebugX.LogT("WWCP importer '" + ImporterId + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
                 }
 
                 finally
@@ -808,7 +828,7 @@ namespace org.GraphDefined.WWCP.Importer
             }
 
             else
-                DebugX.LogT("'WWCPImporter' skipped!");
+                DebugX.LogT("WWCP importer '" + ImporterId + "' skipped!");
 
         }
 
