@@ -500,56 +500,6 @@ namespace org.GraphDefined.WWCP.Importer
         #endregion
 
 
-        #region (private) CheckForwarding(ForwardingInfo)
-
-        private EVSEOperator_Id CheckForwarding(ImporterForwardingInfo ForwardingInfo)
-        {
-
-            //#region Find the EVSE Operator in which the EVSE Ids are valid
-
-            var ForwardToEVSEOperatorId = ForwardingInfo.
-                                              EVSEIds.
-                                              SelectMany(EVSEId => _EVSEOperators.//Where (EVSEOperator => EVSEOperator.ValidEVSEIds.Contains(EVSEId)).
-                                                                                  Select(EVSEOperator => EVSEOperator.Id)).
-                                                                                  Distinct().
-                                                                                  ToList();
-
-            //if (ForwardToEVSEOperatorId.Count > 0)
-            //    return ForwardToEVSEOperatorId.First();
-
-            //if (ForwardToEVSEOperatorId.Count > 1)
-            //    DebugX.Log("EVSE Ids '" + ForwardingInfo.EVSEIds.Select(EVSEId => EVSEId.OriginId.ToString()).AggregateWith(", ") +
-            //               "' have multiple attached EVSE operators '" +
-            //               ForwardToEVSEOperatorId.Select(RNId => RNId.ToString()).AggregateWith(", ") + "'!");
-
-            //#endregion
-
-            //#region Find EVSE Operators for which the EVSE Ids are invalid/blocked
-
-            //var InvalidAtEVSEOperators = ForwardingInfo.
-            //                                 EVSEIds.
-            //                                 SelectMany(EVSEId => _EVSEOperators.
-            //                                                          Where(EVSEOperator => EVSEOperator.InvalidEVSEIds.Contains(EVSEId))).
-            //                                 Distinct().
-            //                                 ToList();
-
-            //if (InvalidAtEVSEOperators.Count > 0)
-            //    return Defaults.NoForwarding;
-
-            //if (InvalidAtEVSEOperators.Count > 1)
-            //    DebugX.Log("EVSE Ids '" + ForwardingInfo.EVSEIds.Select(EVSEId => EVSEId.OriginId.ToString()).AggregateWith(", ") +
-            //               "' have multiple attached RoamingNetworks '" +
-            //               ForwardToEVSEOperatorId.Select(RNId => RNId.ToString()).AggregateWith(", ") + "'!");
-
-
-            //#endregion
-
-            return Defaults.UnknownEVSEOperator;
-
-        }
-
-        #endregion
-
         #region AddOrUpdateForwardingInfos(ForwardingInfos)
 
         public WWCPImporter<T> AddOrUpdateForwardingInfos(IEnumerable<ImporterForwardingInfo> ForwardingInfos)

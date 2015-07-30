@@ -19,13 +19,8 @@ namespace org.GraphDefined.WWCP.Importer
 {
     public static class Defaults
     {
-
         public readonly static RoamingNetwork_Id NoRoamingNetwork       = RoamingNetwork_Id.Parse("NoForwarding");
         public readonly static RoamingNetwork_Id UnknownRoamingNetwork  = RoamingNetwork_Id.Parse("-");
-
-        public readonly static EVSEOperator_Id   NoEVSEOperator         = EVSEOperator_Id.Parse("NoForwarding");
-        public readonly static EVSEOperator_Id   UnknownEVSEOperator    = EVSEOperator_Id.Parse("-");
-
     }
 
 }

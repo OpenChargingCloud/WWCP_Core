@@ -49,16 +49,9 @@ namespace org.GraphDefined.WWCP.Importer
         {
             get
             {
-                try
-                {
-                    return _ForwardedToEVSEOperator != null
-                                ? _ForwardedToEVSEOperator.RoamingNetwork.Id
-                                : Defaults.UnknownRoamingNetwork;
-                }
-                catch (Exception e)
-                {
-                    return Defaults.UnknownRoamingNetwork;
-                }
+                return _ForwardedToEVSEOperator != null
+                            ? _ForwardedToEVSEOperator.RoamingNetwork.Id
+                            : Defaults.UnknownRoamingNetwork;
             }
         }
 
@@ -120,7 +113,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                 return _ForwardedToEVSEOperator != null
                             ? _ForwardedToEVSEOperator.Id
-                            : Defaults.UnknownEVSEOperator;
+                            : null;
 
             }
         }
