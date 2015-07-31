@@ -191,20 +191,18 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AllEVSEStatus
+        #region AllEVSEStatus(IncludeEVSE = null)
 
-        public IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>> AllEVSEStatus
+        public IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>> AllEVSEStatus(Func<EVSE, Boolean>  IncludeEVSE = null)
         {
-            get
-            {
 
-                return _ChargingPools.Values.
-                           SelectMany(v => v.ChargingStations).
-                           SelectMany(v => v.EVSEs).
-                           OrderBy   (v => v.Id).
-                           Select    (v => new KeyValuePair<EVSE_Id, EVSEStatusType>(v.Id, v.Status.Value));
+            return _ChargingPools.Values.
+                       SelectMany(pool    => pool.ChargingStations).
+                       SelectMany(station => station.EVSEs).
+                       Where     (evse    => IncludeEVSE != null ? IncludeEVSE(evse) : true).
+                       OrderBy   (evse    => evse.Id).
+                       Select    (evse    => new KeyValuePair<EVSE_Id, EVSEStatusType>(evse.Id, evse.Status.Value));
 
-            }
         }
 
         #endregion
@@ -1098,10 +1096,11 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CalcEVSEStatusDiff(EVSEStatus, AutoApply = false)
+        #region CalcEVSEStatusDiff(EVSEStatus, IncludeEVSE = null, AutoApply = false)
 
         public EVSEStatusDiff CalcEVSEStatusDiff(Dictionary<EVSE_Id, EVSEStatusType>  EVSEStatus,
-                                                 Boolean                              AutoApply = false)
+                                                 Func<EVSE, Boolean>                  IncludeEVSE  = null,
+                                                 Boolean                              AutoApply    = false)
         {
 
             #region Get data...
@@ -1110,7 +1109,7 @@ namespace org.GraphDefined.WWCP
 
             // Only ValidEVSEIds!
             // Do nothing with manual EVSE Ids!
-            var CurrentEVSEStates  = AllEVSEStatus.
+            var CurrentEVSEStates  = AllEVSEStatus(IncludeEVSE).
                                          Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
                                                      !ManualEVSEIds.Contains(KVP.Key)).
                                          ToDictionary(v => v.Key, v => v.Value);

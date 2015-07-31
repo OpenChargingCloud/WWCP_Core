@@ -490,9 +490,14 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this._ChargingStation        = ChargingStation;
+            this._ChargingStation       = ChargingStation;
 
-            this._StatusHistory          = new Stack<Timestamped<EVSEStatusType>>((Int32) EVSEStatusHistorySize);
+            this._Description           = new I18NString();
+            this._ChargingModes         = new ReactiveSet<ChargingModes>();
+            this._ChargingFacilities    = new ReactiveSet<ChargingFacilities>();
+            this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
+
+            this._StatusHistory         = new Stack<Timestamped<EVSEStatusType>>((Int32) EVSEStatusHistorySize);
             this._StatusHistory.Push(new Timestamped<EVSEStatusType>(EVSEStatusType.Unknown));
 
             #endregion

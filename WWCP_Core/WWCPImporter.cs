@@ -30,8 +30,6 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-
-using org.GraphDefined.WWCP;
 using org.GraphDefined.Vanaheimr.Hermod.Services.DNS;
 
 #endregion
@@ -63,6 +61,34 @@ namespace org.GraphDefined.WWCP.Importer
         #endregion
 
         #region Properties
+
+        #region Id
+
+        private readonly String _Id;
+
+        public String Id
+        {
+            get
+            {
+                return _Id;
+            }
+        }
+
+        #endregion
+
+        #region ConfigFilenamePrefix
+
+        private readonly String _ConfigFilenamePrefix;
+
+        public String ConfigFilenamePrefix
+        {
+            get
+            {
+                return _ConfigFilenamePrefix;
+            }
+        }
+
+        #endregion
 
         #region DNSClient
 
@@ -106,9 +132,9 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region AllForwardingInfos
 
-        private readonly Dictionary<ChargingStation_Id, ImportForwardingInfo> _AllForwardingInfos;
+        private readonly Dictionary<ChargingStation_Id, ImporterForwardingInfo> _AllForwardingInfos;
 
-        public IEnumerable<ImportForwardingInfo> AllForwardingInfos
+        public IEnumerable<ImporterForwardingInfo> AllForwardingInfos
         {
             get
             {
@@ -117,20 +143,6 @@ namespace org.GraphDefined.WWCP.Importer
                            OrderBy(AllForwardingInfos => AllForwardingInfos.Key).
                            Select (AllForwardingInfos => AllForwardingInfos.Value);
 
-            }
-        }
-
-        #endregion
-
-        #region ConfigFilenamePrefix
-
-        private readonly String _ConfigFilenamePrefix;
-
-        public String ConfigFilenamePrefix
-        {
-            get
-            {
-                return _ConfigFilenamePrefix;
             }
         }
 
@@ -207,7 +219,7 @@ namespace org.GraphDefined.WWCP.Importer
         /// <summary>
         /// A delegate called whenever a new forwarding information was added.
         /// </summary>
-        public delegate void OnForwardingInformationAddedDelegate(DateTime Timestamp, WWCPImporter<T> Sender, IEnumerable<ImportForwardingInfo> ForwardingInfos);
+        public delegate void OnForwardingInformationAddedDelegate(DateTime Timestamp, WWCPImporter<T> Sender, IEnumerable<ImporterForwardingInfo> ForwardingInfos);
 
         /// <summary>
         /// An event fired whenever a new forwarding information was added.
@@ -221,6 +233,7 @@ namespace org.GraphDefined.WWCP.Importer
         /// <summary>
         /// Create a new WWCP importer.
         /// </summary>
+        /// <param name="Id"></param>
         /// <param name="ConfigFilenamePrefix"></param>
         /// <param name="DNSClient"></param>
         /// <param name="UpdateEvery"></param>
@@ -228,7 +241,8 @@ namespace org.GraphDefined.WWCP.Importer
         /// <param name="OnFirstRun"></param>
         /// <param name="OnEveryRun"></param>
         /// <param name="MaxNumberOfCachedXMLExports"></param>
-        public WWCPImporter(String                            ConfigFilenamePrefix,
+        public WWCPImporter(String                            Id,
+                            String                            ConfigFilenamePrefix,
                             DNSClient                         DNSClient                    = null,
                             TimeSpan?                         UpdateEvery                  = null,
 
@@ -242,20 +256,24 @@ namespace org.GraphDefined.WWCP.Importer
 
             #region Initial checks
 
+            if (Id.IsNullOrEmpty())
+                throw new ArgumentNullException("ImporterId", "The given config file name must not be null or empty!");
+
             if (ConfigFilenamePrefix.IsNullOrEmpty())
-                throw new ArgumentNullException("The given config file name must not be null or empty!");
+                throw new ArgumentNullException("ConfigFilenamePrefix", "The given config file name must not be null or empty!");
 
             if (GetXMLData == null)
-                throw new ArgumentNullException("The given 'GetXMLData'-delegate must not be null or empty!");
+                throw new ArgumentNullException("GetXMLData", "The given delegate must not be null or empty!");
 
             if (OnFirstRun == null)
-                throw new ArgumentNullException("The given 'OnFirstRun'-delegate must not be null or empty!");
+                throw new ArgumentNullException("OnFirstRun", "The given delegate must not be null or empty!");
 
             if (OnEveryRun == null)
-                throw new ArgumentNullException("The given 'OnEveryRun'-delegate must not be null or empty!");
+                throw new ArgumentNullException("OnEveryRun", "The given delegate must not be null or empty!");
 
             #endregion
 
+            this._Id                           = Id;
             this._ConfigFilenamePrefix         = ConfigFilenamePrefix;
             this._DNSClient                    = DNSClient   != null ? DNSClient         : new DNSClient();
             this._UpdateEvery                  = UpdateEvery != null ? UpdateEvery.Value : DefaultImportEvery;
@@ -267,7 +285,7 @@ namespace org.GraphDefined.WWCP.Importer
             this._MaxNumberOfCachedXMLExports  = MaxNumberOfCachedXMLExports;
 
             this._EVSEOperators                = new List<EVSEOperator>();
-            this._AllForwardingInfos           = new Dictionary<ChargingStation_Id, ImportForwardingInfo>();
+            this._AllForwardingInfos           = new Dictionary<ChargingStation_Id, ImporterForwardingInfo>();
             this._XMLExports                   = new List<Timestamped<T>>();
 
             // Start not now but veeeeery later!
@@ -327,11 +345,11 @@ namespace org.GraphDefined.WWCP.Importer
                             var CurrentRoamingNetworkId  = RoamingNetwork_Id.Parse(CurrentRoamingNetwork.Key);
 
                             var CurrentOperator          = _EVSEOperators.
-                                                               Where(op => op.RoamingNetwork.Id == CurrentRoamingNetworkId).
+                                                               Where(evseoperator => evseoperator.RoamingNetwork.Id == CurrentRoamingNetworkId).
                                                                FirstOrDefault();
 
                             if (CurrentOperator == null)
-                                throw new ApplicationException("Could not find EVSE operator '" + CurrentRoamingNetworkId + "'!");
+                                throw new ApplicationException("Could not find any EVSE operator for roaming network '" + CurrentRoamingNetworkId + "'!");
 
                             if (CurrentRoamingNetwork.Value as JObject != null)
                             {
@@ -343,10 +361,10 @@ namespace org.GraphDefined.WWCP.Importer
 
                                         case "invalidevseids":
 
-                                            (EVSELists.Value as JObject).GetEnumerator().
-                                                ConsumeAll().
-                                                OrderBy(KVP => KVP.Key).
-                                                ForEach(EVSEIdConfig => CurrentOperator.InvalidEVSEIds.Add(EVSE_Id.Parse(EVSEIdConfig.Key)));
+                                            //(EVSELists.Value as JObject).GetEnumerator().
+                                            //    ConsumeAll().
+                                            //    OrderBy(KVP => KVP.Key).
+                                            //    ForEach(EVSEIdConfig => CurrentOperator.InvalidEVSEIds.Add(EVSE_Id.Parse(EVSEIdConfig.Key)));
 
                                             break;
 
@@ -371,22 +389,24 @@ namespace org.GraphDefined.WWCP.Importer
                                                     var EVSEId             = EVSE_Id.Parse(EVSEIdConfig.Key);
                                                     var ChargingStationId  = ChargingStation_Id.Create(EVSEId);
 
-                                                    CurrentOperator.ValidEVSEIds.Add(EVSEId);
+                    //                                CurrentOperator.ValidEVSEIds.Add(EVSEId);
 
                                                     if (!_AllForwardingInfos.ContainsKey(ChargingStationId))
                                                     {
 
-                                                        _AllForwardingInfos.Add(ChargingStationId, new ImportForwardingInfo(
-                                                                                                       _EVSEOperators,
-                                                                                                       new EVSE_Id[] { EVSEId },
-                                                                                                       ChargingStationId,
-                                                                                                       "",
-                                                                                                       "",
-                                                                                                       new Address(),
-                                                                                                       null,
-                                                                                                       OutOfService: true));
+                                                        _AllForwardingInfos.Add(ChargingStationId, new ImporterForwardingInfo(
+                                                                                                       EVSEOperators:           _EVSEOperators,
+                                                                                                       EVSEIds:                 new EVSE_Id[] { EVSEId },
+                                                                                                       StationId:               ChargingStationId,
+                                                                                                       StationName:             "",
+                                                                                                       StationServiceTag:       "",
+                                                                                                       StationAddress:          new Address(),
+                                                                                                       StationGeoCoordinate:    null,
+                                                                                                       Created:                 DateTime.Now,
+                                                                                                       OutOfService:            true,
+                                                                                                       ForwardedToEVSEOperator: CurrentOperator));
 
-                                                        _AllForwardingInfos[ChargingStationId].ForwardedToRoamingNetwork = CheckForwarding(_AllForwardingInfos[ChargingStationId]);
+                                                 //       _AllForwardingInfos[ChargingStationId].ForwardedToEVSEOperator = CurrentOperator; //CheckForwarding(_AllForwardingInfos[ChargingStationId]);
 
                                                     }
 
@@ -480,70 +500,21 @@ namespace org.GraphDefined.WWCP.Importer
         #endregion
 
 
-        #region (private) CheckForwarding(ForwardingInfo)
-
-        private RoamingNetwork_Id CheckForwarding(ImportForwardingInfo ForwardingInfo)
-        {
-
-            #region Find the RoamingNetwork in which the EVSE Ids are valid
-
-            var ForwardToRoamingNetworkId = ForwardingInfo.EVSEIds.
-                                                SelectMany(EVSEId => _EVSEOperators.Where (EVSEOperator => EVSEOperator.ValidEVSEIds.Contains(EVSEId)).
-                                                                                    Select(EVSEOperator => EVSEOperator.RoamingNetwork.Id)).
-                                                                                    Distinct().
-                                                                                    ToList();
-
-            if (ForwardToRoamingNetworkId.Count > 0)
-                return ForwardToRoamingNetworkId.First();
-
-            if (ForwardToRoamingNetworkId.Count > 1)
-                DebugX.Log("EVSE Ids '" + ForwardingInfo.EVSEIds.Select(EVSEId => EVSEId.OriginId.ToString()).AggregateWith(", ") +
-                           "' have multiple attached RoamingNetworks '" +
-                           ForwardToRoamingNetworkId.Select(RNId => RNId.ToString()).AggregateWith(", ") + "'!");
-
-            #endregion
-
-            #region Find EVSE Operators for which the EVSE Ids are invalid/blocked
-
-            var InvalidAtEVSEOperators = ForwardingInfo.
-                                             EVSEIds.
-                                             SelectMany(EVSEId => _EVSEOperators.
-                                                                      Where(EVSEOperator => EVSEOperator.InvalidEVSEIds.Contains(EVSEId))).
-                                             Distinct().
-                                             ToList();
-
-            if (InvalidAtEVSEOperators.Count > 0)
-                return Defaults.NoForwarding;
-
-            if (InvalidAtEVSEOperators.Count > 1)
-                DebugX.Log("EVSE Ids '" + ForwardingInfo.EVSEIds.Select(EVSEId => EVSEId.OriginId.ToString()).AggregateWith(", ") +
-                           "' have multiple attached RoamingNetworks '" +
-                           ForwardToRoamingNetworkId.Select(RNId => RNId.ToString()).AggregateWith(", ") + "'!");
-
-
-            #endregion
-
-            return Defaults.UnknownForwarding;
-
-        }
-
-        #endregion
-
         #region AddOrUpdateForwardingInfos(ForwardingInfos)
 
-        public WWCPImporter<T> AddOrUpdateForwardingInfos(IEnumerable<ImportForwardingInfo> ForwardingInfos)
+        public WWCPImporter<T> AddOrUpdateForwardingInfos(IEnumerable<ImporterForwardingInfo> ForwardingInfos)
         {
 
             lock (_AllForwardingInfos)
             {
 
-                var NewForwardingInfos = new List<ImportForwardingInfo>();
+                var NewForwardingInfos = new List<ImporterForwardingInfo>();
 
                 ForwardingInfos.ForEach(ForwardingInfo => {
 
                     #region An existing forwarding information was found... search for changes...
 
-                    ImportForwardingInfo ExistingForwardingInfo;
+                    ImporterForwardingInfo ExistingForwardingInfo;
 
                     if (_AllForwardingInfos.TryGetValue(ForwardingInfo.StationId, out ExistingForwardingInfo))
                     {
@@ -693,7 +664,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                         OnFirstRun(this, DownloadXMLData(_DNSClient));
 
-                        DebugX.Log("Initital XML import finished!");
+                        DebugX.Log("WWCP importer '" + Id + "' Initital import finished!");
 
                         UpdateEVSEStatusTimer.Change(TimeSpan.FromSeconds(1), UpdateEvery);
 
@@ -704,7 +675,7 @@ namespace org.GraphDefined.WWCP.Importer
                 }
                 catch (Exception e)
                 {
-                    DebugX.Log("Starting the WWCP Importer led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+                    DebugX.Log("Starting the WWCP Importer '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
                 }
 
                 finally
@@ -736,7 +707,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                 #if DEBUG
 
-                DebugX.LogT("'WWCPImporter' started");
+                DebugX.LogT("WWCP importer '" + Id + "' started!");
 
                 var StopWatch = new Stopwatch();
                 StopWatch.Start();
@@ -788,7 +759,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                         StopWatch.Stop();
 
-                        DebugX.LogT("'WWCPImporter' finished after " + StopWatch.Elapsed.TotalSeconds + " seconds!");
+                        DebugX.LogT("WWCP importer '" + Id + "' finished after " + StopWatch.Elapsed.TotalSeconds + " seconds!");
 
                     #endif
 
@@ -797,7 +768,7 @@ namespace org.GraphDefined.WWCP.Importer
                 }
                 catch (Exception e)
                 {
-                    DebugX.LogT("'WWCPImporter' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+                    DebugX.LogT("WWCP importer '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
                 }
 
                 finally
@@ -808,8 +779,21 @@ namespace org.GraphDefined.WWCP.Importer
             }
 
             else
-                DebugX.LogT("'WWCPImporter' skipped!");
+                DebugX.LogT("WWCP importer '" + Id + "' skipped!");
 
+        }
+
+        #endregion
+
+
+        #region ToString()
+
+        /// <summary>
+        /// Get a string representation of this object.
+        /// </summary>
+        public override String ToString()
+        {
+            return String.Concat("WWCP importer '", Id, "': ", _AllForwardingInfos.Count, " forwarding infos");
         }
 
         #endregion

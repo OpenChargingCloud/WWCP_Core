@@ -56,6 +56,31 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region DataSource
+
+        private String _DataSource;
+
+        /// <summary>
+        /// The source of this information, e.g. the WWCP importer used.
+        /// </summary>
+        [Optional]
+        public String DataSource
+        {
+
+            get
+            {
+                return _DataSource;
+            }
+
+            set
+            {
+                _DataSource = value;
+            }
+
+        }
+
+        #endregion
+
         #region LastChange
 
         private DateTime _LastChange;
@@ -117,6 +142,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             this._Id           = Id;
+            this._DataSource   = String.Empty;
             this._LastChange   = DateTime.Now;
             this._UserDefined  = new ConcurrentDictionary<String, Object>();
 
