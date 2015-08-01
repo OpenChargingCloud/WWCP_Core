@@ -19,6 +19,7 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -205,12 +206,12 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #region AuthorizeStart(OperatorId, EVSEId, PartnerSessionId, UID)
 
-        public AUTHSTARTResult AuthorizeStart(EVSEOperator_Id     OperatorId,
-                                              Auth_Token          AuthToken,
-                                              EVSE_Id             EVSEId            = null,   // OICP v2.0: Optional
-                                              String              PartnerProductId  = null,   // OICP v2.0: Optional [100]
-                                              ChargingSession_Id  HubjectSessionId  = null,   // OICP v2.0: Optional
-                                              ChargingSession_Id  PartnerSessionId  = null)   // OICP v2.0: Optional [50]
+        public async Task<HTTPResponse<AUTHSTARTResult>> AuthorizeStart(EVSEOperator_Id     OperatorId,
+                                                                        Auth_Token          AuthToken,
+                                                                        EVSE_Id             EVSEId            = null,   // OICP v2.0: Optional
+                                                                        String              PartnerProductId  = null,   // OICP v2.0: Optional [100]
+                                                                        ChargingSession_Id  HubjectSessionId  = null,   // OICP v2.0: Optional
+                                                                        ChargingSession_Id  PartnerSessionId  = null)   // OICP v2.0: Optional [50]
         {
 
             // Will store the SessionId in order to contact the right authenticator at later requests!
@@ -225,12 +226,15 @@ namespace org.GraphDefined.WWCP.LocalService
                                                           Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
                 {
 
-                    AuthStartResult = AuthenticationService.AuthorizeStart(OperatorId,
-                                                                           AuthToken,
-                                                                           EVSEId,
-                                                                           PartnerProductId,
-                                                                           HubjectSessionId,
-                                                                           PartnerSessionId);
+                    var T = AuthenticationService.AuthorizeStart(OperatorId,
+                                                                 AuthToken,
+                                                                 EVSEId,
+                                                                 PartnerProductId,
+                                                                 HubjectSessionId,
+                                                                 PartnerSessionId);
+
+                    T.Wait();
+                    AuthStartResult = T.Result.Content;
 
                     #region Authorized
 
@@ -241,7 +245,8 @@ namespace org.GraphDefined.WWCP.LocalService
                         // Will be deleted when the CDRecord was sent!
                         SessionIdAuthenticatorCache.Add(AuthStartResult.SessionId, AuthenticationService);
 
-                        return AuthStartResult;
+                        return new HTTPResponse<AUTHSTARTResult>(T.Result.HttpResponse,
+                                                                 AuthStartResult);
 
                     }
 
@@ -250,7 +255,8 @@ namespace org.GraphDefined.WWCP.LocalService
                     #region Blocked
 
                     else if (AuthStartResult.AuthorizationResult == AuthorizationResult.Blocked)
-                        return AuthStartResult;
+                        return new HTTPResponse<AUTHSTARTResult>(T.Result.HttpResponse,
+                                                                 AuthStartResult);
 
                     #endregion
 
@@ -258,11 +264,12 @@ namespace org.GraphDefined.WWCP.LocalService
 
                 #region ...else fail!
 
-                return new AUTHSTARTResult(AuthorizatorId) {
-                    AuthorizationResult  = AuthorizationResult.NotAuthorized,
-                    PartnerSessionId     = PartnerSessionId,
-                    Description          = "No authorization service returned a positiv result!"
-                };
+                return new HTTPResponse<AUTHSTARTResult>(new HTTPResponse(),
+                                                         new AUTHSTARTResult(AuthorizatorId) {
+                                                             AuthorizationResult  = AuthorizationResult.NotAuthorized,
+                                                             PartnerSessionId     = PartnerSessionId,
+                                                             Description          = "No authorization service returned a positiv result!"
+                                                         });
 
                 #endregion
 

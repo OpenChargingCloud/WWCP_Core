@@ -18,8 +18,11 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -40,12 +43,12 @@ namespace org.GraphDefined.WWCP.LocalService
         IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> BlockedTokens        { get; }
 
 
-        AUTHSTARTResult AuthorizeStart(EVSEOperator_Id      OperatorId,
-                                       Auth_Token           AuthToken,
-                                       EVSE_Id              EVSEId            = null,   // OICP v2.0: Optional
-                                       String               PartnerProductId  = null,   // OICP v2.0: Optional [100]
-                                       ChargingSession_Id   HubjectSessionId  = null,   // OICP v2.0: Optional
-                                       ChargingSession_Id   PartnerSessionId  = null);  // OICP v2.0: Optional [50]
+        Task<HTTPResponse<AUTHSTARTResult>> AuthorizeStart(EVSEOperator_Id      OperatorId,
+                                                           Auth_Token           AuthToken,
+                                                           EVSE_Id              EVSEId            = null,   // OICP v2.0: Optional
+                                                           String               PartnerProductId  = null,   // OICP v2.0: Optional [100]
+                                                           ChargingSession_Id   HubjectSessionId  = null,   // OICP v2.0: Optional
+                                                           ChargingSession_Id   PartnerSessionId  = null);  // OICP v2.0: Optional [50]
 
         AUTHSTOPResult  AuthorizeStop (EVSEOperator_Id      OperatorId,
                                        EVSE_Id              EVSEId,

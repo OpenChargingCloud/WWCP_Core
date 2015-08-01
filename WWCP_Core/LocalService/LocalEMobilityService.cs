@@ -19,7 +19,10 @@
 
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Collections.Generic;
+
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -156,12 +159,12 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <param name="PartnerProductId">An optional partner product identification.</param>
         /// <param name="HubjectSessionId">An optional Hubject session identification.</param>
         /// <param name="PartnerSessionId">An optional partner session identification.</param>
-        public AUTHSTARTResult AuthorizeStart(EVSEOperator_Id     OperatorId,
-                                              Auth_Token          AuthToken,
-                                              EVSE_Id             EVSEId            = null,   // OICP v1.2: Optional
-                                              String              PartnerProductId  = null,   // OICP v1.2: Optional [100]
-                                              ChargingSession_Id  HubjectSessionId  = null,   // OICP v1.2: Optional
-                                              ChargingSession_Id  PartnerSessionId  = null)   // OICP v1.2: Optional [50]
+        public async Task<HTTPResponse<AUTHSTARTResult>> AuthorizeStart(EVSEOperator_Id     OperatorId,
+                                                                        Auth_Token          AuthToken,
+                                                                        EVSE_Id             EVSEId            = null,   // OICP v1.2: Optional
+                                                                        String              PartnerProductId  = null,   // OICP v1.2: Optional [100]
+                                                                        ChargingSession_Id  HubjectSessionId  = null,   // OICP v1.2: Optional
+                                                                        ChargingSession_Id  PartnerSessionId  = null)   // OICP v1.2: Optional [50]
 
         {
 
@@ -182,12 +185,14 @@ namespace org.GraphDefined.WWCP.LocalService
 
                         SessionDatabase.Add(_SessionId, new SessionInfo(AuthToken));
 
-                        return new AUTHSTARTResult(AuthorizatorId) {
+                        return new HTTPResponse<AUTHSTARTResult>(
+                                   new HTTPResponse(),
+                                   new AUTHSTARTResult(AuthorizatorId) {
                                        AuthorizationResult  = AuthenticationResult,
                                        SessionId            = _SessionId,
                                        PartnerSessionId     = PartnerSessionId,
                                        ProviderId           = EVSPId
-                                   };
+                                   });
 
                     }
 
@@ -196,23 +201,27 @@ namespace org.GraphDefined.WWCP.LocalService
                     #region Token is blocked!
 
                     else if (AuthenticationResult == AuthorizationResult.Blocked)
-                        return new AUTHSTARTResult(AuthorizatorId) {
+                        return new HTTPResponse<AUTHSTARTResult>(
+                                   new HTTPResponse(),
+                                   new AUTHSTARTResult(AuthorizatorId) {
                                        AuthorizationResult  = AuthenticationResult,
                                        PartnerSessionId     = PartnerSessionId,
                                        ProviderId           = EVSPId,
                                        Description          = "Token is blocked!"
-                                   };
+                                   });
 
                     #endregion
 
                     #region ...fall through!
 
                     else
-                        return new AUTHSTARTResult(AuthorizatorId) {
+                        return new HTTPResponse<AUTHSTARTResult>(
+                                   new HTTPResponse(),
+                                   new AUTHSTARTResult(AuthorizatorId) {
                                        AuthorizationResult  = AuthenticationResult,
                                        PartnerSessionId     = PartnerSessionId,
                                        ProviderId           = EVSPId,
-                                   };
+                                   });
 
                     #endregion
 
@@ -221,12 +230,14 @@ namespace org.GraphDefined.WWCP.LocalService
                 #region Unkown Token!
 
                 else
-                    return new AUTHSTARTResult(AuthorizatorId) {
+                    return new HTTPResponse<AUTHSTARTResult>(
+                                   new HTTPResponse(),
+                                   new AUTHSTARTResult(AuthorizatorId) {
                                    AuthorizationResult  = AuthorizationResult.NotAuthorized,
                                    PartnerSessionId     = PartnerSessionId,
                                    ProviderId           = EVSPId,
                                    Description          = "Unkown token!"
-                               };
+                               });
 
                 #endregion
 
