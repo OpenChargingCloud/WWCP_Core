@@ -748,7 +748,9 @@ namespace org.GraphDefined.WWCP.Importer
                         }
 
                         // Update ForwardingInfos
-                        OnEveryRun(this, XMLTask);
+                        var OnEveryRunLocal = OnEveryRun;
+                        if (OnEveryRunLocal != null)
+                            OnEveryRunLocal(this, XMLTask);
 
                     }).
                     Wait();
