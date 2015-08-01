@@ -148,25 +148,37 @@ namespace org.GraphDefined.WWCP.LocalService
         #endregion
 
 
-        #region AuthorizeStart(OperatorId, AuthToken, EVSEId = null, PartnerProductId = null, HubjectSessionId = null, PartnerSessionId = null)
+        #region AuthorizeStart(OperatorId, AuthToken, EVSEId = null, SessionId = null, PartnerProductId = null, PartnerSessionId = null, QueryTimeout = null)
 
         /// <summary>
         /// Create an authorize start request.
         /// </summary>
-        /// <param name="OperatorId">An EVSE Operator identification.</param>
+        /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="EVSEId">An optional EVSE identification.</param>
+        /// <param name="SessionId">An optional session identification.</param>
         /// <param name="PartnerProductId">An optional partner product identification.</param>
-        /// <param name="HubjectSessionId">An optional Hubject session identification.</param>
         /// <param name="PartnerSessionId">An optional partner session identification.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
         public async Task<HTTPResponse<AUTHSTARTResult>> AuthorizeStart(EVSEOperator_Id     OperatorId,
                                                                         Auth_Token          AuthToken,
                                                                         EVSE_Id             EVSEId            = null,   // OICP v1.2: Optional
+                                                                        ChargingSession_Id  SessionId         = null,   // OICP v1.2: Optional
                                                                         String              PartnerProductId  = null,   // OICP v1.2: Optional [100]
-                                                                        ChargingSession_Id  HubjectSessionId  = null,   // OICP v1.2: Optional
-                                                                        ChargingSession_Id  PartnerSessionId  = null)   // OICP v1.2: Optional [50]
+                                                                        ChargingSession_Id  PartnerSessionId  = null,   // OICP v2.0: Optional [50]
+                                                                        TimeSpan?           QueryTimeout      = null)
 
         {
+
+            #region Initial checks
+
+            if (OperatorId == null)
+                throw new ArgumentNullException("OperatorId", "The given parameter must not be null!");
+
+            if (AuthToken  == null)
+                throw new ArgumentNullException("AuthToken",  "The given parameter must not be null!");
+
+            #endregion
 
             lock (AuthorizationDatabase)
             {
@@ -247,22 +259,45 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #endregion
 
-        #region AuthorizeStop(OperatorId, EVSEId, SessionId, PartnerSessionId, Token)
+        #region AuthorizeStop(OperatorId, SessionId, AuthToken, EVSEId = null, PartnerSessionId = null, QueryTimeout = null)
 
-        public AUTHSTOPResult AuthorizeStop(EVSEOperator_Id  OperatorId,
-                                            EVSE_Id          EVSEId,
-                                            ChargingSession_Id        SessionId,
-                                            ChargingSession_Id        PartnerSessionId,
-                                            Auth_Token            Token)
+        /// <summary>
+        /// Create an authorize stop request.
+        /// </summary>
+        /// <param name="OperatorId">An EVSE operator identification.</param>
+        /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="EVSEId">An optional EVSE identification.</param>
+        /// <param name="PartnerSessionId">An optional partner session identification.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        public async Task<HTTPResponse<AUTHSTOPResult>> AuthorizeStop(EVSEOperator_Id      OperatorId,
+                                                                      ChargingSession_Id   SessionId,
+                                                                      Auth_Token           AuthToken,
+                                                                      EVSE_Id              EVSEId            = null,   // OICP v2.0: Optional
+                                                                      ChargingSession_Id   PartnerSessionId  = null,   // OICP v2.0: Optional [50]
+                                                                      TimeSpan?            QueryTimeout      = null)
 
         {
+
+            #region Initial checks
+
+            if (OperatorId == null)
+                throw new ArgumentNullException("OperatorId", "The given parameter must not be null!");
+
+            if (SessionId  == null)
+                throw new ArgumentNullException("SessionId",  "The given parameter must not be null!");
+
+            if (AuthToken  == null)
+                throw new ArgumentNullException("AuthToken",  "The given parameter must not be null!");
+
+            #endregion
 
             lock (AuthorizationDatabase)
             {
 
                 AuthorizationResult AuthenticationResult;
 
-                if (AuthorizationDatabase.TryGetValue(Token, out AuthenticationResult))
+                if (AuthorizationDatabase.TryGetValue(AuthToken, out AuthenticationResult))
                 {
 
                     if (AuthenticationResult == AuthorizationResult.Authorized)
@@ -275,13 +310,15 @@ namespace org.GraphDefined.WWCP.LocalService
 
                             #region Authorized
 
-                            if (Token == SessionInfo.Token)
-                                return new AUTHSTOPResult(AuthorizatorId) {
-                                           AuthorizationResult  = AuthenticationResult,
-                                           SessionId            = SessionId,
-                                           PartnerSessionId     = PartnerSessionId,
-                                           ProviderId           = EVSPId
-                                       };
+                            if (AuthToken == SessionInfo.Token)
+                                return new HTTPResponse<AUTHSTOPResult>(
+                                           new HTTPResponse(),
+                                           new AUTHSTOPResult(AuthorizatorId) {
+                                               AuthorizationResult  = AuthenticationResult,
+                                               SessionId            = SessionId,
+                                               PartnerSessionId     = PartnerSessionId,
+                                               ProviderId           = EVSPId
+                                           });
 
                             #endregion
 
@@ -289,12 +326,14 @@ namespace org.GraphDefined.WWCP.LocalService
 
                             else
                             {
-                                return new AUTHSTOPResult(AuthorizatorId) {
+                                return new HTTPResponse<AUTHSTOPResult>(
+                                           new HTTPResponse(),
+                                           new AUTHSTOPResult(AuthorizatorId) {
                                                AuthorizationResult  = AuthorizationResult.NotAuthorized,
                                                PartnerSessionId     = PartnerSessionId,
                                                ProviderId           = EVSPId,
                                                Description          = "Invalid token for given session identification!"
-                                           };
+                                           });
                             }
 
                             #endregion
@@ -305,12 +344,14 @@ namespace org.GraphDefined.WWCP.LocalService
 
                         else
                         {
-                            return new AUTHSTOPResult(AuthorizatorId) {
+                            return new HTTPResponse<AUTHSTOPResult>(
+                                       new HTTPResponse(),
+                                       new AUTHSTOPResult(AuthorizatorId) {
                                            AuthorizationResult  = AuthorizationResult.NotAuthorized,
                                            PartnerSessionId     = PartnerSessionId,
                                            ProviderId           = EVSPId,
                                            Description          = "Invalid session identification!"
-                                       };
+                                       });
                         }
 
                         #endregion
@@ -320,23 +361,27 @@ namespace org.GraphDefined.WWCP.LocalService
                     #region Blocked
 
                     else if (AuthenticationResult == AuthorizationResult.Blocked)
-                        return new AUTHSTOPResult(AuthorizatorId) {
+                        return new HTTPResponse<AUTHSTOPResult>(
+                                   new HTTPResponse(),
+                                   new AUTHSTOPResult(AuthorizatorId) {
                                        AuthorizationResult  = AuthenticationResult,
                                        PartnerSessionId     = PartnerSessionId,
                                        ProviderId           = EVSPId,
                                        Description          = "Token is blocked!"
-                                   };
+                                   });
 
                     #endregion
 
                     #region ...fall through!
 
                     else
-                        return new AUTHSTOPResult(AuthorizatorId) {
+                        return new HTTPResponse<AUTHSTOPResult>(
+                                   new HTTPResponse(),
+                                   new AUTHSTOPResult(AuthorizatorId) {
                                        AuthorizationResult  = AuthenticationResult,
                                        PartnerSessionId     = PartnerSessionId,
                                        ProviderId           = EVSPId,
-                                   };
+                                   });
 
                     #endregion
 
@@ -345,12 +390,14 @@ namespace org.GraphDefined.WWCP.LocalService
                 #region Unkown Token!
 
                 else
-                    return new AUTHSTOPResult(AuthorizatorId) {
-                                       AuthorizationResult  = AuthorizationResult.NotAuthorized,
-                                       PartnerSessionId     = PartnerSessionId,
-                                       ProviderId           = EVSPId,
-                                       Description          = "Unkown token!"
-                                   };
+                    return new HTTPResponse<AUTHSTOPResult>(
+                               new HTTPResponse(),
+                               new AUTHSTOPResult(AuthorizatorId) {
+                                   AuthorizationResult  = AuthorizationResult.NotAuthorized,
+                                   PartnerSessionId     = PartnerSessionId,
+                                   ProviderId           = EVSPId,
+                                   Description          = "Unkown token!"
+                               });
 
                 #endregion
 
@@ -360,22 +407,74 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #endregion
 
-        #region SendCDR(EVSEId, SessionId, PartnerSessionId, PartnerProductId, ChargeStart, ChargeEnd, Token = null, eMAId = null, SessionStart = null, SessionEnd = null, MeterValueStart = null, MeterValueEnd = null)
+        #region SendCDR(EVSEId, SessionId, PartnerProductId, SessionStart, SessionEnd, AuthToken = null, eMAId = null, PartnerSessionId = null, ..., QueryTimeout = null)
 
-        public SENDCDRResult SendCDR(EVSE_Id             EVSEId,
-                                     ChargingSession_Id  SessionId,
-                                     ChargingSession_Id  PartnerSessionId,
-                                     String              PartnerProductId,
-                                     DateTime            ChargeStart,
-                                     DateTime            ChargeEnd,
-                                     Auth_Token               Token           = null,
-                                     eMA_Id              eMAId           = null,
-                                     DateTime?           SessionStart    = null,
-                                     DateTime?           SessionEnd      = null,
-                                     Double?             MeterValueStart = null,
-                                     Double?             MeterValueEnd   = null)
+        /// <summary>
+        /// Create a SendChargeDetailRecord request.
+        /// </summary>
+        /// <param name="EVSEId">An EVSE identification.</param>
+        /// <param name="SessionId">The session identification from the Authorize Start request.</param>
+        /// <param name="PartnerProductId"></param>
+        /// <param name="SessionStart">The timestamp of the session start.</param>
+        /// <param name="SessionEnd">The timestamp of the session end.</param>
+        /// <param name="AuthToken">An optional (RFID) user identification.</param>
+        /// <param name="eMAId">An optional e-Mobility account identification.</param>
+        /// <param name="PartnerSessionId">An optional partner session identification.</param>
+        /// <param name="ChargingStart">An optional timestamp of the charging start.</param>
+        /// <param name="ChargingEnd">An optional timestamp of the charging end.</param>
+        /// <param name="MeterValueStart">An optional initial value of the energy meter.</param>
+        /// <param name="MeterValueEnd">An optional final value of the energy meter.</param>
+        /// <param name="MeterValuesInBetween">An optional enumeration of meter values during the charging session.</param>
+        /// <param name="ConsumedEnergy">The optional amount of consumed energy.</param>
+        /// <param name="MeteringSignature">An optional signature for the metering values.</param>
+        /// <param name="HubOperatorId">An optional identification of the hub operator.</param>
+        /// <param name="HubProviderId">An optional identification of the hub provider.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        public async Task<HTTPResponse<SENDCDRResult>>
+
+            SendCDR(EVSE_Id              EVSEId,
+                    ChargingSession_Id   SessionId,
+                    String               PartnerProductId,
+                    DateTime             SessionStart,
+                    DateTime             SessionEnd,
+                    Auth_Token           AuthToken             = null,
+                    eMA_Id               eMAId                 = null,
+                    ChargingSession_Id   PartnerSessionId      = null,
+                    DateTime?            ChargingStart         = null,
+                    DateTime?            ChargingEnd           = null,
+                    Double?              MeterValueStart       = null,
+                    Double?              MeterValueEnd         = null,
+                    IEnumerable<Double>  MeterValuesInBetween  = null,
+                    Double?              ConsumedEnergy        = null,
+                    String               MeteringSignature     = null,
+                    EVSEOperator_Id      HubOperatorId         = null,
+                    EVSP_Id              HubProviderId         = null,
+                    TimeSpan?            QueryTimeout          = null)
 
         {
+
+            #region Initial checks
+
+            if (EVSEId           == null)
+                throw new ArgumentNullException("EVSEId",            "The given parameter must not be null!");
+
+            if (SessionId        == null)
+                throw new ArgumentNullException("SessionId",         "The given parameter must not be null!");
+
+            if (PartnerProductId == null)
+                throw new ArgumentNullException("PartnerProductId",  "The given parameter must not be null!");
+
+            if (SessionStart     == null)
+                throw new ArgumentNullException("SessionStart",      "The given parameter must not be null!");
+
+            if (SessionEnd       == null)
+                throw new ArgumentNullException("SessionEnd",        "The given parameter must not be null!");
+
+            if (AuthToken        == null &&
+                eMAId            == null)
+                throw new ArgumentNullException("AuthToken / eMAId", "At least one of the given parameters must not be null!");
+
+            #endregion
 
             lock (AuthorizationDatabase)
             {
@@ -387,15 +486,16 @@ namespace org.GraphDefined.WWCP.LocalService
 
                     #region Success
 
-                    if (Token == SessionInfo.Token)
+                    if (AuthToken == SessionInfo.Token)
                     {
 
                         SessionDatabase.Remove(SessionId);
 
-                        return new SENDCDRResult(AuthorizatorId) {
-                            State             = SENDCDRState.Forwarded,
-                            PartnerSessionId  = PartnerSessionId
-                        };
+                        return new HTTPResponse<SENDCDRResult>(new HTTPResponse(),
+                                                               new SENDCDRResult(AuthorizatorId) {
+                                                                   State             = SENDCDRState.Forwarded,
+                                                                   PartnerSessionId  = PartnerSessionId
+                                                               });
 
                     }
 
@@ -403,12 +503,12 @@ namespace org.GraphDefined.WWCP.LocalService
 
                     #region Invalid Token for SessionId!
 
-                    else
-                        return new SENDCDRResult(AuthorizatorId) {
-                                       State             = SENDCDRState.False,
-                                       PartnerSessionId  = PartnerSessionId,
-                                       Description       = "Invalid token for given session identification!"
-                                   };
+                    return new HTTPResponse<SENDCDRResult>(new HTTPResponse(),
+                                                           new SENDCDRResult(AuthorizatorId) {
+                                                               State             = SENDCDRState.False,
+                                                               PartnerSessionId  = PartnerSessionId,
+                                                               Description       = "Invalid token for given session identification!"
+                                                           });
 
                     #endregion
 
@@ -417,11 +517,12 @@ namespace org.GraphDefined.WWCP.LocalService
                 #region Invalid SessionId!
 
                 else
-                    return new SENDCDRResult(AuthorizatorId) {
-                                   State             = SENDCDRState.False,
-                                   PartnerSessionId  = PartnerSessionId,
-                                   Description       = "Invalid session identification!"
-                               };
+                    return new HTTPResponse<SENDCDRResult>(new HTTPResponse(),
+                                                           new SENDCDRResult(AuthorizatorId) {
+                                                               State             = SENDCDRState.False,
+                                                               PartnerSessionId  = PartnerSessionId,
+                                                               Description       = "Invalid session identification!"
+                                                           });
 
                 #endregion
 
