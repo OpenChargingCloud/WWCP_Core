@@ -18,11 +18,11 @@
 namespace org.GraphDefined.WWCP
 {
 
-    public enum PaymetOptions
+    public enum PaymentOptions
     {
 
         Unspecified,
-        NoPayment,
+        Free,
         Direct,         // e.g. Cash, Card, SMS
         SMS,
         Cash,

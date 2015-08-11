@@ -454,10 +454,10 @@ namespace org.GraphDefined.WWCP
 
         #region PaymentOptions
 
-        private ReactiveSet<PaymetOptions> _PaymentOptions;
+        private ReactiveSet<PaymentOptions> _PaymentOptions;
 
         [Mandatory]
-        public ReactiveSet<PaymetOptions> PaymentOptions
+        public ReactiveSet<PaymentOptions> PaymentOptions
         {
 
             get
@@ -469,7 +469,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value == null)
-                    value = new ReactiveSet<PaymetOptions>();
+                    value = new ReactiveSet<PaymentOptions>();
 
                 if (_PaymentOptions != value)
                 {

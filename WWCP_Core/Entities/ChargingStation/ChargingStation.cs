@@ -514,10 +514,10 @@ namespace org.GraphDefined.WWCP
 
         #region PaymentOptions
 
-        internal ReactiveSet<PaymetOptions> _PaymentOptions;
+        internal ReactiveSet<PaymentOptions> _PaymentOptions;
 
         [Mandatory]
-        public ReactiveSet<PaymetOptions> PaymentOptions
+        public ReactiveSet<PaymentOptions> PaymentOptions
         {
 
             get

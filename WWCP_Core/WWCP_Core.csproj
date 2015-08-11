@@ -53,7 +53,7 @@
     <Compile Include="Entities\ChargingPool\ChargingPoolStatusReport.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolStatusType.cs" />
     <Compile Include="Entities\ChargingStation\AccessibilityTypes.cs" />
-    <Compile Include="Entities\ChargingStation\PaymetOptions.cs" />
+    <Compile Include="Entities\ChargingStation\PaymentOptions.cs" />
     <Compile Include="Entities\ChargingStation\AuthenticationModes.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationStatusReport.cs" />
     <Compile Include="Entities\EVSEOperator\EVSEOperatorStatusReport.cs" />
