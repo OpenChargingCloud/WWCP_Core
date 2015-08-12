@@ -22,9 +22,9 @@ namespace org.GraphDefined.WWCP
     {
 
         Unspecified,
-        FreePubliclyAccessible,
-        RestrictedAccess,
-        PayingPubliclyAccessible
+        Free_publicly_accessible,
+        Restricted_access,
+        Paying_publicly_accessible
 
     }
 
