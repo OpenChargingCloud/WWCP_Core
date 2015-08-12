@@ -64,7 +64,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return Description != null
+                return _Description != null
                     ? _Description
                     : ChargingStation.Description;
 

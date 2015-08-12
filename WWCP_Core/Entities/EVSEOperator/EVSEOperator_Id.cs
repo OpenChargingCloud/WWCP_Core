@@ -351,6 +351,19 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ChangeFormat
+
+        /// <summary>
+        /// Return a new EVSE operator identification in the given format.
+        /// </summary>
+        /// <param name="Format">An EVSE operator identification format.</param>
+        public EVSEOperator_Id ChangeFormat(IdFormatType Format)
+        {
+            return new EVSEOperator_Id(this._CountryCode, this._OperatorId, Format);
+        }
+
+        #endregion
+
         #region Clone
 
         /// <summary>

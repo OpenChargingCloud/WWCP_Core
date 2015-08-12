@@ -158,7 +158,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value == ChargingPool.Description)
-                    value = null;
+                    return;
 
                 if (Description != value)
                     SetProperty<I18NString>(ref _Description, value);
@@ -193,7 +193,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value == ChargingPool.Address)
-                    value = null;
+                    return;
 
                 if (Address != value)
                 {
@@ -236,7 +236,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value == ChargingPool.GeoLocation)
-                    value = null;
+                    return;
 
                 if (GeoLocation != value)
                 {
@@ -280,7 +280,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value == ChargingPool.EntranceAddress)
-                    value = null;
+                    return;
 
                 if (EntranceAddress != value)
                 {
@@ -324,7 +324,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value == ChargingPool.EntranceLocation)
-                    value = null;
+                    return;
 
                 if (EntranceLocation != value)
                 {
@@ -368,7 +368,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value == ChargingPool.ExitAddress)
-                    value = null;
+                    return;
 
                 if (ExitAddress != value)
                 {
@@ -412,7 +412,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value == ChargingPool.ExitLocation)
-                    value = null;
+                    return;
 
                 if (ExitLocation != value)
                 {
@@ -454,7 +454,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value == ChargingPool.OpeningTime)
-                    value = null;
+                    return;
 
                 if (OpeningTime != value)
                 {
@@ -493,10 +493,13 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value == ChargingPool.AuthenticationModes)
-                    value = null;
+                    return;
 
                 if (AuthenticationModes != value)
                 {
+
+                    if (_AuthenticationModes == null)
+                        _AuthenticationModes = new ReactiveSet<AuthenticationModes>();
 
                     if (value == null)
                         DeleteProperty(ref _AuthenticationModes);
@@ -533,10 +536,13 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value == ChargingPool.PaymentOptions)
-                    value = null;
+                    return;
 
                 if (PaymentOptions != value)
                 {
+
+                    if (_PaymentOptions == null)
+                        _PaymentOptions = new ReactiveSet<PaymentOptions>();
 
                     if (value == null)
                         DeleteProperty(ref _PaymentOptions);
@@ -572,8 +578,15 @@ namespace org.GraphDefined.WWCP
             set
             {
 
+                if (value == ChargingPool.Accessibility)
+                    return;
+
                 if (Accessibility != value)
+                {
+
                     SetProperty(ref _Accessibility, value);
+
+                }
 
             }
 
@@ -581,40 +594,40 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region HotlinePhoneNum
+        #region HotlinePhoneNumber
 
-        internal String _HotlinePhoneNum;
+        internal String _HotlinePhoneNumber;
 
         /// <summary>
         /// The telephone number of the EVSE operator hotline.
         /// </summary>
         [Optional]
-        public String HotlinePhoneNum
+        public String HotlinePhoneNumber
         {
 
             get
             {
 
-                return _HotlinePhoneNum != null
-                    ? _HotlinePhoneNum
-                    : ChargingPool.HotlinePhoneNum;
+                return _HotlinePhoneNumber != null
+                    ? _HotlinePhoneNumber
+                    : ChargingPool.HotlinePhoneNumber;
 
             }
 
             set
             {
 
-                if (value == ChargingPool.HotlinePhoneNum)
-                    value = null;
+                if (value == ChargingPool.HotlinePhoneNumber)
+                    return;
 
-                if (HotlinePhoneNum != value)
+                if (HotlinePhoneNumber != value)
                 {
 
                     if (value == null)
-                        DeleteProperty(ref _HotlinePhoneNum);
+                        DeleteProperty(ref _HotlinePhoneNumber);
 
                     else
-                        SetProperty(ref _HotlinePhoneNum, value);
+                        SetProperty(ref _HotlinePhoneNumber, value);
 
                 }
 
@@ -1105,6 +1118,8 @@ namespace org.GraphDefined.WWCP
             this._UserComment             = new I18NString();
             this._ServiceProviderComment  = new I18NString();
             //this.GeoLocation             = new GeoCoordinate();
+
+            this._PaymentOptions          = new ReactiveSet<PaymentOptions>();
 
             this._StatusHistory           = new Stack<Timestamped<ChargingStationStatusType>>((Int32) StationStatusHistorySize);
             this._StatusHistory.Push(new Timestamped<ChargingStationStatusType>(ChargingStationStatusType.Unknown));

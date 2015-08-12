@@ -161,8 +161,8 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentException("Illegal EVSE identification!", "IdSuffix");
 
             this._OperatorId  = OperatorId;
-            this._Suffix    = _MatchCollection[0].Value;
-            this._Format    = IdFormat;
+            this._Suffix      = _MatchCollection[0].Value;
+            this._Format      = IdFormat;
 
         }
 
@@ -321,6 +321,19 @@ namespace org.GraphDefined.WWCP
         //    return false;
 
         //}
+
+        #endregion
+
+        #region ChangeFormat
+
+        /// <summary>
+        /// Return a new EVSE identification in the given format.
+        /// </summary>
+        /// <param name="Format">An EVSE identification format.</param>
+        public EVSE_Id ChangeFormat(IdFormatType Format)
+        {
+            return new EVSE_Id(this._OperatorId.ChangeFormat(Format), this._Suffix, Format);
+        }
 
         #endregion
 

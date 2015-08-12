@@ -517,20 +517,20 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region HotlinePhoneNum
+        #region HotlinePhoneNumber
 
-        private String _HotlinePhoneNum;
+        private String _HotlinePhoneNumber;
 
         /// <summary>
         /// The telephone number of the EVSE operator hotline.
         /// </summary>
         [Optional]
-        public String HotlinePhoneNum
+        public String HotlinePhoneNumber
         {
 
             get
             {
-                return _HotlinePhoneNum;
+                return _HotlinePhoneNumber;
             }
 
             set
@@ -539,12 +539,12 @@ namespace org.GraphDefined.WWCP
                 if (value == null)
                     value = "";
 
-                if (_HotlinePhoneNum != value)
+                if (_HotlinePhoneNumber != value)
                 {
 
-                    SetProperty(ref _HotlinePhoneNum, value);
+                    SetProperty(ref _HotlinePhoneNumber, value);
 
-                    _ChargingStations.Values.ForEach(station => station._HotlinePhoneNum = null);
+                    _ChargingStations.Values.ForEach(station => station._HotlinePhoneNumber = null);
 
                 }
 
