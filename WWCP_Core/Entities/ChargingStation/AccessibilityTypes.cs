@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2015 GraphDefined GmbH
  * This file is part of WWCP Core <https://github.com/WorldWideCharging/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");

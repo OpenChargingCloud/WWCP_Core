@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2015 GraphDefined GmbH
  * This file is part of WWCP Core <https://github.com/WorldWideCharging/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -638,7 +638,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// URIs of photos of this charging pool.
         /// </summary>
-        [Optional, Not_eMI3defined]
+        [Optional]
         public ReactiveSet<String> PhotoURIs
         {
 
@@ -661,30 +661,30 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The current charging pool status.
         /// </summary>
-        [Optional, Not_eMI3defined]
+        [Optional]
         public Timestamped<ChargingPoolStatusType> Status
         {
             get
             {
-                return _StatusHistory.Peek();
+                return _StatusSchedule.Peek();
             }
         }
 
         #endregion
 
-        #region StatusHistory
+        #region StatusSchedule
 
-        private Stack<Timestamped<ChargingPoolStatusType>> _StatusHistory;
+        private Stack<Timestamped<ChargingPoolStatusType>> _StatusSchedule;
 
         /// <summary>
-        /// The charging pool status history.
+        /// The charging pool status schedule.
         /// </summary>
-        [Optional, Not_eMI3defined]
-        public IEnumerable<Timestamped<ChargingPoolStatusType>> StatusHistory
+        [Optional]
+        public IEnumerable<Timestamped<ChargingPoolStatusType>> StatusSchedule
         {
             get
             {
-                return _StatusHistory.OrderByDescending(v => v.Timestamp);
+                return _StatusSchedule.OrderByDescending(v => v.Timestamp);
             }
         }
 
@@ -1036,8 +1036,8 @@ namespace org.GraphDefined.WWCP
 
             this._AuthenticationModes        = new ReactiveSet<AuthenticationModes>();
 
-            this._StatusHistory              = new Stack<Timestamped<ChargingPoolStatusType>>((Int32) PoolStatusHistorySize);
-            this._StatusHistory.Push(new Timestamped<ChargingPoolStatusType>(ChargingPoolStatusType.Unknown));
+            this._StatusSchedule              = new Stack<Timestamped<ChargingPoolStatusType>>((Int32) PoolStatusHistorySize);
+            this._StatusSchedule.Push(new Timestamped<ChargingPoolStatusType>(ChargingPoolStatusType.Unknown));
 
             #endregion
 
@@ -1429,12 +1429,12 @@ namespace org.GraphDefined.WWCP
 
                 var NewAggregatedStatus = new Timestamped<ChargingPoolStatusType>(StatusAggregationDelegate(new ChargingStationStatusReport(_ChargingStations.Values)));
 
-                if (NewAggregatedStatus.Value != _StatusHistory.Peek().Value)
+                if (NewAggregatedStatus.Value != _StatusSchedule.Peek().Value)
                 {
 
-                    var OldAggregatedStatus = _StatusHistory.Peek();
+                    var OldAggregatedStatus = _StatusSchedule.Peek();
 
-                    _StatusHistory.Push(NewAggregatedStatus);
+                    _StatusSchedule.Push(NewAggregatedStatus);
 
                     var OnAggregatedStatusChangedLocal = OnAggregatedStatusChanged;
                     if (OnAggregatedStatusChangedLocal != null)

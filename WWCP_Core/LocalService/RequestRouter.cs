@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
- * This file is part of eMI3 HTTP <http://www.github.com/eMI3/HTTP>
+ * Copyright (c) 2014-2015 GraphDefined GmbH
+ * This file is part of WWCP Core <https://github.com/WorldWideCharging/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -414,8 +414,7 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <param name="AuthToken">An optional (RFID) user identification.</param>
         /// <param name="eMAId">An optional e-Mobility account identification.</param>
         /// <param name="PartnerSessionId">An optional partner session identification.</param>
-        /// <param name="ChargingStart">An optional timestamp of the charging start.</param>
-        /// <param name="ChargingEnd">An optional timestamp of the charging end.</param>
+        /// <param name="ChargingTime">Optional timestamps of the charging start/stop.</param>
         /// <param name="MeterValueStart">An optional initial value of the energy meter.</param>
         /// <param name="MeterValueEnd">An optional final value of the energy meter.</param>
         /// <param name="MeterValuesInBetween">An optional enumeration of meter values during the charging session.</param>
@@ -428,7 +427,7 @@ namespace org.GraphDefined.WWCP.LocalService
 
             SendCDR(EVSE_Id              EVSEId,
                     ChargingSession_Id   SessionId,
-                    String               PartnerProductId,
+                    ChargingProduct_Id   PartnerProductId,
                     DateTime             SessionStart,
                     DateTime             SessionEnd,
                     Auth_Token           AuthToken             = null,

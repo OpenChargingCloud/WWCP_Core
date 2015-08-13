@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2015 GraphDefined GmbH
  * This file is part of WWCP Core <https://github.com/WorldWideCharging/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -114,7 +114,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The current roaming network status.
         /// </summary>
-        [Optional, Not_eMI3defined]
+        [Optional]
         public Timestamped<RoamingNetworkStatusType> Status
         {
             get
@@ -132,7 +132,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The roaming network status history.
         /// </summary>
-        [Optional, Not_eMI3defined]
+        [Optional]
         public IEnumerable<Timestamped<RoamingNetworkStatusType>> StatusHistory
         {
             get

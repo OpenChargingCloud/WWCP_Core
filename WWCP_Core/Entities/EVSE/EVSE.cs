@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2015 GraphDefined GmbH
  * This file is part of WWCP Core <https://github.com/WorldWideCharging/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -334,13 +334,13 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The current EVSE status.
         /// </summary>
-        [Mandatory, Not_eMI3defined]
+        [Mandatory]
         public Timestamped<EVSEStatusType> Status
         {
 
             get
             {
-                return _StatusHistory.Peek();
+                return _StatusSchedule.Peek();
             }
 
             set
@@ -352,18 +352,18 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region StatusHistory
+        #region StatusSchedule
 
-        private Stack<Timestamped<EVSEStatusType>> _StatusHistory;
+        private Stack<Timestamped<EVSEStatusType>> _StatusSchedule;
 
         /// <summary>
-        /// The EVSE status history.
+        /// The EVSE status schedule.
         /// </summary>
-        public IEnumerable<Timestamped<EVSEStatusType>> StatusHistory
+        public IEnumerable<Timestamped<EVSEStatusType>> StatusSchedule
         {
             get
             {
-                return _StatusHistory.OrderByDescending(v => v.Timestamp);
+                return _StatusSchedule.OrderByDescending(v => v.Timestamp);
             }
         }
 
@@ -497,8 +497,8 @@ namespace org.GraphDefined.WWCP
             this._ChargingFacilities    = new ReactiveSet<ChargingFacilities>();
             this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
 
-            this._StatusHistory         = new Stack<Timestamped<EVSEStatusType>>((Int32) EVSEStatusHistorySize);
-            this._StatusHistory.Push(new Timestamped<EVSEStatusType>(EVSEStatusType.Unknown));
+            this._StatusSchedule         = new Stack<Timestamped<EVSEStatusType>>((Int32) EVSEStatusHistorySize);
+            this._StatusSchedule.Push(new Timestamped<EVSEStatusType>(EVSEStatusType.Unknown));
 
             #endregion
 
@@ -537,12 +537,12 @@ namespace org.GraphDefined.WWCP
                               Timestamped<EVSEStatusType>  NewStatus)
         {
 
-            if (_StatusHistory.Peek().Value != NewStatus.Value)
+            if (_StatusSchedule.Peek().Value != NewStatus.Value)
             {
 
-                var OldStatus = _StatusHistory.Peek();
+                var OldStatus = _StatusSchedule.Peek();
 
-                _StatusHistory.Push(NewStatus);
+                _StatusSchedule.Push(NewStatus);
 
                 var OnStatusChangedLocal = OnStatusChanged;
                 if (OnStatusChangedLocal != null)
@@ -572,12 +572,12 @@ namespace org.GraphDefined.WWCP
 
                 if (NewStatus.Timestamp <= DateTime.Now)
                 {
-                    if (_StatusHistory.Peek().Value != NewStatus.Value)
+                    if (_StatusSchedule.Peek().Value != NewStatus.Value)
                     {
 
-                        var OldStatus = _StatusHistory.Peek();
+                        var OldStatus = _StatusSchedule.Peek();
 
-                        _StatusHistory.Push(NewStatus);
+                        _StatusSchedule.Push(NewStatus);
 
                         var OnStatusChangedLocal = OnStatusChanged;
                         if (OnStatusChangedLocal != null)

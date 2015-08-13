@@ -48,10 +48,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommonTypes\ChangeMethods.cs" />
+    <Compile Include="CommonTypes\StartEndTime.cs" />
     <Compile Include="CommonTypes\IStatus.cs" />
     <Compile Include="CommonTypes\StatusReport.cs" />
+    <Compile Include="Entities\ChargeDetailRecord\ChargeDetailRecord.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolStatusReport.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolStatusType.cs" />
+    <Compile Include="Entities\ChargingProduct\ChargingProduct_Id.cs" />
     <Compile Include="Entities\ChargingStation\AccessibilityTypes.cs" />
     <Compile Include="Entities\ChargingStation\PaymentOptions.cs" />
     <Compile Include="Entities\ChargingStation\AuthenticationModes.cs" />
@@ -66,7 +69,6 @@
     <Compile Include="WWCPImporter.cs" />
     <Compile Include="ImporterDefaults.cs" />
     <Compile Include="Entities\EVSE\EVSEStatusReport.cs" />
-    <Compile Include="CommonTypes\Attributes\Not_eMI3defined.cs" />
     <Compile Include="CommonTypes\EventTracking_Id.cs" />
     <Compile Include="CommonTypes\GridConnection.cs" />
     <Compile Include="CommonTypes\IEntity.cs" />
@@ -77,7 +79,7 @@
     <Compile Include="CommonTypes\Attributes\Optional.cs" />
     <Compile Include="CommonTypes\Address.cs" />
     <Compile Include="CommonTypes\AuthorizationOptions.cs" />
-    <Compile Include="CommonTypes\eMI3_Exception.cs" />
+    <Compile Include="CommonTypes\WWCPException.cs" />
     <Compile Include="Entities\ChargingServicePlan\ChargingServicePlan.cs" />
     <Compile Include="Entities\ChargingServicePlan\ChargingServicePlan_Id.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationState.cs" />
@@ -109,7 +111,6 @@
     <Compile Include="Entities\EVSEOperator\EVSEOperatorExceptions.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkExceptions.cs" />
     <Compile Include="Entities\EVSEOperator\EVSEOperator.cs" />
-    <Compile Include="CommonTypes\GeoLocation.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStation_Id.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPool_Id.cs" />
     <Compile Include="Entities\EVSP\EVServiceProvider.cs" />
@@ -174,6 +175,7 @@
       <Name>Styx</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

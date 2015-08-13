@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2015 GraphDefined GmbH
  * This file is part of WWCP Core <https://github.com/WorldWideCharging/WWCP_Core>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -403,10 +403,10 @@ namespace org.GraphDefined.WWCP
         /// Return the identification in the given format.
         /// </summary>
         /// <param name="IdFormat">The format.</param>
-        public String ToFormat(IdFormatType2 IdFormat)
+        public String ToFormat(IdFormatOriginType IdFormat)
         {
 
-            if (IdFormat == IdFormatType2.Origin)
+            if (IdFormat == IdFormatOriginType.Origin)
                 return ToFormat(this.IdFormat);
 
             return ToFormat((IdFormatType) IdFormat);

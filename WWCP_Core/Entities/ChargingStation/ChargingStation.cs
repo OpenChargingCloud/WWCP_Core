@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2015 GraphDefined GmbH
  * This file is part of WWCP Core <https://github.com/WorldWideCharging/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -820,7 +820,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// URIs of photos of this charging station.
         /// </summary>
-        [Optional, Not_eMI3defined]
+        [Optional]
         public ReactiveSet<String> PhotoURIs
         {
 
@@ -844,30 +844,30 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The current charging station status.
         /// </summary>
-        [Optional, Not_eMI3defined]
+        [Optional]
         public Timestamped<ChargingStationStatusType> Status
         {
             get
             {
-                return _StatusHistory.Peek();
+                return _StatusSchedule.Peek();
             }
         }
 
         #endregion
 
-        #region StatusHistory
+        #region StatusSchedule
 
-        private Stack<Timestamped<ChargingStationStatusType>> _StatusHistory;
+        private Stack<Timestamped<ChargingStationStatusType>> _StatusSchedule;
 
         /// <summary>
-        /// The charging station status history.
+        /// The charging station status schedule.
         /// </summary>
-        [Optional, Not_eMI3defined]
-        public IEnumerable<Timestamped<ChargingStationStatusType>> StatusHistory
+        [Optional]
+        public IEnumerable<Timestamped<ChargingStationStatusType>> StatusSchedule
         {
             get
             {
-                return _StatusHistory.OrderByDescending(v => v.Timestamp);
+                return _StatusSchedule.OrderByDescending(v => v.Timestamp);
             }
         }
 
@@ -1121,8 +1121,8 @@ namespace org.GraphDefined.WWCP
 
             this._PaymentOptions          = new ReactiveSet<PaymentOptions>();
 
-            this._StatusHistory           = new Stack<Timestamped<ChargingStationStatusType>>((Int32) StationStatusHistorySize);
-            this._StatusHistory.Push(new Timestamped<ChargingStationStatusType>(ChargingStationStatusType.Unknown));
+            this._StatusSchedule           = new Stack<Timestamped<ChargingStationStatusType>>((Int32) StationStatusHistorySize);
+            this._StatusSchedule.Push(new Timestamped<ChargingStationStatusType>(ChargingStationStatusType.Unknown));
 
             #endregion
 
@@ -1351,12 +1351,12 @@ namespace org.GraphDefined.WWCP
 
                 var NewAggregatedStatus = new Timestamped<ChargingStationStatusType>(StatusAggregationDelegate(new EVSEStatusReport(_EVSEs.Values)));
 
-                if (NewAggregatedStatus.Value != _StatusHistory.Peek().Value)
+                if (NewAggregatedStatus.Value != _StatusSchedule.Peek().Value)
                 {
 
-                    var OldAggregatedStatus = _StatusHistory.Peek();
+                    var OldAggregatedStatus = _StatusSchedule.Peek();
 
-                    _StatusHistory.Push(NewAggregatedStatus);
+                    _StatusSchedule.Push(NewAggregatedStatus);
 
                     var OnAggregatedStatusChangedLocal = OnAggregatedStatusChanged;
                     if (OnAggregatedStatusChangedLocal != null)

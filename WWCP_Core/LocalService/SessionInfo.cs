@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
- * This file is part of eMI3 HTTP <http://www.github.com/eMI3/HTTP>
+ * Copyright (c) 2014-2015 GraphDefined GmbH
+ * This file is part of WWCP Core <https://github.com/WorldWideCharging/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.

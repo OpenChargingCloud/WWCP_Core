@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2015 Achim Friedland <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2015 GraphDefined GmbH
  * This file is part of WWCP Core <https://github.com/WorldWideCharging/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -18,8 +18,6 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
 
 #endregion
 
@@ -27,16 +25,16 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A general eMI3 exception.
+    /// A general WWCP exception.
     /// </summary>
-    public class eMI3Exception : ApplicationException
+    public class WWCPException : ApplicationException
     {
 
-        public eMI3Exception(String Message)
+        public WWCPException(String Message)
             : base(Message)
         { }
 
-        public eMI3Exception(String Message, Exception InnerException)
+        public WWCPException(String Message, Exception InnerException)
             : base(Message, InnerException)
         { }
 
