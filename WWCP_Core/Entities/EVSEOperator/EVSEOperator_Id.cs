@@ -283,7 +283,9 @@ namespace org.GraphDefined.WWCP
 
                 // Just e.g. "822"...
                 EVSEOperatorId = EVSEOperator_Id.Parse(Country.Germany,
-                                                       _MatchCollection[0].Groups[5].Value);
+                                                       _MatchCollection[0].Groups[5].Value).
+                                                 ChangeFormat(IdFormatType.OLD);
+
                 return true;
 
             }
@@ -654,7 +656,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return _CountryCode.Alpha2Code + "*" + _OperatorId.ToString();
+            return OriginId;
         }
 
         #endregion

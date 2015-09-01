@@ -55,6 +55,12 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #endregion
 
+        #region AdditionalInfo
+
+        public String     AdditionalInfo           { get; set; }
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
