@@ -82,6 +82,7 @@ namespace org.GraphDefined.WWCP
         /// Generate a new Electric Vehicle Charging Group Identification (EVCG Id)
         /// based on the given string.
         /// </summary>
+        /// <param name="String">The string representation of the charging group identification.</param>
         private ChargingGroup_Id(String String)
         {
             _Id = String.Trim();

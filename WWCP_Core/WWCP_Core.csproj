@@ -47,6 +47,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonTypes\Attributes\Mandatory.cs" />
+    <Compile Include="CommonTypes\Attributes\Optional.cs" />
     <Compile Include="CommonTypes\ChangeMethods.cs" />
     <Compile Include="CommonTypes\StartEndTime.cs" />
     <Compile Include="CommonTypes\IStatus.cs" />
@@ -71,12 +73,10 @@
     <Compile Include="Entities\EVSE\EVSEStatusReport.cs" />
     <Compile Include="CommonTypes\EventTracking_Id.cs" />
     <Compile Include="CommonTypes\GridConnection.cs" />
-    <Compile Include="CommonTypes\IEntity.cs" />
+    <Compile Include="Entities\IEntity.cs" />
     <Compile Include="CommonTypes\Attributes\ChargeWithContract.cs" />
     <Compile Include="CommonTypes\Attributes\ChargeWithoutContract.cs" />
     <Compile Include="CommonTypes\Attributes\FreeCharge.cs" />
-    <Compile Include="CommonTypes\Attributes\Mandatory.cs" />
-    <Compile Include="CommonTypes\Attributes\Optional.cs" />
     <Compile Include="CommonTypes\Address.cs" />
     <Compile Include="CommonTypes\AuthorizationOptions.cs" />
     <Compile Include="CommonTypes\WWCPException.cs" />
@@ -96,7 +96,7 @@
     <Compile Include="Entities\ChargingPool\OpeningTime.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStation.cs" />
     <Compile Include="Entities\AEMobilityEntity.cs" />
-    <Compile Include="CommonTypes\IId.cs" />
+    <Compile Include="Entities\IId.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationUIFeatures.cs" />
     <Compile Include="Entities\EVSE\EVSEStatusType.cs" />
     <Compile Include="Entities\EVSE\PlugTypes.cs" />
