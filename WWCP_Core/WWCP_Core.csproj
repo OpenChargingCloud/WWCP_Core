@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="CommonTypes\Attributes\Mandatory.cs" />
     <Compile Include="CommonTypes\Attributes\Optional.cs" />
+    <Compile Include="CommonTypes\DataLicenses.cs" />
     <Compile Include="CommonTypes\ChangeMethods.cs" />
     <Compile Include="CommonTypes\StartEndTime.cs" />
     <Compile Include="CommonTypes\IStatus.cs" />

@@ -105,6 +105,24 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region DataLicense
+
+        private readonly DataLicenses _DataLicense;
+
+        /// <summary>
+        /// The license of the EVSE Operator data.
+        /// </summary>
+        [Mandatory]
+        public DataLicenses DataLicense
+        {
+            get
+            {
+                return _DataLicense;
+            }
+        }
+
+        #endregion
+
 
         #region ValidEVSEIds
 
