@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonTypes\DataLicenses.cs" />
     <Compile Include="CommonTypes\ChangeMethods.cs" />
     <Compile Include="CommonTypes\StartEndTime.cs" />
     <Compile Include="CommonTypes\IStatus.cs" />
