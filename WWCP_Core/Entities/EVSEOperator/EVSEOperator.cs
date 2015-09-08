@@ -1121,6 +1121,9 @@ namespace org.GraphDefined.WWCP
                                                  Boolean                              AutoApply    = false)
         {
 
+            if (EVSEStatus == null || EVSEStatus.Count == 0)
+                return new EVSEStatusDiff(Id, Name);
+
             #region Get data...
 
             var EVSEStatusDiff     = new EVSEStatusDiff(Id, Name);
@@ -1128,8 +1131,8 @@ namespace org.GraphDefined.WWCP
             // Only ValidEVSEIds!
             // Do nothing with manual EVSE Ids!
             var CurrentEVSEStates  = AllEVSEStatus(IncludeEVSE).
-                                         Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
-                                                     !ManualEVSEIds.Contains(KVP.Key)).
+                                         //Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
+                                         //            !ManualEVSEIds.Contains(KVP.Key)).
                                          ToDictionary(v => v.Key, v => v.Value);
 
             var OldEVSEIds         = new List<EVSE_Id>(CurrentEVSEStates.Keys);
@@ -1143,9 +1146,9 @@ namespace org.GraphDefined.WWCP
 
                 // Only for ValidEVSEIds!
                 // Do nothing with manual EVSE Ids!
-                foreach (var NewEVSEStatus in EVSEStatus.
-                                                  Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
-                                                              !ManualEVSEIds.Contains(KVP.Key)))
+                foreach (var NewEVSEStatus in EVSEStatus)
+                                                  //Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
+                                                  //            !ManualEVSEIds.Contains(KVP.Key)))
                 {
 
                     // Add to NewEVSEStates, if new EVSE was found!
@@ -1207,7 +1210,8 @@ namespace org.GraphDefined.WWCP
             foreach (var EVSEState in StatusDiff.ChangedEVSEStatus)
                 SetEVSEStatus(EVSEState.Key, EVSEState.Value);
 
-            RoamingNetwork.RequestRouter.SendEVSEStatusDiff(StatusDiff);
+            //Bug: Will duplicate the status diffs!
+            //RoamingNetwork.RequestRouter.SendEVSEStatusDiff(StatusDiff);
 
             return StatusDiff;
 
