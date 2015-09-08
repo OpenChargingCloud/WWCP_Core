@@ -17,8 +17,11 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
+using System;
+using System.Linq;
 using System.Collections.Generic;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -50,7 +53,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEOperatorId
+        #region EVSEOperatorName
 
         private readonly I18NString _EVSEOperatorName;
 
@@ -113,6 +116,39 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return _RemovedEVSEIds;
+            }
+        }
+
+        #endregion
+
+
+        #region ShortInfo
+
+        /// <summary>
+        /// Get a string representation of this object.
+        /// </summary>
+        public String ShortInfo
+        {
+            get
+            {
+                return _NewEVSEStatus.Count + " / " + _ChangedEVSEStatus.Count + " / " + _RemovedEVSEIds.Count;
+            }
+        }
+
+        #endregion
+
+        #region ExtendedInfo
+
+        /// <summary>
+        /// Get a string representation of this object.
+        /// </summary>
+        public String ExtendedInfo
+        {
+            get
+            {
+                return "New: "     + _NewEVSEStatus.    Select(kvp => kvp.Key.ToString() + " => " + kvp.Value.ToString()).AggregateWith(", ") + Environment.NewLine +
+                       "Changed: " + _ChangedEVSEStatus.Select(kvp => kvp.Key.ToString() + " => " + kvp.Value.ToString()).AggregateWith(", ") + Environment.NewLine +
+                       "Removed: " + _RemovedEVSEIds.   Select(EVSEId => EVSEId.ToString()).AggregateWith(", ") + Environment.NewLine;
             }
         }
 
@@ -277,6 +313,19 @@ namespace org.GraphDefined.WWCP
 
             return this;
 
+        }
+
+        #endregion
+
+
+        #region ToString()
+
+        /// <summary>
+        /// Get a string representation of this object.
+        /// </summary>
+        public override String ToString()
+        {
+            return "EVSE status diff: " + _NewEVSEStatus.Count + " new, " + _ChangedEVSEStatus.Count + " changed, " + _RemovedEVSEIds.Count + " removed";
         }
 
         #endregion
