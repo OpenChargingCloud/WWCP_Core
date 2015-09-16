@@ -101,15 +101,15 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IdFormat
+        #region Format
 
-        private readonly IdFormatType _IdFormat;
+        private readonly IdFormatType _Format;
 
-        public IdFormatType IdFormat
+        public IdFormatType Format
         {
             get
             {
-                return _IdFormat;
+                return _Format;
             }
         }
 
@@ -121,7 +121,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return ToFormat(_IdFormat);
+                return ToFormat(_Format);
             }
         }
 
@@ -144,7 +144,7 @@ namespace org.GraphDefined.WWCP
 
             this._CountryCode  = CountryCode;
             this._OperatorId   = OperatorId;
-            this._IdFormat     = IdFormat;
+            this._Format     = IdFormat;
 
         }
 
@@ -378,7 +378,7 @@ namespace org.GraphDefined.WWCP
 
                 return new EVSEOperator_Id(_CountryCode,
                                            new String(_OperatorId.ToCharArray()),
-                                           _IdFormat);
+                                           _Format);
 
             }
         }
@@ -409,7 +409,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if (IdFormat == IdFormatOriginType.Origin)
-                return ToFormat(this.IdFormat);
+                return ToFormat(this.Format);
 
             return ToFormat((IdFormatType) IdFormat);
 

@@ -399,7 +399,7 @@ namespace org.GraphDefined.WWCP
 
                 ChargingPoolId = new ChargingPool_Id(OperatorId,
                                                      _MatchCollection[0].Groups[0].Value,
-                                                     OperatorId.IdFormat);
+                                                     OperatorId.Format);
 
                 return true;
 
