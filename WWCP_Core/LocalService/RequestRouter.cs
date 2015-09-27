@@ -150,6 +150,29 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #endregion
 
+
+        #region OnChargingPoolAdminDiff
+
+        public delegate void OnChargingPoolAdminDiffDelegate(ChargingPoolAdminStatusDiff StatusDiff);
+
+        /// <summary>
+        /// An event fired whenever a charging station admin status diff was received.
+        /// </summary>
+        public event OnChargingPoolAdminDiffDelegate OnChargingPoolAdminDiff;
+
+        #endregion
+
+        #region OnChargingStationAdminDiff
+
+        public delegate void OnChargingStationAdminDiffDelegate(ChargingStationAdminStatusDiff StatusDiff);
+
+        /// <summary>
+        /// An event fired whenever a charging station admin status diff was received.
+        /// </summary>
+        public event OnChargingStationAdminDiffDelegate OnChargingStationAdminDiff;
+
+        #endregion
+
         #region OnEVSEStatusDiff
 
         public delegate void OnEVSEStatusDiffDelegate(EVSEStatusDiff StatusDiff);
@@ -646,6 +669,50 @@ namespace org.GraphDefined.WWCP.LocalService
         #endregion
 
 
+        #region SendChargingPoolAdminStatusDiff(StatusDiff)
+
+        public void SendChargingPoolAdminStatusDiff(ChargingPoolAdminStatusDiff StatusDiff)
+        {
+
+            lock (AuthenticationServices)
+            {
+
+                var OnChargingPoolAdminDiffLocal = OnChargingPoolAdminDiff;
+                if (OnChargingPoolAdminDiffLocal != null)
+                    OnChargingPoolAdminDiffLocal(StatusDiff);
+
+                //return RemoteStartResult.Error;
+
+            }
+
+            //return StatusDiff;
+
+        }
+
+        #endregion
+
+        #region SendChargingStationAdminStatusDiff(StatusDiff)
+
+        public void SendChargingStationAdminStatusDiff(ChargingStationAdminStatusDiff StatusDiff)
+        {
+
+            lock (AuthenticationServices)
+            {
+
+                var OnChargingStationAdminDiffLocal = OnChargingStationAdminDiff;
+                if (OnChargingStationAdminDiffLocal != null)
+                    OnChargingStationAdminDiffLocal(StatusDiff);
+
+                //return RemoteStartResult.Error;
+
+            }
+
+            //return StatusDiff;
+
+        }
+
+        #endregion
+
         #region SendEVSEStatusDiff(StatusDiff)
 
         public void SendEVSEStatusDiff(EVSEStatusDiff StatusDiff)
@@ -667,6 +734,7 @@ namespace org.GraphDefined.WWCP.LocalService
         }
 
         #endregion
+
 
     }
 

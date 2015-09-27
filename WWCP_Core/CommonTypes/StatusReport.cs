@@ -29,10 +29,9 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A charging station status report.
+    /// A status report.
     /// </summary>
     public class StatusReport<TEntity, TType> : IEnumerable<KeyValuePair<TType, Single>>
-        where TEntity : IStatus<TType>
     {
 
         #region Data
@@ -43,18 +42,18 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region ChargingStations
+        #region Entities
 
-        private readonly IEnumerable<TEntity> _ChargingStations;
+        private readonly IEnumerable<TEntity> _Entities;
 
         /// <summary>
-        /// All aggregated charging stations.
+        /// All aggregated entities.
         /// </summary>
-        public IEnumerable<TEntity> ChargingStations
+        public IEnumerable<TEntity> Entities
         {
             get
             {
-                return _ChargingStations;
+                return _Entities;
             }
         }
 
@@ -65,7 +64,7 @@ namespace org.GraphDefined.WWCP
         private readonly UInt32 _Count;
 
         /// <summary>
-        /// The number of aggregated charging stations.
+        /// The number of aggregated entities.
         /// </summary>
         public UInt32 Count
         {
@@ -82,20 +81,29 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new charging station status report.
+        /// Create a new status report.
         /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
-        public StatusReport(IEnumerable<TEntity> ChargingStations)
+        /// <param name="Entities">An enumeration of entities.</param>
+        /// <param name="GetStatusDelegate">A delegate to convert an entity into its status.</param>
+        public StatusReport(IEnumerable<TEntity>  Entities,
+                            Func<TEntity, TType>  GetStatusDelegate)
         {
 
-            _ChargingStations  = ChargingStations;
-            _Count             = (UInt32) ChargingStations.Count();
+            #region Initial checks
 
-            var sum            = (Single) _Count;
+            if (GetStatusDelegate == null)
+                throw new ArgumentNullException("GetStatusDelegate", "The given parameter must not be null!");
 
-            _Overview          = ChargingStations.GroupBy(_ChargingStation => _ChargingStation.Status.Value).
-                                                  ToDictionary(gr => gr.Key,
-                                                               gr => 100 * gr.Count() / sum );
+            #endregion
+
+            _Entities  = Entities;
+            _Count     = (UInt32) Entities.Count();
+
+            var sum    = (Single) _Count;
+
+            _Overview  = Entities.GroupBy(Entity => GetStatusDelegate(Entity)). // Entity.Status.Value).
+                                          ToDictionary(gr => gr.Key,
+                                                       gr => 100 * gr.Count() / sum );
 
         }
 
@@ -105,9 +113,9 @@ namespace org.GraphDefined.WWCP
         #region this[Status]
 
         /// <summary>
-        /// Return the percentage of charging stations having the given status.
+        /// Return the percentage of entities having the given status.
         /// </summary>
-        /// <param name="Status">A charging station status.</param>
+        /// <param name="Status">An entity status.</param>
         public Single this[TType Status]
         {
             get

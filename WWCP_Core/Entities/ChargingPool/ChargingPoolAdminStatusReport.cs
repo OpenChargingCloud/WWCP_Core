@@ -15,14 +15,27 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System.Collections.Generic;
+
+#endregion
+
 namespace org.GraphDefined.WWCP
 {
 
-    public enum ChargingStationState
+    /// <summary>
+    /// A charging pool admin status report.
+    /// </summary>
+    public class ChargingPoolAdminStatusReport : StatusReport<ChargingPool, ChargingPoolAdminStatusType>
     {
 
-        Unknown,
-        Offline
+        public ChargingPoolAdminStatusReport(IEnumerable<ChargingPool> ChargingPools)
+
+            : base(ChargingPools,
+                   pool => pool.AdminStatus.Value)
+
+        { }
 
     }
 

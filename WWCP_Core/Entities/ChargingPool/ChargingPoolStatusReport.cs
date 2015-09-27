@@ -31,7 +31,10 @@ namespace org.GraphDefined.WWCP
     {
 
         public ChargingPoolStatusReport(IEnumerable<ChargingPool> ChargingPools)
-            : base(ChargingPools)
+
+            : base(ChargingPools,
+                   pool => pool.Status.Value)
+
         { }
 
     }

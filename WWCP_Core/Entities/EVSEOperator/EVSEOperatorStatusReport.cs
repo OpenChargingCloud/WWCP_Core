@@ -31,7 +31,10 @@ namespace org.GraphDefined.WWCP
     {
 
         public EVSEOperatorStatusReport(IEnumerable<EVSEOperator> EVSEOperators)
-            : base(EVSEOperators)
+
+            : base(EVSEOperators,
+                   evseoperator => evseoperator.Status.Value)
+
         { }
 
     }

@@ -40,6 +40,7 @@ namespace org.GraphDefined.WWCP
                         IEquatable<EVSE>, IComparable<EVSE>, IComparable,
                         IEnumerable<SocketOutlet>,
                         IStatus<EVSEStatusType>
+
     {
 
         #region Data
@@ -48,6 +49,11 @@ namespace org.GraphDefined.WWCP
         /// The default max size of the EVSE status history.
         /// </summary>
         public const UInt16 DefaultEVSEStatusHistorySize = 50;
+
+        /// <summary>
+        /// The default max size of the EVSE admin status history.
+        /// </summary>
+        public const UInt16 DefaultEVSEAdminStatusHistorySize = 50;
 
         #endregion
 
@@ -387,6 +393,64 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region AdminStatus
+
+        /// <summary>
+        /// The current EVSE admin status.
+        /// </summary>
+        [Optional]
+        public Timestamped<EVSEAdminStatusType> AdminStatus
+        {
+
+            get
+            {
+                return _AdminStatusSchedule.Peek();
+            }
+
+            set
+            {
+                SetAdminStatus(DateTime.Now, value);
+            }
+
+        }
+
+        #endregion
+
+        #region AdminStatusSchedule
+
+        private Stack<Timestamped<EVSEAdminStatusType>> _AdminStatusSchedule;
+
+        /// <summary>
+        /// The EVSE admin status schedule.
+        /// </summary>
+        public IEnumerable<Timestamped<EVSEAdminStatusType>> AdminStatusSchedule
+        {
+            get
+            {
+                return _AdminStatusSchedule.OrderByDescending(v => v.Timestamp);
+            }
+        }
+
+        #endregion
+
+        #region PlannedAdminStatusChanges
+
+        private List<Timestamped<EVSEAdminStatusType>> _PlannedAdminStatusChanges;
+
+        /// <summary>
+        /// A list of planned future EVSE admin status changes.
+        /// </summary>
+        public IEnumerable<Timestamped<EVSEAdminStatusType>> PlannedAdminStatusChanges
+        {
+            get
+            {
+                return _PlannedAdminStatusChanges.OrderBy(v => v.Timestamp);
+            }
+        }
+
+        #endregion
+
+
         #region ChargingStation
 
         private readonly ChargingStation _ChargingStation;
@@ -425,6 +489,24 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever the dynamic status of the EVSE changed.
         /// </summary>
         public event OnStatusChangedDelegate OnStatusChanged;
+
+        #endregion
+
+        #region OnAdminStatusChanged
+
+        /// <summary>
+        /// A delegate called whenever the admin status of the EVSE changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EVSE">The EVSE.</param>
+        /// <param name="OldEVSEStatus">The old timestamped status of the EVSE.</param>
+        /// <param name="NewEVSEStatus">The new timestamped status of the EVSE.</param>
+        public delegate void OnAdminStatusChangedDelegate(DateTime Timestamp, EVSE EVSE, Timestamped<EVSEAdminStatusType> OldEVSEStatus, Timestamped<EVSEAdminStatusType> NewEVSEStatus);
+
+        /// <summary>
+        /// An event fired whenever the admin status of the EVSE changed.
+        /// </summary>
+        public event OnAdminStatusChangedDelegate OnAdminStatusChanged;
 
         #endregion
 
@@ -467,15 +549,16 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new Electric Vehicle Supply Equipment (EVSE)
-        /// having the given EVSE_Id.
+        /// Create a new Electric Vehicle Supply Equipment (EVSE) having the given EVSE_Id.
         /// </summary>
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="ChargingStation">The parent EVS pool.</param>
         /// <param name="EVSEStatusHistorySize">The default size of the EVSE status history.</param>
+        /// <param name="EVSEAdminStatusHistorySize">The default size of the EVSE admin status history.</param>
         internal EVSE(EVSE_Id          Id,
                       ChargingStation  ChargingStation,
-                      UInt16           EVSEStatusHistorySize = DefaultEVSEStatusHistorySize)
+                      UInt16           EVSEStatusHistorySize      = DefaultEVSEStatusHistorySize,
+                      UInt16           EVSEAdminStatusHistorySize = DefaultEVSEAdminStatusHistorySize)
 
             : base(Id)
 
@@ -497,8 +580,10 @@ namespace org.GraphDefined.WWCP
             this._ChargingFacilities    = new ReactiveSet<ChargingFacilities>();
             this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
 
-            this._StatusSchedule         = new Stack<Timestamped<EVSEStatusType>>((Int32) EVSEStatusHistorySize);
+            this._StatusSchedule        = new Stack<Timestamped<EVSEStatusType>>((Int32) EVSEStatusHistorySize);
             this._StatusSchedule.Push(new Timestamped<EVSEStatusType>(EVSEStatusType.Unknown));
+
+            this._AdminStatusSchedule   = new Stack<Timestamped<EVSEAdminStatusType>>((Int32) EVSEStatusHistorySize);
 
             #endregion
 
@@ -599,6 +684,89 @@ namespace org.GraphDefined.WWCP
                                                     Concat(NewStatusList.Where(TVP => TVP.Timestamp > DateTime.Now)).
                                                     Deduplicate().
                                                     ToList();
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region SetAdminStatus(Timestamp, NewStatus)
+
+        /// <summary>
+        /// Set the timestamped admin status of the EVSE.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="NewStatus">A list of new timestamped status for this EVSE.</param>
+        public void SetAdminStatus(DateTime                          Timestamp,
+                                   Timestamped<EVSEAdminStatusType>  NewStatus)
+        {
+
+            if (_AdminStatusSchedule.Peek().Value != NewStatus.Value)
+            {
+
+                var OldStatus = _AdminStatusSchedule.Peek();
+
+                _AdminStatusSchedule.Push(NewStatus);
+
+                var OnAdminStatusChangedLocal = OnAdminStatusChanged;
+                if (OnAdminStatusChangedLocal != null)
+                    OnAdminStatusChanged(Timestamp, this, OldStatus, NewStatus);
+
+            }
+
+        }
+
+        #endregion
+
+        #region SetAdminStatus(Timestamp, NewStatusList, ChangeMethod = ChangeMethods.Replace)
+
+        /// <summary>
+        /// Set the timestamped admin status of the EVSE.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="NewStatusList">A list of new timestamped status for this EVSE.</param>
+        /// <param name="ChangeMethod">The change mode.</param>
+        public void SetAdminStatus(DateTime                                       Timestamp,
+                                   IEnumerable<Timestamped<EVSEAdminStatusType>>  NewStatusList,
+                                   ChangeMethods                                  ChangeMethod = ChangeMethods.Replace)
+        {
+
+            foreach (var NewStatus in NewStatusList)
+            {
+
+                if (NewStatus.Timestamp <= DateTime.Now)
+                {
+                    if (_AdminStatusSchedule.Peek().Value != NewStatus.Value)
+                    {
+
+                        var OldStatus = _AdminStatusSchedule.Peek();
+
+                        _AdminStatusSchedule.Push(NewStatus);
+
+                        var OnAdminStatusChangedLocal = OnAdminStatusChanged;
+                        if (OnAdminStatusChangedLocal != null)
+                            OnAdminStatusChanged(Timestamp, this, OldStatus, NewStatus);
+
+                    }
+                }
+
+                else
+                {
+
+                    if (ChangeMethod == ChangeMethods.Replace)
+                        _PlannedAdminStatusChanges = NewStatusList.
+                                                         Where(TVP => TVP.Timestamp > DateTime.Now).
+                                                         ToList();
+
+                    else
+                        _PlannedAdminStatusChanges = _PlannedAdminStatusChanges.
+                                                         Concat(NewStatusList.Where(TVP => TVP.Timestamp > DateTime.Now)).
+                                                         Deduplicate().
+                                                         ToList();
 
                 }
 

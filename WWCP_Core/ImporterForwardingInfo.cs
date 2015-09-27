@@ -72,31 +72,21 @@ namespace org.GraphDefined.WWCP.Importer
             set
             {
 
-                if (value != null)
+                // Remove ChargingStation from old ChargingPool/EVSEOperator
+                if (_ForwardedToEVSEOperator != null)
                 {
 
-                    //if (_ForwardedToRoamingNetwork != value)
-                    //{
+                    ChargingStation _ChargingStationToMove = null;
 
-                    //    var OldEVSEOp = this.EVSEOperators.Where(EVSEOp => EVSEOp.RoamingNetwork.Id == _ForwardedToRoamingNetwork).FirstOrDefault();
-                    //    if (OldEVSEOp != null)
-                    //    {
-                    //        foreach (var EVSEId in EVSEIds)
-                    //            OldEVSEOp.ValidEVSEIds.Remove(EVSEId);
-                    //    }
+                    // Do not fail if the charging station is not yet available/existing!
+                    if (_ForwardedToEVSEOperator.TryGetChargingStationbyId(StationId, out _ChargingStationToMove))
+                        _ChargingStationToMove.ChargingPool.RemoveChargingStation(StationId);
 
-                    //}
-
-                    _ForwardedToEVSEOperator = value;
-
-                    //var NewEVSEOp = this.EVSEOperators.Where(EVSEOp => EVSEOp.RoamingNetwork.Id == _ForwardedToRoamingNetwork).FirstOrDefault();
-                    //if (NewEVSEOp != null)
-                    //{
-                    //    foreach (var EVSEId in EVSEIds)
-                    //        NewEVSEOp.ValidEVSEIds.Add(EVSEId);
-                    //}
+                    // Add to new EVSEOperator/CharingPool will be done by next normal import!
 
                 }
+
+                _ForwardedToEVSEOperator = value;
 
             }
 

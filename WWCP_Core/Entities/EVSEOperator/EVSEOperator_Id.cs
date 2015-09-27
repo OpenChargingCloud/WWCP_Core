@@ -144,7 +144,7 @@ namespace org.GraphDefined.WWCP
 
             this._CountryCode  = CountryCode;
             this._OperatorId   = OperatorId;
-            this._Format     = IdFormat;
+            this._Format       = IdFormat;
 
         }
 
@@ -312,7 +312,7 @@ namespace org.GraphDefined.WWCP
         public static Boolean TryParse(Country              CountryCode,
                                        String               OperatorId,
                                        out EVSEOperator_Id  EVSEOperatorId,
-                                       IdFormatType     IdFormat = IdFormatType.NEW)
+                                       IdFormatType         IdFormat = IdFormatType.NEW)
         {
 
             #region Initial checks

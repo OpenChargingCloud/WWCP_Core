@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using NUnit.Framework;
 
 using org.GraphDefined.WWCP;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -35,6 +36,8 @@ namespace org.GraphDefined.WWCP.UnitTests
     [TestFixture]
     public class EVSP_IdTests
     {
+
+        private static Random _Random = new Random();
 
         #region EVSP_IdEmptyConstructorTest()
 
@@ -76,7 +79,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EVSP_IdEVSP_IdConstructorTest()
         {
-            var _EVSP_Id1 = EVSP_Id.New;
+            var _EVSP_Id1 = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
             var _EVSP_Id2 = _EVSP_Id1.Clone;
             Assert.AreEqual(_EVSP_Id1.ToString(), _EVSP_Id2.ToString());
             Assert.AreEqual(_EVSP_Id1.Length,     _EVSP_Id2.Length);
@@ -94,8 +97,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void NewEVSP_IdMethodTest()
         {
-            var _EVSP_Id1 = EVSP_Id.New;
-            var _EVSP_Id2 = EVSP_Id.New;
+            var _EVSP_Id1 = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
+            var _EVSP_Id2 = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
             Assert.AreNotEqual(_EVSP_Id1, _EVSP_Id2);
         }
 
@@ -871,7 +874,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void CompareToNullTest1()
         {
-            var    _EVSP_Id = EVSP_Id.New;
+            var    _EVSP_Id  = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
             Object _Object   = null;
             _EVSP_Id.CompareTo(_Object);
         }
@@ -887,8 +890,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [ExpectedException(typeof(ArgumentNullException))]
         public void CompareToNullTest2()
         {
-            var      _EVSP_Id = EVSP_Id.New;
-            EVSP_Id _Object   = null;
+            var      _EVSP_Id  = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
+            EVSP_Id _Object    = null;
             _EVSP_Id.CompareTo(_Object);
         }
 
@@ -903,7 +906,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         [ExpectedException(typeof(ArgumentException))]
         public void CompareToNonEVSP_IdTest()
         {
-            var _EVSP_Id = EVSP_Id.New;
+            var _EVSP_Id  = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
             var _Object   = "123";
             _EVSP_Id.CompareTo(_Object);
         }
@@ -979,7 +982,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsNullTest1()
         {
-            var    _EVSP_Id = EVSP_Id.New;
+            var    _EVSP_Id  = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
             Object _Object   = null;
             Assert.IsFalse(_EVSP_Id.Equals(_Object));
         }
@@ -994,8 +997,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsNullTest2()
         {
-            var      _EVSP_Id = EVSP_Id.New;
-            EVSP_Id _Object   = null;
+            var      _EVSP_Id  = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
+            EVSP_Id _Object    = null;
             Assert.IsFalse(_EVSP_Id.Equals(_Object));
         }
 
@@ -1009,7 +1012,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsNonEVSP_IdTest()
         {
-            var _EVSP_Id = EVSP_Id.New;
+            var _EVSP_Id  = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
             var _Object   = "123";
             Assert.IsFalse(_EVSP_Id.Equals(_Object));
         }

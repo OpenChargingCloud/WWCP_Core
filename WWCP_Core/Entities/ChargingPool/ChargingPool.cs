@@ -52,6 +52,11 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public const UInt16 DefaultPoolStatusHistorySize = 50;
 
+        /// <summary>
+        /// The default max size of the aggregated charging pool admin status history.
+        /// </summary>
+        public const UInt16 DefaultPoolAdminStatusHistorySize = 50;
+
         #endregion
 
         #region Properties
@@ -656,6 +661,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
         #region Status
 
         /// <summary>
@@ -708,6 +714,82 @@ namespace org.GraphDefined.WWCP
             set
             {
                 _StatusAggregationDelegate = value;
+            }
+
+        }
+
+        #endregion
+
+
+        #region AdminStatus
+
+        /// <summary>
+        /// The current charging pool admin status.
+        /// </summary>
+        [Optional]
+        public Timestamped<ChargingPoolAdminStatusType> AdminStatus
+        {
+            get
+            {
+                return _AdminStatusSchedule.Peek();
+            }
+        }
+
+        #endregion
+
+        #region AdminStatusSchedule
+
+        private Stack<Timestamped<ChargingPoolAdminStatusType>> _AdminStatusSchedule;
+
+        /// <summary>
+        /// The charging pool admin status schedule.
+        /// </summary>
+        [Optional]
+        public IEnumerable<Timestamped<ChargingPoolAdminStatusType>> AdminStatusSchedule
+        {
+            get
+            {
+                return _AdminStatusSchedule.OrderByDescending(v => v.Timestamp);
+            }
+        }
+
+        #endregion
+
+        #region PlannedAdminStatusChanges
+
+        private List<Timestamped<ChargingPoolAdminStatusType>> _PlannedAdminStatusChanges;
+
+        /// <summary>
+        /// A list of planned future charging pool admin status changes.
+        /// </summary>
+        public IEnumerable<Timestamped<ChargingPoolAdminStatusType>> PlannedAdminStatusChanges
+        {
+            get
+            {
+                return _PlannedAdminStatusChanges.OrderBy(v => v.Timestamp);
+            }
+        }
+
+        #endregion
+
+        #region AdminStatusAggregationDelegate
+
+        private Func<ChargingStationAdminStatusReport, ChargingPoolAdminStatusType> _AdminStatusAggregationDelegate;
+
+        /// <summary>
+        /// A delegate called to aggregate the admin status of all subordinated charging stations.
+        /// </summary>
+        public Func<ChargingStationAdminStatusReport, ChargingPoolAdminStatusType> AdminStatusAggregationDelegate
+        {
+
+            get
+            {
+                return _AdminStatusAggregationDelegate;
+            }
+
+            set
+            {
+                _AdminStatusAggregationDelegate = value;
             }
 
         }
@@ -797,6 +879,24 @@ namespace org.GraphDefined.WWCP
 
         // ChargingPool events
 
+        #region OnAdminStatusChanged
+
+        /// <summary>
+        /// A delegate called whenever the admin status changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="ChargingPool">The updated charging pool.</param>
+        /// <param name="OldStatus">The old timestamped admin status of the charging pool.</param>
+        /// <param name="NewStatus">The new timestamped admin status of the charging pool.</param>
+        public delegate void OnAdminStatusChangedDelegate(DateTime Timestamp, ChargingPool ChargingPool, Timestamped<ChargingPoolAdminStatusType> OldStatus, Timestamped<ChargingPoolAdminStatusType> NewStatus);
+
+        /// <summary>
+        /// An event fired whenever the admin status changed.
+        /// </summary>
+        public event OnAdminStatusChangedDelegate OnAdminStatusChanged;
+
+        #endregion
+
         #region OnAggregatedStatusChanged
 
         /// <summary>
@@ -812,6 +912,24 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever the aggregated dynamic status changed.
         /// </summary>
         public event OnAggregatedStatusChangedDelegate OnAggregatedStatusChanged;
+
+        #endregion
+
+        #region OnAggregatedAdminStatusChanged
+
+        /// <summary>
+        /// A delegate called whenever the aggregated admin status changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="ChargingPool">The charging pool.</param>
+        /// <param name="OldStatus">The old timestamped status of the charging pool.</param>
+        /// <param name="NewStatus">The new timestamped status of the charging pool.</param>
+        public delegate void OnAggregatedAdminStatusChangedDelegate(DateTime Timestamp, ChargingPool ChargingPool, Timestamped<ChargingPoolAdminStatusType> OldStatus, Timestamped<ChargingPoolAdminStatusType> NewStatus);
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status changed.
+        /// </summary>
+        public event OnAggregatedAdminStatusChangedDelegate OnAggregatedAdminStatusChanged;
 
         #endregion
 
@@ -871,6 +989,24 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region OnChargingStationAdminStatusChanged
+
+        /// <summary>
+        /// A delegate called whenever the admin status of any subordinated charging station changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="ChargingStation">The updated charging station.</param>
+        /// <param name="OldStatus">The old timestamped admin status of the charging station.</param>
+        /// <param name="NewStatus">The new timestamped admin status of the charging station.</param>
+        public delegate void OnChargingStationAdminStatusChangedDelegate(DateTime Timestamp, ChargingStation ChargingStation, Timestamped<ChargingStationAdminStatusType> OldStatus, Timestamped<ChargingStationAdminStatusType> NewStatus);
+
+        /// <summary>
+        /// An event fired whenever the admin status of any subordinated ChargingStation changed.
+        /// </summary>
+        public event OnChargingStationAdminStatusChangedDelegate OnChargingStationAdminStatusChanged;
+
+        #endregion
+
         #region OnAggregatedChargingStationStatusChanged
 
         /// <summary>
@@ -886,6 +1022,24 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever the aggregated dynamic status of any subordinated charging station changed.
         /// </summary>
         public event OnAggregatedChargingStationStatusChangedDelegate OnAggregatedChargingStationStatusChanged;
+
+        #endregion
+
+        #region OnAggregatedChargingStationAdminStatusChanged
+
+        /// <summary>
+        /// A delegate called whenever the aggregated admin status of any subordinated charging station changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="ChargingStation">The updated charging station.</param>
+        /// <param name="OldStatus">The old timestamped status of the charging station.</param>
+        /// <param name="NewStatus">The new timestamped status of the charging station.</param>
+        public delegate void OnAggregatedChargingStationAdminStatusChangedDelegate(DateTime Timestamp, ChargingStation ChargingStation, Timestamped<ChargingStationAdminStatusType> OldStatus, Timestamped<ChargingStationAdminStatusType> NewStatus);
+
+        /// <summary>
+        /// An event fired whenever the aggregated admin status of any subordinated charging station changed.
+        /// </summary>
+        public event OnAggregatedChargingStationAdminStatusChangedDelegate OnAggregatedChargingStationAdminStatusChanged;
 
         #endregion
 
@@ -963,6 +1117,24 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region OnEVSEAdminStatusChanged
+
+        /// <summary>
+        /// A delegate called whenever the admin status of any subordinated EVSE changed.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EVSE">The updated EVSE.</param>
+        /// <param name="OldStatus">The old timestamped admin status of the EVSE.</param>
+        /// <param name="NewStatus">The new timestamped admin status of the EVSE.</param>
+        public delegate void OnEVSEAdminStatusChangedDelegate(DateTime Timestamp, EVSE EVSE, Timestamped<EVSEAdminStatusType> OldStatus, Timestamped<EVSEAdminStatusType> NewStatus);
+
+        /// <summary>
+        /// An event fired whenever the admin status of any subordinated EVSE changed.
+        /// </summary>
+        public event OnEVSEAdminStatusChangedDelegate OnEVSEAdminStatusChanged;
+
+        #endregion
+
         #region SocketOutletAddition
 
         internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletAddition;
@@ -1007,9 +1179,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique identification of the EVS pool.</param>
         /// <param name="EVSEOperator">The parent EVSE operator.</param>
         /// <param name="PoolStatusHistorySize">The default size of the charging pool (aggregated EVSE) status history.</param>
+        /// <param name="PoolAdminStatusHistorySize">The default size of the charging pool (aggregated EVSE) admin status history.</param>
         internal ChargingPool(ChargingPool_Id  Id,
                               EVSEOperator     EVSEOperator,
-                              UInt16           PoolStatusHistorySize  = DefaultPoolStatusHistorySize)
+                              UInt16           PoolStatusHistorySize       = DefaultPoolStatusHistorySize,
+                              UInt16           PoolAdminStatusHistorySize  = DefaultPoolAdminStatusHistorySize)
 
             : base(Id)
 
@@ -1036,8 +1210,11 @@ namespace org.GraphDefined.WWCP
 
             this._AuthenticationModes        = new ReactiveSet<AuthenticationModes>();
 
-            this._StatusSchedule              = new Stack<Timestamped<ChargingPoolStatusType>>((Int32) PoolStatusHistorySize);
+            this._StatusSchedule             = new Stack<Timestamped<ChargingPoolStatusType>>((Int32) PoolStatusHistorySize);
             this._StatusSchedule.Push(new Timestamped<ChargingPoolStatusType>(ChargingPoolStatusType.Unknown));
+
+            this._AdminStatusSchedule        = new Stack<Timestamped<ChargingPoolAdminStatusType>>((Int32) PoolAdminStatusHistorySize);
+            this._AdminStatusSchedule.Push(new Timestamped<ChargingPoolAdminStatusType>(ChargingPoolAdminStatusType.Unknown));
 
             #endregion
 
@@ -1127,18 +1304,27 @@ namespace org.GraphDefined.WWCP
                 if (_ChargingStations.TryAdd(ChargingStationId, _ChargingStation))
                 {
 
-                    _ChargingStation.OnEVSEDataChanged         += (Timestamp, EVSE, PropertyName, OldValue, NewValue)
-                                                                   => UpdateEVSEData(Timestamp, EVSE, PropertyName, OldValue, NewValue);
+                    _ChargingStation.OnEVSEDataChanged              += (Timestamp, EVSE, PropertyName, OldValue, NewValue)
+                                                                        => UpdateEVSEData       (Timestamp, EVSE, PropertyName, OldValue, NewValue);
 
-                    _ChargingStation.OnEVSEStatusChanged       += (Timestamp, EVSE, OldStatus, NewStatus)
-                                                                   => UpdateEVSEStatus(Timestamp, EVSE, OldStatus, NewStatus);
+                    _ChargingStation.OnEVSEStatusChanged            += (Timestamp, EVSE, OldStatus, NewStatus)
+                                                                        => UpdateEVSEStatus     (Timestamp, EVSE, OldStatus, NewStatus);
+
+                    _ChargingStation.OnEVSEAdminStatusChanged       += (Timestamp, EVSE, OldStatus, NewStatus)
+                                                                        => UpdateEVSEAdminStatus(Timestamp, EVSE, OldStatus, NewStatus);
 
 
-                    _ChargingStation.OnPropertyChanged         += (Timestamp, Sender, PropertyName, OldValue, NewValue)
-                                                                   => UpdateChargingStationData(Timestamp, Sender as ChargingStation, PropertyName, OldValue, NewValue);
+                    _ChargingStation.OnPropertyChanged              += (Timestamp, Sender, PropertyName, OldValue, NewValue)
+                                                                        => UpdateChargingStationData(Timestamp, Sender as ChargingStation, PropertyName, OldValue, NewValue);
 
-                    _ChargingStation.OnAggregatedStatusChanged += (Timestamp, ChargingStation, OldStatus, NewStatus)
-                                                                   => UpdateStatus(Timestamp, ChargingStation, OldStatus, NewStatus);
+                    _ChargingStation.OnAdminStatusChanged           += (Timestamp, ChargingStation, OldStatus, NewStatus)
+                                                                        => UpdateChargingStationAdminStatus(Timestamp, ChargingStation, OldStatus, NewStatus);
+
+                    _ChargingStation.OnAggregatedStatusChanged      += (Timestamp, ChargingStation, OldStatus, NewStatus)
+                                                                        => UpdateAggregatedChargingStationStatus(Timestamp, ChargingStation, OldStatus, NewStatus);
+
+                    _ChargingStation.OnAggregatedAdminStatusChanged += (Timestamp, ChargingStation, OldStatus, NewStatus)
+                                                                        => UpdateAggregatedChargingStationAdminStatus(Timestamp, ChargingStation, OldStatus, NewStatus);
 
 
                     OnSuccess.FailSafeInvoke(_ChargingStation);
@@ -1272,6 +1458,89 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region SetAdminStatus(Timestamp, NewStatus)
+
+        /// <summary>
+        /// Set the timestamped admin status of the charging pool.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="NewStatus">A list of new timestamped status for this charging pool.</param>
+        public void SetAdminStatus(DateTime                                  Timestamp,
+                                   Timestamped<ChargingPoolAdminStatusType>  NewStatus)
+        {
+
+            if (_AdminStatusSchedule.Peek().Value != NewStatus.Value)
+            {
+
+                var OldStatus = _AdminStatusSchedule.Peek();
+
+                _AdminStatusSchedule.Push(NewStatus);
+
+                var OnAdminStatusChangedLocal = OnAdminStatusChanged;
+                if (OnAdminStatusChangedLocal != null)
+                    OnAdminStatusChanged(Timestamp, this, OldStatus, NewStatus);
+
+            }
+
+        }
+
+        #endregion
+
+        #region SetAdminStatus(Timestamp, NewStatusList, ChangeMethod = ChangeMethods.Replace)
+
+        /// <summary>
+        /// Set the timestamped admin status of the charging pool.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="NewStatusList">A list of new timestamped status for this charging pool.</param>
+        /// <param name="ChangeMethod">The change mode.</param>
+        public void SetAdminStatus(DateTime                                               Timestamp,
+                                   IEnumerable<Timestamped<ChargingPoolAdminStatusType>>  NewStatusList,
+                                   ChangeMethods                                          ChangeMethod = ChangeMethods.Replace)
+        {
+
+            foreach (var NewStatus in NewStatusList)
+            {
+
+                if (NewStatus.Timestamp <= DateTime.Now)
+                {
+                    if (_AdminStatusSchedule.Peek().Value != NewStatus.Value)
+                    {
+
+                        var OldStatus = _AdminStatusSchedule.Peek();
+
+                        _AdminStatusSchedule.Push(NewStatus);
+
+                        var OnAdminStatusChangedLocal = OnAdminStatusChanged;
+                        if (OnAdminStatusChangedLocal != null)
+                            OnAdminStatusChanged(Timestamp, this, OldStatus, NewStatus);
+
+                    }
+                }
+
+                else
+                {
+
+                    if (ChangeMethod == ChangeMethods.Replace)
+                        _PlannedAdminStatusChanges = NewStatusList.
+                                                         Where(TVP => TVP.Timestamp > DateTime.Now).
+                                                         ToList();
+
+                    else
+                        _PlannedAdminStatusChanges = _PlannedAdminStatusChanges.
+                                                         Concat(NewStatusList.Where(TVP => TVP.Timestamp > DateTime.Now)).
+                                                         Deduplicate().
+                                                         ToList();
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+
         #region ContainsEVSE(EVSE)
 
         /// <summary>
@@ -1377,10 +1646,34 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (internal) UpdateEVSEAdminStatus(Timestamp, EVSE, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update an EVSE admin status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EVSE">The updated EVSE.</param>
+        /// <param name="OldStatus">The old EVSE status.</param>
+        /// <param name="NewStatus">The new EVSE status.</param>
+        internal void UpdateEVSEAdminStatus(DateTime                          Timestamp,
+                                            EVSE                              EVSE,
+                                            Timestamped<EVSEAdminStatusType>  OldStatus,
+                                            Timestamped<EVSEAdminStatusType>  NewStatus)
+        {
+
+            var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
+            if (OnEVSEAdminStatusChangedLocal != null)
+                OnEVSEAdminStatusChangedLocal(Timestamp, EVSE, OldStatus, NewStatus);
+
+        }
+
+        #endregion
+
+
         #region (internal) UpdateChargingStationData(Timestamp, ChargingStation, OldStatus, NewStatus)
 
         /// <summary>
-        /// Update the data of an charging station.
+        /// Update the data of a charging station.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="ChargingStation">The changed charging station.</param>
@@ -1402,19 +1695,42 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (internal) UpdateStatus(Timestamp, ChargingStation, OldStatus, NewStatus)
+        #region (internal) UpdateChargingStationAdminStatus(Timestamp, ChargingStation, OldStatus, NewStatus)
 
         /// <summary>
-        /// Update the current charging pool status.
+        /// Update the current charging station admin status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="ChargingStation">The updated charging station.</param>
+        /// <param name="OldStatus">The old charging station admin status.</param>
+        /// <param name="NewStatus">The new charging station admin status.</param>
+        internal void UpdateChargingStationAdminStatus(DateTime                                     Timestamp,
+                                                       ChargingStation                              ChargingStation,
+                                                       Timestamped<ChargingStationAdminStatusType>  OldStatus,
+                                                       Timestamped<ChargingStationAdminStatusType>  NewStatus)
+        {
+
+            var OnChargingStationAdminStatusChangedLocal = OnChargingStationAdminStatusChanged;
+            if (OnChargingStationAdminStatusChangedLocal != null)
+                OnChargingStationAdminStatusChangedLocal(Timestamp, ChargingStation, OldStatus, NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateAggregatedChargingStationStatus(Timestamp, ChargingStation, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the current aggregated charging station status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="ChargingStation">The updated charging station.</param>
         /// <param name="OldStatus">The old aggreagted charging station status.</param>
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal void UpdateStatus(DateTime                                Timestamp,
-                                   ChargingStation                         ChargingStation,
-                                   Timestamped<ChargingStationStatusType>  OldStatus,
-                                   Timestamped<ChargingStationStatusType>  NewStatus)
+        internal void UpdateAggregatedChargingStationStatus(DateTime                                Timestamp,
+                                                            ChargingStation                         ChargingStation,
+                                                            Timestamped<ChargingStationStatusType>  OldStatus,
+                                                            Timestamped<ChargingStationStatusType>  NewStatus)
         {
 
             // Send charging station status change upstream
@@ -1439,6 +1755,52 @@ namespace org.GraphDefined.WWCP
                     var OnAggregatedStatusChangedLocal = OnAggregatedStatusChanged;
                     if (OnAggregatedStatusChangedLocal != null)
                         OnAggregatedStatusChangedLocal(Timestamp, this, OldAggregatedStatus, NewAggregatedStatus);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateAggregatedChargingStationAdminStatus(Timestamp, ChargingStation, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the current aggregated charging station admin status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="ChargingStation">The updated charging station.</param>
+        /// <param name="OldStatus">The old aggreagted charging station admin status.</param>
+        /// <param name="NewStatus">The new aggreagted charging station admin status.</param>
+        internal void UpdateAggregatedChargingStationAdminStatus(DateTime                                     Timestamp,
+                                                                 ChargingStation                              ChargingStation,
+                                                                 Timestamped<ChargingStationAdminStatusType>  OldStatus,
+                                                                 Timestamped<ChargingStationAdminStatusType>  NewStatus)
+        {
+
+            // Send charging station status change upstream
+            var OnAggregatedChargingStationAdminStatusChangedLocal = OnAggregatedChargingStationAdminStatusChanged;
+            if (OnAggregatedChargingStationAdminStatusChangedLocal != null)
+                OnAggregatedChargingStationAdminStatusChangedLocal(Timestamp, ChargingStation, OldStatus, NewStatus);
+
+
+            // Calculate new aggregated charging pool status and send upstream
+            if (AdminStatusAggregationDelegate != null)
+            {
+
+                var NewAggregatedStatus = new Timestamped<ChargingPoolAdminStatusType>(AdminStatusAggregationDelegate(new ChargingStationAdminStatusReport(_ChargingStations.Values)));
+
+                if (NewAggregatedStatus.Value != _AdminStatusSchedule.Peek().Value)
+                {
+
+                    var OldAggregatedStatus = _AdminStatusSchedule.Peek();
+
+                    _AdminStatusSchedule.Push(NewAggregatedStatus);
+
+                    var OnAggregatedAdminStatusChangedLocal = OnAggregatedAdminStatusChanged;
+                    if (OnAggregatedAdminStatusChangedLocal != null)
+                        OnAggregatedAdminStatusChangedLocal(Timestamp, this, OldAggregatedStatus, NewAggregatedStatus);
 
                 }
 

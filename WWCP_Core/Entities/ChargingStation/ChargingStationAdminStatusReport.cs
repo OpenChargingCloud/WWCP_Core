@@ -25,15 +25,15 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A charging station status report.
+    /// A charging station admin status report.
     /// </summary>
-    public class ChargingStationStatusReport : StatusReport<ChargingStation, ChargingStationStatusType>
+    public class ChargingStationAdminStatusReport : StatusReport<ChargingStation, ChargingStationAdminStatusType>
     {
 
-        public ChargingStationStatusReport(IEnumerable<ChargingStation> ChargingStations)
+        public ChargingStationAdminStatusReport(IEnumerable<ChargingStation> ChargingStations)
 
             : base(ChargingStations,
-                   station => station.Status.Value)
+                   station => station.AdminStatus.Value)
 
         { }
 

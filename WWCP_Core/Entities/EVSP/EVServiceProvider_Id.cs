@@ -17,7 +17,9 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Illias;
 using System;
+using System.Text.RegularExpressions;
 
 #endregion
 
@@ -36,28 +38,18 @@ namespace org.GraphDefined.WWCP
         #region Data
 
         /// <summary>
-        /// The internal identification.
+        /// The regular expression for parsing an EVSE Service Provider identification.
         /// </summary>
-        protected readonly String _Id;
+        public  const    String   ProviderId_RegEx            = @"^[A-Z0-9]{3}$";
+
+        /// <summary>
+        /// The regular expression for parsing an Alpha-2-CountryCode and an EV Service Provider identification.
+        /// </summary>
+        public  const    String   CountryAndProviderId_RegEx  = @"^([A-Z]{2})\*?([A-Z0-9]{3})$";
 
         #endregion
 
         #region Properties
-
-        #region New
-
-        /// <summary>
-        /// Generate a new unique identification of an Electric Vehicle Service Provider (EVSP Id).
-        /// </summary>
-        public static EVSP_Id New
-        {
-            get
-            {
-                return new EVSP_Id(Guid.NewGuid().ToString());
-            }
-        }
-
-        #endregion
 
         #region Length
 
@@ -68,7 +60,41 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return (UInt64) _Id.Length;
+                return (UInt64) _ProviderId.Length;
+            }
+        }
+
+        #endregion
+
+        #region CountryCode
+
+        private readonly Country _CountryCode;
+
+        /// <summary>
+        /// The internal Alpha-2-CountryCode.
+        /// </summary>
+        public Country CountryCode
+        {
+            get
+            {
+                return _CountryCode;
+            }
+        }
+
+        #endregion
+
+        #region ProviderId
+
+        private readonly String _ProviderId;
+
+        /// <summary>
+        /// The internal EV Service Provider identification.
+        /// </summary>
+        public String ProviderId
+        {
+            get
+            {
+                return _ProviderId;
             }
         }
 
@@ -82,46 +108,192 @@ namespace org.GraphDefined.WWCP
         /// Generate a new Electric Vehicle Service Provider (EVSP Id)
         /// based on the given string.
         /// </summary>
-        public EVSP_Id(String String)
+        /// <param name="CountryCode">The Alpha-2-CountryCode.</param>
+        /// <param name="ProviderId">The EV Service Provider identification.</param>
+        private EVSP_Id(Country  CountryCode,
+                        String   ProviderId)
         {
-            _Id = String.Trim();
+
+            this._CountryCode  = CountryCode;
+            this._ProviderId   = ProviderId;
+
         }
 
         #endregion
 
 
-        #region Parse(Text)
+        #region Parse(CountryAndProviderId)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle Service Provider (EVSP Id).
+        /// Parse the given string as an EV Service Provider identification.
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Vehicle Service Provider identification.</param>
-        public static EVSP_Id Parse(String Text)
+        /// <param name="CountryAndProviderId">The country code and EV Service Provider identification as a string.</param>
+        public static EVSP_Id Parse(String CountryAndProviderId)
         {
-            return new EVSP_Id(Text);
+
+            #region Initial checks
+
+            if (CountryAndProviderId.IsNullOrEmpty())
+                throw new ArgumentException("The parameter must not be null or empty!", "CountryAndProviderId");
+
+            #endregion
+
+            var _MatchCollection = Regex.Matches(CountryAndProviderId.Trim().ToUpper(),
+                                                 CountryAndProviderId_RegEx,
+                                                 RegexOptions.IgnorePatternWhitespace);
+
+            if (_MatchCollection.Count != 1)
+                throw new ArgumentException("Illegal EV Service Provider identification '" + CountryAndProviderId + "'!", "CountryAndProviderId");
+
+            Country __CountryCode;
+
+            if (Country.TryParseAlpha2Code(_MatchCollection[0].Groups[1].Value, out __CountryCode))
+                return new EVSP_Id(__CountryCode,
+                                   _MatchCollection[0].Groups[2].Value);
+
+            throw new ArgumentException("Illegal EV Service Provider identification!", "CountryAndProviderId");
+
         }
 
         #endregion
 
-        #region TryParse(Text, out ChargingPoolId)
+        #region Parse(CountryCode, ProviderId)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle Service Provider (EVSP Id).
+        /// Parse the given string as an EV Service Provider identification.
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Vehicle Service Provider identification.</param>
-        /// <param name="ChargingPoolId">The parsed Electric Vehicle Service Provider identification.</param>
-        public static Boolean TryParse(String Text, out EVSP_Id ChargingPoolId)
+        /// <param name="CountryCode">A country code.</param>
+        /// <param name="ProviderId">An EV Service Provider identification as a string.</param>
+        public static EVSP_Id Parse(Country  CountryCode,
+                                    String   ProviderId)
         {
-            try
+
+            #region Initial checks
+
+            if (CountryCode == null)
+                throw new ArgumentException("The parameter must not be null or empty!", "CountryCode");
+
+            if (ProviderId.IsNullOrEmpty())
+                throw new ArgumentException("The parameter must not be null or empty!", "ProviderId");
+
+            #endregion
+
+            var _MatchCollection = Regex.Matches(ProviderId.Trim().ToUpper(),
+                                                 ProviderId_RegEx,
+                                                 RegexOptions.IgnorePatternWhitespace);
+
+            if (_MatchCollection.Count != 1)
+                throw new ArgumentException("Illegal EV Service Provider identification '" + CountryCode + " / " + ProviderId + "'!", "ProviderId");
+
+            return new EVSP_Id(CountryCode,
+                               _MatchCollection[0].Value);
+
+        }
+
+        #endregion
+
+        #region TryParse(CountryAndProviderId, out EVSEProviderId)
+
+        /// <summary>
+        /// Parse the given string as an EV Service Provider identification.
+        /// </summary>
+        /// <param name="CountryAndProviderId">The country code and EV Service Provider identification as a string.</param>
+        /// <param name="EVSEProviderId">The parsed EV Service Provider identification.</param>
+        public static Boolean TryParse(String       CountryAndProviderId,
+                                       out EVSP_Id  EVSEProviderId)
+        {
+
+            #region Initial checks
+
+            if (CountryAndProviderId.IsNullOrEmpty())
             {
-                ChargingPoolId = new EVSP_Id(Text);
-                return true;
-            }
-            catch (Exception)
-            {
-                ChargingPoolId = null;
+                EVSEProviderId = null;
                 return false;
             }
+
+            #endregion
+
+            try
+            {
+
+                var _MatchCollection = Regex.Matches(CountryAndProviderId.Trim().ToUpper(),
+                                                     CountryAndProviderId_RegEx,
+                                                     RegexOptions.IgnorePatternWhitespace);
+
+                if (_MatchCollection.Count != 1)
+                {
+                    EVSEProviderId = null;
+                    return false;
+                }
+
+                Country __CountryCode;
+
+                if (Country.TryParseAlpha2Code(_MatchCollection[0].Groups[1].Value, out __CountryCode))
+                {
+                    EVSEProviderId = new EVSP_Id(__CountryCode,
+                                                 _MatchCollection[0].Groups[2].Value);
+                    return true;
+                }
+
+            }
+
+            catch (Exception e)
+            { }
+
+            EVSEProviderId = null;
+            return false;
+
+        }
+
+        #endregion
+
+        #region TryParse(CountryCode, ProviderId, out EVSEProviderId, IdFormat = IdFormatType.NEW)
+
+        /// <summary>
+        /// Parse the given string as an EVSE Operator identification.
+        /// </summary>
+        /// <param name="CountryCode">A country code.</param>
+        /// <param name="ProviderId">An EVSE operator identification as a string.</param>
+        /// <param name="EVSEProviderId">The parsed EVSE Operator identification.</param>
+        public static Boolean TryParse(Country      CountryCode,
+                                       String       ProviderId,
+                                       out EVSP_Id  EVSEProviderId)
+        {
+
+            #region Initial checks
+
+            if (CountryCode == null || ProviderId.IsNullOrEmpty())
+            {
+                EVSEProviderId = null;
+                return false;
+            }
+
+            #endregion
+
+            try
+            {
+
+                var _MatchCollection = Regex.Matches(ProviderId.Trim().ToUpper(),
+                                                     ProviderId_RegEx,
+                                                     RegexOptions.IgnorePatternWhitespace);
+
+                if (_MatchCollection.Count != 1)
+                {
+                    EVSEProviderId = null;
+                    return false;
+                }
+
+                EVSEProviderId = new EVSP_Id(CountryCode, _MatchCollection[0].Value);
+                return true;
+
+            }
+
+            catch (Exception)
+            {
+                EVSEProviderId = null;
+                return false;
+            }
+
         }
 
         #endregion
@@ -135,7 +307,10 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return new EVSP_Id(_Id);
+
+                return new EVSP_Id(_CountryCode,
+                                   new String(_ProviderId.ToCharArray()));
+
             }
         }
 
@@ -298,7 +473,7 @@ namespace org.GraphDefined.WWCP
 
             // If equal: Compare Ids
             if (_Result == 0)
-                _Result = _Id.CompareTo(EVSPId._Id);
+                _Result = _ProviderId.CompareTo(EVSPId._ProviderId);
 
             return _Result;
 
@@ -347,7 +522,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) EVSPId == null)
                 return false;
 
-            return _Id.Equals(EVSPId._Id);
+            return _ProviderId.Equals(EVSPId._ProviderId);
 
         }
 
@@ -363,7 +538,7 @@ namespace org.GraphDefined.WWCP
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
         {
-            return _Id.GetHashCode();
+            return _ProviderId.GetHashCode();
         }
 
         #endregion
@@ -375,7 +550,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return _Id.ToString();
+            return _ProviderId.ToString();
         }
 
         #endregion
