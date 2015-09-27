@@ -244,6 +244,19 @@ namespace org.GraphDefined.WWCP.Importer
         #endregion
 
 
+        #region ToString()
+
+        /// <summary>
+        /// Get a string representation of this object.
+        /// </summary>
+        public override String ToString()
+        {
+            return StationId.ToString();
+        }
+
+        #endregion
+
+
     }
 
 }

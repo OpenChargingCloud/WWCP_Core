@@ -46,7 +46,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The regular expression for parsing a charging station identification.
         /// </summary>
-        public    const    String  ChargingStationId_RegEx  = @"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?S([A-Z0-9][A-Z0-9\*]{0,30})$ | ^(\+?[0-9]{1,3}\*?[0-9]{3})\*?([A-Z0-9][A-Z0-9\*]{0,30})$";
+        public    const    String  ChargingStationId_RegEx  = @"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?S([A-Z0-9][A-Z0-9\*]{0,30})$ | ^(\+?[0-9]{1,3}\*?[0-9]{3})\*?S([A-Z0-9][A-Z0-9\*]{0,30})$";
 
         /// <summary>
         /// The regular expression for parsing a charging station identification.
@@ -191,8 +191,16 @@ namespace org.GraphDefined.WWCP
             var _Array = EVSEId.OriginId.Split('*', '-');
 
             if (EVSEId.Format == IdFormatType.NEW)
+            {
                 if (_Array[2].StartsWith("E"))
                     _Array[2] = "S" + _Array[2].Substring(1);
+            }
+            else
+            {
+                if (!_Array[2].StartsWith("S"))
+                     _Array[2] = "S" + _Array[2];
+            }
+
 
             // e.g. "DE*822*E123456"
             if (_Array.Length == 3)
@@ -324,12 +332,9 @@ namespace org.GraphDefined.WWCP
                 if (Id.Contains('-'))
                     Id = Id.Replace("-", "*");
 
-                try
-                {
-                    return ChargingStation_Id.Parse(Id);
-                }
-                catch (Exception)
-                { }
+                var IdElements = Id.Split(new String[] { "*" }, StringSplitOptions.None);
+
+                return ChargingStation_Id.Parse(IdElements[0] + "*" + IdElements[1] + "*S" + IdElements.Skip(2).Aggregate("*"));
 
             }
 
