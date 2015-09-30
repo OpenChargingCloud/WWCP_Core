@@ -911,10 +911,17 @@ namespace org.GraphDefined.WWCP
         [Optional]
         public Timestamped<ChargingStationAdminStatusType> AdminStatus
         {
+
             get
             {
                 return _AdminStatusSchedule.Peek();
             }
+
+            set
+            {
+                SetAdminStatus(DateTime.Now, value);
+            }
+
         }
 
         #endregion

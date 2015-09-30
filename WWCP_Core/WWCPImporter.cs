@@ -410,14 +410,11 @@ namespace org.GraphDefined.WWCP.Importer
                                                         }
 
                                                         JToken JSONToken3;
-                                                        var AdminStatus = ChargingStationAdminStatusType.Unknown;
+                                                        var AdminStatus = ChargingStationAdminStatusType.Operational;
 
                                                         if (CurrentSettings.TryGetValue("Adminstatus", out JSONToken3))
                                                             if (!Enum.TryParse<ChargingStationAdminStatusType>(JSONToken3.Value<String>(), true, out AdminStatus))
-                                                            {
-                                                                var JS = (JSONToken3 as JValue).Value.ToString();
-                                                            }
-
+                                                                DebugX.Log("Invalid admin status '" + JSONToken3.Value<String>() + "' for charging station '" + ChargingStationId.ToString() + "'!");
 
                                                         if (!_AllForwardingInfos.ContainsKey(ChargingStationId))
                                                         {
@@ -432,6 +429,7 @@ namespace org.GraphDefined.WWCP.Importer
                                                                                         StationServiceTag:       "",
                                                                                         StationAddress:          new Address(),
                                                                                         StationGeoCoordinate:    null,
+                                                                                        AdminStatus:             AdminStatus,
                                                                                         Created:                 DateTime.Now,
                                                                                         OutOfService:            true,
                                                                                         ForwardedToEVSEOperator: CurrentOperator)

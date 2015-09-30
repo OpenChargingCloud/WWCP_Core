@@ -21,6 +21,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.WWCP;
 
@@ -169,6 +170,27 @@ namespace org.GraphDefined.WWCP.Importer
 
         #endregion
 
+        #region AdminStatus
+
+        private Timestamped<ChargingStationAdminStatusType> _AdminStatus;
+
+        public Timestamped<ChargingStationAdminStatusType> AdminStatus
+        {
+
+            get
+            {
+                return _AdminStatus;
+            }
+
+            set
+            {
+                _AdminStatus = value;
+            }
+
+        }
+
+        #endregion
+
         #region Created
 
         private readonly DateTime _Created;
@@ -223,16 +245,17 @@ namespace org.GraphDefined.WWCP.Importer
         #region Constructor(s)
 
         public ImporterForwardingInfo(Action<DateTime, ImporterForwardingInfo, RoamingNetwork_Id, RoamingNetwork_Id> OnChangedCallback,
-                                      IEnumerable<EVSEOperator>  EVSEOperators,
-                                      ChargingStation_Id         StationId                 = null,
-                                      String                     StationName               = "",
-                                      String                     StationServiceTag         = "",
-                                      Address                    StationAddress            = null,
-                                      GeoCoordinate              StationGeoCoordinate      = null,
-                                      IEnumerable<EVSE_Id>       EVSEIds                   = null,
-                                      DateTime?                  Created                   = null,
-                                      Boolean                    OutOfService              = false,
-                                      EVSEOperator               ForwardedToEVSEOperator   = null)
+                                      IEnumerable<EVSEOperator>                     EVSEOperators,
+                                      ChargingStation_Id                            StationId                 = null,
+                                      String                                        StationName               = "",
+                                      String                                        StationServiceTag         = "",
+                                      Address                                       StationAddress            = null,
+                                      GeoCoordinate                                 StationGeoCoordinate      = null,
+                                      IEnumerable<EVSE_Id>                          EVSEIds                   = null,
+                                      Timestamped<ChargingStationAdminStatusType>?  AdminStatus               = null,
+                                      DateTime?                                     Created                   = null,
+                                      Boolean                                       OutOfService              = false,
+                                      EVSEOperator                                  ForwardedToEVSEOperator   = null)
         {
 
             this._OnForwardingChangeCallback  = OnChangedCallback;
@@ -243,6 +266,7 @@ namespace org.GraphDefined.WWCP.Importer
             this.StationServiceTag            = StationServiceTag;
             this.StationAddress               = StationAddress;
             this.StationGeoCoordinate         = StationGeoCoordinate != null ? StationGeoCoordinate          : new GeoCoordinate(new Latitude(0), new Longitude(0));
+            this._AdminStatus                 = AdminStatus          != null ? AdminStatus.Value             : new Timestamped<ChargingStationAdminStatusType>(ChargingStationAdminStatusType.Operational);
             this._Created                     = Created              != null ? Created.Value                 : DateTime.Now;
             this._OutOfService                = OutOfService;
             this._LastTimeSeen                = _Created;
