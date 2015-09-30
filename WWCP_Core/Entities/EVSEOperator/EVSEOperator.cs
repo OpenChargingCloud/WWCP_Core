@@ -1212,8 +1212,24 @@ namespace org.GraphDefined.WWCP
 
             ChargingPool _ChargingPool = null;
 
-            if (_ChargingPools.TryRemove(ChargingPoolId, out _ChargingPool))
-                return _ChargingPool;
+            if (TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
+            {
+
+                if (ChargingPoolRemoval.SendVoting(DateTime.Now, this, _ChargingPool))
+                {
+
+                    if (_ChargingPools.TryRemove(ChargingPoolId, out _ChargingPool))
+                    {
+
+                        ChargingPoolRemoval.SendNotification(DateTime.Now, this, _ChargingPool);
+
+                        return _ChargingPool;
+
+                    }
+
+                }
+
+            }
 
             return null;
 
@@ -1225,7 +1241,30 @@ namespace org.GraphDefined.WWCP
 
         public Boolean TryRemoveChargingPool(ChargingPool_Id ChargingPoolId, out ChargingPool ChargingPool)
         {
-            return _ChargingPools.TryRemove(ChargingPoolId, out ChargingPool);
+
+            if (TryGetChargingPoolbyId(ChargingPoolId, out ChargingPool))
+            {
+
+                if (ChargingPoolRemoval.SendVoting(DateTime.Now, this, ChargingPool))
+                {
+
+                    if (_ChargingPools.TryRemove(ChargingPoolId, out ChargingPool))
+                    {
+
+                        ChargingPoolRemoval.SendNotification(DateTime.Now, this, ChargingPool);
+
+                        return true;
+
+                    }
+
+                }
+
+                return false;
+
+            }
+
+            return true;
+
         }
 
         #endregion
@@ -1346,7 +1385,7 @@ namespace org.GraphDefined.WWCP
                                                   Boolean                                      SendUpstream = false)
         {
 
-            SetChargingStationAdminStatus(DateTime.Now, ChargingStationId, NewStatus);
+            SetChargingStationAdminStatus(DateTime.Now, ChargingStationId, NewStatus, SendUpstream);
 
         }
 

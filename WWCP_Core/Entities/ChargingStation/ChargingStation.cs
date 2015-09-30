@@ -1262,7 +1262,7 @@ namespace org.GraphDefined.WWCP
             this._StatusSchedule.Push(new Timestamped<ChargingStationStatusType>(ChargingStationStatusType.Unknown));
 
             this._AdminStatusSchedule     = new Stack<Timestamped<ChargingStationAdminStatusType>>((Int32) StationAdminStatusHistorySize);
-            this._AdminStatusSchedule.Push(new Timestamped<ChargingStationAdminStatusType>(ChargingStationAdminStatusType.Unknown));
+            this._AdminStatusSchedule.Push(new Timestamped<ChargingStationAdminStatusType>(ChargingStationAdminStatusType.Operational));
 
             #endregion
 

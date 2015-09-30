@@ -25,59 +25,59 @@ namespace org.GraphDefined.WWCP
     {
 
         /// <summary>
-        /// Unknown/Unspecified
+        /// The charging station is ready to charge.
         /// </summary>
-        Unknown             = 0,
+        Operational         = 0,
 
         /// <summary>
-        /// This charging station is just planned for the future.
+        /// The station is not fully operational yet.
         /// </summary>
         Planned             = 1,
 
         /// <summary>
-        /// The charging station is currently in deployment.
+        /// The station is not fully operational yet.
         /// </summary>
         InDeployment        = 2,
 
         /// <summary>
-        /// The charging station is ready to charge.
+        /// A charging session is still open (a car is connected)
         /// </summary>
-        Available           = 3,
+        Occupied            = 3,
 
         /// <summary>
-        /// Some cars are connected to the charging station, but still ready to charge.
+        /// A car is connected and an error has occured during charge (this status appeared while charging).
         /// </summary>
-        PartialAvailable    = 4,
+        Faulted             = 4,
 
         /// <summary>
-        /// The charging station is occupied, no additional cars can be charged.
+        /// No car is connected but the station is not ready to charge.
         /// </summary>
-        Occupied            = 5,
+        Unavailable         = 5,
 
         /// <summary>
-        /// At least one car is connected and an error has occured during the charging process.
+        /// No car is connected, the station is not ready to charge because under maintenance.
         /// </summary>
-        Faulted             = 6,
+        OutOfService        = 6,
 
         /// <summary>
-        /// No cars are connected, but the station is out of service.
+        /// The platform has lost connection with the station (may be used by customer depending on its ability to handle offline mode).
         /// </summary>
-        OutOfService        = 7,
+        Offline             = 7,
 
         /// <summary>
-        /// The management platform has lost connection with the charging station (may be used by customer depending on its ability to handle offline mode).
+        /// No car is connected but no car can connect except the one that has booked this station.
         /// </summary>
-        Offline             = 8,
+        Reserved            = 8,
 
         /// <summary>
-        /// No cars are connected but no car can connect except the ones that are booked for this charging station.
+        /// Private internal use.
         /// </summary>
-        Reserved            = 9,
+        Other               = 9,
 
         /// <summary>
-        /// The charging station (identification) was not found!
+        /// No status is set for this station.
         /// </summary>
-        StationNotFound     = 10
+        Unknown             = 10
 
     }
 

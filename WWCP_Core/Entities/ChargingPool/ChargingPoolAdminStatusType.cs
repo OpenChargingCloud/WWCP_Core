@@ -25,74 +25,59 @@ namespace org.GraphDefined.WWCP
     {
 
         /// <summary>
-        /// Unspecified
+        /// The charging pool is ready to charge.
         /// </summary>
-        Unspecified         = 0,
+        Available           = 0,
 
         /// <summary>
-        /// The pole is not fully operational yet.
+        /// The pool is not fully operational yet.
         /// </summary>
         Planned             = 1,
 
         /// <summary>
-        /// The pole is not fully operational yet.
+        /// The pool is not fully operational yet.
         /// </summary>
         InDeployment        = 2,
 
         /// <summary>
-        /// No car connected to EVSE, ready to charge.
-        /// </summary>
-        Available           = 3,
-
-        /// <summary>
-        /// Some cars connected to station or pool, but still ready to charge.
-        /// </summary>
-        PartialAvailable    = 5,
-
-        /// <summary>
         /// A charging session is still open (a car is connected)
         /// </summary>
-        Occupied            = 6,
+        Occupied            = 3,
 
         /// <summary>
         /// A car is connected and an error has occured during charge (this status appeared while charging).
         /// </summary>
-        Faulted             = 7,
+        Faulted             = 4,
 
         /// <summary>
-        /// No car is connected but the pole is not ready to charge.
+        /// No car is connected but the pool is not ready to charge.
         /// </summary>
-        Unavailable         = 8,
+        Unavailable         = 5,
 
         /// <summary>
-        /// No car is connected, the pole is not ready to charge because under maintenance.
+        /// No car is connected, the pool is not ready to charge because under maintenance.
         /// </summary>
-        OutOfService        = 9,
+        OutOfService        = 6,
 
         /// <summary>
-        /// The platform has lost connection with the pole (may be used by customer depending on its ability to handle offline mode).
+        /// The platform has lost connection with the pool (may be used by customer depending on its ability to handle offline mode).
         /// </summary>
-        Offline             = 10,
+        Offline             = 7,
 
         /// <summary>
-        /// No car is connected but no car can connect except the one that has booked this EVSE.
+        /// No car is connected but no car can connect except the one that has booked this pool.
         /// </summary>
-        Reserved            = 11,
+        Reserved            = 8,
 
         /// <summary>
         /// Private internal use.
         /// </summary>
-        Other               = 12,
+        Other               = 9,
 
         /// <summary>
-        /// No status is sent by the pole.
+        /// No status is set for this pool.
         /// </summary>
-        Unknown             = 13,
-
-        /// <summary>
-        /// The EVSE was not found!
-        /// </summary>
-        EvseNotFound        = 14
+        Unknown             = 10
 
     }
 

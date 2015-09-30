@@ -32,16 +32,60 @@ namespace org.GraphDefined.WWCP.Importer
     public class ImporterForwardingInfo
     {
 
+        #region Data
+
+        private Action<DateTime, ImporterForwardingInfo, RoamingNetwork_Id, RoamingNetwork_Id> _OnForwardingChangeCallback;
+
+        public String         StationName;
+        public String         StationServiceTag;
+        public Address        StationAddress;
+        public GeoCoordinate  StationGeoCoordinate;
+
+        #endregion
+
         #region Properties
 
-        public           String                     StationName;
-        public           String                     StationServiceTag;
-        public           Address                    StationAddress;
-        public           GeoCoordinate              StationGeoCoordinate;
-        public  readonly ChargingStation_Id         StationId;
-        public  readonly HashSet<EVSE_Id>           EVSEIds;
+        #region StationId
 
-        private readonly IEnumerable<EVSEOperator>  EVSEOperators;
+        private readonly ChargingStation_Id _StationId;
+
+        public ChargingStation_Id StationId
+        {
+            get
+            {
+                return _StationId;
+            }
+        }
+
+        #endregion
+
+        #region EVSEIds
+
+        private readonly HashSet<EVSE_Id> _EVSEIds;
+
+        //public IEnumerable<EVSE_Id> EVSEIds
+        //{
+        //    get
+        //    {
+        //        return _EVSEIds;
+        //    }
+        //}
+
+        #endregion
+
+        #region EVSEOperators
+
+        private readonly IEnumerable<EVSEOperator>  _EVSEOperators;
+
+        public IEnumerable<EVSEOperator> EVSEOperators
+        {
+            get
+            {
+                return _EVSEOperators;
+            }
+        }
+
+        #endregion
 
         #region ForwardedToRoamingNetworkId
 
@@ -80,13 +124,28 @@ namespace org.GraphDefined.WWCP.Importer
 
                     // Do not fail if the charging station is not yet available/existing!
                     if (_ForwardedToEVSEOperator.TryGetChargingStationbyId(StationId, out _ChargingStationToMove))
+                    {
+
                         _ChargingStationToMove.ChargingPool.RemoveChargingStation(StationId);
 
-                    // Add to new EVSEOperator/CharingPool will be done by next normal import!
+                        // Also remove empty charging pools
+                        if (_ChargingStationToMove.ChargingPool.ChargingStations.Count() == 0)
+                            _ChargingStationToMove.ChargingPool.EVSEOperator.RemoveChargingPool(_ChargingStationToMove.ChargingPool.Id);
+
+                    }
+
+                    // Add to new EVSE operator/charging pool will be done during the next import cycle!
 
                 }
 
+                var Old_ForwardedToEVSEOperator = _ForwardedToEVSEOperator;
+
                 _ForwardedToEVSEOperator = value;
+
+                this._OnForwardingChangeCallback(DateTime.Now,
+                                                 this,
+                                                 Old_ForwardedToEVSEOperator != null ? Old_ForwardedToEVSEOperator.RoamingNetwork.Id : null,
+                                                 value                       != null ? value.RoamingNetwork.Id                       : null);
 
             }
 
@@ -106,27 +165,6 @@ namespace org.GraphDefined.WWCP.Importer
                             : null;
 
             }
-        }
-
-        #endregion
-
-        #region AdminStatus
-
-        private Nullable<EVSEStatusType> _AdminStatus;
-
-        public Nullable<EVSEStatusType> AdminStatus
-        {
-
-            get
-            {
-                return _AdminStatus;
-            }
-
-            set
-            {
-                _AdminStatus = value;
-            }
-
         }
 
         #endregion
@@ -184,30 +222,31 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region Constructor(s)
 
-        public ImporterForwardingInfo(IEnumerable<EVSEOperator>  EVSEOperators,
-                                      IEnumerable<EVSE_Id>       EVSEIds,
+        public ImporterForwardingInfo(Action<DateTime, ImporterForwardingInfo, RoamingNetwork_Id, RoamingNetwork_Id> OnChangedCallback,
+                                      IEnumerable<EVSEOperator>  EVSEOperators,
                                       ChargingStation_Id         StationId                 = null,
                                       String                     StationName               = "",
                                       String                     StationServiceTag         = "",
                                       Address                    StationAddress            = null,
                                       GeoCoordinate              StationGeoCoordinate      = null,
+                                      IEnumerable<EVSE_Id>       EVSEIds                   = null,
                                       DateTime?                  Created                   = null,
                                       Boolean                    OutOfService              = false,
                                       EVSEOperator               ForwardedToEVSEOperator   = null)
         {
 
-            this.EVSEOperators             = EVSEOperators;
-            this.StationName               = StationName;
-            this.StationServiceTag         = StationServiceTag;
-            this.EVSEIds                   = new HashSet<EVSE_Id>(EVSEIds);
-            this.StationAddress            = StationAddress;
-            this.StationGeoCoordinate      = StationGeoCoordinate != null ? StationGeoCoordinate : new GeoCoordinate(new Latitude(0), new Longitude(0));
-            this.StationId                 = StationId != null ? StationId     : ChargingStation_Id.Create(EVSEIds);
-            this._Created                  = Created   != null ? Created.Value : DateTime.Now;
-            this._OutOfService             = OutOfService;
-            this._LastTimeSeen             = _Created;
-
-            this._ForwardedToEVSEOperator  = ForwardedToEVSEOperator;
+            this._OnForwardingChangeCallback  = OnChangedCallback;
+            this._EVSEOperators               = EVSEOperators;
+            this._EVSEIds                     = EVSEIds              != null ? new HashSet<EVSE_Id>(EVSEIds) : new HashSet<EVSE_Id>();
+            this._StationId                   = StationId            != null ? StationId                     : ChargingStation_Id.Create(EVSEIds);
+            this.StationName                  = StationName;
+            this.StationServiceTag            = StationServiceTag;
+            this.StationAddress               = StationAddress;
+            this.StationGeoCoordinate         = StationGeoCoordinate != null ? StationGeoCoordinate          : new GeoCoordinate(new Latitude(0), new Longitude(0));
+            this._Created                     = Created              != null ? Created.Value                 : DateTime.Now;
+            this._OutOfService                = OutOfService;
+            this._LastTimeSeen                = _Created;
+            this._ForwardedToEVSEOperator     = ForwardedToEVSEOperator;
 
         }
 
@@ -218,7 +257,7 @@ namespace org.GraphDefined.WWCP.Importer
 
         public void AddEVSEId(EVSE_Id EVSEId)
         {
-            EVSEIds.Add(EVSEId);
+            _EVSEIds.Add(EVSEId);
         }
 
         #endregion
