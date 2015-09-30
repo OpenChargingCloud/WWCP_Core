@@ -315,12 +315,28 @@ namespace org.GraphDefined.WWCP.Importer
         #endregion
 
 
+
+        //ToDo: Store on disc after OnChargingStationAdminStatusChanged!!!
         #region RegisterEVSEOperator(EVSEOperator)
 
         public WWCPImporter<T> RegisterEVSEOperator(EVSEOperator EVSEOperator)
         {
 
             _EVSEOperators.Add(EVSEOperator);
+
+            EVSEOperator.OnChargingStationAdminStatusChanged += (Timestamp, ChargingStation, OldStatus, NewStatus) => {
+
+                var fwd = AllForwardingInfos.FirstOrDefault(fwdinfo => fwdinfo.StationId == ChargingStation.Id);
+                if (fwd != null)
+                {
+
+                    fwd.AdminStatus = ChargingStation.AdminStatus;
+
+                    //ToDo: Store on disc!
+
+                }
+
+            };
 
             return this;
 
