@@ -623,6 +623,43 @@ namespace org.GraphDefined.WWCP.LocalService
                                              EventTracking_Id    EventTrackingId = null)
         {
 
+            #region Documentation
+
+            // <soapenv:Envelope xmlns:soapenv     = "http://schemas.xmlsoap.org/soap/envelope/"
+            //                   xmlns:CommonTypes = "http://www.hubject.com/b2b/services/commontypes/v2.0">
+            //
+            //    <soapenv:Header/>
+            //
+            //    <soapenv:Body>
+            //       <CommonTypes:eRoamingAcknowledgement>
+            // 
+            //          <CommonTypes:Result>?</CommonTypes:Result>
+            // 
+            //          <CommonTypes:StatusCode>
+            // 
+            //             <CommonTypes:Code>?</CommonTypes:Code>
+            // 
+            //             <!--Optional:-->
+            //             <CommonTypes:Description>?</CommonTypes:Description>
+            // 
+            //             <!--Optional:-->
+            //             <CommonTypes:AdditionalInfo>?</CommonTypes:AdditionalInfo>
+            // 
+            //          </CommonTypes:StatusCode>
+            // 
+            //          <!--Optional:-->
+            //          <CommonTypes:SessionID>?</CommonTypes:SessionID>
+            // 
+            //          <!--Optional:-->
+            //          <CommonTypes:PartnerSessionID>?</CommonTypes:PartnerSessionID>
+            // 
+            //       </CommonTypes:eRoamingAcknowledgement>
+            //    </soapenv:Body>
+            //
+            // </soapenv:Envelope>
+
+            #endregion
+
             lock (AuthenticationServices)
             {
 
@@ -652,6 +689,43 @@ namespace org.GraphDefined.WWCP.LocalService
                                            EVSP_Id             ProviderId,
                                            EventTracking_Id    EventTrackingId  = null)
         {
+
+            #region Documentation
+
+            // <soapenv:Envelope xmlns:soapenv     = "http://schemas.xmlsoap.org/soap/envelope/"
+            //                   xmlns:CommonTypes = "http://www.hubject.com/b2b/services/commontypes/v2.0">
+            //
+            //    <soapenv:Header/>
+            //
+            //    <soapenv:Body>
+            //       <CommonTypes:eRoamingAcknowledgement>
+            // 
+            //          <CommonTypes:Result>?</CommonTypes:Result>
+            // 
+            //          <CommonTypes:StatusCode>
+            // 
+            //             <CommonTypes:Code>?</CommonTypes:Code>
+            // 
+            //             <!--Optional:-->
+            //             <CommonTypes:Description>?</CommonTypes:Description>
+            // 
+            //             <!--Optional:-->
+            //             <CommonTypes:AdditionalInfo>?</CommonTypes:AdditionalInfo>
+            // 
+            //          </CommonTypes:StatusCode>
+            // 
+            //          <!--Optional:-->
+            //          <CommonTypes:SessionID>?</CommonTypes:SessionID>
+            // 
+            //          <!--Optional:-->
+            //          <CommonTypes:PartnerSessionID>?</CommonTypes:PartnerSessionID>
+            // 
+            //       </CommonTypes:eRoamingAcknowledgement>
+            //    </soapenv:Body>
+            //
+            // </soapenv:Envelope>
+
+            #endregion
 
             lock (AuthenticationServices)
             {
