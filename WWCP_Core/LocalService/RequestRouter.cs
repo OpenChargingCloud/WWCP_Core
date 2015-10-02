@@ -448,7 +448,7 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
         public async Task<HTTPResponse<SENDCDRResult>>
 
-            SendCDR(EVSE_Id              EVSEId,
+            SendChargeDetailRecord(EVSE_Id              EVSEId,
                     ChargingSession_Id   SessionId,
                     ChargingProduct_Id   PartnerProductId,
                     DateTime             SessionStart,
@@ -518,7 +518,7 @@ namespace org.GraphDefined.WWCP.LocalService
                 if (SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
                 {
 
-                    var _Task = AuthenticationService.SendCDR(EVSEId,
+                    var _Task = AuthenticationService.SendChargeDetailRecord(EVSEId,
                                                               SessionId,
                                                               PartnerProductId,
                                                               SessionStart,
@@ -557,7 +557,7 @@ namespace org.GraphDefined.WWCP.LocalService
                                                                ToArray())
                 {
 
-                    var _Task = OtherAuthenticationService.SendCDR(EVSEId,
+                    var _Task = OtherAuthenticationService.SendChargeDetailRecord(EVSEId,
                                                                    SessionId,
                                                                    PartnerProductId,
                                                                    SessionStart,

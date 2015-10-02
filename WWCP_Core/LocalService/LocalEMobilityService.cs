@@ -431,7 +431,7 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
         public async Task<HTTPResponse<SENDCDRResult>>
 
-            SendCDR(EVSE_Id              EVSEId,
+            SendChargeDetailRecord(EVSE_Id              EVSEId,
                     ChargingSession_Id   SessionId,
                     ChargingProduct_Id   PartnerProductId,
                     DateTime             SessionStart,

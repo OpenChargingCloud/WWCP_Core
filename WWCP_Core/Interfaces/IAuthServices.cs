@@ -99,7 +99,7 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <param name="HubOperatorId">An optional identification of the hub operator.</param>
         /// <param name="HubProviderId">An optional identification of the hub provider.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        Task<HTTPResponse<SENDCDRResult>>  SendCDR        (EVSE_Id              EVSEId,
+        Task<HTTPResponse<SENDCDRResult>>  SendChargeDetailRecord        (EVSE_Id              EVSEId,
                                                            ChargingSession_Id   SessionId,
                                                            ChargingProduct_Id   PartnerProductId,
                                                            DateTime             SessionStart,
