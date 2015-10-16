@@ -24,9 +24,9 @@ namespace org.GraphDefined.WWCP
         Unkown,
         NFC_RFID_Classic,
         NFC_RFID_DESFire,
-        PnC,                    //ISO/IEC 15118
+        PnC,                    // ISO/IEC 15118
         REMOTE,                 // App, QR-Code, Phone
-        DirectPayment          // Remote use via direct payment. E.g. intercharge direct 
+        DirectPayment           // Remote use via direct payment. E.g. intercharge direct
 
     }
 
