@@ -243,10 +243,10 @@ namespace org.GraphDefined.WWCP.LocalService
 
             AuthorizeStart(EVSEOperator_Id     OperatorId,
                            Auth_Token          AuthToken,
-                           EVSE_Id             EVSEId            = null,   // OICP v2.0: Optional
-                           ChargingSession_Id  SessionId         = null,   // OICP v2.0: Optional
-                           String              PartnerProductId  = null,   // OICP v2.0: Optional [100]
-                           ChargingSession_Id  PartnerSessionId  = null,   // OICP v2.0: Optional [50]
+                           EVSE_Id             EVSEId            = null,
+                           ChargingSession_Id  SessionId         = null,
+                           ChargingProduct_Id  PartnerProductId  = null,
+                           ChargingSession_Id  PartnerSessionId  = null,
                            TimeSpan?           QueryTimeout      = null)
 
         {

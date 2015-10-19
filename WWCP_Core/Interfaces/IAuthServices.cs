@@ -57,7 +57,7 @@ namespace org.GraphDefined.WWCP.LocalService
                                                            Auth_Token           AuthToken,
                                                            EVSE_Id              EVSEId            = null,
                                                            ChargingSession_Id   SessionId         = null,
-                                                           String               PartnerProductId  = null,
+                                                           ChargingProduct_Id   PartnerProductId  = null,
                                                            ChargingSession_Id   PartnerSessionId  = null,
                                                            TimeSpan?            QueryTimeout      = null);
 

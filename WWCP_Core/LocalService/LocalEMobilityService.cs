@@ -162,10 +162,10 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
         public async Task<HTTPResponse<AUTHSTARTResult>> AuthorizeStart(EVSEOperator_Id     OperatorId,
                                                                         Auth_Token          AuthToken,
-                                                                        EVSE_Id             EVSEId            = null,   // OICP v1.2: Optional
-                                                                        ChargingSession_Id  SessionId         = null,   // OICP v1.2: Optional
-                                                                        String              PartnerProductId  = null,   // OICP v1.2: Optional [100]
-                                                                        ChargingSession_Id  PartnerSessionId  = null,   // OICP v2.0: Optional [50]
+                                                                        EVSE_Id             EVSEId            = null,
+                                                                        ChargingSession_Id  SessionId         = null,
+                                                                        ChargingProduct_Id  PartnerProductId  = null,
+                                                                        ChargingSession_Id  PartnerSessionId  = null,
                                                                         TimeSpan?           QueryTimeout      = null)
 
         {
