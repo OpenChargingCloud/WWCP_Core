@@ -22,16 +22,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.ConsoleLog;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
-using org.GraphDefined.Vanaheimr.Hermod.Services.DNS;
 
 #endregion
 
 namespace org.GraphDefined.WWCP.LocalService
 {
+
+    public delegate RemoteStartResult OnRemoteStartDelegate(DateTime            Timestamp,
+                                                            ChargingSession_Id  SessionId,
+                                                            EVSP_Id             ProviderId,
+                                                            eMA_Id              eMAId,
+                                                            EVSE_Id             EVSEId,
+                                                            EventTracking_Id    EventTrackingId  = null);
+
+    public delegate RemoteStopResult  OnRemoteStopDelegate (DateTime            Timestamp,
+                                                            ChargingSession_Id  SessionId,
+                                                            EVSP_Id             ProviderId,
+                                                            EVSE_Id             EVSEId,
+                                                            EventTracking_Id    EventTrackingId  = null);
+
 
     /// <summary>
     /// A simple router to dispatch incoming requests to different service
@@ -119,8 +129,6 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #region OnRemoteStart
 
-        public delegate RemoteStartResult OnRemoteStartDelegate(EVSE_Id EVSEId, ChargingSession_Id SessionId, EVSP_Id ProviderId, eMA_Id eMAId, EventTracking_Id EventTrackingId = null);
-
         /// <summary>
         /// An event fired whenever a remote start command was received.
         /// </summary>
@@ -129,8 +137,6 @@ namespace org.GraphDefined.WWCP.LocalService
         #endregion
 
         #region OnRemoteStop
-
-        public delegate RemoteStopResult OnRemoteStopDelegate(EVSE_Id EVSEId, ChargingSession_Id SessionId, EVSP_Id ProviderId, EventTracking_Id EventTrackingId = null);
 
         /// <summary>
         /// An event fired whenever a remote stop command was received.
@@ -606,21 +612,23 @@ namespace org.GraphDefined.WWCP.LocalService
         #endregion
 
 
-        #region RemoteStart(EVSEId, SessionId, ProviderId, eMAId, EventTrackingId = null)
+        #region RemoteStart(Timestamp, EVSEId, SessionId, ProviderId, eMAId, EventTrackingId = null)
 
         /// <summary>
         /// Initiate a remote start of a charging station socket outlet.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
         /// <param name="eMAId">The unique identification of the e-mobility account.</param>
         /// <param name="EventTrackingId">An optional unique identification for tracking related events.</param>
-        public RemoteStartResult RemoteStart(EVSE_Id             EVSEId,
+        public RemoteStartResult RemoteStart(DateTime            Timestamp,
                                              ChargingSession_Id  SessionId,
                                              EVSP_Id             ProviderId,
                                              eMA_Id              eMAId,
-                                             EventTracking_Id    EventTrackingId = null)
+                                             EVSE_Id             EVSEId,
+                                             EventTracking_Id    EventTrackingId  = null)
         {
 
             #region Documentation
@@ -665,7 +673,12 @@ namespace org.GraphDefined.WWCP.LocalService
 
                 var OnRemoteStartLocal = OnRemoteStart;
                 if (OnRemoteStartLocal != null)
-                    return OnRemoteStartLocal(EVSEId, SessionId, ProviderId, eMAId, EventTrackingId);
+                    return OnRemoteStartLocal(Timestamp,
+                                              SessionId,
+                                              ProviderId,
+                                              eMAId,
+                                              EVSEId,
+                                              EventTrackingId  = null);
 
                 return RemoteStartResult.Error;
 
@@ -675,18 +688,20 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #endregion
 
-        #region RemoteStop(EVSEId, SessionId, ProviderId, EventTrackingId = null)
+        #region RemoteStop(Timestamp, SessionId, ProviderId, EVSEId, EventTrackingId = null)
 
         /// <summary>
         /// Initiate a remote stop of a charging station socket outlet.
         /// </summary>
-        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="EventTrackingId">An optional unique identification for tracking related events.</param>
-        public RemoteStopResult RemoteStop(EVSE_Id             EVSEId,
+        public RemoteStopResult RemoteStop(DateTime            Timestamp,
                                            ChargingSession_Id  SessionId,
                                            EVSP_Id             ProviderId,
+                                           EVSE_Id             EVSEId,
                                            EventTracking_Id    EventTrackingId  = null)
         {
 
@@ -732,7 +747,7 @@ namespace org.GraphDefined.WWCP.LocalService
 
                 var OnRemoteStopLocal = OnRemoteStop;
                 if (OnRemoteStopLocal != null)
-                    return OnRemoteStopLocal(EVSEId, SessionId, ProviderId, EventTrackingId);
+                    return OnRemoteStopLocal(Timestamp, SessionId, ProviderId, EVSEId, EventTrackingId);
 
                 return RemoteStopResult.Error;
 
@@ -808,7 +823,6 @@ namespace org.GraphDefined.WWCP.LocalService
         }
 
         #endregion
-
 
     }
 

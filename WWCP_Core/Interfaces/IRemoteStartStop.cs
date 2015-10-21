@@ -37,27 +37,31 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <summary>
         /// Initiate a remote start of a charging station socket outlet.
         /// </summary>
-        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
         /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="EventTrackingId">An optional unique identification for tracking related events.</param>
-        RemoteStartResult RemoteStart(EVSE_Id             EVSEId,
+        RemoteStartResult RemoteStart(DateTime            Timestamp,
                                       ChargingSession_Id  SessionId,
                                       EVSP_Id             ProviderId,
                                       eMA_Id              eMAId,
+                                      EVSE_Id             EVSEId,
                                       EventTracking_Id    EventTrackingId  = null);
 
         /// <summary>
         /// Initiate a remote stop of a charging station socket outlet.
         /// </summary>
-        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="EventTrackingId">An optional unique identification for tracking related events.</param>
-        RemoteStopResult  RemoteStop (EVSE_Id             EVSEId,
+        RemoteStopResult  RemoteStop (DateTime            Timestamp,
                                       ChargingSession_Id  SessionId,
                                       EVSP_Id             ProviderId,
+                                      EVSE_Id             EVSEId,
                                       EventTracking_Id    EventTrackingId  = null);
 
     }
