@@ -80,6 +80,7 @@
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkStatusType.cs" />
     <Compile Include="Entities\EVSE\ChargingFacilities.cs" />
     <Compile Include="Entities\EVSE\ChargingModes.cs" />
+    <Compile Include="LocalService\Delegates.cs" />
     <Compile Include="RedirectedEVSEList.cs" />
     <Compile Include="WWCPImporter.cs" />
     <Compile Include="ImporterDefaults.cs" />
