@@ -33,6 +33,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="PartnerSessionId">The unique identification for this charging session on the partner side.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
@@ -41,6 +42,7 @@ namespace org.GraphDefined.WWCP
     public delegate RemoteStartResult OnRemoteStartDelegate(DateTime            Timestamp,
                                                             RoamingNetwork_Id   RoamingNetworkId,
                                                             ChargingSession_Id  SessionId,
+                                                            ChargingSession_Id  PartnerSessionId,
                                                             EVSP_Id             ProviderId,
                                                             eMA_Id              eMAId,
                                                             EVSE_Id             EVSEId,
