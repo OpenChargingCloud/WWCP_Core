@@ -18,16 +18,6 @@
 #region Usings
 
 using System;
-using System.Linq;
-using System.Xml.Linq;
-using System.Collections.Generic;
-
-using Newtonsoft.Json.Linq;
-
-using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.ConsoleLog;
-using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 using org.GraphDefined.WWCP.LocalService;
 
@@ -36,19 +26,24 @@ using org.GraphDefined.WWCP.LocalService;
 namespace org.GraphDefined.WWCP
 {
 
+    /// <summary>
+    /// Initiate a remote start of the given charging session at the given EVSE
+    /// and for the given Provider/eMAId.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
+    /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+    /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+    /// <param name="EVSEId">The unique identification of an EVSE.</param>
+    /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
+    /// <returns>A remote start result object.</returns>
     public delegate RemoteStartResult OnRemoteStartDelegate(DateTime            Timestamp,
                                                             RoamingNetwork_Id   RoamingNetworkId,
                                                             ChargingSession_Id  SessionId,
                                                             EVSP_Id             ProviderId,
                                                             eMA_Id              eMAId,
                                                             EVSE_Id             EVSEId,
-                                                            EventTracking_Id    EventTrackingId  = null);
-
-    public delegate RemoteStopResult  OnRemoteStopDelegate (DateTime            Timestamp,
-                                                            RoamingNetwork_Id   RoamingNetworkId,
-                                                            ChargingSession_Id  SessionId,
-                                                            EVSP_Id             ProviderId,
-                                                            EVSE_Id             EVSEId,
-                                                            EventTracking_Id    EventTrackingId  = null);
+                                                            ChargingProduct_Id  ChargingProductId);
 
 }

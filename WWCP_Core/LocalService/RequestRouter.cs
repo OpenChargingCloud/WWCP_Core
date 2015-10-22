@@ -598,10 +598,11 @@ namespace org.GraphDefined.WWCP.LocalService
         #endregion
 
 
-        #region RemoteStart(Timestamp, RoamingNetworkId, SessionId, ProviderId, eMAId, EVSEId, EventTrackingId = null)
+        #region RemoteStart(Timestamp, RoamingNetworkId, SessionId, ProviderId, eMAId, EVSEId, ChargingProductId)
 
         /// <summary>
-        /// Initiate a remote start of a charging station socket outlet.
+        /// Initiate a remote start of the given charging session at the given EVSE
+        /// and for the given Provider/eMAId.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
@@ -609,52 +610,16 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
         /// <param name="eMAId">The unique identification of the e-mobility account.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        /// <param name="EventTrackingId">An optional unique identification for tracking related events.</param>
+        /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
+        /// <returns>A remote start result object.</returns>
         public RemoteStartResult RemoteStart(DateTime            Timestamp,
                                              RoamingNetwork_Id   RoamingNetworkId,
                                              ChargingSession_Id  SessionId,
                                              EVSP_Id             ProviderId,
                                              eMA_Id              eMAId,
                                              EVSE_Id             EVSEId,
-                                             EventTracking_Id    EventTrackingId  = null)
+                                             ChargingProduct_Id  ChargingProductId)
         {
-
-            #region Documentation
-
-            // <soapenv:Envelope xmlns:soapenv     = "http://schemas.xmlsoap.org/soap/envelope/"
-            //                   xmlns:CommonTypes = "http://www.hubject.com/b2b/services/commontypes/v2.0">
-            //
-            //    <soapenv:Header/>
-            //
-            //    <soapenv:Body>
-            //       <CommonTypes:eRoamingAcknowledgement>
-            // 
-            //          <CommonTypes:Result>?</CommonTypes:Result>
-            // 
-            //          <CommonTypes:StatusCode>
-            // 
-            //             <CommonTypes:Code>?</CommonTypes:Code>
-            // 
-            //             <!--Optional:-->
-            //             <CommonTypes:Description>?</CommonTypes:Description>
-            // 
-            //             <!--Optional:-->
-            //             <CommonTypes:AdditionalInfo>?</CommonTypes:AdditionalInfo>
-            // 
-            //          </CommonTypes:StatusCode>
-            // 
-            //          <!--Optional:-->
-            //          <CommonTypes:SessionID>?</CommonTypes:SessionID>
-            // 
-            //          <!--Optional:-->
-            //          <CommonTypes:PartnerSessionID>?</CommonTypes:PartnerSessionID>
-            // 
-            //       </CommonTypes:eRoamingAcknowledgement>
-            //    </soapenv:Body>
-            //
-            // </soapenv:Envelope>
-
-            #endregion
 
             lock (AuthenticationServices)
             {
@@ -667,7 +632,7 @@ namespace org.GraphDefined.WWCP.LocalService
                                               ProviderId,
                                               eMAId,
                                               EVSEId,
-                                              EventTrackingId  = null);
+                                              ChargingProductId);
 
                 return RemoteStartResult.Error;
 
@@ -677,61 +642,25 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #endregion
 
-        #region RemoteStop(Timestamp, RoamingNetworkId, SessionId, ProviderId, EVSEId, EventTrackingId = null)
+        #region RemoteStop(Timestamp, RoamingNetworkId, SessionId, PartnerSessionId, ProviderId, EVSEId)
 
         /// <summary>
-        /// Initiate a remote stop of a charging station socket outlet.
+        /// Initiate a remote stop of the given charging session at the given EVSE.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="PartnerSessionId">The unique identification for this charging session on the partner side.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        /// <param name="EventTrackingId">An optional unique identification for tracking related events.</param>
+        /// <returns>A remote stop result object.</returns>
         public RemoteStopResult RemoteStop(DateTime            Timestamp,
                                            RoamingNetwork_Id   RoamingNetworkId,
                                            ChargingSession_Id  SessionId,
+                                           ChargingSession_Id  PartnerSessionId,
                                            EVSP_Id             ProviderId,
-                                           EVSE_Id             EVSEId,
-                                           EventTracking_Id    EventTrackingId  = null)
+                                           EVSE_Id             EVSEId)
         {
-
-            #region Documentation
-
-            // <soapenv:Envelope xmlns:soapenv     = "http://schemas.xmlsoap.org/soap/envelope/"
-            //                   xmlns:CommonTypes = "http://www.hubject.com/b2b/services/commontypes/v2.0">
-            //
-            //    <soapenv:Header/>
-            //
-            //    <soapenv:Body>
-            //       <CommonTypes:eRoamingAcknowledgement>
-            // 
-            //          <CommonTypes:Result>?</CommonTypes:Result>
-            // 
-            //          <CommonTypes:StatusCode>
-            // 
-            //             <CommonTypes:Code>?</CommonTypes:Code>
-            // 
-            //             <!--Optional:-->
-            //             <CommonTypes:Description>?</CommonTypes:Description>
-            // 
-            //             <!--Optional:-->
-            //             <CommonTypes:AdditionalInfo>?</CommonTypes:AdditionalInfo>
-            // 
-            //          </CommonTypes:StatusCode>
-            // 
-            //          <!--Optional:-->
-            //          <CommonTypes:SessionID>?</CommonTypes:SessionID>
-            // 
-            //          <!--Optional:-->
-            //          <CommonTypes:PartnerSessionID>?</CommonTypes:PartnerSessionID>
-            // 
-            //       </CommonTypes:eRoamingAcknowledgement>
-            //    </soapenv:Body>
-            //
-            // </soapenv:Envelope>
-
-            #endregion
 
             lock (AuthenticationServices)
             {
@@ -741,9 +670,9 @@ namespace org.GraphDefined.WWCP.LocalService
                     return OnRemoteStopLocal(Timestamp,
                                              RoamingNetworkId,
                                              SessionId,
+                                             PartnerSessionId,
                                              ProviderId,
-                                             EVSEId,
-                                             EventTrackingId);
+                                             EVSEId);
 
                 return RemoteStopResult.Error;
 
