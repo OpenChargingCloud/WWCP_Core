@@ -36,6 +36,17 @@ using org.GraphDefined.WWCP.LocalService;
 namespace org.GraphDefined.WWCP
 {
 
+    /// <summary>
+    /// A delegate fired whenever a remote start command was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
+    /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+    /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+    /// <param name="EVSEId">The unique identification of an EVSE.</param>
+    /// <param name="EventTrackingId">An optional unique identification for tracking related events.</param>
+    /// <returns>A remote start result object.</returns>
     public delegate RemoteStartResult OnRemoteStartDelegate(DateTime            Timestamp,
                                                             RoamingNetwork_Id   RoamingNetworkId,
                                                             ChargingSession_Id  SessionId,
@@ -44,6 +55,17 @@ namespace org.GraphDefined.WWCP
                                                             EVSE_Id             EVSEId,
                                                             EventTracking_Id    EventTrackingId  = null);
 
+
+    /// <summary>
+    /// A delegate fired whenever a remote stop command was received.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
+    /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+    /// <param name="EVSEId">The unique identification of an EVSE.</param>
+    /// <param name="EventTrackingId">An optional unique identification for tracking related events.</param>
+    /// <returns>A remote stop result object.</returns>
     public delegate RemoteStopResult  OnRemoteStopDelegate (DateTime            Timestamp,
                                                             RoamingNetwork_Id   RoamingNetworkId,
                                                             ChargingSession_Id  SessionId,
