@@ -94,12 +94,13 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (static) Is24Hours
+
+        #region (static) Open24Hours
 
         /// <summary>
         /// Is open for 24 hours a day.
         /// </summary>
-        public static OpeningTime Is24Hours
+        public static OpeningTime Open24Hours
         {
             get
             {

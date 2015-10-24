@@ -195,6 +195,36 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Address(Country, PostalCode, City, Street, HouseNumber)
+
+        /// <summary>
+        /// Create a new minimal address.
+        /// </summary>
+        /// <param name="Country">The country.</param>
+        /// <param name="PostalCode">The postal code</param>
+        /// <param name="City">The city.</param>
+        /// <param name="Street">The name of the street.</param>
+        /// <param name="HouseNumber">The house number.</param>
+        public Address(Country  Country,
+                       String   PostalCode,
+                       String   City,
+                       String   Street,
+                       String   HouseNumber)
+        {
+
+            this._FloorLevel     = "";
+            this._HouseNumber    = HouseNumber;
+            this._Street         = Street;
+            this._PostalCode     = PostalCode;
+            this._PostalCodeSub  = "";
+            this._City           = City;
+            this._Country        = Country;
+            this._Comment        = new I18NString();
+
+        }
+
+        #endregion
+
         #region Address(Street, HouseNumber, FloorLevel, PostalCode, PostalCodeSub, City, Country, FreeText = null)
 
         /// <summary>
@@ -231,6 +261,30 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+        #endregion
+
+
+        #region (static) Create(Country, PostalCode, City, Street, HouseNumber)
+
+        /// <summary>
+        /// Create a new minimal address.
+        /// </summary>
+        /// <param name="Country">The country.</param>
+        /// <param name="PostalCode">The postal code</param>
+        /// <param name="City">The city.</param>
+        /// <param name="Street">The name of the street.</param>
+        /// <param name="HouseNumber">The house number.</param>
+        public static Address Create(Country  Country,
+                                     String   PostalCode,
+                                     String   City,
+                                     String   Street,
+                                     String   HouseNumber)
+        {
+
+            return new Address(Country, PostalCode, City, Street, HouseNumber);
+
+        }
 
         #endregion
 

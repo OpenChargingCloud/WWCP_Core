@@ -76,10 +76,12 @@
     <Compile Include="Entities\EVSE\EVSEAdminStatusType.cs" />
     <Compile Include="Entities\EVSE\EVSEAdminStatusReport.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationAdminStatusDiff.cs" />
+    <Compile Include="Entities\HubProvider_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkAdminStatusType.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkStatusType.cs" />
     <Compile Include="Entities\EVSE\ChargingFacilities.cs" />
     <Compile Include="Entities\EVSE\ChargingModes.cs" />
+    <Compile Include="Entities\HubOperator_Id.cs" />
     <Compile Include="RemoteStartStop\OnRemoteStopDelegate.cs" />
     <Compile Include="RemoteStartStop\OnRemoteStartDelegate.cs" />
     <Compile Include="RedirectedEVSEList.cs" />
