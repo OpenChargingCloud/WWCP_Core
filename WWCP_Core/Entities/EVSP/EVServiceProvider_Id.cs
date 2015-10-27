@@ -550,7 +550,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return _ProviderId.ToString();
+            return String.Concat(CountryCode.Alpha2Code.ToUpper(), "*", _ProviderId.ToString());
         }
 
         #endregion
