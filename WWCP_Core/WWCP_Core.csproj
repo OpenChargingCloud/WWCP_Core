@@ -129,8 +129,8 @@
     <Compile Include="Entities\EVSEOperator\EVSEOperator.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStation_Id.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPool_Id.cs" />
-    <Compile Include="Entities\EVSP\EVServiceProvider.cs" />
-    <Compile Include="Entities\EVSP\EVServiceProvider_Id.cs" />
+    <Compile Include="Entities\EVSP\EVSP.cs" />
+    <Compile Include="Entities\EVSP\EVSP_Id.cs" />
     <Compile Include="Entities\EVSEOperator\EVSEOperator_Id.cs" />
     <Compile Include="Entities\EMobilityAccount\eMA_Id.cs" />
     <Compile Include="Entities\EVSE\EVSE_Id.cs" />

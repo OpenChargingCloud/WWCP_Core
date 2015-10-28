@@ -39,8 +39,8 @@ namespace org.GraphDefined.WWCP
     /// by any entity in the ev charging process to track the ev driver or its
     /// behaviour.
     /// </summary>
-    public class EVServiceProvider : AEMobilityEntity<EVSP_Id>,
-                                     IEquatable<EVServiceProvider>, IComparable<EVServiceProvider>, IComparable
+    public class EVSP : AEMobilityEntity<EVSP_Id>,
+                        IEquatable<EVSP>, IComparable<EVSP>, IComparable
     {
 
         #region Data
@@ -143,7 +143,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The ChargingPool Id.</param>
         /// <param name="RoamingNetwork">The corresponding roaming network.</param>
-        internal EVServiceProvider(EVSP_Id         Id,
+        internal EVSP(EVSP_Id         Id,
                                    RoamingNetwork  RoamingNetwork)
 
             : this(Id, RoamingNetwork, new LocalEMobilityService(Id, Authorizator_Id.Parse(Id.ToString() + " Local Authorizator")))
@@ -161,7 +161,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The ChargingPool Id.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
-        internal EVServiceProvider(EVSP_Id                                        Id,
+        internal EVSP(EVSP_Id                                        Id,
                                    RoamingNetwork                                 RoamingNetwork,
                                    IAuthServices  EMobilityService)
 
@@ -207,7 +207,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an EVSE_Operator.
-            var EVSE_Operator = Object as EVServiceProvider;
+            var EVSE_Operator = Object as EVSP;
             if ((Object) EVSE_Operator == null)
                 throw new ArgumentException("The given object is not an EVSE_Operator!");
 
@@ -223,7 +223,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="EVSE_Operator">An EVSE_Operator object to compare with.</param>
-        public Int32 CompareTo(EVServiceProvider EVSE_Operator)
+        public Int32 CompareTo(EVSP EVSE_Operator)
         {
 
             if ((Object) EVSE_Operator == null)
@@ -253,7 +253,7 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is an EVSE_Operator.
-            var EVSE_Operator = Object as EVServiceProvider;
+            var EVSE_Operator = Object as EVSP;
             if ((Object) EVSE_Operator == null)
                 return false;
 
@@ -270,7 +270,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSE_Operator">An EVSE_Operator to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EVServiceProvider EVSE_Operator)
+        public Boolean Equals(EVSP EVSE_Operator)
         {
 
             if ((Object) EVSE_Operator == null)

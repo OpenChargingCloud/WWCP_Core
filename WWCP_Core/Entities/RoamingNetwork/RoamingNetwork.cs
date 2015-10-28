@@ -50,7 +50,7 @@ namespace org.GraphDefined.WWCP
         #region Data
 
         private  readonly ConcurrentDictionary<EVSEOperator_Id,               EVSEOperator>               _EVSEOperators;
-        private  readonly ConcurrentDictionary<EVSP_Id,                       EVServiceProvider>          _EVServiceProviders;
+        private  readonly ConcurrentDictionary<EVSP_Id,                       EVSP>          _EVServiceProviders;
         private  readonly ConcurrentDictionary<RoamingProvider_Id,            RoamingProvider>            _RoamingProviders;
         private  readonly ConcurrentDictionary<NavigationServiceProvider_Id,  NavigationServiceProvider>  _SearchProviders;
 
@@ -247,7 +247,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return all EV service providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<EVServiceProvider> EVServiceProviders
+        public IEnumerable<EVSP> EVServiceProviders
         {
             get
             {
@@ -396,12 +396,12 @@ namespace org.GraphDefined.WWCP
 
         #region EVServiceProviderAddition
 
-        private readonly IVotingNotificator<RoamingNetwork, EVServiceProvider, Boolean> EVServiceProviderAddition;
+        private readonly IVotingNotificator<RoamingNetwork, EVSP, Boolean> EVServiceProviderAddition;
 
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was added.
         /// </summary>
-        public IVotingSender<RoamingNetwork, EVServiceProvider, Boolean> OnEVServiceProviderAddition
+        public IVotingSender<RoamingNetwork, EVSP, Boolean> OnEVServiceProviderAddition
         {
             get
             {
@@ -413,12 +413,12 @@ namespace org.GraphDefined.WWCP
 
         #region EVServiceProviderRemoval
 
-        private readonly IVotingNotificator<RoamingNetwork, EVServiceProvider, Boolean> EVServiceProviderRemoval;
+        private readonly IVotingNotificator<RoamingNetwork, EVSP, Boolean> EVServiceProviderRemoval;
 
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was removed.
         /// </summary>
-        public IVotingSender<RoamingNetwork, EVServiceProvider, Boolean> OnEVServiceProviderRemoval
+        public IVotingSender<RoamingNetwork, EVSP, Boolean> OnEVServiceProviderRemoval
         {
             get
             {
@@ -923,7 +923,7 @@ namespace org.GraphDefined.WWCP
             #region Init data and properties
 
             this._EVSEOperators             = new ConcurrentDictionary<EVSEOperator_Id,              EVSEOperator>();
-            this._EVServiceProviders        = new ConcurrentDictionary<EVSP_Id,                      EVServiceProvider>();
+            this._EVServiceProviders        = new ConcurrentDictionary<EVSP_Id,                      EVSP>();
             this._RoamingProviders          = new ConcurrentDictionary<RoamingProvider_Id,           RoamingProvider>();
             this._SearchProviders           = new ConcurrentDictionary<NavigationServiceProvider_Id, NavigationServiceProvider>();
             this._RequestRouter             = new RequestRouter(Id, AuthorizatorId);
@@ -939,8 +939,8 @@ namespace org.GraphDefined.WWCP
             this.EVSEOperatorAddition       = new VotingNotificator<DateTime, RoamingNetwork,  EVSEOperator,              Boolean>(() => new VetoVote(), true);
             this.EVSEOperatorRemoval        = new VotingNotificator<DateTime, RoamingNetwork,  EVSEOperator,              Boolean>(() => new VetoVote(), true);
 
-            this.EVServiceProviderAddition  = new VotingNotificator<RoamingNetwork,  EVServiceProvider,         Boolean>(() => new VetoVote(), true);
-            this.EVServiceProviderRemoval   = new VotingNotificator<RoamingNetwork,  EVServiceProvider,         Boolean>(() => new VetoVote(), true);
+            this.EVServiceProviderAddition  = new VotingNotificator<RoamingNetwork,  EVSP,         Boolean>(() => new VetoVote(), true);
+            this.EVServiceProviderRemoval   = new VotingNotificator<RoamingNetwork,  EVSP,         Boolean>(() => new VetoVote(), true);
 
             this.RoamingProviderAddition    = new VotingNotificator<RoamingNetwork,  RoamingProvider,           Boolean>(() => new VetoVote(), true);
             this.RoamingProviderRemoval     = new VotingNotificator<RoamingNetwork,  RoamingProvider,           Boolean>(() => new VetoVote(), true);
@@ -1160,8 +1160,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVServiceProviderId">The unique identification of the new roaming provider.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
-        public EVServiceProvider CreateNewEVServiceProvider(EVSP_Id                    EVServiceProviderId,
-                                                            Action<EVServiceProvider>  Action  = null)
+        public EVSP CreateNewEVServiceProvider(EVSP_Id                    EVServiceProviderId,
+                                                            Action<EVSP>  Action  = null)
         {
 
             #region Initial checks
@@ -1174,7 +1174,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            var _EVServiceProvider = new EVServiceProvider(EVServiceProviderId, this);
+            var _EVServiceProvider = new EVSP(EVServiceProviderId, this);
 
             Action.FailSafeInvoke(_EVServiceProvider);
 
@@ -1202,9 +1202,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVServiceProviderId">The unique identification of the new roaming provider.</param>
         /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
-        public EVServiceProvider CreateNewEVServiceProvider(EVSP_Id                    EVServiceProviderId,
+        public EVSP CreateNewEVServiceProvider(EVSP_Id                    EVServiceProviderId,
                                                             IAuthServices              EMobilityService,
-                                                            Action<EVServiceProvider>  Action  = null)
+                                                            Action<EVSP>  Action  = null)
         {
 
             #region Initial checks
@@ -1217,7 +1217,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            var _EVServiceProvider = new EVServiceProvider(EVServiceProviderId, this, EMobilityService);
+            var _EVServiceProvider = new EVSP(EVServiceProviderId, this, EMobilityService);
 
             Action.FailSafeInvoke(_EVServiceProvider);
 
