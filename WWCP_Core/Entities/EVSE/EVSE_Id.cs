@@ -158,7 +158,7 @@ namespace org.GraphDefined.WWCP
                                                  RegexOptions.IgnorePatternWhitespace);
 
             if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal EVSE identification!", "IdSuffix");
+                throw new ArgumentException("Illegal EVSE identification '" + OperatorId.ToString() + "' with suffix '" + IdSuffix + "'!", "IdSuffix");
 
             this._OperatorId  = OperatorId;
             this._Suffix      = _MatchCollection[0].Value;
@@ -189,7 +189,7 @@ namespace org.GraphDefined.WWCP
                                                  RegexOptions.IgnorePatternWhitespace);
 
             if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal EVSE identification!", "EVSEId");
+                throw new ArgumentException("Illegal EVSE identification '" + Text + "'!", "EVSEId");
 
             EVSEOperator_Id __EVSEOperatorId = null;
 
@@ -204,7 +204,7 @@ namespace org.GraphDefined.WWCP
                                    IdFormatType.OLD);
 
 
-            throw new ArgumentException("Illegal EVSE identification!", "EVSEId");
+            throw new ArgumentException("Illegal EVSE identification '" + Text + "'!", "EVSEId");
 
         }
 

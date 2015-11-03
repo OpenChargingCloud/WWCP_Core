@@ -205,13 +205,13 @@ namespace org.GraphDefined.WWCP
 
         #region MaxCapacity_kWh
 
-        private Double _MaxCapacity_kWh;
+        private Double? _MaxCapacity_kWh;
 
         /// <summary>
         /// Max power capacity at the connector [kWh].
         /// </summary>
         [Mandatory]
-        public Double MaxCapacity_kWh
+        public Double? MaxCapacity_kWh
         {
 
             get
