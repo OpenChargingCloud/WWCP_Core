@@ -37,6 +37,14 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         protected readonly String _Id;
 
+        /// <summary>
+        /// The regular expression for parsing an Alpha-2-CountryCode and an EV Service Provider identification.
+        /// The ISO format onyl allows '-' as a separator!
+        /// </summary>
+        public const String eMAId_RegEx = @"^(([A-Z]{2})([\*|\-]?)([A-Z0-9]{3}))([\*|\-]?)([A-Za-z0-9]{6,9})([\*|\-]?)([\d|X])$";
+        // ([A-Za-z]{2}    \- ?[A-Za-z0-9]{3}    \- ?C[A-Za-z0-9]{8}[\*|\-]?[\d|X])  ISO
+        // ([A-Za-z]{2}[\*|\-]?[A-Za-z0-9]{3}[\*|\-]? [A-Za-z0-9]{6}[\*|\-]?[\d|X])  DIN
+
         #endregion
 
         #region Properties
@@ -51,6 +59,38 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return (UInt64) _Id.Length;
+            }
+        }
+
+        #endregion
+
+        #region ProviderId
+
+        private readonly EVSP_Id _ProviderId;
+
+        /// <summary>
+        /// The EVSP Id format.
+        /// </summary>
+        public EVSP_Id ProviderId
+        {
+            get
+            {
+                return _ProviderId;
+            }
+        }
+
+        #endregion
+
+        #region IdFormat
+
+        /// <summary>
+        /// The EVSP Id format.
+        /// </summary>
+        public ProviderIdFormats IdFormat
+        {
+            get
+            {
+                return _ProviderId.IdFormat;
             }
         }
 

@@ -26,6 +26,16 @@ using System.Text.RegularExpressions;
 namespace org.GraphDefined.WWCP
 {
 
+    public enum ProviderIdFormats
+    {
+        DIN,
+        DIN_STAR,
+        DIN_HYPHEN,
+        ISO,
+        ISO_HYPHEN
+    }
+
+
     /// <summary>
     /// The unique identification of an Electric Vehicle Service Provider (EVSP Id).
     /// </summary>
@@ -44,8 +54,9 @@ namespace org.GraphDefined.WWCP
 
         /// <summary>
         /// The regular expression for parsing an Alpha-2-CountryCode and an EV Service Provider identification.
+        /// The ISO format onyl allows '-' as a separator!
         /// </summary>
-        public  const    String   CountryAndProviderId_RegEx  = @"^([A-Z]{2})\*?([A-Z0-9]{3})$";
+        public  const    String   CountryAndProviderId_RegEx  = @"^([A-Z]{2})([\*|\-]?)([A-Z0-9]{3})$";
 
         #endregion
 
@@ -83,6 +94,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region IdFormat
+
+        private readonly ProviderIdFormats _IdFormat;
+
+        /// <summary>
+        /// The EVSP Id format.
+        /// </summary>
+        public ProviderIdFormats IdFormat
+        {
+            get
+            {
+                return _IdFormat;
+            }
+        }
+
+        #endregion
+
         #region ProviderId
 
         private readonly String _ProviderId;
@@ -109,12 +137,15 @@ namespace org.GraphDefined.WWCP
         /// based on the given string.
         /// </summary>
         /// <param name="CountryCode">The Alpha-2-CountryCode.</param>
+        /// <param name="Separator">The separator '-' (ISO) or '*|-' DIN to use.</param>
         /// <param name="ProviderId">The EV Service Provider identification.</param>
-        private EVSP_Id(Country  CountryCode,
-                        String   ProviderId)
+        private EVSP_Id(Country          CountryCode,
+                        ProviderIdFormats  Separator,
+                        String           ProviderId)
         {
 
             this._CountryCode  = CountryCode;
+            this._IdFormat    = Separator;
             this._ProviderId   = ProviderId;
 
         }
@@ -148,8 +179,25 @@ namespace org.GraphDefined.WWCP
             Country __CountryCode;
 
             if (Country.TryParseAlpha2Code(_MatchCollection[0].Groups[1].Value, out __CountryCode))
+            {
+
+                ProviderIdFormats Separator = ProviderIdFormats.ISO_HYPHEN;
+
+                switch (_MatchCollection[0].Groups[2].Value)
+                {
+
+                    case ""  : Separator = ProviderIdFormats.DIN|ProviderIdFormats.ISO; break;
+                    case "-" : Separator = ProviderIdFormats.DIN_HYPHEN|ProviderIdFormats.ISO_HYPHEN; break;
+                    case "*" : Separator = ProviderIdFormats.DIN_STAR; break;
+
+                    default: throw new ArgumentException("Illegal EV Service Provider identification!", "CountryAndProviderId");
+
+                }
+
                 return new EVSP_Id(__CountryCode,
-                                   _MatchCollection[0].Groups[2].Value);
+                                   Separator,
+                                   _MatchCollection[0].Groups[3].Value);
+            }
 
             throw new ArgumentException("Illegal EV Service Provider identification!", "CountryAndProviderId");
 
@@ -186,6 +234,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentException("Illegal EV Service Provider identification '" + CountryCode + " / " + ProviderId + "'!", "ProviderId");
 
             return new EVSP_Id(CountryCode,
+                               ProviderIdFormats.DIN|ProviderIdFormats.ISO,
                                _MatchCollection[0].Value);
 
         }
@@ -230,7 +279,22 @@ namespace org.GraphDefined.WWCP
 
                 if (Country.TryParseAlpha2Code(_MatchCollection[0].Groups[1].Value, out __CountryCode))
                 {
+
+                    ProviderIdFormats Separator = ProviderIdFormats.ISO_HYPHEN;
+
+                    switch (_MatchCollection[0].Groups[2].Value)
+                    {
+
+                        case ""  : Separator = ProviderIdFormats.DIN|ProviderIdFormats.ISO; break;
+                        case "-" : Separator = ProviderIdFormats.DIN_HYPHEN|ProviderIdFormats.ISO_HYPHEN; break;
+                        case "*" : Separator = ProviderIdFormats.DIN_STAR; break;
+
+                        default: throw new ArgumentException("Illegal EV Service Provider identification!", "CountryAndProviderId");
+
+                    }
+
                     EVSEProviderId = new EVSP_Id(__CountryCode,
+                                                 Separator,
                                                  _MatchCollection[0].Groups[2].Value);
                     return true;
                 }
@@ -283,7 +347,10 @@ namespace org.GraphDefined.WWCP
                     return false;
                 }
 
-                EVSEProviderId = new EVSP_Id(CountryCode, _MatchCollection[0].Value);
+                EVSEProviderId = new EVSP_Id(CountryCode,
+                                             ProviderIdFormats.DIN | ProviderIdFormats.ISO,
+                                             _MatchCollection[0].Value);
+
                 return true;
 
             }
@@ -294,6 +361,20 @@ namespace org.GraphDefined.WWCP
                 return false;
             }
 
+        }
+
+        #endregion
+
+        #region ChangeIdFormat(NewIdFormat)
+
+        /// <summary>
+        /// Change the EVSP Id format.
+        /// </summary>
+        /// <param name="NewIdFormat">The new EVSP Id format.</param>
+        /// <returns>A new EVSPId object.</returns>
+        public EVSP_Id ChangeIdFormat(ProviderIdFormats NewIdFormat)
+        {
+            return new EVSP_Id(this._CountryCode, NewIdFormat, this.ProviderId);
         }
 
         #endregion
@@ -309,6 +390,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 return new EVSP_Id(_CountryCode,
+                                   _IdFormat,
                                    new String(_ProviderId.ToCharArray()));
 
             }
@@ -543,6 +625,33 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ToString(IdFormat)
+
+        /// <summary>
+        /// Return a string represtentation of this object
+        /// in the given Id format.
+        /// </summary>
+        public String ToString(ProviderIdFormats IdFormat)
+        {
+
+            switch (IdFormat)
+            {
+
+                case ProviderIdFormats.DIN_HYPHEN | ProviderIdFormats.ISO_HYPHEN:
+                    return String.Concat(CountryCode.Alpha2Code.ToUpper(), "-", _ProviderId.ToString());
+
+                case ProviderIdFormats.DIN_STAR:
+                    return String.Concat(CountryCode.Alpha2Code.ToUpper(), "*", _ProviderId.ToString());
+
+                default:
+                    return String.Concat(CountryCode.Alpha2Code.ToUpper(), _ProviderId.ToString());
+
+            }
+
+        }
+
+        #endregion
+
         #region ToString()
 
         /// <summary>
@@ -550,7 +659,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return String.Concat(CountryCode.Alpha2Code.ToUpper(), "*", _ProviderId.ToString());
+            return ToString(_IdFormat);
         }
 
         #endregion
