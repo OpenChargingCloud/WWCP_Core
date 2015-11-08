@@ -25,6 +25,9 @@ namespace org.GraphDefined.WWCP.LocalService
         EVSE_NotReachable,
         SessionId_AlreadyInUse,
         EVSE_AlreadyInUse,
+        UnknownEVSE,
+        EVSEReserved,
+        EVSEOutOfService,
         Start_Timeout
     }
 
