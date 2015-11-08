@@ -46,17 +46,17 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region Data
 
-        private                 Boolean                           Started = false;
-        private readonly        Object                            UpdateEVSEDataAndStatusLock;
-        private readonly        Timer                             UpdateEVSEStatusTimer;
+        private                 Boolean                                         Started = false;
+        private readonly        Object                                          UpdateEVSEDataAndStatusLock;
+        private readonly        Timer                                           UpdateEVSEStatusTimer;
 
-        private readonly        Func<DNSClient, Task<T>>          DownloadXMLData;
-        private readonly        Action<WWCPImporter<T>, Task<T>>  OnFirstRun;
-        private readonly        Action<WWCPImporter<T>, Task<T>>  OnEveryRun;
+        private readonly        Func<DNSClient, Task<HTTPResponse<T>>>          DownloadXMLData;
+        private readonly        Action<WWCPImporter<T>, Task<HTTPResponse<T>>>  OnFirstRun;
+        private readonly        Action<WWCPImporter<T>, Task<HTTPResponse<T>>>  OnEveryRun;
 
-        private readonly static TimeSpan                          DefaultImportEvery  = TimeSpan.FromMinutes(1);
+        private readonly static TimeSpan                                        DefaultImportEvery  = TimeSpan.FromMinutes(1);
 
-        public  const           UInt16                            DefaultMaxNumberOfCachedXMLExports = 100;
+        public  const           UInt16                                          DefaultMaxNumberOfCachedXMLExports = 100;
 
         #endregion
 
@@ -259,16 +259,16 @@ namespace org.GraphDefined.WWCP.Importer
         /// <param name="OnFirstRun"></param>
         /// <param name="OnEveryRun"></param>
         /// <param name="MaxNumberOfCachedXMLExports"></param>
-        public WWCPImporter(String                            Id,
-                            String                            ConfigFilenamePrefix,
-                            DNSClient                         DNSClient                    = null,
-                            TimeSpan?                         UpdateEvery                  = null,
+        public WWCPImporter(String                                          Id,
+                            String                                          ConfigFilenamePrefix,
+                            DNSClient                                       DNSClient                    = null,
+                            TimeSpan?                                       UpdateEvery                  = null,
 
-                            Func<DNSClient, Task<T>>          GetXMLData                   = null,
-                            Action<WWCPImporter<T>, Task<T>>  OnFirstRun                   = null,
-                            Action<WWCPImporter<T>, Task<T>>  OnEveryRun                   = null,
+                            Func<DNSClient, Task<HTTPResponse<T>>>          GetXMLData                   = null,
+                            Action<WWCPImporter<T>, Task<HTTPResponse<T>>>  OnFirstRun                   = null,
+                            Action<WWCPImporter<T>, Task<HTTPResponse<T>>>  OnEveryRun                   = null,
 
-                            UInt16                            MaxNumberOfCachedXMLExports  = DefaultMaxNumberOfCachedXMLExports)
+                            UInt16                                          MaxNumberOfCachedXMLExports  = DefaultMaxNumberOfCachedXMLExports)
 
         {
 
@@ -885,7 +885,7 @@ namespace org.GraphDefined.WWCP.Importer
                         ContinueWith(XMLTask => {
 
                         // Save the XML Export for later review...
-                        _XMLExports.Add(new Timestamped<T>(XMLTask.Result));
+                        _XMLExports.Add(new Timestamped<T>(XMLTask.Result.Content));
 
                         if (_XMLExports.Count > _MaxNumberOfCachedXMLExports)
                             _XMLExports.Remove(_XMLExports.First());
