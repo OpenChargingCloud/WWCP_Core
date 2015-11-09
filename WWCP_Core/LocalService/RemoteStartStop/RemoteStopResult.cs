@@ -20,6 +20,10 @@ namespace org.GraphDefined.WWCP.LocalService
 
     public enum RemoteStopResult
     {
+        EVSE_NotReachable,
+        Stop_Timeout,
+        UnknownEVSE,
+        EVSEOutOfService,
         Error,
         Success
     }
