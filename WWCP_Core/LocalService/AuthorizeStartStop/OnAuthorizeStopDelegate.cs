@@ -29,30 +29,22 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// Initiate a remote start of the given charging session at the given EVSE
-    /// and for the given Provider/eMAId.
+    /// Initiate a remote stop of the given charging session at the given EVSE.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="PartnerSessionId">The unique identification for this charging session on the partner side.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
-    /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
-    /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
     /// <param name="CancellationToken">A task cancellation token.</param>
-    /// <returns>A RemoteStartResult task.</returns>
-    public delegate Task<RemoteStartResult> OnRemoteStartDelegate(DateTime            Timestamp,
-                                                                  RoamingNetwork_Id   RoamingNetworkId,
-                                                                  ChargingSession_Id  SessionId,
-                                                                  ChargingSession_Id  PartnerSessionId,
-                                                                  EVSP_Id             ProviderId,
-                                                                  eMA_Id              eMAId,
-                                                                  EVSE_Id             EVSEId,
-                                                                  ChargingProduct_Id  ChargingProductId,
-                                                                  CancellationToken   CancellationToken);
-
+    /// <returns>A remote stop result object.</returns>
+    public delegate Task<AuthorizeStopResult> OnAuthorizeStopDelegate(DateTime            Timestamp,
+                                                                      RoamingNetwork_Id   RoamingNetworkId,
+                                                                      ChargingSession_Id  SessionId,
+                                                                      ChargingSession_Id  PartnerSessionId,
+                                                                      EVSP_Id             ProviderId,
+                                                                      EVSE_Id             EVSEId,
+                                                                      CancellationToken   CancellationToken);
 
 }
-
-
