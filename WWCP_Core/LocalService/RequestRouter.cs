@@ -628,6 +628,22 @@ namespace org.GraphDefined.WWCP.LocalService
 
                 var OnRemoteStartLocal = OnRemoteStart;
                 if (OnRemoteStartLocal != null)
+                {
+
+                    //var eventListeners = OnRemoteStartLocal.GetInvocationList();
+                    //
+                    //Console.WriteLine("Raising " + eventListeners.Length + " events...");
+                    //
+                    //for (int index = 0; index < eventListeners.Count(); index++)
+                    //{
+                    //    var methodToInvoke = (OnRemoteStartDelegate) eventListeners[index];
+                    //    methodToInvoke.BeginInvoke(this, EventArgs.Empty, EndAsyncEvent, null);
+                    //}
+                    //
+                    //Console.WriteLine("Done raising events...");
+
+
+
                     return OnRemoteStartLocal(Timestamp,
                                               RoamingNetworkId,
                                               SessionId,
@@ -637,6 +653,9 @@ namespace org.GraphDefined.WWCP.LocalService
                                               EVSEId,
                                               ChargingProductId);
 
+
+                }
+
                 return RemoteStartResult.Error;
 
             }
@@ -644,6 +663,24 @@ namespace org.GraphDefined.WWCP.LocalService
         }
 
         #endregion
+
+
+        private void EndAsyncEvent(IAsyncResult iar)
+        {
+            var ar = (System.Runtime.Remoting.Messaging.AsyncResult)iar;
+            var invokedMethod = (EventHandler)ar.AsyncDelegate;
+
+            try
+            {
+                invokedMethod.EndInvoke(iar);
+            }
+            catch
+            {
+                // Handle any exceptions that were thrown by the invoked method
+                Console.WriteLine("An event listener went kaboom!");
+            }
+        }
+
 
         #region RemoteStop(Timestamp, RoamingNetworkId, SessionId, PartnerSessionId, ProviderId, EVSEId)
 
