@@ -24,6 +24,7 @@ namespace org.GraphDefined.WWCP.LocalService
         Stop_Timeout,
         UnknownEVSE,
         EVSEOutOfService,
+        SessionIsInvalid,
         Error,
         Success
     }
