@@ -82,8 +82,8 @@
     <Compile Include="Entities\EVSE\ChargingFacilities.cs" />
     <Compile Include="Entities\EVSE\ChargingModes.cs" />
     <Compile Include="Entities\HubOperator_Id.cs" />
-    <Compile Include="RemoteStartStop\OnRemoteStopDelegate.cs" />
-    <Compile Include="RemoteStartStop\OnRemoteStartDelegate.cs" />
+    <Compile Include="LocalService\RemoteStartStop\OnRemoteStopDelegate.cs" />
+    <Compile Include="LocalService\RemoteStartStop\OnRemoteStartDelegate.cs" />
     <Compile Include="RedirectedEVSEList.cs" />
     <Compile Include="WWCPImporter.cs" />
     <Compile Include="ImporterDefaults.cs" />
@@ -143,8 +143,8 @@
     <Compile Include="Interfaces\IAuthServices.cs" />
     <Compile Include="Interfaces\IRemoteStartStop.cs" />
     <Compile Include="LocalService\AuthorizatorId.cs" />
-    <Compile Include="RemoteStartStop\RemoteStartResult.cs" />
-    <Compile Include="RemoteStartStop\RemoteStopResult.cs" />
+    <Compile Include="LocalService\RemoteStartStop\RemoteStartResult.cs" />
+    <Compile Include="LocalService\RemoteStartStop\RemoteStopResult.cs" />
     <Compile Include="LocalService\LocalEMobilityService.cs" />
     <Compile Include="LocalService\RequestRouter.cs" />
     <Compile Include="LocalService\SessionInfo.cs" />
