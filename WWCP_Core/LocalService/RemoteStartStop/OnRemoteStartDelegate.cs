@@ -40,7 +40,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
-    /// <param name="CancellationToken">A task cancellation token.</param>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <returns>A RemoteStartResult task.</returns>
     public delegate Task<RemoteStartResult> OnRemoteStartDelegate(DateTime            Timestamp,
                                                                   RoamingNetwork_Id   RoamingNetworkId,
