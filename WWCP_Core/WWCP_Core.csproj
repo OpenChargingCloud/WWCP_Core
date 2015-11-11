@@ -62,6 +62,7 @@
     <Compile Include="Entities\ChargingPool\ChargingPoolStatusType.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolAdminStatusDiff.cs" />
     <Compile Include="Entities\ChargingProduct\ChargingProduct_Id.cs" />
+    <Compile Include="Entities\ChargingReservation\ChargingReservation_Id.cs" />
     <Compile Include="Entities\ChargingStation\AccessibilityTypes.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationAdminStatusType.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationAdminStatusReport.cs" />
@@ -88,6 +89,8 @@
     <Compile Include="LocalService\AuthorizeStartStop\AuthorizeStopResult.cs" />
     <Compile Include="LocalService\RemoteStartStop\OnRemoteStopDelegate.cs" />
     <Compile Include="LocalService\RemoteStartStop\OnRemoteStartDelegate.cs" />
+    <Compile Include="LocalService\Reserve\OnDeleteReservationDelegate.cs" />
+    <Compile Include="LocalService\Reserve\OnReserveDelegate.cs" />
     <Compile Include="RedirectedEVSEList.cs" />
     <Compile Include="WWCPImporter.cs" />
     <Compile Include="ImporterDefaults.cs" />
