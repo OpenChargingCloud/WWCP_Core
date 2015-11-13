@@ -29,11 +29,11 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A charge detail record for a charging session.
+    /// A charging reservation
     /// </summary>
-    public class ChargeDetailRecord : IEquatable <ChargeDetailRecord>,
-                                      IComparable<ChargeDetailRecord>,
-                                      IComparable
+    public class ChargingReservation : IEquatable <ChargingReservation>,
+                                       IComparable<ChargingReservation>,
+                                       IComparable
     {
 
         #region Data
@@ -155,21 +155,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChargingReservation
-
-        private readonly ChargingReservation _ChargingReservation;
-
-        [Mandatory]
-        public ChargingReservation ChargingReservation
-        {
-            get
-            {
-                return _ChargingReservation;
-            }
-        }
-
-        #endregion
-
         #region ParkingTime
 
         private readonly StartEndTime? _ParkingTime;
@@ -180,21 +165,6 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return _ParkingTime;
-            }
-        }
-
-        #endregion
-
-        #region SessionTime
-
-        private readonly StartEndTime? _SessionTime;
-
-        [Mandatory]
-        public StartEndTime? SessionTime
-        {
-            get
-            {
-                return _SessionTime;
             }
         }
 
@@ -265,36 +235,14 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a charge detail record for the given charging session (identification).
+        /// Create a charging reservation.
         /// </summary>
-        /// <param name="SessionId">The charging session identification from the Authorize Start request.</param>
-        /// <param name="PartnerProductId">An unqiue identification for the consumed charging product.</param>
-        /// <param name="EVSEId">An EVSE identification.</param>
-        /// <param name="SessionStart">The timestamp of the session start.</param>
-        /// <param name="SessionEnd">The timestamp of the session end.</param>
-        /// <param name="AuthInfo">An identification.</param>
-        /// <param name="PartnerSessionId">An optional partner session identification.</param>
-        /// <param name="ChargingTime">Optional timestamps of the charging start/stop.</param>
-        /// <param name="MeterValueStart">An optional initial value of the energy meter.</param>
-        /// <param name="MeterValueEnd">An optional final value of the energy meter.</param>
-        /// <param name="MeterValuesInBetween">An optional enumeration of meter values during the charging session.</param>
-        /// <param name="ConsumedEnergy">The optional amount of consumed energy.</param>
-        /// <param name="MeteringSignature">An optional signature for the metering values.</param>
-        /// <param name="HubOperatorId">An optional identification of the hub operator.</param>
-        /// <param name="HubProviderId">An optional identification of the hub provider.</param>
-        public ChargeDetailRecord(ChargingSession_Id                SessionId,
-                                  ChargingSession_Id                PartnerSessionId   = null,
-                                  ChargingProduct_Id                PartnerProductId   = null,
-                                  ChargingPool_Id                   ChargingPoolId     = null,
-                                  ChargingStation_Id                ChargingStationId  = null,
-                                  EVSE_Id                           EVSEId             = null,
-                                  AuthInfo                          AuthInfo           = null,
-                                  StartEndTime?                     ParkingTime        = null,
-                                  StartEndTime?                     SessionTime        = null,
-                                  StartEndTime?                     ChargingTime       = null,
-                                  Double?                           ConsumedEnergy     = null,
-                                  IEnumerable<Timestamped<Double>>  MeterValues        = null,
-                                  String                            MeteringSignature  = null)
+        public ChargingReservation(DateTime                          StartTime,
+                                   TimeSpan                          Duration,
+                                   ChargingPool                      ChargingPool       = null,
+                                   ChargingStation                   ChargingStation    = null,
+                                   EVSE                              EVSE               = null
+                                   )
 
         {
 
@@ -314,7 +262,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region IComparable<ChargeDetailRecord> Members
+        #region IComparable<ChargingReservation> Members
 
         #region CompareTo(Object)
 
@@ -329,29 +277,29 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is a charge detail record.
-            var ChargeDetailRecord = Object as ChargeDetailRecord;
-            if ((Object) ChargeDetailRecord == null)
+            var ChargingReservation = Object as ChargingReservation;
+            if ((Object) ChargingReservation == null)
                 throw new ArgumentException("The given object is not a charge detail record!");
 
-            return CompareTo(ChargeDetailRecord);
+            return CompareTo(ChargingReservation);
 
         }
 
         #endregion
 
-        #region CompareTo(ChargeDetailRecord)
+        #region CompareTo(ChargingReservation)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargeDetailRecord">A charge detail record object to compare with.</param>
-        public Int32 CompareTo(ChargeDetailRecord ChargeDetailRecord)
+        /// <param name="ChargingReservation">A charge detail record object to compare with.</param>
+        public Int32 CompareTo(ChargingReservation ChargingReservation)
         {
 
-            if ((Object) ChargeDetailRecord == null)
+            if ((Object) ChargingReservation == null)
                 throw new ArgumentNullException("The given charge detail record must not be null!");
 
-            return _SessionId.CompareTo(ChargeDetailRecord._SessionId);
+            return _SessionId.CompareTo(ChargingReservation._SessionId);
 
         }
 
@@ -359,7 +307,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<ChargeDetailRecord> Members
+        #region IEquatable<ChargingReservation> Members
 
         #region Equals(Object)
 
@@ -375,30 +323,30 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is a charge detail record.
-            var ChargeDetailRecord = Object as ChargeDetailRecord;
-            if ((Object) ChargeDetailRecord == null)
+            var ChargingReservation = Object as ChargingReservation;
+            if ((Object) ChargingReservation == null)
                 return false;
 
-            return this.Equals(ChargeDetailRecord);
+            return this.Equals(ChargingReservation);
 
         }
 
         #endregion
 
-        #region Equals(ChargeDetailRecord)
+        #region Equals(ChargingReservation)
 
         /// <summary>
         /// Compares two charge detail records for equality.
         /// </summary>
-        /// <param name="ChargeDetailRecord">A charge detail record to compare with.</param>
+        /// <param name="ChargingReservation">A charge detail record to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargeDetailRecord ChargeDetailRecord)
+        public Boolean Equals(ChargingReservation ChargingReservation)
         {
 
-            if ((Object) ChargeDetailRecord == null)
+            if ((Object) ChargingReservation == null)
                 return false;
 
-            return _SessionId.Equals(ChargeDetailRecord._SessionId);
+            return _SessionId.Equals(ChargingReservation._SessionId);
 
         }
 

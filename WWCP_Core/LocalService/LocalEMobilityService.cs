@@ -407,7 +407,7 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #endregion
 
-        #region SendCDR(EVSEId, SessionId, PartnerProductId, SessionStart, SessionEnd, AuthToken = null, eMAId = null, PartnerSessionId = null, ..., QueryTimeout = null)
+        #region SendChargeDetailRecord(EVSEId, SessionId, PartnerProductId, SessionStart, SessionEnd, AuthInfo, PartnerSessionId = null, ..., QueryTimeout = null)
 
         /// <summary>
         /// Create a SendChargeDetailRecord request.
@@ -417,10 +417,10 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <param name="PartnerProductId"></param>
         /// <param name="SessionStart">The timestamp of the session start.</param>
         /// <param name="SessionEnd">The timestamp of the session end.</param>
-        /// <param name="AuthToken">An optional (RFID) user identification.</param>
-        /// <param name="eMAId">An optional e-Mobility account identification.</param>
+        /// <param name="AuthInfo">An identification.</param>
         /// <param name="PartnerSessionId">An optional partner session identification.</param>
-        /// <param name="ChargingTime">Optional timestamps of the charging start/stop.</param>
+        /// <param name="ChargingStart">An optional charging start timestamp.</param>
+        /// <param name="ChargingEnd">An optional charging end timestamp.</param>
         /// <param name="MeterValueStart">An optional initial value of the energy meter.</param>
         /// <param name="MeterValueEnd">An optional final value of the energy meter.</param>
         /// <param name="MeterValuesInBetween">An optional enumeration of meter values during the charging session.</param>
@@ -432,23 +432,22 @@ namespace org.GraphDefined.WWCP.LocalService
         public async Task<HTTPResponse<SENDCDRResult>>
 
             SendChargeDetailRecord(EVSE_Id              EVSEId,
-                    ChargingSession_Id   SessionId,
-                    ChargingProduct_Id   PartnerProductId,
-                    DateTime             SessionStart,
-                    DateTime             SessionEnd,
-                    Auth_Token           AuthToken             = null,
-                    eMA_Id               eMAId                 = null,
-                    ChargingSession_Id   PartnerSessionId      = null,
-                    DateTime?            ChargingStart         = null,
-                    DateTime?            ChargingEnd           = null,
-                    Double?              MeterValueStart       = null,
-                    Double?              MeterValueEnd         = null,
-                    IEnumerable<Double>  MeterValuesInBetween  = null,
-                    Double?              ConsumedEnergy        = null,
-                    String               MeteringSignature     = null,
-                    EVSEOperator_Id      HubOperatorId         = null,
-                    EVSP_Id              HubProviderId         = null,
-                    TimeSpan?            QueryTimeout          = null)
+                                   ChargingSession_Id   SessionId,
+                                   ChargingProduct_Id   PartnerProductId,
+                                   DateTime             SessionStart,
+                                   DateTime             SessionEnd,
+                                   AuthInfo             AuthInfo,
+                                   ChargingSession_Id   PartnerSessionId      = null,
+                                   DateTime?            ChargingStart         = null,
+                                   DateTime?            ChargingEnd           = null,
+                                   Double?              MeterValueStart       = null,
+                                   Double?              MeterValueEnd         = null,
+                                   IEnumerable<Double>  MeterValuesInBetween  = null,
+                                   Double?              ConsumedEnergy        = null,
+                                   String               MeteringSignature     = null,
+                                   HubOperator_Id       HubOperatorId         = null,
+                                   EVSP_Id              HubProviderId         = null,
+                                   TimeSpan?            QueryTimeout          = null)
 
         {
 
@@ -469,9 +468,8 @@ namespace org.GraphDefined.WWCP.LocalService
             if (SessionEnd       == null)
                 throw new ArgumentNullException("SessionEnd",        "The given parameter must not be null!");
 
-            if (AuthToken        == null &&
-                eMAId            == null)
-                throw new ArgumentNullException("AuthToken / eMAId", "At least one of the given parameters must not be null!");
+            if (AuthInfo         == null)
+                throw new ArgumentNullException("AuthInfo",          "The given parameter must not be null!");
 
             #endregion
 
@@ -485,7 +483,7 @@ namespace org.GraphDefined.WWCP.LocalService
 
                     #region Success
 
-                    if (AuthToken == SessionInfo.Token)
+                    if (AuthInfo.AuthToken == SessionInfo.Token)
                     {
 
                         SessionDatabase.Remove(SessionId);

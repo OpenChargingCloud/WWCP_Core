@@ -49,12 +49,14 @@
   <ItemGroup>
     <Compile Include="CommonTypes\Attributes\Mandatory.cs" />
     <Compile Include="CommonTypes\Attributes\Optional.cs" />
+    <Compile Include="CommonTypes\eMAIdWithPIN.cs" />
     <Compile Include="CommonTypes\StatusDiff.cs" />
     <Compile Include="CommonTypes\DataLicenses.cs" />
     <Compile Include="CommonTypes\ChangeMethods.cs" />
     <Compile Include="CommonTypes\StartEndTime.cs" />
     <Compile Include="CommonTypes\IStatus.cs" />
     <Compile Include="CommonTypes\StatusReport.cs" />
+    <Compile Include="Entities\AuthInfo.cs" />
     <Compile Include="Entities\ChargeDetailRecord\ChargeDetailRecord.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolAdminStatusReport.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolStatusReport.cs" />
@@ -62,6 +64,7 @@
     <Compile Include="Entities\ChargingPool\ChargingPoolStatusType.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolAdminStatusDiff.cs" />
     <Compile Include="Entities\ChargingProduct\ChargingProduct_Id.cs" />
+    <Compile Include="Entities\ChargingReservation\ChargingReservation.cs" />
     <Compile Include="Entities\ChargingReservation\ChargingReservation_Id.cs" />
     <Compile Include="Entities\ChargingStation\AccessibilityTypes.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationAdminStatusType.cs" />
@@ -129,7 +132,7 @@
     <Compile Include="Entities\ChargingPool\ChargingPool.cs" />
     <Compile Include="Entities\ChargingStation\RegisterEVSEResult.cs" />
     <Compile Include="CommonTypes\Auth_Token.cs" />
-    <Compile Include="Entities\ChargingSession\ChargingSession_Id.cs" />
+    <Compile Include="Entities\ChargeDetailRecord\ChargingSession_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="Entities\EVSEOperator\EVSEOperatorExceptions.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkExceptions.cs" />

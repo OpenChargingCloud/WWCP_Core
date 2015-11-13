@@ -87,10 +87,10 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <param name="PartnerProductId"></param>
         /// <param name="SessionStart">The timestamp of the session start.</param>
         /// <param name="SessionEnd">The timestamp of the session end.</param>
-        /// <param name="AuthToken">An optional (RFID) user identification.</param>
-        /// <param name="eMAId">An optional e-Mobility account identification.</param>
+        /// <param name="AuthInfo">AuthInfo</param>.
         /// <param name="PartnerSessionId">An optional partner session identification.</param>
-        /// <param name="ChargingTime">Optional timestamps of the charging start/stop.</param>
+        /// <param name="ChargingStart">An optional charging start timestamp.</param>
+        /// <param name="ChargingEnd">An optional charging end timestamp.</param>
         /// <param name="MeterValueStart">An optional initial value of the energy meter.</param>
         /// <param name="MeterValueEnd">An optional final value of the energy meter.</param>
         /// <param name="MeterValuesInBetween">An optional enumeration of meter values during the charging session.</param>
@@ -99,24 +99,23 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <param name="HubOperatorId">An optional identification of the hub operator.</param>
         /// <param name="HubProviderId">An optional identification of the hub provider.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        Task<HTTPResponse<SENDCDRResult>>  SendChargeDetailRecord        (EVSE_Id              EVSEId,
-                                                           ChargingSession_Id   SessionId,
-                                                           ChargingProduct_Id   PartnerProductId,
-                                                           DateTime             SessionStart,
-                                                           DateTime             SessionEnd,
-                                                           Auth_Token           AuthToken             = null,
-                                                           eMA_Id               eMAId                 = null,
-                                                           ChargingSession_Id   PartnerSessionId      = null,
-                                                           DateTime?            ChargingStart         = null,
-                                                           DateTime?            ChargingEnd           = null,
-                                                           Double?              MeterValueStart       = null,
-                                                           Double?              MeterValueEnd         = null,
-                                                           IEnumerable<Double>  MeterValuesInBetween  = null,
-                                                           Double?              ConsumedEnergy        = null,
-                                                           String               MeteringSignature     = null,
-                                                           EVSEOperator_Id      HubOperatorId         = null,
-                                                           EVSP_Id              HubProviderId         = null,
-                                                           TimeSpan?            QueryTimeout          = null);
+        Task<HTTPResponse<SENDCDRResult>> SendChargeDetailRecord(EVSE_Id              EVSEId,
+                                                                 ChargingSession_Id   SessionId,
+                                                                 ChargingProduct_Id   PartnerProductId,
+                                                                 DateTime             SessionStart,
+                                                                 DateTime             SessionEnd,
+                                                                 AuthInfo             AuthInfo,
+                                                                 ChargingSession_Id   PartnerSessionId      = null,
+                                                                 DateTime?            ChargingStart         = null,
+                                                                 DateTime?            ChargingEnd           = null,
+                                                                 Double?              MeterValueStart       = null,
+                                                                 Double?              MeterValueEnd         = null,
+                                                                 IEnumerable<Double>  MeterValuesInBetween  = null,
+                                                                 Double?              ConsumedEnergy        = null,
+                                                                 String               MeteringSignature     = null,
+                                                                 HubOperator_Id       HubOperatorId         = null,
+                                                                 EVSP_Id              HubProviderId         = null,
+                                                                 TimeSpan?            QueryTimeout          = null);
 
     }
 
