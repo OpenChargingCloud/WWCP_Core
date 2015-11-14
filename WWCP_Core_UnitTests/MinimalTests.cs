@@ -42,7 +42,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         public void Test0()
         {
 
-            var _rn  = new RoamingNetwork();
+            var _rns = new RoamingNetworks();
+            var _rn  = _rns.CreateNewRoamingNetwork(RoamingNetwork_Id.New);
             var _op  = _rn.CreateNewEVSEOperator(EVSEOperator_Id.Parse("DE*822"));
             var _cp  = _op.CreateNewChargingPool();
             _cp.StatusAggregationDelegate = report => {

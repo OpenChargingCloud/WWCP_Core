@@ -237,11 +237,13 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a charging reservation.
         /// </summary>
-        public ChargingReservation(DateTime                          StartTime,
+        public ChargingReservation(EVSP_Id                           ProviderId,
+                                   DateTime                          StartTime,
                                    TimeSpan                          Duration,
                                    ChargingPool                      ChargingPool       = null,
                                    ChargingStation                   ChargingStation    = null,
-                                   EVSE                              EVSE               = null
+                                   EVSE                              EVSE               = null,
+                                   IEnumerable<AuthInfo>             AuthInfos          = null
                                    )
 
         {

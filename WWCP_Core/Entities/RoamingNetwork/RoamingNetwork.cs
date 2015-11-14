@@ -58,31 +58,6 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Name
-
-        private I18NString _Name;
-
-        /// <summary>
-        /// The offical (multi-language) name of the RoamingNetwork.
-        /// </summary>
-        [Mandatory]
-        public I18NString Name
-        {
-
-            get
-            {
-                return _Name;
-            }
-
-            set
-            {
-                SetProperty<I18NString>(ref _Name, value);
-            }
-
-        }
-
-        #endregion
-
         #region Description
 
         private I18NString _Description;
@@ -90,7 +65,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An optional additional (multi-language) description of the RoamingNetwork.
         /// </summary>
-        [Optional]
+        [Mandatory]
         public I18NString Description
         {
 
@@ -287,16 +262,47 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
         #region ChargingPools
 
         /// <summary>
-        /// Return all search providers registered within this roaming network.
+        /// Return all charging pools registered within this roaming network.
         /// </summary>
         public IEnumerable<ChargingPool> ChargingPools
         {
             get
             {
-                return _EVSEOperators.SelectMany(v => v.Value);
+                return _EVSEOperators.SelectMany(evseoperator => evseoperator.Value);
+            }
+        }
+
+        #endregion
+
+        #region ChargingStations
+
+        /// <summary>
+        /// Return all charging stations registered within this roaming network.
+        /// </summary>
+        public IEnumerable<ChargingStation> ChargingStations
+        {
+            get
+            {
+                return _EVSEOperators.SelectMany(evseoperator => evseoperator.Value.SelectMany(pool => pool));
+            }
+        }
+
+        #endregion
+
+        #region EVSEs
+
+        /// <summary>
+        /// Return all EVSEs registered within this roaming network.
+        /// </summary>
+        public IEnumerable<EVSE> EVSEs
+        {
+            get
+            {
+                return _EVSEOperators.SelectMany(evseoperator => evseoperator.Value.SelectMany(pool => pool.SelectMany(station => station)));
             }
         }
 
@@ -888,19 +894,19 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region RoamingNetwork()
+        #region (internal) RoamingNetwork()
 
         /// <summary>
         /// Create a new roaming network having a random
         /// roaming network identification.
         /// </summary>
-        public RoamingNetwork()
+        internal RoamingNetwork()
             : this(RoamingNetwork_Id.New)
         { }
 
         #endregion
 
-        #region RoamingNetwork(Id, AuthorizatorId = null)
+        #region (internal) RoamingNetwork(Id, AuthorizatorId = null)
 
         /// <summary>
         /// Create a new roaming network having the given
@@ -908,9 +914,11 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the roaming network.</param>
         /// <param name="AuthorizatorId">The unique identification for the Auth service.</param>
-        public RoamingNetwork(RoamingNetwork_Id  Id,
-                              Authorizator_Id    AuthorizatorId = null)
+        internal RoamingNetwork(RoamingNetwork_Id  Id,
+                                Authorizator_Id    AuthorizatorId = null)
+
             : base(Id)
+
         {
 
             #region Initial checks
@@ -928,8 +936,7 @@ namespace org.GraphDefined.WWCP
             this._SearchProviders           = new ConcurrentDictionary<NavigationServiceProvider_Id, NavigationServiceProvider>();
             this._RequestRouter             = new RequestRouter(Id, AuthorizatorId);
 
-            this.Name                       = new I18NString(Languages.en, Id.ToString());
-            this.Description                = new I18NString();
+            this._Description               = new I18NString();
 
             #endregion
 
