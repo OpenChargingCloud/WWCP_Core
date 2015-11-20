@@ -820,13 +820,28 @@ namespace org.GraphDefined.WWCP
         private readonly ConcurrentDictionary<ChargingStation_Id, ChargingStation> _ChargingStations;
 
         /// <summary>
-        /// Return all charging stations registered within this EVS pool.
+        /// Return all charging stations registered within this charing pool.
         /// </summary>
         public IEnumerable<ChargingStation> ChargingStations
         {
             get
             {
                 return _ChargingStations.Select(KVP => KVP.Value);
+            }
+        }
+
+        #endregion
+
+        #region ChargingStationIds
+
+        /// <summary>
+        /// Return all charging station Ids registered within this charing pool.
+        /// </summary>
+        public IEnumerable<ChargingStation_Id> ChargingStationIds
+        {
+            get
+            {
+                return _ChargingStations.Select(KVP => KVP.Value.Id);
             }
         }
 
@@ -1176,7 +1191,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a new group/pool of charging stations having the given identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the EVS pool.</param>
+        /// <param name="Id">The unique identification of the charing pool.</param>
         /// <param name="EVSEOperator">The parent EVSE operator.</param>
         /// <param name="PoolStatusHistorySize">The default size of the charging pool (aggregated EVSE) status history.</param>
         /// <param name="PoolAdminStatusHistorySize">The default size of the charging pool (aggregated EVSE) admin status history.</param>
