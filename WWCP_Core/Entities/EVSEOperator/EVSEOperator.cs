@@ -1300,7 +1300,7 @@ namespace org.GraphDefined.WWCP
 
                     RoamingNetwork.
                         RequestRouter.
-                        SendChargingPoolAdminStatusDiff(new ChargingPoolAdminStatusDiff(
+                        SendChargingPoolAdminStatusDiff(new ChargingPoolAdminStatusDiff(DateTime.Now,
                                                                EVSEOperatorId:    Id,
                                                                EVSEOperatorName:  Name,
                                                                NewStatus:         new List<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>(),
@@ -1409,7 +1409,7 @@ namespace org.GraphDefined.WWCP
 
                     RoamingNetwork.
                         RequestRouter.
-                        SendChargingStationAdminStatusDiff(new ChargingStationAdminStatusDiff(
+                        SendChargingStationAdminStatusDiff(new ChargingStationAdminStatusDiff(DateTime.Now,
                                                                EVSEOperatorId:    Id,
                                                                EVSEOperatorName:  Name,
                                                                NewStatus:         new List<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>(),
@@ -1520,7 +1520,8 @@ namespace org.GraphDefined.WWCP
 
                     RoamingNetwork.
                         RequestRouter.
-                        SendEVSEStatusDiff(new EVSEStatusDiff(EVSEOperatorId:    Id,
+                        SendEVSEStatusDiff(new EVSEStatusDiff(Timestamp:         DateTime.Now,
+                                                              EVSEOperatorId:    Id,
                                                               EVSEOperatorName:  Name,
                                                               NewStatus:         new List<KeyValuePair<EVSE_Id, EVSEStatusType>>(),
                                                               ChangedStatus:     new List<KeyValuePair<EVSE_Id, EVSEStatusType>>() {
@@ -1547,11 +1548,11 @@ namespace org.GraphDefined.WWCP
         {
 
             if (EVSEStatus == null || EVSEStatus.Count == 0)
-                return new EVSEStatusDiff(Id, Name);
+                return new EVSEStatusDiff(DateTime.Now, Id, Name);
 
             #region Get data...
 
-            var EVSEStatusDiff     = new EVSEStatusDiff(Id, Name);
+            var EVSEStatusDiff     = new EVSEStatusDiff(DateTime.Now, Id, Name);
 
             // Only ValidEVSEIds!
             // Do nothing with manual EVSE Ids!
@@ -1618,7 +1619,7 @@ namespace org.GraphDefined.WWCP
             }
 
             // empty!
-            return new EVSEStatusDiff(Id, Name);
+            return new EVSEStatusDiff(DateTime.Now, Id, Name);
 
         }
 

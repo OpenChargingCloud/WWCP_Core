@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -34,12 +35,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a new status diff.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the status diff.</param>
         /// <param name="EVSEOperatorId">The unique identification of the EVSE operator.</param>
         /// <param name="EVSEOperatorName">The optional internationalized name of the EVSE operator.</param>
-        public ChargingStationAdminStatusDiff(EVSEOperator_Id  EVSEOperatorId,
+        public ChargingStationAdminStatusDiff(DateTime         Timestamp,
+                                              EVSEOperator_Id  EVSEOperatorId,
                                               I18NString       EVSEOperatorName = null)
 
-            : base(EVSEOperatorId, EVSEOperatorName)
+            : base(Timestamp, EVSEOperatorId, EVSEOperatorName)
 
         { }
 
@@ -50,18 +53,20 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a new status diff.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the status diff.</param>
         /// <param name="EVSEOperatorId">The unique identification of the EVSE operator.</param>
         /// <param name="NewStatus">All new status.</param>
         /// <param name="ChangedStatus">All changed status.</param>
         /// <param name="RemovedIds">All removed status.</param>
         /// <param name="EVSEOperatorName">The optional internationalized name of the EVSE operator.</param>
-        public ChargingStationAdminStatusDiff(EVSEOperator_Id                                                                EVSEOperatorId,
+        public ChargingStationAdminStatusDiff(DateTime                                                                       Timestamp,
+                                              EVSEOperator_Id                                                                EVSEOperatorId,
                                               IEnumerable<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>  NewStatus,
                                               IEnumerable<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>  ChangedStatus,
                                               IEnumerable<ChargingStation_Id>                                                RemovedIds,
                                               I18NString                                                                     EVSEOperatorName = null)
 
-            : base(EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName)
+            : base(Timestamp, EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName)
 
         { }
 

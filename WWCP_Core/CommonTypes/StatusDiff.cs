@@ -36,6 +36,24 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
+        #region Timestamp
+
+        private readonly DateTime _Timestamp;
+
+        /// <summary>
+        /// The timestamp of the status diff.
+        /// </summary>
+        public DateTime Timestamp
+        {
+            get
+            {
+                return _Timestamp;
+            }
+        }
+
+        #endregion
+
+
         #region EVSEOperatorId
 
         private readonly EVSEOperator_Id _EVSEOperatorId;
@@ -159,17 +177,20 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region StatusDiff(EVSEOperatorId, EVSEOperatorName = null)
+        #region StatusDiff(Timestamp, EVSEOperatorId, EVSEOperatorName = null)
 
         /// <summary>
         /// Create a new status diff.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the status diff.</param>
         /// <param name="EVSEOperatorId">The unique identification of the EVSE operator.</param>
         /// <param name="EVSEOperatorName">The optional internationalized name of the EVSE operator.</param>
-        public StatusDiff(EVSEOperator_Id  EVSEOperatorId,
+        public StatusDiff(DateTime         Timestamp,
+                          EVSEOperator_Id  EVSEOperatorId,
                           I18NString       EVSEOperatorName = null)
         {
 
+            this._Timestamp          = Timestamp;
             this._EVSEOperatorId     = EVSEOperatorId;
             this._EVSEOperatorName   = EVSEOperatorName != null ? EVSEOperatorName : new I18NString();
 
@@ -181,23 +202,26 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region StatusDiff(EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName = null)
+        #region StatusDiff(Timestamp, EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName = null)
 
         /// <summary>
         /// Create a new status diff.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the status diff.</param>
         /// <param name="EVSEOperatorId">The unique identification of the EVSE operator.</param>
         /// <param name="NewStatus">All new status.</param>
         /// <param name="ChangedStatus">All changed status.</param>
         /// <param name="RemovedIds">All removed status.</param>
         /// <param name="EVSEOperatorName">The optional internationalized name of the EVSE operator.</param>
-        public StatusDiff(EVSEOperator_Id                              EVSEOperatorId,
+        public StatusDiff(DateTime                                     Timestamp,
+                          EVSEOperator_Id                              EVSEOperatorId,
                           IEnumerable<KeyValuePair<TId, TStatusType>>  NewStatus,
                           IEnumerable<KeyValuePair<TId, TStatusType>>  ChangedStatus,
                           IEnumerable<TId>                             RemovedIds,
                           I18NString                                   EVSEOperatorName = null)
         {
 
+            this._Timestamp          = Timestamp;
             this._EVSEOperatorId     = EVSEOperatorId;
             this._EVSEOperatorName   = EVSEOperatorName != null ? EVSEOperatorName : new I18NString();
 
@@ -326,7 +350,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return " status diff: " + _NewStatus.Count + " new, " + _ChangedStatus.Count + " changed, " + _RemovedIds.Count + " removed";
+            return "[" + Timestamp + "] Status diff: " + _NewStatus.Count + " new, " + _ChangedStatus.Count + " changed, " + _RemovedIds.Count + " removed";
         }
 
         #endregion

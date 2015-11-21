@@ -17,6 +17,7 @@
 
 #region Usings
 
+using System;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -32,39 +33,43 @@ namespace org.GraphDefined.WWCP
     public class EVSEStatusDiff : StatusDiff<EVSE_Id, EVSEStatusType>
     {
 
-        #region EVSEStatusDiff(EVSEOperatorId, EVSEOperatorName = null)
+        #region EVSEStatusDiff(Timestamp, EVSEOperatorId, EVSEOperatorName = null)
 
         /// <summary>
         /// Create a new status diff.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the status diff.</param>
         /// <param name="EVSEOperatorId">The unique identification of the EVSE operator.</param>
         /// <param name="EVSEOperatorName">The optional internationalized name of the EVSE operator.</param>
-        public EVSEStatusDiff(EVSEOperator_Id  EVSEOperatorId,
+        public EVSEStatusDiff(DateTime         Timestamp,
+                              EVSEOperator_Id  EVSEOperatorId,
                               I18NString       EVSEOperatorName = null)
 
-            : base(EVSEOperatorId, EVSEOperatorName)
+            : base(Timestamp, EVSEOperatorId, EVSEOperatorName)
 
         { }
 
         #endregion
 
-        #region EVSEStatusDiff(EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName = null)
+        #region EVSEStatusDiff(Timestamp, EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName = null)
 
         /// <summary>
         /// Create a new status diff.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the status diff.</param>
         /// <param name="EVSEOperatorId">The unique identification of the EVSE operator.</param>
         /// <param name="NewStatus">All new status.</param>
         /// <param name="ChangedStatus">All changed status.</param>
         /// <param name="RemovedIds">All removed status.</param>
         /// <param name="EVSEOperatorName">The optional internationalized name of the EVSE operator.</param>
-        public EVSEStatusDiff(EVSEOperator_Id                                     EVSEOperatorId,
+        public EVSEStatusDiff(DateTime                                            Timestamp,
+                              EVSEOperator_Id                                     EVSEOperatorId,
                               IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>>  NewStatus,
                               IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>>  ChangedStatus,
                               IEnumerable<EVSE_Id>                                RemovedIds,
                               I18NString                                          EVSEOperatorName = null)
 
-            : base(EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName)
+            : base(Timestamp, EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName)
 
         { }
 

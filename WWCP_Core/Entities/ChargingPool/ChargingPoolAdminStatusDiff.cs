@@ -20,6 +20,7 @@
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System;
 
 #endregion
 
@@ -29,39 +30,43 @@ namespace org.GraphDefined.WWCP
     public class ChargingPoolAdminStatusDiff : StatusDiff<ChargingPool_Id, ChargingPoolAdminStatusType>
     {
 
-        #region StatusDiff(EVSEOperatorId, EVSEOperatorName = null)
+        #region StatusDiff(Timestamp, EVSEOperatorId, EVSEOperatorName = null)
 
         /// <summary>
         /// Create a new status diff.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the status diff.</param>
         /// <param name="EVSEOperatorId">The unique identification of the EVSE operator.</param>
         /// <param name="EVSEOperatorName">The optional internationalized name of the EVSE operator.</param>
-        public ChargingPoolAdminStatusDiff(EVSEOperator_Id  EVSEOperatorId,
-                                              I18NString       EVSEOperatorName = null)
+        public ChargingPoolAdminStatusDiff(DateTime         Timestamp,
+                                           EVSEOperator_Id  EVSEOperatorId,
+                                           I18NString       EVSEOperatorName = null)
 
-            : base(EVSEOperatorId, EVSEOperatorName)
+            : base(Timestamp, EVSEOperatorId, EVSEOperatorName)
 
         { }
 
         #endregion
 
-        #region StatusDiff(EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName = null)
+        #region StatusDiff(Timestamp, EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName = null)
 
         /// <summary>
         /// Create a new status diff.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the status diff.</param>
         /// <param name="EVSEOperatorId">The unique identification of the EVSE operator.</param>
         /// <param name="NewStatus">All new status.</param>
         /// <param name="ChangedStatus">All changed status.</param>
         /// <param name="RemovedIds">All removed status.</param>
         /// <param name="EVSEOperatorName">The optional internationalized name of the EVSE operator.</param>
-        public ChargingPoolAdminStatusDiff(EVSEOperator_Id                                                                EVSEOperatorId,
-                                              IEnumerable<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>  NewStatus,
-                                              IEnumerable<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>  ChangedStatus,
-                                              IEnumerable<ChargingPool_Id>                                                RemovedIds,
-                                              I18NString                                                                     EVSEOperatorName = null)
+        public ChargingPoolAdminStatusDiff(DateTime                                                                 Timestamp,
+                                           EVSEOperator_Id                                                          EVSEOperatorId,
+                                           IEnumerable<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>  NewStatus,
+                                           IEnumerable<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>  ChangedStatus,
+                                           IEnumerable<ChargingPool_Id>                                             RemovedIds,
+                                           I18NString                                                               EVSEOperatorName = null)
 
-            : base(EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName)
+            : base(Timestamp, EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName)
 
         { }
 
