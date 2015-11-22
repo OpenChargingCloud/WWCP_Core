@@ -626,7 +626,11 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return String.Concat(_OperatorId, "*E", _Suffix);
+
+            return Format == IdFormatType.NEW
+                       ? String.Concat(_OperatorId, "*E", _Suffix)
+                       : String.Concat(_OperatorId, "*",  _Suffix);
+
         }
 
         #endregion
