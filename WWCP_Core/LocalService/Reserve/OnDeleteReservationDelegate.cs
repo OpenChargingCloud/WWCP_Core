@@ -44,7 +44,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Duration">The duration of the reservation. [default: 30 min]</param>
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <returns>A RemoteStartResult task.</returns>
-    public delegate Task<RemoteStartResult> OnDeleteReservationDelegate(DateTime                Timestamp,
+    public delegate Task<RemoteStartResultType> OnDeleteReservationDelegate(DateTime                Timestamp,
                                                                         RoamingNetwork_Id       RoamingNetworkId,
                                                                         ChargingReservation_Id  ReservationId,
                                                                         CancellationToken       CancellationToken);

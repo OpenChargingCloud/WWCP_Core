@@ -52,7 +52,6 @@ namespace org.GraphDefined.WWCP
                                                                   ChargingProduct_Id  ChargingProductId,
                                                                   CancellationToken   CancellationToken);
 
-
 }
 
 

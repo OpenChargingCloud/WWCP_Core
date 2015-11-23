@@ -18,7 +18,25 @@
 namespace org.GraphDefined.WWCP.LocalService
 {
 
-    public enum RemoteStartResult
+    public class RemoteStartResult
+    {
+
+        public RemoteStartResultType Result     { get; set; }
+        public ChargingSession_Id    SessionId  { get; set; }
+
+
+        public static RemoteStartResult Error
+        {
+            get
+            {
+                return new RemoteStartResult() { Result = RemoteStartResultType.Error };
+            }
+        }
+
+    }
+
+
+    public enum RemoteStartResultType
     {
         Error,
         Success,

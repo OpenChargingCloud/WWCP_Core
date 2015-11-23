@@ -43,7 +43,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Duration">The duration of the reservation. [default: 30 min]</param>
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <returns>A RemoteStartResult task.</returns>
-    public delegate Task<RemoteStartResult> OnReservePoolDelegate(DateTime                Timestamp,
+    public delegate Task<RemoteStartResultType> OnReservePoolDelegate(DateTime                Timestamp,
                                                                   RoamingNetwork_Id       RoamingNetworkId,
                                                                   ChargingReservation_Id  ReservationId,
                                                                   EVSP_Id                 ProviderId,
@@ -71,7 +71,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Duration">The duration of the reservation. [default: 30 min]</param>
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <returns>A RemoteStartResult task.</returns>
-    public delegate Task<RemoteStartResult> OnReserveStationDelegate(DateTime                Timestamp,
+    public delegate Task<RemoteStartResultType> OnReserveStationDelegate(DateTime                Timestamp,
                                                                      RoamingNetwork_Id       RoamingNetworkId,
                                                                      ChargingReservation_Id  ReservationId,
                                                                      EVSP_Id                 ProviderId,
@@ -99,7 +99,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Duration">The duration of the reservation. [default: 30 min]</param>
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <returns>A RemoteStartResult task.</returns>
-    public delegate Task<RemoteStartResult> OnReserveEVSEDelegate(DateTime                Timestamp,
+    public delegate Task<RemoteStartResultType> OnReserveEVSEDelegate(DateTime                Timestamp,
                                                                   RoamingNetwork_Id       RoamingNetworkId,
                                                                   ChargingReservation_Id  ReservationId,
                                                                   EVSP_Id                 ProviderId,
