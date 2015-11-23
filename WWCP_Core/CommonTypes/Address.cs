@@ -121,12 +121,12 @@ namespace org.GraphDefined.WWCP
 
         #region City
 
-        private readonly String _City;
+        private readonly I18NString _City;
 
         /// <summary>
         /// The city.
         /// </summary>
-        public String City
+        public I18NString City
         {
             get
             {
@@ -187,7 +187,7 @@ namespace org.GraphDefined.WWCP
             this._Street         = "";
             this._PostalCode     = "";
             this._PostalCodeSub  = "";
-            this._City           = "";
+            this._City           = new I18NString();
             this._Country        = Country.unknown;
             this._Comment        = new I18NString();
 
@@ -205,11 +205,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="City">The city.</param>
         /// <param name="Street">The name of the street.</param>
         /// <param name="HouseNumber">The house number.</param>
-        public Address(Country  Country,
-                       String   PostalCode,
-                       String   City,
-                       String   Street,
-                       String   HouseNumber)
+        public Address(Country     Country,
+                       String      PostalCode,
+                       I18NString  City,
+                       String      Street,
+                       String      HouseNumber)
         {
 
             this._FloorLevel     = "";
@@ -243,7 +243,7 @@ namespace org.GraphDefined.WWCP
                        String      FloorLevel,
                        String      PostalCode,
                        String      PostalCodeSub,
-                       String      City,
+                       I18NString  City,
                        Country     Country,
                        I18NString  Comment = null)
 
@@ -275,11 +275,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="City">The city.</param>
         /// <param name="Street">The name of the street.</param>
         /// <param name="HouseNumber">The house number.</param>
-        public static Address Create(Country  Country,
-                                     String   PostalCode,
-                                     String   City,
-                                     String   Street,
-                                     String   HouseNumber)
+        public static Address Create(Country     Country,
+                                     String      PostalCode,
+                                     I18NString  City,
+                                     String      Street,
+                                     String      HouseNumber)
         {
 
             return new Address(Country, PostalCode, City, Street, HouseNumber);
