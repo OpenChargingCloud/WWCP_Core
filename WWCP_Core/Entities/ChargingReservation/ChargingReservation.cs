@@ -47,53 +47,57 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region SessionId
+        #region ReservationId
 
-        private readonly ChargingSession_Id _SessionId;
+        private readonly ChargingReservation_Id _ReservationId;
 
         /// <summary>
-        /// The charging session identification from the Authorize Start request.
+        /// The charging reservation identification.
         /// </summary>
         [Mandatory]
-        public ChargingSession_Id SessionId
+        public ChargingReservation_Id Id
         {
             get
             {
-                return _SessionId;
+                return _ReservationId;
             }
         }
 
         #endregion
 
-        #region PartnerSessionId
+        #region StartTime
 
-        private readonly ChargingSession_Id _PartnerSessionId;
+        private readonly DateTime _StartTime;
 
         [Optional]
-        public ChargingSession_Id PartnerSessionId
+        public DateTime StartTime
         {
             get
             {
-                return _PartnerSessionId;
+                return _StartTime;
             }
         }
 
         #endregion
 
-        #region PartnerProductId
+        #region Duration
 
-        private readonly ChargingProduct_Id _PartnerProductId;
+        private readonly TimeSpan _Duration;
 
         [Optional]
-        public ChargingProduct_Id PartnerProductId
+        public TimeSpan Duration
         {
             get
             {
-                return _PartnerProductId;
+                return _Duration;
             }
         }
 
         #endregion
+
+
+
+
 
         #region ChargingPoolId
 
@@ -237,27 +241,31 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a charging reservation.
         /// </summary>
-        public ChargingReservation(EVSP_Id                           ProviderId,
-                                   DateTime                          StartTime,
-                                   TimeSpan                          Duration,
-                                   ChargingPool                      ChargingPool       = null,
-                                   ChargingStation                   ChargingStation    = null,
-                                   EVSE                              EVSE               = null,
-                                   IEnumerable<AuthInfo>             AuthInfos          = null
-                                   )
+        public ChargingReservation(DateTime                Timestamp,
+                                   ChargingReservation_Id  ReservationId,
+                                   EVSP_Id                 ProviderId,
+                                   DateTime?               StartTime          = null,
+                                   TimeSpan?               Duration           = null,
+                                   ChargingPool_Id         ChargingPoolId     = null,
+                                   ChargingStation_Id      ChargingStationId  = null,
+                                   EVSE_Id                 EVSEId             = null,
+                                   ChargingProduct_Id      ChargingProductId  = null)
 
         {
 
             #region Initial checks
 
-            if (SessionId == null)
-                throw new ArgumentNullException("Id", "The charging session identification must not be null!");
+            if (ReservationId == null)
+                throw new ArgumentNullException("ReservationId", "The charging reservation identification must not be null!");
+
+            if (ProviderId == null)
+                throw new ArgumentNullException("ProviderId", "The provider identification must not be null!");
 
             #endregion
 
-            this._SessionId         = SessionId;
-            this._PartnerSessionId  = PartnerSessionId;
-            this._PartnerProductId  = PartnerProductId;
+            this._ReservationId     = ReservationId;
+            this._StartTime         = StartTime.HasValue ? StartTime.Value : DateTime.Now;
+            this._Duration          = Duration. HasValue ? Duration. Value : TimeSpan.FromMinutes(15);
 
         }
 
@@ -278,10 +286,10 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is a charge detail record.
+            // Check if the given object is a charging reservation.
             var ChargingReservation = Object as ChargingReservation;
             if ((Object) ChargingReservation == null)
-                throw new ArgumentException("The given object is not a charge detail record!");
+                throw new ArgumentException("The given object is not a charging reservation!");
 
             return CompareTo(ChargingReservation);
 
@@ -294,14 +302,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingReservation">A charge detail record object to compare with.</param>
+        /// <param name="ChargingReservation">A charging reservation object to compare with.</param>
         public Int32 CompareTo(ChargingReservation ChargingReservation)
         {
 
             if ((Object) ChargingReservation == null)
-                throw new ArgumentNullException("The given charge detail record must not be null!");
+                throw new ArgumentNullException("The given charging reservation must not be null!");
 
-            return _SessionId.CompareTo(ChargingReservation._SessionId);
+            return _ReservationId.CompareTo(ChargingReservation._ReservationId);
 
         }
 
@@ -324,7 +332,7 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is a charge detail record.
+            // Check if the given object is a charging reservation.
             var ChargingReservation = Object as ChargingReservation;
             if ((Object) ChargingReservation == null)
                 return false;
@@ -338,9 +346,9 @@ namespace org.GraphDefined.WWCP
         #region Equals(ChargingReservation)
 
         /// <summary>
-        /// Compares two charge detail records for equality.
+        /// Compares two charging reservations for equality.
         /// </summary>
-        /// <param name="ChargingReservation">A charge detail record to compare with.</param>
+        /// <param name="ChargingReservation">A charging reservation to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingReservation ChargingReservation)
         {
@@ -348,7 +356,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) ChargingReservation == null)
                 return false;
 
-            return _SessionId.Equals(ChargingReservation._SessionId);
+            return _ReservationId.Equals(ChargingReservation._ReservationId);
 
         }
 
@@ -363,7 +371,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override Int32 GetHashCode()
         {
-            return _SessionId.GetHashCode();
+            return _ReservationId.GetHashCode();
         }
 
         #endregion
@@ -375,7 +383,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return _SessionId.ToString();
+            return _ReservationId.ToString();
         }
 
         #endregion

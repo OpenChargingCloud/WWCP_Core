@@ -93,7 +93,8 @@
     <Compile Include="LocalService\RemoteStartStop\OnRemoteStopDelegate.cs" />
     <Compile Include="LocalService\RemoteStartStop\OnRemoteStartDelegate.cs" />
     <Compile Include="LocalService\Reserve\OnDeleteReservationDelegate.cs" />
-    <Compile Include="LocalService\Reserve\OnReserveDelegate.cs" />
+    <Compile Include="LocalService\Reserve\OnReserveDelegates.cs" />
+    <Compile Include="LocalService\Reserve\ReservationResult.cs" />
     <Compile Include="RedirectedEVSEList.cs" />
     <Compile Include="WWCPImporter.cs" />
     <Compile Include="ImporterDefaults.cs" />

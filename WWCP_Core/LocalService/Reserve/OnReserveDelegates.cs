@@ -44,16 +44,16 @@ namespace org.GraphDefined.WWCP
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <returns>A RemoteStartResult task.</returns>
     public delegate Task<RemoteStartResultType> OnReservePoolDelegate(DateTime                Timestamp,
-                                                                  RoamingNetwork_Id       RoamingNetworkId,
-                                                                  ChargingReservation_Id  ReservationId,
-                                                                  EVSP_Id                 ProviderId,
-                                                                  eMA_Id                  eMAId,
-                                                                  ChargingPool_Id         ChargingPoolId,
-                                                                  ChargingProduct_Id      ChargingProductId,
-                                                                  DateTime?               CurrentCallerTime,
-                                                                  DateTime?               StartTime,
-                                                                  TimeSpan?               Duration,
-                                                                  CancellationToken       CancellationToken);
+                                                                      RoamingNetwork_Id       RoamingNetworkId,
+                                                                      ChargingReservation_Id  ReservationId,
+                                                                      EVSP_Id                 ProviderId,
+                                                                      eMA_Id                  eMAId,
+                                                                      ChargingPool_Id         ChargingPoolId,
+                                                                      ChargingProduct_Id      ChargingProductId,
+                                                                      DateTime?               CurrentCallerTime,
+                                                                      DateTime?               StartTime,
+                                                                      TimeSpan?               Duration,
+                                                                      CancellationToken       CancellationToken);
 
 
     /// <summary>
@@ -72,44 +72,40 @@ namespace org.GraphDefined.WWCP
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <returns>A RemoteStartResult task.</returns>
     public delegate Task<RemoteStartResultType> OnReserveStationDelegate(DateTime                Timestamp,
-                                                                     RoamingNetwork_Id       RoamingNetworkId,
-                                                                     ChargingReservation_Id  ReservationId,
-                                                                     EVSP_Id                 ProviderId,
-                                                                     eMA_Id                  eMAId,
-                                                                     ChargingStation_Id      ChargingStationId,
-                                                                     ChargingProduct_Id      ChargingProductId,
-                                                                     DateTime?               CurrentCallerTime,
-                                                                     DateTime?               StartTime,
-                                                                     TimeSpan?               Duration,
-                                                                     CancellationToken       CancellationToken);
+                                                                         RoamingNetwork_Id       RoamingNetworkId,
+                                                                         ChargingReservation_Id  ReservationId,
+                                                                         EVSP_Id                 ProviderId,
+                                                                         eMA_Id                  eMAId,
+                                                                         ChargingStation_Id      ChargingStationId,
+                                                                         ChargingProduct_Id      ChargingProductId,
+                                                                         DateTime?               CurrentCallerTime,
+                                                                         DateTime?               StartTime,
+                                                                         TimeSpan?               Duration,
+                                                                         CancellationToken       CancellationToken);
 
 
     /// <summary>
     /// Reserve the given EVSE for future charging.
     /// </summary>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
-    /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
-    /// <param name="CurrentCallerTime">The optional current timestamp on the caller side (to sync clocks). [default: Now]</param>
     /// <param name="StartTime">The timestamp when the reservation should start. [default: Now]</param>
     /// <param name="Duration">The duration of the reservation. [default: 30 min]</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <returns>A RemoteStartResult task.</returns>
-    public delegate Task<RemoteStartResultType> OnReserveEVSEDelegate(DateTime                Timestamp,
+    public delegate Task<ReservationResult> OnReserveEVSEDelegate(CancellationToken       CancellationToken,
+                                                                  DateTime                Timestamp,
                                                                   RoamingNetwork_Id       RoamingNetworkId,
                                                                   ChargingReservation_Id  ReservationId,
                                                                   EVSP_Id                 ProviderId,
-                                                                  eMA_Id                  eMAId,
                                                                   EVSE_Id                 EVSEId,
                                                                   ChargingProduct_Id      ChargingProductId,
-                                                                  DateTime?               CurrentCallerTime,
                                                                   DateTime?               StartTime,
-                                                                  TimeSpan?               Duration,
-                                                                  CancellationToken       CancellationToken);
+                                                                  TimeSpan?               Duration);
 
 
 }
