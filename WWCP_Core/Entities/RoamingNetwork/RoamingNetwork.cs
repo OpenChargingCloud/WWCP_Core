@@ -972,19 +972,19 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (internal) RoamingNetwork()
+        #region RoamingNetwork()
 
         /// <summary>
         /// Create a new roaming network having a random
         /// roaming network identification.
         /// </summary>
-        internal RoamingNetwork()
+        public RoamingNetwork()
             : this(RoamingNetwork_Id.New)
         { }
 
         #endregion
 
-        #region (internal) RoamingNetwork(Id, AuthorizatorId = null)
+        #region RoamingNetwork(Id, AuthorizatorId = null)
 
         /// <summary>
         /// Create a new roaming network having the given
@@ -992,8 +992,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the roaming network.</param>
         /// <param name="AuthorizatorId">The unique identification for the Auth service.</param>
-        internal RoamingNetwork(RoamingNetwork_Id  Id,
-                                Authorizator_Id    AuthorizatorId = null)
+        public RoamingNetwork(RoamingNetwork_Id  Id,
+                              Authorizator_Id    AuthorizatorId = null)
 
             : base(Id)
 

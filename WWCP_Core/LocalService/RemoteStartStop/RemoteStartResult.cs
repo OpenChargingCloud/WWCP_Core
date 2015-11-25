@@ -25,6 +25,14 @@ namespace org.GraphDefined.WWCP.LocalService
         public ChargingSession_Id    SessionId  { get; set; }
 
 
+        public static RemoteStartResult Success
+        {
+            get
+            {
+                return new RemoteStartResult() { Result = RemoteStartResultType.Success };
+            }
+        }
+
         public static RemoteStartResult Error
         {
             get
