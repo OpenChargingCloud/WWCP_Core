@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
@@ -806,7 +807,6 @@ namespace org.GraphDefined.WWCP.LocalService
                                                                             ChargingStationId,
                                                                             EVSEId,
                                                                             ChargingProductId));
-
 
             return new ReservationResult(ReservationResultType.Success,
                                          Reservation);
