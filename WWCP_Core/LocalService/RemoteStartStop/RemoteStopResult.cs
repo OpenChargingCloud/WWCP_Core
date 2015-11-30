@@ -18,7 +18,74 @@
 namespace org.GraphDefined.WWCP.LocalService
 {
 
-    public enum RemoteStopResult
+    public class RemoteStopResult
+    {
+
+        #region Properties
+
+        #region Result
+
+        private readonly RemoteStopResultType _Result;
+
+        public RemoteStopResultType Result
+        {
+            get
+            {
+                return _Result;
+            }
+        }
+
+        #endregion
+
+        #region SessionId
+
+        private readonly ChargingSession_Id _SessionId;
+
+        public ChargingSession_Id SessionId
+        {
+            get
+            {
+                return _SessionId;
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Constructor(s)
+
+        public RemoteStopResult(RemoteStopResultType  Result,
+                                ChargingSession_Id    SessionId = null)
+        {
+            this._Result     = Result;
+            this._SessionId  = SessionId;
+        }
+
+        #endregion
+
+
+
+        public static RemoteStopResult Success
+        {
+            get
+            {
+                return new RemoteStopResult(RemoteStopResultType.Success);
+            }
+        }
+
+        public static RemoteStopResult Error
+        {
+            get
+            {
+                return new RemoteStopResult(RemoteStopResultType.Error);
+            }
+        }
+
+    }
+
+
+    public enum RemoteStopResultType
     {
         EVSE_NotReachable,
         Stop_Timeout,

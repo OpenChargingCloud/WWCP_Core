@@ -21,15 +21,55 @@ namespace org.GraphDefined.WWCP.LocalService
     public class RemoteStartResult
     {
 
-        public RemoteStartResultType Result     { get; set; }
-        public ChargingSession_Id    SessionId  { get; set; }
+        #region Properties
+
+        #region Result
+
+        private readonly RemoteStartResultType _Result;
+
+        public RemoteStartResultType Result
+        {
+            get
+            {
+                return _Result;
+            }
+        }
+
+        #endregion
+
+        #region SessionId
+
+        private readonly ChargingSession_Id _SessionId;
+
+        public ChargingSession_Id SessionId
+        {
+            get
+            {
+                return _SessionId;
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Constructor(s)
+
+        public RemoteStartResult(RemoteStartResultType  Result,
+                                 ChargingSession_Id     SessionId = null)
+        {
+            this._Result     = Result;
+            this._SessionId  = SessionId;
+        }
+
+        #endregion
 
 
         public static RemoteStartResult Success
         {
             get
             {
-                return new RemoteStartResult() { Result = RemoteStartResultType.Success };
+                return new RemoteStartResult(RemoteStartResultType.Success);
             }
         }
 
@@ -37,7 +77,7 @@ namespace org.GraphDefined.WWCP.LocalService
         {
             get
             {
-                return new RemoteStartResult() { Result = RemoteStartResultType.Error };
+                return new RemoteStartResult(RemoteStartResultType.Error);
             }
         }
 
