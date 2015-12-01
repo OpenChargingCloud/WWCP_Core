@@ -25,69 +25,59 @@ namespace org.GraphDefined.WWCP
     {
 
         /// <summary>
-        /// Unspecified
+        /// Unclear or unknown status of the EVSE
         /// </summary>
         Unspecified         = 0,
 
         /// <summary>
-        /// The pole is not fully operational yet.
+        /// The EVSE is planned for the future.
         /// </summary>
         Planned             = 1,
 
         /// <summary>
-        /// The pole is not fully operational yet.
+        /// The EVSE is currently in deployment and not fully operational yet.
         /// </summary>
         InDeployment        = 2,
 
         /// <summary>
-        /// No car connected to EVSE, ready to charge.
+        /// Nothing connected to EVSE, ready to charge.
         /// </summary>
         Available           = 3,
 
         /// <summary>
-        /// A charging session is still open (a car is connected)
+        /// An ongoing charging session.
         /// </summary>
         Occupied            = 5,
 
         /// <summary>
-        /// A car is connected and an error has occured during charge (this status appeared while charging).
+        /// An error has occured while charging.
         /// </summary>
         Faulted             = 6,
 
         /// <summary>
-        /// No car is connected but the pole is not ready to charge.
+        /// Nothing connected, but the EVSE is not ready to charge because it is under maintenance.
         /// </summary>
-        Unavailable         = 7,
+        OutOfService        = 7,
 
         /// <summary>
-        /// No car is connected, the pole is not ready to charge because under maintenance.
+        /// The platform has lost connection with the EVSE (may be used by customer depending on its ability to handle offline mode).
         /// </summary>
-        OutOfService        = 8,
+        Offline             = 8,
 
         /// <summary>
-        /// The platform has lost connection with the pole (may be used by customer depending on its ability to handle offline mode).
+        /// Nothing is connected, but no one can connect except the customer who has reserved this EVSE.
         /// </summary>
-        Offline             = 9,
-
-        /// <summary>
-        /// No car is connected but no car can connect except the one that has booked this EVSE.
-        /// </summary>
-        Reserved            = 10,
+        Reserved            = 9,
 
         /// <summary>
         /// Private internal use.
         /// </summary>
-        Other               = 11,
-
-        /// <summary>
-        /// No status is sent by the pole.
-        /// </summary>
-        Unknown             = 12,
+        Other               = 10,
 
         /// <summary>
         /// The EVSE was not found!
         /// </summary>
-        EvseNotFound        = 13
+        EvseNotFound        = 11
 
 
     }

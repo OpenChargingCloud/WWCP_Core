@@ -776,19 +776,18 @@ namespace org.GraphDefined.WWCP.LocalService
 
 
 
-
         #region SendReserveEVSE(...)
 
-        public async Task<ReservationResult> SendReserveEVSE(CancellationToken       CancellationToken,
-                                                             DateTime                Timestamp,
-                                                             ChargingReservation_Id  ReservationId,
-                                                             DateTime?               StartTime,
-                                                             TimeSpan?               Duration,
-                                                             EVSP_Id                 ProviderId,
-                                                             ChargingPool_Id         ChargingPoolId,
-                                                             ChargingStation_Id      ChargingStationId,
-                                                             EVSE_Id                 EVSEId,
-                                                             ChargingProduct_Id      ChargingProductId)
+        public async Task<ReservationResult> ReserveEVSE(CancellationToken       CancellationToken,
+                                                         DateTime                Timestamp,
+                                                         ChargingReservation_Id  ReservationId,
+                                                         DateTime?               StartTime,
+                                                         TimeSpan?               Duration,
+                                                         EVSP_Id                 ProviderId,
+                                                         ChargingPool_Id         ChargingPoolId,
+                                                         ChargingStation_Id      ChargingStationId,
+                                                         EVSE_Id                 EVSEId,
+                                                         ChargingProduct_Id      ChargingProductId)
         {
 
             if (_ChargingReservations.ContainsKey(ReservationId))

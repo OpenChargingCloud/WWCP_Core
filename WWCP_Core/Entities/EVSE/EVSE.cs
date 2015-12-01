@@ -581,7 +581,7 @@ namespace org.GraphDefined.WWCP
             this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
 
             this._StatusSchedule        = new Stack<Timestamped<EVSEStatusType>>((Int32) EVSEStatusHistorySize);
-            this._StatusSchedule.Push(new Timestamped<EVSEStatusType>(EVSEStatusType.Unknown));
+            this._StatusSchedule.Push(new Timestamped<EVSEStatusType>(EVSEStatusType.Unspecified));
 
             this._AdminStatusSchedule   = new Stack<Timestamped<EVSEAdminStatusType>>((Int32) EVSEStatusHistorySize);
 

@@ -25,42 +25,42 @@ namespace org.GraphDefined.WWCP
     {
 
         /// <summary>
-        /// Unknown/Unspecified
+        /// Unclear or unknown status of the charging station
         /// </summary>
-        Unknown             = 0,
+        Unspecified         = 0,
 
         /// <summary>
-        /// This charging station is just planned for the future.
+        /// The charging station is planned for the future.
         /// </summary>
         Planned             = 1,
 
         /// <summary>
-        /// The charging station is currently in deployment.
+        /// The charging station is currently in deployment and not fully operational yet.
         /// </summary>
         InDeployment        = 2,
 
         /// <summary>
-        /// The charging station is ready to charge.
+        /// The entire charging station is ready to charge.
         /// </summary>
         Available           = 3,
 
         /// <summary>
-        /// Some cars are connected to the charging station, but still ready to charge.
+        /// Some ongoing charging sessions or reservations, but still ready to charge.
         /// </summary>
         PartialAvailable    = 4,
 
         /// <summary>
-        /// The charging station is occupied, no additional cars can be charged.
+        /// The entire charging station is occupied. Currently no additional charging sessions are possible.
         /// </summary>
         Occupied            = 5,
 
         /// <summary>
-        /// At least one car is connected and an error has occured during the charging process.
+        /// An error has occured in the charging station.
         /// </summary>
         Faulted             = 6,
 
         /// <summary>
-        /// No cars are connected, but the station is out of service.
+        /// The charging station is not ready to charge because it is under maintenance.
         /// </summary>
         OutOfService        = 7,
 
@@ -70,7 +70,7 @@ namespace org.GraphDefined.WWCP
         Offline             = 8,
 
         /// <summary>
-        /// No cars are connected but no car can connect except the ones that are booked for this charging station.
+        /// The entire charging station is reserved.
         /// </summary>
         Reserved            = 9,
 

@@ -1266,7 +1266,7 @@ namespace org.GraphDefined.WWCP
             this._PaymentOptions          = new ReactiveSet<PaymentOptions>();
 
             this._StatusSchedule          = new Stack<Timestamped<ChargingStationStatusType>>((Int32) StationStatusHistorySize);
-            this._StatusSchedule.Push(new Timestamped<ChargingStationStatusType>(ChargingStationStatusType.Unknown));
+            this._StatusSchedule.Push(new Timestamped<ChargingStationStatusType>(ChargingStationStatusType.Unspecified));
 
             this._AdminStatusSchedule     = new Stack<Timestamped<ChargingStationAdminStatusType>>((Int32) StationAdminStatusHistorySize);
             this._AdminStatusSchedule.Push(new Timestamped<ChargingStationAdminStatusType>(ChargingStationAdminStatusType.Operational));
