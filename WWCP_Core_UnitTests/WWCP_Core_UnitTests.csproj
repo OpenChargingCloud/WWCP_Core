@@ -61,7 +61,7 @@
       <Project>{4d8ffccd-738d-41aa-a527-8cfdfe0a681d}</Project>
       <Name>Aegir</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Illias\Illias.NET4.5\Illias.csproj">
+    <ProjectReference Include="..\..\Illias\Illias\Illias.csproj">
       <Project>{23d37453-2d4e-4bd8-b40f-3e731fee7712}</Project>
       <Name>Illias</Name>
     </ProjectReference>
