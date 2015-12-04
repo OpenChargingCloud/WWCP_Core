@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2014-2015 GraphDefined GmbH
- * This file is part of WWCP Core <https://github.com/WorldWideCharging/WWCP_Core>
+ * This file is part of WWCP Core <https://github.com/GraphDefined/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -791,6 +791,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
         #region IComparable<EVSE> Members
 
         #region CompareTo(Object)
@@ -828,7 +829,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) EVSE == null)
                 throw new ArgumentNullException("The given EVSE must not be null!");
 
-            return Id.CompareTo(EVSE.Id);
+            return _Id.CompareTo(EVSE._Id);
 
         }
 
@@ -875,7 +876,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) EVSE == null)
                 return false;
 
-            return Id.Equals(EVSE.Id);
+            return _Id.Equals(EVSE._Id);
 
         }
 
@@ -890,19 +891,19 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override Int32 GetHashCode()
         {
-            return Id.GetHashCode();
+            return _Id.GetHashCode();
         }
 
         #endregion
 
-        #region ToString()
+        #region (override) ToString()
 
         /// <summary>
         /// Get a string representation of this object.
         /// </summary>
         public override String ToString()
         {
-            return Id.ToString();
+            return _Id.ToString();
         }
 
         #endregion

@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2014-2015 GraphDefined GmbH
- * This file is part of WWCP Core <https://github.com/WorldWideCharging/WWCP_Core>
+ * This file is part of WWCP Core <https://github.com/GraphDefined/WWCP_Core>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -621,7 +621,7 @@ namespace org.GraphDefined.WWCP
         #region (override) ToString()
 
         /// <summary>
-        /// Return a string represtentation of this object.
+        /// Return a string representation of this object.
         /// ISO-IEC-15118 – Annex H "Specification of Identifiers"
         /// </summary>
         public override String ToString()

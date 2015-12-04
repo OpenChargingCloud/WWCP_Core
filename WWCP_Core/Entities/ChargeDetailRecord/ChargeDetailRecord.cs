@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2014-2015 GraphDefined GmbH
- * This file is part of WWCP Core <https://github.com/WorldWideCharging/WWCP_Core>
+ * This file is part of WWCP Core <https://github.com/GraphDefined/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -172,10 +172,10 @@ namespace org.GraphDefined.WWCP
 
         #region ParkingTime
 
-        private readonly StartEndTime? _ParkingTime;
+        private readonly StartEndDateTime? _ParkingTime;
 
         [Mandatory]
-        public StartEndTime? ParkingTime
+        public StartEndDateTime? ParkingTime
         {
             get
             {
@@ -187,10 +187,10 @@ namespace org.GraphDefined.WWCP
 
         #region SessionTime
 
-        private readonly StartEndTime? _SessionTime;
+        private readonly StartEndDateTime? _SessionTime;
 
         [Mandatory]
-        public StartEndTime? SessionTime
+        public StartEndDateTime? SessionTime
         {
             get
             {
@@ -202,10 +202,10 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingTime
 
-        private readonly StartEndTime? _ChargingTime;
+        private readonly StartEndDateTime? _ChargingTime;
 
         [Mandatory]
-        public StartEndTime? ChargingTime
+        public StartEndDateTime? ChargingTime
         {
             get
             {
@@ -289,9 +289,9 @@ namespace org.GraphDefined.WWCP
                                   ChargingStation_Id                ChargingStationId  = null,
                                   EVSE_Id                           EVSEId             = null,
                                   AuthInfo                          AuthInfo           = null,
-                                  StartEndTime?                     ParkingTime        = null,
-                                  StartEndTime?                     SessionTime        = null,
-                                  StartEndTime?                     ChargingTime       = null,
+                                  StartEndDateTime?                     ParkingTime        = null,
+                                  StartEndDateTime?                     SessionTime        = null,
+                                  StartEndDateTime?                     ChargingTime       = null,
                                   Double?                           ConsumedEnergy     = null,
                                   IEnumerable<Timestamped<Double>>  MeterValues        = null,
                                   String                            MeteringSignature  = null)
@@ -418,7 +418,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ToString()
+        #region (override) ToString()
 
         /// <summary>
         /// Get a string representation of this object.
