@@ -166,12 +166,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the smaller operator both null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_Smaller_BothNull_Test()
         {
             EVSE_Id _EVSE_Id1 = null;
             EVSE_Id _EVSE_Id2 = null;
-            Assert.IsFalse(_EVSE_Id1 < _EVSE_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSE_Id1 < _EVSE_Id2; });
         }
 
         #endregion
@@ -186,7 +185,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         {
             var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
             var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
-            Assert.IsFalse(_EVSE_Id1 < _EVSE_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSE_Id1 < _EVSE_Id2; });
         }
 
         #endregion
@@ -201,7 +200,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         {
             var _EVSE_Id1 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "1");
             var _EVSE_Id2 = EVSE_Id.Parse(EVSEOperator_Id.Parse(Country.Germany, "822"), "2");
-            Assert.IsTrue(_EVSE_Id1 < _EVSE_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSE_Id1 < _EVSE_Id2; });
         }
 
         #endregion
@@ -258,12 +257,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the smallerOrEqual operator both null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_SmallerOrEqual_BothNull_Test()
         {
             EVSE_Id _EVSE_Id1 = null;
             EVSE_Id _EVSE_Id2 = null;
-            Assert.IsFalse(_EVSE_Id1 <= _EVSE_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSE_Id1 <= _EVSE_Id2; });
         }
 
         #endregion
@@ -350,12 +348,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the bigger operator both null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_Bigger_BothNull_Test()
         {
             EVSE_Id _EVSE_Id1 = null;
             EVSE_Id _EVSE_Id2 = null;
-            Assert.IsFalse(_EVSE_Id1 > _EVSE_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSE_Id1 > _EVSE_Id2; });
         }
 
         #endregion
@@ -442,12 +439,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the biggerOrEqual operator both null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_BiggerOrEqual_BothNull_Test()
         {
             EVSE_Id _EVSE_Id1 = null;
             EVSE_Id _EVSE_Id2 = null;
-            Assert.IsFalse(_EVSE_Id1 >= _EVSE_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSE_Id1 >= _EVSE_Id2; });
         }
 
         #endregion

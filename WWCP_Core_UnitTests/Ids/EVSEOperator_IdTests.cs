@@ -216,12 +216,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the smaller operator null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_Smaller_Null_Test1()
         {
             var      _EVSEOperator_Id1 = EVSEOperator_Id.Parse(Country.Germany, "123");
             EVSEOperator_Id _EVSEOperator_Id2 = null;
-            Assert.IsTrue(_EVSEOperator_Id1 < _EVSEOperator_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 < _EVSEOperator_Id2; });
         }
 
         #endregion
@@ -232,12 +231,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the smaller operator null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_Smaller_Null_Test2()
         {
             EVSEOperator_Id _EVSEOperator_Id1 = null;
             var      _EVSEOperator_Id2 = EVSEOperator_Id.Parse(Country.Germany, "123");
-            Assert.IsTrue(_EVSEOperator_Id1 < _EVSEOperator_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 < _EVSEOperator_Id2; });
         }
 
         #endregion
@@ -248,12 +246,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the smaller operator both null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_Smaller_BothNull_Test()
         {
             EVSEOperator_Id _EVSEOperator_Id1 = null;
             EVSEOperator_Id _EVSEOperator_Id2 = null;
-            Assert.IsFalse(_EVSEOperator_Id1 < _EVSEOperator_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 < _EVSEOperator_Id2; });
         }
 
         #endregion
@@ -356,12 +353,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the smallerOrEqual operator null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_SmallerOrEqual_Null_Test1()
         {
             var      _EVSEOperator_Id1 = EVSEOperator_Id.Parse(Country.Germany, "123");
             EVSEOperator_Id _EVSEOperator_Id2 = null;
-            Assert.IsTrue(_EVSEOperator_Id1 <= _EVSEOperator_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 <= _EVSEOperator_Id2; });
         }
 
         #endregion
@@ -372,12 +368,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the smallerOrEqual operator null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_SmallerOrEqual_Null_Test2()
         {
             EVSEOperator_Id _EVSEOperator_Id1 = null;
             var      _EVSEOperator_Id2 = EVSEOperator_Id.Parse(Country.Germany, "123");
-            Assert.IsTrue(_EVSEOperator_Id1 <= _EVSEOperator_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 <= _EVSEOperator_Id2; });
         }
 
         #endregion
@@ -388,12 +383,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the smallerOrEqual operator both null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_SmallerOrEqual_BothNull_Test()
         {
             EVSEOperator_Id _EVSEOperator_Id1 = null;
             EVSEOperator_Id _EVSEOperator_Id2 = null;
-            Assert.IsFalse(_EVSEOperator_Id1 <= _EVSEOperator_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 <= _EVSEOperator_Id2; });
         }
 
         #endregion
@@ -496,12 +490,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the bigger operator null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_Bigger_Null_Test1()
         {
             var      _EVSEOperator_Id1 = EVSEOperator_Id.Parse(Country.Germany, "123");
             EVSEOperator_Id _EVSEOperator_Id2 = null;
-            Assert.IsTrue(_EVSEOperator_Id1 > _EVSEOperator_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 > _EVSEOperator_Id2; });
         }
 
         #endregion
@@ -512,12 +505,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the bigger operator null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_Bigger_Null_Test2()
         {
             EVSEOperator_Id _EVSEOperator_Id1 = null;
             var      _EVSEOperator_Id2 = EVSEOperator_Id.Parse(Country.Germany, "123");
-            Assert.IsTrue(_EVSEOperator_Id1 > _EVSEOperator_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 > _EVSEOperator_Id2; });
         }
 
         #endregion
@@ -528,12 +520,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the bigger operator both null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_Bigger_BothNull_Test()
         {
             EVSEOperator_Id _EVSEOperator_Id1 = null;
             EVSEOperator_Id _EVSEOperator_Id2 = null;
-            Assert.IsFalse(_EVSEOperator_Id1 > _EVSEOperator_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 > _EVSEOperator_Id2; });
         }
 
         #endregion
@@ -636,12 +627,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the biggerOrEqual operator null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_BiggerOrEqual_Null_Test1()
         {
             var _EVSEOperator_Id1 = EVSEOperator_Id.Parse(Country.Germany, "123");
             EVSEOperator_Id _EVSEOperator_Id2 = null;
-            Assert.IsTrue(_EVSEOperator_Id1 >= _EVSEOperator_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 >= _EVSEOperator_Id2; });
         }
 
         #endregion
@@ -652,12 +642,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the biggerOrEqual operator null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_BiggerOrEqual_Null_Test2()
         {
             EVSEOperator_Id _EVSEOperator_Id1 = null;
             var _EVSEOperator_Id2 = EVSEOperator_Id.Parse(Country.Germany, "123");
-            Assert.IsTrue(_EVSEOperator_Id1 >= _EVSEOperator_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 >= _EVSEOperator_Id2; });
         }
 
         #endregion
@@ -668,12 +657,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the biggerOrEqual operator both null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_BiggerOrEqual_BothNull_Test()
         {
             EVSEOperator_Id _EVSEOperator_Id1 = null;
             EVSEOperator_Id _EVSEOperator_Id2 = null;
-            Assert.IsFalse(_EVSEOperator_Id1 >= _EVSEOperator_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 >= _EVSEOperator_Id2; });
         }
 
         #endregion
@@ -776,12 +764,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for CompareTo null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void CompareToNullTest1()
         {
             var _EVSEOperator_Id = EVSEOperator_Id.Parse(Country.Germany, "123");
             Object _Object   = null;
-            _EVSEOperator_Id.CompareTo(_Object);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id.CompareTo(_Object); });
         }
 
         #endregion
@@ -792,12 +779,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for CompareTo null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void CompareToNullTest2()
         {
             var _EVSEOperator_Id = EVSEOperator_Id.Parse(Country.Germany, "123");
             EVSEOperator_Id _Object   = null;
-            _EVSEOperator_Id.CompareTo(_Object);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id.CompareTo(_Object); });
         }
 
         #endregion
@@ -808,12 +794,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for CompareTo a non-EVSEOperator_Id.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void CompareToNonEVSEOperator_IdTest()
         {
             var _EVSEOperator_Id = EVSEOperator_Id.Parse(Country.Germany, "123");
             var _Object   = "123";
-            _EVSEOperator_Id.CompareTo(_Object);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id.CompareTo(_Object); });
         }
 
         #endregion

@@ -312,12 +312,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the smaller operator null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_Smaller_Null_Test1()
         {
             var      _EVP_Id1 = ChargingPool_Id.Random(EVSEOperatorId);
             ChargingPool_Id _EVP_Id2 = null;
-            Assert.IsTrue(_EVP_Id1 < _EVP_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVP_Id1 < _EVP_Id2; });
         }
 
         #endregion
@@ -328,12 +327,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the smaller operator null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_Smaller_Null_Test2()
         {
             ChargingPool_Id _EVP_Id1 = null;
             var      _EVP_Id2 = ChargingPool_Id.Random(EVSEOperatorId);
-            Assert.IsTrue(_EVP_Id1 < _EVP_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVP_Id1 < _EVP_Id2; });
         }
 
         #endregion
@@ -344,12 +342,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the smaller operator both null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_Smaller_BothNull_Test()
         {
             ChargingPool_Id _EVP_Id1 = null;
             ChargingPool_Id _EVP_Id2 = null;
-            Assert.IsFalse(_EVP_Id1 < _EVP_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVP_Id1 < _EVP_Id2; });
         }
 
         #endregion
@@ -452,12 +449,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the smallerOrEqual operator null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_SmallerOrEqual_Null_Test1()
         {
             var      _EVP_Id1 = ChargingPool_Id.Random(EVSEOperatorId);
             ChargingPool_Id _EVP_Id2 = null;
-            Assert.IsTrue(_EVP_Id1 <= _EVP_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVP_Id1 <= _EVP_Id2; });
         }
 
         #endregion
@@ -468,12 +464,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the smallerOrEqual operator null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_SmallerOrEqual_Null_Test2()
         {
             ChargingPool_Id _EVP_Id1 = null;
             var      _EVP_Id2 = ChargingPool_Id.Random(EVSEOperatorId);
-            Assert.IsTrue(_EVP_Id1 <= _EVP_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVP_Id1 <= _EVP_Id2; });
         }
 
         #endregion
@@ -484,12 +479,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the smallerOrEqual operator both null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_SmallerOrEqual_BothNull_Test()
         {
             ChargingPool_Id _EVP_Id1 = null;
             ChargingPool_Id _EVP_Id2 = null;
-            Assert.IsFalse(_EVP_Id1 <= _EVP_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVP_Id1 <= _EVP_Id2; });
         }
 
         #endregion
@@ -592,12 +586,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the bigger operator null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_Bigger_Null_Test1()
         {
             var      _EVP_Id1 = ChargingPool_Id.Random(EVSEOperatorId);
             ChargingPool_Id _EVP_Id2 = null;
-            Assert.IsTrue(_EVP_Id1 > _EVP_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVP_Id1 > _EVP_Id2; });
         }
 
         #endregion
@@ -608,12 +601,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the bigger operator null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_Bigger_Null_Test2()
         {
             ChargingPool_Id _EVP_Id1 = null;
             var      _EVP_Id2 = ChargingPool_Id.Random(EVSEOperatorId);
-            Assert.IsTrue(_EVP_Id1 > _EVP_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVP_Id1 > _EVP_Id2; });
         }
 
         #endregion
@@ -624,12 +616,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the bigger operator both null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_Bigger_BothNull_Test()
         {
             ChargingPool_Id _EVP_Id1 = null;
             ChargingPool_Id _EVP_Id2 = null;
-            Assert.IsFalse(_EVP_Id1 > _EVP_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVP_Id1 > _EVP_Id2; });
         }
 
         #endregion
@@ -732,12 +723,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the biggerOrEqual operator null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_BiggerOrEqual_Null_Test1()
         {
             var      _EVP_Id1 = ChargingPool_Id.Random(EVSEOperatorId);
             ChargingPool_Id _EVP_Id2 = null;
-            Assert.IsTrue(_EVP_Id1 >= _EVP_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVP_Id1 >= _EVP_Id2; });
         }
 
         #endregion
@@ -748,12 +738,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the biggerOrEqual operator null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_BiggerOrEqual_Null_Test2()
         {
             ChargingPool_Id _EVP_Id1 = null;
             var      _EVP_Id2 = ChargingPool_Id.Random(EVSEOperatorId);
-            Assert.IsTrue(_EVP_Id1 >= _EVP_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVP_Id1 >= _EVP_Id2; });
         }
 
         #endregion
@@ -764,12 +753,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for the biggerOrEqual operator both null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void op_BiggerOrEqual_BothNull_Test()
         {
             ChargingPool_Id _EVP_Id1 = null;
             ChargingPool_Id _EVP_Id2 = null;
-            Assert.IsFalse(_EVP_Id1 >= _EVP_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVP_Id1 >= _EVP_Id2; });
         }
 
         #endregion
@@ -872,12 +860,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for CompareTo null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void CompareToNullTest1()
         {
             var    _EVP_Id = ChargingPool_Id.Random(EVSEOperatorId);
             Object _Object   = null;
-            _EVP_Id.CompareTo(_Object);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVP_Id.CompareTo(_Object); });
         }
 
         #endregion
@@ -888,12 +875,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for CompareTo null.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void CompareToNullTest2()
         {
             var      _EVP_Id = ChargingPool_Id.Random(EVSEOperatorId);
             ChargingPool_Id _Object   = null;
-            _EVP_Id.CompareTo(_Object);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVP_Id.CompareTo(_Object); });
         }
 
         #endregion
@@ -904,12 +890,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         /// A test for CompareTo a non-EVP_Id.
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentException))]
         public void CompareToNonEVP_IdTest()
         {
             var _EVP_Id = ChargingPool_Id.Random(EVSEOperatorId);
             var _Object   = "123";
-            _EVP_Id.CompareTo(_Object);
+            Assert.Throws<ArgumentNullException>(() => { var x = _EVP_Id.CompareTo(_Object); });
         }
 
         #endregion
