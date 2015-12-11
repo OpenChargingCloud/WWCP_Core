@@ -18,6 +18,9 @@
 namespace org.GraphDefined.WWCP.LocalService
 {
 
+    /// <summary>
+    /// The result of a remote stop operation.
+    /// </summary>
     public class RemoteStopResult
     {
 
@@ -27,6 +30,9 @@ namespace org.GraphDefined.WWCP.LocalService
 
         private readonly RemoteStopResultType _Result;
 
+        /// <summary>
+        /// The result of a remote stop operation.
+        /// </summary>
         public RemoteStopResultType Result
         {
             get
@@ -37,35 +43,40 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #endregion
 
-        #region SessionId
+        #endregion
 
-        private readonly ChargingSession_Id _SessionId;
+        #region Constructor(s)
 
-        public ChargingSession_Id SessionId
+        public RemoteStopResult(RemoteStopResultType  Result)
+        {
+
+            this._Result  = Result;
+
+        }
+
+        #endregion
+
+
+        #region (static) Unknown
+
+        /// <summary>
+        /// Create a new remote stop 'Unknown' result.
+        /// </summary>
+        public static RemoteStopResult Unknown
         {
             get
             {
-                return _SessionId;
+                return new RemoteStopResult(RemoteStopResultType.Unknown);
             }
         }
 
         #endregion
 
-        #endregion
+        #region (static) Success
 
-        #region Constructor(s)
-
-        public RemoteStopResult(RemoteStopResultType  Result,
-                                ChargingSession_Id    SessionId = null)
-        {
-            this._Result     = Result;
-            this._SessionId  = SessionId;
-        }
-
-        #endregion
-
-
-
+        /// <summary>
+        /// Create a new remote stop 'Success' result.
+        /// </summary>
         public static RemoteStopResult Success
         {
             get
@@ -74,6 +85,13 @@ namespace org.GraphDefined.WWCP.LocalService
             }
         }
 
+        #endregion
+
+        #region (static) Error
+
+        /// <summary>
+        /// Create a new remote stop 'Error' result.
+        /// </summary>
         public static RemoteStopResult Error
         {
             get
@@ -82,18 +100,32 @@ namespace org.GraphDefined.WWCP.LocalService
             }
         }
 
+        #endregion
+
     }
 
 
+    /// <summary>
+    /// The result types of a remote stop operation.
+    /// </summary>
     public enum RemoteStopResultType
     {
+
+        /// <summary>
+        /// The result is unknown or should be ignored.
+        /// </summary>
+        Unknown,
+
+        Success,
+
+        Error,
+
         EVSE_NotReachable,
         Stop_Timeout,
         UnknownEVSE,
         EVSEOutOfService,
-        SessionIsInvalid,
-        Error,
-        Success
+        SessionIsInvalid
+
     }
 
 }

@@ -52,6 +52,27 @@ namespace org.GraphDefined.WWCP
                                                                   EVSP_Id                 ProviderId,
                                                                   eMA_Id                  eMAId);
 
+
+    /// <summary>
+    /// Initiate a remote stop of the given charging session at the given EVSE.
+    /// </summary>
+    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
+    /// <param name="EVSEId">The unique identification of an EVSE.</param>
+    /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+    /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender..</param>
+    /// <returns>A RemoteStopResult task.</returns>
+    public delegate Task<RemoteStopResult> OnRemoteStopDelegate(CancellationToken    CancellationToken,
+                                                                DateTime             Timestamp,
+                                                                RoamingNetwork_Id    RoamingNetworkId,
+                                                                EVSE_Id              EVSEId,
+                                                                ReservationHandling  ReservationHandling,
+                                                                ChargingSession_Id   SessionId,
+                                                                EVSP_Id              ProviderId);
+
+
 }
 
 
