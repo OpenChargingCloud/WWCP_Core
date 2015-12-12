@@ -335,6 +335,63 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region ReservationId
+
+        private ChargingReservation_Id _ReservationId;
+
+        /// <summary>
+        /// The charging reservation identification.
+        /// </summary>
+        [InternalUseOnly]
+        public ChargingReservation_Id ReservationId
+        {
+
+            get
+            {
+                return _ReservationId;
+            }
+
+            set
+            {
+
+                if (_ReservationId != value)
+                    SetProperty(ref _ReservationId, value);
+
+            }
+
+        }
+
+        #endregion
+
+        #region CurrentChargingSession
+
+        private ChargingSession_Id _CurrentChargingSession;
+
+        /// <summary>
+        /// The current charging session at this EVSE.
+        /// </summary>
+        [InternalUseOnly]
+        public ChargingSession_Id CurrentChargingSession
+        {
+
+            get
+            {
+                return _CurrentChargingSession;
+            }
+
+            set
+            {
+
+                if (_CurrentChargingSession != value)
+                    SetProperty(ref _CurrentChargingSession, value);
+
+            }
+
+        }
+
+        #endregion
+
+
         #region Status
 
         /// <summary>

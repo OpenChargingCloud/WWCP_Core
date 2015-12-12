@@ -25,69 +25,30 @@ namespace org.GraphDefined.WWCP
     {
 
         /// <summary>
-        /// Unspecified
+        /// Unclear or unknown admin status of the EVSE.
         /// </summary>
         Unspecified         = 0,
 
         /// <summary>
-        /// The pole is not fully operational yet.
+        /// The EVSE is not ready for charging because it is under maintenance.
         /// </summary>
-        Planned             = 1,
+        OutOfService        = 1,
 
         /// <summary>
-        /// The pole is not fully operational yet.
+        /// The EVSE is ready to charge.
         /// </summary>
-        InDeployment        = 2,
+        Operational         = 2,
 
         /// <summary>
-        /// No car connected to EVSE, ready to charge.
+        /// Private or internal use.
         /// </summary>
-        Available           = 3,
-
-        /// <summary>
-        /// A charging session is still open (a car is connected)
-        /// </summary>
-        Occupied            = 5,
-
-        /// <summary>
-        /// A car is connected and an error has occured during charge (this status appeared while charging).
-        /// </summary>
-        Faulted             = 6,
-
-        /// <summary>
-        /// No car is connected but the pole is not ready to charge.
-        /// </summary>
-        Unavailable         = 7,
-
-        /// <summary>
-        /// No car is connected, the pole is not ready to charge because under maintenance.
-        /// </summary>
-        OutOfService        = 8,
-
-        /// <summary>
-        /// The platform has lost connection with the pole (may be used by customer depending on its ability to handle offline mode).
-        /// </summary>
-        Offline             = 9,
-
-        /// <summary>
-        /// No car is connected but no car can connect except the one that has booked this EVSE.
-        /// </summary>
-        Reserved            = 10,
-
-        /// <summary>
-        /// Private internal use.
-        /// </summary>
-        Other               = 11,
-
-        /// <summary>
-        /// No status is sent by the pole.
-        /// </summary>
-        Unknown             = 12,
+        Other               = 3,
 
         /// <summary>
         /// The EVSE was not found!
+        /// (Only valid within batch-processing)
         /// </summary>
-        EvseNotFound        = 13
+        UnknownStation      = 4
 
     }
 

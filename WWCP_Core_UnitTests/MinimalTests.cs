@@ -85,8 +85,8 @@ namespace org.GraphDefined.WWCP.UnitTests
             f2.Status = EVSEStatusType.Available;
             f3.Status = EVSEStatusType.Available;
 
-            e2.Status = EVSEStatusType.Occupied;
-            e3.Status = EVSEStatusType.Occupied;
+            e2.Status = EVSEStatusType.Charging;
+            e3.Status = EVSEStatusType.Charging;
 
         }
 

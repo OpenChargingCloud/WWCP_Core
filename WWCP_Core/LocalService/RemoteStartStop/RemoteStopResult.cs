@@ -15,6 +15,12 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP.LocalService
 {
 
@@ -43,30 +49,132 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #endregion
 
+        #region ErrorMessage
+
+        private readonly String _ErrorMessage;
+
+        /// <summary>
+        /// An optional error message.
+        /// </summary>
+        public String ErrorMessage
+        {
+            get
+            {
+                return _ErrorMessage;
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
 
-        public RemoteStopResult(RemoteStopResultType  Result)
+        #region (private) RemoteStopResult(Result)
+
+        /// <summary>
+        /// Create a new remote stop result.
+        /// </summary>
+        /// <param name="Result">The result of the remote Stop operation.</param>
+        private RemoteStopResult(RemoteStopResultType  Result)
         {
 
-            this._Result  = Result;
+            this._Result        = Result;
+            this._ErrorMessage  = null;
 
         }
 
         #endregion
 
-
-        #region (static) Unknown
+        #region (private) RemoteStopResult(ErrorMessage = null)
 
         /// <summary>
-        /// Create a new remote stop 'Unknown' result.
+        /// Create a new remote stop result.
         /// </summary>
-        public static RemoteStopResult Unknown
+        /// <param name="ErrorMessage">A optional error message.</param>
+        private RemoteStopResult(String ErrorMessage = null)
+        {
+
+            this._Result        = RemoteStopResultType.Error;
+            this._ErrorMessage  = ErrorMessage;
+
+        }
+
+        #endregion
+
+        #endregion
+
+
+        #region (static) Unspecified
+
+        /// <summary>
+        /// The result is unknown and/or should be ignored.
+        /// </summary>
+        public static RemoteStopResult Unspecified
         {
             get
             {
-                return new RemoteStopResult(RemoteStopResultType.Unknown);
+                return new RemoteStopResult(RemoteStopResultType.Unspecified);
+            }
+        }
+
+        #endregion
+
+        #region (static) UnknownEVSE
+
+        /// <summary>
+        /// The EVSE is unknown.
+        /// </summary>
+        public static RemoteStopResult UnknownEVSE
+        {
+            get
+            {
+                return new RemoteStopResult(RemoteStopResultType.UnknownEVSE);
+            }
+        }
+
+        #endregion
+
+        #region (static) InvalidSessionId
+
+        /// <summary>
+        /// The charging session identification is unknown or invalid.
+        /// </summary>
+        public static RemoteStopResult InvalidSessionId
+        {
+            get
+            {
+                return new RemoteStopResult(RemoteStopResultType.InvalidSessionId);
+            }
+        }
+
+        #endregion
+
+        #region (static) OutOfService
+
+        /// <summary>
+        /// The EVSE is out of service.
+        /// </summary>
+        public static RemoteStopResult OutOfService
+        {
+            get
+            {
+                return new RemoteStopResult(RemoteStopResultType.OutOfService);
+            }
+        }
+
+        #endregion
+
+        #region (static) Offline
+
+        /// <summary>
+        /// The EVSE is offline.
+        /// </summary>
+        public static RemoteStopResult Offline
+        {
+            get
+            {
+                return new RemoteStopResult(RemoteStopResultType.Offline);
             }
         }
 
@@ -75,7 +183,7 @@ namespace org.GraphDefined.WWCP.LocalService
         #region (static) Success
 
         /// <summary>
-        /// Create a new remote stop 'Success' result.
+        /// The remote stop was successful.
         /// </summary>
         public static RemoteStopResult Success
         {
@@ -87,17 +195,43 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #endregion
 
-        #region (static) Error
+        #region (static) Timeout
 
         /// <summary>
-        /// Create a new remote stop 'Error' result.
+        /// The remote stop ran into a timeout.
         /// </summary>
-        public static RemoteStopResult Error
+        public static RemoteStopResult Timeout
         {
             get
             {
-                return new RemoteStopResult(RemoteStopResultType.Error);
+                return new RemoteStopResult(RemoteStopResultType.Timeout);
             }
+        }
+
+        #endregion
+
+        #region (static) Error(Message = null)
+
+        /// <summary>
+        /// The remote stop led to an error.
+        /// </summary>
+        /// <param name="Message">An optional error message.</param>
+        public static RemoteStopResult Error(String Message = null)
+        {
+            return new RemoteStopResult(Message);
+        }
+
+        #endregion
+
+
+        #region (override) ToString()
+
+        /// <summary>
+        /// Get a string representation of this object.
+        /// </summary>
+        public override String ToString()
+        {
+            return _Result.ToString();
         }
 
         #endregion
@@ -112,19 +246,44 @@ namespace org.GraphDefined.WWCP.LocalService
     {
 
         /// <summary>
-        /// The result is unknown or should be ignored.
+        /// The result is unknown and/or should be ignored.
         /// </summary>
-        Unknown,
+        Unspecified,
 
+        /// <summary>
+        /// The EVSE is unknown.
+        /// </summary>
+        UnknownEVSE,
+
+        /// <summary>
+        /// The charging session identification is unknown or invalid.
+        /// </summary>
+        InvalidSessionId,
+
+        /// <summary>
+        /// The EVSE is out of service.
+        /// </summary>
+        OutOfService,
+
+        /// <summary>
+        /// The EVSE is offline.
+        /// </summary>
+        Offline,
+
+        /// <summary>
+        /// The remote stop was successful.
+        /// </summary>
         Success,
 
-        Error,
+        /// <summary>
+        /// The remote stop ran into a timeout.
+        /// </summary>
+        Timeout,
 
-        EVSE_NotReachable,
-        Stop_Timeout,
-        UnknownEVSE,
-        EVSEOutOfService,
-        SessionIsInvalid
+        /// <summary>
+        /// The remote stop led to an error.
+        /// </summary>
+        Error
 
     }
 

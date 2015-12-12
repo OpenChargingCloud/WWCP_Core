@@ -1226,10 +1226,10 @@ namespace org.GraphDefined.WWCP
             this._AuthenticationModes        = new ReactiveSet<AuthenticationModes>();
 
             this._StatusSchedule             = new Stack<Timestamped<ChargingPoolStatusType>>((Int32) PoolStatusHistorySize);
-            this._StatusSchedule.Push(new Timestamped<ChargingPoolStatusType>(ChargingPoolStatusType.Unknown));
+            this._StatusSchedule.Push(new Timestamped<ChargingPoolStatusType>(ChargingPoolStatusType.Unspecified));
 
             this._AdminStatusSchedule        = new Stack<Timestamped<ChargingPoolAdminStatusType>>((Int32) PoolAdminStatusHistorySize);
-            this._AdminStatusSchedule.Push(new Timestamped<ChargingPoolAdminStatusType>(ChargingPoolAdminStatusType.Unknown));
+            this._AdminStatusSchedule.Push(new Timestamped<ChargingPoolAdminStatusType>(ChargingPoolAdminStatusType.Unspecified));
 
             #endregion
 

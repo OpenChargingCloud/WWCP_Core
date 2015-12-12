@@ -19,80 +19,71 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The status of a charging pool.
+    /// The current status of a charging pool.
     /// </summary>
     public enum ChargingPoolStatusType
     {
 
         /// <summary>
-        /// Unspecified
+        /// Unclear or unknown status of the charging pool.
         /// </summary>
         Unspecified         = 0,
 
         /// <summary>
-        /// The pole is not fully operational yet.
+        /// The charging pool is planned for the future.
         /// </summary>
         Planned             = 1,
 
         /// <summary>
-        /// The pole is not fully operational yet.
+        /// The charging pool is currently in deployment, but not fully operational yet.
         /// </summary>
         InDeployment        = 2,
 
         /// <summary>
-        /// No car connected to EVSE, ready to charge.
+        /// The charging pool is not ready for charging because it is under maintenance.
         /// </summary>
-        Available           = 3,
+        OutOfService        = 3,
 
         /// <summary>
-        /// Some cars connected to station or pool, but still ready to charge.
+        /// Currently no communication with the charging pool possible, but charging in offline mode might be available.
         /// </summary>
-        PartialAvailable    = 5,
+        Offline             = 4,
 
         /// <summary>
-        /// A charging session is still open (a car is connected)
+        /// The charging pool is ready to charge.
         /// </summary>
-        Occupied            = 6,
+        Available           = 5,
 
         /// <summary>
-        /// A car is connected and an error has occured during charge (this status appeared while charging).
+        /// Some ongoing charging sessions or reservations, but still ready to charge.
         /// </summary>
-        Faulted             = 7,
+        PartialAvailable    = 6,
 
         /// <summary>
-        /// No car is connected but the pole is not ready to charge.
+        /// The entire charging pool was reserved by an ev customer.
         /// </summary>
-        Unavailable         = 8,
+        Reserved            = 7,
 
         /// <summary>
-        /// No car is connected, the pole is not ready to charge because under maintenance.
+        /// The entire charging pool is charging. Currently no additional charging sessions are possible.
         /// </summary>
-        OutOfService        = 9,
+        Charging            = 8,
 
         /// <summary>
-        /// The platform has lost connection with the pole (may be used by customer depending on its ability to handle offline mode).
+        /// An error has occured.
         /// </summary>
-        Offline             = 10,
+        Faulted             = 9,
 
         /// <summary>
-        /// No car is connected but no car can connect except the one that has booked this EVSE.
+        /// Private or internal use.
         /// </summary>
-        Reserved            = 11,
+        Other               = 10,
 
         /// <summary>
-        /// Private internal use.
+        /// The charging pool was not found!
+        /// (Only valid within batch-processing)
         /// </summary>
-        Other               = 12,
-
-        /// <summary>
-        /// No status is sent by the pole.
-        /// </summary>
-        Unknown             = 13,
-
-        /// <summary>
-        /// The EVSE was not found!
-        /// </summary>
-        EvseNotFound        = 14
+        UnknownPool         = 11
 
     }
 

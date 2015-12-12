@@ -85,7 +85,7 @@ namespace org.GraphDefined.WWCP
         Reserved            = 11,
 
         /// <summary>
-        /// Private internal use.
+        /// Private or internal use.
         /// </summary>
         Other               = 12,
 

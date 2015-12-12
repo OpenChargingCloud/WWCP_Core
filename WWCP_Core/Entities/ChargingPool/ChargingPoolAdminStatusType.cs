@@ -25,59 +25,40 @@ namespace org.GraphDefined.WWCP
     {
 
         /// <summary>
-        /// The charging pool is ready to charge.
+        /// Unclear or unknown admin status of the charging pool.
         /// </summary>
-        Available           = 0,
+        Unspecified         = 0,
 
         /// <summary>
-        /// The pool is not fully operational yet.
+        /// The charging pool is planned for the future.
         /// </summary>
         Planned             = 1,
 
         /// <summary>
-        /// The pool is not fully operational yet.
+        /// The charging pool is currently in deployment, but not fully operational yet.
         /// </summary>
         InDeployment        = 2,
 
         /// <summary>
-        /// A charging session is still open (a car is connected)
+        /// The charging pool is not ready for charging because it is under maintenance.
         /// </summary>
-        Occupied            = 3,
+        OutOfService        = 3,
 
         /// <summary>
-        /// A car is connected and an error has occured during charge (this status appeared while charging).
+        /// The charging pool is ready to charge.
         /// </summary>
-        Faulted             = 4,
+        Operational         = 4,
 
         /// <summary>
-        /// No car is connected but the pool is not ready to charge.
+        /// Private or internal use.
         /// </summary>
-        Unavailable         = 5,
+        Other               = 5,
 
         /// <summary>
-        /// No car is connected, the pool is not ready to charge because under maintenance.
+        /// The charging pool was not found!
+        /// (Only valid within batch-processing)
         /// </summary>
-        OutOfService        = 6,
-
-        /// <summary>
-        /// The platform has lost connection with the pool (may be used by customer depending on its ability to handle offline mode).
-        /// </summary>
-        Offline             = 7,
-
-        /// <summary>
-        /// No car is connected but no car can connect except the one that has booked this pool.
-        /// </summary>
-        Reserved            = 8,
-
-        /// <summary>
-        /// Private internal use.
-        /// </summary>
-        Other               = 9,
-
-        /// <summary>
-        /// No status is set for this pool.
-        /// </summary>
-        Unknown             = 10
+        UnknownPool         = 6
 
     }
 

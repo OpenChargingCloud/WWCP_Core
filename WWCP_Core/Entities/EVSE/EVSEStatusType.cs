@@ -19,13 +19,13 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The status of an EVSE.
+    /// The current status of an EVSE.
     /// </summary>
     public enum EVSEStatusType
     {
 
         /// <summary>
-        /// Unclear or unknown status of the EVSE
+        /// Unclear or unknown status of the EVSE.
         /// </summary>
         Unspecified         = 0,
 
@@ -35,53 +35,51 @@ namespace org.GraphDefined.WWCP
         Planned             = 1,
 
         /// <summary>
-        /// The EVSE is currently in deployment and not fully operational yet.
+        /// The EVSE is currently in deployment, but not fully operational yet.
         /// </summary>
         InDeployment        = 2,
 
         /// <summary>
-        /// Nothing connected to EVSE, ready to charge.
+        /// The EVSE is not ready for charging because it is under maintenance.
         /// </summary>
-        Available           = 3,
+        OutOfService        = 3,
+
+        /// <summary>
+        /// Currently no communication with the EVSE possible, but charging in offline mode might be available.
+        /// </summary>
+        Offline             = 4,
+
+        /// <summary>
+        /// The EVSE is ready to charge.
+        /// </summary>
+        Available           = 5,
+
+        /// <summary>
+        /// The EVSE was reserved by an ev customer.
+        /// </summary>
+        Reserved            = 6,
 
         /// <summary>
         /// An ongoing charging session.
         /// </summary>
-        Occupied            = 5,
+        Charging            = 7,
 
         /// <summary>
-        /// An error has occured while charging.
+        /// An error has occured.
         /// </summary>
-        Faulted             = 6,
+        Faulted             = 8,
 
         /// <summary>
-        /// Nothing connected, but the EVSE is not ready to charge because it is under maintenance.
+        /// Private or internal use.
         /// </summary>
-        OutOfService        = 7,
-
-        /// <summary>
-        /// The platform has lost connection with the EVSE (may be used by customer depending on its ability to handle offline mode).
-        /// </summary>
-        Offline             = 8,
-
-        /// <summary>
-        /// Nothing is connected, but no one can connect except the customer who has reserved this EVSE.
-        /// </summary>
-        Reserved            = 9,
-
-        /// <summary>
-        /// Private internal use.
-        /// </summary>
-        Other               = 10,
+        Other               = 9,
 
         /// <summary>
         /// The EVSE was not found!
+        /// (Only valid within batch-processing)
         /// </summary>
-        EvseNotFound        = 11
-
+        UnknownEVSE         = 10
 
     }
-
-
 
 }
