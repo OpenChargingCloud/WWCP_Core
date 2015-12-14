@@ -57,13 +57,15 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #endregion
 
-        #region (static) Error
+        #region Message
 
-        public static ReservationResult Error
+        private readonly String _Message;
+
+        public String Message
         {
             get
             {
-                return new ReservationResult(ReservationResultType.Error);
+                return _Message;
             }
         }
 
@@ -71,16 +73,159 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #endregion
 
+
+        #region (static) UnknownChargingReservationId
+
+        public static ReservationResult UnknownChargingReservationId
+        {
+            get
+            {
+                return new ReservationResult(ReservationResultType.UnknownChargingReservationId);
+            }
+        }
+
+        #endregion
+
+        #region (static) UnknownChargingPool
+
+        public static ReservationResult UnknownChargingPool
+        {
+            get
+            {
+                return new ReservationResult(ReservationResultType.UnknownChargingPool);
+            }
+        }
+
+        #endregion
+
+        #region (static) UnknownChargingStation
+
+        public static ReservationResult UnknownChargingStation
+        {
+            get
+            {
+                return new ReservationResult(ReservationResultType.UnknownChargingStation);
+            }
+        }
+
+        #endregion
+
+        #region (static) UnknownEVSE
+
+        public static ReservationResult UnknownEVSE
+        {
+            get
+            {
+                return new ReservationResult(ReservationResultType.UnknownEVSE);
+            }
+        }
+
+        #endregion
+
+        #region (static) AlreadyInUse
+
+        public static ReservationResult AlreadyInUse
+        {
+            get
+            {
+                return new ReservationResult(ReservationResultType.AlreadyInUse);
+            }
+        }
+
+        #endregion
+
+        #region (static) AlreadyReserved
+
+        public static ReservationResult AlreadyReserved
+        {
+            get
+            {
+                return new ReservationResult(ReservationResultType.AlreadyReserved);
+            }
+        }
+
+        #endregion
+
+        #region (static) OutOfService
+
+        public static ReservationResult OutOfService
+        {
+            get
+            {
+                return new ReservationResult(ReservationResultType.OutOfService);
+            }
+        }
+
+        #endregion
+
+        #region (static) NoEVSEsAvailable
+
+        public static ReservationResult NoEVSEsAvailable
+        {
+            get
+            {
+                return new ReservationResult(ReservationResultType.NoEVSEsAvailable);
+            }
+        }
+
+        #endregion
+
+        #region (static) Success(Reservation)
+
+        public static ReservationResult Success(ChargingReservation Reservation)
+        {
+            return new ReservationResult(Reservation);
+        }
+
+        #endregion
+
+        #region (static) Error(Message = "")
+
+        public static ReservationResult Error(String Message = "")
+        {
+            return new ReservationResult(Message);
+        }
+
+        #endregion
+
+
         #region Constructor(s)
 
-        public ReservationResult(ReservationResultType  Result,
-                                 ChargingReservation    Reservation = null)
+        #region ReservationResult(Result)
+
+        private ReservationResult(ReservationResultType  Result)
         {
 
             this._Result       = Result;
+            this._Reservation  = null;
+
+        }
+
+        #endregion
+
+        #region ReservationResult(Reservation)
+
+        private ReservationResult(ChargingReservation  Reservation)
+        {
+
+            this._Result       = ReservationResultType.Success;
             this._Reservation  = Reservation;
 
         }
+
+        #endregion
+
+        #region ReservationResult(Message = "")
+
+        private ReservationResult(String Message = "")
+        {
+
+            this._Result   = ReservationResultType.Error;
+            this._Message  = Message;
+
+        }
+
+        #endregion
 
         #endregion
 
@@ -90,28 +235,23 @@ namespace org.GraphDefined.WWCP.LocalService
     public enum ReservationResultType
     {
 
-        Error,
-        Timeout,
+        Unspecified,
 
-        Success,
-
-        ReservationId_AlreadyInUse,
-
+        UnknownChargingReservationId,
         UnknownChargingPool,
         UnknownChargingStation,
         UnknownEVSE,
 
-        ChargingPool_AlreadyReserved,
-        ChargingStation_AlreadyReserved,
-        EVSE_AlreadyReserved,
+        AlreadyInUse,
+        AlreadyReserved,
+        OutOfService,
 
-        ChargingPool_AlreadyInUse,
-        ChargingStation_AlreadyInUse,
-        EVSE_AlreadyInUse,
+        NoEVSEsAvailable,
 
-        ChargingPool_IsOutOfService,
-        ChargingStation_IsOutOfService,
-        EVSE_IsOutOfService
+        Success,
+
+        Timeout,
+        Error,
 
     }
 

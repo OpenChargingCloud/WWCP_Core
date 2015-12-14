@@ -1339,11 +1339,12 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
+            var Now   = DateTime.Now;
             var _EVSE = new EVSE(EVSEId, this);
 
             Configurator.FailSafeInvoke(_EVSE);
 
-            if (EVSEAddition.SendVoting(DateTime.Now, this, _EVSE))
+            if (EVSEAddition.SendVoting(Now, this, _EVSE))
             {
                 if (_EVSEs.TryAdd(EVSEId, _EVSE))
                 {
@@ -1358,7 +1359,9 @@ namespace org.GraphDefined.WWCP
                                                     => UpdateEVSEAdminStatus(Timestamp, EVSE, OldEVSEStatus, NewEVSEStatus);
 
                     OnSuccess.FailSafeInvoke(_EVSE);
-                    EVSEAddition.SendNotification(DateTime.Now, this, _EVSE);
+                    EVSEAddition.SendNotification(Now, this, _EVSE);
+                    UpdateEVSEStatus(Now, _EVSE, new Timestamped<EVSEStatusType>(Now, EVSEStatusType.Unspecified), _EVSE.Status);
+
                     return _EVSE;
 
                 }
@@ -1449,27 +1452,31 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region SetAdminStatus(Timestamp, NewStatus)
+        #region SetAdminStatus(NewAdminStatus)
 
         /// <summary>
         /// Set the timestamped admin status of the charging station.
         /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="NewStatus">A list of new timestamped status for this charging station.</param>
-        public void SetAdminStatus(DateTime                                     Timestamp,
-                                   Timestamped<ChargingStationAdminStatusType>  NewStatus)
+        /// <param name="NewAdminStatus">A new admin status for this charging station.</param>
+        public void SetAdminStatus(ChargingStationAdminStatusType  NewAdminStatus)
         {
 
-            if (_AdminStatusSchedule.Peek().Value != NewStatus.Value)
+            if (_AdminStatusSchedule.Peek().Value != NewAdminStatus)
             {
+
+                var Now = DateTime.Now;
 
                 var OldStatus = _AdminStatusSchedule.Peek();
 
-                _AdminStatusSchedule.Push(NewStatus);
+                // If we have the same timestampt remove the previous entry!
+                if (OldStatus.Timestamp == Now)
+                    _StatusSchedule.Pop();
+
+                _AdminStatusSchedule.Push(new Timestamped<ChargingStationAdminStatusType>(Now, NewAdminStatus));
 
                 var OnAdminStatusChangedLocal = OnAdminStatusChanged;
                 if (OnAdminStatusChangedLocal != null)
-                    OnAdminStatusChanged(Timestamp, this, OldStatus, NewStatus);
+                    OnAdminStatusChanged(Now, this, OldStatus, NewAdminStatus);
 
             }
 
@@ -1477,20 +1484,52 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SetAdminStatus(Timestamp, NewStatusList, ChangeMethod = ChangeMethods.Replace)
+        #region SetAdminStatus(Timestamp, NewAdminStatus)
 
         /// <summary>
         /// Set the timestamped admin status of the charging station.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="NewStatusList">A list of new timestamped status for this charging station.</param>
+        /// <param name="NewAdminStatus">A list of new timestamped admin status for this charging station.</param>
+        public void SetAdminStatus(DateTime                                     Timestamp,
+                                   Timestamped<ChargingStationAdminStatusType>  NewAdminStatus)
+        {
+
+            if (_AdminStatusSchedule.Peek().Value != NewAdminStatus.Value)
+            {
+
+                var OldStatus = _AdminStatusSchedule.Peek();
+
+                // If we have the same timestampt remove the previous entry!
+                if (OldStatus.Timestamp == Timestamp)
+                    _StatusSchedule.Pop();
+
+                _AdminStatusSchedule.Push(NewAdminStatus);
+
+                var OnAdminStatusChangedLocal = OnAdminStatusChanged;
+                if (OnAdminStatusChangedLocal != null)
+                    OnAdminStatusChanged(Timestamp, this, OldStatus, NewAdminStatus);
+
+            }
+
+        }
+
+        #endregion
+
+        #region SetAdminStatus(Timestamp, NewAdminStatusList, ChangeMethod = ChangeMethods.Replace)
+
+        /// <summary>
+        /// Set the timestamped admin status of the charging station.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="NewAdminStatusList">A list of new timestamped admin status for this charging station.</param>
         /// <param name="ChangeMethod">The change mode.</param>
         public void SetAdminStatus(DateTime                                                  Timestamp,
-                                   IEnumerable<Timestamped<ChargingStationAdminStatusType>>  NewStatusList,
+                                   IEnumerable<Timestamped<ChargingStationAdminStatusType>>  NewAdminStatusList,
                                    ChangeMethods                                             ChangeMethod = ChangeMethods.Replace)
         {
 
-            foreach (var NewStatus in NewStatusList)
+            foreach (var NewStatus in NewAdminStatusList)
             {
 
                 if (NewStatus.Timestamp <= DateTime.Now)
@@ -1499,6 +1538,10 @@ namespace org.GraphDefined.WWCP
                     {
 
                         var OldStatus = _AdminStatusSchedule.Peek();
+
+                        // If we have the same timestampt remove the previous entry!
+                        if (OldStatus.Timestamp == Timestamp)
+                            _StatusSchedule.Pop();
 
                         _AdminStatusSchedule.Push(NewStatus);
 
@@ -1513,13 +1556,13 @@ namespace org.GraphDefined.WWCP
                 {
 
                     if (ChangeMethod == ChangeMethods.Replace)
-                        _PlannedAdminStatusChanges = NewStatusList.
+                        _PlannedAdminStatusChanges = NewAdminStatusList.
                                                          Where(TVP => TVP.Timestamp > DateTime.Now).
                                                          ToList();
 
                     else
                         _PlannedAdminStatusChanges = _PlannedAdminStatusChanges.
-                                                         Concat(NewStatusList.Where(TVP => TVP.Timestamp > DateTime.Now)).
+                                                         Concat(NewAdminStatusList.Where(TVP => TVP.Timestamp > DateTime.Now)).
                                                          Deduplicate().
                                                          ToList();
 
@@ -1577,17 +1620,35 @@ namespace org.GraphDefined.WWCP
             if (OnEVSEStatusChangedLocal != null)
                 OnEVSEStatusChangedLocal(Timestamp, EVSE, OldStatus, NewStatus);
 
+            InvokeStatusAggregationDelegate(Timestamp);
+
+        }
+
+        #endregion
+
+        #region (internal) InvokeStatusAggregationDelegate(Timestamp)
+
+        /// <summary>
+        /// Calculate the current aggregates charging station status and send it upstream.
+        /// </summary>
+        internal void InvokeStatusAggregationDelegate(DateTime Timestamp)
+        {
 
             // Calculate new aggregated charging station status and send upstream
             if (StatusAggregationDelegate != null)
             {
 
-                var NewAggregatedStatus = new Timestamped<ChargingStationStatusType>(StatusAggregationDelegate(new EVSEStatusReport(_EVSEs.Values)));
+                var NewAggregatedStatus = new Timestamped<ChargingStationStatusType>(Timestamp,
+                                                                                     StatusAggregationDelegate(new EVSEStatusReport(_EVSEs.Values)));
 
                 if (NewAggregatedStatus.Value != _StatusSchedule.Peek().Value)
                 {
 
                     var OldAggregatedStatus = _StatusSchedule.Peek();
+
+                    // If we have the same timestampt remove the previous entry!
+                    if (OldAggregatedStatus.Timestamp == Timestamp)
+                        _StatusSchedule.Pop();
 
                     _StatusSchedule.Push(NewAggregatedStatus);
 
@@ -1634,6 +1695,10 @@ namespace org.GraphDefined.WWCP
                 {
 
                     var OldAggregatedStatus = _AdminStatusSchedule.Peek();
+
+                    // If we have the same timestampt remove the previous entry!
+                    if (OldAggregatedStatus.Timestamp == Timestamp)
+                        _StatusSchedule.Pop();
 
                     _AdminStatusSchedule.Push(NewAggregatedStatus);
 

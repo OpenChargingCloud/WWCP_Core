@@ -80,22 +80,6 @@ namespace org.GraphDefined.WWCP.LocalService
         #endregion
 
 
-        #region ChargingReservations
-
-        private readonly Dictionary<ChargingReservation_Id, ChargingReservation> _ChargingReservations;
-
-        public IEnumerable<ChargingReservation> ChargingReservations
-        {
-            get
-            {
-                return _ChargingReservations.Select(kvp => kvp.Value);
-            }
-        }
-
-        #endregion
-
-
-
         public IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> AllTokens
         {
             get
@@ -208,8 +192,6 @@ namespace org.GraphDefined.WWCP.LocalService
             this.AuthenticationServices       = new Dictionary<UInt32,                 IAuthServices>();
             this.SessionIdAuthenticatorCache  = new Dictionary<ChargingSession_Id,     IAuthServices>();
             this.EVSEOperatorLookup           = new Dictionary<EVSEOperator_Id,        IRemoteStartStop>();
-
-            this._ChargingReservations        = new Dictionary<ChargingReservation_Id, ChargingReservation>();
 
         }
 
@@ -769,46 +751,6 @@ namespace org.GraphDefined.WWCP.LocalService
             }
 
             //return StatusDiff;
-
-        }
-
-        #endregion
-
-
-
-        #region SendReserveEVSE(...)
-
-        public async Task<ReservationResult> ReserveEVSE(CancellationToken       CancellationToken,
-                                                         DateTime                Timestamp,
-                                                         ChargingReservation_Id  ReservationId,
-                                                         DateTime?               StartTime,
-                                                         TimeSpan?               Duration,
-                                                         EVSP_Id                 ProviderId,
-                                                         ChargingPool_Id         ChargingPoolId,
-                                                         ChargingStation_Id      ChargingStationId,
-                                                         EVSE_Id                 EVSEId,
-                                                         ChargingProduct_Id      ChargingProductId)
-        {
-
-            if (_ChargingReservations.ContainsKey(ReservationId))
-                return new ReservationResult(ReservationResultType.ReservationId_AlreadyInUse);
-
-            var MaxDuration = TimeSpan.FromMinutes(15);
-
-            var Reservation = _ChargingReservations.
-                                  AddAndReturnValue(ReservationId,
-                                                    new ChargingReservation(Timestamp,
-                                                                            ReservationId,
-                                                                            ProviderId,
-                                                                            StartTime.HasValue                           ? StartTime.Value : DateTime.Now,
-                                                                            Duration. HasValue && Duration < MaxDuration ? Duration. Value : MaxDuration,
-                                                                            ChargingPoolId,
-                                                                            ChargingStationId,
-                                                                            EVSEId,
-                                                                            ChargingProductId));
-
-            return new ReservationResult(ReservationResultType.Success,
-                                         Reservation);
 
         }
 

@@ -337,25 +337,46 @@ namespace org.GraphDefined.WWCP
 
         #region ReservationId
 
-        private ChargingReservation_Id _ReservationId;
-
         /// <summary>
         /// The charging reservation identification.
         /// </summary>
         [InternalUseOnly]
         public ChargingReservation_Id ReservationId
         {
+            get
+            {
+                return _Reservation.Id;
+            }
+        }
+
+        #endregion
+
+        #region Reservation
+
+        private ChargingReservation _Reservation;
+
+        /// <summary>
+        /// The charging reservation.
+        /// </summary>
+        [InternalUseOnly]
+        public ChargingReservation Reservation
+        {
 
             get
             {
-                return _ReservationId;
+                return _Reservation;
             }
 
             set
             {
 
-                if (_ReservationId != value)
-                    SetProperty(ref _ReservationId, value);
+                if (_Reservation != value)
+                    SetProperty(ref _Reservation, value);
+
+                if (_Reservation != null)
+                    SetStatus(EVSEStatusType.Reserved);
+                else
+                    SetStatus(EVSEStatusType.Available);
 
             }
 
@@ -384,6 +405,11 @@ namespace org.GraphDefined.WWCP
 
                 if (_CurrentChargingSession != value)
                     SetProperty(ref _CurrentChargingSession, value);
+
+                if (_CurrentChargingSession != null)
+                    SetStatus(EVSEStatusType.Charging);
+                else
+                    SetStatus(EVSEStatusType.Available);
 
             }
 
@@ -668,6 +694,38 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region SetStatus(NewStatus)
+
+        /// <summary>
+        /// Set the current status of this EVSE.
+        /// </summary>
+        /// <param name="NewStatus">A new status for this EVSE.</param>
+        public void SetStatus(EVSEStatusType  NewStatus)
+        {
+
+            if (_StatusSchedule.Peek().Value != NewStatus)
+            {
+
+                var Now = DateTime.Now;
+
+                var OldStatus = _StatusSchedule.Peek();
+
+                // If we have the same timestampt remove the previous entry!
+                if (OldStatus.Timestamp == Now)
+                    _StatusSchedule.Pop();
+
+                _StatusSchedule.Push(new Timestamped<EVSEStatusType>(Now, NewStatus));
+
+                var OnStatusChangedLocal = OnStatusChanged;
+                if (OnStatusChangedLocal != null)
+                    OnStatusChanged(Now, this, OldStatus, NewStatus);
+
+            }
+
+        }
+
+        #endregion
+
         #region SetStatus(Timestamp, NewStatus)
 
         /// <summary>
@@ -683,6 +741,10 @@ namespace org.GraphDefined.WWCP
             {
 
                 var OldStatus = _StatusSchedule.Peek();
+
+                // If we have the same timestampt remove the previous entry!
+                if (OldStatus.Timestamp == Timestamp)
+                    _StatusSchedule.Pop();
 
                 _StatusSchedule.Push(NewStatus);
 
@@ -718,6 +780,10 @@ namespace org.GraphDefined.WWCP
                     {
 
                         var OldStatus = _StatusSchedule.Peek();
+
+                        // If we have the same timestampt remove the previous entry!
+                        if (OldStatus.Timestamp == Timestamp)
+                            _StatusSchedule.Pop();
 
                         _StatusSchedule.Push(NewStatus);
 
@@ -767,6 +833,10 @@ namespace org.GraphDefined.WWCP
 
                 var OldStatus = _AdminStatusSchedule.Peek();
 
+                // If we have the same timestampt remove the previous entry!
+                if (OldStatus.Timestamp == Timestamp)
+                    _StatusSchedule.Pop();
+
                 _AdminStatusSchedule.Push(NewStatus);
 
                 var OnAdminStatusChangedLocal = OnAdminStatusChanged;
@@ -801,6 +871,10 @@ namespace org.GraphDefined.WWCP
                     {
 
                         var OldStatus = _AdminStatusSchedule.Peek();
+
+                        // If we have the same timestampt remove the previous entry!
+                        if (OldStatus.Timestamp == Timestamp)
+                            _StatusSchedule.Pop();
 
                         _AdminStatusSchedule.Push(NewStatus);
 

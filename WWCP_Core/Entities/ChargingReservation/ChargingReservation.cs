@@ -36,16 +36,22 @@ namespace org.GraphDefined.WWCP
                                        IComparable
     {
 
-        #region Data
+        #region Properties
 
-        /// <summary>
-        /// The default max size of the charging station (aggregated EVSE) status history.
-        /// </summary>
-        public const UInt16 DefaultStationStatusHistorySize = 50;
+        #region Timestamp
+
+        private readonly DateTime _Timestamp;
+
+        [Mandatory]
+        public DateTime Timestamp
+        {
+            get
+            {
+                return _Timestamp;
+            }
+        }
 
         #endregion
-
-        #region Properties
 
         #region ReservationId
 
@@ -65,11 +71,26 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ProviderId
+
+        private readonly EVSP_Id _ProviderId;
+
+        [Optional]
+        public EVSP_Id ProviderId
+        {
+            get
+            {
+                return _ProviderId;
+            }
+        }
+
+        #endregion
+
         #region StartTime
 
         private readonly DateTime _StartTime;
 
-        [Optional]
+        [Mandatory]
         public DateTime StartTime
         {
             get
@@ -84,7 +105,7 @@ namespace org.GraphDefined.WWCP
 
         private readonly TimeSpan _Duration;
 
-        [Optional]
+        [Mandatory]
         public TimeSpan Duration
         {
             get
@@ -94,10 +115,6 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
-
-
-
-
 
         #region ChargingPoolId
 
@@ -144,91 +161,61 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Identification
+        #region ChargingProductId
 
-        private readonly AuthInfo _Identification;
-
-        [Optional]
-        public AuthInfo Identification
-        {
-            get
-            {
-                return _Identification;
-            }
-        }
-
-        #endregion
-
-        #region ParkingTime
-
-        private readonly StartEndDateTime? _ParkingTime;
-
-        [Mandatory]
-        public StartEndDateTime? ParkingTime
-        {
-            get
-            {
-                return _ParkingTime;
-            }
-        }
-
-        #endregion
-
-        #region ChargingTime
-
-        private readonly StartEndDateTime? _ChargingTime;
-
-        [Mandatory]
-        public StartEndDateTime? ChargingTime
-        {
-            get
-            {
-                return _ChargingTime;
-            }
-        }
-
-        #endregion
-
-        #region ConsumedEnergy
-
-        private readonly Double? _ConsumedEnergy;
+        private readonly ChargingProduct_Id _ChargingProductId;
 
         [Optional]
-        public Double? ConsumedEnergy
+        public ChargingProduct_Id ChargingProductId
         {
             get
             {
-                return _ConsumedEnergy;
+                return _ChargingProductId;
             }
         }
 
         #endregion
 
-        #region MeterValues
+        #region RFIDIds
 
-        private readonly IEnumerable<Timestamped<Double>> _MeterValues;
+        private readonly IEnumerable<Auth_Token> _RFIDIds;
 
         [Optional]
-        public IEnumerable<Timestamped<Double>> MeterValues
+        public IEnumerable<Auth_Token> RFIDIds
         {
             get
             {
-                return _MeterValues;
+                return _RFIDIds;
             }
         }
 
         #endregion
 
-        #region MeteringSignature
+        #region eMAIds
 
-        private readonly String _MeteringSignature;
+        private readonly IEnumerable<eMA_Id> _eMAIds;
 
         [Optional]
-        public String MeteringSignature
+        public IEnumerable<eMA_Id> eMAIds
         {
             get
             {
-                return _MeteringSignature;
+                return _eMAIds;
+            }
+        }
+
+        #endregion
+
+        #region PINs
+
+        private readonly IEnumerable<UInt32> _PINs;
+
+        [Optional]
+        public IEnumerable<UInt32> PINs
+        {
+            get
+            {
+                return _PINs;
             }
         }
 
@@ -242,30 +229,30 @@ namespace org.GraphDefined.WWCP
         /// Create a charging reservation.
         /// </summary>
         public ChargingReservation(DateTime                Timestamp,
-                                   ChargingReservation_Id  ReservationId,
-                                   EVSP_Id                 ProviderId,
-                                   DateTime?               StartTime          = null,
-                                   TimeSpan?               Duration           = null,
+                                   DateTime                StartTime,
+                                   TimeSpan                Duration,
+                                   EVSP_Id                 ProviderId         = null,
                                    ChargingPool_Id         ChargingPoolId     = null,
                                    ChargingStation_Id      ChargingStationId  = null,
                                    EVSE_Id                 EVSEId             = null,
-                                   ChargingProduct_Id      ChargingProductId  = null)
+                                   ChargingProduct_Id      ChargingProductId  = null,
+                                   IEnumerable<Auth_Token> RFIDIds            = null,
+                                   IEnumerable<eMA_Id>     eMAIds             = null,
+                                   IEnumerable<UInt32>     PINs               = null)
 
         {
 
-            #region Initial checks
-
-            if (ReservationId == null)
-                throw new ArgumentNullException("ReservationId", "The charging reservation identification must not be null!");
-
-            if (ProviderId == null)
-                throw new ArgumentNullException("ProviderId", "The provider identification must not be null!");
-
-            #endregion
-
-            this._ReservationId     = ReservationId;
-            this._StartTime         = StartTime.HasValue ? StartTime.Value : DateTime.Now;
-            this._Duration          = Duration. HasValue ? Duration. Value : TimeSpan.FromMinutes(15);
+            this._Timestamp          = Timestamp;
+            this._ReservationId      = ChargingReservation_Id.New;
+            this._StartTime          = StartTime;
+            this._Duration           = Duration;
+            this._ChargingPoolId     = ChargingPoolId;
+            this._ChargingStationId  = ChargingStationId;
+            this._EVSEId             = EVSEId;
+            this._ChargingProductId  = ChargingProductId;
+            this._RFIDIds            = RFIDIds != null ? RFIDIds : new Auth_Token[0];
+            this._eMAIds             = eMAIds  != null ? eMAIds  : new eMA_Id[0];
+            this._PINs               = PINs    != null ? PINs    : new UInt32[0];
 
         }
 

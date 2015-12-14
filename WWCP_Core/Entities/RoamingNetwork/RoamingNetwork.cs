@@ -27,6 +27,8 @@ using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 using org.GraphDefined.WWCP.LocalService;
+using System.Threading.Tasks;
+using System.Threading;
 
 #endregion
 
@@ -49,10 +51,14 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private  readonly ConcurrentDictionary<EVSEOperator_Id,               EVSEOperator>               _EVSEOperators;
-        private  readonly ConcurrentDictionary<EVSP_Id,                       EVSP>          _EVServiceProviders;
-        private  readonly ConcurrentDictionary<RoamingProvider_Id,            RoamingProvider>            _RoamingProviders;
-        private  readonly ConcurrentDictionary<NavigationServiceProvider_Id,  NavigationServiceProvider>  _SearchProviders;
+        public static readonly TimeSpan MaxReservationDuration              = TimeSpan.FromMinutes(15);
+
+        private readonly ConcurrentDictionary<EVSEOperator_Id,               EVSEOperator>               _EVSEOperators;
+        private readonly ConcurrentDictionary<EVSP_Id,                       EVSP>                       _EVServiceProviders;
+        private readonly ConcurrentDictionary<RoamingProvider_Id,            RoamingProvider>            _RoamingProviders;
+        private readonly ConcurrentDictionary<NavigationServiceProvider_Id,  NavigationServiceProvider>  _SearchProviders;
+
+        private readonly ConcurrentDictionary<ChargingReservation_Id, ChargingReservation>               _ChargingReservations;
 
         #endregion
 
@@ -381,6 +387,21 @@ namespace org.GraphDefined.WWCP
 
                                        ))));
 
+            }
+        }
+
+        #endregion
+
+        #region ChargingReservations
+
+        /// <summary>
+        /// Return all charging reservations registered within this roaming network.
+        /// </summary>
+        public IEnumerable<ChargingReservation> ChargingReservations
+        {
+            get
+            {
+                return _ChargingReservations.Select(kvp => kvp.Value);
             }
         }
 
@@ -999,22 +1020,17 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            #region Initial checks
-
-            if (Id == null)
-                throw new ArgumentNullException("Id", "The given unique roaming network identification must not be null!");
-
-            #endregion
-
             #region Init data and properties
 
-            this._EVSEOperators             = new ConcurrentDictionary<EVSEOperator_Id,              EVSEOperator>();
-            this._EVServiceProviders        = new ConcurrentDictionary<EVSP_Id,                      EVSP>();
-            this._RoamingProviders          = new ConcurrentDictionary<RoamingProvider_Id,           RoamingProvider>();
-            this._SearchProviders           = new ConcurrentDictionary<NavigationServiceProvider_Id, NavigationServiceProvider>();
-            this._RequestRouter             = new RequestRouter(Id, AuthorizatorId);
+            this._EVSEOperators         = new ConcurrentDictionary<EVSEOperator_Id,              EVSEOperator>();
+            this._EVServiceProviders    = new ConcurrentDictionary<EVSP_Id,                      EVSP>();
+            this._RoamingProviders      = new ConcurrentDictionary<RoamingProvider_Id,           RoamingProvider>();
+            this._SearchProviders       = new ConcurrentDictionary<NavigationServiceProvider_Id, NavigationServiceProvider>();
+            this._RequestRouter         = new RequestRouter(Id, AuthorizatorId);
 
-            this._Description               = new I18NString();
+            this._ChargingReservations  = new ConcurrentDictionary<ChargingReservation_Id, ChargingReservation>();
+
+            this._Description           = new I18NString();
 
             #endregion
 
@@ -1467,6 +1483,77 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region SendReserveEVSE(...)
+
+        public async Task<ReservationResult> ReserveEVSE(DateTime                Timestamp,
+                                                         CancellationToken       CancellationToken,
+                                                         EVSP_Id                 ProviderId,
+                                                         ChargingReservation_Id  ReservationId,
+                                                         DateTime?               StartTime,
+                                                         TimeSpan?               Duration,
+                                                         EVSE_Id                 EVSEId,
+                                                         ChargingProduct_Id      ChargingProductId  = null,
+                                                         IEnumerable<Auth_Token> RFIDIds            = null,
+                                                         IEnumerable<eMA_Id>     eMAIds             = null,
+                                                         IEnumerable<UInt32>     PINs               = null)
+        {
+
+            #region Try to remove an existing reservation
+
+            if (ReservationId != null)
+            {
+
+                ChargingReservation _Reservation = null;
+
+                if (!_ChargingReservations.TryRemove(ReservationId, out _Reservation))
+                    return ReservationResult.UnknownChargingReservationId;
+
+            }
+
+            #endregion
+
+            EVSE _EVSE;
+
+            if (!TryGetEVSEbyId(EVSEId, out _EVSE))
+                return ReservationResult.UnknownEVSE;
+
+            if (_EVSE.Status.Value == EVSEStatusType.OutOfService)
+                return ReservationResult.OutOfService;
+
+            if (_EVSE.Status.Value == EVSEStatusType.Charging)
+                return ReservationResult.AlreadyInUse;
+
+            if (_EVSE.Status.Value == EVSEStatusType.Reserved)
+                return ReservationResult.AlreadyReserved;
+
+            if (_EVSE.Status.Value == EVSEStatusType.Available)
+            {
+
+                var _Reservation = new ChargingReservation(Timestamp,
+                                                           StartTime.HasValue ? StartTime.Value : DateTime.Now,
+                                                           Duration. HasValue ? Duration. Value : MaxReservationDuration,
+                                                           ProviderId,
+                                                           _EVSE.ChargingStation.ChargingPool.Id,
+                                                           _EVSE.ChargingStation.Id,
+                                                           _EVSE.Id,
+                                                           ChargingProductId,
+                                                           RFIDIds,
+                                                           eMAIds,
+                                                           PINs);
+
+                _EVSE.Reservation = _ChargingReservations.AddAndReturnValue(_Reservation.Id, _Reservation);
+
+                return ReservationResult.Success(_Reservation);
+
+            }
+
+            return ReservationResult.Error();
+
+        }
+
+        #endregion
+
         #endregion
 
         #region ChargingStation methods
@@ -1525,6 +1612,73 @@ namespace org.GraphDefined.WWCP
 
             ChargingStation = null;
             return false;
+
+        }
+
+        #endregion
+
+
+        #region ReserveChargingStation(...)
+
+        public async Task<ReservationResult> ReserveChargingStation(DateTime                Timestamp,
+                                                                    CancellationToken       CancellationToken,
+                                                                    EVSP_Id                 ProviderId,
+                                                                    ChargingReservation_Id  ReservationId,
+                                                                    DateTime?               StartTime,
+                                                                    TimeSpan?               Duration,
+                                                                    ChargingStation_Id      ChargingStationId,
+                                                                    ChargingProduct_Id      ChargingProductId  = null,
+                                                                    IEnumerable<Auth_Token> RFIDIds            = null,
+                                                                    IEnumerable<eMA_Id>     eMAIds             = null,
+                                                                    IEnumerable<UInt32>     PINs               = null)
+        {
+
+            #region Try to remove an existing reservation
+
+            if (ReservationId != null)
+            {
+
+                ChargingReservation _Reservation = null;
+
+                if (!_ChargingReservations.TryRemove(ReservationId, out _Reservation))
+                    return ReservationResult.UnknownChargingReservationId;
+
+            }
+
+            #endregion
+
+            ChargingStation _ChargingStation;
+
+            if (!TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
+                return ReservationResult.UnknownChargingStation;
+
+            var _EVSE = _ChargingStation.EVSEs.
+                            Where  (evse => evse.Status.Value == EVSEStatusType.Available).
+                            OrderBy(evse => evse.Id).
+                            FirstOrDefault();
+
+            if (_EVSE != null)
+            {
+
+                var _Reservation = new ChargingReservation(Timestamp,
+                                                           StartTime.HasValue ? StartTime.Value : DateTime.Now,
+                                                           Duration. HasValue ? Duration. Value : MaxReservationDuration,
+                                                           ProviderId,
+                                                           _EVSE.ChargingStation.ChargingPool.Id,
+                                                           _EVSE.ChargingStation.Id,
+                                                           _EVSE.Id,
+                                                           ChargingProductId,
+                                                           RFIDIds,
+                                                           eMAIds,
+                                                           PINs);
+
+                _EVSE.Reservation = _ChargingReservations.AddAndReturnValue(_Reservation.Id, _Reservation);
+
+                return ReservationResult.Success(_Reservation);
+
+            }
+
+            return ReservationResult.NoEVSEsAvailable;
 
         }
 
@@ -1593,7 +1747,101 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region ReserveChargingPool(...)
+
+        public async Task<ReservationResult> ReserveChargingPool(DateTime                Timestamp,
+                                                                 CancellationToken       CancellationToken,
+                                                                 EVSP_Id                 ProviderId,
+                                                                 ChargingReservation_Id  ReservationId,
+                                                                 DateTime?               StartTime,
+                                                                 TimeSpan?               Duration,
+                                                                 ChargingPool_Id         ChargingPoolId,
+                                                                 ChargingProduct_Id      ChargingProductId  = null,
+                                                                 IEnumerable<Auth_Token> RFIDIds            = null,
+                                                                 IEnumerable<eMA_Id>     eMAIds             = null,
+                                                                 IEnumerable<UInt32>     PINs               = null)
+        {
+
+            #region Try to remove an existing reservation
+
+            if (ReservationId != null)
+            {
+
+                ChargingReservation _Reservation = null;
+
+                if (!_ChargingReservations.TryRemove(ReservationId, out _Reservation))
+                    return ReservationResult.UnknownChargingReservationId;
+
+            }
+
+            #endregion
+
+            ChargingPool _ChargingPool;
+
+            if (!TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
+                return ReservationResult.UnknownChargingPool;
+
+            var _EVSE = _ChargingPool.EVSEs.
+                            Where  (evse => evse.Status.Value == EVSEStatusType.Available).
+                            OrderBy(evse => evse.Id).
+                            FirstOrDefault();
+
+            if (_EVSE != null)
+            {
+
+                var _Reservation = new ChargingReservation(Timestamp,
+                                                           StartTime.HasValue ? StartTime.Value : DateTime.Now,
+                                                           Duration. HasValue ? Duration. Value : MaxReservationDuration,
+                                                           ProviderId,
+                                                           _EVSE.ChargingStation.ChargingPool.Id,
+                                                           _EVSE.ChargingStation.Id,
+                                                           _EVSE.Id,
+                                                           ChargingProductId,
+                                                           RFIDIds,
+                                                           eMAIds,
+                                                           PINs);
+
+                _EVSE.Reservation = _ChargingReservations.AddAndReturnValue(_Reservation.Id, _Reservation);
+
+                return ReservationResult.Success(_Reservation);
+
+            }
+
+            return ReservationResult.NoEVSEsAvailable;
+
+        }
+
         #endregion
+
+        #endregion
+
+        #region Reservation methods
+
+        #region TryGetChargingReservationbyId(ChargingReservationId, out ChargingReservation)
+
+        public Boolean TryGetChargingReservationbyId(ChargingReservation_Id ChargingReservationId, out ChargingReservation ChargingReservation)
+        {
+            return _ChargingReservations.TryGetValue(ChargingReservationId, out ChargingReservation);
+        }
+
+        #endregion
+
+        #region Remove(ChargingReservation)
+
+        public Boolean Remove(ChargingReservation_Id ChargingReservationId)
+        {
+
+            ChargingReservation ChargingReservation;
+
+            return _ChargingReservations.TryRemove(ChargingReservationId, out ChargingReservation);
+
+        }
+
+        #endregion
+
+        #endregion
+
 
 
         #region (internal) UpdateEVSEData(Timestamp, EVSE, OldStatus, NewStatus)

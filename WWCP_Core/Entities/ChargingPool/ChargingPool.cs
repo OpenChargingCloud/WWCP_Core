@@ -1753,17 +1753,34 @@ namespace org.GraphDefined.WWCP
             if (OnAggregatedChargingStationStatusChangedLocal != null)
                 OnAggregatedChargingStationStatusChangedLocal(Timestamp, ChargingStation, OldStatus, NewStatus);
 
+            InvokeStatusAggregationDelegate(Timestamp);
 
-            // Calculate new aggregated charging pool status and send upstream
+        }
+
+        #endregion
+
+        #region (internal) InvokeStatusAggregationDelegate(Timestamp)
+
+        /// <summary>
+        /// Calculate the current aggregates charging pool status and send it upstream.
+        /// </summary>
+        internal void InvokeStatusAggregationDelegate(DateTime Timestamp)
+        {
+
             if (StatusAggregationDelegate != null)
             {
 
-                var NewAggregatedStatus = new Timestamped<ChargingPoolStatusType>(StatusAggregationDelegate(new ChargingStationStatusReport(_ChargingStations.Values)));
+                var NewAggregatedStatus = new Timestamped<ChargingPoolStatusType>(Timestamp,
+                                                                                  StatusAggregationDelegate(new ChargingStationStatusReport(_ChargingStations.Values)));
 
                 if (NewAggregatedStatus.Value != _StatusSchedule.Peek().Value)
                 {
 
                     var OldAggregatedStatus = _StatusSchedule.Peek();
+
+                    // If we have the same timestampt remove the previous entry!
+                    if (OldAggregatedStatus.Timestamp == Timestamp)
+                        _StatusSchedule.Pop();
 
                     _StatusSchedule.Push(NewAggregatedStatus);
 
@@ -1810,6 +1827,10 @@ namespace org.GraphDefined.WWCP
                 {
 
                     var OldAggregatedStatus = _AdminStatusSchedule.Peek();
+
+                    // If we have the same timestampt remove the previous entry!
+                    if (OldAggregatedStatus.Timestamp == Timestamp)
+                        _StatusSchedule.Pop();
 
                     _AdminStatusSchedule.Push(NewAggregatedStatus);
 
