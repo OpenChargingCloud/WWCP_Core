@@ -176,7 +176,7 @@ namespace org.GraphDefined.WWCP.LocalService
         /// </summary>
         public static RemoteStopResult InvalidSessionId(ChargingSession_Id SessionId)
         {
-            return new RemoteStopResult(RemoteStopResultType.InvalidSessionId);
+            return new RemoteStopResult(SessionId);
         }
 
         #endregion
