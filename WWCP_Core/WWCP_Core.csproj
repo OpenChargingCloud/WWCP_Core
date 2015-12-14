@@ -86,8 +86,8 @@
     <Compile Include="Entities\EVSE\ChargingFacilities.cs" />
     <Compile Include="Entities\EVSE\ChargingModes.cs" />
     <Compile Include="Entities\HubOperator_Id.cs" />
-    <Compile Include="LocalService\AuthorizeStartStop\AuthorizeStartResult.cs" />
-    <Compile Include="LocalService\AuthorizeStartStop\AuthorizeStopResult.cs" />
+    <Compile Include="LocalService\AuthorizeStartStop\AuthorizeStartResultType.cs" />
+    <Compile Include="LocalService\AuthorizeStartStop\AuthorizeStopResultType.cs" />
     <Compile Include="LocalService\RemoteStartStop\OnRemoteStartStopDelegates.cs" />
     <Compile Include="LocalService\Reserve\OnDeleteReservationDelegate.cs" />
     <Compile Include="LocalService\Reserve\ReservationHandling.cs" />

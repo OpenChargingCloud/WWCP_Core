@@ -18,17 +18,16 @@
 namespace org.GraphDefined.WWCP.LocalService
 {
 
-    public enum AuthorizeStartResult
+    public enum AuthorizeStopResultType
     {
-        Error,
-        Success,
+        Unspecified,
         EVSE_NotReachable,
-        SessionId_AlreadyInUse,
-        EVSE_AlreadyInUse,
+        Stop_Timeout,
         UnknownEVSE,
-        EVSEReserved,
         EVSEOutOfService,
-        Start_Timeout
+        SessionIsInvalid,
+        Error,
+        Success
     }
 
 }
