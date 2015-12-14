@@ -1832,9 +1832,21 @@ namespace org.GraphDefined.WWCP
         public Boolean Remove(ChargingReservation_Id ChargingReservationId)
         {
 
-            ChargingReservation ChargingReservation;
+            ChargingReservation _ChargingReservation;
 
-            return _ChargingReservations.TryRemove(ChargingReservationId, out ChargingReservation);
+            if (_ChargingReservations.TryRemove(ChargingReservationId, out _ChargingReservation))
+            {
+
+                EVSE _EVSE = null;
+
+                if (TryGetEVSEbyId(_ChargingReservation.EVSEId, out _EVSE))
+                    _EVSE.Reservation = null;
+
+                return true;
+
+            }
+
+            return false;
 
         }
 
