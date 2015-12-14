@@ -49,6 +49,23 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #endregion
 
+        #region SessionId
+
+        private readonly ChargingSession_Id _SessionId;
+
+        /// <summary>
+        /// The charging session identification for an invalid remote stop operation.
+        /// </summary>
+        public ChargingSession_Id SessionId
+        {
+            get
+            {
+                return _SessionId;
+            }
+        }
+
+        #endregion
+
         #region ErrorMessage
 
         private readonly String _ErrorMessage;
@@ -81,6 +98,23 @@ namespace org.GraphDefined.WWCP.LocalService
 
             this._Result        = Result;
             this._ErrorMessage  = null;
+
+        }
+
+        #endregion
+
+        #region (private) RemoteStopResult(SessionId)
+
+        /// <summary>
+        /// Create a new remote stop result caused by an invalid session identification.
+        /// </summary>
+        /// <param name="SessionId">The unique charging session identification.</param>
+        private RemoteStopResult(ChargingSession_Id SessionId)
+        {
+
+            this._Result        = RemoteStopResultType.InvalidSessionId;
+            this._SessionId     = SessionId;
+            this._ErrorMessage  = "The session identification is invalid!";
 
         }
 
@@ -140,12 +174,9 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <summary>
         /// The charging session identification is unknown or invalid.
         /// </summary>
-        public static RemoteStopResult InvalidSessionId
+        public static RemoteStopResult InvalidSessionId(ChargingSession_Id SessionId)
         {
-            get
-            {
-                return new RemoteStopResult(RemoteStopResultType.InvalidSessionId);
-            }
+            return new RemoteStopResult(RemoteStopResultType.InvalidSessionId);
         }
 
         #endregion
