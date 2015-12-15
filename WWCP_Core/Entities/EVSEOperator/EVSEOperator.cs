@@ -1299,7 +1299,6 @@ namespace org.GraphDefined.WWCP
                 {
 
                     RoamingNetwork.
-                        RequestRouter.
                         SendChargingPoolAdminStatusDiff(new ChargingPoolAdminStatusDiff(DateTime.Now,
                                                                EVSEOperatorId:    Id,
                                                                EVSEOperatorName:  Name,
@@ -1408,7 +1407,6 @@ namespace org.GraphDefined.WWCP
                 {
 
                     RoamingNetwork.
-                        RequestRouter.
                         SendChargingStationAdminStatusDiff(new ChargingStationAdminStatusDiff(DateTime.Now,
                                                                EVSEOperatorId:    Id,
                                                                EVSEOperatorName:  Name,
@@ -1519,7 +1517,6 @@ namespace org.GraphDefined.WWCP
                 {
 
                     RoamingNetwork.
-                        RequestRouter.
                         SendEVSEStatusDiff(new EVSEStatusDiff(Timestamp:         DateTime.Now,
                                                               EVSEOperatorId:    Id,
                                                               EVSEOperatorName:  Name,
