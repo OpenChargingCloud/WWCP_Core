@@ -21,7 +21,7 @@ using System;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.LocalService
+namespace org.GraphDefined.WWCP
 {
 
     public abstract class AResult

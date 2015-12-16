@@ -21,33 +21,148 @@ using System;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.LocalService
+namespace org.GraphDefined.WWCP
 {
 
-    public enum SENDCDRState
-    {
-        Forwarded,
-        False,
-        NotForwared
-    }
-
-    public class SENDCDRResult : AResult
+    public class SendCDRResult
     {
 
         #region Properties
 
-        public SENDCDRState State { get; set; }
+        #region AuthorizatorId
+
+        private readonly Authorizator_Id _AuthorizatorId;
+
+        public Authorizator_Id AuthorizatorId
+        {
+            get
+            {
+                return _AuthorizatorId;
+            }
+        }
+
+        #endregion
+
+        #region Result
+
+        private SendCDRResultType _Result;
+
+        public SendCDRResultType Result
+        {
+            get
+            {
+                return _Result;
+            }
+        }
+
+        #endregion
+
+        #region Description
+
+        private String _Description;
+
+        public String Description
+        {
+            get
+            {
+                return _Description;
+            }
+        }
+
+        #endregion
+
+        #region AdditionalInfo
+
+        private String _AdditionalInfo;
+
+        public String AdditionalInfo
+        {
+            get
+            {
+                return _AdditionalInfo;
+            }
+        }
+
+        #endregion
 
         #endregion
 
         #region Constructor(s)
 
-        public SENDCDRResult(Authorizator_Id AuthorizatorId)
-            : base(AuthorizatorId)
-        { }
+        private SendCDRResult(SendCDRResultType  Result,
+                              Authorizator_Id    AuthorizatorId,
+                              String             Description = null)
+        {
+
+            this._AuthorizatorId  = AuthorizatorId;
+            this._Result          = Result;
+            this._Description     = Description;
+
+        }
 
         #endregion
 
+
+        #region (static) Forwarded(AuthorizatorId)
+
+        public static SendCDRResult Forwarded(Authorizator_Id AuthorizatorId)
+        {
+            return new SendCDRResult(SendCDRResultType.Forwarded, AuthorizatorId);
+        }
+
+        #endregion
+
+        #region (static) False(AuthorizatorId, Description = null)
+
+        public static SendCDRResult False(Authorizator_Id  AuthorizatorId,
+                                          String           Description = null)
+        {
+
+            return new SendCDRResult(SendCDRResultType.False,
+                                     AuthorizatorId,
+                                     Description);
+
+        }
+
+        #endregion
+
+        #region (static) InvalidSessionId(AuthorizatorId, Description = null)
+
+        public static SendCDRResult InvalidSessionId(Authorizator_Id  AuthorizatorId,
+                                                     String           Description = null)
+        {
+
+            return new SendCDRResult(SendCDRResultType.InvalidSessionId,
+                                     AuthorizatorId,
+                                     Description != null ? Description : "Invalid session identification!");
+
+        }
+
+        #endregion
+
+        #region (static) NotForwared(AuthorizatorId, Description = null)
+
+        public static SendCDRResult NotForwared(Authorizator_Id  AuthorizatorId,
+                                                String           Description = null)
+        {
+
+            return new SendCDRResult(SendCDRResultType.NotForwared,
+                                     AuthorizatorId,
+                                     Description);
+
+        }
+
+        #endregion
+
+    }
+
+
+    public enum SendCDRResultType
+    {
+        Forwarded,
+        False,
+        InvalidSessionId,
+        NotForwared
     }
 
 }

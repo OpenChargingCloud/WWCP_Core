@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using System.Collections.Concurrent;
 
 #endregion
 
@@ -37,8 +38,8 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #region Data
 
-        private readonly Dictionary<Auth_Token,         AuthorizationResult>  AuthorizationDatabase;
-        private readonly Dictionary<ChargingSession_Id, SessionInfo>          SessionDatabase;
+        private readonly ConcurrentDictionary<Auth_Token,         AuthorizationResult>  AuthorizationDatabase;
+        private readonly ConcurrentDictionary<ChargingSession_Id, SessionInfo>          SessionDatabase;
 
         #endregion
 
@@ -72,39 +73,6 @@ namespace org.GraphDefined.WWCP.LocalService
 
         #endregion
 
-        #endregion
-
-        #region Constructor(s)
-
-        public LocalEMobilityService(EVSP_Id          EVSPId,
-                                     Authorizator_Id  AuthorizatorId = null)
-        {
-            this._EVSPId                = EVSPId;
-            this._AuthorizatorId        = (AuthorizatorId == null) ? Authorizator_Id.Parse("eMI3 Local E-Mobility Database") : AuthorizatorId;
-            this.AuthorizationDatabase  = new Dictionary<Auth_Token,     AuthorizationResult>();
-            this.SessionDatabase        = new Dictionary<ChargingSession_Id, SessionInfo>();
-        }
-
-        #endregion
-
-
-        #region AddToken(Token, AuthenticationResult = AuthenticationResult.Allowed)
-
-        public Boolean AddToken(Auth_Token                Token,
-                                AuthorizationResult  AuthenticationResult = AuthorizationResult.Authorized)
-        {
-
-            if (!AuthorizationDatabase.ContainsKey(Token))
-            {
-                AuthorizationDatabase.Add(Token, AuthenticationResult);
-                return true;
-            }
-
-            return false;
-
-        }
-
-        #endregion
 
         public IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> AllTokens
         {
@@ -138,11 +106,50 @@ namespace org.GraphDefined.WWCP.LocalService
             }
         }
 
+        #endregion
+
+        #region Events
+
+        #endregion
+
+        #region Constructor(s)
+
+        public LocalEMobilityService(EVSP_Id          EVSPId,
+                                     Authorizator_Id  AuthorizatorId = null)
+        {
+            this._EVSPId                = EVSPId;
+            this._AuthorizatorId        = (AuthorizatorId == null) ? Authorizator_Id.Parse("eMI3 Local E-Mobility Database") : AuthorizatorId;
+            this.AuthorizationDatabase  = new ConcurrentDictionary<Auth_Token,     AuthorizationResult>();
+            this.SessionDatabase        = new ConcurrentDictionary<ChargingSession_Id, SessionInfo>();
+        }
+
+        #endregion
+
+
+        #region AddToken(Token, AuthenticationResult = AuthenticationResult.Allowed)
+
+        public Boolean AddToken(Auth_Token                Token,
+                                AuthorizationResult  AuthenticationResult = AuthorizationResult.Authorized)
+        {
+
+            if (!AuthorizationDatabase.ContainsKey(Token))
+                return AuthorizationDatabase.TryAdd(Token, AuthenticationResult);
+
+            return false;
+
+        }
+
+        #endregion
+
         #region RemoveToken(Token)
 
         public Boolean RemoveToken(Auth_Token Token)
         {
-            return AuthorizationDatabase.Remove(Token);
+
+            AuthorizationResult _AuthorizationResult;
+
+            return AuthorizationDatabase.TryRemove(Token, out _AuthorizationResult);
+
         }
 
         #endregion
@@ -180,80 +187,76 @@ namespace org.GraphDefined.WWCP.LocalService
 
             #endregion
 
-            lock (AuthorizationDatabase)
+
+            AuthorizationResult AuthenticationResult;
+
+            if (AuthorizationDatabase.TryGetValue(AuthToken, out AuthenticationResult))
             {
 
-                AuthorizationResult AuthenticationResult;
+                #region Authorized
 
-                if (AuthorizationDatabase.TryGetValue(AuthToken, out AuthenticationResult))
+                if (AuthenticationResult == AuthorizationResult.Authorized)
                 {
 
-                    #region Authorized
+                    var _SessionId = ChargingSession_Id.New;
 
-                    if (AuthenticationResult == AuthorizationResult.Authorized)
-                    {
+                    SessionDatabase.TryAdd(_SessionId, new SessionInfo(AuthToken));
 
-                        var _SessionId = ChargingSession_Id.New;
-
-                        SessionDatabase.Add(_SessionId, new SessionInfo(AuthToken));
-
-                        return new HTTPResponse<AUTHSTARTResult>(
-                                   new HTTPResponse(),
-                                   new AUTHSTARTResult(AuthorizatorId) {
-                                       AuthorizationResult  = AuthenticationResult,
-                                       SessionId            = _SessionId,
-                                       PartnerSessionId     = PartnerSessionId,
-                                       ProviderId           = EVSPId
-                                   });
-
-                    }
-
-                    #endregion
-
-                    #region Token is blocked!
-
-                    else if (AuthenticationResult == AuthorizationResult.Blocked)
-                        return new HTTPResponse<AUTHSTARTResult>(
-                                   new HTTPResponse(),
-                                   new AUTHSTARTResult(AuthorizatorId) {
-                                       AuthorizationResult  = AuthenticationResult,
-                                       PartnerSessionId     = PartnerSessionId,
-                                       ProviderId           = EVSPId,
-                                       Description          = "Token is blocked!"
-                                   });
-
-                    #endregion
-
-                    #region ...fall through!
-
-                    else
-                        return new HTTPResponse<AUTHSTARTResult>(
-                                   new HTTPResponse(),
-                                   new AUTHSTARTResult(AuthorizatorId) {
-                                       AuthorizationResult  = AuthenticationResult,
-                                       PartnerSessionId     = PartnerSessionId,
-                                       ProviderId           = EVSPId,
-                                   });
-
-                    #endregion
+                    return new HTTPResponse<AUTHSTARTResult>(
+                               new HTTPResponse(),
+                               new AUTHSTARTResult(AuthorizatorId) {
+                                   AuthorizationResult  = AuthenticationResult,
+                                   SessionId            = _SessionId,
+                                   PartnerSessionId     = PartnerSessionId,
+                                   ProviderId           = EVSPId
+                               });
 
                 }
 
-                #region Unkown Token!
+                #endregion
+
+                #region Token is blocked!
+
+                else if (AuthenticationResult == AuthorizationResult.Blocked)
+                    return new HTTPResponse<AUTHSTARTResult>(
+                               new HTTPResponse(),
+                               new AUTHSTARTResult(AuthorizatorId) {
+                                   AuthorizationResult  = AuthenticationResult,
+                                   PartnerSessionId     = PartnerSessionId,
+                                   ProviderId           = EVSPId,
+                                   Description          = "Token is blocked!"
+                               });
+
+                #endregion
+
+                #region ...fall through!
 
                 else
                     return new HTTPResponse<AUTHSTARTResult>(
-                                   new HTTPResponse(),
-                                   new AUTHSTARTResult(AuthorizatorId) {
-                                   AuthorizationResult  = AuthorizationResult.NotAuthorized,
+                               new HTTPResponse(),
+                               new AUTHSTARTResult(AuthorizatorId) {
+                                   AuthorizationResult  = AuthenticationResult,
                                    PartnerSessionId     = PartnerSessionId,
                                    ProviderId           = EVSPId,
-                                   Description          = "Unkown token!"
                                });
 
                 #endregion
 
             }
+
+            #region Unkown Token!
+
+            else
+                return new HTTPResponse<AUTHSTARTResult>(
+                               new HTTPResponse(),
+                               new AUTHSTARTResult(AuthorizatorId) {
+                               AuthorizationResult  = AuthorizationResult.NotAuthorized,
+                               PartnerSessionId     = PartnerSessionId,
+                               ProviderId           = EVSPId,
+                               Description          = "Unkown token!"
+                           });
+
+            #endregion
 
         }
 
@@ -292,55 +295,34 @@ namespace org.GraphDefined.WWCP.LocalService
 
             #endregion
 
-            lock (AuthorizationDatabase)
+            AuthorizationResult AuthenticationResult;
+
+            if (AuthorizationDatabase.TryGetValue(AuthToken, out AuthenticationResult))
             {
 
-                AuthorizationResult AuthenticationResult;
-
-                if (AuthorizationDatabase.TryGetValue(AuthToken, out AuthenticationResult))
+                if (AuthenticationResult == AuthorizationResult.Authorized)
                 {
 
-                    if (AuthenticationResult == AuthorizationResult.Authorized)
+                    SessionInfo SessionInfo = null;
+
+                    if (SessionDatabase.TryGetValue(SessionId, out SessionInfo))
                     {
 
-                        SessionInfo SessionInfo = null;
+                        #region Authorized
 
-                        if (SessionDatabase.TryGetValue(SessionId, out SessionInfo))
-                        {
+                        if (AuthToken == SessionInfo.Token)
+                            return new HTTPResponse<AUTHSTOPResult>(
+                                       new HTTPResponse(),
+                                       new AUTHSTOPResult(AuthorizatorId) {
+                                           AuthorizationResult  = AuthenticationResult,
+                                           SessionId            = SessionId,
+                                           PartnerSessionId     = PartnerSessionId,
+                                           ProviderId           = EVSPId
+                                       });
 
-                            #region Authorized
+                        #endregion
 
-                            if (AuthToken == SessionInfo.Token)
-                                return new HTTPResponse<AUTHSTOPResult>(
-                                           new HTTPResponse(),
-                                           new AUTHSTOPResult(AuthorizatorId) {
-                                               AuthorizationResult  = AuthenticationResult,
-                                               SessionId            = SessionId,
-                                               PartnerSessionId     = PartnerSessionId,
-                                               ProviderId           = EVSPId
-                                           });
-
-                            #endregion
-
-                            #region Invalid Token for SessionId!
-
-                            else
-                            {
-                                return new HTTPResponse<AUTHSTOPResult>(
-                                           new HTTPResponse(),
-                                           new AUTHSTOPResult(AuthorizatorId) {
-                                               AuthorizationResult  = AuthorizationResult.NotAuthorized,
-                                               PartnerSessionId     = PartnerSessionId,
-                                               ProviderId           = EVSPId,
-                                               Description          = "Invalid token for given session identification!"
-                                           });
-                            }
-
-                            #endregion
-
-                        }
-
-                        #region Invalid SessionId!
+                        #region Invalid Token for SessionId!
 
                         else
                         {
@@ -350,7 +332,7 @@ namespace org.GraphDefined.WWCP.LocalService
                                            AuthorizationResult  = AuthorizationResult.NotAuthorized,
                                            PartnerSessionId     = PartnerSessionId,
                                            ProviderId           = EVSPId,
-                                           Description          = "Invalid session identification!"
+                                           Description          = "Invalid token for given session identification!"
                                        });
                         }
 
@@ -358,56 +340,72 @@ namespace org.GraphDefined.WWCP.LocalService
 
                     }
 
-                    #region Blocked
-
-                    else if (AuthenticationResult == AuthorizationResult.Blocked)
-                        return new HTTPResponse<AUTHSTOPResult>(
-                                   new HTTPResponse(),
-                                   new AUTHSTOPResult(AuthorizatorId) {
-                                       AuthorizationResult  = AuthenticationResult,
-                                       PartnerSessionId     = PartnerSessionId,
-                                       ProviderId           = EVSPId,
-                                       Description          = "Token is blocked!"
-                                   });
-
-                    #endregion
-
-                    #region ...fall through!
+                    #region Invalid SessionId!
 
                     else
+                    {
                         return new HTTPResponse<AUTHSTOPResult>(
                                    new HTTPResponse(),
                                    new AUTHSTOPResult(AuthorizatorId) {
-                                       AuthorizationResult  = AuthenticationResult,
+                                       AuthorizationResult  = AuthorizationResult.NotAuthorized,
                                        PartnerSessionId     = PartnerSessionId,
                                        ProviderId           = EVSPId,
+                                       Description          = "Invalid session identification!"
                                    });
+                    }
 
                     #endregion
 
                 }
 
-                #region Unkown Token!
+                #region Blocked
+
+                else if (AuthenticationResult == AuthorizationResult.Blocked)
+                    return new HTTPResponse<AUTHSTOPResult>(
+                               new HTTPResponse(),
+                               new AUTHSTOPResult(AuthorizatorId) {
+                                   AuthorizationResult  = AuthenticationResult,
+                                   PartnerSessionId     = PartnerSessionId,
+                                   ProviderId           = EVSPId,
+                                   Description          = "Token is blocked!"
+                               });
+
+                #endregion
+
+                #region ...fall through!
 
                 else
                     return new HTTPResponse<AUTHSTOPResult>(
                                new HTTPResponse(),
                                new AUTHSTOPResult(AuthorizatorId) {
-                                   AuthorizationResult  = AuthorizationResult.NotAuthorized,
+                                   AuthorizationResult  = AuthenticationResult,
                                    PartnerSessionId     = PartnerSessionId,
                                    ProviderId           = EVSPId,
-                                   Description          = "Unkown token!"
                                });
 
                 #endregion
 
             }
 
+            #region Unkown Token!
+
+            else
+                return new HTTPResponse<AUTHSTOPResult>(
+                           new HTTPResponse(),
+                           new AUTHSTOPResult(AuthorizatorId) {
+                               AuthorizationResult  = AuthorizationResult.NotAuthorized,
+                               PartnerSessionId     = PartnerSessionId,
+                               ProviderId           = EVSPId,
+                               Description          = "Unkown token!"
+                           });
+
+            #endregion
+
         }
 
         #endregion
 
-        #region SendChargeDetailRecord(EVSEId, SessionId, PartnerProductId, SessionStart, SessionEnd, AuthInfo, PartnerSessionId = null, ..., QueryTimeout = null)
+        #region SendChargeDetailRecord(EVSEId, SessionId, SessionStart, SessionEnd, PartnerProductId, ..., QueryTimeout = null)
 
         /// <summary>
         /// Create a SendChargeDetailRecord request.
@@ -417,7 +415,6 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <param name="PartnerProductId"></param>
         /// <param name="SessionStart">The timestamp of the session start.</param>
         /// <param name="SessionEnd">The timestamp of the session end.</param>
-        /// <param name="AuthInfo">An identification.</param>
         /// <param name="PartnerSessionId">An optional partner session identification.</param>
         /// <param name="ChargingStart">An optional charging start timestamp.</param>
         /// <param name="ChargingEnd">An optional charging end timestamp.</param>
@@ -429,14 +426,14 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <param name="HubOperatorId">An optional identification of the hub operator.</param>
         /// <param name="HubProviderId">An optional identification of the hub provider.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        public async Task<HTTPResponse<SENDCDRResult>>
+        public async Task<HTTPResponse<SendCDRResult>>
 
             SendChargeDetailRecord(EVSE_Id              EVSEId,
                                    ChargingSession_Id   SessionId,
                                    ChargingProduct_Id   PartnerProductId,
                                    DateTime             SessionStart,
                                    DateTime             SessionEnd,
-                                   AuthInfo             AuthInfo,
+                                   AuthInfo             AuthInfo, // REMOVE ME!
                                    ChargingSession_Id   PartnerSessionId      = null,
                                    DateTime?            ChargingStart         = null,
                                    DateTime?            ChargingEnd           = null,
@@ -459,71 +456,22 @@ namespace org.GraphDefined.WWCP.LocalService
             if (SessionId        == null)
                 throw new ArgumentNullException("SessionId",         "The given parameter must not be null!");
 
-            if (PartnerProductId == null)
-                throw new ArgumentNullException("PartnerProductId",  "The given parameter must not be null!");
-
             if (SessionStart     == null)
                 throw new ArgumentNullException("SessionStart",      "The given parameter must not be null!");
 
             if (SessionEnd       == null)
                 throw new ArgumentNullException("SessionEnd",        "The given parameter must not be null!");
 
-            if (AuthInfo         == null)
-                throw new ArgumentNullException("AuthInfo",          "The given parameter must not be null!");
-
             #endregion
 
-            lock (AuthorizationDatabase)
-            {
+            SessionInfo _SessionInfo = null;
 
-                SessionInfo SessionInfo  = null;
+            if (SessionDatabase.TryRemove(SessionId, out _SessionInfo))
+                return new HTTPResponse<SendCDRResult>(new HTTPResponse(),
+                                                       SendCDRResult.Forwarded(AuthorizatorId));
 
-                if (SessionDatabase.TryGetValue(SessionId, out SessionInfo))
-                {
-
-                    #region Success
-
-                    if (AuthInfo.AuthToken == SessionInfo.Token)
-                    {
-
-                        SessionDatabase.Remove(SessionId);
-
-                        return new HTTPResponse<SENDCDRResult>(new HTTPResponse(),
-                                                               new SENDCDRResult(AuthorizatorId) {
-                                                                   State             = SENDCDRState.Forwarded,
-                                                                   PartnerSessionId  = PartnerSessionId
-                                                               });
-
-                    }
-
-                    #endregion
-
-                    #region Invalid Token for SessionId!
-
-                    return new HTTPResponse<SENDCDRResult>(new HTTPResponse(),
-                                                           new SENDCDRResult(AuthorizatorId) {
-                                                               State             = SENDCDRState.False,
-                                                               PartnerSessionId  = PartnerSessionId,
-                                                               Description       = "Invalid token for given session identification!"
-                                                           });
-
-                    #endregion
-
-                }
-
-                #region Invalid SessionId!
-
-                else
-                    return new HTTPResponse<SENDCDRResult>(new HTTPResponse(),
-                                                           new SENDCDRResult(AuthorizatorId) {
-                                                               State             = SENDCDRState.False,
-                                                               PartnerSessionId  = PartnerSessionId,
-                                                               Description       = "Invalid session identification!"
-                                                           });
-
-                #endregion
-
-            }
+            return new HTTPResponse<SendCDRResult>(new HTTPResponse(),
+                                                   SendCDRResult.InvalidSessionId(AuthorizatorId));
 
         }
 

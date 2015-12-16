@@ -163,7 +163,7 @@
     <Compile Include="Responses\AUTHSTOPResult.cs" />
     <Compile Include="Responses\MobileRemoteStartResult.cs" />
     <Compile Include="Responses\MobileRemoteStopResult.cs" />
-    <Compile Include="Responses\SENDCDRResult.cs" />
+    <Compile Include="Responses\SendCDRResult.cs" />
     <Compile Include="Semantics.cs" />
   </ItemGroup>
   <ItemGroup>

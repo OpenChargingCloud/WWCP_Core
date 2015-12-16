@@ -1068,7 +1068,7 @@ namespace org.GraphDefined.WWCP
 
         #region OnFilterCDRRecords
 
-        public delegate SENDCDRResult OnFilterCDRRecordsDelegate(Authorizator_Id AuthorizatorId, AuthInfo AuthInfo, ChargingSession_Id PartnerSessionId);
+        public delegate SendCDRResult OnFilterCDRRecordsDelegate(Authorizator_Id AuthorizatorId, AuthInfo AuthInfo, ChargingSession_Id PartnerSessionId);
 
         /// <summary>
         /// An event fired whenever a CDR needs to be filtered.
@@ -2060,7 +2060,8 @@ namespace org.GraphDefined.WWCP
                                                                      PartnerSessionId,
                                                                      QueryTimeout);
 
-                    _Task.Wait();
+                    _Task.Wait(TimeSpan.FromSeconds(30));
+
                     AuthStartResult = _Task.Result.Content;
 
                     #region Authorized
@@ -2226,7 +2227,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="HubOperatorId">An optional identification of the hub operator.</param>
         /// <param name="HubProviderId">An optional identification of the hub provider.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        public async Task<HTTPResponse<SENDCDRResult>>
+        public async Task<HTTPResponse<SendCDRResult>>
 
             SendChargeDetailRecord(EVSE_Id              EVSEId,
                                    ChargingSession_Id   SessionId,
@@ -2282,7 +2283,7 @@ namespace org.GraphDefined.WWCP
                     var _SENDCDRResult = OnFilterCDRRecordsLocal(AuthorizatorId, AuthInfo, PartnerSessionId);
 
                     if (_SENDCDRResult != null)
-                        return new HTTPResponse<SENDCDRResult>(new HTTPResponse(),
+                        return new HTTPResponse<SendCDRResult>(new HTTPResponse(),
                                                                _SENDCDRResult);
 
                 }
@@ -2316,7 +2317,7 @@ namespace org.GraphDefined.WWCP
 
                     _Task.Wait();
 
-                    if (_Task.Result.Content.State == SENDCDRState.Forwarded)
+                    if (_Task.Result.Content.Result == SendCDRResultType.Forwarded)
                     {
                         SessionIdAuthenticatorCache.Remove(SessionId);
                         return _Task.Result;
@@ -2354,7 +2355,7 @@ namespace org.GraphDefined.WWCP
 
                     _Task.Wait();
 
-                    if (_Task.Result.Content.State == SENDCDRState.Forwarded)
+                    if (_Task.Result.Content.Result == SendCDRResultType.Forwarded)
                     {
                         SessionIdAuthenticatorCache.Remove(SessionId);
                         return _Task.Result;
@@ -2366,12 +2367,9 @@ namespace org.GraphDefined.WWCP
 
                 #region ...else fail!
 
-                return new HTTPResponse<SENDCDRResult>(new HTTPResponse(),
-                                                       new SENDCDRResult(AuthorizatorId) {
-                                                           State             = SENDCDRState.False,
-                                                           PartnerSessionId  = PartnerSessionId,
-                                                           Description       = "No authorization service returned a positiv result!"
-                                                       });
+                return new HTTPResponse<SendCDRResult>(new HTTPResponse(),
+                                                       SendCDRResult.False(AuthorizatorId,
+                                                                           "No authorization service returned a positiv result!"));
 
                 #endregion
 
