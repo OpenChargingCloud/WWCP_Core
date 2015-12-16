@@ -24,31 +24,49 @@ using System;
 namespace org.GraphDefined.WWCP
 {
 
-    public enum AuthorizationResult
-    {
-        Authorized,
-        NotAuthorized,
-        Blocked
-    }
-
-    #region (abstract) AUTHResult
-
-    public abstract class AUTHResult : AResult
+    public class AuthStartResult
     {
 
         #region Properties
 
-        public AuthorizationResult  AuthorizationResult   { get; set; }
-        public ChargingSession_Id   SessionId             { get; set; }
-        public EVSP_Id              ProviderId            { get; set; }
+        public AuthorizeStartResultType  AuthorizationResult  { get; set; }
+        public ChargingSession_Id        SessionId            { get; set; }
+        public EVSP_Id                   ProviderId           { get; set; }
+
+        #region AuthorizatorId
+
+        private readonly Authorizator_Id _AuthorizatorId;
+
+        public Authorizator_Id AuthorizatorId
+        {
+            get
+            {
+                return _AuthorizatorId;
+            }
+        }
+
+        #endregion
+
+        #region Description
+
+        public String Description { get; set; }
+
+        #endregion
+
+        #region AdditionalInfo
+
+        public String AdditionalInfo { get; set; }
+
+        #endregion
 
         #endregion
 
         #region Constructor(s)
 
-        public AUTHResult(Authorizator_Id AuthorizatorId)
-            : base(AuthorizatorId)
-        { }
+        public AuthStartResult(Authorizator_Id AuthorizatorId)
+        {
+            this._AuthorizatorId = AuthorizatorId;
+        }
 
         #endregion
 
@@ -72,6 +90,18 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    #endregion
+    public enum AuthorizeStartResultType
+    {
+        Unspecified,
+        Error,
+        Success,
+        EVSE_NotReachable,
+        SessionId_AlreadyInUse,
+        EVSE_AlreadyInUse,
+        UnknownEVSE,
+        EVSEReserved,
+        EVSEOutOfService,
+        Start_Timeout
+    }
 
 }

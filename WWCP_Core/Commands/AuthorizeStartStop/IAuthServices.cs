@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
-namespace org.GraphDefined.WWCP.LocalService
+namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
@@ -37,10 +37,10 @@ namespace org.GraphDefined.WWCP.LocalService
 
         Authorizator_Id AuthorizatorId { get; }
 
-        IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> AllTokens            { get; }
-        IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> AuthorizedTokens     { get; }
-        IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> NotAuthorizedTokens  { get; }
-        IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> BlockedTokens        { get; }
+        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens            { get; }
+        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens     { get; }
+        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens  { get; }
+        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens        { get; }
 
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <param name="PartnerProductId">An optional partner product identification.</param>
         /// <param name="PartnerSessionId">An optional partner session identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        Task<HTTPResponse<AUTHSTARTResult>> AuthorizeStart(EVSEOperator_Id      OperatorId,
+        Task<HTTPResponse<AuthStartResult>> AuthorizeStart(EVSEOperator_Id      OperatorId,
                                                            Auth_Token           AuthToken,
                                                            EVSE_Id              EVSEId            = null,
                                                            ChargingSession_Id   SessionId         = null,
@@ -71,7 +71,7 @@ namespace org.GraphDefined.WWCP.LocalService
         /// <param name="EVSEId">An optional EVSE identification.</param>
         /// <param name="PartnerSessionId">An optional partner session identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        Task<HTTPResponse<AUTHSTOPResult>>  AuthorizeStop (EVSEOperator_Id      OperatorId,
+        Task<HTTPResponse<AuthStopResult>>  AuthorizeStop (EVSEOperator_Id      OperatorId,
                                                            ChargingSession_Id   SessionId,
                                                            Auth_Token           AuthToken,
                                                            EVSE_Id              EVSEId            = null,

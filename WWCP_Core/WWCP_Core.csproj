@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\SendCDR\OnSendCDRDelegate.cs" />
     <Compile Include="CommonTypes\Attributes\Mandatory.cs" />
     <Compile Include="CommonTypes\Attributes\InternalUseOnly.cs" />
     <Compile Include="CommonTypes\Attributes\Optional.cs" />
@@ -86,8 +87,6 @@
     <Compile Include="Entities\EVSE\ChargingFacilities.cs" />
     <Compile Include="Entities\EVSE\ChargingModes.cs" />
     <Compile Include="Entities\HubOperator_Id.cs" />
-    <Compile Include="Commands\AuthorizeStartStop\AuthorizeStartResultType.cs" />
-    <Compile Include="Commands\AuthorizeStartStop\AuthorizeStopResultType.cs" />
     <Compile Include="Commands\RemoteStartStop\OnRemoteStartStopDelegates.cs" />
     <Compile Include="Commands\Reserve\OnDeleteReservationDelegate.cs" />
     <Compile Include="Commands\Reserve\ReservationHandling.cs" />
@@ -146,24 +145,20 @@
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork.cs" />
     <Compile Include="ImporterForwardingInfo.cs" />
-    <Compile Include="Interfaces\IAuthServices.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\IAuthServices.cs" />
     <Compile Include="CommonTypes\AuthorizatorId.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStartResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopResult.cs" />
-    <Compile Include="LocalService\LocalEMobilityService.cs" />
     <Compile Include="CommonTypes\SessionInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Entities\RoamingProvider\RoamingProvider.cs" />
     <Compile Include="Entities\RoamingProvider\RoamingProvider_Id.cs" />
     <Compile Include="Entities\NavigationServiceProvider\NavigationServiceProvider.cs" />
     <Compile Include="Entities\NavigationServiceProvider\NavigationServiceProvider_Id.cs" />
-    <Compile Include="Responses\AResult.cs" />
-    <Compile Include="Responses\AUTHResult.cs" />
-    <Compile Include="Responses\AUTHSTARTResult.cs" />
-    <Compile Include="Responses\AUTHSTOPResult.cs" />
-    <Compile Include="Responses\MobileRemoteStartResult.cs" />
-    <Compile Include="Responses\MobileRemoteStopResult.cs" />
-    <Compile Include="Responses\SendCDRResult.cs" />
+    <Compile Include="Commands\TokenAuthorizationResultType.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\AuthStartResult.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\AuthStopResult.cs" />
+    <Compile Include="Commands\SendCDR\SendCDRResult.cs" />
     <Compile Include="Semantics.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -187,7 +182,9 @@
       <Name>Styx</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Responses\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

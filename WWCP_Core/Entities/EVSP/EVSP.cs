@@ -21,7 +21,7 @@ using System;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
-using org.GraphDefined.WWCP.LocalService;
+using org.GraphDefined.WWCP;
 
 #endregion
 
@@ -135,23 +135,6 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (internal) EVSProvider(Id, RoamingNetwork)
-
-        /// <summary>
-        /// Create a new Electric Vehicle Service Provider (EVSP)
-        /// having the given EVSProvider_Id.
-        /// </summary>
-        /// <param name="Id">The ChargingPool Id.</param>
-        /// <param name="RoamingNetwork">The corresponding roaming network.</param>
-        internal EVSP(EVSP_Id         Id,
-                                   RoamingNetwork  RoamingNetwork)
-
-            : this(Id, RoamingNetwork, new LocalEMobilityService(Id, Authorizator_Id.Parse(Id.ToString() + " Local Authorizator")))
-
-        { }
-
-        #endregion
-
         #region (internal) EVSProvider(Id, RoamingNetwork, EMobilityService)
 
         /// <summary>
@@ -161,9 +144,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The ChargingPool Id.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
-        internal EVSP(EVSP_Id                                        Id,
-                                   RoamingNetwork                                 RoamingNetwork,
-                                   IAuthServices  EMobilityService)
+        internal EVSP(EVSP_Id         Id,
+                      RoamingNetwork  RoamingNetwork,
+                      IAuthServices   EMobilityService)
 
             : base(Id)
 

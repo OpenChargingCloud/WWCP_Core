@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
-using org.GraphDefined.WWCP.LocalService;
+using org.GraphDefined.WWCP;
 using System.Threading.Tasks;
 using System.Threading;
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
@@ -63,7 +63,6 @@ namespace org.GraphDefined.WWCP
 
         private readonly Dictionary<UInt32,             IAuthServices>     AuthenticationServices;
         private readonly Dictionary<ChargingSession_Id, IAuthServices>     SessionIdAuthenticatorCache;
-        //private readonly Dictionary<EVSEOperator_Id,    IRemoteStartStop>  EVSEOperatorLookup;
 
         #endregion
 
@@ -84,7 +83,9 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        public IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> AllTokens
+        #region AllTokens
+
+        public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens
         {
             get
             {
@@ -92,7 +93,11 @@ namespace org.GraphDefined.WWCP
             }
         }
 
-        public IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> AuthorizedTokens
+        #endregion
+
+        #region AuthorizedTokens
+
+        public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens
         {
             get
             {
@@ -100,7 +105,11 @@ namespace org.GraphDefined.WWCP
             }
         }
 
-        public IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> NotAuthorizedTokens
+        #endregion
+
+        #region NotAuthorizedTokens
+
+        public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens
         {
             get
             {
@@ -108,13 +117,19 @@ namespace org.GraphDefined.WWCP
             }
         }
 
-        public IEnumerable<KeyValuePair<Auth_Token, AuthorizationResult>> BlockedTokens
+        #endregion
+
+        #region BlockedTokens
+
+        public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens
         {
             get
             {
                 return AuthenticationServices.SelectMany(vv => vv.Value.BlockedTokens);
             }
         }
+
+        #endregion
 
 
         #region Description
@@ -459,21 +474,6 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
-
-
-        //#region RequestRouter
-
-        //private readonly RequestRouter _RequestRouter;
-
-        //public RequestRouter RequestRouter
-        //{
-        //    get
-        //    {
-        //        return _RequestRouter;
-        //    }
-        //}
-
-        //#endregion
 
         #endregion
 
@@ -1066,6 +1066,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region OnSendChargeDetailRecord
+
+        /// <summary>
+        /// An event fired whenever a charge detail record was received.
+        /// </summary>
+        public event SendChargeDetailRecordDelegate OnSendChargeDetailRecord;
+
+        #endregion
+
         #region OnFilterCDRRecords
 
         public delegate SendCDRResult OnFilterCDRRecordsDelegate(Authorizator_Id AuthorizatorId, AuthInfo AuthInfo, ChargingSession_Id PartnerSessionId);
@@ -1379,47 +1389,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CreateNewEVServiceProvider(EVServiceProviderId, Action = null)
-
-        /// <summary>
-        /// Create and register a new electric vehicle service provider having the given
-        /// unique electric vehicle service provider identification.
-        /// </summary>
-        /// <param name="EVServiceProviderId">The unique identification of the new roaming provider.</param>
-        /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
-        public EVSP CreateNewEVServiceProvider(EVSP_Id                    EVServiceProviderId,
-                                                            Action<EVSP>  Action  = null)
-        {
-
-            #region Initial checks
-
-            if (EVServiceProviderId == null)
-                throw new ArgumentNullException("EVServiceProviderId", "The given electric vehicle service provider identification must not be null!");
-
-            if (_EVServiceProviders.ContainsKey(EVServiceProviderId))
-                throw new EVServiceProviderAlreadyExists(EVServiceProviderId, this.Id);
-
-            #endregion
-
-            var _EVServiceProvider = new EVSP(EVServiceProviderId, this);
-
-            Action.FailSafeInvoke(_EVServiceProvider);
-
-            if (EVServiceProviderAddition.SendVoting(this, _EVServiceProvider))
-            {
-                if (_EVServiceProviders.TryAdd(EVServiceProviderId, _EVServiceProvider))
-                {
-                    EVServiceProviderAddition.SendNotification(this, _EVServiceProvider);
-                    return _EVServiceProvider;
-                }
-            }
-
-            throw new Exception();
-
-        }
-
-        #endregion
-
         #region CreateNewEVServiceProvider(EVServiceProviderId, EMobilityService, Action = null)
 
         /// <summary>
@@ -1429,9 +1398,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVServiceProviderId">The unique identification of the new roaming provider.</param>
         /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
-        public EVSP CreateNewEVServiceProvider(EVSP_Id                    EVServiceProviderId,
-                                                            IAuthServices              EMobilityService,
-                                                            Action<EVSP>  Action  = null)
+        public EVSP CreateNewEVServiceProvider(EVSP_Id        EVServiceProviderId,
+                                               IAuthServices  EMobilityService,
+                                               Action<EVSP>   Action  = null)
         {
 
             #region Initial checks
@@ -2018,7 +1987,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="PartnerProductId">An optional partner product identification.</param>
         /// <param name="PartnerSessionId">An optional partner session identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        public async Task<HTTPResponse<AUTHSTARTResult>>
+        public async Task<HTTPResponse<AuthStartResult>>
 
             AuthorizeStart(EVSEOperator_Id     OperatorId,
                            Auth_Token          AuthToken,
@@ -2045,7 +2014,7 @@ namespace org.GraphDefined.WWCP
             lock (AuthenticationServices)
             {
 
-                AUTHSTARTResult AuthStartResult;
+                AuthStartResult AuthStartResult;
 
                 foreach (var AuthenticationService in AuthenticationServices.
                                                           OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
@@ -2066,14 +2035,14 @@ namespace org.GraphDefined.WWCP
 
                     #region Authorized
 
-                    if (AuthStartResult.AuthorizationResult == AuthorizationResult.Authorized)
+                    if (AuthStartResult.AuthorizationResult == AuthorizeStartResultType.Success)
                     {
 
                         // Store the upstream SessionId and its AuthenticationService!
                         // Will be deleted when the CDRecord was sent!
                         SessionIdAuthenticatorCache.Add(AuthStartResult.SessionId, AuthenticationService);
 
-                        return new HTTPResponse<AUTHSTARTResult>(_Task.Result.HttpResponse,
+                        return new HTTPResponse<AuthStartResult>(_Task.Result.HttpResponse,
                                                                  AuthStartResult);
 
                     }
@@ -2082,9 +2051,9 @@ namespace org.GraphDefined.WWCP
 
                     #region Blocked
 
-                    else if (AuthStartResult.AuthorizationResult == AuthorizationResult.Blocked)
-                        return new HTTPResponse<AUTHSTARTResult>(_Task.Result.HttpResponse,
-                                                                 AuthStartResult);
+                    //else if (AuthStartResult.AuthorizationResult == AuthorizationResultType.Blocked)
+                    //    return new HTTPResponse<AuthStartResult>(_Task.Result.HttpResponse,
+                    //                                             AuthStartResult);
 
                     #endregion
 
@@ -2092,10 +2061,9 @@ namespace org.GraphDefined.WWCP
 
                 #region ...else fail!
 
-                return new HTTPResponse<AUTHSTARTResult>(new HTTPResponse(),
-                                                         new AUTHSTARTResult(AuthorizatorId) {
-                                                             AuthorizationResult  = AuthorizationResult.NotAuthorized,
-                                                             PartnerSessionId     = PartnerSessionId,
+                return new HTTPResponse<AuthStartResult>(new HTTPResponse(),
+                                                         new AuthStartResult(AuthorizatorId) {
+                                                             AuthorizationResult  = AuthorizeStartResultType.Error,
                                                              Description          = "No authorization service returned a positiv result!"
                                                          });
 
@@ -2118,7 +2086,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId">An optional EVSE identification.</param>
         /// <param name="PartnerSessionId">An optional partner session identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        public async Task<HTTPResponse<AUTHSTOPResult>>
+        public async Task<HTTPResponse<AuthStopResult>>
 
             AuthorizeStop(EVSEOperator_Id      OperatorId,
                           ChargingSession_Id   SessionId,
@@ -2155,8 +2123,8 @@ namespace org.GraphDefined.WWCP
                     var _Task = AuthenticationService.AuthorizeStop(OperatorId, SessionId, AuthToken, EVSEId, PartnerSessionId);
                     _Task.Wait();
 
-                    if (_Task.Result.Content.AuthorizationResult == AuthorizationResult.Authorized ||
-                        _Task.Result.Content.AuthorizationResult == AuthorizationResult.Blocked)
+                    if (_Task.Result.Content.AuthorizationResult == AuthorizeStopResultType.Success)// ||
+                        //_Task.Result.Content.AuthorizationResult == AuthorizationResultType.Blocked)
                         return _Task.Result;
 
                 }
@@ -2179,8 +2147,8 @@ namespace org.GraphDefined.WWCP
                                                                          QueryTimeout);
                     _Task.Wait();
 
-                    if (_Task.Result.Content.AuthorizationResult == AuthorizationResult.Authorized ||
-                        _Task.Result.Content.AuthorizationResult == AuthorizationResult.Blocked)
+                    if (_Task.Result.Content.AuthorizationResult == AuthorizeStopResultType.Success) // ||
+                        //_Task.Result.Content.AuthorizationResult == AuthorizationResultType.Blocked)
                         return _Task.Result;
 
                 }
@@ -2189,10 +2157,9 @@ namespace org.GraphDefined.WWCP
 
                 #region ...else fail!
 
-                return new HTTPResponse<AUTHSTOPResult>(new HTTPResponse(),
-                                                        new AUTHSTOPResult(AuthorizatorId) {
-                                                            AuthorizationResult  = AuthorizationResult.NotAuthorized,
-                                                            PartnerSessionId     = PartnerSessionId,
+                return new HTTPResponse<AuthStopResult>(new HTTPResponse(),
+                                                        new AuthStopResult(AuthorizatorId) {
+                                                            AuthorizationResult  = AuthorizeStopResultType.Error,
                                                             Description          = "No authorization service returned a positiv result!"
                                                         });
 
@@ -2382,28 +2349,30 @@ namespace org.GraphDefined.WWCP
 
         #region RemoteStart(Timestamp, RoamingNetworkId, SessionId, PartnerSessionId, ProviderId, eMAId, EVSEId, ChargingProductId)
 
-        ///// <summary>
-        ///// Initiate a remote start of the given charging session at the given EVSE
-        ///// and for the given Provider/eMAId.
-        ///// </summary>
-        ///// <param name="Timestamp">The timestamp of the request.</param>
-        ///// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-        ///// <param name="SessionId">The unique identification for this charging session.</param>
-        ///// <param name="PartnerSessionId">The unique identification for this charging session on the partner side.</param>
-        ///// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
-        ///// <param name="eMAId">The unique identification of the e-mobility account.</param>
-        ///// <param name="EVSEId">The unique identification of an EVSE.</param>
-        ///// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
-        ///// <returns>A remote start result object.</returns>
-        //public RemoteStartResult RemoteStart(DateTime            Timestamp,
-        //                                     RoamingNetwork_Id   RoamingNetworkId,
-        //                                     ChargingSession_Id  SessionId,
-        //                                     ChargingSession_Id  PartnerSessionId,
-        //                                     EVSP_Id             ProviderId,
-        //                                     eMA_Id              eMAId,
-        //                                     EVSE_Id             EVSEId,
-        //                                     ChargingProduct_Id  ChargingProductId)
-        //{
+        /// <summary>
+        /// Initiate a remote start of the given charging session at the given EVSE
+        /// and for the given Provider/eMAId.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="PartnerSessionId">The unique identification for this charging session on the partner side.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
+        /// <returns>A remote start result object.</returns>
+        public async Task<HTTPResponse<RemoteStartResult>>  RemoteStart(DateTime            Timestamp,
+                                                                        RoamingNetwork_Id   RoamingNetworkId,
+                                                                        ChargingSession_Id  SessionId,
+                                                                        ChargingSession_Id  PartnerSessionId,
+                                                                        EVSP_Id             ProviderId,
+                                                                        eMA_Id              eMAId,
+                                                                        EVSE_Id             EVSEId,
+                                                                        ChargingProduct_Id  ChargingProductId)
+        {
+
+            return new HTTPResponse<RemoteStartResult>();
 
         //    lock (AuthenticationServices)
         //    {
@@ -2427,47 +2396,49 @@ namespace org.GraphDefined.WWCP
 
         //    }
 
-        //}
+        }
 
         #endregion
 
         #region RemoteStop(Timestamp, RoamingNetworkId, SessionId, PartnerSessionId, ProviderId, EVSEId)
 
-        ///// <summary>
-        ///// Initiate a remote stop of the given charging session at the given EVSE.
-        ///// </summary>
-        ///// <param name="Timestamp">The timestamp of the request.</param>
-        ///// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-        ///// <param name="SessionId">The unique identification for this charging session.</param>
-        ///// <param name="PartnerSessionId">The unique identification for this charging session on the partner side.</param>
-        ///// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
-        ///// <param name="EVSEId">The unique identification of an EVSE.</param>
-        ///// <returns>A remote stop result object.</returns>
-        //public RemoteStopResult RemoteStop(DateTime            Timestamp,
-        //                                   RoamingNetwork_Id   RoamingNetworkId,
-        //                                   ChargingSession_Id  SessionId,
-        //                                   ChargingSession_Id  PartnerSessionId,
-        //                                   EVSP_Id             ProviderId,
-        //                                   EVSE_Id             EVSEId)
-        //{
+        /// <summary>
+        /// Initiate a remote stop of the given charging session at the given EVSE.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="PartnerSessionId">The unique identification for this charging session on the partner side.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        /// <returns>A remote stop result object.</returns>
+        public async Task<HTTPResponse<RemoteStopResult>> RemoteStop(DateTime            Timestamp,
+                                                                     RoamingNetwork_Id   RoamingNetworkId,
+                                                                     ChargingSession_Id  SessionId,
+                                                                     ChargingSession_Id  PartnerSessionId,
+                                                                     EVSP_Id             ProviderId,
+                                                                     EVSE_Id             EVSEId)
+        {
 
-        //    lock (AuthenticationServices)
-        //    {
+            return new HTTPResponse<RemoteStopResult>();
 
-        //        var OnRemoteStopLocal = OnRemoteStop;
-        //        if (OnRemoteStopLocal != null)
-        //            return OnRemoteStopLocal(Timestamp,
-        //                                     RoamingNetworkId,
-        //                                     SessionId,
-        //                                     PartnerSessionId,
-        //                                     ProviderId,
-        //                                     EVSEId);
+            //lock (AuthenticationServices)
+            //{
+            //
+            //    var OnRemoteStopLocal = OnRemoteStop;
+            //    if (OnRemoteStopLocal != null)
+            //        return OnRemoteStopLocal(Timestamp,
+            //                                 RoamingNetworkId,
+            //                                 SessionId,
+            //                                 PartnerSessionId,
+            //                                 ProviderId,
+            //                                 EVSEId);
+            //
+            //    return RemoteStopResult.Error;
+            //
+            //}
 
-        //        return RemoteStopResult.Error;
-
-        //    }
-
-        //}
+        }
 
         #endregion
 

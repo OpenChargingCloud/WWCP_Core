@@ -15,19 +15,20 @@
  * limitations under the License.
  */
 
-namespace org.GraphDefined.WWCP.LocalService
+#region Usings
+
+using System;
+
+#endregion
+
+namespace org.GraphDefined.WWCP
 {
 
-    public enum AuthorizeStopResultType
+    public enum TokenAuthorizationResultType
     {
-        Unspecified,
-        EVSE_NotReachable,
-        Stop_Timeout,
-        UnknownEVSE,
-        EVSEOutOfService,
-        SessionIsInvalid,
-        Error,
-        Success
+        Authorized,
+        NotAuthorized,
+        Blocked
     }
 
 }

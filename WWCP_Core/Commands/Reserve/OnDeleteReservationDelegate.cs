@@ -21,7 +21,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using org.GraphDefined.WWCP.LocalService;
+using org.GraphDefined.WWCP;
 
 #endregion
 

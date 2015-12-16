@@ -24,10 +24,14 @@ using System;
 namespace org.GraphDefined.WWCP
 {
 
-    public abstract class AResult
+    public class AuthStopResult
     {
 
         #region Properties
+
+        public AuthorizeStopResultType  AuthorizationResult  { get; set; }
+        public ChargingSession_Id       SessionId            { get; set; }
+        public EVSP_Id                  ProviderId           { get; set; }
 
         #region AuthorizatorId
 
@@ -43,21 +47,15 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region PartnerSessionId
-
-        public ChargingSession_Id  PartnerSessionId         { get; set; }
-
-        #endregion
-
         #region Description
 
-        public String     Description              { get; set; }
+        public String Description { get; set; }
 
         #endregion
 
         #region AdditionalInfo
 
-        public String     AdditionalInfo           { get; set; }
+        public String AdditionalInfo { get; set; }
 
         #endregion
 
@@ -65,13 +63,43 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        public AResult(Authorizator_Id AuthorizatorId)
+        public AuthStopResult(Authorizator_Id AuthorizatorId)
         {
             this._AuthorizatorId = AuthorizatorId;
         }
 
         #endregion
 
+
+        #region (override) ToString()
+
+        /// <summary>
+        /// Get a string representation of this object.
+        /// </summary>
+        public override String ToString()
+        {
+
+            if (ProviderId != null)
+                return String.Concat(AuthorizationResult.ToString(), ", ", ProviderId);
+
+            return String.Concat(AuthorizationResult.ToString());
+
+        }
+
+        #endregion
+
+    }
+
+    public enum AuthorizeStopResultType
+    {
+        Unspecified,
+        EVSE_NotReachable,
+        Stop_Timeout,
+        UnknownEVSE,
+        EVSEOutOfService,
+        SessionIsInvalid,
+        Error,
+        Success
     }
 
 }
