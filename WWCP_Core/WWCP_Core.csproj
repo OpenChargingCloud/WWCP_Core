@@ -92,8 +92,8 @@
     <Compile Include="Commands\Reserve\ReservationHandling.cs" />
     <Compile Include="Commands\Reserve\ReservationResult.cs" />
     <Compile Include="RedirectedEVSEList.cs" />
-    <Compile Include="WWCPImporter.cs" />
-    <Compile Include="ImporterDefaults.cs" />
+    <Compile Include="Importer\WWCPImporter.cs" />
+    <Compile Include="Importer\ImporterDefaults.cs" />
     <Compile Include="Entities\EVSE\EVSEStatusReport.cs" />
     <Compile Include="CommonTypes\EventTracking_Id.cs" />
     <Compile Include="CommonTypes\GridConnection.cs" />
@@ -144,7 +144,7 @@
     <Compile Include="Entities\EVSE\EVSE.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork.cs" />
-    <Compile Include="ImporterForwardingInfo.cs" />
+    <Compile Include="Importer\ImporterForwardingInfo.cs" />
     <Compile Include="Commands\AuthorizeStartStop\IAuthServices.cs" />
     <Compile Include="CommonTypes\AuthorizatorId.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStartResult.cs" />
@@ -182,9 +182,7 @@
       <Name>Styx</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Responses\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

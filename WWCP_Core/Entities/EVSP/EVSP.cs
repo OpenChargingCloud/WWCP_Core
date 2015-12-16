@@ -119,14 +119,34 @@ namespace org.GraphDefined.WWCP
 
         #region EMobilityService
 
-        private readonly IAuthServices _EMobilityService;
+        private IAuthServices _EMobilityService;
 
         public IAuthServices EMobilityService
         {
+
             get
             {
                 return _EMobilityService;
             }
+
+            internal set
+            {
+
+                if (_EMobilityService == null)
+                {
+
+                    if (EMobilityService == null)
+                        throw new ArgumentNullException("EMobilityService", "The given e-mobility service must not be null!");
+
+                    _EMobilityService = value;
+
+                }
+
+                else
+                    throw new ArgumentException("Setting property 'EMobilityService' twice is not allowed!");
+
+            }
+
         }
 
         #endregion
@@ -135,18 +155,14 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (internal) EVSProvider(Id, RoamingNetwork, EMobilityService)
-
         /// <summary>
         /// Create a new Electric Vehicle Service Provider (EVSP)
         /// having the given EVSProvider_Id.
         /// </summary>
         /// <param name="Id">The ChargingPool Id.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
         internal EVSP(EVSP_Id         Id,
-                      RoamingNetwork  RoamingNetwork,
-                      IAuthServices   EMobilityService)
+                      RoamingNetwork  RoamingNetwork)
 
             : base(Id)
 
@@ -157,20 +173,14 @@ namespace org.GraphDefined.WWCP
             if (RoamingNetwork == null)
                 throw new ArgumentNullException("RoamingNetwork", "The given roaming network must not be null!");
 
-            if (EMobilityService == null)
-                throw new ArgumentNullException("EMobilityService", "The given e-mobility service must not be null!");
-
             #endregion
+
+            this._RoamingNetwork        = RoamingNetwork;
 
             this.Name                   = new I18NString();
             this.Description            = new I18NString();
 
-            this._RoamingNetwork        = RoamingNetwork;
-            this._EMobilityService      = EMobilityService;
-
         }
-
-        #endregion
 
         #endregion
 

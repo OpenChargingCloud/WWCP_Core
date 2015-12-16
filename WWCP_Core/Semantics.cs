@@ -18,8 +18,11 @@
 #region Usings
 
 using System;
+using System.Runtime.CompilerServices;
 
 #endregion
+
+[assembly: InternalsVisibleTo("WWCP_Cloud")]
 
 namespace org.GraphDefined.WWCP
 {

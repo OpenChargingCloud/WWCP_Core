@@ -1389,18 +1389,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CreateNewEVServiceProvider(EVServiceProviderId, EMobilityService, Action = null)
+        #region CreateNewEVServiceProvider(EVServiceProviderId, Action = null)
 
         /// <summary>
         /// Create and register a new electric vehicle service provider having the given
         /// unique electric vehicle service provider identification.
         /// </summary>
         /// <param name="EVServiceProviderId">The unique identification of the new roaming provider.</param>
-        /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
         /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
-        public EVSP CreateNewEVServiceProvider(EVSP_Id        EVServiceProviderId,
-                                               IAuthServices  EMobilityService,
-                                               Action<EVSP>   Action  = null)
+        public EVSP CreateNewEVServiceProvider(EVSP_Id       EVServiceProviderId,
+                                               Action<EVSP>  Action  = null)
         {
 
             #region Initial checks
@@ -1413,7 +1411,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            var _EVServiceProvider = new EVSP(EVServiceProviderId, this, EMobilityService);
+            var _EVServiceProvider = new EVSP(EVServiceProviderId, this);
 
             Action.FailSafeInvoke(_EVServiceProvider);
 

@@ -50,7 +50,7 @@ namespace org.GraphDefined.WWCP.Importer
         private readonly        Object                                          UpdateEVSEDataAndStatusLock;
         private readonly        Timer                                           UpdateEVSEStatusTimer;
 
-        private readonly        Func<DNSClient, Task<HTTPResponse<T>>>          DownloadXMLData;
+        private readonly        Func<DNSClient, Task<HTTPResponse<T>>>          DownloadData;
         private readonly        Action<WWCPImporter<T>, Task<HTTPResponse<T>>>  OnFirstRun;
         private readonly        Action<WWCPImporter<T>, Task<HTTPResponse<T>>>  OnEveryRun;
 
@@ -150,13 +150,13 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region XMLExports
 
-        private List<Timestamped<T>> _XMLExports;
+        private List<Timestamped<T>> _ImportedData;
 
         public IEnumerable<Timestamped<T>> XMLExports
         {
             get
             {
-                return _XMLExports;
+                return _ImportedData;
             }
         }
 
@@ -164,13 +164,13 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region MaxNumberOfCachedXMLExports
 
-        private UInt16 _MaxNumberOfCachedXMLExports;
+        private UInt16 _MaxNumberOfCachedDataImports;
 
         public UInt16 MaxNumberOfCachedXMLExports
         {
             get
             {
-                return _MaxNumberOfCachedXMLExports;
+                return _MaxNumberOfCachedDataImports;
             }
         }
 
@@ -296,15 +296,15 @@ namespace org.GraphDefined.WWCP.Importer
             this._DNSClient                    = DNSClient   != null ? DNSClient         : new DNSClient();
             this._UpdateEvery                  = UpdateEvery != null ? UpdateEvery.Value : DefaultImportEvery;
 
-            this.DownloadXMLData               = GetXMLData;
+            this.DownloadData               = GetXMLData;
             this.OnFirstRun                    = OnFirstRun;
             this.OnEveryRun                    = OnEveryRun;
 
-            this._MaxNumberOfCachedXMLExports  = MaxNumberOfCachedXMLExports;
+            this._MaxNumberOfCachedDataImports  = MaxNumberOfCachedXMLExports;
 
             this._EVSEOperators                = new List<EVSEOperator>();
             this._AllForwardingInfos           = new Dictionary<ChargingStation_Id, ImporterForwardingInfo>();
-            this._XMLExports                   = new List<Timestamped<T>>();
+            this._ImportedData                   = new List<Timestamped<T>>();
 
             // Start not now but veeeeery later!
             UpdateEVSEDataAndStatusLock        = new Object();
@@ -794,7 +794,7 @@ namespace org.GraphDefined.WWCP.Importer
                     if (!Started)
                     {
 
-                        OnFirstRun(this, DownloadXMLData(_DNSClient));
+                        OnFirstRun(this, DownloadData(_DNSClient));
 
                         DebugX.Log("WWCP importer '" + Id + "' Initital import finished!");
 
@@ -881,14 +881,14 @@ namespace org.GraphDefined.WWCP.Importer
 
                     #endregion
 
-                    DownloadXMLData(_DNSClient).
-                        ContinueWith(XMLTask => {
+                    DownloadData(_DNSClient).
+                        ContinueWith(ImporterTask => {
 
-                        // Save the XML Export for later review...
-                        _XMLExports.Add(new Timestamped<T>(XMLTask.Result.Content));
+                        // Save the imported data for later review...
+                        _ImportedData.Add(new Timestamped<T>(ImporterTask.Result.Content));
 
-                        if (_XMLExports.Count > _MaxNumberOfCachedXMLExports)
-                            _XMLExports.Remove(_XMLExports.First());
+                        if (_ImportedData.Count > _MaxNumberOfCachedDataImports)
+                            _ImportedData.Remove(_ImportedData.First());
 
                         // Mark ForwardingInfos as 'OutOfService', to detect which are no longer within the XML...
                         lock (_AllForwardingInfos)
@@ -899,7 +899,7 @@ namespace org.GraphDefined.WWCP.Importer
                         // Update ForwardingInfos
                         var OnEveryRunLocal = OnEveryRun;
                         if (OnEveryRunLocal != null)
-                            OnEveryRunLocal(this, XMLTask);
+                            OnEveryRunLocal(this, ImporterTask);
 
                     }).
                     Wait();
