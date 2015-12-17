@@ -135,7 +135,7 @@ namespace org.GraphDefined.WWCP
                 if (_EMobilityService == null)
                 {
 
-                    if (EMobilityService == null)
+                    if (value == null)
                         throw new ArgumentNullException("EMobilityService", "The given e-mobility service must not be null!");
 
                     _EMobilityService = value;
