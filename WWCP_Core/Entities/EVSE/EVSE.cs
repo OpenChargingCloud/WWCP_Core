@@ -955,21 +955,19 @@ namespace org.GraphDefined.WWCP
 
                 case EVSEStatusType.Available:
 
-                    this._Reservation = new ChargingReservation(Timestamp,
-                                                                StartTime.HasValue ? StartTime.Value : DateTime.Now,
-                                                                Duration. HasValue ? Duration. Value : MaxReservationDuration,
-                                                                ProviderId,
-                                                                ChargingReservationType.AtEVSE,
-                                                                ChargingStation.ChargingPool.EVSEOperator.RoamingNetwork,
-                                                                ChargingStation.ChargingPool.Id,
-                                                                ChargingStation.Id,
-                                                                Id,
-                                                                ChargingProductId,
-                                                                RFIDIds,
-                                                                eMAIds,
-                                                                PINs);
-
-                    this.Status = EVSEStatusType.Reserved;
+                    this.Reservation = new ChargingReservation(Timestamp,
+                                                               StartTime.HasValue ? StartTime.Value : DateTime.Now,
+                                                               Duration. HasValue ? Duration. Value : MaxReservationDuration,
+                                                               ProviderId,
+                                                               ChargingReservationType.AtEVSE,
+                                                               ChargingStation.ChargingPool.EVSEOperator.RoamingNetwork,
+                                                               ChargingStation.ChargingPool.Id,
+                                                               ChargingStation.Id,
+                                                               Id,
+                                                               ChargingProductId,
+                                                               RFIDIds,
+                                                               eMAIds,
+                                                               PINs);
 
                     return ReservationResult.Success(_Reservation);
 
