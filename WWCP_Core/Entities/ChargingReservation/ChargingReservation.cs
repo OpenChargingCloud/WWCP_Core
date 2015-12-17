@@ -71,6 +71,34 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region IsExpired
+
+        private Boolean _IsExpired;
+
+        /// <summary>
+        /// returns true if the charging reservation is expired.
+        /// </summary>
+        [InternalUseOnly]
+        public Boolean IsExpired
+        {
+
+            get
+            {
+                return _IsExpired;
+            }
+
+            set
+            {
+                if (_IsExpired == false && value == true)
+                {
+                    _IsExpired = true;
+                }
+            }
+
+        }
+
+        #endregion
+
         #region ProviderId
 
         private readonly EVSP_Id _ProviderId;
@@ -111,6 +139,37 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return _Duration;
+            }
+        }
+
+        #endregion
+
+
+        #region ReservationType
+
+        private readonly ChargingReservationType _ReservationType;
+
+        [Mandatory]
+        public ChargingReservationType ReservationType
+        {
+            get
+            {
+                return _ReservationType;
+            }
+        }
+
+        #endregion
+
+        #region RoamingNetwork
+
+        private readonly RoamingNetwork _RoamingNetwork;
+
+        [Optional]
+        public RoamingNetwork RoamingNetwork
+        {
+            get
+            {
+                return _RoamingNetwork;
             }
         }
 
@@ -176,6 +235,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
         #region RFIDIds
 
         private readonly IEnumerable<Auth_Token> _RFIDIds;
@@ -225,36 +285,91 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
+        #region ChargingReservation(...)
+
         /// <summary>
         /// Create a charging reservation.
         /// </summary>
-        public ChargingReservation(DateTime                Timestamp,
-                                   DateTime                StartTime,
-                                   TimeSpan                Duration,
-                                   EVSP_Id                 ProviderId         = null,
-                                   ChargingPool_Id         ChargingPoolId     = null,
-                                   ChargingStation_Id      ChargingStationId  = null,
-                                   EVSE_Id                 EVSEId             = null,
-                                   ChargingProduct_Id      ChargingProductId  = null,
-                                   IEnumerable<Auth_Token> RFIDIds            = null,
-                                   IEnumerable<eMA_Id>     eMAIds             = null,
-                                   IEnumerable<UInt32>     PINs               = null)
+        public ChargingReservation(DateTime                 Timestamp,
+                                   DateTime                 StartTime,
+                                   TimeSpan                 Duration,
+                                   EVSP_Id                  ProviderId,
+
+                                   ChargingReservationType  ChargingReservationType,
+                                   RoamingNetwork           RoamingNetwork,
+                                   ChargingPool_Id          ChargingPoolId     = null,
+                                   ChargingStation_Id       ChargingStationId  = null,
+                                   EVSE_Id                  EVSEId             = null,
+                                   ChargingProduct_Id       ChargingProductId  = null,
+
+                                   IEnumerable<Auth_Token>  RFIDIds            = null,
+                                   IEnumerable<eMA_Id>      eMAIds             = null,
+                                   IEnumerable<UInt32>      PINs               = null)
+
+            : this(ChargingReservation_Id.New,
+                   Timestamp,
+                   StartTime,
+                   Duration,
+                   ProviderId,
+
+                   ChargingReservationType,
+                   RoamingNetwork,
+                   ChargingPoolId,
+                   ChargingStationId,
+                   EVSEId,
+                   ChargingProductId,
+
+                   RFIDIds,
+                   eMAIds,
+                   PINs)
+
+        { }
+
+        #endregion
+
+        #region ChargingReservation(ReservationId, ...)
+
+        /// <summary>
+        /// Create a charging reservation.
+        /// </summary>
+        public ChargingReservation(ChargingReservation_Id   ReservationId,
+                                   DateTime                 Timestamp,
+                                   DateTime                 StartTime,
+                                   TimeSpan                 Duration,
+                                   EVSP_Id                  ProviderId,
+
+                                   ChargingReservationType  ChargingReservationType,
+                                   RoamingNetwork           RoamingNetwork,
+                                   ChargingPool_Id          ChargingPoolId     = null,
+                                   ChargingStation_Id       ChargingStationId  = null,
+                                   EVSE_Id                  EVSEId             = null,
+                                   ChargingProduct_Id       ChargingProductId  = null,
+
+                                   IEnumerable<Auth_Token>  RFIDIds            = null,
+                                   IEnumerable<eMA_Id>      eMAIds             = null,
+                                   IEnumerable<UInt32>      PINs               = null)
 
         {
 
             this._Timestamp          = Timestamp;
-            this._ReservationId      = ChargingReservation_Id.New;
+            this._ReservationId      = ReservationId;
             this._StartTime          = StartTime;
             this._Duration           = Duration;
+
+            this._ReservationType    = ReservationType;
+            this._RoamingNetwork     = RoamingNetwork;
             this._ChargingPoolId     = ChargingPoolId;
             this._ChargingStationId  = ChargingStationId;
             this._EVSEId             = EVSEId;
             this._ChargingProductId  = ChargingProductId;
+
             this._RFIDIds            = RFIDIds != null ? RFIDIds : new Auth_Token[0];
             this._eMAIds             = eMAIds  != null ? eMAIds  : new eMA_Id[0];
             this._PINs               = PINs    != null ? PINs    : new UInt32[0];
 
         }
+
+        #endregion
 
         #endregion
 

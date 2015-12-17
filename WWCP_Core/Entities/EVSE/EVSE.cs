@@ -25,6 +25,8 @@ using System.Collections.Concurrent;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using System.Threading.Tasks;
+using System.Threading;
 
 #endregion
 
@@ -54,6 +56,11 @@ namespace org.GraphDefined.WWCP
         /// The default max size of the EVSE admin status history.
         /// </summary>
         public const UInt16 DefaultEVSEAdminStatusHistorySize = 50;
+
+        /// <summary>
+        /// The maximum time span for a reservation.
+        /// </summary>
+        public static readonly TimeSpan MaxReservationDuration = TimeSpan.FromMinutes(15);
 
         #endregion
 
@@ -906,6 +913,70 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+
+
+        public async Task<ReservationResult> Reserve(DateTime                Timestamp,
+                                                     CancellationToken       CancellationToken,
+                                                     EVSP_Id                 ProviderId,
+                                                     ChargingReservation_Id  ReservationId,
+                                                     DateTime?               StartTime,
+                                                     TimeSpan?               Duration,
+                                                     ChargingProduct_Id      ChargingProductId  = null,
+                                                     IEnumerable<Auth_Token> RFIDIds            = null,
+                                                     IEnumerable<eMA_Id>     eMAIds             = null,
+                                                     IEnumerable<UInt32>     PINs               = null)
+        {
+
+            #region Try to remove an existing reservation if this is an update!
+
+            if (ReservationId != null && _Reservation.Id != ReservationId)
+            {
+
+                return ReservationResult.UnknownChargingReservationId;
+
+                // Send DeleteReservation event!
+
+            }
+
+            #endregion
+
+            switch (Status.Value)
+            {
+
+                case EVSEStatusType.OutOfService:
+                    return ReservationResult.OutOfService;
+
+                case EVSEStatusType.Charging:
+                    return ReservationResult.AlreadyInUse;
+
+                case EVSEStatusType.Reserved:
+                    return ReservationResult.AlreadyReserved;
+
+                case EVSEStatusType.Available:
+
+                    this._Reservation = new ChargingReservation(Timestamp,
+                                                                StartTime.HasValue ? StartTime.Value : DateTime.Now,
+                                                                Duration. HasValue ? Duration. Value : MaxReservationDuration,
+                                                                ProviderId,
+                                                                ChargingReservationType.AtEVSE,
+                                                                ChargingStation.ChargingPool.EVSEOperator.RoamingNetwork,
+                                                                ChargingStation.ChargingPool.Id,
+                                                                ChargingStation.Id,
+                                                                Id,
+                                                                ChargingProductId,
+                                                                RFIDIds,
+                                                                eMAIds,
+                                                                PINs);
+
+                    return ReservationResult.Success(_Reservation);
+
+                default:
+                    return ReservationResult.Error();
+
+            }
+
+        }
 
 
         #region IEnumerable<SocketOutlet> Members

@@ -66,6 +66,7 @@
     <Compile Include="Entities\ChargingPool\ChargingPoolAdminStatusDiff.cs" />
     <Compile Include="Entities\ChargingProduct\ChargingProduct_Id.cs" />
     <Compile Include="Entities\ChargingReservation\ChargingReservation.cs" />
+    <Compile Include="Entities\ChargingReservation\ChargingReservationType.cs" />
     <Compile Include="Entities\ChargingReservation\ChargingReservation_Id.cs" />
     <Compile Include="Entities\ChargingStation\AccessibilityTypes.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationAdminStatusType.cs" />

@@ -50,22 +50,22 @@ namespace org.GraphDefined.WWCP
     /// <param name="HubProviderId">An optional identification of the hub provider.</param>
     /// <param name="QueryTimeout">An optional timeout for this query.</param>
     public delegate Task<SendCDRResult> SendChargeDetailRecordDelegate(EVSE_Id              EVSEId,
-                                                               ChargingSession_Id   SessionId,
-                                                               ChargingProduct_Id   PartnerProductId,
-                                                               DateTime             SessionStart,
-                                                               DateTime             SessionEnd,
-                                                               AuthInfo             AuthInfo,
-                                                               ChargingSession_Id   PartnerSessionId      = null,
-                                                               DateTime?            ChargingStart         = null,
-                                                               DateTime?            ChargingEnd           = null,
-                                                               Double?              MeterValueStart       = null,
-                                                               Double?              MeterValueEnd         = null,
-                                                               IEnumerable<Double>  MeterValuesInBetween  = null,
-                                                               Double?              ConsumedEnergy        = null,
-                                                               String               MeteringSignature     = null,
-                                                               HubOperator_Id       HubOperatorId         = null,
-                                                               EVSP_Id              HubProviderId         = null,
-                                                               TimeSpan?            QueryTimeout          = null);
+                                                                       ChargingSession_Id   SessionId,
+                                                                       ChargingProduct_Id   PartnerProductId,
+                                                                       DateTime             SessionStart,
+                                                                       DateTime             SessionEnd,
+                                                                       AuthInfo             AuthInfo,
+                                                                       ChargingSession_Id   PartnerSessionId      = null,
+                                                                       DateTime?            ChargingStart         = null,
+                                                                       DateTime?            ChargingEnd           = null,
+                                                                       Double?              MeterValueStart       = null,
+                                                                       Double?              MeterValueEnd         = null,
+                                                                       IEnumerable<Double>  MeterValuesInBetween  = null,
+                                                                       Double?              ConsumedEnergy        = null,
+                                                                       String               MeteringSignature     = null,
+                                                                       HubOperator_Id       HubOperatorId         = null,
+                                                                       EVSP_Id              HubProviderId         = null,
+                                                                       TimeSpan?            QueryTimeout          = null);
 
 }
 
