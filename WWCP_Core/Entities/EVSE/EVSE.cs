@@ -969,6 +969,8 @@ namespace org.GraphDefined.WWCP
                                                                 eMAIds,
                                                                 PINs);
 
+                    this.Status = EVSEStatusType.Reserved;
+
                     return ReservationResult.Success(_Reservation);
 
                 default:
