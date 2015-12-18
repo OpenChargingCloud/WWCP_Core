@@ -24,14 +24,14 @@ using System;
 namespace org.GraphDefined.WWCP
 {
 
-    public class AuthStartResult
+    public class AuthStopChargingStationResult
     {
 
         #region Properties
 
-        public AuthorizeStartResultType  AuthorizationResult  { get; set; }
-        public ChargingSession_Id        SessionId            { get; set; }
-        public EVSP_Id                   ProviderId           { get; set; }
+        public AuthStopChargingStationResultType  AuthorizationResult  { get; set; }
+        public ChargingSession_Id       SessionId            { get; set; }
+        public EVSP_Id                  ProviderId           { get; set; }
 
         #region AuthorizatorId
 
@@ -63,7 +63,7 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        public AuthStartResult(Authorizator_Id AuthorizatorId)
+        public AuthStopChargingStationResult(Authorizator_Id AuthorizatorId)
         {
             this._AuthorizatorId = AuthorizatorId;
         }
@@ -90,18 +90,16 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public enum AuthorizeStartResultType
+    public enum AuthStopChargingStationResultType
     {
         Unspecified,
+        NotReachable,
+        Timeout,
+        UnknownChargingStation,
+        OutOfService,
+        SessionIsInvalid,
         Error,
-        Success,
-        EVSE_NotReachable,
-        SessionId_AlreadyInUse,
-        EVSE_AlreadyInUse,
-        UnknownEVSE,
-        EVSEReserved,
-        EVSEOutOfService,
-        Start_Timeout
+        Success
     }
 
 }

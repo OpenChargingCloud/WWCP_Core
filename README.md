@@ -5,6 +5,10 @@ connect market actors in the field of e-mobility solutions via scalable and secu
 Internet protocols. This repository defines the fundamental core concepts, entities
 and data structures.
 
+WWCP comes with adapters to well-known e-mobility protocols like OCPP, OICP and OCPI.
+Please note, that OICP is not a free and open protocol and therefore the adapter can
+not be distributed as free open source software.
+
 This software is developed by [GraphDefined GmbH](http://www.graphdefined.com).
 We appreciate your participation in this ongoing project, and your help to improve it.
 If you find bugs, want to request a feature or send us a pull request, feel free to

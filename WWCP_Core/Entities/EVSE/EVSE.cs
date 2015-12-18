@@ -377,8 +377,10 @@ namespace org.GraphDefined.WWCP
             set
             {
 
-                if (_Reservation != value)
-                    SetProperty(ref _Reservation, value);
+                if (_Reservation == value)
+                    return;
+
+                _Reservation = value;
 
                 if (_Reservation != null)
                     SetStatus(EVSEStatusType.Reserved);
@@ -597,6 +599,23 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever the admin status of the EVSE changed.
         /// </summary>
         public event OnAdminStatusChangedDelegate OnAdminStatusChanged;
+
+        #endregion
+
+        #region OnNewReservation
+
+        /// <summary>
+        /// A delegate called whenever a reservation was created.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EVSE">The EVSE.</param>
+        /// <param name="Reservation">The new charging reservation.</param>
+        public delegate void OnNewReservationDelegate(DateTime Timestamp, EVSE EVSE, ChargingReservation Reservation);
+
+        /// <summary>
+        /// An event fired whenever reservation was created.
+        /// </summary>
+        public event OnNewReservationDelegate OnNewReservation;
 
         #endregion
 
@@ -955,19 +974,21 @@ namespace org.GraphDefined.WWCP
 
                 case EVSEStatusType.Available:
 
-                    this.Reservation = new ChargingReservation(Timestamp,
-                                                               StartTime.HasValue ? StartTime.Value : DateTime.Now,
-                                                               Duration. HasValue ? Duration. Value : MaxReservationDuration,
-                                                               ProviderId,
-                                                               ChargingReservationType.AtEVSE,
-                                                               ChargingStation.ChargingPool.EVSEOperator.RoamingNetwork,
-                                                               ChargingStation.ChargingPool.Id,
-                                                               ChargingStation.Id,
-                                                               Id,
-                                                               ChargingProductId,
-                                                               RFIDIds,
-                                                               eMAIds,
-                                                               PINs);
+                    this._Reservation = new ChargingReservation(Timestamp,
+                                                                StartTime.HasValue ? StartTime.Value : DateTime.Now,
+                                                                Duration. HasValue ? Duration. Value : MaxReservationDuration,
+                                                                ProviderId,
+                                                                ChargingReservationType.AtEVSE,
+                                                                ChargingStation.ChargingPool.EVSEOperator.RoamingNetwork,
+                                                                ChargingStation.ChargingPool.Id,
+                                                                ChargingStation.Id,
+                                                                Id,
+                                                                ChargingProductId,
+                                                                RFIDIds,
+                                                                eMAIds,
+                                                                PINs);
+
+                    SetStatus(EVSEStatusType.Reserved);
 
                     return ReservationResult.Success(_Reservation);
 

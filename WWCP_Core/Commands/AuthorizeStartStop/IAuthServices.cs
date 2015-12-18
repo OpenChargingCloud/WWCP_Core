@@ -49,17 +49,31 @@ namespace org.GraphDefined.WWCP
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="EVSEId">An optional EVSE identification.</param>
+        /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
-        /// <param name="PartnerProductId">An optional partner product identification.</param>
-        /// <param name="PartnerSessionId">An optional partner session identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        Task<HTTPResponse<AuthStartResult>> AuthorizeStart(EVSEOperator_Id      OperatorId,
-                                                           Auth_Token           AuthToken,
-                                                           EVSE_Id              EVSEId            = null,
-                                                           ChargingSession_Id   SessionId         = null,
-                                                           ChargingProduct_Id   PartnerProductId  = null,
-                                                           ChargingSession_Id   PartnerSessionId  = null,
-                                                           TimeSpan?            QueryTimeout      = null);
+        Task<AuthStartEVSEResult> AuthorizeStart(EVSEOperator_Id      OperatorId,
+                                                 Auth_Token           AuthToken,
+                                                 EVSE_Id              EVSEId             = null,
+                                                 ChargingProduct_Id   ChargingProductId  = null,
+                                                 ChargingSession_Id   SessionId          = null,
+                                                 TimeSpan?            QueryTimeout       = null);
+
+        /// <summary>
+        /// Create an authorize start request.
+        /// </summary>
+        /// <param name="OperatorId">An EVSE operator identification.</param>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="ChargingStationId">A charging station identification.</param>
+        /// <param name="ChargingProductId">An optional charging product identification.</param>
+        /// <param name="SessionId">An optional session identification.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        Task<AuthStartChargingStationResult> AuthorizeStart(EVSEOperator_Id      OperatorId,
+                                                            Auth_Token           AuthToken,
+                                                            ChargingStation_Id   ChargingStationId,
+                                                            ChargingProduct_Id   ChargingProductId  = null,
+                                                            ChargingSession_Id   SessionId          = null,
+                                                            TimeSpan?            QueryTimeout       = null);
 
 
         /// <summary>
@@ -69,14 +83,26 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="EVSEId">An optional EVSE identification.</param>
-        /// <param name="PartnerSessionId">An optional partner session identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        Task<HTTPResponse<AuthStopResult>>  AuthorizeStop (EVSEOperator_Id      OperatorId,
-                                                           ChargingSession_Id   SessionId,
-                                                           Auth_Token           AuthToken,
-                                                           EVSE_Id              EVSEId            = null,
-                                                           ChargingSession_Id   PartnerSessionId  = null,
-                                                           TimeSpan?            QueryTimeout      = null);
+        Task<AuthStopEVSEResult> AuthorizeStop(EVSEOperator_Id     OperatorId,
+                                               ChargingSession_Id  SessionId,
+                                               Auth_Token          AuthToken,
+                                               EVSE_Id             EVSEId            = null,
+                                               TimeSpan?           QueryTimeout      = null);
+
+        /// <summary>
+        /// Create an authorize stop request.
+        /// </summary>
+        /// <param name="OperatorId">An EVSE operator identification.</param>
+        /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="ChargingStationId">A charging station identification.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        Task<AuthStopChargingStationResult> AuthorizeStop(EVSEOperator_Id     OperatorId,
+                                                          ChargingSession_Id  SessionId,
+                                                          Auth_Token          AuthToken,
+                                                          ChargingStation_Id  ChargingStationId,
+                                                          TimeSpan?           QueryTimeout      = null);
 
 
         /// <summary>
@@ -84,11 +110,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSEId">An EVSE identification.</param>
         /// <param name="SessionId">The session identification from the Authorize Start request.</param>
-        /// <param name="PartnerProductId"></param>
+        /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionStart">The timestamp of the session start.</param>
         /// <param name="SessionEnd">The timestamp of the session end.</param>
         /// <param name="AuthInfo">AuthInfo</param>.
-        /// <param name="PartnerSessionId">An optional partner session identification.</param>
         /// <param name="ChargingStart">An optional charging start timestamp.</param>
         /// <param name="ChargingEnd">An optional charging end timestamp.</param>
         /// <param name="MeterValueStart">An optional initial value of the energy meter.</param>
@@ -99,23 +124,22 @@ namespace org.GraphDefined.WWCP
         /// <param name="HubOperatorId">An optional identification of the hub operator.</param>
         /// <param name="HubProviderId">An optional identification of the hub provider.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        Task<HTTPResponse<SendCDRResult>> SendChargeDetailRecord(EVSE_Id              EVSEId,
-                                                                 ChargingSession_Id   SessionId,
-                                                                 ChargingProduct_Id   PartnerProductId,
-                                                                 DateTime             SessionStart,
-                                                                 DateTime             SessionEnd,
-                                                                 AuthInfo             AuthInfo,
-                                                                 ChargingSession_Id   PartnerSessionId      = null,
-                                                                 DateTime?            ChargingStart         = null,
-                                                                 DateTime?            ChargingEnd           = null,
-                                                                 Double?              MeterValueStart       = null,
-                                                                 Double?              MeterValueEnd         = null,
-                                                                 IEnumerable<Double>  MeterValuesInBetween  = null,
-                                                                 Double?              ConsumedEnergy        = null,
-                                                                 String               MeteringSignature     = null,
-                                                                 HubOperator_Id       HubOperatorId         = null,
-                                                                 EVSP_Id              HubProviderId         = null,
-                                                                 TimeSpan?            QueryTimeout          = null);
+        Task<SendCDRResult> SendChargeDetailRecord(EVSE_Id              EVSEId,
+                                                   ChargingSession_Id   SessionId,
+                                                   ChargingProduct_Id   ChargingProductId,
+                                                   DateTime             SessionStart,
+                                                   DateTime             SessionEnd,
+                                                   AuthInfo             AuthInfo,
+                                                   DateTime?            ChargingStart         = null,
+                                                   DateTime?            ChargingEnd           = null,
+                                                   Double?              MeterValueStart       = null,
+                                                   Double?              MeterValueEnd         = null,
+                                                   IEnumerable<Double>  MeterValuesInBetween  = null,
+                                                   Double?              ConsumedEnergy        = null,
+                                                   String               MeteringSignature     = null,
+                                                   HubOperator_Id       HubOperatorId         = null,
+                                                   EVSP_Id              HubProviderId         = null,
+                                                   TimeSpan?            QueryTimeout          = null);
 
     }
 

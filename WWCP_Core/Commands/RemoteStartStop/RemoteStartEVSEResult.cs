@@ -25,21 +25,21 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The result of a remote start operation.
+    /// The result of a remote start operation at an EVSE.
     /// </summary>
-    public class RemoteStartResult
+    public class RemoteStartEVSEResult
     {
 
         #region Properties
 
         #region Result
 
-        private readonly RemoteStartResultType _Result;
+        private readonly RemoteStartEVSEResultType _Result;
 
         /// <summary>
         /// The result of a remote start operation.
         /// </summary>
-        public RemoteStartResultType Result
+        public RemoteStartEVSEResultType Result
         {
             get
             {
@@ -93,11 +93,11 @@ namespace org.GraphDefined.WWCP
         /// Create a new remote start result.
         /// </summary>
         /// <param name="Result">The result of the remote start operation.</param>
-        private RemoteStartResult(RemoteStartResultType  Result)
+        private RemoteStartEVSEResult(RemoteStartEVSEResultType  Result)
         {
 
-            if (Result == RemoteStartResultType.Success ||
-                Result == RemoteStartResultType.Error)
+            if (Result == RemoteStartEVSEResultType.Success ||
+                Result == RemoteStartEVSEResultType.Error)
                 throw new ArgumentException("Invalid parameter!");
 
             this._Result        = Result;
@@ -114,10 +114,10 @@ namespace org.GraphDefined.WWCP
         /// Create a new successful remote start result.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification (mandatory for successful session starts).</param>
-        private RemoteStartResult(ChargingSession_Id  SessionId)
+        private RemoteStartEVSEResult(ChargingSession_Id  SessionId)
         {
 
-            this._Result        = RemoteStartResultType.Success;
+            this._Result        = RemoteStartEVSEResultType.Success;
             this._SessionId     = SessionId;
             this._ErrorMessage  = null;
 
@@ -130,12 +130,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a new remote start result.
         /// </summary>
-        /// <param name="ErrorMessage">A optional error message.</param>
-        private RemoteStartResult(String ErrorMessage = null)
+        /// <param name="ErrorMessage">An error message.</param>
+        private RemoteStartEVSEResult(String ErrorMessage = null)
         {
 
-            this._Result        = RemoteStartResultType.Error;
-            this._ErrorMessage  = ErrorMessage;
+            this._Result        = RemoteStartEVSEResultType.Error;
+            this._ErrorMessage  = ErrorMessage != null ? ErrorMessage : String.Empty;
 
         }
 
@@ -149,11 +149,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The result is unknown and/or should be ignored.
         /// </summary>
-        public static RemoteStartResult Unspecified
+        public static RemoteStartEVSEResult Unspecified
         {
             get
             {
-                return new RemoteStartResult(RemoteStartResultType.Unspecified);
+                return new RemoteStartEVSEResult(RemoteStartEVSEResultType.Unspecified);
             }
         }
 
@@ -164,11 +164,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The EVSE is unknown.
         /// </summary>
-        public static RemoteStartResult UnknownEVSE
+        public static RemoteStartEVSEResult UnknownEVSE
         {
             get
             {
-                return new RemoteStartResult(RemoteStartResultType.UnknownEVSE);
+                return new RemoteStartEVSEResult(RemoteStartEVSEResultType.UnknownEVSE);
             }
         }
 
@@ -179,11 +179,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The given charging session identification is unknown or invalid.
         /// </summary>
-        public static RemoteStartResult InvalidSessionId
+        public static RemoteStartEVSEResult InvalidSessionId
         {
             get
             {
-                return new RemoteStartResult(RemoteStartResultType.InvalidSessionId);
+                return new RemoteStartEVSEResult(RemoteStartEVSEResultType.InvalidSessionId);
             }
         }
 
@@ -194,11 +194,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The EVSE is already in use.
         /// </summary>
-        public static RemoteStartResult AlreadyInUse
+        public static RemoteStartEVSEResult AlreadyInUse
         {
             get
             {
-                return new RemoteStartResult(RemoteStartResultType.AlreadyInUse);
+                return new RemoteStartEVSEResult(RemoteStartEVSEResultType.AlreadyInUse);
             }
         }
 
@@ -209,11 +209,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The EVSE is reserved.
         /// </summary>
-        public static RemoteStartResult Reserved
+        public static RemoteStartEVSEResult Reserved
         {
             get
             {
-                return new RemoteStartResult(RemoteStartResultType.Reserved);
+                return new RemoteStartEVSEResult(RemoteStartEVSEResultType.Reserved);
             }
         }
 
@@ -224,11 +224,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The EVSE is out of service.
         /// </summary>
-        public static RemoteStartResult OutOfService
+        public static RemoteStartEVSEResult OutOfService
         {
             get
             {
-                return new RemoteStartResult(RemoteStartResultType.OutOfService);
+                return new RemoteStartEVSEResult(RemoteStartEVSEResultType.OutOfService);
             }
         }
 
@@ -239,11 +239,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The EVSE is offline.
         /// </summary>
-        public static RemoteStartResult Offline
+        public static RemoteStartEVSEResult Offline
         {
             get
             {
-                return new RemoteStartResult(RemoteStartResultType.Offline);
+                return new RemoteStartEVSEResult(RemoteStartEVSEResultType.Offline);
             }
         }
 
@@ -255,7 +255,7 @@ namespace org.GraphDefined.WWCP
         /// The remote start was successful.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        public static RemoteStartResult Success(ChargingSession_Id SessionId)
+        public static RemoteStartEVSEResult Success(ChargingSession_Id SessionId)
         {
 
             #region Initial checks
@@ -265,7 +265,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new RemoteStartResult(SessionId);
+            return new RemoteStartEVSEResult(SessionId);
 
         }
 
@@ -276,25 +276,25 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The remote stop ran into a timeout.
         /// </summary>
-        public static RemoteStartResult Timeout
+        public static RemoteStartEVSEResult Timeout
         {
             get
             {
-                return new RemoteStartResult(RemoteStartResultType.Timeout);
+                return new RemoteStartEVSEResult(RemoteStartEVSEResultType.Timeout);
             }
         }
 
         #endregion
 
-        #region (static) Error(Message = null)
+        #region (static) Error(ErrorMessage = null)
 
         /// <summary>
         /// The remote stop led to an error.
         /// </summary>
-        /// <param name="Message">An optional error message.</param>
-        public static RemoteStartResult Error(String Message = null)
+        /// <param name="ErrorMessage">An error message.</param>
+        public static RemoteStartEVSEResult Error(String ErrorMessage = null)
         {
-            return new RemoteStartResult(Message);
+            return new RemoteStartEVSEResult(ErrorMessage);
         }
 
         #endregion
@@ -316,9 +316,9 @@ namespace org.GraphDefined.WWCP
 
 
     /// <summary>
-    /// The result types of a remote start operation.
+    /// The result types of a remote start operation at an EVSE.
     /// </summary>
-    public enum RemoteStartResultType
+    public enum RemoteStartEVSEResultType
     {
 
         /// <summary>

@@ -43,15 +43,15 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Result
+        #region Status
 
-        private SendCDRResultType _Result;
+        private SendCDRResultType _Status;
 
-        public SendCDRResultType Result
+        public SendCDRResultType Status
         {
             get
             {
-                return _Result;
+                return _Status;
             }
         }
 
@@ -95,7 +95,7 @@ namespace org.GraphDefined.WWCP
         {
 
             this._AuthorizatorId  = AuthorizatorId;
-            this._Result          = Result;
+            this._Status          = Result;
             this._Description     = Description;
 
         }

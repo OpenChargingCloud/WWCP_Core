@@ -47,6 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\AuthorizeStartStop\AuthStartChargingStationResult.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\AuthStopChargingStationResult.cs" />
+    <Compile Include="Commands\RemoteStartStop\RemoteStartChargingStationResult.cs" />
     <Compile Include="Commands\SendCDR\OnSendCDRDelegate.cs" />
     <Compile Include="CommonTypes\Attributes\Mandatory.cs" />
     <Compile Include="CommonTypes\Attributes\InternalUseOnly.cs" />
@@ -148,7 +151,7 @@
     <Compile Include="Importer\ImporterForwardingInfo.cs" />
     <Compile Include="Commands\AuthorizeStartStop\IAuthServices.cs" />
     <Compile Include="CommonTypes\AuthorizatorId.cs" />
-    <Compile Include="Commands\RemoteStartStop\RemoteStartResult.cs" />
+    <Compile Include="Commands\RemoteStartStop\RemoteStartEVSEResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopResult.cs" />
     <Compile Include="CommonTypes\SessionInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -157,8 +160,8 @@
     <Compile Include="Entities\NavigationServiceProvider\NavigationServiceProvider.cs" />
     <Compile Include="Entities\NavigationServiceProvider\NavigationServiceProvider_Id.cs" />
     <Compile Include="Commands\TokenAuthorizationResultType.cs" />
-    <Compile Include="Commands\AuthorizeStartStop\AuthStartResult.cs" />
-    <Compile Include="Commands\AuthorizeStartStop\AuthStopResult.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\AuthStartEVSEResult.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\AuthStopEVSEResult.cs" />
     <Compile Include="Commands\SendCDR\SendCDRResult.cs" />
     <Compile Include="Semantics.cs" />
   </ItemGroup>

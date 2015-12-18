@@ -24,12 +24,12 @@ using System;
 namespace org.GraphDefined.WWCP
 {
 
-    public class AuthStopResult
+    public class AuthStopEVSEResult
     {
 
         #region Properties
 
-        public AuthorizeStopResultType  AuthorizationResult  { get; set; }
+        public AuthStopEVSEResultType  AuthorizationResult  { get; set; }
         public ChargingSession_Id       SessionId            { get; set; }
         public EVSP_Id                  ProviderId           { get; set; }
 
@@ -63,7 +63,7 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        public AuthStopResult(Authorizator_Id AuthorizatorId)
+        public AuthStopEVSEResult(Authorizator_Id AuthorizatorId)
         {
             this._AuthorizatorId = AuthorizatorId;
         }
@@ -90,13 +90,13 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public enum AuthorizeStopResultType
+    public enum AuthStopEVSEResultType
     {
         Unspecified,
-        EVSE_NotReachable,
-        Stop_Timeout,
+        NotReachable,
+        Timeout,
         UnknownEVSE,
-        EVSEOutOfService,
+        OutOfService,
         SessionIsInvalid,
         Error,
         Success

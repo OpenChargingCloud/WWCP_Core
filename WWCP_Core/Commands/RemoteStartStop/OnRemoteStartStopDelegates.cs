@@ -43,16 +43,16 @@ namespace org.GraphDefined.WWCP
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
     /// <returns>A RemoteStartResult task.</returns>
-    public delegate Task<RemoteStartResult> OnRemoteStartDelegate(DateTime                Timestamp,
-                                                                  Object                  Sender,
-                                                                  CancellationToken       CancellationToken,
-                                                                  RoamingNetwork_Id       RoamingNetworkId,
-                                                                  EVSE_Id                 EVSEId,
-                                                                  ChargingProduct_Id      ChargingProductId,
-                                                                  ChargingReservation_Id  ReservationId,
-                                                                  ChargingSession_Id      SessionId,
-                                                                  EVSP_Id                 ProviderId,
-                                                                  eMA_Id                  eMAId);
+    public delegate Task<RemoteStartEVSEResult> OnRemoteStartDelegate(DateTime                Timestamp,
+                                                                      Object                  Sender,
+                                                                      CancellationToken       CancellationToken,
+                                                                      RoamingNetwork_Id       RoamingNetworkId,
+                                                                      EVSE_Id                 EVSEId,
+                                                                      ChargingProduct_Id      ChargingProductId,
+                                                                      ChargingReservation_Id  ReservationId,
+                                                                      ChargingSession_Id      SessionId,
+                                                                      EVSP_Id                 ProviderId,
+                                                                      eMA_Id                  eMAId);
 
 
     /// <summary>

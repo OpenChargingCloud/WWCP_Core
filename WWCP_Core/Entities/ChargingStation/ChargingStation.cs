@@ -27,6 +27,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
+using System.Threading.Tasks;
+using System.Threading;
 
 #endregion
 
@@ -53,6 +55,11 @@ namespace org.GraphDefined.WWCP
         /// The default max size of the charging station (aggregated EVSE) admin status history.
         /// </summary>
         public const UInt16 DefaultStationAdminStatusHistorySize = 50;
+
+        /// <summary>
+        /// The maximum time span for a reservation.
+        /// </summary>
+        public static readonly TimeSpan MaxReservationDuration = TimeSpan.FromMinutes(15);
 
         #endregion
 
@@ -844,6 +851,58 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region ReservationId
+
+        /// <summary>
+        /// The charging reservation identification.
+        /// </summary>
+        [InternalUseOnly]
+        public ChargingReservation_Id ReservationId
+        {
+            get
+            {
+                return _Reservation.Id;
+            }
+        }
+
+        #endregion
+
+        #region Reservation
+
+        private ChargingReservation _Reservation;
+
+        /// <summary>
+        /// The charging reservation.
+        /// </summary>
+        [InternalUseOnly]
+        public ChargingReservation Reservation
+        {
+
+            get
+            {
+                return _Reservation;
+            }
+
+            set
+            {
+
+                if (_Reservation == value)
+                    return;
+
+                _Reservation = value;
+
+                //if (_Reservation != null)
+                //    SetStatus(EVSEStatusType.Reserved);
+                //else
+                //    SetStatus(EVSEStatusType.Available);
+
+            }
+
+        }
+
+        #endregion
+
+
         #region Status
 
         /// <summary>
@@ -1573,6 +1632,71 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+
+        public async Task<ReservationResult> Reserve(DateTime                Timestamp,
+                                                     CancellationToken       CancellationToken,
+                                                     EVSP_Id                 ProviderId,
+                                                     ChargingReservation_Id  ReservationId,
+                                                     DateTime?               StartTime,
+                                                     TimeSpan?               Duration,
+                                                     ChargingProduct_Id      ChargingProductId  = null,
+                                                     IEnumerable<Auth_Token> RFIDIds            = null,
+                                                     IEnumerable<eMA_Id>     eMAIds             = null,
+                                                     IEnumerable<UInt32>     PINs               = null)
+        {
+
+            #region Try to remove an existing reservation if this is an update!
+
+            if (ReservationId != null && _Reservation.Id != ReservationId)
+            {
+
+                return ReservationResult.UnknownChargingReservationId;
+
+                // Send DeleteReservation event!
+
+            }
+
+            #endregion
+
+            switch (Status.Value)
+            {
+
+                case ChargingStationStatusType.OutOfService:
+                    return ReservationResult.OutOfService;
+
+                case ChargingStationStatusType.Charging:
+                    return ReservationResult.AlreadyInUse;
+
+                case ChargingStationStatusType.Reserved:
+                    return ReservationResult.AlreadyReserved;
+
+                case ChargingStationStatusType.Available:
+
+                    this._Reservation = new ChargingReservation(Timestamp,
+                                                                StartTime.HasValue ? StartTime.Value : DateTime.Now,
+                                                                Duration. HasValue ? Duration. Value : MaxReservationDuration,
+                                                                ProviderId,
+                                                                ChargingReservationType.AtChargingStation,
+                                                                ChargingPool.EVSEOperator.RoamingNetwork,
+                                                                ChargingPool.Id,
+                                                                Id,
+                                                                null,
+                                                                ChargingProductId,
+                                                                RFIDIds,
+                                                                eMAIds,
+                                                                PINs);
+
+        //            SetStatus(EVSEStatusType.Reserved);
+
+                    return ReservationResult.Success(_Reservation);
+
+                default:
+                    return ReservationResult.Error();
+
+            }
+
+        }
 
 
         #region (internal) UpdateEVSEData(Timestamp, EVSE, OldStatus, NewStatus)

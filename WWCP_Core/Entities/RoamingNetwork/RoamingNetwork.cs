@@ -59,10 +59,10 @@ namespace org.GraphDefined.WWCP
         private readonly ConcurrentDictionary<RoamingProvider_Id,            RoamingProvider>            _RoamingProviders;
         private readonly ConcurrentDictionary<NavigationServiceProvider_Id,  NavigationServiceProvider>  _SearchProviders;
 
-        private readonly ConcurrentDictionary<ChargingReservation_Id, ChargingReservation>               _ChargingReservations;
+        private readonly ConcurrentDictionary<ChargingReservation_Id,        ChargingReservation>        _ChargingReservations;
 
-        private readonly Dictionary<UInt32,             IAuthServices>     AuthenticationServices;
-        private readonly Dictionary<ChargingSession_Id, IAuthServices>     SessionIdAuthenticatorCache;
+        private readonly ConcurrentDictionary<UInt32,                        IAuthServices>              _AuthenticationServices;
+        private readonly ConcurrentDictionary<ChargingSession_Id,            IAuthServices>              _SessionIdAuthenticatorCache;
 
         #endregion
 
@@ -89,7 +89,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return AuthenticationServices.SelectMany(vv => vv.Value.AllTokens);
+                return _AuthenticationServices.SelectMany(vv => vv.Value.AllTokens);
             }
         }
 
@@ -101,7 +101,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return AuthenticationServices.SelectMany(vv => vv.Value.AuthorizedTokens);
+                return _AuthenticationServices.SelectMany(vv => vv.Value.AuthorizedTokens);
             }
         }
 
@@ -113,7 +113,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return AuthenticationServices.SelectMany(vv => vv.Value.NotAuthorizedTokens);
+                return _AuthenticationServices.SelectMany(vv => vv.Value.NotAuthorizedTokens);
             }
         }
 
@@ -125,7 +125,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return AuthenticationServices.SelectMany(vv => vv.Value.BlockedTokens);
+                return _AuthenticationServices.SelectMany(vv => vv.Value.BlockedTokens);
             }
         }
 
@@ -1153,7 +1153,7 @@ namespace org.GraphDefined.WWCP
 
         #region OnFilterCDRRecords
 
-        public delegate SendCDRResult OnFilterCDRRecordsDelegate(Authorizator_Id AuthorizatorId, AuthInfo AuthInfo, ChargingSession_Id PartnerSessionId);
+        public delegate SendCDRResult OnFilterCDRRecordsDelegate(Authorizator_Id AuthorizatorId, AuthInfo AuthInfo);
 
         /// <summary>
         /// An event fired whenever a CDR needs to be filtered.
@@ -1241,9 +1241,9 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._AuthorizatorId              = (AuthorizatorId == null) ? Authorizator_Id.Parse("GraphDefined E-Mobility Gateway") : AuthorizatorId;
-            this.AuthenticationServices       = new Dictionary<UInt32,                 IAuthServices>();
-            this.SessionIdAuthenticatorCache  = new Dictionary<ChargingSession_Id,     IAuthServices>();
+            this._AuthorizatorId               = (AuthorizatorId == null) ? Authorizator_Id.Parse("GraphDefined E-Mobility Gateway") : AuthorizatorId;
+            this._AuthenticationServices       = new ConcurrentDictionary<UInt32,                 IAuthServices>();
+            this._SessionIdAuthenticatorCache  = new ConcurrentDictionary<ChargingSession_Id,     IAuthServices>();
 
 
             #region Init events
@@ -2021,25 +2021,14 @@ namespace org.GraphDefined.WWCP
                                            IAuthServices  AuthenticationService)
         {
 
-            lock (AuthenticationServices)
-            {
-
-                if (!AuthenticationServices.ContainsKey(Priority))
-                {
-                    AuthenticationServices.Add(Priority, AuthenticationService);
-                    return true;
-                }
-
-                return false;
-
-            }
+            return _AuthenticationServices.TryAdd(Priority, AuthenticationService);
 
         }
 
         #endregion
 
 
-        #region AuthorizeStart(OperatorId, AuthToken, EVSEId = null, SessionId = null, PartnerProductId = null, PartnerSessionId = null)
+        #region AuthorizeStart(OperatorId, AuthToken, EVSEId = null, ChargingProductId = null, SessionId = null)
 
         /// <summary>
         /// Create an authorize start request.
@@ -2047,19 +2036,17 @@ namespace org.GraphDefined.WWCP
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="EVSEId">An optional EVSE identification.</param>
+        /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
-        /// <param name="PartnerProductId">An optional partner product identification.</param>
-        /// <param name="PartnerSessionId">An optional partner session identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        public async Task<HTTPResponse<AuthStartResult>>
+        public async Task<AuthStartEVSEResult>
 
             AuthorizeStart(EVSEOperator_Id     OperatorId,
                            Auth_Token          AuthToken,
-                           EVSE_Id             EVSEId            = null,
-                           ChargingSession_Id  SessionId         = null,
-                           ChargingProduct_Id  PartnerProductId  = null,
-                           ChargingSession_Id  PartnerSessionId  = null,
-                           TimeSpan?           QueryTimeout      = null)
+                           EVSE_Id             EVSEId             = null,
+                           ChargingProduct_Id  ChargingProductId  = null,
+                           ChargingSession_Id  SessionId          = null,
+                           TimeSpan?           QueryTimeout       = null)
 
         {
 
@@ -2075,39 +2062,33 @@ namespace org.GraphDefined.WWCP
 
             // Will store the SessionId in order to contact the right authenticator at later requests!
 
-            lock (AuthenticationServices)
+            lock (_AuthenticationServices)
             {
 
-                AuthStartResult AuthStartResult;
-
-                foreach (var AuthenticationService in AuthenticationServices.
+                foreach (var AuthenticationService in _AuthenticationServices.
                                                           OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
                                                           Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
                 {
 
-                    var _Task = AuthenticationService.AuthorizeStart(OperatorId,
-                                                                     AuthToken,
-                                                                     EVSEId,
-                                                                     SessionId,
-                                                                     PartnerProductId,
-                                                                     PartnerSessionId,
-                                                                     QueryTimeout);
+                    var _AuthStartTask = AuthenticationService.AuthorizeStart(OperatorId,
+                                                                              AuthToken,
+                                                                              EVSEId,
+                                                                              ChargingProductId,
+                                                                              SessionId,
+                                                                              QueryTimeout);
 
-                    _Task.Wait(TimeSpan.FromSeconds(30));
-
-                    AuthStartResult = _Task.Result.Content;
+                    _AuthStartTask.Wait(TimeSpan.FromSeconds(45));
 
                     #region Authorized
 
-                    if (AuthStartResult.AuthorizationResult == AuthorizeStartResultType.Success)
+                    if (_AuthStartTask.Result.AuthorizationResult == AuthStartEVSEResultType.Authorized)
                     {
 
                         // Store the upstream SessionId and its AuthenticationService!
                         // Will be deleted when the CDRecord was sent!
-                        SessionIdAuthenticatorCache.Add(AuthStartResult.SessionId, AuthenticationService);
+                        _SessionIdAuthenticatorCache.TryAdd(_AuthStartTask.Result.SessionId, AuthenticationService);
 
-                        return new HTTPResponse<AuthStartResult>(_Task.Result.HttpResponse,
-                                                                 AuthStartResult);
+                        return _AuthStartTask.Result;
 
                     }
 
@@ -2115,7 +2096,7 @@ namespace org.GraphDefined.WWCP
 
                     #region Blocked
 
-                    //else if (AuthStartResult.AuthorizationResult == AuthorizationResultType.Blocked)
+                    //else if (_Task.Result.Content.AuthorizationResult == AuthorizationResultType.Blocked)
                     //    return new HTTPResponse<AuthStartResult>(_Task.Result.HttpResponse,
                     //                                             AuthStartResult);
 
@@ -2125,11 +2106,8 @@ namespace org.GraphDefined.WWCP
 
                 #region ...else fail!
 
-                return new HTTPResponse<AuthStartResult>(new HTTPResponse(),
-                                                         new AuthStartResult(AuthorizatorId) {
-                                                             AuthorizationResult  = AuthorizeStartResultType.Error,
-                                                             Description          = "No authorization service returned a positiv result!"
-                                                         });
+                return AuthStartEVSEResult.Error(AuthorizatorId,
+                                                 "No authorization service returned a positiv result!");
 
                 #endregion
 
@@ -2139,7 +2117,49 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStop(OperatorId, SessionId, AuthToken, EVSEId = null, PartnerSessionId = null)
+        #region AuthorizeStart(OperatorId, AuthToken, ChargingStationId, ChargingProductId = null, SessionId = null)
+
+        /// <summary>
+        /// Create an authorize start request.
+        /// </summary>
+        /// <param name="OperatorId">An EVSE operator identification.</param>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="ChargingStationId">A charging station identification.</param>
+        /// <param name="ChargingProductId">An optional charging product identification.</param>
+        /// <param name="SessionId">An optional session identification.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        public async Task<AuthStartChargingStationResult>
+
+            AuthorizeStart(EVSEOperator_Id     OperatorId,
+                           Auth_Token          AuthToken,
+                           ChargingStation_Id  ChargingStationId,
+                           ChargingProduct_Id  ChargingProductId  = null,
+                           ChargingSession_Id  SessionId          = null,
+                           TimeSpan?           QueryTimeout       = null)
+
+        {
+
+            #region Initial checks
+
+            if (OperatorId        == null)
+                throw new ArgumentNullException("OperatorId",         "The given parameter must not be null!");
+
+            if (AuthToken         == null)
+                throw new ArgumentNullException("AuthToken",          "The given parameter must not be null!");
+
+            if (ChargingStationId == null)
+                throw new ArgumentNullException("ChargingStationId",  "The given parameter must not be null!");
+
+            #endregion
+
+            //ToDo: Implement AuthorizeStart(...ChargingStationId...)
+            return AuthStartChargingStationResult.Error(AuthorizatorId, "Not implemented!");
+
+        }
+
+        #endregion
+
+        #region AuthorizeStop(OperatorId, SessionId, AuthToken, EVSEId = null)
 
         /// <summary>
         /// Create an authorize stop request.
@@ -2148,16 +2168,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="EVSEId">An optional EVSE identification.</param>
-        /// <param name="PartnerSessionId">An optional partner session identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        public async Task<HTTPResponse<AuthStopResult>>
+        public async Task<AuthStopEVSEResult>
 
-            AuthorizeStop(EVSEOperator_Id      OperatorId,
-                          ChargingSession_Id   SessionId,
-                          Auth_Token           AuthToken,
-                          EVSE_Id              EVSEId            = null,   // OICP v2.0: Optional
-                          ChargingSession_Id   PartnerSessionId  = null,   // OICP v2.0: Optional [50]
-                          TimeSpan?            QueryTimeout      = null)
+            AuthorizeStop(EVSEOperator_Id     OperatorId,
+                          ChargingSession_Id  SessionId,
+                          Auth_Token          AuthToken,
+                          EVSE_Id             EVSEId        = null,
+                          TimeSpan?           QueryTimeout  = null)
 
         {
 
@@ -2174,22 +2192,23 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            lock (AuthenticationServices)
+            lock (_AuthenticationServices)
             {
 
                 #region An authenticator was found for the upstream SessionId!
 
                 IAuthServices AuthenticationService;
 
-                if (SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
+                if (_SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
                 {
 
-                    var _Task = AuthenticationService.AuthorizeStop(OperatorId, SessionId, AuthToken, EVSEId, PartnerSessionId);
-                    _Task.Wait();
+                    var _AuthStopTask = AuthenticationService.
+                                            AuthorizeStop(OperatorId, SessionId, AuthToken, EVSEId);
 
-                    if (_Task.Result.Content.AuthorizationResult == AuthorizeStopResultType.Success)// ||
-                        //_Task.Result.Content.AuthorizationResult == AuthorizationResultType.Blocked)
-                        return _Task.Result;
+                    _AuthStopTask.Wait(TimeSpan.FromSeconds(45));
+
+                    if (_AuthStopTask.Result.AuthorizationResult == AuthStopEVSEResultType.Success)
+                        return _AuthStopTask.Result;
 
                 }
 
@@ -2197,23 +2216,22 @@ namespace org.GraphDefined.WWCP
 
                 #region Try to find anyone who might kown anything about the given SessionId!
 
-                foreach (var OtherAuthenticationService in AuthenticationServices.
+                foreach (var OtherAuthenticationService in _AuthenticationServices.
                                                                OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
                                                                Select (AuthServiceWithPriority => AuthServiceWithPriority.Value).
                                                                ToArray())
                 {
 
-                    var _Task = OtherAuthenticationService.AuthorizeStop(OperatorId,
-                                                                         SessionId,
-                                                                         AuthToken,
-                                                                         EVSEId,
-                                                                         PartnerSessionId,
-                                                                         QueryTimeout);
-                    _Task.Wait();
+                    var _AuthStopTask = OtherAuthenticationService.AuthorizeStop(OperatorId,
+                                                                                 SessionId,
+                                                                                 AuthToken,
+                                                                                 EVSEId,
+                                                                                 QueryTimeout);
 
-                    if (_Task.Result.Content.AuthorizationResult == AuthorizeStopResultType.Success) // ||
-                        //_Task.Result.Content.AuthorizationResult == AuthorizationResultType.Blocked)
-                        return _Task.Result;
+                    _AuthStopTask.Wait(TimeSpan.FromSeconds(45));
+
+                    if (_AuthStopTask.Result.AuthorizationResult == AuthStopEVSEResultType.Success)
+                        return _AuthStopTask.Result;
 
                 }
 
@@ -2221,11 +2239,10 @@ namespace org.GraphDefined.WWCP
 
                 #region ...else fail!
 
-                return new HTTPResponse<AuthStopResult>(new HTTPResponse(),
-                                                        new AuthStopResult(AuthorizatorId) {
-                                                            AuthorizationResult  = AuthorizeStopResultType.Error,
-                                                            Description          = "No authorization service returned a positiv result!"
-                                                        });
+                return new AuthStopEVSEResult(AuthorizatorId) {
+                           AuthorizationResult  = AuthStopEVSEResultType.Error,
+                           Description          = "No authorization service returned a positiv result!"
+                       };
 
                 #endregion
 
@@ -2235,19 +2252,17 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SendChargeDetailRecord(EVSEId, SessionId, PartnerProductId, SessionStart, SessionEnd, AuthToken = null, eMAId = null, PartnerSessionId = null, ..., QueryTimeout = null)
+        #region SendChargeDetailRecord(EVSEId, SessionId, ChargingProductId, SessionStart, SessionEnd, AuthToken = null, eMAId = null, ..., QueryTimeout = null)
 
         /// <summary>
         /// Create a SendChargeDetailRecord request.
         /// </summary>
         /// <param name="EVSEId">An EVSE identification.</param>
         /// <param name="SessionId">The session identification from the Authorize Start request.</param>
-        /// <param name="PartnerProductId"></param>
+        /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionStart">The timestamp of the session start.</param>
         /// <param name="SessionEnd">The timestamp of the session end.</param>
-        /// <param name="AuthToken">An optional (RFID) user identification.</param>
-        /// <param name="eMAId">An optional e-Mobility account identification.</param>
-        /// <param name="PartnerSessionId">An optional partner session identification.</param>
+        /// <param name="AuthInfo">An optional ev customer or e-Mobility account identification.</param>
         /// <param name="ChargingStart">An optional charging start timestamp.</param>
         /// <param name="ChargingEnd">An optional charging end timestamp.</param>
         /// <param name="MeterValueStart">An optional initial value of the energy meter.</param>
@@ -2258,15 +2273,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="HubOperatorId">An optional identification of the hub operator.</param>
         /// <param name="HubProviderId">An optional identification of the hub provider.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        public async Task<HTTPResponse<SendCDRResult>>
+        public async Task<SendCDRResult>
 
             SendChargeDetailRecord(EVSE_Id              EVSEId,
                                    ChargingSession_Id   SessionId,
-                                   ChargingProduct_Id   PartnerProductId,
+                                   ChargingProduct_Id   ChargingProductId,
                                    DateTime             SessionStart,
                                    DateTime             SessionEnd,
                                    AuthInfo             AuthInfo,
-                                   ChargingSession_Id   PartnerSessionId      = null,
                                    DateTime?            ChargingStart         = null,
                                    DateTime?            ChargingEnd           = null,
                                    Double?              MeterValueStart       = null,
@@ -2283,26 +2297,26 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (EVSEId           == null)
-                throw new ArgumentNullException("EVSEId",            "The given parameter must not be null!");
+                throw new ArgumentNullException("EVSEId",             "The given parameter must not be null!");
 
             if (SessionId        == null)
-                throw new ArgumentNullException("SessionId",         "The given parameter must not be null!");
+                throw new ArgumentNullException("SessionId",          "The given parameter must not be null!");
 
-            if (PartnerProductId == null)
-                throw new ArgumentNullException("PartnerProductId",  "The given parameter must not be null!");
+            if (ChargingProductId == null)
+                throw new ArgumentNullException("ChargingProductId",  "The given parameter must not be null!");
 
             if (SessionStart     == null)
-                throw new ArgumentNullException("SessionStart",      "The given parameter must not be null!");
+                throw new ArgumentNullException("SessionStart",       "The given parameter must not be null!");
 
             if (SessionEnd       == null)
-                throw new ArgumentNullException("SessionEnd",        "The given parameter must not be null!");
+                throw new ArgumentNullException("SessionEnd",         "The given parameter must not be null!");
 
             if (AuthInfo         == null)
-                throw new ArgumentNullException("AuthInfo",          "The given parameter must not be null!");
+                throw new ArgumentNullException("AuthInfo",           "The given parameter must not be null!");
 
             #endregion
 
-            lock (AuthenticationServices)
+            lock (_AuthenticationServices)
             {
 
                 #region Some CDR should perhaps be filtered...
@@ -2311,11 +2325,10 @@ namespace org.GraphDefined.WWCP
                 if (OnFilterCDRRecordsLocal != null)
                 {
 
-                    var _SENDCDRResult = OnFilterCDRRecordsLocal(AuthorizatorId, AuthInfo, PartnerSessionId);
+                    var _SENDCDRResult = OnFilterCDRRecordsLocal(AuthorizatorId, AuthInfo);
 
                     if (_SENDCDRResult != null)
-                        return new HTTPResponse<SendCDRResult>(new HTTPResponse(),
-                                                               _SENDCDRResult);
+                        return _SENDCDRResult;
 
                 }
 
@@ -2325,33 +2338,32 @@ namespace org.GraphDefined.WWCP
 
                 #region An authenticator was found for the upstream SessionId!
 
-                if (SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
+                if (_SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
                 {
 
-                    var _Task = AuthenticationService.SendChargeDetailRecord(EVSEId,
-                                                                             SessionId,
-                                                                             PartnerProductId,
-                                                                             SessionStart,
-                                                                             SessionEnd,
-                                                                             AuthInfo,
-                                                                             PartnerSessionId,
-                                                                             ChargingStart,
-                                                                             ChargingEnd,
-                                                                             MeterValueStart,
-                                                                             MeterValueEnd,
-                                                                             MeterValuesInBetween,
-                                                                             ConsumedEnergy,
-                                                                             MeteringSignature,
-                                                                             HubOperatorId,
-                                                                             HubProviderId,
-                                                                             QueryTimeout);
+                    var _SendCDRTask = AuthenticationService.SendChargeDetailRecord(EVSEId,
+                                                                                    SessionId,
+                                                                                    ChargingProductId,
+                                                                                    SessionStart,
+                                                                                    SessionEnd,
+                                                                                    AuthInfo,
+                                                                                    ChargingStart,
+                                                                                    ChargingEnd,
+                                                                                    MeterValueStart,
+                                                                                    MeterValueEnd,
+                                                                                    MeterValuesInBetween,
+                                                                                    ConsumedEnergy,
+                                                                                    MeteringSignature,
+                                                                                    HubOperatorId,
+                                                                                    HubProviderId,
+                                                                                    QueryTimeout);
 
-                    _Task.Wait();
+                    _SendCDRTask.Wait();
 
-                    if (_Task.Result.Content.Result == SendCDRResultType.Forwarded)
+                    if (_SendCDRTask.Result.Status == SendCDRResultType.Forwarded)
                     {
-                        SessionIdAuthenticatorCache.Remove(SessionId);
-                        return _Task.Result;
+                        _SessionIdAuthenticatorCache.TryRemove(SessionId, out AuthenticationService);
+                        return _SendCDRTask.Result;
                     }
 
                 }
@@ -2360,36 +2372,35 @@ namespace org.GraphDefined.WWCP
 
                 #region Try to find anyone who might kown anything about the given SessionId!
 
-                foreach (var OtherAuthenticationService in AuthenticationServices.
+                foreach (var OtherAuthenticationService in _AuthenticationServices.
                                                                OrderBy(v => v.Key).
                                                                Select(v => v.Value).
                                                                ToArray())
                 {
 
-                    var _Task = OtherAuthenticationService.SendChargeDetailRecord(EVSEId,
-                                                                                  SessionId,
-                                                                                  PartnerProductId,
-                                                                                  SessionStart,
-                                                                                  SessionEnd,
-                                                                                  AuthInfo,
-                                                                                  PartnerSessionId,
-                                                                                  ChargingStart,
-                                                                                  ChargingEnd,
-                                                                                  MeterValueStart,
-                                                                                  MeterValueEnd,
-                                                                                  MeterValuesInBetween,
-                                                                                  ConsumedEnergy,
-                                                                                  MeteringSignature,
-                                                                                  HubOperatorId,
-                                                                                  HubProviderId,
-                                                                                  QueryTimeout);
+                    var _SendCDRTask = OtherAuthenticationService.SendChargeDetailRecord(EVSEId,
+                                                                                         SessionId,
+                                                                                         ChargingProductId,
+                                                                                         SessionStart,
+                                                                                         SessionEnd,
+                                                                                         AuthInfo,
+                                                                                         ChargingStart,
+                                                                                         ChargingEnd,
+                                                                                         MeterValueStart,
+                                                                                         MeterValueEnd,
+                                                                                         MeterValuesInBetween,
+                                                                                         ConsumedEnergy,
+                                                                                         MeteringSignature,
+                                                                                         HubOperatorId,
+                                                                                         HubProviderId,
+                                                                                         QueryTimeout);
 
-                    _Task.Wait();
+                    _SendCDRTask.Wait();
 
-                    if (_Task.Result.Content.Result == SendCDRResultType.Forwarded)
+                    if (_SendCDRTask.Result.Status == SendCDRResultType.Forwarded)
                     {
-                        SessionIdAuthenticatorCache.Remove(SessionId);
-                        return _Task.Result;
+                        _SessionIdAuthenticatorCache.TryRemove(SessionId, out AuthenticationService);
+                        return _SendCDRTask.Result;
                     }
 
                 }
@@ -2398,9 +2409,8 @@ namespace org.GraphDefined.WWCP
 
                 #region ...else fail!
 
-                return new HTTPResponse<SendCDRResult>(new HTTPResponse(),
-                                                       SendCDRResult.False(AuthorizatorId,
-                                                                           "No authorization service returned a positiv result!"));
+                return SendCDRResult.False(AuthorizatorId,
+                                           "No authorization service returned a positiv result!");
 
                 #endregion
 
@@ -2411,7 +2421,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region RemoteStart(Timestamp, RoamingNetworkId, SessionId, PartnerSessionId, ProviderId, eMAId, EVSEId, ChargingProductId)
+        #region RemoteStart(Timestamp, RoamingNetworkId, SessionId, ProviderId, eMAId, EVSEId, ChargingProductId)
 
         /// <summary>
         /// Initiate a remote start of the given charging session at the given EVSE
@@ -2420,23 +2430,71 @@ namespace org.GraphDefined.WWCP
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="PartnerSessionId">The unique identification for this charging session on the partner side.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
         /// <param name="eMAId">The unique identification of the e-mobility account.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
         /// <returns>A remote start result object.</returns>
-        public async Task<HTTPResponse<RemoteStartResult>>  RemoteStart(DateTime            Timestamp,
+        public async Task<HTTPResponse<RemoteStartEVSEResult>>  RemoteStart(DateTime            Timestamp,
+                                                                            RoamingNetwork_Id   RoamingNetworkId,
+                                                                            ChargingSession_Id  SessionId,
+                                                                            EVSP_Id             ProviderId,
+                                                                            eMA_Id              eMAId,
+                                                                            EVSE_Id             EVSEId,
+                                                                            ChargingProduct_Id  ChargingProductId)
+        {
+
+            return new HTTPResponse<RemoteStartEVSEResult>();
+
+        //    lock (AuthenticationServices)
+        //    {
+
+        //        var OnRemoteStartLocal = OnRemoteStart;
+        //        if (OnRemoteStartLocal != null)
+        //        {
+
+        //            return OnRemoteStartLocal(Timestamp,
+        //                                      RoamingNetworkId,
+        //                                      SessionId,
+        //                                      ProviderId,
+        //                                      eMAId,
+        //                                      EVSEId,
+        //                                      ChargingProductId);
+
+        //        }
+
+        //        return RemoteStartResult.Error;
+
+        //    }
+
+        }
+
+        #endregion
+
+        #region RemoteStart(Timestamp, RoamingNetworkId, SessionId, ProviderId, eMAId, ChargingStationId, ChargingProductId)
+
+        /// <summary>
+        /// Initiate a remote start of the given charging session at the given charging station
+        /// and for the given Provider/eMAId.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
+        /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
+        /// <returns>A remote start result object.</returns>
+        public async Task<HTTPResponse<RemoteStartEVSEResult>>  RemoteStart(DateTime            Timestamp,
                                                                         RoamingNetwork_Id   RoamingNetworkId,
                                                                         ChargingSession_Id  SessionId,
-                                                                        ChargingSession_Id  PartnerSessionId,
                                                                         EVSP_Id             ProviderId,
                                                                         eMA_Id              eMAId,
-                                                                        EVSE_Id             EVSEId,
+                                                                        ChargingStation_Id  ChargingStationId,
                                                                         ChargingProduct_Id  ChargingProductId)
         {
 
-            return new HTTPResponse<RemoteStartResult>();
+            return new HTTPResponse<RemoteStartEVSEResult>();
 
         //    lock (AuthenticationServices)
         //    {
@@ -2512,7 +2570,7 @@ namespace org.GraphDefined.WWCP
         public void SendChargingPoolAdminStatusDiff(ChargingPoolAdminStatusDiff StatusDiff)
         {
 
-            lock (AuthenticationServices)
+            lock (_AuthenticationServices)
             {
 
                 var OnChargingPoolAdminDiffLocal = OnChargingPoolAdminDiff;
@@ -2534,7 +2592,7 @@ namespace org.GraphDefined.WWCP
         public void SendChargingStationAdminStatusDiff(ChargingStationAdminStatusDiff StatusDiff)
         {
 
-            lock (AuthenticationServices)
+            lock (_AuthenticationServices)
             {
 
                 var OnChargingStationAdminDiffLocal = OnChargingStationAdminDiff;
@@ -2556,7 +2614,7 @@ namespace org.GraphDefined.WWCP
         public void SendEVSEStatusDiff(EVSEStatusDiff StatusDiff)
         {
 
-            lock (AuthenticationServices)
+            lock (_AuthenticationServices)
             {
 
                 var OnEVSEStatusDiffLocal = OnEVSEStatusDiff;
@@ -2572,14 +2630,6 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
-
-
-
-
-
-
-
-
 
 
 
