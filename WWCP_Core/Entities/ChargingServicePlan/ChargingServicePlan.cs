@@ -250,7 +250,7 @@ namespace org.GraphDefined.WWCP
         #region (override) ToString()
 
         /// <summary>
-        /// Get a string representation of this object.
+        /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
         {

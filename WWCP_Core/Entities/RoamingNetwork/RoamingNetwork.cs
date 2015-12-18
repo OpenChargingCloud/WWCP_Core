@@ -2207,7 +2207,7 @@ namespace org.GraphDefined.WWCP
 
                     _AuthStopTask.Wait(TimeSpan.FromSeconds(45));
 
-                    if (_AuthStopTask.Result.AuthorizationResult == AuthStopEVSEResultType.Success)
+                    if (_AuthStopTask.Result.AuthorizationResult == AuthStopEVSEResultType.Authorized)
                         return _AuthStopTask.Result;
 
                 }
@@ -2230,7 +2230,7 @@ namespace org.GraphDefined.WWCP
 
                     _AuthStopTask.Wait(TimeSpan.FromSeconds(45));
 
-                    if (_AuthStopTask.Result.AuthorizationResult == AuthStopEVSEResultType.Success)
+                    if (_AuthStopTask.Result.AuthorizationResult == AuthStopEVSEResultType.Authorized)
                         return _AuthStopTask.Result;
 
                 }
@@ -2239,10 +2239,8 @@ namespace org.GraphDefined.WWCP
 
                 #region ...else fail!
 
-                return new AuthStopEVSEResult(AuthorizatorId) {
-                           AuthorizationResult  = AuthStopEVSEResultType.Error,
-                           Description          = "No authorization service returned a positiv result!"
-                       };
+                return AuthStopEVSEResult.Error(AuthorizatorId,
+                                                "No authorization service returned a positiv result!");
 
                 #endregion
 
@@ -3111,7 +3109,7 @@ namespace org.GraphDefined.WWCP
         #region (override) ToString()
 
         /// <summary>
-        /// Get a string representation of this object.
+        /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
         {

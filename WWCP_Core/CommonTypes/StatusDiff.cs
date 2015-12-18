@@ -144,7 +144,7 @@ namespace org.GraphDefined.WWCP
         #region ShortInfo
 
         /// <summary>
-        /// Get a string representation of this object.
+        /// Return a string representation of this object.
         /// </summary>
         public String ShortInfo
         {
@@ -159,7 +159,7 @@ namespace org.GraphDefined.WWCP
         #region ExtendedInfo
 
         /// <summary>
-        /// Get a string representation of this object.
+        /// Return a string representation of this object.
         /// </summary>
         public String ExtendedInfo
         {
@@ -346,7 +346,7 @@ namespace org.GraphDefined.WWCP
         #region (override) ToString()
 
         /// <summary>
-        /// Get a string representation of this object.
+        /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
         {

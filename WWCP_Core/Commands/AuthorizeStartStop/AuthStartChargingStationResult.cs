@@ -173,18 +173,18 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (private) AuthStartChargingStationResult(AuthorizatorId, AuthStartChargingStationResultType, ProviderId = null, Description = null, AdditionalInfo = null)
+        #region (private) AuthStartChargingStationResult(AuthorizatorId, Result, ProviderId = null, Description = null, AdditionalInfo = null)
 
         /// <summary>
         /// Create a new authorize start result.
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
-        /// <param name="AuthStartChargingStationResultType">The authorize start result type.</param>
+        /// <param name="Result">The authorize start result type.</param>
         /// <param name="ProviderId">An optional identification of the ev service provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         private AuthStartChargingStationResult(Authorizator_Id                     AuthorizatorId,
-                                               AuthStartChargingStationResultType  AuthStartChargingStationResultType,
+                                               AuthStartChargingStationResultType  Result,
                                                EVSP_Id                             ProviderId      = null,
                                                String                              Description     = null,
                                                String                              AdditionalInfo  = null)
@@ -198,7 +198,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             this._AuthorizatorId        = AuthorizatorId;
-            this._Result                = AuthStartChargingStationResultType;
+            this._Result                = Result;
             this._ProviderId            = ProviderId;
             this._Description           = Description    != null ? Description    : String.Empty;
             this._AdditionalInfo        = AdditionalInfo != null ? AdditionalInfo : String.Empty;
@@ -388,7 +388,8 @@ namespace org.GraphDefined.WWCP
                                                       ProviderId,
                                                       Description,
                                                       AdditionalInfo,
-                                                      ListOfAuthStopTokens);
+                                                      ListOfAuthStopTokens,
+                                                      ListOfAuthStopPINs);
 
         }
 
@@ -397,7 +398,7 @@ namespace org.GraphDefined.WWCP
         #region (static) NotAuthorized(AuthorizatorId, SessionId)
 
         /// <summary>
-        /// The authorize start was not successful.
+        /// The authorize start was not successful (e.g. ev customer is unkown).
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ProviderId">The unique identification of the ev service provider.</param>
@@ -419,10 +420,35 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) Blocked(AuthorizatorId, SessionId)
+
+        /// <summary>
+        /// The authorize start operation is not allowed (ev customer is blocked).
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ProviderId">The unique identification of the ev service provider.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// <param name="AdditionalInfo">An optional additional message.</param>
+        public static AuthStartChargingStationResult Blocked(Authorizator_Id  AuthorizatorId,
+                                                             EVSP_Id          ProviderId,
+                                                             String           Description     = null,
+                                                             String           AdditionalInfo  = null)
+        {
+
+            return new AuthStartChargingStationResult(AuthorizatorId,
+                                                      AuthStartChargingStationResultType.Blocked,
+                                                      ProviderId,
+                                                      Description,
+                                                      AdditionalInfo);
+
+        }
+
+        #endregion
+
         #region (static) EVSECommunicationTimeout(AuthorizatorId)
 
         /// <summary>
-        /// The remote stop ran into a timeout between evse operator backend and charging station.
+        /// The authorize stop ran into a timeout between evse operator backend and charging station.
         /// </summary>
         public static AuthStartChargingStationResult EVSECommunicationTimeout(Authorizator_Id AuthorizatorId)
         {
@@ -437,7 +463,7 @@ namespace org.GraphDefined.WWCP
         #region (static) StartChargingTimeout(AuthorizatorId)
 
         /// <summary>
-        /// The remote stop ran into a timeout between charging station and ev.
+        /// The authorize stop ran into a timeout between charging station and ev.
         /// </summary>
         public static AuthStartChargingStationResult StartChargingTimeout(Authorizator_Id AuthorizatorId)
         {
@@ -452,7 +478,7 @@ namespace org.GraphDefined.WWCP
         #region (static) Error(AuthorizatorId, ErrorMessage = null)
 
         /// <summary>
-        /// The remote start operation led to an error.
+        /// The authorize start operation led to an error.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ErrorMessage">An error message.</param>
@@ -471,7 +497,7 @@ namespace org.GraphDefined.WWCP
         #region (override) ToString()
 
         /// <summary>
-        /// Get a string representation of this object.
+        /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
         {
@@ -525,17 +551,22 @@ namespace org.GraphDefined.WWCP
         Authorized,
 
         /// <summary>
-        /// The authorize start was not successful.
+        /// The authorize start was not successful (e.g. ev customer is unkown).
         /// </summary>
         NotAuthorized,
 
         /// <summary>
-        /// The remote stop ran into a timeout between evse operator backend and charging station.
+        /// The authorize start operation is not allowed (ev customer is blocked).
+        /// </summary>
+        Blocked,
+
+        /// <summary>
+        /// The authorize start ran into a timeout between evse operator backend and charging station.
         /// </summary>
         ChargingStationCommunicationTimeout,
 
         /// <summary>
-        /// The remote stop ran into a timeout between charging station and ev.
+        /// The authorize start ran into a timeout between charging station and ev.
         /// </summary>
         StartChargingTimeout,
 

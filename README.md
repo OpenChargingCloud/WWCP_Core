@@ -5,9 +5,11 @@ connect market actors in the field of e-mobility solutions via scalable and secu
 Internet protocols. This repository defines the fundamental core concepts, entities
 and data structures.
 
-WWCP comes with adapters to well-known e-mobility protocols like OCPP, OICP and OCPI.
-Please note, that OICP is not a free and open protocol and therefore the adapter can
-not be distributed as free open source software.
+Serveral project make use of this core library:
+ - [WWCP Net](https://github.com/GraphDefined/WWCP_Net) is a HTTP interface for WWCP
+ - **WWCP Cloud** allows you to run a distributed and fault-tolerant EMP or CPO backend using WWCP, OCPI and the Intercharge protocol.
+ - [WWCP OCPI](https://github.com/GraphDefined/WWCP_OCPI) defines a mapping between WWCP and the [Open ChargePoint Interface](https://github.com/ocpi/ocpi).
+ - [WWCP OICP](https://github.com/GraphDefined/WWCP_OICP) defines a mapping between WWCP and the Open InterCharge Protocol. Please note, that the Intercharge protocol is not (yet) a free and open protocol and therefore the adapter can not be distributed as free open source software. Nevertheless it is available as shared source for customers of [Hubject GmbH](http://www.hubject.com).
 
 This software is developed by [GraphDefined GmbH](http://www.graphdefined.com).
 We appreciate your participation in this ongoing project, and your help to improve it.
