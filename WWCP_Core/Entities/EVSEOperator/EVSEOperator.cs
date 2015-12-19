@@ -1120,7 +1120,7 @@ namespace org.GraphDefined.WWCP
                     _ChargingPool.OnChargingStationAdminStatusChanged           += (Timestamp, ChargingStation, OldStatus, NewStatus)
                                                                                     => UpdateChargingStationAdminStatus(Timestamp, ChargingStation, OldStatus, NewStatus);
 
-                    _ChargingPool.OnAggregatedChargingStationStatusChanged      += (Timestamp, ChargingStation, OldStatus, NewStatus)
+                    _ChargingPool.OnChargingStationStatusChanged      += (Timestamp, ChargingStation, OldStatus, NewStatus)
                                                                                     => UpdateAggregatedChargingStationStatus(Timestamp, ChargingStation, OldStatus, NewStatus);
 
                     _ChargingPool.OnAggregatedChargingStationAdminStatusChanged += (Timestamp, ChargingStation, OldStatus, NewStatus)
@@ -1269,51 +1269,61 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SetChargingPoolAdminStatus(ChargingPoolId, NewStatus, SendUpstream = false)
+        #region SetChargingPoolAdminStatus(ChargingPoolId, NewStatus)
 
         public void SetChargingPoolAdminStatus(ChargingPool_Id                           ChargingPoolId,
                                                Timestamped<ChargingPoolAdminStatusType>  NewStatus,
                                                Boolean                                   SendUpstream = false)
         {
 
-            SetChargingPoolAdminStatus(DateTime.Now, ChargingPoolId, NewStatus);
+            ChargingPool _ChargingPool = null;
+            if (TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
+                _ChargingPool.SetAdminStatus(NewStatus);
 
         }
 
-        public void SetChargingPoolAdminStatus(DateTime                                  Timestamp,
-                                               ChargingPool_Id                           ChargingPoolId,
-                                               Timestamped<ChargingPoolAdminStatusType>  NewStatus,
-                                               Boolean                                   SendUpstream = false)
+        #endregion
+
+        #region SetChargingPoolAdminStatus(ChargingPoolId, Timestamp, NewStatus)
+
+        public void SetChargingPoolAdminStatus(ChargingPool_Id              ChargingPoolId,
+                                               DateTime                     Timestamp,
+                                               ChargingPoolAdminStatusType  NewStatus)
         {
 
-            //if (InvalidChargingPoolIds.Contains(ChargingPoolId))
-            //    return;
-
-            ChargingPool _ChargingPool = null;
+            ChargingPool _ChargingPool  = null;
             if (TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
-            {
-
                 _ChargingPool.SetAdminStatus(Timestamp, NewStatus);
 
-                if (SendUpstream)
-                {
+        }
 
-                    RoamingNetwork.
-                        SendChargingPoolAdminStatusDiff(new ChargingPoolAdminStatusDiff(DateTime.Now,
-                                                               EVSEOperatorId:    Id,
-                                                               EVSEOperatorName:  Name,
-                                                               NewStatus:         new List<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>(),
-                                                               ChangedStatus:     new List<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>() {
-                                                                                          new KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>(ChargingPoolId, NewStatus.Value)
-                                                                                      },
-                                                               RemovedIds:        new List<ChargingPool_Id>()));
+        #endregion
 
-                }
+        #region SetChargingPoolAdminStatus(ChargingPoolId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
-            }
+        public void SetChargingPoolAdminStatus(ChargingPool_Id                                        ChargingPoolId,
+                                               IEnumerable<Timestamped<ChargingPoolAdminStatusType>>  StatusList,
+                                               ChangeMethods                                          ChangeMethod  = ChangeMethods.Replace)
+        {
 
-            else
-                DebugX.Log("Could not set status for ChargingPool '" + ChargingPoolId.OriginId.ToString() + "'!");
+            ChargingPool _ChargingPool  = null;
+            if (TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
+                _ChargingPool.SetAdminStatus(StatusList, ChangeMethod);
+
+            //if (SendUpstream)
+            //{
+            //
+            //    RoamingNetwork.
+            //        SendChargingPoolAdminStatusDiff(new ChargingPoolAdminStatusDiff(DateTime.Now,
+            //                                               EVSEOperatorId:    Id,
+            //                                               EVSEOperatorName:  Name,
+            //                                               NewStatus:         new List<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>(),
+            //                                               ChangedStatus:     new List<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>() {
+            //                                                                          new KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>(ChargingPoolId, NewStatus.Value)
+            //                                                                      },
+            //                                               RemovedIds:        new List<ChargingPool_Id>()));
+            //
+            //}
 
         }
 
@@ -1377,55 +1387,65 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SetChargingStationAdminStatus(ChargingStationId, NewStatus, SendUpstream = false)
+        #region SetChargingStationAdminStatus(ChargingStationId, NewStatus)
 
         public void SetChargingStationAdminStatus(ChargingStation_Id                           ChargingStationId,
-                                                  Timestamped<ChargingStationAdminStatusType>  NewStatus,
-                                                  Boolean                                      SendUpstream = false)
+                                                  Timestamped<ChargingStationAdminStatusType>  NewStatus)
         {
 
-            SetChargingStationAdminStatus(DateTime.Now, ChargingStationId, NewStatus, SendUpstream);
-
-        }
-
-        public void SetChargingStationAdminStatus(DateTime                                     Timestamp,
-                                                  ChargingStation_Id                           ChargingStationId,
-                                                  Timestamped<ChargingStationAdminStatusType>  NewStatus,
-                                                  Boolean                                      SendUpstream = false)
-        {
-
-            //if (InvalidChargingStationIds.Contains(ChargingStationId))
-            //    return;
-
-            ChargingStation _ChargingStation = null;
+            ChargingStation _ChargingStation  = null;
             if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
-            {
-
-                _ChargingStation.SetAdminStatus(Timestamp, NewStatus);
-
-                if (SendUpstream)
-                {
-
-                    RoamingNetwork.
-                        SendChargingStationAdminStatusDiff(new ChargingStationAdminStatusDiff(DateTime.Now,
-                                                               EVSEOperatorId:    Id,
-                                                               EVSEOperatorName:  Name,
-                                                               NewStatus:         new List<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>(),
-                                                               ChangedStatus:     new List<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>() {
-                                                                                          new KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>(ChargingStationId, NewStatus.Value)
-                                                                                      },
-                                                               RemovedIds:        new List<ChargingStation_Id>()));
-
-                }
-
-            }
-
-            else
-                DebugX.Log("Could not set status for ChargingStation '" + ChargingStationId.OriginId.ToString() + "'!");
+                _ChargingStation.SetAdminStatus(NewStatus);
 
         }
 
         #endregion
+
+        #region SetChargingStationAdminStatus(ChargingStationId, Timestamp, NewStatus)
+
+        public void SetChargingStationAdminStatus(ChargingStation_Id              ChargingStationId,
+                                                  DateTime                        Timestamp,
+                                                  ChargingStationAdminStatusType  NewStatus)
+        {
+
+            ChargingStation _ChargingStation  = null;
+            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
+                _ChargingStation.SetAdminStatus(Timestamp, NewStatus);
+
+        }
+
+        #endregion
+
+        #region SetChargingStationAdminStatus(ChargingStationId, StatusList, ChangeMethod = ChangeMethods.Replace)
+
+        public void SetChargingStationAdminStatus(ChargingStation_Id                                        ChargingStationId,
+                                                  IEnumerable<Timestamped<ChargingStationAdminStatusType>>  StatusList,
+                                                  ChangeMethods                                             ChangeMethod  = ChangeMethods.Replace)
+        {
+
+            ChargingStation _ChargingStation  = null;
+            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
+                _ChargingStation.SetAdminStatus(StatusList, ChangeMethod);
+
+            //if (SendUpstream)
+            //{
+            //
+            //    RoamingNetwork.
+            //        SendChargingStationAdminStatusDiff(new ChargingStationAdminStatusDiff(DateTime.Now,
+            //                                               EVSEOperatorId:    Id,
+            //                                               EVSEOperatorName:  Name,
+            //                                               NewStatus:         new List<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>(),
+            //                                               ChangedStatus:     new List<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>() {
+            //                                                                          new KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>(ChargingStationId, NewStatus.Value)
+            //                                                                      },
+            //                                               RemovedIds:        new List<ChargingStation_Id>()));
+            //
+            //}
+
+        }
+
+        #endregion
+
 
 
 
@@ -1487,51 +1507,65 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SetEVSEStatus(EVSEId, NewStatus, SendUpstream = false)
+        #region SetEVSEStatus(EVSEId, NewStatus)
 
         public void SetEVSEStatus(EVSE_Id                      EVSEId,
-                                  Timestamped<EVSEStatusType>  NewStatus,
-                                  Boolean                      SendUpstream = false)
+                                  Timestamped<EVSEStatusType>  NewStatus)
         {
 
-            SetEVSEStatus(DateTime.Now, EVSEId, NewStatus);
+            EVSE _EVSE = null;
+            if (TryGetEVSEbyId(EVSEId, out _EVSE))
+                _EVSE.SetStatus(NewStatus);
 
         }
 
-        public void SetEVSEStatus(DateTime                     Timestamp,
-                                  EVSE_Id                      EVSEId,
-                                  Timestamped<EVSEStatusType>  NewStatus,
-                                  Boolean                      SendUpstream = false)
+        #endregion
+
+        #region SetEVSEStatus(EVSEId, Timestamp, NewStatus)
+
+        public void SetEVSEStatus(EVSE_Id         EVSEId,
+                                  DateTime        Timestamp,
+                                  EVSEStatusType  NewStatus)
+        {
+
+            EVSE _EVSE = null;
+            if (TryGetEVSEbyId(EVSEId, out _EVSE))
+                _EVSE.SetStatus(Timestamp, NewStatus);
+
+        }
+
+        #endregion
+
+        #region SetEVSEStatus(EVSEId, StatusList)
+
+        public void SetEVSEStatus(EVSE_Id                                   EVSEId,
+                                  IEnumerable<Timestamped<EVSEStatusType>>  StatusList)
         {
 
             if (InvalidEVSEIds.Contains(EVSEId))
                 return;
 
-            EVSE _EVSE = null;
+            EVSE _EVSE  = null;
             if (TryGetEVSEbyId(EVSEId, out _EVSE))
-            {
+                _EVSE.SetStatus(StatusList);
 
-                _EVSE.SetStatus(Timestamp, NewStatus);
+        }
 
-                if (SendUpstream)
-                {
+        #endregion
 
-                    RoamingNetwork.
-                        SendEVSEStatusDiff(new EVSEStatusDiff(Timestamp:         DateTime.Now,
-                                                              EVSEOperatorId:    Id,
-                                                              EVSEOperatorName:  Name,
-                                                              NewStatus:         new List<KeyValuePair<EVSE_Id, EVSEStatusType>>(),
-                                                              ChangedStatus:     new List<KeyValuePair<EVSE_Id, EVSEStatusType>>() {
-                                                                                         new KeyValuePair<EVSE_Id, EVSEStatusType>(EVSEId, NewStatus.Value)
-                                                                                     },
-                                                              RemovedIds:        new List<EVSE_Id>()));
+        #region SetEVSEAdminStatus(EVSEId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
-                }
+        public void SetEVSEAdminStatus(EVSE_Id                                        EVSEId,
+                                       IEnumerable<Timestamped<EVSEAdminStatusType>>  StatusList,
+                                       ChangeMethods                                  ChangeMethod  = ChangeMethods.Replace)
+        {
 
-            }
+            if (InvalidEVSEIds.Contains(EVSEId))
+                return;
 
-            else
-                DebugX.Log("Could not set status for EVSE '" + EVSEId.OriginId.ToString() + "'!");
+            EVSE _EVSE  = null;
+            if (TryGetEVSEbyId(EVSEId, out _EVSE))
+                _EVSE.SetAdminStatus(StatusList, ChangeMethod);
 
         }
 

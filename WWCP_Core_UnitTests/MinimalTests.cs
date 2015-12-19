@@ -1,12 +1,12 @@
 ﻿/*
- * Copyright (c) 2013 Achim Friedland <achim.friedland@graphdefined.com>
- * This file is part of eMI3 <http://www.github.com/GraphDefined/eMI3>
+ * Copyright (c) 2014-2015 GraphDefined GmbH
+ * This file is part of WWCP Core <https://github.com/GraphDefined/WWCP_Core>
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
+ * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.gnu.org/licenses/agpl.html
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -59,7 +59,7 @@ namespace org.GraphDefined.WWCP.UnitTests
                                                           var max_n = report.Where(o => o.Value == max);
                                                           return (ChargingStationStatusType) max_n.OrderBy(o => o.Key).First().Key;
                                                       };
-            s1.OnAggregatedStatusChanged += (ts, sta, os, ns) => { Console.WriteLine("New station #1 state: " + ns.Value); };
+            s1.OnStatusChanged += (ts, sta, os, ns) => { Console.WriteLine("New station #1 state: " + ns.Value); };
 
             var e1 = s1.CreateNewEVSE(EVSE_Id.Parse("DE*822*E1111*1"));
             var e2 = s1.CreateNewEVSE(EVSE_Id.Parse("DE*822*E1111*2"));
@@ -70,7 +70,7 @@ namespace org.GraphDefined.WWCP.UnitTests
                                                           var max_n = report.Where(o => o.Value == max);
                                                           return (ChargingStationStatusType) max_n.OrderBy(o => o.Key).First().Key;
                                                       };
-            s2.OnAggregatedStatusChanged += (ts, sta, os, ns) => { Console.WriteLine("New station #2 state: " + ns.Value); };
+            s2.OnStatusChanged += (ts, sta, os, ns) => { Console.WriteLine("New station #2 state: " + ns.Value); };
 
             var f1 = s2.CreateNewEVSE(EVSE_Id.Parse("DE*822*E2222*1"));
             var f2 = s2.CreateNewEVSE(EVSE_Id.Parse("DE*822*E2222*2"));

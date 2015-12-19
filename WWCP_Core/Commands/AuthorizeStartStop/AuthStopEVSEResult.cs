@@ -162,11 +162,11 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._AuthorizatorId        = AuthorizatorId;
-            this._Result                = Result;
-            this._ProviderId            = ProviderId;
-            this._Description           = Description    != null ? Description    : String.Empty;
-            this._AdditionalInfo        = AdditionalInfo != null ? AdditionalInfo : String.Empty;
+            this._AuthorizatorId  = AuthorizatorId;
+            this._Result          = Result;
+            this._ProviderId      = ProviderId;
+            this._Description     = Description    != null ? Description    : String.Empty;
+            this._AdditionalInfo  = AdditionalInfo != null ? AdditionalInfo : String.Empty;
 
         }
 
@@ -190,9 +190,9 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._Result                = AuthStopEVSEResultType.Error;
-            this._AuthorizatorId        = AuthorizatorId;
-            this._Description           = ErrorMessage         != null ? ErrorMessage         : String.Empty;
+            this._Result          = AuthStopEVSEResultType.Error;
+            this._AuthorizatorId  = AuthorizatorId;
+            this._Description     = ErrorMessage != null ? ErrorMessage : String.Empty;
 
         }
 

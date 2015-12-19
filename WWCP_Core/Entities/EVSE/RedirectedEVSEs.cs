@@ -26,12 +26,12 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A list of EVSE Ids which must be redirected from one
-    /// roaming network to another roaming network.
+    /// A list of EVSE identifications which are redirected
+    /// from one roaming network to another roaming network.
     /// This might be usefull whenever some charging stations
     /// shall be conntected to a testing/QA roaming network.
     /// </summary>
-    public class RedirectedEVSEList
+    public class RedirectedEVSEs
     {
 
         #region Data
@@ -42,7 +42,7 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        private RedirectedEVSEList()
+        private RedirectedEVSEs()
         {
 
             _RedirectedEVSEList = new Dictionary<EVSE_Id, Tuple<RoamingNetwork_Id, RoamingNetwork_Id>>();
@@ -54,16 +54,16 @@ namespace org.GraphDefined.WWCP
 
         #region Create()
 
-        public static RedirectedEVSEList Create()
+        public static RedirectedEVSEs Create()
         {
-            return new RedirectedEVSEList();
+            return new RedirectedEVSEs();
         }
 
         #endregion
 
         #region Add()
 
-        public RedirectedEVSEList Add(EVSE_Id            EVSEId,
+        public RedirectedEVSEs Add(EVSE_Id            EVSEId,
                                       RoamingNetwork_Id  RoamingNetwork_From,
                                       RoamingNetwork_Id  RoamingNetwork_To)
         {
@@ -79,7 +79,7 @@ namespace org.GraphDefined.WWCP
 
         #region Clear()
 
-        public RedirectedEVSEList Clear()
+        public RedirectedEVSEs Clear()
         {
 
             _RedirectedEVSEList.Clear();

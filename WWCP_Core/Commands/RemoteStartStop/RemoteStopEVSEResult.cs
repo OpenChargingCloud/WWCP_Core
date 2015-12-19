@@ -25,21 +25,21 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The result of a remote stop operation.
+    /// The result of a remote stop operation at an EVSE.
     /// </summary>
-    public class RemoteStopResult
+    public class RemoteStopEVSEResult
     {
 
         #region Properties
 
         #region Result
 
-        private readonly RemoteStopResultType _Result;
+        private readonly RemoteStopEVSEResultType _Result;
 
         /// <summary>
         /// The result of a remote stop operation.
         /// </summary>
-        public RemoteStopResultType Result
+        public RemoteStopEVSEResultType Result
         {
             get
             {
@@ -93,7 +93,7 @@ namespace org.GraphDefined.WWCP
         /// Create a new remote stop result.
         /// </summary>
         /// <param name="Result">The result of the remote Stop operation.</param>
-        private RemoteStopResult(RemoteStopResultType  Result)
+        private RemoteStopEVSEResult(RemoteStopEVSEResultType  Result)
         {
 
             this._Result        = Result;
@@ -109,10 +109,10 @@ namespace org.GraphDefined.WWCP
         /// Create a new remote stop result caused by an invalid session identification.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        private RemoteStopResult(ChargingSession_Id SessionId)
+        private RemoteStopEVSEResult(ChargingSession_Id SessionId)
         {
 
-            this._Result        = RemoteStopResultType.InvalidSessionId;
+            this._Result        = RemoteStopEVSEResultType.InvalidSessionId;
             this._SessionId     = SessionId;
             this._ErrorMessage  = "The session identification is invalid!";
 
@@ -126,10 +126,10 @@ namespace org.GraphDefined.WWCP
         /// Create a new remote stop result.
         /// </summary>
         /// <param name="ErrorMessage">A optional error message.</param>
-        private RemoteStopResult(String ErrorMessage = null)
+        private RemoteStopEVSEResult(String ErrorMessage = null)
         {
 
-            this._Result        = RemoteStopResultType.Error;
+            this._Result        = RemoteStopEVSEResultType.Error;
             this._ErrorMessage  = ErrorMessage;
 
         }
@@ -144,11 +144,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The result is unknown and/or should be ignored.
         /// </summary>
-        public static RemoteStopResult Unspecified
+        public static RemoteStopEVSEResult Unspecified
         {
             get
             {
-                return new RemoteStopResult(RemoteStopResultType.Unspecified);
+                return new RemoteStopEVSEResult(RemoteStopEVSEResultType.Unspecified);
             }
         }
 
@@ -159,11 +159,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The EVSE is unknown.
         /// </summary>
-        public static RemoteStopResult UnknownEVSE
+        public static RemoteStopEVSEResult UnknownEVSE
         {
             get
             {
-                return new RemoteStopResult(RemoteStopResultType.UnknownEVSE);
+                return new RemoteStopEVSEResult(RemoteStopEVSEResultType.UnknownEVSE);
             }
         }
 
@@ -174,9 +174,9 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The charging session identification is unknown or invalid.
         /// </summary>
-        public static RemoteStopResult InvalidSessionId(ChargingSession_Id SessionId)
+        public static RemoteStopEVSEResult InvalidSessionId(ChargingSession_Id SessionId)
         {
-            return new RemoteStopResult(SessionId);
+            return new RemoteStopEVSEResult(SessionId);
         }
 
         #endregion
@@ -186,11 +186,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The EVSE is out of service.
         /// </summary>
-        public static RemoteStopResult OutOfService
+        public static RemoteStopEVSEResult OutOfService
         {
             get
             {
-                return new RemoteStopResult(RemoteStopResultType.OutOfService);
+                return new RemoteStopEVSEResult(RemoteStopEVSEResultType.OutOfService);
             }
         }
 
@@ -201,11 +201,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The EVSE is offline.
         /// </summary>
-        public static RemoteStopResult Offline
+        public static RemoteStopEVSEResult Offline
         {
             get
             {
-                return new RemoteStopResult(RemoteStopResultType.Offline);
+                return new RemoteStopEVSEResult(RemoteStopEVSEResultType.Offline);
             }
         }
 
@@ -216,11 +216,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The remote stop was successful.
         /// </summary>
-        public static RemoteStopResult Success
+        public static RemoteStopEVSEResult Success
         {
             get
             {
-                return new RemoteStopResult(RemoteStopResultType.Success);
+                return new RemoteStopEVSEResult(RemoteStopEVSEResultType.Success);
             }
         }
 
@@ -231,11 +231,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The remote stop ran into a timeout.
         /// </summary>
-        public static RemoteStopResult Timeout
+        public static RemoteStopEVSEResult Timeout
         {
             get
             {
-                return new RemoteStopResult(RemoteStopResultType.Timeout);
+                return new RemoteStopEVSEResult(RemoteStopEVSEResultType.Timeout);
             }
         }
 
@@ -247,9 +247,9 @@ namespace org.GraphDefined.WWCP
         /// The remote stop led to an error.
         /// </summary>
         /// <param name="Message">An optional error message.</param>
-        public static RemoteStopResult Error(String Message = null)
+        public static RemoteStopEVSEResult Error(String Message = null)
         {
-            return new RemoteStopResult(Message);
+            return new RemoteStopEVSEResult(Message);
         }
 
         #endregion
@@ -271,9 +271,9 @@ namespace org.GraphDefined.WWCP
 
 
     /// <summary>
-    /// The result types of a remote stop operation.
+    /// The result types of a remote stop operation at an EVSE.
     /// </summary>
-    public enum RemoteStopResultType
+    public enum RemoteStopEVSEResultType
     {
 
         /// <summary>

@@ -67,7 +67,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender..</param>
     /// <returns>A RemoteStopResult task.</returns>
-    public delegate Task<RemoteStopResult> OnRemoteStopDelegate(DateTime             Timestamp,
+    public delegate Task<RemoteStopEVSEResult> OnRemoteStopDelegate(DateTime             Timestamp,
                                                                 Object               Sender,
                                                                 CancellationToken    CancellationToken,
                                                                 RoamingNetwork_Id    RoamingNetworkId,

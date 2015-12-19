@@ -1601,7 +1601,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">An EVSE.</param>
         public Boolean ContainsEVSE(EVSE EVSE)
         {
-            return _EVSEOperators.Values.Any(evseoperator => evseoperator.ContainsEVSE(EVSE.Id));
+
+            EVSEOperator _EVSEOperator  = null;
+
+            if (TryGetEVSEOperatorbyId(EVSE.ChargingStation.ChargingPool.EVSEOperator.Id, out _EVSEOperator))
+                return _EVSEOperator.ContainsEVSE(EVSE.Id);
+
+            return false;
+
         }
 
         #endregion
@@ -1614,7 +1621,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId">An EVSE identification.</param>
         public Boolean ContainsEVSE(EVSE_Id EVSEId)
         {
-            return _EVSEOperators.Values.Any(evseoperator => evseoperator.ContainsEVSE(EVSEId));
+
+            EVSEOperator _EVSEOperator  = null;
+
+            if (TryGetEVSEOperatorbyId(EVSE_Id.Parse(EVSEId.ToString()).OperatorId, out _EVSEOperator))
+                return _EVSEOperator.ContainsEVSE(EVSEId);
+
+            return false;
+
         }
 
         #endregion
@@ -1624,10 +1638,11 @@ namespace org.GraphDefined.WWCP
         public EVSE GetEVSEbyId(EVSE_Id EVSEId)
         {
 
-            EVSE _EVSE = null;
+            EVSE         _EVSE          = null;
+            EVSEOperator _EVSEOperator  = null;
 
-            foreach (var EVSEOperator in _EVSEOperators.Values)
-                if (EVSEOperator.TryGetEVSEbyId(EVSEId, out _EVSE))
+            if (TryGetEVSEOperatorbyId(EVSE_Id.Parse(EVSEId.ToString()).OperatorId, out _EVSEOperator))
+                if (_EVSEOperator.TryGetEVSEbyId(EVSEId, out _EVSE))
                     return _EVSE;
 
             return null;
@@ -1641,9 +1656,10 @@ namespace org.GraphDefined.WWCP
         public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
         {
 
-            foreach (var EVSEOperator in _EVSEOperators.Values)
-                if (EVSEOperator.TryGetEVSEbyId(EVSEId, out EVSE))
-                    return true;
+            EVSEOperator _EVSEOperator  = null;
+
+            if (TryGetEVSEOperatorbyId(EVSE_Id.Parse(EVSEId.ToString()).OperatorId, out _EVSEOperator))
+                return _EVSEOperator.TryGetEVSEbyId(EVSEId, out EVSE);
 
             EVSE = null;
             return false;
@@ -1655,17 +1671,17 @@ namespace org.GraphDefined.WWCP
 
         #region ReserveEVSE(...)
 
-        public async Task<ReservationResult> ReserveEVSE(DateTime                Timestamp,
-                                                         CancellationToken       CancellationToken,
-                                                         EVSP_Id                 ProviderId,
-                                                         ChargingReservation_Id  ReservationId,
-                                                         DateTime?               StartTime,
-                                                         TimeSpan?               Duration,
-                                                         EVSE_Id                 EVSEId,
-                                                         ChargingProduct_Id      ChargingProductId  = null,
-                                                         IEnumerable<Auth_Token> RFIDIds            = null,
-                                                         IEnumerable<eMA_Id>     eMAIds             = null,
-                                                         IEnumerable<UInt32>     PINs               = null)
+        public async Task<ReservationResult> ReserveEVSE(DateTime                 Timestamp,
+                                                         CancellationToken        CancellationToken,
+                                                         EVSP_Id                  ProviderId,
+                                                         ChargingReservation_Id   ReservationId,
+                                                         DateTime?                StartTime,
+                                                         TimeSpan?                Duration,
+                                                         EVSE_Id                  EVSEId,
+                                                         ChargingProduct_Id       ChargingProductId  = null,
+                                                         IEnumerable<Auth_Token>  RFIDIds            = null,
+                                                         IEnumerable<eMA_Id>      eMAIds             = null,
+                                                         IEnumerable<UInt32>      PINs               = null)
         {
 
             #region Try to remove an existing reservation if this is an update!
@@ -1707,6 +1723,37 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region SetEVSEStatus(EVSEId, StatusList)
+
+        public void SetEVSEStatus(EVSE_Id                                   EVSEId,
+                                  IEnumerable<Timestamped<EVSEStatusType>>  StatusList)
+        {
+
+            EVSEOperator _EVSEOperator = null;
+
+            if (TryGetEVSEOperatorbyId(EVSE_Id.Parse(EVSEId.ToString()).OperatorId, out _EVSEOperator))
+                _EVSEOperator.SetEVSEStatus(EVSEId, StatusList);
+
+        }
+
+        #endregion
+
+        #region SetEVSEAdminStatus(EVSEId, StatusList)
+
+        public void SetEVSEAdminStatus(EVSE_Id                                        EVSEId,
+                                       IEnumerable<Timestamped<EVSEAdminStatusType>>  StatusList)
+        {
+
+            EVSEOperator _EVSEOperator = null;
+
+            if (TryGetEVSEOperatorbyId(EVSE_Id.Parse(EVSEId.ToString()).OperatorId, out _EVSEOperator))
+                _EVSEOperator.SetEVSEAdminStatus(EVSEId, StatusList);
+
+        }
+
+        #endregion
+
         #endregion
 
         #region ChargingStation methods
@@ -1714,12 +1761,19 @@ namespace org.GraphDefined.WWCP
         #region ContainsChargingStation(ChargingStation)
 
         /// <summary>
-        /// Check if the given ChargingStation is already present within the roaming network.
+        /// Check if the given charging station is already present within the roaming network.
         /// </summary>
-        /// <param name="ChargingStation">An ChargingStation.</param>
+        /// <param name="ChargingStation">A charging station.</param>
         public Boolean ContainsChargingStation(ChargingStation ChargingStation)
         {
-            return _EVSEOperators.Values.Any(evseoperator => evseoperator.ContainsChargingStation(ChargingStation.Id));
+
+            EVSEOperator _EVSEOperator  = null;
+
+            if (TryGetEVSEOperatorbyId(ChargingStation.ChargingPool.EVSEOperator.Id, out _EVSEOperator))
+                return _EVSEOperator.ContainsChargingStation(ChargingStation.Id);
+
+            return false;
+
         }
 
         #endregion
@@ -1727,12 +1781,19 @@ namespace org.GraphDefined.WWCP
         #region ContainsChargingStation(ChargingStationId)
 
         /// <summary>
-        /// Check if the given ChargingStation identification is already present within the roaming network.
+        /// Check if the given charging station identification is already present within the roaming network.
         /// </summary>
-        /// <param name="ChargingStationId">An ChargingStation identification.</param>
+        /// <param name="ChargingStationId">A charging station identification.</param>
         public Boolean ContainsChargingStation(ChargingStation_Id ChargingStationId)
         {
-            return _EVSEOperators.Values.Any(evseoperator => evseoperator.ContainsChargingStation(ChargingStationId));
+
+            EVSEOperator _EVSEOperator  = null;
+
+            if (TryGetEVSEOperatorbyId(ChargingStation_Id.Parse(ChargingStationId.ToString()).OperatorId, out _EVSEOperator))
+                return _EVSEOperator.ContainsChargingStation(ChargingStationId);
+
+            return false;
+
         }
 
         #endregion
@@ -1742,10 +1803,11 @@ namespace org.GraphDefined.WWCP
         public ChargingStation GetChargingStationbyId(ChargingStation_Id ChargingStationId)
         {
 
-            ChargingStation _ChargingStation = null;
+            ChargingStation _ChargingStation  = null;
+            EVSEOperator    _EVSEOperator     = null;
 
-            foreach (var ChargingStationOperator in _EVSEOperators.Values)
-                if (ChargingStationOperator.TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
+            if (TryGetEVSEOperatorbyId(ChargingStation_Id.Parse(ChargingStationId.ToString()).OperatorId, out _EVSEOperator))
+                if (_EVSEOperator.TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
                     return _ChargingStation;
 
             return null;
@@ -1759,9 +1821,10 @@ namespace org.GraphDefined.WWCP
         public Boolean TryGetChargingStationbyId(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
         {
 
-            foreach (var ChargingStationOperator in _EVSEOperators.Values)
-                if (ChargingStationOperator.TryGetChargingStationbyId(ChargingStationId, out ChargingStation))
-                    return true;
+            EVSEOperator _EVSEOperator  = null;
+
+            if (TryGetEVSEOperatorbyId(ChargingStation_Id.Parse(ChargingStationId.ToString()).OperatorId, out _EVSEOperator))
+                return _EVSEOperator.TryGetChargingStationbyId(ChargingStationId, out ChargingStation);
 
             ChargingStation = null;
             return false;
@@ -1773,17 +1836,17 @@ namespace org.GraphDefined.WWCP
 
         #region ReserveChargingStation(...)
 
-        public async Task<ReservationResult> ReserveChargingStation(DateTime                Timestamp,
-                                                                    CancellationToken       CancellationToken,
-                                                                    EVSP_Id                 ProviderId,
-                                                                    ChargingReservation_Id  ReservationId,
-                                                                    DateTime?               StartTime,
-                                                                    TimeSpan?               Duration,
-                                                                    ChargingStation_Id      ChargingStationId,
-                                                                    ChargingProduct_Id      ChargingProductId  = null,
-                                                                    IEnumerable<Auth_Token> RFIDIds            = null,
-                                                                    IEnumerable<eMA_Id>     eMAIds             = null,
-                                                                    IEnumerable<UInt32>     PINs               = null)
+        public async Task<ReservationResult> ReserveChargingStation(DateTime                 Timestamp,
+                                                                    CancellationToken        CancellationToken,
+                                                                    EVSP_Id                  ProviderId,
+                                                                    ChargingReservation_Id   ReservationId,
+                                                                    DateTime?                StartTime,
+                                                                    TimeSpan?                Duration,
+                                                                    ChargingStation_Id       ChargingStationId,
+                                                                    ChargingProduct_Id       ChargingProductId  = null,
+                                                                    IEnumerable<Auth_Token>  RFIDIds            = null,
+                                                                    IEnumerable<eMA_Id>      eMAIds             = null,
+                                                                    IEnumerable<UInt32>      PINs               = null)
         {
 
             #region Try to remove an existing reservation if this is an update!
@@ -1840,6 +1903,22 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region SetChargingStationAdminStatus(ChargingStationId, StatusList)
+
+        public void SetChargingStationAdminStatus(ChargingStation_Id                                        ChargingStationId,
+                                                  IEnumerable<Timestamped<ChargingStationAdminStatusType>>  StatusList)
+        {
+
+            EVSEOperator _EVSEOperator  = null;
+
+            if (TryGetEVSEOperatorbyId(ChargingStation_Id.Parse(ChargingStationId.ToString()).OperatorId, out _EVSEOperator))
+                _EVSEOperator.SetChargingStationAdminStatus(ChargingStationId, StatusList);
+
+        }
+
+        #endregion
+
         #endregion
 
         #region ChargingPool methods
@@ -1847,12 +1926,19 @@ namespace org.GraphDefined.WWCP
         #region ContainsChargingPool(ChargingPool)
 
         /// <summary>
-        /// Check if the given ChargingPool is already present within the roaming network.
+        /// Check if the given charging pool is already present within the roaming network.
         /// </summary>
-        /// <param name="ChargingPool">An ChargingPool.</param>
+        /// <param name="ChargingPool">A charging pool.</param>
         public Boolean ContainsChargingPool(ChargingPool ChargingPool)
         {
-            return _EVSEOperators.Values.Any(evseoperator => evseoperator.ContainsChargingPool(ChargingPool.Id));
+
+            EVSEOperator _EVSEOperator  = null;
+
+            if (TryGetEVSEOperatorbyId(ChargingPool.EVSEOperator.Id, out _EVSEOperator))
+                return _EVSEOperator.ContainsChargingPool(ChargingPool.Id);
+
+            return false;
+
         }
 
         #endregion
@@ -1860,12 +1946,19 @@ namespace org.GraphDefined.WWCP
         #region ContainsChargingPool(ChargingPoolId)
 
         /// <summary>
-        /// Check if the given ChargingPool identification is already present within the roaming network.
+        /// Check if the given charging pool identification is already present within the roaming network.
         /// </summary>
-        /// <param name="ChargingPoolId">An ChargingPool identification.</param>
+        /// <param name="ChargingPoolId">A charging pool identification.</param>
         public Boolean ContainsChargingPool(ChargingPool_Id ChargingPoolId)
         {
-            return _EVSEOperators.Values.Any(evseoperator => evseoperator.ContainsChargingPool(ChargingPoolId));
+
+            EVSEOperator _EVSEOperator  = null;
+
+            if (TryGetEVSEOperatorbyId(ChargingPool_Id.Parse(ChargingPoolId.ToString()).OperatorId, out _EVSEOperator))
+                return _EVSEOperator.ContainsChargingPool(ChargingPoolId);
+
+            return false;
+
         }
 
         #endregion
@@ -1875,10 +1968,11 @@ namespace org.GraphDefined.WWCP
         public ChargingPool GetChargingPoolbyId(ChargingPool_Id ChargingPoolId)
         {
 
-            ChargingPool _ChargingPool = null;
+            ChargingPool _ChargingPool  = null;
+            EVSEOperator _EVSEOperator  = null;
 
-            foreach (var ChargingPoolOperator in _EVSEOperators.Values)
-                if (ChargingPoolOperator.TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
+            if (TryGetEVSEOperatorbyId(ChargingPool_Id.Parse(ChargingPoolId.ToString()).OperatorId, out _EVSEOperator))
+                if (_EVSEOperator.TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
                     return _ChargingPool;
 
             return null;
@@ -1892,9 +1986,10 @@ namespace org.GraphDefined.WWCP
         public Boolean TryGetChargingPoolbyId(ChargingPool_Id ChargingPoolId, out ChargingPool ChargingPool)
         {
 
-            foreach (var ChargingPoolOperator in _EVSEOperators.Values)
-                if (ChargingPoolOperator.TryGetChargingPoolbyId(ChargingPoolId, out ChargingPool))
-                    return true;
+            EVSEOperator _EVSEOperator  = null;
+
+            if (TryGetEVSEOperatorbyId(ChargingPool_Id.Parse(ChargingPoolId.ToString()).OperatorId, out _EVSEOperator))
+                return _EVSEOperator.TryGetChargingPoolbyId(ChargingPoolId, out ChargingPool);
 
             ChargingPool = null;
             return false;
@@ -1906,17 +2001,17 @@ namespace org.GraphDefined.WWCP
 
         #region ReserveChargingPool(...)
 
-        public async Task<ReservationResult> ReserveChargingPool(DateTime                Timestamp,
-                                                                 CancellationToken       CancellationToken,
-                                                                 EVSP_Id                 ProviderId,
-                                                                 ChargingReservation_Id  ReservationId,
-                                                                 DateTime?               StartTime,
-                                                                 TimeSpan?               Duration,
-                                                                 ChargingPool_Id         ChargingPoolId,
-                                                                 ChargingProduct_Id      ChargingProductId  = null,
-                                                                 IEnumerable<Auth_Token> RFIDIds            = null,
-                                                                 IEnumerable<eMA_Id>     eMAIds             = null,
-                                                                 IEnumerable<UInt32>     PINs               = null)
+        public async Task<ReservationResult> ReserveChargingPool(DateTime                 Timestamp,
+                                                                 CancellationToken        CancellationToken,
+                                                                 EVSP_Id                  ProviderId,
+                                                                 ChargingReservation_Id   ReservationId,
+                                                                 DateTime?                StartTime,
+                                                                 TimeSpan?                Duration,
+                                                                 ChargingPool_Id          ChargingPoolId,
+                                                                 ChargingProduct_Id       ChargingProductId  = null,
+                                                                 IEnumerable<Auth_Token>  RFIDIds            = null,
+                                                                 IEnumerable<eMA_Id>      eMAIds             = null,
+                                                                 IEnumerable<UInt32>      PINs               = null)
         {
 
             #region Try to remove an existing reservation if this is an update!
@@ -1968,6 +2063,22 @@ namespace org.GraphDefined.WWCP
             }
 
             return ReservationResult.NoEVSEsAvailable;
+
+        }
+
+        #endregion
+
+
+        #region SetChargingPoolAdminStatus(ChargingPoolId, StatusList)
+
+        public void SetChargingPoolAdminStatus(ChargingPool_Id                                        ChargingPoolId,
+                                               IEnumerable<Timestamped<ChargingPoolAdminStatusType>>  StatusList)
+        {
+
+            EVSEOperator _EVSEOperator  = null;
+
+            if (TryGetEVSEOperatorbyId(ChargingPool_Id.Parse(ChargingPoolId.ToString()).OperatorId, out _EVSEOperator))
+                _EVSEOperator.SetChargingPoolAdminStatus(ChargingPoolId, StatusList);
 
         }
 
@@ -2532,7 +2643,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <returns>A remote stop result object.</returns>
-        public async Task<HTTPResponse<RemoteStopResult>> RemoteStop(DateTime            Timestamp,
+        public async Task<HTTPResponse<RemoteStopEVSEResult>> RemoteStop(DateTime            Timestamp,
                                                                      RoamingNetwork_Id   RoamingNetworkId,
                                                                      ChargingSession_Id  SessionId,
                                                                      ChargingSession_Id  PartnerSessionId,
@@ -2540,7 +2651,7 @@ namespace org.GraphDefined.WWCP
                                                                      EVSE_Id             EVSEId)
         {
 
-            return new HTTPResponse<RemoteStopResult>();
+            return new HTTPResponse<RemoteStopEVSEResult>();
 
             //lock (AuthenticationServices)
             //{

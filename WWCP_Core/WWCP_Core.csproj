@@ -50,6 +50,7 @@
     <Compile Include="Commands\AuthorizeStartStop\AuthStartChargingStationResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStopChargingStationResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStartChargingStationResult.cs" />
+    <Compile Include="Commands\RemoteStartStop\RemoteStopChargingStationResult.cs" />
     <Compile Include="Commands\SendCDR\OnSendCDRDelegate.cs" />
     <Compile Include="CommonTypes\Attributes\Mandatory.cs" />
     <Compile Include="CommonTypes\Attributes\InternalUseOnly.cs" />
@@ -60,6 +61,7 @@
     <Compile Include="CommonTypes\ChangeMethods.cs" />
     <Compile Include="CommonTypes\IStatus.cs" />
     <Compile Include="CommonTypes\StatusReport.cs" />
+    <Compile Include="Entities\StatusSchedule.cs" />
     <Compile Include="Entities\AuthInfo.cs" />
     <Compile Include="Entities\ChargeDetailRecord\ChargeDetailRecord.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolAdminStatusReport.cs" />
@@ -67,6 +69,7 @@
     <Compile Include="Entities\ChargingPool\ChargingPoolAdminStatusType.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolStatusType.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolAdminStatusDiff.cs" />
+    <Compile Include="Entities\ChargingPool\RedirectedChargingPools.cs" />
     <Compile Include="Entities\ChargingProduct\ChargingProduct_Id.cs" />
     <Compile Include="Entities\ChargingReservation\ChargingReservation.cs" />
     <Compile Include="Entities\ChargingReservation\ChargingReservationType.cs" />
@@ -77,6 +80,7 @@
     <Compile Include="Entities\ChargingStation\PaymentOptions.cs" />
     <Compile Include="Entities\ChargingStation\AuthenticationModes.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationStatusReport.cs" />
+    <Compile Include="Entities\ChargingStation\RedirectedChargingStations.cs" />
     <Compile Include="Entities\EVSEOperator\EVSEOperatorAdminStatusReport.cs" />
     <Compile Include="Entities\EVSEOperator\EVSEOperatorStatusReport.cs" />
     <Compile Include="Entities\EVSEOperator\EVSEOperatorAdminStatusType.cs" />
@@ -95,7 +99,7 @@
     <Compile Include="Commands\Reserve\OnDeleteReservationDelegate.cs" />
     <Compile Include="Commands\Reserve\ReservationHandling.cs" />
     <Compile Include="Commands\Reserve\ReservationResult.cs" />
-    <Compile Include="RedirectedEVSEList.cs" />
+    <Compile Include="Entities\EVSE\RedirectedEVSEs.cs" />
     <Compile Include="Importer\WWCPImporter.cs" />
     <Compile Include="Importer\ImporterDefaults.cs" />
     <Compile Include="Entities\EVSE\EVSEStatusReport.cs" />
@@ -152,7 +156,7 @@
     <Compile Include="Commands\AuthorizeStartStop\IAuthServices.cs" />
     <Compile Include="CommonTypes\AuthorizatorId.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStartEVSEResult.cs" />
-    <Compile Include="Commands\RemoteStartStop\RemoteStopResult.cs" />
+    <Compile Include="Commands\RemoteStartStop\RemoteStopEVSEResult.cs" />
     <Compile Include="CommonTypes\SessionInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Entities\RoamingProvider\RoamingProvider.cs" />
