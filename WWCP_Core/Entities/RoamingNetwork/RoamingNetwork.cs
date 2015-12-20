@@ -2414,12 +2414,6 @@ namespace org.GraphDefined.WWCP
             if (ChargingProductId == null)
                 throw new ArgumentNullException("ChargingProductId",  "The given parameter must not be null!");
 
-            if (SessionStart     == null)
-                throw new ArgumentNullException("SessionStart",       "The given parameter must not be null!");
-
-            if (SessionEnd       == null)
-                throw new ArgumentNullException("SessionEnd",         "The given parameter must not be null!");
-
             if (AuthInfo         == null)
                 throw new ArgumentNullException("AuthInfo",           "The given parameter must not be null!");
 

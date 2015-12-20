@@ -187,7 +187,7 @@ namespace org.GraphDefined.WWCP
                 NewStatusSchedule.Add(new Timestamped<T>(Timestamp, Value));
 
                 _StatusSchedule.Clear();
-                _StatusSchedule.AddRange(NewStatusSchedule.OrderByDescending(v => v.Timestamp).Take(_MaxStatusHistorySize));
+                _StatusSchedule.AddRange(NewStatusSchedule.OrderByDescending(v => v.Timestamp).Take((Int32) _MaxStatusHistorySize));
 
                 CheckCurrentStatus();
 
@@ -234,7 +234,7 @@ namespace org.GraphDefined.WWCP
                                                                   OrderByDescending(status => status.Timestamp).
                                                                   First()).
                                             OrderByDescending(v => v.Timestamp).
-                                            Take(_MaxStatusHistorySize);
+                                            Take((Int32) _MaxStatusHistorySize);
 
                 _StatusSchedule.Clear();
                 _StatusSchedule.AddRange(NewStatusSchedule);
