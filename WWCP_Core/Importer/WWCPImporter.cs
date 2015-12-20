@@ -919,7 +919,12 @@ namespace org.GraphDefined.WWCP.Importer
                 }
                 catch (Exception e)
                 {
+
+                    while (e.InnerException != null)
+                        e = e.InnerException;
+
                     DebugX.LogT("WWCP importer '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+
                 }
 
                 finally

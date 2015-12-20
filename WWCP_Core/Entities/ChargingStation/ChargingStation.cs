@@ -65,6 +65,32 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
+        #region RemoteChargingStation
+
+        private IRemoteChargingStation _RemoteChargingStation;
+
+        public IRemoteChargingStation RemoteChargingStation
+        {
+
+            get
+            {
+                return _RemoteChargingStation;
+            }
+
+            internal set
+            {
+
+                if (value == null)
+                    throw new ArgumentNullException("RemoteChargingStation", "The given parameter must not be null!");
+
+                _RemoteChargingStation = value;
+
+            }
+
+        }
+
+        #endregion
+
         #region ServiceIdentification
 
         private String _ServiceIdentification;

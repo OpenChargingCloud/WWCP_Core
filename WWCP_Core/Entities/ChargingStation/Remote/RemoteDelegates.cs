@@ -24,13 +24,14 @@ using System;
 namespace org.GraphDefined.WWCP
 {
 
-    public static class Semantics
-    {
+    public delegate void CSConnectedDelegate(IRemoteChargingStation ChargingStation);
 
-        public const String DebugLog         = "/DebugLog";
-        public const String ForwardingInfos  = "/ForwardingInfos";
+    public delegate void CSEVSEOperatorTimeoutReachedDelegate(IRemoteChargingStation ChargingStation, String EVSEOperatorDNS);
 
-    }
+    public delegate void CSDisconnectedDelegate(IRemoteChargingStation ChargingStation);
+
+    public delegate void CSStateChangedDelegate(IRemoteChargingStation ChargingStation,
+                                            ChargingStationStatusType OldState,
+                                            ChargingStationStatusType NewState);
 
 }
-

@@ -15,22 +15,7 @@
  * limitations under the License.
  */
 
-#region Usings
+using System.Runtime.CompilerServices;
 
-using System;
-
-#endregion
-
-namespace org.GraphDefined.WWCP
-{
-
-    public static class Semantics
-    {
-
-        public const String DebugLog         = "/DebugLog";
-        public const String ForwardingInfos  = "/ForwardingInfos";
-
-    }
-
-}
-
+[assembly: InternalsVisibleTo("org.GraphDefined.WWCP.EMSP")]
+[assembly: InternalsVisibleTo("org.GraphDefined.WWCP.ChargingStation")]
