@@ -46,13 +46,30 @@ namespace org.GraphDefined.WWCP
     #region ChargingStationAlreadyExistsInPool
 
     /// <summary>
-    /// An exception thrown whenever a charging station already exists within the given EV Charging pool.
+    /// An exception thrown whenever a charging station already exists within the given charging pool.
     /// </summary>
     public class ChargingStationAlreadyExistsInPool : ChargingPoolPoolException
     {
 
         public ChargingStationAlreadyExistsInPool(ChargingStation_Id  ChargingStation_Id,
                                                   ChargingPool_Id     ChargingPool_Id)
+            : base("The given charging station identification '" + ChargingStation_Id + "' already exists within the given '" + ChargingPool_Id + "' EVS pool!")
+        { }
+
+    }
+
+    #endregion
+
+    #region ChargingStationCouldNotBeCreated
+
+    /// <summary>
+    /// An exception thrown whenever a charging station could not be created within the given charging pool.
+    /// </summary>
+    public class ChargingStationCouldNotBeCreated : ChargingPoolPoolException
+    {
+
+        public ChargingStationCouldNotBeCreated(ChargingStation_Id  ChargingStation_Id,
+                                                ChargingPool_Id     ChargingPool_Id)
             : base("The given charging station identification '" + ChargingStation_Id + "' already exists within the given '" + ChargingPool_Id + "' EVS pool!")
         { }
 

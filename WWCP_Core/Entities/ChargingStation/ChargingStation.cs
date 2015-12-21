@@ -69,7 +69,7 @@ namespace org.GraphDefined.WWCP
 
         private IRemoteChargingStation _RemoteChargingStation;
 
-        public IRemoteChargingStation RemoteChargingStation
+        internal IRemoteChargingStation RemoteChargingStation
         {
 
             get
@@ -77,7 +77,7 @@ namespace org.GraphDefined.WWCP
                 return _RemoteChargingStation;
             }
 
-            internal set
+            set
             {
 
                 if (value == null)
@@ -1534,18 +1534,19 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+
         #region Reserve(...)
 
-        public async Task<ReservationResult> Reserve(DateTime                Timestamp,
-                                                     CancellationToken       CancellationToken,
-                                                     EVSP_Id                 ProviderId,
-                                                     ChargingReservation_Id  ReservationId,
-                                                     DateTime?               StartTime,
-                                                     TimeSpan?               Duration,
-                                                     ChargingProduct_Id      ChargingProductId  = null,
-                                                     IEnumerable<Auth_Token> RFIDIds            = null,
-                                                     IEnumerable<eMA_Id>     eMAIds             = null,
-                                                     IEnumerable<UInt32>     PINs               = null)
+        public async Task<ReservationResult> Reserve(DateTime                 Timestamp,
+                                                     CancellationToken        CancellationToken,
+                                                     EVSP_Id                  ProviderId,
+                                                     ChargingReservation_Id   ReservationId,
+                                                     DateTime?                StartTime,
+                                                     TimeSpan?                Duration,
+                                                     ChargingProduct_Id       ChargingProductId  = null,
+                                                     IEnumerable<Auth_Token>  RFIDIds            = null,
+                                                     IEnumerable<eMA_Id>      eMAIds             = null,
+                                                     IEnumerable<UInt32>      PINs               = null)
         {
 
             #region Try to remove an existing reservation if this is an update!
@@ -1601,6 +1602,74 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+        #region RemoteStart(Timestamp, CancellationToken, ChargingStationId, ChargingProductId, ReservationId, SessionId, eMAId)
+
+        /// <summary>
+        /// Initiate a remote start of the given charging session at the given charging station
+        /// and for the given provider/eMAId.
+        /// </summary>
+        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
+        /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
+        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <returns>A RemoteStartResult task.</returns>
+        public async Task<RemoteStartChargingStationResult> RemoteStart(DateTime                Timestamp,
+                                                                        CancellationToken       CancellationToken,
+                                                                        ChargingStation_Id      ChargingStationId,
+                                                                        ChargingProduct_Id      ChargingProductId,
+                                                                        ChargingReservation_Id  ReservationId,
+                                                                        ChargingSession_Id      SessionId,
+                                                                        eMA_Id                  eMAId)
+        {
+
+            if (_RemoteChargingStation == null)
+                return RemoteStartChargingStationResult.Offline;
+
+            return await _RemoteChargingStation.
+                             RemoteStart(Timestamp,
+                                         CancellationToken,
+                                         ChargingStationId,
+                                         ChargingProductId,
+                                         ReservationId,
+                                         SessionId,
+                                         eMAId);
+
+        }
+
+        #endregion
+
+        #region RemoteStop(Timestamp, CancellationToken, ChargingStationId, ReservationHandling, SessionId)
+
+        /// <summary>
+        /// Initiate a remote stop of the given charging session at the given charging station.
+        /// </summary>
+        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
+        /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <returns>A RemoteStopResult task.</returns>
+        public async Task<RemoteStopChargingStationResult> RemoteStop(DateTime             Timestamp,
+                                                                      CancellationToken    CancellationToken,
+                                                                      ChargingStation_Id   ChargingStationId,
+                                                                      ReservationHandling  ReservationHandling,
+                                                                      ChargingSession_Id   SessionId)
+        {
+
+            if (RemoteChargingStation == null)
+                return RemoteStopChargingStationResult.Offline;
+
+            return await RemoteChargingStation.
+                             RemoteStop(Timestamp,
+                                        CancellationToken,
+                                        ChargingStationId,
+                                        ReservationHandling,
+                                        SessionId);
+
+        }
+
+        #endregion
+
 
 
         #region (internal) UpdateStatus(Timestamp, OldStatus, NewStatus)

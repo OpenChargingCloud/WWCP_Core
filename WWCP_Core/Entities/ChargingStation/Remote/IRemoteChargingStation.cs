@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
+using System.Threading;
 
 #endregion
 
@@ -48,11 +49,84 @@ namespace org.GraphDefined.WWCP
         TCPDisconnectResult Disconnect();
 
 
-        Task<RemoteStartEVSEResult> RemoteStart(EVSE_Id EVSEId, ChargingProduct_Id ChargingProductId, ChargingReservation_Id ReservationId, ChargingSession_Id SessionId, eMA_Id eMAId);
-        Task<RemoteStopEVSEResult>  RemoteStop (EVSE_Id EVSEId, ReservationHandling ReservationHandling, ChargingSession_Id SessionId);
+
+        Task<ReservationResult> Reserve(DateTime                 Timestamp,
+                                        CancellationToken        CancellationToken,
+                                        EVSP_Id                  ProviderId,
+                                        ChargingReservation_Id   ReservationId,
+                                        DateTime?                StartTime,
+                                        TimeSpan?                Duration,
+                                        ChargingProduct_Id       ChargingProductId  = null,
+                                        IEnumerable<Auth_Token>  RFIDIds            = null,
+                                        IEnumerable<eMA_Id>      eMAIds             = null,
+                                        IEnumerable<UInt32>      PINs               = null);
 
 
-        bool AuthRFID(string UID);
+
+        /// <summary>
+        /// Initiate a remote start of the given charging session at the given charging station
+        /// and for the given provider/eMAId.
+        /// </summary>
+        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
+        /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
+        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <returns>A RemoteStartResult task.</returns>
+        Task<RemoteStartChargingStationResult> RemoteStart(DateTime                Timestamp,
+                                                           CancellationToken       CancellationToken,
+                                                           ChargingStation_Id      ChargingStationId,
+                                                           ChargingProduct_Id      ChargingProductId,
+                                                           ChargingReservation_Id  ReservationId,
+                                                           ChargingSession_Id      SessionId,
+                                                           eMA_Id                  eMAId);
+
+        /// <summary>
+        /// Initiate a remote start of the given charging session at the given EVSE
+        /// and for the given Provider/eMAId.
+        /// </summary>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
+        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <returns>A RemoteStartResult task.</returns>
+        Task<RemoteStartEVSEResult> RemoteStart(DateTime                Timestamp,
+                                                CancellationToken       CancellationToken,
+                                                EVSE_Id                 EVSEId,
+                                                ChargingProduct_Id      ChargingProductId,
+                                                ChargingReservation_Id  ReservationId,
+                                                ChargingSession_Id      SessionId,
+                                                eMA_Id                  eMAId);
+
+        /// <summary>
+        /// Initiate a remote stop of the given charging session at the given charging station.
+        /// </summary>
+        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
+        /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <returns>A RemoteStopResult task.</returns>
+        Task<RemoteStopChargingStationResult> RemoteStop(DateTime             Timestamp,
+                                                         CancellationToken    CancellationToken,
+                                                         ChargingStation_Id   ChargingStationId,
+                                                         ReservationHandling  ReservationHandling,
+                                                         ChargingSession_Id   SessionId);
+
+        /// <summary>
+        /// Initiate a remote stop of the given charging session at the given EVSE.
+        /// </summary>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <returns>A RemoteStopResult task.</returns>
+        Task<RemoteStopEVSEResult> RemoteStop(DateTime             Timestamp,
+                                              CancellationToken    CancellationToken,
+                                              EVSE_Id              EVSEId,
+                                              ReservationHandling  ReservationHandling,
+                                              ChargingSession_Id   SessionId);
+
+
+        Boolean AuthenticateToken(Auth_Token AuthToken);
 
     }
 

@@ -1316,7 +1316,12 @@ namespace org.GraphDefined.WWCP
                 }
             }
 
-            Debug.WriteLine("ChargingStation '" + ChargingStationId + "' was not created!");
+            Debug.WriteLine("ChargingStation '" + ChargingStationId + "' could not be created!");
+
+            if (OnError == null)
+                throw new ChargingStationCouldNotBeCreated(ChargingStationId, this.Id);
+
+            OnError.FailSafeInvoke(this, ChargingStationId);
             return null;
 
         }
