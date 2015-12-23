@@ -51,9 +51,9 @@ namespace org.GraphDefined.WWCP
     public class ChargingStationAlreadyExistsInPool : ChargingPoolPoolException
     {
 
-        public ChargingStationAlreadyExistsInPool(ChargingStation_Id  ChargingStation_Id,
-                                                  ChargingPool_Id     ChargingPool_Id)
-            : base("The given charging station identification '" + ChargingStation_Id + "' already exists within the given '" + ChargingPool_Id + "' EVS pool!")
+        public ChargingStationAlreadyExistsInPool(ChargingStation_Id  ChargingStationId,
+                                                  ChargingPool_Id     ChargingPoolId)
+            : base("The given charging station identification '" + ChargingStationId + "' already exists within the given '" + ChargingPoolId + "' charging pool!")
         { }
 
     }

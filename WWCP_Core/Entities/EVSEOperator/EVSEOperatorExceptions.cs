@@ -46,14 +46,32 @@ namespace org.GraphDefined.WWCP
     #region ChargingPoolAlreadyExists
 
     /// <summary>
-    /// An exception thrown whenever an EVS pool already exists within the given EVSE operator.
+    /// An exception thrown whenever a charging pool already exists within the given EVSE operator.
     /// </summary>
     public class ChargingPoolAlreadyExists : EVSEOperatorException
     {
 
         public ChargingPoolAlreadyExists(ChargingPool_Id       ChargingPool_Id,
                                     EVSEOperator_Id  EVSEOperator_Id)
-            : base("The given ChargingPool identification '" + ChargingPool_Id + "' already exists within the given '" + EVSEOperator_Id + "' EVSE operator!")
+            : base("The given charging pool identification '" + ChargingPool_Id + "' already exists within the given '" + EVSEOperator_Id + "' EVSE operator!")
+        { }
+
+    }
+
+    #endregion
+
+
+    #region ChargingStationGroupAlreadyExists
+
+    /// <summary>
+    /// An exception thrown whenever a charging station group already exists within the given EVSE operator.
+    /// </summary>
+    public class ChargingStationGroupAlreadyExists : EVSEOperatorException
+    {
+
+        public ChargingStationGroupAlreadyExists(ChargingStationGroup_Id  ChargingStationGroupId,
+                                                 EVSEOperator_Id          EVSEOperator_Id)
+            : base("The given charging station group identification '" + ChargingStationGroupId + "' already exists within the given '" + EVSEOperator_Id + "' EVSE operator!")
         { }
 
     }

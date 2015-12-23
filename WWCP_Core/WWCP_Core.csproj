@@ -62,6 +62,7 @@
     <Compile Include="CommonTypes\ChangeMethods.cs" />
     <Compile Include="CommonTypes\IStatus.cs" />
     <Compile Include="CommonTypes\StatusReport.cs" />
+    <Compile Include="Entities\ChargingGroups\ChargingStationGroupAdminStatusType.cs" />
     <Compile Include="Entities\ChargingStation\Remote\RemoteDelegates.cs" />
     <Compile Include="Entities\ChargingStation\Remote\IRemoteChargingStation.cs" />
     <Compile Include="Entities\StatusSchedule.cs" />
@@ -121,10 +122,10 @@
     <Compile Include="Entities\ChargingStation\ChargingStationStatusType.cs" />
     <Compile Include="Entities\ParkingSpot\ParkingSpot.cs" />
     <Compile Include="Entities\ParkingSpot\ParkingSpot_Id.cs" />
-    <Compile Include="Entities\ChargingGroup\ChargingGroupExceptions.cs" />
+    <Compile Include="Entities\ChargingGroups\ChargingGroupExceptions.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationExceptions.cs" />
-    <Compile Include="Entities\ChargingGroup\ChargingGroup.cs" />
-    <Compile Include="Entities\ChargingGroup\ChargingGroup_Id.cs" />
+    <Compile Include="Entities\ChargingGroups\ChargingStationGroup.cs" />
+    <Compile Include="Entities\ChargingGroups\ChargingStationGroup_Id.cs" />
     <Compile Include="Entities\EVSE\EVSEExceptions.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolExceptions.cs" />
     <Compile Include="Entities\ChargingPool\OpeningTime.cs" />

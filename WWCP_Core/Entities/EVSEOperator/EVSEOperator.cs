@@ -465,7 +465,7 @@ namespace org.GraphDefined.WWCP
         private readonly ConcurrentDictionary<ChargingPool_Id, ChargingPool> _ChargingPools;
 
         /// <summary>
-        /// Return all EV Charging Pools registered within this EVSE operator.
+        /// Return all charging pools registered within this EVSE operator.
         /// </summary>
         public IEnumerable<ChargingPool> ChargingPools
         {
@@ -477,11 +477,45 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ChargingStationGroups
+
+        private readonly ConcurrentDictionary<ChargingStationGroup_Id, ChargingStationGroup> _ChargingStationGroups;
+
+        /// <summary>
+        /// Return all charging station groups registered within this EVSE operator.
+        /// </summary>
+        public IEnumerable<ChargingStationGroup> ChargingStationGroups
+        {
+            get
+            {
+                return _ChargingStationGroups.Select(KVP => KVP.Value);
+            }
+        }
+
+        #endregion
+
         #endregion
 
         #region Events
 
         // EVSEOperator events
+
+        #region ChargingStationGroupAddition
+
+        internal readonly IVotingNotificator<DateTime, EVSEOperator, ChargingStationGroup, Boolean> ChargingStationGroupAddition;
+
+        /// <summary>
+        /// Called whenever a charging station group will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, EVSEOperator, ChargingStationGroup, Boolean> OnChargingStationGroupAddition
+        {
+            get
+            {
+                return ChargingStationGroupAddition;
+            }
+        }
+
+        #endregion
 
         #region OnAggregatedStatusChanged
 
@@ -1060,6 +1094,99 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+
+        #region CreateNewChargingStationGroup(ChargingStationGroupId = null, Configurator = null, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create and register a new charging group having the given
+        /// unique charging group identification.
+        /// </summary>
+        /// <param name="ChargingStationGroupId">The unique identification of the new charging group.</param>
+        /// <param name="Configurator">An optional delegate to configure the new charging group before its successful creation.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging group after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging group failed.</param>
+        public ChargingStationGroup CreateNewChargingStationGroup(ChargingStationGroup_Id                        ChargingStationGroupId  = null,
+                                                                  Action<ChargingStationGroup>                   Configurator            = null,
+                                                                  Action<ChargingStationGroup>                   OnSuccess               = null,
+                                                                  Action<EVSEOperator, ChargingStationGroup_Id>  OnError                 = null)
+        {
+
+            #region Initial checks
+
+            if (ChargingStationGroupId == null)
+                ChargingStationGroupId = ChargingStationGroup_Id.Random(this.Id);
+
+            // Do not throw an exception when an OnError delegate was given!
+            if (_ChargingStationGroups.ContainsKey(ChargingStationGroupId))
+            {
+                if (OnError == null)
+                    throw new ChargingStationGroupAlreadyExists(ChargingStationGroupId, this.Id);
+                else
+                    OnError.FailSafeInvoke(this, ChargingStationGroupId);
+            }
+
+            #endregion
+
+            var _ChargingStationGroup = new ChargingStationGroup(ChargingStationGroupId, this);
+
+            if (Configurator != null)
+                Configurator(_ChargingStationGroup);
+
+            if (ChargingStationGroupAddition.SendVoting(DateTime.Now, this, _ChargingStationGroup))
+            {
+                if (_ChargingStationGroups.TryAdd(ChargingStationGroupId, _ChargingStationGroup))
+                {
+
+                    _ChargingStationGroup.OnEVSEDataChanged                             += (Timestamp, EVSE, PropertyName, OldValue, NewValue)
+                                                                                    => UpdateEVSEData(Timestamp, EVSE, PropertyName, OldValue, NewValue);
+
+                    _ChargingStationGroup.OnEVSEStatusChanged                           += (Timestamp, EVSE, OldStatus, NewStatus)
+                                                                                    => UpdateEVSEStatus(Timestamp, EVSE, OldStatus, NewStatus);
+
+                    _ChargingStationGroup.OnEVSEAdminStatusChanged                      += (Timestamp, EVSE, OldStatus, NewStatus)
+                                                                                    => UpdateEVSEAdminStatus(Timestamp, EVSE, OldStatus, NewStatus);
+
+
+                    _ChargingStationGroup.OnChargingStationDataChanged                  += (Timestamp, ChargingStation, PropertyName, OldValue, NewValue)
+                                                                                    => UpdateChargingStationData(Timestamp, ChargingStation, PropertyName, OldValue, NewValue);
+
+                    _ChargingStationGroup.OnChargingStationAdminStatusChanged           += (Timestamp, ChargingStation, OldStatus, NewStatus)
+                                                                                    => UpdateChargingStationAdminStatus(Timestamp, ChargingStation, OldStatus, NewStatus);
+
+                    _ChargingStationGroup.OnChargingStationStatusChanged                += (Timestamp, ChargingStation, OldStatus, NewStatus)
+                                                                                    => UpdateAggregatedChargingStationStatus(Timestamp, ChargingStation, OldStatus, NewStatus);
+
+                    _ChargingStationGroup.OnAggregatedChargingStationAdminStatusChanged += (Timestamp, ChargingStation, OldStatus, NewStatus)
+                                                                                    => UpdateAggregatedChargingStationAdminStatus(Timestamp, ChargingStation, OldStatus, NewStatus);
+
+
+                    _ChargingStationGroup.OnPropertyChanged                             += (Timestamp, Sender, PropertyName, OldValue, NewValue)
+                                                                                    => UpdateChargingPoolData(Timestamp, Sender as ChargingPool, PropertyName, OldValue, NewValue);
+
+                  //  _ChargingStationGroup.OnAdminStatusChanged                          += (Timestamp, ChargingPool, OldStatus, NewStatus)
+                  //                                                                  => UpdateChargingPoolAdminStatus(Timestamp, ChargingPool, OldStatus, NewStatus);
+
+                  //  _ChargingStationGroup.OnAggregatedStatusChanged                     += (Timestamp, ChargingPool, OldStatus, NewStatus)
+                  //                                                                  => UpdateChargingPoolStatus(Timestamp, ChargingPool, OldStatus, NewStatus);
+                  //
+                  //  _ChargingStationGroup.OnAggregatedAdminStatusChanged                += (Timestamp, ChargingPool, OldStatus, NewStatus)
+                  //                                                                  => UpdateAggregatedChargingPoolAdminStatus(Timestamp, ChargingPool, OldStatus, NewStatus);
+
+
+                    OnSuccess.FailSafeInvoke(_ChargingStationGroup);
+                    ChargingStationGroupAddition.SendNotification(DateTime.Now, this, _ChargingStationGroup);
+                    return _ChargingStationGroup;
+
+                }
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
 
 
         #region CreateNewChargingPool(ChargingPoolId = null, Configurator = null, OnSuccess = null, OnError = null)

@@ -52,7 +52,7 @@ namespace org.GraphDefined.WWCP
     {
 
         public ChargingStationAlreadyExistsInGroup(ChargingStation_Id  ChargingStation_Id,
-                                                   ChargingGroup_Id    ChargingGroup_Id)
+                                                   ChargingStationGroup_Id    ChargingGroup_Id)
             : base("The given charging station identification '" + ChargingStation_Id + "' already exists within the given '" + ChargingGroup_Id + "' charging group!")
         { }
 
