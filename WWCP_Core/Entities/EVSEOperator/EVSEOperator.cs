@@ -1188,7 +1188,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-
         #region CreateNewChargingPool(ChargingPoolId = null, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
