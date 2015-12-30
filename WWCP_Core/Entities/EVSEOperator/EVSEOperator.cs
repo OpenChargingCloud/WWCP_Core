@@ -112,7 +112,7 @@ namespace org.GraphDefined.WWCP
 
         #region DataLicense
 
-        private readonly DataLicenses _DataLicense;
+        private DataLicenses _DataLicense;
 
         /// <summary>
         /// The license of the EVSE Operator data.
@@ -120,10 +120,17 @@ namespace org.GraphDefined.WWCP
         [Mandatory]
         public DataLicenses DataLicense
         {
+
             get
             {
                 return _DataLicense;
             }
+
+            set
+            {
+                SetProperty<DataLicenses>(ref _DataLicense, value);
+            }
+
         }
 
         #endregion
@@ -335,7 +342,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _StatusHistory.Peek();
+                return _StatusSchedule.CurrentStatus;
             }
         }
 
@@ -343,17 +350,17 @@ namespace org.GraphDefined.WWCP
 
         #region StatusHistory
 
-        private Stack<Timestamped<EVSEOperatorStatusType>> _StatusHistory;
+        private StatusSchedule<EVSEOperatorStatusType> _StatusSchedule;
 
         /// <summary>
-        /// The EVSE operator status history.
+        /// The EVSE operator status schedule.
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<EVSEOperatorStatusType>> StatusHistory
+        public IEnumerable<Timestamped<EVSEOperatorStatusType>> StatusSchedule
         {
             get
             {
-                return _StatusHistory.OrderByDescending(v => v.Timestamp);
+                return _StatusSchedule.OrderByDescending(v => v.Timestamp);
             }
         }
 
@@ -394,7 +401,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _AdminStatusHistory.Peek();
+                return _AdminStatusSchedule.CurrentStatus;
             }
         }
 
@@ -402,17 +409,17 @@ namespace org.GraphDefined.WWCP
 
         #region AdminStatusHistory
 
-        private Stack<Timestamped<EVSEOperatorAdminStatusType>> _AdminStatusHistory;
+        private StatusSchedule<EVSEOperatorAdminStatusType> _AdminStatusSchedule;
 
         /// <summary>
-        /// The EVSE operator admin status history.
+        /// The EVSE operator admin status schedule.
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<EVSEOperatorAdminStatusType>> AdminStatusHistory
+        public IEnumerable<Timestamped<EVSEOperatorAdminStatusType>> AdminStatusSchedule
         {
             get
             {
-                return _AdminStatusHistory.OrderByDescending(v => v.Timestamp);
+                return _AdminStatusSchedule.OrderByDescending(v => v.Timestamp);
             }
         }
 
@@ -1036,6 +1043,13 @@ namespace org.GraphDefined.WWCP
             this._ManualEVSEIds             = new ReactiveSet<EVSE_Id>();
 
             this._ChargingPools             = new ConcurrentDictionary<ChargingPool_Id, ChargingPool>();
+            this._ChargingStationGroups     = new ConcurrentDictionary<ChargingStationGroup_Id, ChargingStationGroup>();
+
+            this._StatusSchedule             = new StatusSchedule<EVSEOperatorStatusType>();
+            this._StatusSchedule.Insert(EVSEOperatorStatusType.Unspecified);
+
+            this._AdminStatusSchedule        = new StatusSchedule<EVSEOperatorAdminStatusType>();
+            this._AdminStatusSchedule.Insert(EVSEOperatorAdminStatusType.Unspecified);
 
             #endregion
 
@@ -2038,32 +2052,13 @@ namespace org.GraphDefined.WWCP
                                                Timestamped<ChargingPoolStatusType>  NewStatus)
         {
 
-            // Send charging pool status change upstream
             var OnAggregatedChargingPoolStatusChangedLocal = OnAggregatedChargingPoolStatusChanged;
             if (OnAggregatedChargingPoolStatusChangedLocal != null)
                 OnAggregatedChargingPoolStatusChangedLocal(Timestamp, ChargingPool, OldStatus, NewStatus);
 
-
-            // Calculate new aggregated EVSE operator status and send upstream
             if (StatusAggregationDelegate != null)
-            {
-
-                var NewAggregatedStatus = new Timestamped<EVSEOperatorStatusType>(StatusAggregationDelegate(new ChargingPoolStatusReport(_ChargingPools.Values)));
-
-                if (NewAggregatedStatus.Value != _StatusHistory.Peek().Value)
-                {
-
-                    var OldAggregatedStatus = _StatusHistory.Peek();
-
-                    _StatusHistory.Push(NewAggregatedStatus);
-
-                    var OnAggregatedStatusChangedLocal = OnAggregatedStatusChanged;
-                    if (OnAggregatedStatusChangedLocal != null)
-                        OnAggregatedStatusChangedLocal(Timestamp, this, OldAggregatedStatus, NewAggregatedStatus);
-
-                }
-
-            }
+                _StatusSchedule.Insert(Timestamp,
+                                       StatusAggregationDelegate(new ChargingPoolStatusReport(_ChargingPools.Values)));
 
         }
 
@@ -2084,32 +2079,9 @@ namespace org.GraphDefined.WWCP
                                                               Timestamped<ChargingPoolAdminStatusType>  NewStatus)
         {
 
-            // Send charging pool status change upstream
             var OnAggregatedChargingPoolAdminStatusChangedLocal = OnAggregatedChargingPoolAdminStatusChanged;
             if (OnAggregatedChargingPoolAdminStatusChangedLocal != null)
                 OnAggregatedChargingPoolAdminStatusChangedLocal(Timestamp, ChargingPool, OldStatus, NewStatus);
-
-
-            // Calculate new aggregated EVSE operator status and send upstream
-            if (AdminStatusAggregationDelegate != null)
-            {
-
-                var NewAggregatedStatus = new Timestamped<EVSEOperatorAdminStatusType>(AdminStatusAggregationDelegate(new ChargingPoolAdminStatusReport(_ChargingPools.Values)));
-
-                if (NewAggregatedStatus.Value != _AdminStatusHistory.Peek().Value)
-                {
-
-                    var OldAggregatedStatus = _AdminStatusHistory.Peek();
-
-                    _AdminStatusHistory.Push(NewAggregatedStatus);
-
-                    var OnAggregatedAdminStatusChangedLocal = OnAggregatedAdminStatusChanged;
-                    if (OnAggregatedAdminStatusChangedLocal != null)
-                        OnAggregatedAdminStatusChangedLocal(Timestamp, this, OldAggregatedStatus, NewAggregatedStatus);
-
-                }
-
-            }
 
         }
 
