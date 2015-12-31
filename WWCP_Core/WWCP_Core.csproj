@@ -49,9 +49,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\AuthorizeStartStop\AuthStartChargingStationResult.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\AuthStartResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStopChargingStationResult.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\AuthStopResult.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStopDelegates.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStartDelegates.cs" />
+    <Compile Include="Commands\RemoteStartStop\OnRemoteStopDelegates.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStartChargingStationResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopChargingStationResult.cs" />
+    <Compile Include="Commands\RemoteStartStop\RemoteStopResult.cs" />
     <Compile Include="Commands\SendCDR\OnSendCDRDelegate.cs" />
     <Compile Include="CommonTypes\Attributes\Mandatory.cs" />
     <Compile Include="CommonTypes\Attributes\InternalUseOnly.cs" />
@@ -63,11 +69,12 @@
     <Compile Include="CommonTypes\IStatus.cs" />
     <Compile Include="CommonTypes\StatusReport.cs" />
     <Compile Include="Entities\ChargingGroup\ChargingStationGroupAdminStatusType.cs" />
+    <Compile Include="Entities\ChargingSession\ChargingSession.cs" />
     <Compile Include="Entities\ChargingStation\Remote\RemoteDelegates.cs" />
     <Compile Include="Entities\ChargingStation\Remote\IRemoteChargingStation.cs" />
     <Compile Include="Entities\StatusSchedule.cs" />
     <Compile Include="Entities\AuthInfo.cs" />
-    <Compile Include="Entities\ChargeDetailRecord\ChargeDetailRecord.cs" />
+    <Compile Include="Entities\ChargingSession\ChargeDetailRecord.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolAdminStatusReport.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolStatusReport.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolAdminStatusType.cs" />
@@ -99,7 +106,7 @@
     <Compile Include="Entities\EVSE\ChargingFacilities.cs" />
     <Compile Include="Entities\EVSE\ChargingModes.cs" />
     <Compile Include="Entities\HubOperator_Id.cs" />
-    <Compile Include="Commands\RemoteStartStop\OnRemoteStartStopDelegates.cs" />
+    <Compile Include="Commands\RemoteStartStop\OnRemoteStartDelegates.cs" />
     <Compile Include="Commands\Reserve\OnDeleteReservationDelegate.cs" />
     <Compile Include="Commands\Reserve\ReservationHandling.cs" />
     <Compile Include="Commands\Reserve\ReservationResult.cs" />
@@ -141,7 +148,7 @@
     <Compile Include="Entities\ChargingPool\ChargingPool.cs" />
     <Compile Include="Entities\ChargingStation\RegisterEVSEResult.cs" />
     <Compile Include="CommonTypes\Auth_Token.cs" />
-    <Compile Include="Entities\ChargeDetailRecord\ChargingSession_Id.cs" />
+    <Compile Include="Entities\ChargingSession\ChargingSession_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="Entities\EVSEOperator\EVSEOperatorExceptions.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkExceptions.cs" />

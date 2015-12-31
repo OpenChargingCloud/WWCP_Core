@@ -20,6 +20,7 @@
 using System;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -653,6 +654,22 @@ namespace org.GraphDefined.WWCP
         public event OnInvalidEVSEIdRemovedDelegate OnInvalidEVSEIdRemoved;
 
         #endregion
+
+
+        /// <summary>
+        /// An event sent whenever an EVSE should start charging.
+        /// </summary>
+        public event OnRemoteStartEVSEDelegate OnRemoteStartEVSE;
+
+        /// <summary>
+        /// An event sent whenever an charging station should start charging.
+        /// </summary>
+        public event OnRemoteStartChargingStationDelegate OnRemoteStartChargingStation;
+
+        /// <summary>
+        /// An event sent whenever a charging session should stop.
+        /// </summary>
+        public event OnRemoteStopEVSEDelegate OnRemoteStop;
 
 
         // ChargingPool events
@@ -2082,6 +2099,179 @@ namespace org.GraphDefined.WWCP
             var OnAggregatedChargingPoolAdminStatusChangedLocal = OnAggregatedChargingPoolAdminStatusChanged;
             if (OnAggregatedChargingPoolAdminStatusChangedLocal != null)
                 OnAggregatedChargingPoolAdminStatusChangedLocal(Timestamp, ChargingPool, OldStatus, NewStatus);
+
+        }
+
+        #endregion
+
+
+
+        #region (internal) RemoteStart(..., EVSEId, ...)
+
+        internal async Task<RemoteStartEVSEResult> RemoteStart(DateTime                Timestamp,
+                                                               CancellationToken       CancellationToken,
+                                                               EVSE_Id                 EVSEId,
+                                                               ChargingProduct_Id      ChargingProductId,
+                                                               ChargingReservation_Id  ReservationId,
+                                                               ChargingSession_Id      SessionId,
+                                                               EVSP_Id                 ProviderId,
+                                                               eMA_Id                  eMAId)
+        {
+
+            var OnRemoteStartEVSELocal = OnRemoteStartEVSE;
+            if (OnRemoteStartEVSELocal == null)
+                return RemoteStartEVSEResult.Error("");
+
+            var results = await Task.WhenAll(OnRemoteStartEVSELocal.
+                                                 GetInvocationList().
+                                                 Select(subscriber => (subscriber as OnRemoteStartEVSEDelegate)
+                                                     (Timestamp,
+                                                      this,
+                                                      CancellationToken,
+                                                      EVSEId,
+                                                      ChargingProductId,
+                                                      ReservationId,
+                                                      SessionId,
+                                                      ProviderId,
+                                                      eMAId)));
+
+            return results.
+                       Where(result => result.Result != RemoteStartEVSEResultType.Unspecified).
+                       First();
+
+        }
+
+        #endregion
+
+        #region (internal) RemoteStart(..., ChargingStationId, ...)
+
+        internal async Task<RemoteStartChargingStationResult> RemoteStart(DateTime                Timestamp,
+                                                                          CancellationToken       CancellationToken,
+                                                                          ChargingStation_Id      ChargingStationId,
+                                                                          ChargingProduct_Id      ChargingProductId,
+                                                                          ChargingReservation_Id  ReservationId,
+                                                                          ChargingSession_Id      SessionId,
+                                                                          EVSP_Id                 ProviderId,
+                                                                          eMA_Id                  eMAId)
+        {
+
+            var OnRemoteStartChargingStationLocal = OnRemoteStartChargingStation;
+            if (OnRemoteStartChargingStationLocal == null)
+                return RemoteStartChargingStationResult.Error("");
+
+            var results = await Task.WhenAll(OnRemoteStartChargingStationLocal.
+                                                 GetInvocationList().
+                                                 Select(subscriber => (subscriber as OnRemoteStartChargingStationDelegate)
+                                                     (Timestamp,
+                                                      this,
+                                                      CancellationToken,
+                                                      ChargingStationId,
+                                                      ChargingProductId,
+                                                      ReservationId,
+                                                      SessionId,
+                                                      ProviderId,
+                                                      eMAId)));
+
+            return results.
+                       Where(result => result.Result != RemoteStartChargingStationResultType.Unspecified).
+                       First();
+
+        }
+
+        #endregion
+
+        #region (internal) RemoteStop(...)
+
+        internal async Task<RemoteStopResult> RemoteStop(DateTime             Timestamp,
+                                                         CancellationToken    CancellationToken,
+                                                         ReservationHandling  ReservationHandling,
+                                                         ChargingSession_Id   SessionId,
+                                                         EVSP_Id              ProviderId)
+        {
+
+            var OnRemoteStopLocal = OnRemoteStop;
+            if (OnRemoteStopLocal == null)
+                return RemoteStopResult.Error();
+
+            var results = await Task.WhenAll(OnRemoteStopLocal.
+                                                 GetInvocationList().
+                                                 Select(subscriber => (subscriber as OnRemoteStopDelegate2)
+                                                     (Timestamp,
+                                                      this,
+                                                      CancellationToken,
+                                                      ReservationHandling,
+                                                      SessionId,
+                                                      ProviderId)));
+
+            return results.
+                       Where(result => result.Result != RemoteStopResultType.Unspecified).
+                       First();
+
+        }
+
+        #endregion
+
+        #region (internal) RemoteStop(..., EVSEId)
+
+        internal async Task<RemoteStopEVSEResult> RemoteStop(DateTime             Timestamp,
+                                                             CancellationToken    CancellationToken,
+                                                             ReservationHandling  ReservationHandling,
+                                                             ChargingSession_Id   SessionId,
+                                                             EVSP_Id              ProviderId,
+                                                             EVSE_Id              EVSEId)
+        {
+
+            var OnRemoteStopLocal = OnRemoteStop;
+            if (OnRemoteStopLocal == null)
+                return RemoteStopEVSEResult.Error();
+
+            var results = await Task.WhenAll(OnRemoteStopLocal.
+                                                 GetInvocationList().
+                                                 Select(subscriber => (subscriber as OnRemoteStopEVSEDelegate)
+                                                     (Timestamp,
+                                                      this,
+                                                      CancellationToken,
+                                                      ReservationHandling,
+                                                      SessionId,
+                                                      ProviderId,
+                                                      EVSEId)));
+
+            return results.
+                       Where(result => result.Result != RemoteStopEVSEResultType.Unspecified).
+                       First();
+
+        }
+
+        #endregion
+
+        #region (internal) RemoteStop(..., ChargingStationId)
+
+        internal async Task<RemoteStopChargingStationResult> RemoteStop(DateTime             Timestamp,
+                                                                        CancellationToken    CancellationToken,
+                                                                        ReservationHandling  ReservationHandling,
+                                                                        ChargingSession_Id   SessionId,
+                                                                        EVSP_Id              ProviderId,
+                                                                        ChargingStation_Id   ChargingStationId)
+        {
+
+            var OnRemoteStopLocal = OnRemoteStop;
+            if (OnRemoteStopLocal == null)
+                return RemoteStopChargingStationResult.Error();
+
+            var results = await Task.WhenAll(OnRemoteStopLocal.
+                                                 GetInvocationList().
+                                                 Select(subscriber => (subscriber as OnRemoteStopChargingStationDelegate)
+                                                     (Timestamp,
+                                                      this,
+                                                      CancellationToken,
+                                                      ReservationHandling,
+                                                      SessionId,
+                                                      ProviderId,
+                                                      ChargingStationId)));
+
+            return results.
+                       Where(result => result.Result != RemoteStopChargingStationResultType.Unspecified).
+                       First();
 
         }
 

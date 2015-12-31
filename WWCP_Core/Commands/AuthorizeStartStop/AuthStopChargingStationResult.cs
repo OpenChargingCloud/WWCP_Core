@@ -175,7 +175,7 @@ namespace org.GraphDefined.WWCP
         #region (private) AuthStopChargingStationResult(AuthorizatorId, ErrorMessage = null)
 
         /// <summary>
-        /// Create a new remote stop result.
+        /// Create a new authorize stop result.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ErrorMessage">An error message.</param>

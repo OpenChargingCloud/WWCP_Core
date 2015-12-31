@@ -87,7 +87,7 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (private) RemoteStopResult(Result)
+        #region (private) RemoteStopChargingStationResult(Result)
 
         /// <summary>
         /// Create a new remote stop result.
@@ -103,7 +103,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (private) RemoteStopResult(SessionId)
+        #region (private) RemoteStopChargingStationResult(SessionId)
 
         /// <summary>
         /// Create a new remote stop result caused by an invalid session identification.
@@ -120,7 +120,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (private) RemoteStopResult(ErrorMessage = null)
+        #region (private) RemoteStopChargingStationResult(ErrorMessage = null)
 
         /// <summary>
         /// Create a new remote stop result.

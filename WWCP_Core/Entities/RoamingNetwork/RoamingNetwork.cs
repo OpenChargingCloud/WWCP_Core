@@ -62,6 +62,7 @@ namespace org.GraphDefined.WWCP
         private readonly ConcurrentDictionary<ChargingReservation_Id,        ChargingReservation>        _ChargingReservations;
 
         private readonly ConcurrentDictionary<UInt32,                        IAuthServices>              _AuthenticationServices;
+        private readonly ConcurrentDictionary<ChargingSession_Id,            ChargingSession>            _ChargingSessionCache;
         private readonly ConcurrentDictionary<ChargingSession_Id,            IAuthServices>              _SessionIdAuthenticatorCache;
 
         #endregion
@@ -1124,45 +1125,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region OnRemoteStart
-
-        /// <summary>
-        /// An event fired whenever a remote start command was received.
-        /// </summary>
-        public event OnRemoteStartDelegate OnRemoteStart;
-
-        #endregion
-
-        #region OnRemoteStop
-
-        /// <summary>
-        /// An event fired whenever a remote stop command was received.
-        /// </summary>
-        public event OnRemoteStopDelegate OnRemoteStop;
-
-        #endregion
-
-        #region OnSendChargeDetailRecord
-
-        /// <summary>
-        /// An event fired whenever a charge detail record was received.
-        /// </summary>
-        public event SendChargeDetailRecordDelegate OnSendChargeDetailRecord;
-
-        #endregion
-
-        #region OnFilterCDRRecords
-
-        public delegate SendCDRResult OnFilterCDRRecordsDelegate(Authorizator_Id AuthorizatorId, AuthInfo AuthInfo);
-
-        /// <summary>
-        /// An event fired whenever a CDR needs to be filtered.
-        /// </summary>
-        public event OnFilterCDRRecordsDelegate OnFilterCDRRecords;
-
-        #endregion
-
-
         // Reservation events
 
         #region OnReservationExpired
@@ -1194,6 +1156,187 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever a reservation was deleted.
         /// </summary>
         public event OnReservationDeletedDelegate OnReservationDeleted;
+
+        #endregion
+
+
+        // Charging log events
+
+        #region OnRemoteEVSEStart / OnRemoteEVSEStarted
+
+        /// <summary>
+        /// An event fired whenever a remote start EVSE command was received.
+        /// </summary>
+        public event OnRemoteEVSEStartDelegate OnRemoteEVSEStart;
+
+        /// <summary>
+        /// An event fired whenever a remote start EVSE command completed.
+        /// </summary>
+        public event OnRemoteEVSEStartedDelegate OnRemoteEVSEStarted;
+
+        #endregion
+
+        #region OnRemoteChargingStationStart / OnRemoteChargingStationStarted
+
+        /// <summary>
+        /// An event fired whenever a remote start charging station command was received.
+        /// </summary>
+        public event OnRemoteChargingStationStartDelegate OnRemoteChargingStationStart;
+
+        /// <summary>
+        /// An event fired whenever a remote start charging station command completed.
+        /// </summary>
+        public event OnRemoteChargingStationStartedDelegate OnRemoteChargingStationStarted;
+
+        #endregion
+
+
+        #region OnRemoteStop / OnRemoteStopped
+
+        /// <summary>
+        /// An event fired whenever a remote stop command was received.
+        /// </summary>
+        public event OnRemoteStopDelegate OnRemoteStop;
+
+        /// <summary>
+        /// An event fired whenever a remote stop command completed.
+        /// </summary>
+        public event OnRemoteStoppedDelegate OnRemoteStopped;
+
+        #endregion
+
+        #region OnRemoteEVSEStop / OnRemoteEVSEStopped
+
+        /// <summary>
+        /// An event fired whenever a remote stop EVSE command was received.
+        /// </summary>
+        public event OnRemoteEVSEStopDelegate OnRemoteEVSEStop;
+
+        /// <summary>
+        /// An event fired whenever a remote stop EVSE command completed.
+        /// </summary>
+        public event OnRemoteEVSEStoppedDelegate OnRemoteEVSEStopped;
+
+        #endregion
+
+        #region OnRemoteChargingStationStop / OnRemoteChargingStationStopped
+
+        /// <summary>
+        /// An event fired whenever a remote stop charging station command was received.
+        /// </summary>
+        public event OnRemoteChargingStationStopDelegate OnRemoteChargingStationStop;
+
+        /// <summary>
+        /// An event fired whenever a remote stop charging station command completed.
+        /// </summary>
+        public event OnRemoteChargingStationStoppedDelegate OnRemoteChargingStationStopped;
+
+        #endregion
+
+
+        #region OnAuthorizeStart / OnAuthorizeStarted
+
+        /// <summary>
+        /// An event fired whenever an authorize start command was received.
+        /// </summary>
+        public event OnAuthorizeStartDelegate OnAuthorizeStart;
+
+        /// <summary>
+        /// An event fired whenever an authorize start command completed.
+        /// </summary>
+        public event OnAuthorizeStartedDelegate OnAuthorizeStarted;
+
+        #endregion
+
+        #region OnAuthorizeEVSEStart / OnAuthorizeEVSEStarted
+
+        /// <summary>
+        /// An event fired whenever an authorize start EVSE command was received.
+        /// </summary>
+        public event OnAuthorizeEVSEStartDelegate OnAuthorizeEVSEStart;
+
+        /// <summary>
+        /// An event fired whenever an authorize start EVSE command completed.
+        /// </summary>
+        public event OnAuthorizeEVSEStartedDelegate OnAuthorizeEVSEStarted;
+
+        #endregion
+
+        #region OnAuthorizeChargingStationStart / OnAuthorizeChargingStationStarted
+
+        /// <summary>
+        /// An event fired whenever an authorize start charging station command was received.
+        /// </summary>
+        public event OnAuthorizeChargingStationStartDelegate OnAuthorizeChargingStationStart;
+
+        /// <summary>
+        /// An event fired whenever an authorize start charging station command completed.
+        /// </summary>
+        public event OnAuthorizeChargingStationStartedDelegate OnAuthorizeChargingStationStarted;
+
+        #endregion
+
+
+        #region OnAuthorizeStop / OnAuthorizeStoped
+
+        /// <summary>
+        /// An event fired whenever an authorize stop command was received.
+        /// </summary>
+        public event OnAuthorizeStopDelegate OnAuthorizeStop;
+
+        /// <summary>
+        /// An event fired whenever an authorize stop command completed.
+        /// </summary>
+        public event OnAuthorizeStoppedDelegate OnAuthorizeStopped;
+
+        #endregion
+
+        #region OnAuthorizeEVSEStop / OnAuthorizeEVSEStoped
+
+        /// <summary>
+        /// An event fired whenever an authorize stop EVSE command was received.
+        /// </summary>
+        public event OnAuthorizeEVSEStopDelegate OnAuthorizeEVSEStop;
+
+        /// <summary>
+        /// An event fired whenever an authorize stop EVSE command completed.
+        /// </summary>
+        public event OnAuthorizeEVSEStoppedDelegate OnAuthorizeEVSEStopped;
+
+        #endregion
+
+        #region OnAuthorizeStop / OnAuthorizeStoped
+
+        /// <summary>
+        /// An event fired whenever an authorize stop charging station command was received.
+        /// </summary>
+        public event OnAuthorizeChargingStationStopDelegate OnAuthorizeChargingStationStop;
+
+        /// <summary>
+        /// An event fired whenever an authorize stop charging station command completed.
+        /// </summary>
+        public event OnAuthorizeChargingStationStoppedDelegate OnAuthorizeChargingStationStopped;
+
+        #endregion
+
+
+        #region OnSendChargeDetailRecord
+
+        /// <summary>
+        /// An event fired whenever a charge detail record was received.
+        /// </summary>
+        public event SendChargeDetailRecordDelegate OnSendChargeDetailRecord;
+
+        #endregion
+
+        #region OnFilterCDRRecords
+
+        public delegate SendCDRResult OnFilterCDRRecordsDelegate(Authorizator_Id AuthorizatorId, AuthInfo AuthInfo);
+
+        /// <summary>
+        /// An event fired whenever a CDR needs to be filtered.
+        /// </summary>
+        public event OnFilterCDRRecordsDelegate OnFilterCDRRecords;
 
         #endregion
 
@@ -2139,154 +2282,373 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region AuthorizeStart(OperatorId, AuthToken, EVSEId = null, ChargingProductId = null, SessionId = null)
+        #region AuthorizeStart(Timestamp, CancellationToken, OperatorId, AuthToken, ChargingProductId = null, SessionId = null)
 
         /// <summary>
         /// Create an authorize start request.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this task.</param>
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="EVSEId">An optional EVSE identification.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        public async Task<AuthStartEVSEResult>
-
-            AuthorizeStart(EVSEOperator_Id     OperatorId,
-                           Auth_Token          AuthToken,
-                           EVSE_Id             EVSEId             = null,
-                           ChargingProduct_Id  ChargingProductId  = null,
-                           ChargingSession_Id  SessionId          = null,
-                           TimeSpan?           QueryTimeout       = null)
+        public async Task<AuthStartResult> AuthorizeStart(DateTime            Timestamp,
+                                                          CancellationToken   CancellationToken,
+                                                          EVSEOperator_Id     OperatorId,
+                                                          Auth_Token          AuthToken,
+                                                          ChargingProduct_Id  ChargingProductId  = null,
+                                                          ChargingSession_Id  SessionId          = null,
+                                                          TimeSpan?           QueryTimeout       = null)
 
         {
 
             #region Initial checks
 
             if (OperatorId == null)
-                throw new ArgumentNullException("OperatorId", "The given parameter must not be null!");
+                throw new ArgumentNullException("OperatorId", "The given EVSE operator must not be null!");
 
             if (AuthToken  == null)
-                throw new ArgumentNullException("AuthToken",  "The given parameter must not be null!");
+                throw new ArgumentNullException("AuthToken",  "The given authentication token must not be null!");
 
             #endregion
 
-            // Will store the SessionId in order to contact the right authenticator at later requests!
+            #region Send log event
 
-            lock (_AuthenticationServices)
+            var OnAuthorizeStartLocal = OnAuthorizeStart;
+            if (OnAuthorizeStartLocal != null)
+                OnAuthorizeStartLocal(this,
+                                      Timestamp,
+                                      Id,
+                                      OperatorId,
+                                      AuthToken,
+                                      ChargingProductId,
+                                      SessionId);
+
+            #endregion
+
+
+            AuthStartResult result = null;
+
+            foreach (var AuthenticationService in _AuthenticationServices.
+                                                      OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+                                                      Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
             {
 
-                foreach (var AuthenticationService in _AuthenticationServices.
-                                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-                                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+                result = await AuthenticationService.AuthorizeStart(OperatorId,
+                                                                    AuthToken,
+                                                                    ChargingProductId,
+                                                                    SessionId,
+                                                                    QueryTimeout);
+
+
+                #region Authorized
+
+                if (result.AuthorizationResult == AuthStartResultType.Authorized)
                 {
 
-                    var _AuthStartTask = AuthenticationService.AuthorizeStart(OperatorId,
-                                                                              AuthToken,
-                                                                              EVSEId,
-                                                                              ChargingProductId,
-                                                                              SessionId,
-                                                                              QueryTimeout);
+                    // Store the upstream session id in order to contact the right authenticator at later requests!
+                    // Will be deleted when the CDRecord was sent!
+                    _SessionIdAuthenticatorCache.TryAdd(result.SessionId, AuthenticationService);
 
-                    _AuthStartTask.Wait(TimeSpan.FromSeconds(45));
-
-                    #region Authorized
-
-                    if (_AuthStartTask.Result.AuthorizationResult == AuthStartEVSEResultType.Authorized)
-                    {
-
-                        // Store the upstream SessionId and its AuthenticationService!
-                        // Will be deleted when the CDRecord was sent!
-                        _SessionIdAuthenticatorCache.TryAdd(_AuthStartTask.Result.SessionId, AuthenticationService);
-
-                        return _AuthStartTask.Result;
-
-                    }
-
-                    #endregion
-
-                    #region Blocked
-
-                    //else if (_Task.Result.Content.AuthorizationResult == AuthorizationResultType.Blocked)
-                    //    return new HTTPResponse<AuthStartResult>(_Task.Result.HttpResponse,
-                    //                                             AuthStartResult);
-
-                    #endregion
+                    break;
 
                 }
 
-                #region ...else fail!
+                #endregion
 
-                return AuthStartEVSEResult.Error(AuthorizatorId,
-                                                 "No authorization service returned a positiv result!");
+                #region Blocked
+
+                else if (result.AuthorizationResult == AuthStartResultType.Blocked)
+                    break;
 
                 #endregion
 
             }
 
+            #region ...or fail!
+
+            if (result == null)
+                result =  AuthStartResult.Error(AuthorizatorId,
+                                                "No authorization service returned a positiv result!");
+
+            #endregion
+
+
+            #region Send log event
+
+            var OnAuthorizeStartedLocal = OnAuthorizeStarted;
+            if (OnAuthorizeStartedLocal != null)
+                OnAuthorizeStartedLocal(this,
+                                        DateTime.Now,
+                                        Id,
+                                        result);
+
+            #endregion
+
+            return result;
+
         }
 
         #endregion
 
-        #region AuthorizeStart(OperatorId, AuthToken, ChargingStationId, ChargingProductId = null, SessionId = null)
+        #region AuthorizeStart(Timestamp, CancellationToken, OperatorId, AuthToken, EVSEId, ChargingProductId = null, SessionId = null)
 
         /// <summary>
-        /// Create an authorize start request.
+        /// Create an authorize start request at the given EVSE.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this task.</param>
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="ChargingStationId">A charging station identification.</param>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        public async Task<AuthStartChargingStationResult>
-
-            AuthorizeStart(EVSEOperator_Id     OperatorId,
-                           Auth_Token          AuthToken,
-                           ChargingStation_Id  ChargingStationId,
-                           ChargingProduct_Id  ChargingProductId  = null,
-                           ChargingSession_Id  SessionId          = null,
-                           TimeSpan?           QueryTimeout       = null)
+        public async Task<AuthStartEVSEResult> AuthorizeStart(DateTime            Timestamp,
+                                                              CancellationToken   CancellationToken,
+                                                              EVSEOperator_Id     OperatorId,
+                                                              Auth_Token          AuthToken,
+                                                              EVSE_Id             EVSEId,
+                                                              ChargingProduct_Id  ChargingProductId  = null,
+                                                              ChargingSession_Id  SessionId          = null,
+                                                              TimeSpan?           QueryTimeout       = null)
 
         {
 
             #region Initial checks
 
-            if (OperatorId        == null)
-                throw new ArgumentNullException("OperatorId",         "The given parameter must not be null!");
+            if (OperatorId == null)
+                throw new ArgumentNullException("OperatorId", "The given EVSE operator must not be null!");
 
-            if (AuthToken         == null)
-                throw new ArgumentNullException("AuthToken",          "The given parameter must not be null!");
+            if (AuthToken  == null)
+                throw new ArgumentNullException("AuthToken",  "The given authentication token must not be null!");
 
-            if (ChargingStationId == null)
-                throw new ArgumentNullException("ChargingStationId",  "The given parameter must not be null!");
+            if (EVSEId == null)
+                throw new ArgumentNullException("EVSEId",     "The given EVSE identification must not be null!");
 
             #endregion
 
-            //ToDo: Implement AuthorizeStart(...ChargingStationId...)
-            return AuthStartChargingStationResult.Error(AuthorizatorId, "Not implemented!");
+            #region Send log event
+
+            var OnAuthorizeEVSEStartLocal = OnAuthorizeEVSEStart;
+            if (OnAuthorizeEVSEStartLocal != null)
+                OnAuthorizeEVSEStartLocal(this,
+                                          Timestamp,
+                                          Id,
+                                          OperatorId,
+                                          AuthToken,
+                                          EVSEId,
+                                          ChargingProductId,
+                                          SessionId);
+
+            #endregion
+
+
+            AuthStartEVSEResult result = null;
+
+            foreach (var AuthenticationService in _AuthenticationServices.
+                                                      OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+                                                      Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            {
+
+                result = await AuthenticationService.AuthorizeStart(OperatorId,
+                                                                    AuthToken,
+                                                                    EVSEId,
+                                                                    ChargingProductId,
+                                                                    SessionId,
+                                                                    QueryTimeout);
+
+
+                #region Authorized
+
+                if (result.AuthorizationResult == AuthStartEVSEResultType.Authorized)
+                {
+
+                    // Store the upstream session id in order to contact the right authenticator at later requests!
+                    // Will be deleted when the CDRecord was sent!
+                    _SessionIdAuthenticatorCache.TryAdd(result.SessionId, AuthenticationService);
+
+                    break;
+
+                }
+
+                #endregion
+
+                #region Blocked
+
+                else if (result.AuthorizationResult == AuthStartEVSEResultType.Blocked)
+                    break;
+
+                #endregion
+
+            }
+
+            #region ...or fail!
+
+            if (result == null)
+                result =  AuthStartEVSEResult.Error(AuthorizatorId,
+                                                    "No authorization service returned a positiv result!");
+
+            #endregion
+
+
+            #region Send log event
+
+            var OnAuthorizeEVSEStartedLocal = OnAuthorizeEVSEStarted;
+            if (OnAuthorizeEVSEStartedLocal != null)
+                OnAuthorizeEVSEStartedLocal(this,
+                                            DateTime.Now,
+                                            Id,
+                                            EVSEId,
+                                            result);
+
+            #endregion
+
+            return result;
 
         }
 
         #endregion
 
-        #region AuthorizeStop(OperatorId, SessionId, AuthToken, EVSEId = null)
+        #region AuthorizeStart(Timestamp, CancellationToken, OperatorId, AuthToken, ChargingStationId, ChargingProductId = null, SessionId = null)
+
+        /// <summary>
+        /// Create an authorize start request at the given charging station.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this task.</param>
+        /// <param name="OperatorId">An EVSE operator identification.</param>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="ChargingStationId">The unique identification charging station.</param>
+        /// <param name="ChargingProductId">An optional charging product identification.</param>
+        /// <param name="SessionId">An optional session identification.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        public async Task<AuthStartChargingStationResult> AuthorizeStart(DateTime            Timestamp,
+                                                                         CancellationToken   CancellationToken,
+                                                                         EVSEOperator_Id     OperatorId,
+                                                                         Auth_Token          AuthToken,
+                                                                         ChargingStation_Id  ChargingStationId,
+                                                                         ChargingProduct_Id  ChargingProductId  = null,
+                                                                         ChargingSession_Id  SessionId          = null,
+                                                                         TimeSpan?           QueryTimeout       = null)
+
+        {
+
+            #region Initial checks
+
+            if (OperatorId == null)
+                throw new ArgumentNullException("OperatorId",         "The given EVSE operator must not be null!");
+
+            if (AuthToken  == null)
+                throw new ArgumentNullException("AuthToken",          "The given authentication token must not be null!");
+
+            if (ChargingStationId == null)
+                throw new ArgumentNullException("ChargingStationId",  "The given charging station identification must not be null!");
+
+            #endregion
+
+            #region Send log event
+
+            var OnAuthorizeChargingStationStartLocal = OnAuthorizeChargingStationStart;
+            if (OnAuthorizeChargingStationStartLocal != null)
+                OnAuthorizeChargingStationStartLocal(this,
+                                                     Timestamp,
+                                                     Id,
+                                                     OperatorId,
+                                                     AuthToken,
+                                                     ChargingStationId,
+                                                     ChargingProductId,
+                                                     SessionId);
+
+            #endregion
+
+
+            AuthStartChargingStationResult result = null;
+
+            foreach (var AuthenticationService in _AuthenticationServices.
+                                                      OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+                                                      Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            {
+
+                result = await AuthenticationService.AuthorizeStart(OperatorId,
+                                                                    AuthToken,
+                                                                    ChargingStationId,
+                                                                    ChargingProductId,
+                                                                    SessionId,
+                                                                    QueryTimeout);
+
+
+                #region Authorized
+
+                if (result.AuthorizationResult == AuthStartChargingStationResultType.Authorized)
+                {
+
+                    // Store the upstream session id in order to contact the right authenticator at later requests!
+                    // Will be deleted when the CDRecord was sent!
+                    _SessionIdAuthenticatorCache.TryAdd(result.SessionId, AuthenticationService);
+
+                    break;
+
+                }
+
+                #endregion
+
+                #region Blocked
+
+                else if (result.AuthorizationResult == AuthStartChargingStationResultType.Blocked)
+                    break;
+
+                #endregion
+
+            }
+
+            #region ...or fail!
+
+            if (result == null)
+                result = AuthStartChargingStationResult.Error(AuthorizatorId,
+                                                              "No authorization service returned a positiv result!");
+
+            #endregion
+
+
+            #region Send log event
+
+            var OnAuthorizeChargingStationStartedLocal = OnAuthorizeChargingStationStarted;
+            if (OnAuthorizeChargingStationStartedLocal != null)
+                OnAuthorizeChargingStationStartedLocal(this,
+                                                       DateTime.Now,
+                                                       Id,
+                                                       ChargingStationId,
+                                                       result);
+
+            #endregion
+
+            return result;
+
+        }
+
+        #endregion
+
+
+        #region AuthorizeStop(Timestamp, CancellationToken, OperatorId, SessionId, AuthToken)
 
         /// <summary>
         /// Create an authorize stop request.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this task.</param>
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="EVSEId">An optional EVSE identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        public async Task<AuthStopEVSEResult>
-
-            AuthorizeStop(EVSEOperator_Id     OperatorId,
-                          ChargingSession_Id  SessionId,
-                          Auth_Token          AuthToken,
-                          EVSE_Id             EVSEId        = null,
-                          TimeSpan?           QueryTimeout  = null)
+        public async Task<AuthStopResult> AuthorizeStop(DateTime            Timestamp,
+                                                        CancellationToken   CancellationToken,
+                                                        EVSEOperator_Id     OperatorId,
+                                                        ChargingSession_Id  SessionId,
+                                                        Auth_Token          AuthToken,
+                                                        TimeSpan?           QueryTimeout  = null)
 
         {
 
@@ -2303,63 +2665,626 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            lock (_AuthenticationServices)
+            #region Send log event
+
+            var OnAuthorizeStopLocal = OnAuthorizeStop;
+            if (OnAuthorizeStopLocal != null)
+                OnAuthorizeStopLocal(this,
+                                     Timestamp,
+                                     Id,
+                                     OperatorId,
+                                     SessionId,
+                                     AuthToken);
+
+            #endregion
+
+
+            AuthStopResult result = null;
+
+            #region An authenticator was found for the upstream SessionId!
+
+            IAuthServices AuthenticationService;
+
+            if (_SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
             {
 
-                #region An authenticator was found for the upstream SessionId!
+                result = await AuthenticationService.AuthorizeStop(OperatorId, SessionId, AuthToken);
 
-                IAuthServices AuthenticationService;
+                //ToDo: Delete the session id from the cache?
 
-                if (_SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
-                {
+            }
 
-                    var _AuthStopTask = AuthenticationService.
-                                            AuthorizeStop(OperatorId, SessionId, AuthToken, EVSEId);
+            #endregion
 
-                    _AuthStopTask.Wait(TimeSpan.FromSeconds(45));
+            #region Try to find anyone who might kown anything about the given SessionId!
 
-                    if (_AuthStopTask.Result.AuthorizationResult == AuthStopEVSEResultType.Authorized)
-                        return _AuthStopTask.Result;
-
-                }
-
-                #endregion
-
-                #region Try to find anyone who might kown anything about the given SessionId!
-
+            if (result == null || result.AuthorizationResult != AuthStopResultType.Authorized)
                 foreach (var OtherAuthenticationService in _AuthenticationServices.
                                                                OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
                                                                Select (AuthServiceWithPriority => AuthServiceWithPriority.Value).
                                                                ToArray())
                 {
 
-                    var _AuthStopTask = OtherAuthenticationService.AuthorizeStop(OperatorId,
-                                                                                 SessionId,
-                                                                                 AuthToken,
-                                                                                 EVSEId,
-                                                                                 QueryTimeout);
+                    result = await OtherAuthenticationService.AuthorizeStop(OperatorId,
+                                                                            SessionId,
+                                                                            AuthToken,
+                                                                            QueryTimeout);
 
-                    _AuthStopTask.Wait(TimeSpan.FromSeconds(45));
-
-                    if (_AuthStopTask.Result.AuthorizationResult == AuthStopEVSEResultType.Authorized)
-                        return _AuthStopTask.Result;
+                    if (result.AuthorizationResult == AuthStopResultType.Authorized)
+                        break;
 
                 }
 
-                #endregion
+            #endregion
 
-                #region ...else fail!
+            #region ...or fail!
 
-                return AuthStopEVSEResult.Error(AuthorizatorId,
-                                                "No authorization service returned a positiv result!");
+            if (result == null)
+                result = AuthStopResult.Error(AuthorizatorId,
+                                              "No authorization service returned a positiv result!");
 
-                #endregion
+            #endregion
 
-            }
+
+            #region Send log event
+
+            var OnAuthorizeStoppedLocal = OnAuthorizeStopped;
+            if (OnAuthorizeStoppedLocal != null)
+                OnAuthorizeStoppedLocal(this,
+                                        DateTime.Now,
+                                        Id,
+                                        result);
+
+            #endregion
+
+            return result;
 
         }
 
         #endregion
+
+        #region AuthorizeStop(Timestamp, CancellationToken, OperatorId, SessionId, AuthToken, EVSEId)
+
+        /// <summary>
+        /// Create an authorize stop request at the given EVSE.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this task.</param>
+        /// <param name="OperatorId">An EVSE operator identification.</param>
+        /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        public async Task<AuthStopEVSEResult> AuthorizeStop(DateTime            Timestamp,
+                                                            CancellationToken   CancellationToken,
+                                                            EVSEOperator_Id     OperatorId,
+                                                            ChargingSession_Id  SessionId,
+                                                            Auth_Token          AuthToken,
+                                                            EVSE_Id             EVSEId,
+                                                            TimeSpan?           QueryTimeout  = null)
+
+        {
+
+            #region Initial checks
+
+            if (OperatorId == null)
+                throw new ArgumentNullException("OperatorId", "The given parameter must not be null!");
+
+            if (SessionId  == null)
+                throw new ArgumentNullException("SessionId",  "The given parameter must not be null!");
+
+            if (AuthToken  == null)
+                throw new ArgumentNullException("AuthToken",  "The given parameter must not be null!");
+
+            if (EVSEId == null)
+                throw new ArgumentNullException("EVSEId",     "The given parameter must not be null!");
+
+            #endregion
+
+            #region Send log event
+
+            var OnAuthorizeEVSEStopLocal = OnAuthorizeEVSEStop;
+            if (OnAuthorizeEVSEStopLocal != null)
+                OnAuthorizeEVSEStopLocal(this,
+                                         Timestamp,
+                                         Id,
+                                         OperatorId,
+                                         EVSEId,
+                                         SessionId,
+                                         AuthToken);
+
+            #endregion
+
+
+            AuthStopEVSEResult result = null;
+
+            #region An authenticator was found for the upstream SessionId!
+
+            IAuthServices AuthenticationService;
+
+            if (_SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
+            {
+
+                result = await AuthenticationService.AuthorizeStop(OperatorId, EVSEId, SessionId, AuthToken);
+
+                //ToDo: Delete the session id from the cache?
+
+            }
+
+            #endregion
+
+            #region Try to find anyone who might kown anything about the given SessionId!
+
+            if (result == null || result.AuthorizationResult != AuthStopEVSEResultType.Authorized)
+                foreach (var OtherAuthenticationService in _AuthenticationServices.
+                                                               OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+                                                               Select (AuthServiceWithPriority => AuthServiceWithPriority.Value).
+                                                               ToArray())
+                {
+
+                    result = await OtherAuthenticationService.AuthorizeStop(OperatorId,
+                                                                            EVSEId,
+                                                                            SessionId,
+                                                                            AuthToken,
+                                                                            QueryTimeout);
+
+                    if (result.AuthorizationResult == AuthStopEVSEResultType.Authorized)
+                        break;
+
+                }
+
+            #endregion
+
+            #region ...or fail!
+
+            if (result == null)
+                result = AuthStopEVSEResult.Error(AuthorizatorId,
+                                                  "No authorization service returned a positiv result!");
+
+            #endregion
+
+
+            #region Send log event
+
+            var OnAuthorizeEVSEStoppedLocal = OnAuthorizeEVSEStopped;
+            if (OnAuthorizeEVSEStoppedLocal != null)
+                OnAuthorizeEVSEStoppedLocal(this,
+                                            DateTime.Now,
+                                            Id,
+                                            EVSEId,
+                                            result);
+
+            #endregion
+
+            return result;
+
+        }
+
+        #endregion
+
+        #region AuthorizeStop(Timestamp, CancellationToken, OperatorId, SessionId, AuthToken, EVSEId = null)
+
+        /// <summary>
+        /// Create an authorize stop request at the given charging station.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this task.</param>
+        /// <param name="OperatorId">An EVSE operator identification.</param>
+        /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        public async Task<AuthStopChargingStationResult> AuthorizeStop(DateTime            Timestamp,
+                                                                       CancellationToken   CancellationToken,
+                                                                       EVSEOperator_Id     OperatorId,
+                                                                       ChargingSession_Id  SessionId,
+                                                                       Auth_Token          AuthToken,
+                                                                       ChargingStation_Id  ChargingStationId,
+                                                                       TimeSpan?           QueryTimeout  = null)
+
+        {
+
+            #region Initial checks
+
+            if (OperatorId == null)
+                throw new ArgumentNullException("OperatorId",         "The given parameter must not be null!");
+
+            if (SessionId  == null)
+                throw new ArgumentNullException("SessionId",          "The given parameter must not be null!");
+
+            if (AuthToken  == null)
+                throw new ArgumentNullException("AuthToken",          "The given parameter must not be null!");
+
+            if (ChargingStationId == null)
+                throw new ArgumentNullException("ChargingStationId",  "The given parameter must not be null!");
+
+            #endregion
+
+            #region Send log event
+
+            var OnAuthorizeChargingStationStopLocal = OnAuthorizeChargingStationStop;
+            if (OnAuthorizeChargingStationStopLocal != null)
+                OnAuthorizeChargingStationStopLocal(this,
+                                                    Timestamp,
+                                                    Id,
+                                                    OperatorId,
+                                                    ChargingStationId,
+                                                    SessionId,
+                                                    AuthToken);
+
+            #endregion
+
+
+            AuthStopChargingStationResult result = null;
+
+            #region An authenticator was found for the upstream SessionId!
+
+            IAuthServices AuthenticationService;
+
+            if (_SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
+            {
+
+                result = await AuthenticationService.AuthorizeStop(OperatorId, ChargingStationId, SessionId, AuthToken);
+
+                //ToDo: Delete the session id from the cache?
+
+            }
+
+            #endregion
+
+            #region Try to find anyone who might kown anything about the given SessionId!
+
+            if (result == null || result.AuthorizationResult != AuthStopChargingStationResultType.Authorized)
+                foreach (var OtherAuthenticationService in _AuthenticationServices.
+                                                               OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+                                                               Select (AuthServiceWithPriority => AuthServiceWithPriority.Value).
+                                                               ToArray())
+                {
+
+                    result = await OtherAuthenticationService.AuthorizeStop(OperatorId,
+                                                                            ChargingStationId,
+                                                                            SessionId,
+                                                                            AuthToken,
+                                                                            QueryTimeout);
+
+                    if (result.AuthorizationResult == AuthStopChargingStationResultType.Authorized)
+                        break;
+
+                }
+
+            #endregion
+
+            #region ...or fail!
+
+            if (result == null)
+                result = AuthStopChargingStationResult.Error(AuthorizatorId,
+                                                             "No authorization service returned a positiv result!");
+
+            #endregion
+
+
+            #region Send log event
+
+            var OnAuthorizeChargingStationStoppedLocal = OnAuthorizeChargingStationStopped;
+            if (OnAuthorizeChargingStationStoppedLocal != null)
+                OnAuthorizeChargingStationStoppedLocal(this,
+                                                       DateTime.Now,
+                                                       Id,
+                                                       ChargingStationId,
+                                                       result);
+
+            #endregion
+
+            return result;
+
+        }
+
+        #endregion
+
+
+        #region RemoteStart(Timestamp, CancellationToken, EVSEId, ChargingProductId, ReservationId, SessionId, ProviderId, eMAId)
+
+        /// <summary>
+        /// Initiate a remote start of the given charging session at the given EVSE
+        /// and for the given provider-/eMAId.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this task.</param>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
+        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <returns>A remote start result object.</returns>
+        public async Task<RemoteStartEVSEResult>  RemoteStart(DateTime                Timestamp,
+                                                              CancellationToken       CancellationToken,
+                                                              EVSE_Id                 EVSEId,
+                                                              ChargingProduct_Id      ChargingProductId,
+                                                              ChargingReservation_Id  ReservationId,
+                                                              ChargingSession_Id      SessionId,
+                                                              EVSP_Id                 ProviderId,
+                                                              eMA_Id                  eMAId)
+
+        {
+
+            var OnRemoteEVSEStartLocal = OnRemoteEVSEStart;
+            if (OnRemoteEVSEStartLocal != null)
+                OnRemoteEVSEStartLocal(this,
+                                       Timestamp,
+                                       Id,
+                                       EVSEId,
+                                       ChargingProductId,
+                                       ReservationId,
+                                       SessionId,
+                                       ProviderId,
+                                       eMAId);
+
+
+            EVSEOperator EVSEOperator = null;
+
+            if (!TryGetEVSEOperatorbyId(EVSEId.OperatorId, out EVSEOperator))
+                return RemoteStartEVSEResult.Error("Unknown EVSE Operator!");
+
+            var result = await EVSEOperator.RemoteStart(Timestamp,
+                                                        CancellationToken,
+                                                        EVSEId,
+                                                        ChargingProductId,
+                                                        ReservationId,
+                                                        SessionId,
+                                                        ProviderId,
+                                                        eMAId);
+
+            var OnRemoteEVSEStartedLocal = OnRemoteEVSEStarted;
+            if (OnRemoteEVSEStartedLocal != null)
+                OnRemoteEVSEStartedLocal(this,
+                                         DateTime.Now,
+                                         Id,
+                                         EVSEId,
+                                         result);
+
+            return result;
+
+        }
+
+        #endregion
+
+        #region RemoteStart(Timestamp, CancellationToken, ChargingStationId, ChargingProductId, ReservationId, SessionId, ProviderId, eMAId)
+
+        /// <summary>
+        /// Initiate a remote start of the given charging session at the given charging station
+        /// and for the given provider-/eMAId.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this task.</param>
+        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
+        /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
+        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <returns>A remote start result object.</returns>
+        /// <returns>A remote start result object.</returns>
+        public async Task<RemoteStartChargingStationResult>  RemoteStart(DateTime                Timestamp,
+                                                                         CancellationToken       CancellationToken,
+                                                                         ChargingStation_Id      ChargingStationId,
+                                                                         ChargingProduct_Id      ChargingProductId,
+                                                                         ChargingReservation_Id  ReservationId,
+                                                                         ChargingSession_Id      SessionId,
+                                                                         EVSP_Id                 ProviderId,
+                                                                         eMA_Id                  eMAId)
+        {
+
+            var OnRemoteChargingStationStartLocal = OnRemoteChargingStationStart;
+            if (OnRemoteChargingStationStartLocal != null)
+                OnRemoteChargingStationStartLocal(this,
+                                                  Timestamp,
+                                                  Id,
+                                                  ChargingStationId,
+                                                  ChargingProductId,
+                                                  ReservationId,
+                                                  SessionId,
+                                                  ProviderId,
+                                                  eMAId);
+
+            EVSEOperator EVSEOperator = null;
+
+            if (!TryGetEVSEOperatorbyId(ChargingStationId.OperatorId, out EVSEOperator))
+                return RemoteStartChargingStationResult.Error("Unknown EVSE Operator!");
+
+            var result = await EVSEOperator.RemoteStart(Timestamp,
+                                                        CancellationToken,
+                                                        ChargingStationId,
+                                                        ChargingProductId,
+                                                        ReservationId,
+                                                        SessionId,
+                                                        ProviderId,
+                                                        eMAId);
+
+            var OnRemoteChargingStationStartedLocal = OnRemoteChargingStationStarted;
+            if (OnRemoteChargingStationStartedLocal != null)
+                OnRemoteChargingStationStartedLocal(this,
+                                                    DateTime.Now,
+                                                    Id,
+                                                    ChargingStationId,
+                                                    result);
+
+            return result;
+
+        }
+
+        #endregion
+
+
+        #region RemoteStop(Timestamp, CancellationToken, SessionId, ReservationHandling, ProviderId)
+
+        /// <summary>
+        /// Initiate a remote stop of the given charging session.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this task.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <returns>A remote stop result object.</returns>
+        public async Task<RemoteStopResult> RemoteStop(DateTime             Timestamp,
+                                                       CancellationToken    CancellationToken,
+                                                       ChargingSession_Id   SessionId,
+                                                       ReservationHandling  ReservationHandling,
+                                                       EVSP_Id              ProviderId)
+
+        {
+
+            var OnRemoteStopLocal = OnRemoteStop;
+            if (OnRemoteStopLocal != null)
+                OnRemoteStopLocal(this,
+                                  Timestamp,
+                                  Id,
+                                  SessionId,
+                                  ReservationHandling,
+                                  ProviderId);
+
+
+            EVSEOperator EVSEOperator = null;
+
+            //if (!TryGetEVSEOperatorbyId(EVSEId.OperatorId, out EVSEOperator))
+            //    return RemoteStopEVSEResult.Error("Unknown EVSE Operator!");
+
+            var result = await EVSEOperator.RemoteStop(Timestamp,
+                                                       CancellationToken,
+                                                       ReservationHandling,
+                                                       SessionId,
+                                                       ProviderId);
+
+            var OnRemoteStoppedLocal = OnRemoteStopped;
+            if (OnRemoteStoppedLocal != null)
+                OnRemoteStoppedLocal(this,
+                                     DateTime.Now,
+                                     Id,
+                                     result);
+
+            return result;
+
+        }
+
+        #endregion
+
+        #region RemoteStop(Timestamp, CancellationToken, EVSEId, SessionId, ReservationHandling, ProviderId)
+
+        /// <summary>
+        /// Initiate a remote stop of the given charging session at the given EVSE.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this task.</param>
+        /// <param name="EVSEId">An optional unique identification of an EVSE.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <returns>A remote stop result object.</returns>
+        public async Task<RemoteStopEVSEResult> RemoteStop(DateTime             Timestamp,
+                                                           CancellationToken    CancellationToken,
+                                                           EVSE_Id              EVSEId,
+                                                           ChargingSession_Id   SessionId,
+                                                           ReservationHandling  ReservationHandling,
+                                                           EVSP_Id              ProviderId)
+
+        {
+
+            var OnRemoteEVSEStopLocal = OnRemoteEVSEStop;
+            if (OnRemoteEVSEStopLocal != null)
+                OnRemoteEVSEStopLocal(this,
+                                      Timestamp,
+                                      Id,
+                                      EVSEId,
+                                      SessionId,
+                                      ReservationHandling,
+                                      ProviderId);
+
+
+            EVSEOperator EVSEOperator = null;
+
+            if (!TryGetEVSEOperatorbyId(EVSEId.OperatorId, out EVSEOperator))
+                return RemoteStopEVSEResult.Error("Unknown EVSE Operator!");
+
+            var result = await EVSEOperator.RemoteStop(Timestamp,
+                                                       CancellationToken,
+                                                       ReservationHandling,
+                                                       SessionId,
+                                                       ProviderId,
+                                                       EVSEId);
+
+            var OnRemoteEVSEStoppedLocal = OnRemoteEVSEStopped;
+            if (OnRemoteEVSEStoppedLocal != null)
+                OnRemoteEVSEStoppedLocal(this,
+                                         DateTime.Now,
+                                         Id,
+                                         EVSEId,
+                                         result);
+
+            return result;
+
+        }
+
+        #endregion
+
+        #region RemoteStop(Timestamp, CancellationToken, ChargingStationId, SessionId, ReservationHandling, ProviderId)
+
+        /// <summary>
+        /// Initiate a remote stop of the given charging session at the given EVSE.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this task.</param>
+        /// <param name="ChargingStationId">An optional unique identification of a charging station.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <returns>A remote stop result object.</returns>
+        public async Task<RemoteStopChargingStationResult> RemoteStop(DateTime             Timestamp,
+                                                                      CancellationToken    CancellationToken,
+                                                                      ChargingStation_Id   ChargingStationId,
+                                                                      ChargingSession_Id   SessionId,
+                                                                      ReservationHandling  ReservationHandling,
+                                                                      EVSP_Id              ProviderId)
+
+        {
+
+            var OnRemoteChargingStationStopLocal = OnRemoteChargingStationStop;
+            if (OnRemoteChargingStationStopLocal != null)
+                OnRemoteChargingStationStopLocal(this,
+                                                 Timestamp,
+                                                 Id,
+                                                 ChargingStationId,
+                                                 SessionId,
+                                                 ReservationHandling,
+                                                 ProviderId);
+
+
+            EVSEOperator EVSEOperator = null;
+
+            if (!TryGetEVSEOperatorbyId(ChargingStationId.OperatorId, out EVSEOperator))
+                return RemoteStopChargingStationResult.Error("Unknown EVSE Operator!");
+
+            var result = await EVSEOperator.RemoteStop(Timestamp,
+                                                       CancellationToken,
+                                                       ReservationHandling,
+                                                       SessionId,
+                                                       ProviderId,
+                                                       ChargingStationId);
+
+            var OnRemoteChargingStationStoppedLocal = OnRemoteChargingStationStopped;
+            if (OnRemoteChargingStationStoppedLocal != null)
+                OnRemoteChargingStationStoppedLocal(this,
+                                                    DateTime.Now,
+                                                    Id,
+                                                    ChargingStationId,
+                                                    result);
+
+            return result;
+
+        }
+
+        #endregion
+
 
         #region SendChargeDetailRecord(EVSEId, SessionId, ChargingProductId, SessionStart, SessionEnd, AuthToken = null, eMAId = null, ..., QueryTimeout = null)
 
@@ -2382,24 +3307,22 @@ namespace org.GraphDefined.WWCP
         /// <param name="HubOperatorId">An optional identification of the hub operator.</param>
         /// <param name="HubProviderId">An optional identification of the hub provider.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        public async Task<SendCDRResult>
-
-            SendChargeDetailRecord(EVSE_Id              EVSEId,
-                                   ChargingSession_Id   SessionId,
-                                   ChargingProduct_Id   ChargingProductId,
-                                   DateTime             SessionStart,
-                                   DateTime             SessionEnd,
-                                   AuthInfo             AuthInfo,
-                                   DateTime?            ChargingStart         = null,
-                                   DateTime?            ChargingEnd           = null,
-                                   Double?              MeterValueStart       = null,
-                                   Double?              MeterValueEnd         = null,
-                                   IEnumerable<Double>  MeterValuesInBetween  = null,
-                                   Double?              ConsumedEnergy        = null,
-                                   String               MeteringSignature     = null,
-                                   HubOperator_Id       HubOperatorId         = null,
-                                   EVSP_Id              HubProviderId         = null,
-                                   TimeSpan?            QueryTimeout          = null)
+        public async Task<SendCDRResult> SendChargeDetailRecord(EVSE_Id              EVSEId,
+                                                                ChargingSession_Id   SessionId,
+                                                                ChargingProduct_Id   ChargingProductId,
+                                                                DateTime             SessionStart,
+                                                                DateTime             SessionEnd,
+                                                                AuthInfo             AuthInfo,
+                                                                DateTime?            ChargingStart         = null,
+                                                                DateTime?            ChargingEnd           = null,
+                                                                Double?              MeterValueStart       = null,
+                                                                Double?              MeterValueEnd         = null,
+                                                                IEnumerable<Double>  MeterValuesInBetween  = null,
+                                                                Double?              ConsumedEnergy        = null,
+                                                                String               MeteringSignature     = null,
+                                                                HubOperator_Id       HubOperatorId         = null,
+                                                                EVSP_Id              HubProviderId         = null,
+                                                                TimeSpan?            QueryTimeout          = null)
 
         {
 
@@ -2518,150 +3441,6 @@ namespace org.GraphDefined.WWCP
                 #endregion
 
             }
-
-        }
-
-        #endregion
-
-
-        #region RemoteStart(Timestamp, RoamingNetworkId, SessionId, ProviderId, eMAId, EVSEId, ChargingProductId)
-
-        /// <summary>
-        /// Initiate a remote start of the given charging session at the given EVSE
-        /// and for the given Provider/eMAId.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-        /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
-        /// <returns>A remote start result object.</returns>
-        public async Task<HTTPResponse<RemoteStartEVSEResult>>  RemoteStart(DateTime            Timestamp,
-                                                                            RoamingNetwork_Id   RoamingNetworkId,
-                                                                            ChargingSession_Id  SessionId,
-                                                                            EVSP_Id             ProviderId,
-                                                                            eMA_Id              eMAId,
-                                                                            EVSE_Id             EVSEId,
-                                                                            ChargingProduct_Id  ChargingProductId)
-        {
-
-            return new HTTPResponse<RemoteStartEVSEResult>();
-
-        //    lock (AuthenticationServices)
-        //    {
-
-        //        var OnRemoteStartLocal = OnRemoteStart;
-        //        if (OnRemoteStartLocal != null)
-        //        {
-
-        //            return OnRemoteStartLocal(Timestamp,
-        //                                      RoamingNetworkId,
-        //                                      SessionId,
-        //                                      ProviderId,
-        //                                      eMAId,
-        //                                      EVSEId,
-        //                                      ChargingProductId);
-
-        //        }
-
-        //        return RemoteStartResult.Error;
-
-        //    }
-
-        }
-
-        #endregion
-
-        #region RemoteStart(Timestamp, RoamingNetworkId, SessionId, ProviderId, eMAId, ChargingStationId, ChargingProductId)
-
-        /// <summary>
-        /// Initiate a remote start of the given charging session at the given charging station
-        /// and for the given Provider/eMAId.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
-        /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
-        /// <returns>A remote start result object.</returns>
-        public async Task<HTTPResponse<RemoteStartEVSEResult>>  RemoteStart(DateTime            Timestamp,
-                                                                        RoamingNetwork_Id   RoamingNetworkId,
-                                                                        ChargingSession_Id  SessionId,
-                                                                        EVSP_Id             ProviderId,
-                                                                        eMA_Id              eMAId,
-                                                                        ChargingStation_Id  ChargingStationId,
-                                                                        ChargingProduct_Id  ChargingProductId)
-        {
-
-            return new HTTPResponse<RemoteStartEVSEResult>();
-
-        //    lock (AuthenticationServices)
-        //    {
-
-        //        var OnRemoteStartLocal = OnRemoteStart;
-        //        if (OnRemoteStartLocal != null)
-        //        {
-
-        //            return OnRemoteStartLocal(Timestamp,
-        //                                      RoamingNetworkId,
-        //                                      SessionId,
-        //                                      PartnerSessionId,
-        //                                      ProviderId,
-        //                                      eMAId,
-        //                                      EVSEId,
-        //                                      ChargingProductId);
-
-        //        }
-
-        //        return RemoteStartResult.Error;
-
-        //    }
-
-        }
-
-        #endregion
-
-        #region RemoteStop(Timestamp, RoamingNetworkId, SessionId, PartnerSessionId, ProviderId, EVSEId)
-
-        /// <summary>
-        /// Initiate a remote stop of the given charging session at the given EVSE.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="PartnerSessionId">The unique identification for this charging session on the partner side.</param>
-        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
-        /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        /// <returns>A remote stop result object.</returns>
-        public async Task<HTTPResponse<RemoteStopEVSEResult>> RemoteStop(DateTime            Timestamp,
-                                                                     RoamingNetwork_Id   RoamingNetworkId,
-                                                                     ChargingSession_Id  SessionId,
-                                                                     ChargingSession_Id  PartnerSessionId,
-                                                                     EVSP_Id             ProviderId,
-                                                                     EVSE_Id             EVSEId)
-        {
-
-            return new HTTPResponse<RemoteStopEVSEResult>();
-
-            //lock (AuthenticationServices)
-            //{
-            //
-            //    var OnRemoteStopLocal = OnRemoteStop;
-            //    if (OnRemoteStopLocal != null)
-            //        return OnRemoteStopLocal(Timestamp,
-            //                                 RoamingNetworkId,
-            //                                 SessionId,
-            //                                 PartnerSessionId,
-            //                                 ProviderId,
-            //                                 EVSEId);
-            //
-            //    return RemoteStopResult.Error;
-            //
-            //}
 
         }
 

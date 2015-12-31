@@ -48,23 +48,37 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="EVSEId">An optional EVSE identification.</param>
+        /// <param name="ChargingProductId">An optional charging product identification.</param>
+        /// <param name="SessionId">An optional session identification.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        Task<AuthStartResult> AuthorizeStart(EVSEOperator_Id      OperatorId,
+                                             Auth_Token           AuthToken,
+                                             ChargingProduct_Id   ChargingProductId  = null,
+                                             ChargingSession_Id   SessionId          = null,
+                                             TimeSpan?            QueryTimeout       = null);
+
+        /// <summary>
+        /// Create an authorize start request at the given EVSE.
+        /// </summary>
+        /// <param name="OperatorId">An EVSE operator identification.</param>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
         Task<AuthStartEVSEResult> AuthorizeStart(EVSEOperator_Id      OperatorId,
                                                  Auth_Token           AuthToken,
-                                                 EVSE_Id              EVSEId             = null,
+                                                 EVSE_Id              EVSEId,
                                                  ChargingProduct_Id   ChargingProductId  = null,
                                                  ChargingSession_Id   SessionId          = null,
                                                  TimeSpan?            QueryTimeout       = null);
 
         /// <summary>
-        /// Create an authorize start request.
+        /// Create an authorize start request at the given charging station.
         /// </summary>
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="ChargingStationId">A charging station identification.</param>
+        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
@@ -82,27 +96,39 @@ namespace org.GraphDefined.WWCP
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="EVSEId">An optional EVSE identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        Task<AuthStopEVSEResult> AuthorizeStop(EVSEOperator_Id     OperatorId,
-                                               ChargingSession_Id  SessionId,
-                                               Auth_Token          AuthToken,
-                                               EVSE_Id             EVSEId            = null,
-                                               TimeSpan?           QueryTimeout      = null);
+        Task<AuthStopResult> AuthorizeStop(EVSEOperator_Id     OperatorId,
+                                           ChargingSession_Id  SessionId,
+                                           Auth_Token          AuthToken,
+                                           TimeSpan?           QueryTimeout  = null);
 
         /// <summary>
-        /// Create an authorize stop request.
+        /// Create an authorize stop request at the given EVSE.
         /// </summary>
         /// <param name="OperatorId">An EVSE operator identification.</param>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        Task<AuthStopEVSEResult> AuthorizeStop(EVSEOperator_Id     OperatorId,
+                                               EVSE_Id             EVSEId,
+                                               ChargingSession_Id  SessionId,
+                                               Auth_Token          AuthToken,
+                                               TimeSpan?           QueryTimeout  = null);
+
+        /// <summary>
+        /// Create an authorize stop request at the given charging station.
+        /// </summary>
+        /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="ChargingStationId">A charging station identification.</param>
+        /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
         Task<AuthStopChargingStationResult> AuthorizeStop(EVSEOperator_Id     OperatorId,
+                                                          ChargingStation_Id  ChargingStationId,
                                                           ChargingSession_Id  SessionId,
                                                           Auth_Token          AuthToken,
-                                                          ChargingStation_Id  ChargingStationId,
-                                                          TimeSpan?           QueryTimeout      = null);
+                                                          TimeSpan?           QueryTimeout  = null);
 
 
         /// <summary>
