@@ -66,23 +66,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SessionId
-
-        private readonly ChargingSession_Id _SessionId;
-
-        /// <summary>
-        /// The charging session identification for a successful authorize stop operation.
-        /// </summary>
-        public ChargingSession_Id SessionId
-        {
-            get
-            {
-                return _SessionId;
-            }
-        }
-
-        #endregion
-
         #region ProviderId
 
         private readonly EVSP_Id _ProviderId;
