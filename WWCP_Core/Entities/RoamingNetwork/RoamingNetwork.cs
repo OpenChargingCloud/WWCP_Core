@@ -1320,14 +1320,20 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region OnSendChargeDetailRecord
+        #region OnSendCDR / OnCDRSent
 
         /// <summary>
         /// An event fired whenever a charge detail record was received.
         /// </summary>
-        public event SendChargeDetailRecordDelegate OnSendChargeDetailRecord;
+        public event SendCDRDelegate OnSendCDR;
+
+        /// <summary>
+        /// An event fired whenever a charge detail record result was sent.
+        /// </summary>
+        public event CDRSentDelegate OnCDRSent;
 
         #endregion
+
 
         #region OnFilterCDRRecords
 
