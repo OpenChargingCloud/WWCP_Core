@@ -139,9 +139,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="CountryCode">The Alpha-2-CountryCode.</param>
         /// <param name="Separator">The separator '-' (ISO) or '*|-' DIN to use.</param>
         /// <param name="ProviderId">The EV Service Provider identification.</param>
-        private EVSP_Id(Country          CountryCode,
+        private EVSP_Id(Country            CountryCode,
                         ProviderIdFormats  Separator,
-                        String           ProviderId)
+                        String             ProviderId)
         {
 
             this._CountryCode  = CountryCode;
@@ -295,8 +295,10 @@ namespace org.GraphDefined.WWCP
 
                     EVSEProviderId = new EVSP_Id(__CountryCode,
                                                  Separator,
-                                                 _MatchCollection[0].Groups[2].Value);
+                                                 _MatchCollection[0].Groups[3].Value);
+
                     return true;
+
                 }
 
             }
