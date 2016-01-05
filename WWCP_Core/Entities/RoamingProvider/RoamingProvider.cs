@@ -32,11 +32,11 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A Electric Vehicle Roaming Provider (EVRP).
+    /// A e-Mobility Roaming Provider (EMRP).
     /// </summary>
     public class RoamingProvider : AEMobilityEntity<RoamingProvider_Id>,
-                                   IEquatable<RoamingProvider>, IComparable<RoamingProvider>, IComparable,
-                                   IEnumerable<ChargingPool>
+                                                    IEquatable<RoamingProvider>, IComparable<RoamingProvider>, IComparable,
+                                                    IEnumerable<ChargingPool>
     {
 
         #region Data
@@ -64,15 +64,29 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EMobilityService
+        #region OperatorRoamingService
 
-        private readonly IAuthServices _EMobilityService;
+        private readonly IOperatorRoamingService _OperatorRoamingService;
 
-        public IAuthServices EMobilityService
+        public IOperatorRoamingService OperatorRoamingService
         {
             get
             {
-                return _EMobilityService;
+                return _OperatorRoamingService;
+            }
+        }
+
+        #endregion
+
+        #region eMobilityRoamingService
+
+        private readonly IeMobilityRoamingService _eMobilityRoamingService;
+
+        public IeMobilityRoamingService eMobilityRoamingService
+        {
+            get
+            {
+                return _eMobilityRoamingService;
             }
         }
 
@@ -121,18 +135,20 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (internal) RoamingProvider(Id, RoamingNetwork, EMobilityService)
+        #region (internal) RoamingProvider(Id, RoamingNetwork, OperatorRoamingService, eMobilityRoamingService)
 
         /// <summary>
-        /// Create a new Electric Vehicle Roaming Provider (EVRP)
-        /// having the given RoamingProvider_Id.
+        /// Create a new e-Mobility Roaming Provider (EMRP)
+        /// having the given unique roaming provider identification.
         /// </summary>
-        /// <param name="Id">The ChargingPool Id.</param>
+        /// <param name="Id">The unique identification of the roaming provider.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        /// <param name="EMobilityService">The attached local or remote e-mobility service.</param>
-        internal RoamingProvider(RoamingProvider_Id                             Id,
-                                 RoamingNetwork                                 RoamingNetwork,
-                                 IAuthServices  EMobilityService)
+        /// <param name="OperatorRoamingService">The attached local or remote EVSE operator roaming service.</param>
+        /// <param name="eMobilityRoamingService">The attached local or remote e-mobility roaming service.</param>
+        internal RoamingProvider(RoamingProvider_Id        Id,
+                                 RoamingNetwork            RoamingNetwork,
+                                 IOperatorRoamingService   OperatorRoamingService,
+                                 IeMobilityRoamingService  eMobilityRoamingService)
 
             : base(Id)
 
@@ -143,16 +159,17 @@ namespace org.GraphDefined.WWCP
             if (RoamingNetwork == null)
                 throw new ArgumentNullException("RoamingNetwork", "The given roaming network must not be null!");
 
-            if (EMobilityService == null)
-                throw new ArgumentNullException("EMobilityService", "The given e-mobility service must not be null!");
+            if (OperatorRoamingService == null)
+                throw new ArgumentNullException("OperatorRoamingService", "The given EVSE operator roaming service must not be null!");
 
             #endregion
 
-            this._RoamingNetwork        = RoamingNetwork;
-            this.Name                   = new I18NString();
-            this._EMobilityService      = EMobilityService;
+            this._RoamingNetwork           = RoamingNetwork;
+            this.Name                      = new I18NString();
+            this._OperatorRoamingService   = OperatorRoamingService;
+            this._eMobilityRoamingService  = eMobilityRoamingService;
 
-            this._RegisteredChargingPools    = new ConcurrentDictionary<ChargingPool_Id, ChargingPool>();
+            this._RegisteredChargingPools  = new ConcurrentDictionary<ChargingPool_Id, ChargingPool>();
 
         }
 

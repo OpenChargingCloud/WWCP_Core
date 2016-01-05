@@ -32,16 +32,11 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The EV Roaming Provider provided EVSE Operator services interface.
     /// </summary>
-    public interface IAuthServices
+    public interface IOperatorRoamingService
     {
 
-        Authorizator_Id AuthorizatorId { get; }
-
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens            { get; }
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens     { get; }
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens  { get; }
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens        { get; }
-
+        RoamingNetwork_Id  RoamingNetworkId   { get; }
+        RoamingProvider_Id RoamingProviderId  { get; }
 
         #region AuthorizeStart
 
