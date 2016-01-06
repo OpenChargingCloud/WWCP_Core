@@ -32,16 +32,59 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The EV Roaming Provider provided EVSE Operator services interface.
     /// </summary>
-    public interface IAuthServices
+    public interface IEVSEOperatorServices
     {
 
-        Authorizator_Id AuthorizatorId { get; }
+        #region PushEVSEStatus
 
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens            { get; }
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens     { get; }
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens  { get; }
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens        { get; }
+        /// <summary>
+        /// Create a new task pushing EVSE status key-value-pairs.
+        /// </summary>
+        /// <param name="EVSEStatus">An enumeration of EVSE identification and status key-value-pairs.</param>
+        /// <param name="OICPAction">An optional action.</param>
+        /// <param name="OperatorId">An optional EVSE operator identification to use. Otherwise it will be taken from the EVSE data records.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        Task<Acknowledgement> PushEVSEStatus(IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>>  EVSEStatus,
+                                             ActionType                                          OICPAction    = ActionType.update,
+                                             EVSEOperator_Id                                     OperatorId    = null,
+                                             TimeSpan?                                           QueryTimeout  = null);
 
+
+        ///// <summary>
+        ///// Create a new task pushing EVSE status records.
+        ///// </summary>
+        ///// <param name="EVSEStatus">An enumeration of EVSE Id and status records.</param>
+        ///// <param name="OICPAction">An optional OICP action.</param>
+        ///// <param name="OperatorId">An optional EVSE operator identification to use. Otherwise it will be taken from the EVSE data records.</param>
+        ///// <param name="OperatorName">An optional EVSE operator name.</param>
+        ///// <param name="QueryTimeout">An optional timeout for this query.</param>
+        //Task<eRoamingAcknowledgement> PushEVSEStatus(IEnumerable<EVSEStatusRecord>  EVSEStatus,
+        //                                             ActionType                     OICPAction    = ActionType.update,
+        //                                             EVSEOperator_Id                OperatorId    = null,
+        //                                             String                         OperatorName  = null,
+        //                                             TimeSpan?                      QueryTimeout  = null);
+
+        /// <summary>
+        /// Send EVSE status updates.
+        /// </summary>
+        /// <param name="EVSEStatusDiff">An EVSE status diff.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        Task PushEVSEStatus(EVSEStatusDiff  EVSEStatusDiff,
+                            TimeSpan?       QueryTimeout = null);
+
+        #endregion
+
+        //#region PullAuthenticationData
+        //
+        ///// <summary>
+        ///// Create an OICP v2.0 PullAuthenticationData request.
+        ///// </summary>
+        ///// <param name="OperatorId">An EVSE operator identification.</param>
+        ///// <param name="QueryTimeout">An optional timeout for this query.</param>
+        //Task<eRoamingAuthenticationData> PullAuthenticationData(EVSEOperator_Id  OperatorId,
+        //                                                        TimeSpan?        QueryTimeout = null);
+        //
+        //#endregion
 
         #region AuthorizeStart
 
@@ -138,6 +181,14 @@ namespace org.GraphDefined.WWCP
         #endregion
 
         #region SendChargeDetailRecord
+
+        /// <summary>
+        /// Create an SendChargeDetailRecord request.
+        /// </summary>
+        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        Task<SendCDRResult> SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
+                                                   TimeSpan?           QueryTimeout = null);
 
         /// <summary>
         /// Create a SendChargeDetailRecord request.

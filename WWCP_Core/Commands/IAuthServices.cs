@@ -17,7 +17,7 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
+using System.Collections.Generic;
 
 #endregion
 
@@ -27,27 +27,15 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The EV Roaming Provider provided EVSE Operator services interface.
     /// </summary>
-    public interface IOperatorRoamingService : IEVSEOperatorServices
+    public interface IAuthServices : IEVSEOperatorServices
     {
 
-        #region Properties
+        Authorizator_Id AuthorizatorId { get; }
 
-        /// <summary>
-        /// The unique identification of the roaming provider.
-        /// </summary>
-        RoamingProvider_Id Id                { get; }
-
-        /// <summary>
-        /// The offical (multi-language) name of the roaming provider.
-        /// </summary>
-        I18NString         Name              { get; }
-
-        /// <summary>
-        /// The hosting WWCP roaming network.
-        /// </summary>
-        RoamingNetwork_Id  RoamingNetworkId  { get; }
-
-        #endregion
+        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens            { get; }
+        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens     { get; }
+        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens  { get; }
+        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens        { get; }
 
     }
 

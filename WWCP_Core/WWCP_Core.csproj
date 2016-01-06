@@ -52,6 +52,7 @@
     <Compile Include="Commands\AuthorizeStartStop\AuthStartResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStopChargingStationResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStopResult.cs" />
+    <Compile Include="Commands\IEVSEOperatorServices.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStopDelegates.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStartDelegates.cs" />
     <Compile Include="Commands\IeMobilityRoamingService.cs" />
@@ -61,10 +62,12 @@
     <Compile Include="Commands\RemoteStartStop\RemoteStopChargingStationResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopResult.cs" />
     <Compile Include="Commands\SendCDR\OnSendCDRDelegate.cs" />
+    <Compile Include="CommonTypes\ActionType.cs" />
     <Compile Include="CommonTypes\Attributes\Mandatory.cs" />
     <Compile Include="CommonTypes\Attributes\InternalUseOnly.cs" />
     <Compile Include="CommonTypes\Attributes\Optional.cs" />
     <Compile Include="CommonTypes\eMAIdWithPIN.cs" />
+    <Compile Include="CommonTypes\Acknowledgement.cs" />
     <Compile Include="CommonTypes\StatusDiff.cs" />
     <Compile Include="CommonTypes\DataLicenses.cs" />
     <Compile Include="CommonTypes\ChangeMethods.cs" />
@@ -166,7 +169,7 @@
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork.cs" />
     <Compile Include="Importer\ImporterForwardingInfo.cs" />
-    <Compile Include="Commands\AuthorizeStartStop\IAuthServices.cs" />
+    <Compile Include="Commands\IAuthServices.cs" />
     <Compile Include="CommonTypes\AuthorizatorId.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStartEVSEResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopEVSEResult.cs" />

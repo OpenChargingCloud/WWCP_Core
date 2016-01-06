@@ -19,17 +19,14 @@
 
 using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
-
-using org.GraphDefined.WWCP;
-using System.Threading.Tasks;
-using System.Threading;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -69,6 +66,8 @@ namespace org.GraphDefined.WWCP
         private readonly ConcurrentDictionary<ChargingSession_Id,            IOperatorRoamingService>    _SessionIdOperatorRoamingServiceCache;
 
         #endregion
+
+        public Boolean DisableStatusUpdates = false;
 
         #region Properties
 
@@ -1382,23 +1381,21 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this._EVSEOperators         = new ConcurrentDictionary<EVSEOperator_Id,              EVSEOperator>();
-            this._EVServiceProviders    = new ConcurrentDictionary<EVSP_Id,                      EVSP>();
-            this._RoamingProviders      = new ConcurrentDictionary<RoamingProvider_Id,           RoamingProvider>();
-            this._SearchProviders       = new ConcurrentDictionary<NavigationServiceProvider_Id, NavigationServiceProvider>();
+            this._AuthorizatorId                        = (AuthorizatorId == null) ? Authorizator_Id.Parse("GraphDefined E-Mobility Gateway") : AuthorizatorId;
+            this._Description                           = new I18NString();
 
-            this._ChargingReservations  = new ConcurrentDictionary<ChargingReservation_Id, ChargingReservation>();
-
-            this._Description           = new I18NString();
+            this._EVSEOperators                         = new ConcurrentDictionary<EVSEOperator_Id,              EVSEOperator>();
+            this._EVServiceProviders                    = new ConcurrentDictionary<EVSP_Id,                      EVSP>();
+            this._RoamingProviders                      = new ConcurrentDictionary<RoamingProvider_Id,           RoamingProvider>();
+            this._SearchProviders                       = new ConcurrentDictionary<NavigationServiceProvider_Id, NavigationServiceProvider>();
+            this._ChargingReservations                  = new ConcurrentDictionary<ChargingReservation_Id,       ChargingReservation>();
+            this._AuthenticationServices                = new ConcurrentDictionary<UInt32,                       IAuthServices>();
+            this._OperatorRoamingServices               = new ConcurrentDictionary<UInt32,                       IOperatorRoamingService>();
+            this._ChargingSessionCache                  = new ConcurrentDictionary<ChargingSession_Id,           ChargingSession>();
+            this._SessionIdAuthenticatorCache           = new ConcurrentDictionary<ChargingSession_Id,           IAuthServices>();
+            this._SessionIdOperatorRoamingServiceCache  = new ConcurrentDictionary<ChargingSession_Id,           IOperatorRoamingService>();
 
             #endregion
-
-            this._AuthorizatorId                        = (AuthorizatorId == null) ? Authorizator_Id.Parse("GraphDefined E-Mobility Gateway") : AuthorizatorId;
-            this._AuthenticationServices                = new ConcurrentDictionary<UInt32,                 IAuthServices>();
-            this._OperatorRoamingServices               = new ConcurrentDictionary<UInt32,                 IOperatorRoamingService>();
-            this._SessionIdAuthenticatorCache           = new ConcurrentDictionary<ChargingSession_Id,     IAuthServices>();
-            this._SessionIdOperatorRoamingServiceCache  = new ConcurrentDictionary<ChargingSession_Id,     IOperatorRoamingService>();
-
 
             #region Init events
 
@@ -1535,7 +1532,7 @@ namespace org.GraphDefined.WWCP
                 }
             }
 
-            throw new Exception();
+            throw new Exception("Could not create new EVSE operator '" + EVSEOperatorId + "'!");
 
         }
 
@@ -1619,16 +1616,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CreateNewEVServiceProvider(EVServiceProviderId, Action = null)
+        #region CreateNewEVServiceProvider(EVServiceProviderId, Configurator = null)
 
         /// <summary>
         /// Create and register a new electric vehicle service provider having the given
         /// unique electric vehicle service provider identification.
         /// </summary>
         /// <param name="EVServiceProviderId">The unique identification of the new roaming provider.</param>
-        /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
+        /// <param name="Configurator">An optional delegate to configure the new roaming provider after its creation.</param>
         public EVSP CreateNewEVServiceProvider(EVSP_Id       EVServiceProviderId,
-                                               Action<EVSP>  Action  = null)
+                                               Action<EVSP>  Configurator  = null)
         {
 
             #region Initial checks
@@ -1643,7 +1640,7 @@ namespace org.GraphDefined.WWCP
 
             var _EVServiceProvider = new EVSP(EVServiceProviderId, this);
 
-            Action.FailSafeInvoke(_EVServiceProvider);
+            Configurator.FailSafeInvoke(_EVServiceProvider);
 
             if (EVServiceProviderAddition.SendVoting(this, _EVServiceProvider))
             {
@@ -1654,47 +1651,51 @@ namespace org.GraphDefined.WWCP
                 }
             }
 
-            throw new Exception();
+            throw new Exception("Could not create new ev service provider '" + EVServiceProviderId + "'!");
 
         }
 
         #endregion
 
-        #region CreateNewRoamingProvider(OperatorRoamingService, Action = null)
+        #region CreateNewRoamingProvider(OperatorRoamingService, Configurator = null)
 
         /// <summary>
         /// Create and register a new electric vehicle roaming provider having the given
         /// unique electric vehicle roaming provider identification.
         /// </summary>
         /// <param name="OperatorRoamingService">The attached E-Mobility service.</param>
-        /// <param name="Action">An optional delegate to configure the new roaming provider after its creation.</param>
+        /// <param name="Configurator">An optional delegate to configure the new roaming provider after its creation.</param>
         public RoamingProvider CreateNewRoamingProvider(IOperatorRoamingService  OperatorRoamingService,
-                                                        Action<RoamingProvider>  Action = null)
+                                                        Action<RoamingProvider>  Configurator = null)
         {
 
             #region Initial checks
 
-            if (OperatorRoamingService.RoamingProviderId == null)
-                throw new ArgumentNullException("RoamingProviderId", "The given roaming provider identification must not be null!");
+            if (OperatorRoamingService.Id == null)
+                throw new ArgumentNullException("OperatorRoamingService.Id",    "The given roaming provider identification must not be null!");
 
-            if (_RoamingProviders.ContainsKey(OperatorRoamingService.RoamingProviderId))
-                throw new RoamingProviderAlreadyExists(OperatorRoamingService.RoamingProviderId, this.Id);
+            if (OperatorRoamingService.Name.IsNullOrEmpty())
+                throw new ArgumentNullException("OperatorRoamingService.Name",  "The given roaming provider name must not be null or empty!");
+
+            if (_RoamingProviders.ContainsKey(OperatorRoamingService.Id))
+                throw new RoamingProviderAlreadyExists(OperatorRoamingService.Id, this.Id);
 
             if (OperatorRoamingService.RoamingNetworkId != this.Id)
                 throw new ArgumentException("The given operator roaming service is not part of this roaming network!", "OperatorRoamingService");
 
             #endregion
 
-            var _RoamingProvider = new RoamingProvider(OperatorRoamingService.RoamingProviderId,
+            var _RoamingProvider = new RoamingProvider(OperatorRoamingService.Id,
+                                                       OperatorRoamingService.Name,
                                                        this,
                                                        OperatorRoamingService,
                                                        null);
 
-            Action.FailSafeInvoke(_RoamingProvider);
+            Configurator.FailSafeInvoke(_RoamingProvider);
 
             if (RoamingProviderAddition.SendVoting(this, _RoamingProvider))
             {
-                if (_RoamingProviders.TryAdd(OperatorRoamingService.RoamingProviderId, _RoamingProvider))
+                if (_RoamingProviders.TryAdd(OperatorRoamingService.Id, _RoamingProvider))
                 {
 
                     RoamingProviderAddition.SendNotification(this, _RoamingProvider);
@@ -1704,22 +1705,22 @@ namespace org.GraphDefined.WWCP
                 }
             }
 
-            throw new Exception();
+            throw new Exception("Could not create new roaming provider '" + OperatorRoamingService.Id + "'!");
 
         }
 
         #endregion
 
-        #region CreateNewSearchProvider(NavigationServiceProviderId, Action = null)
+        #region CreateNewSearchProvider(NavigationServiceProviderId, Configurator = null)
 
         /// <summary>
         /// Create and register a new navigation service provider having the given
         /// unique identification.
         /// </summary>
         /// <param name="NavigationServiceProviderId">The unique identification of the new search provider.</param>
-        /// <param name="Action">An optional delegate to configure the new search provider after its creation.</param>
+        /// <param name="Configurator">An optional delegate to configure the new search provider after its creation.</param>
         public NavigationServiceProvider CreateNewSearchProvider(NavigationServiceProvider_Id       NavigationServiceProviderId,
-                                                                 Action<NavigationServiceProvider>  Action = null)
+                                                                 Action<NavigationServiceProvider>  Configurator = null)
         {
 
             #region Initial checks
@@ -1734,7 +1735,7 @@ namespace org.GraphDefined.WWCP
 
             var _SearchProvider = new NavigationServiceProvider(NavigationServiceProviderId, this);
 
-            Action.FailSafeInvoke(_SearchProvider);
+            Configurator.FailSafeInvoke(_SearchProvider);
 
             if (SearchProviderAddition.SendVoting(this, _SearchProvider))
             {
@@ -1745,7 +1746,7 @@ namespace org.GraphDefined.WWCP
                 }
             }
 
-            throw new Exception();
+            throw new Exception("Could not create new search provider '" + NavigationServiceProviderId + "'!");
 
         }
 
@@ -3771,21 +3772,12 @@ namespace org.GraphDefined.WWCP
 
         #region SendChargingPoolAdminStatusDiff(StatusDiff)
 
-        public void SendChargingPoolAdminStatusDiff(ChargingPoolAdminStatusDiff StatusDiff)
+        internal void SendChargingPoolAdminStatusDiff(ChargingPoolAdminStatusDiff StatusDiff)
         {
 
-            lock (_AuthenticationServices)
-            {
-
-                var OnChargingPoolAdminDiffLocal = OnChargingPoolAdminDiff;
-                if (OnChargingPoolAdminDiffLocal != null)
-                    OnChargingPoolAdminDiffLocal(StatusDiff);
-
-                //return RemoteStartResult.Error;
-
-            }
-
-            //return StatusDiff;
+            var OnChargingPoolAdminDiffLocal = OnChargingPoolAdminDiff;
+            if (OnChargingPoolAdminDiffLocal != null)
+                OnChargingPoolAdminDiffLocal(StatusDiff);
 
         }
 
@@ -3793,21 +3785,12 @@ namespace org.GraphDefined.WWCP
 
         #region SendChargingStationAdminStatusDiff(StatusDiff)
 
-        public void SendChargingStationAdminStatusDiff(ChargingStationAdminStatusDiff StatusDiff)
+        internal void SendChargingStationAdminStatusDiff(ChargingStationAdminStatusDiff StatusDiff)
         {
 
-            lock (_AuthenticationServices)
-            {
-
-                var OnChargingStationAdminDiffLocal = OnChargingStationAdminDiff;
-                if (OnChargingStationAdminDiffLocal != null)
-                    OnChargingStationAdminDiffLocal(StatusDiff);
-
-                //return RemoteStartResult.Error;
-
-            }
-
-            //return StatusDiff;
+            var OnChargingStationAdminDiffLocal = OnChargingStationAdminDiff;
+            if (OnChargingStationAdminDiffLocal != null)
+                OnChargingStationAdminDiffLocal(StatusDiff);
 
         }
 
@@ -3815,21 +3798,12 @@ namespace org.GraphDefined.WWCP
 
         #region SendEVSEStatusDiff(StatusDiff)
 
-        public void SendEVSEStatusDiff(EVSEStatusDiff StatusDiff)
+        internal void SendEVSEStatusDiff(EVSEStatusDiff StatusDiff)
         {
 
-            lock (_AuthenticationServices)
-            {
-
-                var OnEVSEStatusDiffLocal = OnEVSEStatusDiff;
-                if (OnEVSEStatusDiffLocal != null)
-                    OnEVSEStatusDiffLocal(StatusDiff);
-
-                //return RemoteStartResult.Error;
-
-            }
-
-            //return StatusDiff;
+            var OnEVSEStatusDiffLocal = OnEVSEStatusDiff;
+            if (OnEVSEStatusDiffLocal != null)
+                OnEVSEStatusDiffLocal(StatusDiff);
 
         }
 
@@ -3871,11 +3845,45 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal void UpdateEVSEStatus(DateTime                     Timestamp,
-                                       EVSE                         EVSE,
-                                       Timestamped<EVSEStatusType>  OldStatus,
-                                       Timestamped<EVSEStatusType>  NewStatus)
+        internal async Task UpdateEVSEStatus(DateTime                     Timestamp,
+                                             EVSE                         EVSE,
+                                             Timestamped<EVSEStatusType>  OldStatus,
+                                             Timestamped<EVSEStatusType>  NewStatus)
         {
+
+            #region Send log event
+
+
+            #endregion
+
+            Acknowledgement result = null;
+
+            if (!DisableStatusUpdates)
+            { 
+
+                foreach (var AuthenticationService in _AuthenticationServices.
+                                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+                                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+                {
+
+                    result = await AuthenticationService.PushEVSEStatus(new KeyValuePair<EVSE_Id, EVSEStatusType>[] { new KeyValuePair<EVSE_Id, EVSEStatusType>(EVSE.Id, NewStatus.Value) },
+                                                                        ActionType.update,
+                                                                        EVSE.ChargingStation.ChargingPool.EVSEOperator.Id);
+
+                }
+
+                foreach (var OperatorRoamingService in _OperatorRoamingServices.
+                                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+                                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+                {
+
+                    result = await OperatorRoamingService.PushEVSEStatus(new KeyValuePair<EVSE_Id, EVSEStatusType>[] { new KeyValuePair<EVSE_Id, EVSEStatusType>(EVSE.Id, NewStatus.Value) },
+                                                                         ActionType.update,
+                                                                         EVSE.ChargingStation.ChargingPool.EVSEOperator.Id);
+
+                }
+
+            }
 
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
             if (OnEVSEStatusChangedLocal != null)

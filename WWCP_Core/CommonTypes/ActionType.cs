@@ -15,40 +15,18 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using org.GraphDefined.Vanaheimr.Illias;
-
-#endregion
-
 namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The EV Roaming Provider provided EVSE Operator services interface.
+    /// The type of data management action when updating remote data.
     /// </summary>
-    public interface IOperatorRoamingService : IEVSEOperatorServices
+    public enum ActionType
     {
-
-        #region Properties
-
-        /// <summary>
-        /// The unique identification of the roaming provider.
-        /// </summary>
-        RoamingProvider_Id Id                { get; }
-
-        /// <summary>
-        /// The offical (multi-language) name of the roaming provider.
-        /// </summary>
-        I18NString         Name              { get; }
-
-        /// <summary>
-        /// The hosting WWCP roaming network.
-        /// </summary>
-        RoamingNetwork_Id  RoamingNetworkId  { get; }
-
-        #endregion
-
+        fullLoad,
+        update,     // will act like an 'upsert' for dynamic EVSE states!
+        insert,
+        delete
     }
 
 }

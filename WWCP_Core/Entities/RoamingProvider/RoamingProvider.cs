@@ -18,13 +18,8 @@
 #region Usings
 
 using System;
-using System.Linq;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
 
 using org.GraphDefined.Vanaheimr.Illias;
-
-using org.GraphDefined.WWCP;
 
 #endregion
 
@@ -35,17 +30,28 @@ namespace org.GraphDefined.WWCP
     /// A e-Mobility Roaming Provider (EMRP).
     /// </summary>
     public class RoamingProvider : AEMobilityEntity<RoamingProvider_Id>,
-                                                    IEquatable<RoamingProvider>, IComparable<RoamingProvider>, IComparable,
-                                                    IEnumerable<ChargingPool>
+                                   IEquatable<RoamingProvider>, IComparable<RoamingProvider>, IComparable
     {
 
-        #region Data
+        #region Properties
 
-        private readonly ConcurrentDictionary<ChargingPool_Id, ChargingPool>  _RegisteredChargingPools;
+        #region Name
+
+        private readonly I18NString _Name;
+
+        /// <summary>
+        /// The offical (multi-language) name of the roaming provider.
+        /// </summary>
+        [Mandatory]
+        public I18NString Name
+        {
+            get
+            {
+                return _Name;
+            }
+        }
 
         #endregion
-
-        #region Properties
 
         #region RoamingNetwork
 
@@ -92,60 +98,21 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
-        #region Name
-
-        private I18NString _Name;
-
-        /// <summary>
-        /// The offical (multi-language) name of an EVSE operator.
-        /// </summary>
-        [Mandatory]
-        public I18NString Name
-        {
-
-            get
-            {
-                return _Name;
-            }
-
-            set
-            {
-                SetProperty<I18NString>(ref _Name, value);
-            }
-
-        }
-
-        #endregion
-
-
-        #region ChargingPools
-
-        public IEnumerable<ChargingPool> ChargingPools
-        {
-            get
-            {
-                return _RegisteredChargingPools.Select(KVP => KVP.Value);
-            }
-        }
-
-        #endregion
-
         #endregion
 
         #region Constructor(s)
 
-        #region (internal) RoamingProvider(Id, RoamingNetwork, OperatorRoamingService, eMobilityRoamingService)
-
         /// <summary>
         /// Create a new e-Mobility Roaming Provider (EMRP)
-        /// having the given unique roaming provider identification.
+        /// having the given unique roaming provider identification and name.
         /// </summary>
         /// <param name="Id">The unique identification of the roaming provider.</param>
+        /// <param name="Name">The offical (multi-language) name of the roaming provider.
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         /// <param name="OperatorRoamingService">The attached local or remote EVSE operator roaming service.</param>
         /// <param name="eMobilityRoamingService">The attached local or remote e-mobility roaming service.</param>
         internal RoamingProvider(RoamingProvider_Id        Id,
+                                 I18NString                Name,
                                  RoamingNetwork            RoamingNetwork,
                                  IOperatorRoamingService   OperatorRoamingService,
                                  IeMobilityRoamingService  eMobilityRoamingService)
@@ -156,43 +123,28 @@ namespace org.GraphDefined.WWCP
 
             #region Initial Checks
 
-            if (RoamingNetwork == null)
-                throw new ArgumentNullException("RoamingNetwork", "The given roaming network must not be null!");
+            if (Name.IsNullOrEmpty())
+                throw new ArgumentNullException("Name",                    "The given roaming network must not be null!");
+
+            if (RoamingNetwork         == null)
+                throw new ArgumentNullException("RoamingNetwork",          "The given roaming network must not be null!");
 
             if (OperatorRoamingService == null)
-                throw new ArgumentNullException("OperatorRoamingService", "The given EVSE operator roaming service must not be null!");
+                throw new ArgumentNullException("OperatorRoamingService",  "The given EVSE operator roaming service must not be null!");
 
             #endregion
 
+            this._Name                     = Name;
             this._RoamingNetwork           = RoamingNetwork;
-            this.Name                      = new I18NString();
             this._OperatorRoamingService   = OperatorRoamingService;
             this._eMobilityRoamingService  = eMobilityRoamingService;
 
-            this._RegisteredChargingPools  = new ConcurrentDictionary<ChargingPool_Id, ChargingPool>();
-
         }
 
         #endregion
 
-        #endregion
 
-
-        #region IEnumerable<ChargingPool> Members
-
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return _RegisteredChargingPools.Values.GetEnumerator();
-        }
-
-        public IEnumerator<ChargingPool> GetEnumerator()
-        {
-            return _RegisteredChargingPools.Values.GetEnumerator();
-        }
-
-        #endregion
-
-        #region IComparable<EVSE_Operator> Members
+        #region IComparable<RoamingProvider> Members
 
         #region CompareTo(Object)
 
@@ -206,30 +158,30 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an EVSE_Operator.
-            var EVSE_Operator = Object as RoamingProvider;
-            if ((Object) EVSE_Operator == null)
-                throw new ArgumentException("The given object is not an EVSE_Operator!");
+            // Check if the given object is a roaming provider.
+            var RoamingProvider = Object as RoamingProvider;
+            if ((Object) RoamingProvider == null)
+                throw new ArgumentException("The given object is not a roaming provider!");
 
-            return CompareTo(EVSE_Operator);
+            return CompareTo(RoamingProvider);
 
         }
 
         #endregion
 
-        #region CompareTo(EVSE_Operator)
+        #region CompareTo(RoamingProvider)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSE_Operator">An EVSE_Operator object to compare with.</param>
-        public Int32 CompareTo(RoamingProvider EVSE_Operator)
+        /// <param name="RoamingProvider">A roaming provider object to compare with.</param>
+        public Int32 CompareTo(RoamingProvider RoamingProvider)
         {
 
-            if ((Object) EVSE_Operator == null)
-                throw new ArgumentNullException("The given EVSE_Operator must not be null!");
+            if ((Object) RoamingProvider == null)
+                throw new ArgumentNullException("The given roaming provider must not be null!");
 
-            return Id.CompareTo(EVSE_Operator.Id);
+            return Id.CompareTo(RoamingProvider.Id);
 
         }
 
@@ -237,7 +189,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<EVSE_Operator> Members
+        #region IEquatable<RoamingProvider> Members
 
         #region Equals(Object)
 
@@ -252,31 +204,31 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an EVSE_Operator.
-            var EVSE_Operator = Object as RoamingProvider;
-            if ((Object) EVSE_Operator == null)
+            // Check if the given object is a roaming provider.
+            var RoamingProvider = Object as RoamingProvider;
+            if ((Object) RoamingProvider == null)
                 return false;
 
-            return this.Equals(EVSE_Operator);
+            return this.Equals(RoamingProvider);
 
         }
 
         #endregion
 
-        #region Equals(EVSE_Operator)
+        #region Equals(RoamingProvider)
 
         /// <summary>
-        /// Compares two EVSE_Operator for equality.
+        /// Compares two roaming provider for equality.
         /// </summary>
-        /// <param name="EVSE_Operator">An EVSE_Operator to compare with.</param>
+        /// <param name="RoamingProvider">A roaming provider to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(RoamingProvider EVSE_Operator)
+        public Boolean Equals(RoamingProvider RoamingProvider)
         {
 
-            if ((Object) EVSE_Operator == null)
+            if ((Object) RoamingProvider == null)
                 return false;
 
-            return Id.Equals(EVSE_Operator.Id);
+            return Id.Equals(RoamingProvider.Id);
 
         }
 
