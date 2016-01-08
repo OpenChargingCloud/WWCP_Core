@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The unique identification of an Electric Vehicle Supply Equipment (EVSE_Id)
+    /// The unique identification of an Electric Vehicle Supply Equipment.
     /// </summary>
     public class EVSE_Id : IId,
                            IEquatable<EVSE_Id>,
@@ -135,7 +135,7 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new Electric Vehicle Supply Equipment (EVSE) identification (EVSE_Id)
+        /// Generate a new Electric Vehicle Supply Equipment (EVSE) identification
         /// based on the given string.
         /// </summary>
         private EVSE_Id(EVSEOperator_Id   OperatorId,

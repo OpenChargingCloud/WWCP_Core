@@ -18,11 +18,9 @@
 #region Usings
 
 using System;
-using System.Text;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -30,10 +28,40 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
+    /// A delegate called whenever new EVSE data will be send upstream.
+    /// </summary>
+    public delegate void OnEVSEDataPushDelegate(DateTime                                  Timestamp,
+                                                Object                                    Sender,
+                                                String                                    SenderId,
+                                                RoamingNetwork_Id                         RoamingNetworkId,
+                                                ActionType                                ActionType,
+                                                ILookup<EVSEOperator, IEnumerable<EVSE>>  EVSEData,
+                                                UInt32                                    NumberOfEVSEs);
+
+
+    /// <summary>
+    /// A delegate called whenever new EVSE data had been send upstream.
+    /// </summary>
+    public delegate void OnEVSEDataPushedDelegate(DateTime                                  Timestamp,
+                                                  Object                                    Sender,
+                                                  String                                    SenderId,
+                                                  RoamingNetwork_Id                         RoamingNetworkId,
+                                                  ActionType                                ActionType,
+                                                  ILookup<EVSEOperator, IEnumerable<EVSE>>  EVSEData,
+                                                  UInt32                                    NumberOfEVSEs,
+                                                  Acknowledgement                           Result);
+
+
+
+    /// <summary>
     /// The EV Roaming Provider provided EVSE Operator services interface.
     /// </summary>
     public interface IEVSEOperatorServices
     {
+
+        event OnEVSEDataPushDelegate    OnEVSEDataPush;
+        event OnEVSEDataPushedDelegate  OnEVSEDataPushed;
+
 
         #region PushEVSEStatus
 
