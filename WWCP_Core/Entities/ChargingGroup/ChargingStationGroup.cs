@@ -129,13 +129,13 @@ namespace org.GraphDefined.WWCP
 
         #region OpeningTime
 
-        private OpeningTime _OpeningTime;
+        private OpeningTimes _OpeningTime;
 
         /// <summary>
         /// The opening time of this charging pool.
         /// </summary>
         [Optional]
-        public OpeningTime OpeningTime
+        public OpeningTimes OpeningTime
         {
 
             get
@@ -147,14 +147,14 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value == null)
-                    value = new OpeningTime();
+                    value = new OpeningTimes();
 
                 if (_OpeningTime != value)
                 {
 
                     SetProperty(ref _OpeningTime, value);
 
-                    _ChargingStations.Values.ForEach(station => station._OpeningTime = null);
+                    _ChargingStations.Values.ForEach(station => station._OpeningTimes = null);
 
                 }
 

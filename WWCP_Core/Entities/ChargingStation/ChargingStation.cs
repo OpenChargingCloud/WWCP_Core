@@ -469,39 +469,39 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region OpeningTime
+        #region OpeningTimes
 
-        internal OpeningTime _OpeningTime;
+        internal OpeningTimes _OpeningTimes;
 
         /// <summary>
-        /// The opening time of this charging station.
+        /// The opening times of this charging station.
         /// </summary>
-        public OpeningTime OpeningTime
+        public OpeningTimes OpeningTimes
         {
 
             get
             {
 
-                return _OpeningTime != null
-                    ? _OpeningTime
-                    : ChargingPool.OpeningTime;
+                return _OpeningTimes != null
+                    ? _OpeningTimes
+                    : ChargingPool.OpeningTimes;
 
             }
 
             set
             {
 
-                if (value == ChargingPool.OpeningTime)
+                if (value == ChargingPool.OpeningTimes)
                     return;
 
-                if (OpeningTime != value)
+                if (OpeningTimes != value)
                 {
 
                     if (value == null)
-                        DeleteProperty(ref _OpeningTime);
+                        DeleteProperty(ref _OpeningTimes);
 
                     else
-                        SetProperty(ref _OpeningTime, value);
+                        SetProperty(ref _OpeningTimes, value);
 
                 }
 

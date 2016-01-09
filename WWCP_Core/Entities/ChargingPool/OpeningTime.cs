@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// An opening time.
     /// </summary>
-    public class OpeningTime : IEquatable<OpeningTime>
+    public class OpeningTimes : IEquatable<OpeningTimes>
     {
 
         #region Properties
@@ -73,7 +73,7 @@ namespace org.GraphDefined.WWCP
 
         #region OpeningTime(IsOpen24Hours = true)
 
-        public OpeningTime(Boolean IsOpen24Hours = true)
+        public OpeningTimes(Boolean IsOpen24Hours = true)
         {
             this._IsOpen24Hours  = IsOpen24Hours;
             this._Text           = IsOpen24Hours ? "Mon-Sun, 24 hours" : "";
@@ -83,7 +83,7 @@ namespace org.GraphDefined.WWCP
 
         #region OpeningTime(Text)
 
-        public OpeningTime(String Text)
+        public OpeningTimes(String Text)
         {
             this._IsOpen24Hours  = false;
             this._Text           = Text;
@@ -100,11 +100,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Is open for 24 hours a day.
         /// </summary>
-        public static OpeningTime Open24Hours
+        public static OpeningTimes Open24Hours
         {
             get
             {
-                return new OpeningTime(true);
+                return new OpeningTimes(true);
             }
         }
 
@@ -121,7 +121,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="OpeningTime1">An opening time.</param>
         /// <param name="OpeningTime2">Another opening time.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (OpeningTime OpeningTime1, OpeningTime OpeningTime2)
+        public static Boolean operator == (OpeningTimes OpeningTime1, OpeningTimes OpeningTime2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -146,7 +146,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="OpeningTime1">An opening time.</param>
         /// <param name="OpeningTime2">Another opening time.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (OpeningTime OpeningTime1, OpeningTime OpeningTime2)
+        public static Boolean operator != (OpeningTimes OpeningTime1, OpeningTimes OpeningTime2)
         {
             return !(OpeningTime1 == OpeningTime2);
         }
@@ -171,7 +171,7 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is an OpeningTime.
-            var OpenTime = Object as OpeningTime;
+            var OpenTime = Object as OpeningTimes;
             if ((Object) OpenTime == null)
                 return false;
 
@@ -188,7 +188,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Operator">An opening time to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(OpeningTime OpenTime)
+        public Boolean Equals(OpeningTimes OpenTime)
         {
 
             if ((Object) OpenTime == null)
