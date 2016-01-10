@@ -128,6 +128,35 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region BrandName
+
+        private I18NString _BrandName;
+
+        /// <summary>
+        /// A (multi-language) brand name for this charging pool
+        /// is this is different from the EVSE operator.
+        /// </summary>
+        [Mandatory]
+        public I18NString BrandName
+        {
+
+            get
+            {
+                return _BrandName;
+            }
+
+            set
+            {
+
+                if (_BrandName != value)
+                    SetProperty<I18NString>(ref _BrandName, value);
+
+            }
+
+        }
+
+        #endregion
+
         #region LocationLanguage
 
         private Languages _LocationLanguage;
@@ -1181,11 +1210,12 @@ namespace org.GraphDefined.WWCP
 
             this._ChargingStations           = new ConcurrentDictionary<ChargingStation_Id, ChargingStation>();
 
-            this.LocationLanguage            = Languages.unknown;
-            this.Name                        = new I18NString();
-            this.Description                 = new I18NString();
-            this.Address                     = new Address();
-            this.EntranceAddress             = new Address();
+            this._LocationLanguage           = Languages.unknown;
+            this._Name                       = new I18NString();
+            this._BrandName                  = new I18NString();
+            this._Description                = new I18NString();
+            this._Address                    = new Address();
+            this._EntranceAddress            = new Address();
 
             this._AuthenticationModes        = new ReactiveSet<AuthenticationModes>();
 

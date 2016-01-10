@@ -18,6 +18,10 @@
 #region Usings
 
 using System;
+using System.Linq;
+using System.Collections.Generic;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -32,15 +36,31 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
+        private readonly RegularHours[] _RegularHours;
+
+        public IEnumerable<RegularHours> RegularHours
+        {
+            get
+            {
+                return _RegularHours.Where(rh => !(rh.Weekday == DayOfWeek.Sunday && rh.Begin.Hour == 0 && rh.Begin.Minute == 0 && rh.End.Hour == 0 && rh.End.Minute == 0));
+            }
+        }
+
+        private readonly List<ExceptionalPeriod> _ExceptionalOpenings;
+        private readonly List<ExceptionalPeriod> _ExceptionalClosings;
+
         #region IsOpen24Hours
 
-        private readonly Boolean _IsOpen24Hours;
+       // private readonly Boolean _IsOpen24Hours;
 
+        /// <summary>
+        /// 24/7 open...
+        /// </summary>
         public Boolean IsOpen24Hours
         {
             get
             {
-                return _IsOpen24Hours;
+                return !RegularHours.Any() && _Text.IsNullOrEmpty();
             }
         }
 
@@ -50,6 +70,9 @@ namespace org.GraphDefined.WWCP
 
         private String _Text;
 
+        /// <summary>
+        /// An additoonal free text.
+        /// </summary>
         public String Text
         {
 
@@ -75,8 +98,11 @@ namespace org.GraphDefined.WWCP
 
         public OpeningTimes(Boolean IsOpen24Hours = true)
         {
-            this._IsOpen24Hours  = IsOpen24Hours;
-            this._Text           = IsOpen24Hours ? "Mon-Sun, 24 hours" : "";
+    //        this._IsOpen24Hours        = IsOpen24Hours;
+            this._RegularHours         = new RegularHours[7];
+            this._ExceptionalOpenings  = new List<ExceptionalPeriod>();
+            this._ExceptionalClosings  = new List<ExceptionalPeriod>();
+            this._Text                 = "";//IsOpen24Hours ? "Mon-Sun, 24 hours" : "";
         }
 
         #endregion
@@ -85,14 +111,46 @@ namespace org.GraphDefined.WWCP
 
         public OpeningTimes(String Text)
         {
-            this._IsOpen24Hours  = false;
-            this._Text           = Text;
+   //         this._IsOpen24Hours        = false;
+            this._RegularHours         = new RegularHours[7];
+            this._ExceptionalOpenings  = new List<ExceptionalPeriod>();
+            this._ExceptionalClosings  = new List<ExceptionalPeriod>();
+            this._Text                 = Text;
         }
 
         #endregion
 
         #endregion
 
+
+        public OpeningTimes Set(DayOfWeek  Weekday,
+                                HourMin    Begin,
+                                HourMin    End)
+        {
+
+            _RegularHours[(int) Weekday] = new RegularHours(Weekday, Begin, End);
+
+            return this;
+
+        }
+
+        public OpeningTimes AddExceptionalOpening(DateTime Start, DateTime End)
+        {
+
+            _ExceptionalOpenings.Add(new ExceptionalPeriod(Start, End));
+
+            return this;
+
+        }
+
+        public OpeningTimes AddExceptionalClosing(DateTime Start, DateTime End)
+        {
+
+            _ExceptionalClosings.Add(new ExceptionalPeriod(Start, End));
+
+            return this;
+
+        }
 
 
         #region (static) Open24Hours

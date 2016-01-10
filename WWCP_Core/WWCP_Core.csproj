@@ -68,6 +68,9 @@
     <Compile Include="CommonTypes\Attributes\Optional.cs" />
     <Compile Include="CommonTypes\eMAIdWithPIN.cs" />
     <Compile Include="CommonTypes\Acknowledgement.cs" />
+    <Compile Include="CommonTypes\ExceptionalPeriod.cs" />
+    <Compile Include="CommonTypes\HourMin.cs" />
+    <Compile Include="CommonTypes\RegularHours.cs" />
     <Compile Include="CommonTypes\StatusDiff.cs" />
     <Compile Include="CommonTypes\DataLicenses.cs" />
     <Compile Include="CommonTypes\ChangeMethods.cs" />
@@ -140,7 +143,7 @@
     <Compile Include="Entities\ChargingGroup\ChargingStationGroup_Id.cs" />
     <Compile Include="Entities\EVSE\EVSEExceptions.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolExceptions.cs" />
-    <Compile Include="Entities\ChargingPool\OpeningTime.cs" />
+    <Compile Include="CommonTypes\OpeningTime.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStation.cs" />
     <Compile Include="Entities\AEMobilityEntity.cs" />
     <Compile Include="Entities\IId.cs" />
