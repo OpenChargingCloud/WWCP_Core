@@ -36,22 +36,24 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        private readonly RegularHours[] _RegularHours;
+        #region RegularOpenings
 
-        public IEnumerable<RegularHours> RegularHours
+        private readonly RegularHours[] _RegularOpenings;
+
+        public IEnumerable<RegularHours> RegularOpenings
         {
             get
             {
-                return _RegularHours.Where(rh => !(rh.Weekday == DayOfWeek.Sunday && rh.Begin.Hour == 0 && rh.Begin.Minute == 0 && rh.End.Hour == 0 && rh.End.Minute == 0));
+                return _RegularOpenings.Where(rh => !(rh.Weekday == DayOfWeek.Sunday && rh.Begin.Hour == 0 && rh.Begin.Minute == 0 && rh.End.Hour == 0 && rh.End.Minute == 0));
             }
         }
+
+        #endregion
 
         private readonly List<ExceptionalPeriod> _ExceptionalOpenings;
         private readonly List<ExceptionalPeriod> _ExceptionalClosings;
 
         #region IsOpen24Hours
-
-       // private readonly Boolean _IsOpen24Hours;
 
         /// <summary>
         /// 24/7 open...
@@ -60,7 +62,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return !RegularHours.Any() && _Text.IsNullOrEmpty();
+                return !RegularOpenings.Any();
             }
         }
 
@@ -94,28 +96,34 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region OpeningTime(IsOpen24Hours = true)
+        #region OpeningTime(Text = "")
 
-        public OpeningTimes(Boolean IsOpen24Hours = true)
+        public OpeningTimes(String Text = "")
         {
-    //        this._IsOpen24Hours        = IsOpen24Hours;
-            this._RegularHours         = new RegularHours[7];
+
+            this._RegularOpenings         = new RegularHours[7];
             this._ExceptionalOpenings  = new List<ExceptionalPeriod>();
             this._ExceptionalClosings  = new List<ExceptionalPeriod>();
-            this._Text                 = "";//IsOpen24Hours ? "Mon-Sun, 24 hours" : "";
+            this._Text                 = Text;
+
         }
 
         #endregion
 
-        #region OpeningTime(Text)
+        #region OpeningTime(FromWeekday, ToWeekday, Begin, End, Text = "")
 
-        public OpeningTimes(String Text)
+        public OpeningTimes(DayOfWeek  FromWeekday,
+                            DayOfWeek  ToWeekday,
+                            HourMin    Begin,
+                            HourMin    End,
+                            String     Text = "")
+
+            : this(Text)
+
         {
-   //         this._IsOpen24Hours        = false;
-            this._RegularHours         = new RegularHours[7];
-            this._ExceptionalOpenings  = new List<ExceptionalPeriod>();
-            this._ExceptionalClosings  = new List<ExceptionalPeriod>();
-            this._Text                 = Text;
+
+            Set(FromWeekday, ToWeekday, Begin, End);
+
         }
 
         #endregion
@@ -128,7 +136,26 @@ namespace org.GraphDefined.WWCP
                                 HourMin    End)
         {
 
-            _RegularHours[(int) Weekday] = new RegularHours(Weekday, Begin, End);
+            _RegularOpenings[(int) Weekday] = new RegularHours(Weekday, Begin, End);
+
+            return this;
+
+        }
+
+        public OpeningTimes Set(DayOfWeek  FromWeekday,
+                                DayOfWeek  ToWeekday,
+                                HourMin    Begin,
+                                HourMin    End)
+        {
+
+            var _FromWeekday = (int) FromWeekday;
+            var _ToWeekday   = (int) ToWeekday;
+
+            if (_ToWeekday < _FromWeekday)
+                _ToWeekday += 7;
+
+            for (var weekday = _FromWeekday; weekday <= _ToWeekday; weekday++)
+                _RegularOpenings[weekday % 7] = new RegularHours((DayOfWeek) (weekday % 7), Begin, End);
 
             return this;
 
@@ -162,7 +189,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return new OpeningTimes(true);
+                return new OpeningTimes();
             }
         }
 
