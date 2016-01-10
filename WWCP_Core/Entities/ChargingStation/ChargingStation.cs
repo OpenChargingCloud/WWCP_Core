@@ -207,28 +207,28 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region BrandName
+        #region Brand
 
-        private I18NString _BrandName;
+        private Brand _Brand;
 
         /// <summary>
-        /// A (multi-language) brand name for this charging station
+        /// A brand for this charging station
         /// is this is different from the EVSE operator.
         /// </summary>
-        [Mandatory]
-        public I18NString BrandName
+        [Optional]
+        public Brand Brand
         {
 
             get
             {
-                return _BrandName;
+                return _Brand;
             }
 
             set
             {
 
-                if (_BrandName != value)
-                    SetProperty<I18NString>(ref _BrandName, value);
+                if (_Brand != value)
+                    SetProperty<Brand>(ref _Brand, value);
 
             }
 

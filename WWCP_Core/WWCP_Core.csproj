@@ -80,6 +80,8 @@
     <Compile Include="Entities\ChargingSession\ChargingSession.cs" />
     <Compile Include="Entities\ChargingStation\Remote\RemoteDelegates.cs" />
     <Compile Include="Entities\ChargingStation\Remote\IRemoteChargingStation.cs" />
+    <Compile Include="Entities\Brand\Brand.cs" />
+    <Compile Include="Entities\Brand\Brand_Id.cs" />
     <Compile Include="Entities\StatusSchedule.cs" />
     <Compile Include="Entities\AuthInfo.cs" />
     <Compile Include="Entities\ChargingSession\ChargeDetailRecord.cs" />
@@ -143,7 +145,7 @@
     <Compile Include="Entities\ChargingGroup\ChargingStationGroup_Id.cs" />
     <Compile Include="Entities\EVSE\EVSEExceptions.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolExceptions.cs" />
-    <Compile Include="CommonTypes\OpeningTime.cs" />
+    <Compile Include="CommonTypes\OpeningTimes.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStation.cs" />
     <Compile Include="Entities\AEMobilityEntity.cs" />
     <Compile Include="Entities\IId.cs" />

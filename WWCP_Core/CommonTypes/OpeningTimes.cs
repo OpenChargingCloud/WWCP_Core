@@ -20,6 +20,7 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 #endregion
 
@@ -99,7 +100,7 @@ namespace org.GraphDefined.WWCP
         public OpeningTimes(String Text = "")
         {
 
-            this._RegularOpenings         = new RegularHours[7];
+            this._RegularOpenings      = new RegularHours[7];
             this._ExceptionalOpenings  = new List<ExceptionalPeriod>();
             this._ExceptionalClosings  = new List<ExceptionalPeriod>();
             this._Text                 = Text;
@@ -174,6 +175,42 @@ namespace org.GraphDefined.WWCP
             _ExceptionalClosings.Add(new ExceptionalPeriod(Start, End));
 
             return this;
+
+        }
+
+
+        public static Boolean TryParse(String Text, out OpeningTimes OpeningTimes)
+        {
+
+            OpeningTimes = null;
+
+            var match = Regex.Match(Text, "([a-zA-Z]+) - ([a-zA-Z]+) ([0-9]{2}:[0-9]{2})h - ([0-9]{2}:[0-9]{2})h");
+            if (!match.Success)
+                return false;
+
+            DayOfWeek FromWeekday;
+
+            if (!Enum.TryParse<DayOfWeek>(match.Groups[1].Value, true, out FromWeekday))
+                return false;
+
+            DayOfWeek ToWeekday;
+
+            if (!Enum.TryParse<DayOfWeek>(match.Groups[2].Value, true, out ToWeekday))
+                return false;
+
+            HourMin Begin;
+
+            if (!HourMin.TryParse(match.Groups[3].Value, out Begin))
+                return false;
+
+            HourMin End;
+
+            if (!HourMin.TryParse(match.Groups[4].Value, out End))
+                return false;
+
+
+            OpeningTimes = new OpeningTimes(FromWeekday, ToWeekday, Begin, End);
+            return true;
 
         }
 

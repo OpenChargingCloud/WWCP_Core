@@ -111,6 +111,85 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Logo
+
+        private String _Logo;
+
+        /// <summary>
+        /// The logo of this evse operator.
+        /// </summary>
+        [Optional]
+        public String Logo
+        {
+
+            get
+            {
+                return _Logo;
+            }
+
+            set
+            {
+                if (_Logo != value)
+                    SetProperty<String>(ref _Logo, value);
+            }
+
+        }
+
+        #endregion
+
+        #region Homepage
+
+        private String _Homepage;
+
+        /// <summary>
+        /// The homepage of this evse operator.
+        /// </summary>
+        [Optional]
+        public String Homepage
+        {
+
+            get
+            {
+                return _Homepage;
+            }
+
+            set
+            {
+                if (_Homepage != value)
+                    SetProperty<String>(ref _Homepage, value);
+            }
+
+        }
+
+        #endregion
+
+        #region HotlinePhoneNumber
+
+        private String _HotlinePhoneNumber;
+
+        /// <summary>
+        /// The telephone number of the EVSE operator hotline.
+        /// </summary>
+        [Optional]
+        public String HotlinePhoneNumber
+        {
+
+            get
+            {
+                return _HotlinePhoneNumber;
+            }
+
+            set
+            {
+                if (_HotlinePhoneNumber != value)
+                    SetProperty<String>(ref _HotlinePhoneNumber, value);
+            }
+
+        }
+
+        #endregion
+
+
         #region DataLicense
 
         private DataLicenses _DataLicense;
