@@ -21,15 +21,13 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 
-using org.GraphDefined.Vanaheimr.Illias;
-
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// An opening time.
+    /// Opening times.
     /// </summary>
     public class OpeningTimes : IEquatable<OpeningTimes>
     {
@@ -266,23 +264,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Equals(Operator)
+        #region Equals(OpeningTimes)
 
         /// <summary>
         /// Compares two opening times for equality.
         /// </summary>
-        /// <param name="Operator">An opening time to compare with.</param>
+        /// <param name="OpeningTimes">An opening time to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(OpeningTimes OpenTime)
+        public Boolean Equals(OpeningTimes OpeningTimes)
         {
 
-            if ((Object) OpenTime == null)
+            if ((Object) OpeningTimes == null)
                 return false;
 
-            if (IsOpen24Hours && OpenTime.IsOpen24Hours)
+            if (IsOpen24Hours && OpeningTimes.IsOpen24Hours)
                 return true;
 
-            return Text.Equals(OpenTime.Text);
+            return Text.Equals(OpeningTimes.Text);
 
         }
 
