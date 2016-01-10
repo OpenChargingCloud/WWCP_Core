@@ -441,7 +441,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value == null)
-                    value = new OpeningTimes();
+                    value = OpeningTimes.Open24Hours;
 
                 if (_OpeningTimes != value)
                 {

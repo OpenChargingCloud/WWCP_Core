@@ -39,6 +39,9 @@ namespace org.GraphDefined.WWCP
 
         private readonly RegularHours[] _RegularOpenings;
 
+        /// <summary>
+        /// The regular openings.
+        /// </summary>
         public IEnumerable<RegularHours> RegularOpenings
         {
             get
@@ -97,7 +100,7 @@ namespace org.GraphDefined.WWCP
 
         #region OpeningTime(Text = "")
 
-        public OpeningTimes(String Text = "")
+        private OpeningTimes(String Text = "")
         {
 
             this._RegularOpenings      = new RegularHours[7];
@@ -121,7 +124,7 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            Set(FromWeekday, ToWeekday, Begin, End);
+            SetRegularOpening(FromWeekday, ToWeekday, Begin, End);
 
         }
 
@@ -130,9 +133,9 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        public OpeningTimes Set(DayOfWeek  Weekday,
-                                HourMin    Begin,
-                                HourMin    End)
+        public OpeningTimes SetRegularOpening(DayOfWeek  Weekday,
+                                              HourMin    Begin,
+                                              HourMin    End)
         {
 
             _RegularOpenings[(int) Weekday] = new RegularHours(Weekday, Begin, End);
@@ -141,10 +144,10 @@ namespace org.GraphDefined.WWCP
 
         }
 
-        public OpeningTimes Set(DayOfWeek  FromWeekday,
-                                DayOfWeek  ToWeekday,
-                                HourMin    Begin,
-                                HourMin    End)
+        public OpeningTimes SetRegularOpening(DayOfWeek  FromWeekday,
+                                              DayOfWeek  ToWeekday,
+                                              HourMin    Begin,
+                                              HourMin    End)
         {
 
             var _FromWeekday = (int) FromWeekday;
@@ -178,6 +181,26 @@ namespace org.GraphDefined.WWCP
 
         }
 
+
+        public static OpeningTimes FreeText(String Text)
+        {
+
+            return new OpeningTimes(Text);
+
+        }
+
+
+        public static OpeningTimes Parse(String Text)
+        {
+
+            OpeningTimes _OpeningTimes = null;
+
+            if (TryParse(Text, out _OpeningTimes))
+                return _OpeningTimes;
+
+            return null;
+
+        }
 
         public static Boolean TryParse(String Text, out OpeningTimes OpeningTimes)
         {
