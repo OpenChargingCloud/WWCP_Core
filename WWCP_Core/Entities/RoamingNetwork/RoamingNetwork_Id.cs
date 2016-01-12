@@ -81,7 +81,7 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new Electric Vehicle Roaming Network (EVRN Id) identification.
+        /// Generate a new Electric Vehicle Roaming Network (EVRN Id) identification
         /// based on the given string.
         /// </summary>
         private RoamingNetwork_Id(String Text)
@@ -104,7 +104,7 @@ namespace org.GraphDefined.WWCP
         #region Parse(Text)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle Roaming Network (EVRN Id).
+        /// Parse the given string as an Electric Vehicle Roaming Network identification (EVRN Id).
         /// </summary>
         /// <param name="Text">A text representation of an Electric Vehicle Roaming Network identification.</param>
         public static RoamingNetwork_Id Parse(String Text)
@@ -117,7 +117,7 @@ namespace org.GraphDefined.WWCP
         #region TryParse(Text, out RoamingNetworkId)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle Roaming Network (EVRN Id).
+        /// Parse the given string as an Electric Vehicle Roaming Network identification (EVRN Id).
         /// </summary>
         /// <param name="Text">A text representation of an Electric Vehicle Roaming Network identification.</param>
         /// <param name="RoamingNetworkId">The parsed Electric Vehicle Roaming Network identification.</param>

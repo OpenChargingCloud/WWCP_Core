@@ -78,6 +78,7 @@
     <Compile Include="CommonTypes\StatusReport.cs" />
     <Compile Include="Entities\ChargingGroup\ChargingStationGroupAdminStatusType.cs" />
     <Compile Include="Entities\ChargingSession\ChargingSession.cs" />
+    <Compile Include="Entities\ChargingSession\EnergyMeter_Id.cs" />
     <Compile Include="Entities\ChargingStation\Remote\RemoteDelegates.cs" />
     <Compile Include="Entities\ChargingStation\Remote\IRemoteChargingStation.cs" />
     <Compile Include="Entities\Brand\Brand.cs" />

@@ -61,9 +61,9 @@ namespace org.GraphDefined.WWCP
         private readonly ConcurrentDictionary<UInt32,                        IAuthServices>              _AuthenticationServices;
         private readonly ConcurrentDictionary<UInt32,                        IOperatorRoamingService>    _OperatorRoamingServices;
 
-        private readonly ConcurrentDictionary<ChargingSession_Id,            ChargingSession>            _ChargingSessionCache;
-        private readonly ConcurrentDictionary<ChargingSession_Id,            IAuthServices>              _SessionIdAuthenticatorCache;
-        private readonly ConcurrentDictionary<ChargingSession_Id,            IOperatorRoamingService>    _SessionIdOperatorRoamingServiceCache;
+        private readonly ConcurrentDictionary<ChargingSession_Id,            ChargingSession>            _ChargingSessions;
+        //private readonly ConcurrentDictionary<ChargingSession_Id,            IAuthServices>              _SessionIdAuthenticatorCache;
+        //private readonly ConcurrentDictionary<ChargingSession_Id,            IOperatorRoamingService>    _SessionIdOperatorRoamingServiceCache;
 
         #endregion
 
@@ -473,6 +473,21 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return _ChargingReservations.Select(kvp => kvp.Value);
+            }
+        }
+
+        #endregion
+
+        #region ChargingSessions
+
+        /// <summary>
+        /// Return all charging reservations registered within this roaming network.
+        /// </summary>
+        public IEnumerable<ChargingSession> ChargingSessions
+        {
+            get
+            {
+                return _ChargingSessions.Select(kvp => kvp.Value);
             }
         }
 
@@ -1391,9 +1406,9 @@ namespace org.GraphDefined.WWCP
             this._ChargingReservations                  = new ConcurrentDictionary<ChargingReservation_Id,       ChargingReservation>();
             this._AuthenticationServices                = new ConcurrentDictionary<UInt32,                       IAuthServices>();
             this._OperatorRoamingServices               = new ConcurrentDictionary<UInt32,                       IOperatorRoamingService>();
-            this._ChargingSessionCache                  = new ConcurrentDictionary<ChargingSession_Id,           ChargingSession>();
-            this._SessionIdAuthenticatorCache           = new ConcurrentDictionary<ChargingSession_Id,           IAuthServices>();
-            this._SessionIdOperatorRoamingServiceCache  = new ConcurrentDictionary<ChargingSession_Id,           IOperatorRoamingService>();
+            this._ChargingSessions                      = new ConcurrentDictionary<ChargingSession_Id,           ChargingSession>();
+            //this._SessionIdAuthenticatorCache           = new ConcurrentDictionary<ChargingSession_Id,           IAuthServices>();
+            //this._SessionIdOperatorRoamingServiceCache  = new ConcurrentDictionary<ChargingSession_Id,           IOperatorRoamingService>();
 
             #endregion
 
@@ -2357,7 +2372,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region Send log event
+            #region Send OnAuthorizeStart event
 
             var OnAuthorizeStartLocal = OnAuthorizeStart;
             if (OnAuthorizeStartLocal != null)
@@ -2393,7 +2408,9 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    _SessionIdAuthenticatorCache.TryAdd(result.SessionId, AuthenticationService);
+                    //_SessionIdAuthenticatorCache.TryAdd(result.SessionId, AuthenticationService);
+
+                    _ChargingSessions.TryAdd(result.SessionId, new ChargingSession(result.SessionId, AuthService: AuthenticationService));
 
                     break;
 
@@ -2429,7 +2446,9 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    _SessionIdOperatorRoamingServiceCache.TryAdd(result.SessionId, OperatorRoamingService);
+                    //_SessionIdOperatorRoamingServiceCache.TryAdd(result.SessionId, OperatorRoamingService);
+
+                    _ChargingSessions.TryAdd(result.SessionId, new ChargingSession(result.SessionId, OperatorRoamingService: OperatorRoamingService));
 
                     break;
 
@@ -2455,7 +2474,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            #region Send log event
+            #region Send OnAuthorizeStarted event
 
             var OnAuthorizeStartedLocal = OnAuthorizeStarted;
             if (OnAuthorizeStartedLocal != null)
@@ -2511,7 +2530,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region Send log event
+            #region Send OnAuthorizeEVSEStart event
 
             var OnAuthorizeEVSEStartLocal = OnAuthorizeEVSEStart;
             if (OnAuthorizeEVSEStartLocal != null)
@@ -2549,7 +2568,9 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    _SessionIdAuthenticatorCache.TryAdd(result.SessionId, AuthenticationService);
+                    //_SessionIdAuthenticatorCache.TryAdd(result.SessionId, AuthenticationService);
+
+                    _ChargingSessions.TryAdd(result.SessionId, new ChargingSession(result.SessionId, AuthService: AuthenticationService));
 
                     break;
 
@@ -2586,7 +2607,9 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    _SessionIdOperatorRoamingServiceCache.TryAdd(result.SessionId, OperatorRoamingService);
+                    //_SessionIdOperatorRoamingServiceCache.TryAdd(result.SessionId, OperatorRoamingService);
+
+                    _ChargingSessions.TryAdd(result.SessionId, new ChargingSession(result.SessionId, OperatorRoamingService: OperatorRoamingService));
 
                     break;
 
@@ -2612,7 +2635,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            #region Send log event
+            #region Send OnAuthorizeEVSEStarted event
 
             var OnAuthorizeEVSEStartedLocal = OnAuthorizeEVSEStarted;
             if (OnAuthorizeEVSEStartedLocal != null)
@@ -2669,7 +2692,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region Send log event
+            #region Send OnAuthorizeChargingStationStart event
 
             var OnAuthorizeChargingStationStartLocal = OnAuthorizeChargingStationStart;
             if (OnAuthorizeChargingStationStartLocal != null)
@@ -2707,7 +2730,9 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    _SessionIdAuthenticatorCache.TryAdd(result.SessionId, AuthenticationService);
+                    //_SessionIdAuthenticatorCache.TryAdd(result.SessionId, AuthenticationService);
+
+                    _ChargingSessions.TryAdd(result.SessionId, new ChargingSession(result.SessionId, AuthService: AuthenticationService));
 
                     break;
 
@@ -2744,7 +2769,9 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    _SessionIdOperatorRoamingServiceCache.TryAdd(result.SessionId, OperatorRoamingService);
+                    //_SessionIdOperatorRoamingServiceCache.TryAdd(result.SessionId, OperatorRoamingService);
+
+                    _ChargingSessions.TryAdd(result.SessionId, new ChargingSession(result.SessionId, OperatorRoamingService: OperatorRoamingService));
 
                     break;
 
@@ -2770,7 +2797,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            #region Send log event
+            #region Send OnAuthorizeChargingStationStarted event
 
             var OnAuthorizeChargingStationStartedLocal = OnAuthorizeChargingStationStarted;
             if (OnAuthorizeChargingStationStartedLocal != null)
@@ -2824,7 +2851,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region Send log event
+            #region Send OnAuthorizeStop event
 
             var OnAuthorizeStopLocal = OnAuthorizeStop;
             if (OnAuthorizeStopLocal != null)
@@ -2842,27 +2869,40 @@ namespace org.GraphDefined.WWCP
 
             #region An authenticator was found for the upstream SessionId!
 
-            IAuthServices AuthenticationService;
+            ChargingSession _ChargingSession = null;
 
-            if (_SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
+            if (_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
             {
 
-                result = await AuthenticationService.AuthorizeStop(OperatorId, SessionId, AuthToken);
+                if (_ChargingSession.AuthService != null)
+                    result = await _ChargingSession.AuthService.           AuthorizeStop(OperatorId, SessionId, AuthToken);
 
-                //ToDo: Delete the session id from the cache?
+                else if (_ChargingSession.OperatorRoamingService != null)
+                    result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(OperatorId, SessionId, AuthToken);
 
             }
 
-            IOperatorRoamingService OperatorRoamingService;
-
-            if (_SessionIdOperatorRoamingServiceCache.TryGetValue(SessionId, out OperatorRoamingService))
-            {
-
-                result = await OperatorRoamingService.AuthorizeStop(OperatorId, SessionId, AuthToken);
-
-                //ToDo: Delete the session id from the cache?
-
-            }
+            //IAuthServices AuthenticationService;
+            //
+            //if (_SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
+            //{
+            //
+            //    result = await AuthenticationService.AuthorizeStop(OperatorId, SessionId, AuthToken);
+            //
+            //    //ToDo: Delete the session id from the cache?
+            //
+            //}
+            //
+            //IOperatorRoamingService OperatorRoamingService;
+            //
+            //if (_SessionIdOperatorRoamingServiceCache.TryGetValue(SessionId, out OperatorRoamingService))
+            //{
+            //
+            //    result = await OperatorRoamingService.AuthorizeStop(OperatorId, SessionId, AuthToken);
+            //
+            //    //ToDo: Delete the session id from the cache?
+            //
+            //}
 
             #endregion
 
@@ -2913,7 +2953,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            #region Send log event
+            #region Send OnAuthorizeStopped event
 
             var OnAuthorizeStoppedLocal = OnAuthorizeStopped;
             if (OnAuthorizeStoppedLocal != null)
@@ -2970,7 +3010,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region Send log event
+            #region Send OnAuthorizeEVSEStop event
 
             var OnAuthorizeEVSEStopLocal = OnAuthorizeEVSEStop;
             if (OnAuthorizeEVSEStopLocal != null)
@@ -2989,27 +3029,40 @@ namespace org.GraphDefined.WWCP
 
             #region An authenticator was found for the upstream SessionId!
 
-            IAuthServices AuthenticationService;
+            ChargingSession _ChargingSession = null;
 
-            if (_SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
+            if (_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
             {
 
-                result = await AuthenticationService.AuthorizeStop(OperatorId, EVSEId, SessionId, AuthToken);
+                if (_ChargingSession.AuthService != null)
+                    result = await _ChargingSession.AuthService.           AuthorizeStop(OperatorId, EVSEId, SessionId, AuthToken);
 
-                //ToDo: Delete the session id from the cache?
+                else if (_ChargingSession.OperatorRoamingService != null)
+                    result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(OperatorId, EVSEId, SessionId, AuthToken);
 
             }
 
-            IOperatorRoamingService OperatorRoamingService;
-
-            if (_SessionIdOperatorRoamingServiceCache.TryGetValue(SessionId, out OperatorRoamingService))
-            {
-
-                result = await OperatorRoamingService.AuthorizeStop(OperatorId, EVSEId, SessionId, AuthToken);
-
-                //ToDo: Delete the session id from the cache?
-
-            }
+            //IAuthServices AuthenticationService;
+            //
+            //if (_SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
+            //{
+            //
+            //    result = await AuthenticationService.AuthorizeStop(OperatorId, EVSEId, SessionId, AuthToken);
+            //
+            //    //ToDo: Delete the session id from the cache?
+            //
+            //}
+            //
+            //IOperatorRoamingService OperatorRoamingService;
+            //
+            //if (_SessionIdOperatorRoamingServiceCache.TryGetValue(SessionId, out OperatorRoamingService))
+            //{
+            //
+            //    result = await OperatorRoamingService.AuthorizeStop(OperatorId, EVSEId, SessionId, AuthToken);
+            //
+            //    //ToDo: Delete the session id from the cache?
+            //
+            //}
 
             #endregion
 
@@ -3062,7 +3115,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            #region Send log event
+            #region Send OnAuthorizeEVSEStopped event
 
             var OnAuthorizeEVSEStoppedLocal = OnAuthorizeEVSEStopped;
             if (OnAuthorizeEVSEStoppedLocal != null)
@@ -3120,7 +3173,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region Send log event
+            #region Send OnAuthorizeChargingStationStop event
 
             var OnAuthorizeChargingStationStopLocal = OnAuthorizeChargingStationStop;
             if (OnAuthorizeChargingStationStopLocal != null)
@@ -3139,27 +3192,40 @@ namespace org.GraphDefined.WWCP
 
             #region An authenticator was found for the upstream SessionId!
 
-            IAuthServices AuthenticationService;
+            ChargingSession _ChargingSession = null;
 
-            if (_SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
+            if (_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
             {
 
-                result = await AuthenticationService.AuthorizeStop(OperatorId, ChargingStationId, SessionId, AuthToken);
+                if (_ChargingSession.AuthService != null)
+                    result = await _ChargingSession.AuthService.           AuthorizeStop(OperatorId, ChargingStationId, SessionId, AuthToken);
 
-                //ToDo: Delete the session id from the cache?
+                else if (_ChargingSession.OperatorRoamingService != null)
+                    result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(OperatorId, ChargingStationId, SessionId, AuthToken);
 
             }
 
-            IOperatorRoamingService OperatorRoamingService;
-
-            if (_SessionIdOperatorRoamingServiceCache.TryGetValue(SessionId, out OperatorRoamingService))
-            {
-
-                result = await OperatorRoamingService.AuthorizeStop(OperatorId, ChargingStationId, SessionId, AuthToken);
-
-                //ToDo: Delete the session id from the cache?
-
-            }
+            //IAuthServices AuthenticationService;
+            //
+            //if (_SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
+            //{
+            //
+            //    result = await AuthenticationService.AuthorizeStop(OperatorId, ChargingStationId, SessionId, AuthToken);
+            //
+            //    //ToDo: Delete the session id from the cache?
+            //
+            //}
+            //
+            //IOperatorRoamingService OperatorRoamingService;
+            //
+            //if (_SessionIdOperatorRoamingServiceCache.TryGetValue(SessionId, out OperatorRoamingService))
+            //{
+            //
+            //    result = await OperatorRoamingService.AuthorizeStop(OperatorId, ChargingStationId, SessionId, AuthToken);
+            //
+            //    //ToDo: Delete the session id from the cache?
+            //
+            //}
 
             #endregion
 
@@ -3212,7 +3278,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            #region Send log event
+            #region Send OnAuthorizeChargingStationStopped event
 
             var OnAuthorizeChargingStationStoppedLocal = OnAuthorizeChargingStationStopped;
             if (OnAuthorizeChargingStationStoppedLocal != null)
@@ -3584,8 +3650,6 @@ namespace org.GraphDefined.WWCP
                                    IEnumerable<Double>  MeterValuesInBetween  = null,
                                    Double?              ConsumedEnergy        = null,
                                    String               MeteringSignature     = null,
-                                   HubOperator_Id       HubOperatorId         = null,
-                                   EVSP_Id              HubProviderId         = null,
                                    TimeSpan?            QueryTimeout          = null)
 
         {
@@ -3606,64 +3670,80 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            lock (_AuthenticationServices)
+            #region Some CDR should perhaps be filtered...
+
+            var OnFilterCDRRecordsLocal = OnFilterCDRRecords;
+            if (OnFilterCDRRecordsLocal != null)
             {
 
-                #region Some CDR should perhaps be filtered...
+                var _SENDCDRResult = OnFilterCDRRecordsLocal(AuthorizatorId, AuthInfo);
 
-                var OnFilterCDRRecordsLocal = OnFilterCDRRecords;
-                if (OnFilterCDRRecordsLocal != null)
+                if (_SENDCDRResult != null)
+                    return _SENDCDRResult;
+
+            }
+
+            #endregion
+
+
+            SendCDRResult result = null;
+
+            #region An authenticator was found for the upstream SessionId!
+
+            ChargingSession _ChargingSession = null;
+
+            if (_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
+            {
+
+                if (_ChargingSession.AuthService != null)
+                    result = await _ChargingSession.AuthService.SendChargeDetailRecord(EVSEId,
+                                                                                       SessionId,
+                                                                                       ChargingProductId,
+                                                                                       SessionStart,
+                                                                                       SessionEnd,
+                                                                                       AuthInfo,
+                                                                                       ChargingStart,
+                                                                                       ChargingEnd,
+                                                                                       MeterValueStart,
+                                                                                       MeterValueEnd,
+                                                                                       MeterValuesInBetween,
+                                                                                       ConsumedEnergy,
+                                                                                       MeteringSignature,
+                                                                                       QueryTimeout);
+
+                else if (_ChargingSession.OperatorRoamingService != null)
+                    result = await _ChargingSession.OperatorRoamingService.SendChargeDetailRecord(EVSEId,
+                                                                                                  SessionId,
+                                                                                                  ChargingProductId,
+                                                                                                  SessionStart,
+                                                                                                  SessionEnd,
+                                                                                                  AuthInfo,
+                                                                                                  ChargingStart,
+                                                                                                  ChargingEnd,
+                                                                                                  MeterValueStart,
+                                                                                                  MeterValueEnd,
+                                                                                                  MeterValuesInBetween,
+                                                                                                  ConsumedEnergy,
+                                                                                                  MeteringSignature,
+                                                                                                  QueryTimeout);
+
+            }
+
+            #endregion
+
+            #region Try to find anyone who might kown anything about the given SessionId!
+
+            if (result        == null ||
+                result.Status == SendCDRResultType.InvalidSessionId)
+            {
+
+                foreach (var OtherAuthenticationService in _AuthenticationServices.
+                                                               OrderBy(v => v.Key).
+                                                               Select(v => v.Value).
+                                                               ToArray())
                 {
 
-                    var _SENDCDRResult = OnFilterCDRRecordsLocal(AuthorizatorId, AuthInfo);
-
-                    if (_SENDCDRResult != null)
-                        return _SENDCDRResult;
-
-                }
-
-                #endregion
-
-                IAuthServices  AuthenticationService;
-
-                #region An authenticator was found for the upstream SessionId!
-
-                if (_SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
-                {
-
-                    var _SendCDRTask = AuthenticationService.SendChargeDetailRecord(EVSEId,
-                                                                                    SessionId,
-                                                                                    ChargingProductId,
-                                                                                    SessionStart,
-                                                                                    SessionEnd,
-                                                                                    AuthInfo,
-                                                                                    ChargingStart,
-                                                                                    ChargingEnd,
-                                                                                    MeterValueStart,
-                                                                                    MeterValueEnd,
-                                                                                    MeterValuesInBetween,
-                                                                                    ConsumedEnergy,
-                                                                                    MeteringSignature,
-                                                                                    HubOperatorId,
-                                                                                    HubProviderId,
-                                                                                    QueryTimeout);
-
-                    _SendCDRTask.Wait();
-
-                    if (_SendCDRTask.Result.Status == SendCDRResultType.Forwarded)
-                    {
-                        _SessionIdAuthenticatorCache.TryRemove(SessionId, out AuthenticationService);
-                        return _SendCDRTask.Result;
-                    }
-
-                }
-
-                IOperatorRoamingService OperatorRoamingService;
-
-                if (_SessionIdOperatorRoamingServiceCache.TryGetValue(SessionId, out OperatorRoamingService))
-                {
-
-                    var _SendCDRTask = OperatorRoamingService.SendChargeDetailRecord(EVSEId,
+                    result = await OtherAuthenticationService.SendChargeDetailRecord(EVSEId,
                                                                                      SessionId,
                                                                                      ChargingProductId,
                                                                                      SessionStart,
@@ -3676,53 +3756,15 @@ namespace org.GraphDefined.WWCP
                                                                                      MeterValuesInBetween,
                                                                                      ConsumedEnergy,
                                                                                      MeteringSignature,
-                                                                                     HubOperatorId,
-                                                                                     HubProviderId,
                                                                                      QueryTimeout);
 
-                    _SendCDRTask.Wait();
-
-                    if (_SendCDRTask.Result.Status == SendCDRResultType.Forwarded)
-                    {
-                        _SessionIdOperatorRoamingServiceCache.TryRemove(SessionId, out OperatorRoamingService);
-                        return _SendCDRTask.Result;
-                    }
-
                 }
 
-                #endregion
+            }
 
-                #region Try to find anyone who might kown anything about the given SessionId!
-
-                foreach (var OtherAuthenticationService in _AuthenticationServices.
-                                                               OrderBy(v => v.Key).
-                                                               Select(v => v.Value).
-                                                               ToArray())
-                {
-
-                    var _SendCDRTask = OtherAuthenticationService.SendChargeDetailRecord(EVSEId,
-                                                                                         SessionId,
-                                                                                         ChargingProductId,
-                                                                                         SessionStart,
-                                                                                         SessionEnd,
-                                                                                         AuthInfo,
-                                                                                         ChargingStart,
-                                                                                         ChargingEnd,
-                                                                                         MeterValueStart,
-                                                                                         MeterValueEnd,
-                                                                                         MeterValuesInBetween,
-                                                                                         ConsumedEnergy,
-                                                                                         MeteringSignature,
-                                                                                         HubOperatorId,
-                                                                                         HubProviderId,
-                                                                                         QueryTimeout);
-
-                    _SendCDRTask.Wait();
-
-                    if (_SendCDRTask.Result.Status == SendCDRResultType.Forwarded)
-                        return _SendCDRTask.Result;
-
-                }
+            if (result        == null ||
+                result.Status == SendCDRResultType.InvalidSessionId)
+            {
 
                 foreach (var OtherOperatorRoamingService in _OperatorRoamingServices.
                                                                OrderBy(v => v.Key).
@@ -3730,40 +3772,44 @@ namespace org.GraphDefined.WWCP
                                                                ToArray())
                 {
 
-                    var _SendCDRTask = OtherOperatorRoamingService.SendChargeDetailRecord(EVSEId,
-                                                                                          SessionId,
-                                                                                          ChargingProductId,
-                                                                                          SessionStart,
-                                                                                          SessionEnd,
-                                                                                          AuthInfo,
-                                                                                          ChargingStart,
-                                                                                          ChargingEnd,
-                                                                                          MeterValueStart,
-                                                                                          MeterValueEnd,
-                                                                                          MeterValuesInBetween,
-                                                                                          ConsumedEnergy,
-                                                                                          MeteringSignature,
-                                                                                          HubOperatorId,
-                                                                                          HubProviderId,
-                                                                                          QueryTimeout);
-
-                    _SendCDRTask.Wait();
-
-                    if (_SendCDRTask.Result.Status == SendCDRResultType.Forwarded)
-                        return _SendCDRTask.Result;
+                    result = await OtherOperatorRoamingService.SendChargeDetailRecord(EVSEId,
+                                                                                      SessionId,
+                                                                                      ChargingProductId,
+                                                                                      SessionStart,
+                                                                                      SessionEnd,
+                                                                                      AuthInfo,
+                                                                                      ChargingStart,
+                                                                                      ChargingEnd,
+                                                                                      MeterValueStart,
+                                                                                      MeterValueEnd,
+                                                                                      MeterValuesInBetween,
+                                                                                      ConsumedEnergy,
+                                                                                      MeteringSignature,
+                                                                                      QueryTimeout);
 
                 }
 
-                #endregion
+            }
 
-                #region ...else fail!
+            #endregion
+
+            #region ...else fail!
+
+            if (result        == null ||
+                result.Status == SendCDRResultType.InvalidSessionId)
+            {
 
                 return SendCDRResult.False(AuthorizatorId,
                                            "No authorization service returned a positiv result!");
 
-                #endregion
-
             }
+
+            #endregion
+
+
+            _ChargingSession.RemoveMe = true;
+
+            return result;
 
         }
 
