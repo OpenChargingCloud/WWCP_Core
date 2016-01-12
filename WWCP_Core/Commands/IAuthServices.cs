@@ -17,6 +17,8 @@
 
 #region Usings
 
+using System;
+using System.Linq;
 using System.Collections.Generic;
 
 #endregion
@@ -27,7 +29,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The EV Roaming Provider provided EVSE Operator services interface.
     /// </summary>
-    public interface IAuthServices : IEVSEOperatorServices
+    public interface IAuthServices : IGeneralServices
     {
 
         Authorizator_Id AuthorizatorId { get; }

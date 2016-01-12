@@ -157,13 +157,18 @@ namespace org.GraphDefined.WWCP
 
             get
             {
+
+                if (_Name == null || !_Name.Any())
+                    return _ChargingPool.Name;
+
                 return _Name;
+
             }
 
             set
             {
 
-                if (_Name != value)
+                if (_Name != value && _Name != _ChargingPool.Name)
                     SetProperty<I18NString>(ref _Name, value);
 
             }
@@ -1066,11 +1071,28 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The charging pool.
         /// </summary>
+        [InternalUseOnly]
         public ChargingPool ChargingPool
         {
             get
             {
                 return _ChargingPool;
+            }
+        }
+
+        #endregion
+
+        #region EVSEOperator
+
+        /// <summary>
+        /// The EVSE operator of this EVSE.
+        /// </summary>
+        [InternalUseOnly]
+        public EVSEOperator EVSEOperator
+        {
+            get
+            {
+                return ChargingPool.EVSEOperator;
             }
         }
 

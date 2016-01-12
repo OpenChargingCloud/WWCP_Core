@@ -515,11 +515,28 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The charging station of this EVSE.
         /// </summary>
+        [InternalUseOnly]
         public ChargingStation ChargingStation
         {
             get
             {
                 return _ChargingStation;
+            }
+        }
+
+        #endregion
+
+        #region EVSEOperator
+
+        /// <summary>
+        /// The EVSE operator of this EVSE.
+        /// </summary>
+        [InternalUseOnly]
+        public EVSEOperator EVSEOperator
+        {
+            get
+            {
+                return ChargingStation.ChargingPool.EVSEOperator;
             }
         }
 

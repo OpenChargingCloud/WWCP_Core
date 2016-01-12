@@ -3866,7 +3866,7 @@ namespace org.GraphDefined.WWCP
                                                           Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
                 {
 
-                    result = await AuthenticationService.PushEVSEStatus(new KeyValuePair<EVSE_Id, EVSEStatusType>[] { new KeyValuePair<EVSE_Id, EVSEStatusType>(EVSE.Id, NewStatus.Value) },
+                    result = await AuthenticationService.PushEVSEStatus(EVSE,
                                                                         ActionType.update,
                                                                         EVSE.ChargingStation.ChargingPool.EVSEOperator.Id);
 
@@ -3877,7 +3877,7 @@ namespace org.GraphDefined.WWCP
                                                           Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
                 {
 
-                    result = await OperatorRoamingService.PushEVSEStatus(new KeyValuePair<EVSE_Id, EVSEStatusType>[] { new KeyValuePair<EVSE_Id, EVSEStatusType>(EVSE.Id, NewStatus.Value) },
+                    result = await OperatorRoamingService.PushEVSEStatus(EVSE,
                                                                          ActionType.update,
                                                                          EVSE.ChargingStation.ChargingPool.EVSEOperator.Id);
 

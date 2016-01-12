@@ -17,6 +17,9 @@
 
 #region Usings
 
+using System;
+using System.Linq;
+
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -27,7 +30,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The EV Roaming Provider provided EVSE Operator services interface.
     /// </summary>
-    public interface IOperatorRoamingService : IEVSEOperatorServices
+    public interface IOperatorRoamingService : IGeneralServices
     {
 
         #region Properties
