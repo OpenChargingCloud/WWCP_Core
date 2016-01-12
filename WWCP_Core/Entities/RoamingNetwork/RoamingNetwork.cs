@@ -3735,6 +3735,8 @@ namespace org.GraphDefined.WWCP
                         result = await _ChargingSession.OperatorRoamingService.SendChargeDetailRecord(ChargeDetailRecord,
                                                                                                       QueryTimeout);
 
+                    _ChargingSession.RemoveMe = true;
+
                 }
 
                 #endregion
@@ -3789,8 +3791,6 @@ namespace org.GraphDefined.WWCP
                 }
 
                 #endregion
-
-                _ChargingSession.RemoveMe = true;
 
             }
 
