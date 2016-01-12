@@ -62,8 +62,6 @@ namespace org.GraphDefined.WWCP
         private readonly ConcurrentDictionary<UInt32,                        IOperatorRoamingService>    _OperatorRoamingServices;
 
         private readonly ConcurrentDictionary<ChargingSession_Id,            ChargingSession>            _ChargingSessions;
-        //private readonly ConcurrentDictionary<ChargingSession_Id,            IAuthServices>              _SessionIdAuthenticatorCache;
-        //private readonly ConcurrentDictionary<ChargingSession_Id,            IOperatorRoamingService>    _SessionIdOperatorRoamingServiceCache;
 
         #endregion
 
@@ -3614,13 +3612,13 @@ namespace org.GraphDefined.WWCP
 
         //ToDo: Refactor SendChargeDetailRecord to be async!
 
-        #region SendChargeDetailRecord(EVSEId, SessionId, ChargingProductId, SessionStart, SessionEnd, AuthToken = null, eMAId = null, ..., QueryTimeout = null)
+        #region SendChargeDetailRecord(EVSEId, ChargingSessionId, ChargingProductId, SessionStart, SessionEnd, AuthToken = null, eMAId = null, ..., QueryTimeout = null)
 
         /// <summary>
         /// Create a SendChargeDetailRecord request.
         /// </summary>
         /// <param name="EVSEId">An EVSE identification.</param>
-        /// <param name="SessionId">The session identification from the Authorize Start request.</param>
+        /// <param name="ChargingSessionId">The session identification from the Authorize Start request.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionStart">The timestamp of the session start.</param>
         /// <param name="SessionEnd">The timestamp of the session end.</param>
@@ -3632,13 +3630,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="MeterValuesInBetween">An optional enumeration of meter values during the charging session.</param>
         /// <param name="ConsumedEnergy">The optional amount of consumed energy.</param>
         /// <param name="MeteringSignature">An optional signature for the metering values.</param>
-        /// <param name="HubOperatorId">An optional identification of the hub operator.</param>
-        /// <param name="HubProviderId">An optional identification of the hub provider.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
         public async Task<SendCDRResult>
 
             SendChargeDetailRecord(EVSE_Id              EVSEId,
-                                   ChargingSession_Id   SessionId,
+                                   ChargingSession_Id   ChargingSessionId,
                                    ChargingProduct_Id   ChargingProductId,
                                    DateTime             SessionStart,
                                    DateTime             SessionEnd,
@@ -3656,17 +3652,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (EVSEId           == null)
-                throw new ArgumentNullException("EVSEId",             "The given parameter must not be null!");
-
-            if (SessionId        == null)
-                throw new ArgumentNullException("SessionId",          "The given parameter must not be null!");
-
-            if (ChargingProductId == null)
-                throw new ArgumentNullException("ChargingProductId",  "The given parameter must not be null!");
-
-            if (AuthInfo         == null)
-                throw new ArgumentNullException("AuthInfo",           "The given parameter must not be null!");
+            if (ChargingSessionId == null)
+                throw new ArgumentNullException("ChargingSessionId", "The given charging session identification must not be null!");
 
             #endregion
 
@@ -3685,129 +3672,140 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
+            return await SendChargeDetailRecord(new ChargeDetailRecord(ChargingSessionId),
+                                                QueryTimeout);
+
+        }
+
+        #endregion
+
+        #region SendChargeDetailRecord(ChargeDetailRecord, QueryTimeout = null)
+
+        public async Task<SendCDRResult>
+
+            SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
+                                   TimeSpan?           QueryTimeout = null)
+
+        {
+
+            #region Initial checks
+
+            if (ChargeDetailRecord == null)
+                throw new ArgumentNullException("ChargeDetailRecord", "The given charge detail record must not be null!");
+
+            #endregion
+
+            #region Send OnSendCDR event
+
+            var OnSendCDRLocal = OnSendCDR;
+            if (OnSendCDRLocal != null)
+                OnSendCDRLocal(DateTime.Now,
+                               this,
+                               this.Id,
+                               ChargeDetailRecord);
+
+            #endregion
+
 
             SendCDRResult result = null;
 
-            #region An authenticator was found for the upstream SessionId!
+            #region Some CDR should perhaps be filtered...
 
-            ChargingSession _ChargingSession = null;
-
-            if (_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
-            {
-
-                if (_ChargingSession.AuthService != null)
-                    result = await _ChargingSession.AuthService.SendChargeDetailRecord(EVSEId,
-                                                                                       SessionId,
-                                                                                       ChargingProductId,
-                                                                                       SessionStart,
-                                                                                       SessionEnd,
-                                                                                       AuthInfo,
-                                                                                       ChargingStart,
-                                                                                       ChargingEnd,
-                                                                                       MeterValueStart,
-                                                                                       MeterValueEnd,
-                                                                                       MeterValuesInBetween,
-                                                                                       ConsumedEnergy,
-                                                                                       MeteringSignature,
-                                                                                       QueryTimeout);
-
-                else if (_ChargingSession.OperatorRoamingService != null)
-                    result = await _ChargingSession.OperatorRoamingService.SendChargeDetailRecord(EVSEId,
-                                                                                                  SessionId,
-                                                                                                  ChargingProductId,
-                                                                                                  SessionStart,
-                                                                                                  SessionEnd,
-                                                                                                  AuthInfo,
-                                                                                                  ChargingStart,
-                                                                                                  ChargingEnd,
-                                                                                                  MeterValueStart,
-                                                                                                  MeterValueEnd,
-                                                                                                  MeterValuesInBetween,
-                                                                                                  ConsumedEnergy,
-                                                                                                  MeteringSignature,
-                                                                                                  QueryTimeout);
-
-            }
+            var OnFilterCDRRecordsLocal = OnFilterCDRRecords;
+            if (OnFilterCDRRecordsLocal != null)
+                result = OnFilterCDRRecordsLocal(AuthorizatorId, ChargeDetailRecord.Identification);
 
             #endregion
 
-            #region Try to find anyone who might kown anything about the given SessionId!
-
-            if (result        == null ||
-                result.Status == SendCDRResultType.InvalidSessionId)
+            if (result == null)
             {
 
-                foreach (var OtherAuthenticationService in _AuthenticationServices.
-                                                               OrderBy(v => v.Key).
-                                                               Select(v => v.Value).
-                                                               ToArray())
+                #region An authenticator was found for the upstream SessionId!
+
+                ChargingSession _ChargingSession = null;
+
+                if (_ChargingSessions.TryGetValue(ChargeDetailRecord.SessionId, out _ChargingSession))
                 {
 
-                    result = await OtherAuthenticationService.SendChargeDetailRecord(EVSEId,
-                                                                                     SessionId,
-                                                                                     ChargingProductId,
-                                                                                     SessionStart,
-                                                                                     SessionEnd,
-                                                                                     AuthInfo,
-                                                                                     ChargingStart,
-                                                                                     ChargingEnd,
-                                                                                     MeterValueStart,
-                                                                                     MeterValueEnd,
-                                                                                     MeterValuesInBetween,
-                                                                                     ConsumedEnergy,
-                                                                                     MeteringSignature,
-                                                                                     QueryTimeout);
+                    if (_ChargingSession.AuthService != null)
+                        result = await _ChargingSession.AuthService.SendChargeDetailRecord(ChargeDetailRecord,
+                                                                                           QueryTimeout);
+
+                    else if (_ChargingSession.OperatorRoamingService != null)
+                        result = await _ChargingSession.OperatorRoamingService.SendChargeDetailRecord(ChargeDetailRecord,
+                                                                                                      QueryTimeout);
 
                 }
 
-            }
+                #endregion
 
-            if (result        == null ||
-                result.Status == SendCDRResultType.InvalidSessionId)
-            {
+                #region Try to find anyone who might kown anything about the given SessionId!
 
-                foreach (var OtherOperatorRoamingService in _OperatorRoamingServices.
-                                                               OrderBy(v => v.Key).
-                                                               Select(v => v.Value).
-                                                               ToArray())
+                if (result == null ||
+                    result.Status == SendCDRResultType.InvalidSessionId)
                 {
 
-                    result = await OtherOperatorRoamingService.SendChargeDetailRecord(EVSEId,
-                                                                                      SessionId,
-                                                                                      ChargingProductId,
-                                                                                      SessionStart,
-                                                                                      SessionEnd,
-                                                                                      AuthInfo,
-                                                                                      ChargingStart,
-                                                                                      ChargingEnd,
-                                                                                      MeterValueStart,
-                                                                                      MeterValueEnd,
-                                                                                      MeterValuesInBetween,
-                                                                                      ConsumedEnergy,
-                                                                                      MeteringSignature,
-                                                                                      QueryTimeout);
+                    foreach (var OtherAuthenticationService in _AuthenticationServices.
+                                                                   OrderBy(v => v.Key).
+                                                                   Select(v => v.Value).
+                                                                   ToArray())
+                    {
+
+                        result = await OtherAuthenticationService.SendChargeDetailRecord(ChargeDetailRecord,
+                                                                                         QueryTimeout);
+
+                    }
 
                 }
 
+                if (result == null ||
+                    result.Status == SendCDRResultType.InvalidSessionId)
+                {
+
+                    foreach (var OtherOperatorRoamingService in _OperatorRoamingServices.
+                                                                    OrderBy(v => v.Key).
+                                                                    Select(v => v.Value).
+                                                                    ToArray())
+                    {
+
+                        result = await OtherOperatorRoamingService.SendChargeDetailRecord(ChargeDetailRecord,
+                                                                                          QueryTimeout);
+
+                    }
+
+                }
+
+                #endregion
+
+                #region ...else fail!
+
+                if (result == null ||
+                    result.Status == SendCDRResultType.InvalidSessionId)
+                {
+
+                    return SendCDRResult.False(AuthorizatorId,
+                                               "No authorization service returned a positiv result!");
+
+                }
+
+                #endregion
+
+                _ChargingSession.RemoveMe = true;
+
             }
 
-            #endregion
 
-            #region ...else fail!
+            #region Send OnCDRSent event
 
-            if (result        == null ||
-                result.Status == SendCDRResultType.InvalidSessionId)
-            {
-
-                return SendCDRResult.False(AuthorizatorId,
-                                           "No authorization service returned a positiv result!");
-
-            }
+            var OnCDRSentLocal = OnCDRSent;
+            if (OnCDRSentLocal != null)
+                OnCDRSentLocal(DateTime.Now,
+                               this,
+                               this.Id,
+                               ChargeDetailRecord,
+                               result);
 
             #endregion
-
-
-            _ChargingSession.RemoveMe = true;
 
             return result;
 

@@ -200,6 +200,8 @@ namespace org.GraphDefined.WWCP
 
         /// <summary>
         /// An optional enumeration of intermediate energy meter values.
+        /// This values indicate the consumed energy between the current
+        /// and the last timestamp in watt-hours [Wh].
         /// </summary>
         [Optional]
         public IEnumerable<Timestamped<Double>> EnergyMeterValues
@@ -207,6 +209,26 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return _EnergyMeterValues;
+            }
+        }
+
+        #endregion
+
+        #region ConsumedEnergy
+
+        /// <summary>
+        /// The current amount of energy consumed while charging in [kWh].
+        /// </summary>
+        [Mandatory]
+        public Double ConsumedEnergy
+        {
+            get
+            {
+
+                return _EnergyMeterValues.
+                           Select(metervalue => metervalue.Value).
+                           Sum() / 1000;
+
             }
         }
 

@@ -385,37 +385,37 @@ namespace org.GraphDefined.WWCP
         Task<SendCDRResult> SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
                                                    TimeSpan?           QueryTimeout = null);
 
-        /// <summary>
-        /// Create a SendChargeDetailRecord request.
-        /// </summary>
-        /// <param name="EVSEId">An EVSE identification.</param>
-        /// <param name="SessionId">The session identification from the Authorize Start request.</param>
-        /// <param name="ChargingProductId">An optional charging product identification.</param>
-        /// <param name="SessionStart">The timestamp of the session start.</param>
-        /// <param name="SessionEnd">The timestamp of the session end.</param>
-        /// <param name="AuthInfo">AuthInfo</param>.
-        /// <param name="ChargingStart">An optional charging start timestamp.</param>
-        /// <param name="ChargingEnd">An optional charging end timestamp.</param>
-        /// <param name="MeterValueStart">An optional initial value of the energy meter.</param>
-        /// <param name="MeterValueEnd">An optional final value of the energy meter.</param>
-        /// <param name="MeterValuesInBetween">An optional enumeration of meter values during the charging session.</param>
-        /// <param name="ConsumedEnergy">The optional amount of consumed energy.</param>
-        /// <param name="MeteringSignature">An optional signature for the metering values.</param>
-        /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        Task<SendCDRResult> SendChargeDetailRecord(EVSE_Id              EVSEId,
-                                                   ChargingSession_Id   SessionId,
-                                                   ChargingProduct_Id   ChargingProductId,
-                                                   DateTime             SessionStart,
-                                                   DateTime             SessionEnd,
-                                                   AuthInfo             AuthInfo,
-                                                   DateTime?            ChargingStart         = null,
-                                                   DateTime?            ChargingEnd           = null,
-                                                   Double?              MeterValueStart       = null,
-                                                   Double?              MeterValueEnd         = null,
-                                                   IEnumerable<Double>  MeterValuesInBetween  = null,
-                                                   Double?              ConsumedEnergy        = null,
-                                                   String               MeteringSignature     = null,
-                                                   TimeSpan?            QueryTimeout          = null);
+        ///// <summary>
+        ///// Create a SendChargeDetailRecord request.
+        ///// </summary>
+        ///// <param name="EVSEId">An EVSE identification.</param>
+        ///// <param name="SessionId">The session identification from the Authorize Start request.</param>
+        ///// <param name="ChargingProductId">An optional charging product identification.</param>
+        ///// <param name="SessionStart">The timestamp of the session start.</param>
+        ///// <param name="SessionEnd">The timestamp of the session end.</param>
+        ///// <param name="AuthInfo">AuthInfo</param>.
+        ///// <param name="ChargingStart">An optional charging start timestamp.</param>
+        ///// <param name="ChargingEnd">An optional charging end timestamp.</param>
+        ///// <param name="MeterValueStart">An optional initial value of the energy meter.</param>
+        ///// <param name="MeterValueEnd">An optional final value of the energy meter.</param>
+        ///// <param name="MeterValuesInBetween">An optional enumeration of meter values during the charging session.</param>
+        ///// <param name="ConsumedEnergy">The optional amount of consumed energy.</param>
+        ///// <param name="MeteringSignature">An optional signature for the metering values.</param>
+        ///// <param name="QueryTimeout">An optional timeout for this query.</param>
+        //Task<SendCDRResult> SendChargeDetailRecord(EVSE_Id              EVSEId,
+        //                                           ChargingSession_Id   SessionId,
+        //                                           ChargingProduct_Id   ChargingProductId,
+        //                                           DateTime             SessionStart,
+        //                                           DateTime             SessionEnd,
+        //                                           AuthInfo             AuthInfo,
+        //                                           DateTime?            ChargingStart         = null,
+        //                                           DateTime?            ChargingEnd           = null,
+        //                                           Double?              MeterValueStart       = null,
+        //                                           Double?              MeterValueEnd         = null,
+        //                                           IEnumerable<Double>  MeterValuesInBetween  = null,
+        //                                           Double?              ConsumedEnergy        = null,
+        //                                           String               MeteringSignature     = null,
+        //                                           TimeSpan?            QueryTimeout          = null);
 
         #endregion
 

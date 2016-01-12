@@ -258,17 +258,19 @@ namespace org.GraphDefined.WWCP
 
         #region ConsumedEnergy
 
-        private readonly Double? _ConsumedEnergy;
-
         /// <summary>
-        /// The optional total amount of consumed energy.
+        /// The current amount of energy consumed while charging in [kWh].
         /// </summary>
-        [Optional]
-        public Double? ConsumedEnergy
+        [Mandatory]
+        public Double ConsumedEnergy
         {
             get
             {
-                return _ConsumedEnergy;
+
+                return _EnergyMeterValues.
+                           Select(metervalue => metervalue.Value).
+                           Sum() / 1000;
+
             }
         }
 
@@ -331,7 +333,6 @@ namespace org.GraphDefined.WWCP
         /// 
         /// <param name="EnergyMeterId">An optional unique identification of the energy meter.</param>
         /// <param name="EnergyMeterValues">An optional enumeration of intermediate energy meter values.</param>
-        /// <param name="ConsumedEnergy">The optional total amount of consumed energy.</param>
         /// <param name="MeteringSignature">An optional signature for the metering values.</param>
         /// 
         /// <param name="Identification">An identification.</param>
@@ -351,7 +352,6 @@ namespace org.GraphDefined.WWCP
 
                                   EnergyMeter_Id                    EnergyMeterId        = null,
                                   IEnumerable<Timestamped<Double>>  EnergyMeterValues    = null,
-                                  Double?                           ConsumedEnergy       = null,
                                   String                            MeteringSignature    = null,
 
                                   AuthInfo                          Identification       = null)
