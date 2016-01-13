@@ -182,12 +182,16 @@ namespace org.GraphDefined.WWCP
                 var _OldStatus = _CurrentStatus;
 
                 // Remove any old status having the same timestamp!
-                var NewStatusSchedule = _StatusSchedule.Where(status => status.Timestamp != Timestamp).ToList();
+                var NewStatusSchedule = _StatusSchedule.
+                                            Where(status => status.Timestamp != Timestamp).
+                                            ToList();
 
                 NewStatusSchedule.Add(new Timestamped<T>(Timestamp, Value));
 
                 _StatusSchedule.Clear();
-                _StatusSchedule.AddRange(NewStatusSchedule.OrderByDescending(v => v.Timestamp).Take((Int32) _MaxStatusHistorySize));
+                _StatusSchedule.AddRange(NewStatusSchedule.
+                                             OrderByDescending(v => v.Timestamp).
+                                             Take((Int32) _MaxStatusHistorySize));
 
                 CheckCurrentStatus();
 

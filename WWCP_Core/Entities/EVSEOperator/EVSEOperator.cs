@@ -1791,6 +1791,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
         #region SetEVSEStatus(EVSEId, NewStatus)
 
         public void SetEVSEStatus(EVSE_Id                      EVSEId,
@@ -1820,10 +1821,11 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SetEVSEStatus(EVSEId, StatusList)
+        #region SetEVSEStatus(EVSEId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
         public void SetEVSEStatus(EVSE_Id                                   EVSEId,
-                                  IEnumerable<Timestamped<EVSEStatusType>>  StatusList)
+                                  IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
+                                  ChangeMethods                             ChangeMethod  = ChangeMethods.Replace)
         {
 
             if (InvalidEVSEIds.Contains(EVSEId))
@@ -1831,35 +1833,16 @@ namespace org.GraphDefined.WWCP
 
             EVSE _EVSE  = null;
             if (TryGetEVSEbyId(EVSEId, out _EVSE))
-                _EVSE.SetStatus(StatusList);
+                _EVSE.SetStatus(StatusList, ChangeMethod);
 
         }
 
         #endregion
 
-        #region SetEVSEAdminStatus(EVSEId, StatusList, ChangeMethod = ChangeMethods.Replace)
-
-        public void SetEVSEAdminStatus(EVSE_Id                                        EVSEId,
-                                       IEnumerable<Timestamped<EVSEAdminStatusType>>  StatusList,
-                                       ChangeMethods                                  ChangeMethod  = ChangeMethods.Replace)
-        {
-
-            if (InvalidEVSEIds.Contains(EVSEId))
-                return;
-
-            EVSE _EVSE  = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE))
-                _EVSE.SetAdminStatus(StatusList, ChangeMethod);
-
-        }
-
-        #endregion
-
-        #region CalcEVSEStatusDiff(EVSEStatus, IncludeEVSE = null, AutoApply = false)
+        #region CalcEVSEStatusDiff(EVSEStatus, IncludeEVSE = null)
 
         public EVSEStatusDiff CalcEVSEStatusDiff(Dictionary<EVSE_Id, EVSEStatusType>  EVSEStatus,
-                                                 Func<EVSE, Boolean>                  IncludeEVSE  = null,
-                                                 Boolean                              AutoApply    = false)
+                                                 Func<EVSE, Boolean>                  IncludeEVSE  = null)
         {
 
             if (EVSEStatus == null || EVSEStatus.Count == 0)
@@ -1918,12 +1901,6 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                if ((EVSEStatusDiff.NewStatus.    Any() ||
-                     EVSEStatusDiff.ChangedStatus.Any() ||
-                     EVSEStatusDiff.RemovedIds.   Any()) &&
-                     AutoApply)
-                    ApplyEVSEStatusDiff(EVSEStatusDiff);
-
                 return EVSEStatusDiff;
 
             }
@@ -1945,21 +1922,97 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ApplyEVSEStatusDiff(StatusDiff)
+        #region ApplyEVSEStatusDiff(EVSEStatusDiff)
 
-        public EVSEStatusDiff ApplyEVSEStatusDiff(EVSEStatusDiff StatusDiff)
+        public EVSEStatusDiff ApplyEVSEStatusDiff(EVSEStatusDiff EVSEStatusDiff)
         {
 
-            foreach (var EVSEState in StatusDiff.NewStatus)
-                SetEVSEStatus(EVSEState.Key, EVSEState.Value);
+            #region Initial checks
 
-            foreach (var EVSEState in StatusDiff.ChangedStatus)
-                SetEVSEStatus(EVSEState.Key, EVSEState.Value);
+            if (EVSEStatusDiff == null)
+                throw new ArgumentNullException("EVSEStatusDiff", "The given EVSE status diff must not be null!");
 
-            //Bug: Will duplicate the status diffs!
-            //RoamingNetwork.RequestRouter.SendEVSEStatusDiff(StatusDiff);
+            #endregion
 
-            return StatusDiff;
+            foreach (var EVSEStatus in EVSEStatusDiff.NewStatus)
+                SetEVSEStatus(EVSEStatus.Key, EVSEStatus.Value);
+
+            foreach (var EVSEStatus in EVSEStatusDiff.ChangedStatus)
+                SetEVSEStatus(EVSEStatus.Key, EVSEStatus.Value);
+
+            return EVSEStatusDiff;
+
+        }
+
+        #endregion
+
+
+        #region SetEVSEAdminStatus(EVSEId, NewAdminStatus)
+
+        public void SetEVSEAdminStatus(EVSE_Id                           EVSEId,
+                                       Timestamped<EVSEAdminStatusType>  NewAdminStatus)
+        {
+
+            EVSE _EVSE = null;
+            if (TryGetEVSEbyId(EVSEId, out _EVSE))
+                _EVSE.SetAdminStatus(NewAdminStatus);
+
+        }
+
+        #endregion
+
+        #region SetEVSEAdminStatus(EVSEId, Timestamp, NewAdminStatus)
+
+        public void SetEVSEAdminStatus(EVSE_Id              EVSEId,
+                                       DateTime             Timestamp,
+                                       EVSEAdminStatusType  NewAdminStatus)
+        {
+
+            EVSE _EVSE = null;
+            if (TryGetEVSEbyId(EVSEId, out _EVSE))
+                _EVSE.SetAdminStatus(Timestamp, NewAdminStatus);
+
+        }
+
+        #endregion
+
+        #region SetEVSEAdminStatus(EVSEId, AdminStatusList, ChangeMethod = ChangeMethods.Replace)
+
+        public void SetEVSEAdminStatus(EVSE_Id                                        EVSEId,
+                                       IEnumerable<Timestamped<EVSEAdminStatusType>>  AdminStatusList,
+                                       ChangeMethods                                  ChangeMethod  = ChangeMethods.Replace)
+        {
+
+            if (InvalidEVSEIds.Contains(EVSEId))
+                return;
+
+            EVSE _EVSE  = null;
+            if (TryGetEVSEbyId(EVSEId, out _EVSE))
+                _EVSE.SetAdminStatus(AdminStatusList, ChangeMethod);
+
+        }
+
+        #endregion
+
+        #region ApplyEVSEAdminStatusDiff(EVSEAdminStatusDiff)
+
+        public EVSEAdminStatusDiff ApplyEVSEAdminStatusDiff(EVSEAdminStatusDiff EVSEAdminStatusDiff)
+        {
+
+            #region Initial checks
+
+            if (EVSEAdminStatusDiff == null)
+                throw new ArgumentNullException("EVSEAdminStatusDiff", "The given EVSE admin status diff must not be null!");
+
+            #endregion
+
+            foreach (var EVSEAdminStatus in EVSEAdminStatusDiff.NewStatus)
+                SetEVSEAdminStatus(EVSEAdminStatus.Key, EVSEAdminStatus.Value);
+
+            foreach (var EVSEAdminStatus in EVSEAdminStatusDiff.ChangedStatus)
+                SetEVSEAdminStatus(EVSEAdminStatus.Key, EVSEAdminStatus.Value);
+
+            return EVSEAdminStatusDiff;
 
         }
 

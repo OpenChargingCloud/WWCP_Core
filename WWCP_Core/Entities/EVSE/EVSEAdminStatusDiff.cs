@@ -28,22 +28,22 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// An EVSE status diff.
+    /// An EVSE admin status diff.
     /// </summary>
-    public class EVSEStatusDiff : StatusDiff<EVSE_Id, EVSEStatusType>
+    public class EVSEAdminStatusDiff : StatusDiff<EVSE_Id, EVSEAdminStatusType>
     {
 
-        #region EVSEStatusDiff(Timestamp, EVSEOperatorId, EVSEOperatorName = null)
+        #region EVSEAdminStatusDiff(Timestamp, EVSEOperatorId, EVSEOperatorName = null)
 
         /// <summary>
-        /// Create a new EVSE status diff.
+        /// Create a new EVSE admin status diff.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the status diff.</param>
         /// <param name="EVSEOperatorId">The unique identification of the EVSE operator.</param>
         /// <param name="EVSEOperatorName">The optional internationalized name of the EVSE operator.</param>
-        public EVSEStatusDiff(DateTime         Timestamp,
-                              EVSEOperator_Id  EVSEOperatorId,
-                              I18NString       EVSEOperatorName = null)
+        public EVSEAdminStatusDiff(DateTime         Timestamp,
+                                   EVSEOperator_Id  EVSEOperatorId,
+                                   I18NString       EVSEOperatorName = null)
 
             : base(Timestamp, EVSEOperatorId, EVSEOperatorName)
 
@@ -51,10 +51,10 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEStatusDiff(Timestamp, EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName = null)
+        #region EVSEAdminStatusDiff(Timestamp, EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName = null)
 
         /// <summary>
-        /// Create a new EVSE status diff.
+        /// Create a new EVSE admin status diff.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the status diff.</param>
         /// <param name="EVSEOperatorId">The unique identification of the EVSE operator.</param>
@@ -62,12 +62,12 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChangedStatus">All changed status.</param>
         /// <param name="RemovedIds">All removed status.</param>
         /// <param name="EVSEOperatorName">The optional internationalized name of the EVSE operator.</param>
-        public EVSEStatusDiff(DateTime                                            Timestamp,
-                              EVSEOperator_Id                                     EVSEOperatorId,
-                              IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>>  NewStatus,
-                              IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>>  ChangedStatus,
-                              IEnumerable<EVSE_Id>                                RemovedIds,
-                              I18NString                                          EVSEOperatorName = null)
+        public EVSEAdminStatusDiff(DateTime                                                 Timestamp,
+                                   EVSEOperator_Id                                          EVSEOperatorId,
+                                   IEnumerable<KeyValuePair<EVSE_Id, EVSEAdminStatusType>>  NewStatus,
+                                   IEnumerable<KeyValuePair<EVSE_Id, EVSEAdminStatusType>>  ChangedStatus,
+                                   IEnumerable<EVSE_Id>                                     RemovedIds,
+                                   I18NString                                               EVSEOperatorName = null)
 
             : base(Timestamp, EVSEOperatorId, NewStatus, ChangedStatus, RemovedIds, EVSEOperatorName)
 

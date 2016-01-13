@@ -1899,31 +1899,96 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region SetEVSEStatus(EVSEId, StatusList)
+        #region SetEVSEStatus(EVSEId, NewStatus)
 
-        public void SetEVSEStatus(EVSE_Id                                   EVSEId,
-                                  IEnumerable<Timestamped<EVSEStatusType>>  StatusList)
+        public void SetEVSEStatus(EVSE_Id                      EVSEId,
+                                  Timestamped<EVSEStatusType>  NewStatus)
         {
 
             EVSEOperator _EVSEOperator = null;
 
             if (TryGetEVSEOperatorbyId(EVSEId.OperatorId, out _EVSEOperator))
-                _EVSEOperator.SetEVSEStatus(EVSEId, StatusList);
+                _EVSEOperator.SetEVSEStatus(EVSEId, NewStatus);
 
         }
 
         #endregion
 
-        #region SetEVSEAdminStatus(EVSEId, StatusList)
+        #region SetEVSEStatus(EVSEId, Timestamp, NewStatus)
 
-        public void SetEVSEAdminStatus(EVSE_Id                                        EVSEId,
-                                       IEnumerable<Timestamped<EVSEAdminStatusType>>  StatusList)
+        public void SetEVSEStatus(EVSE_Id         EVSEId,
+                                  DateTime        Timestamp,
+                                  EVSEStatusType  NewStatus)
         {
 
             EVSEOperator _EVSEOperator = null;
 
             if (TryGetEVSEOperatorbyId(EVSEId.OperatorId, out _EVSEOperator))
-                _EVSEOperator.SetEVSEAdminStatus(EVSEId, StatusList);
+                _EVSEOperator.SetEVSEStatus(EVSEId, NewStatus);
+
+        }
+
+        #endregion
+
+        #region SetEVSEStatus(EVSEId, StatusList)
+
+        public void SetEVSEStatus(EVSE_Id                                   EVSEId,
+                                  IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
+                                  ChangeMethods                             ChangeMethod  = ChangeMethods.Replace)
+        {
+
+            EVSEOperator _EVSEOperator = null;
+
+            if (TryGetEVSEOperatorbyId(EVSEId.OperatorId, out _EVSEOperator))
+                _EVSEOperator.SetEVSEStatus(EVSEId, StatusList, ChangeMethod);
+
+        }
+
+        #endregion
+
+
+        #region SetEVSEAdminStatus(EVSEId, NewStatus)
+
+        public void SetEVSEAdminStatus(EVSE_Id                           EVSEId,
+                                       Timestamped<EVSEAdminStatusType>  NewAdminStatus)
+        {
+
+            EVSEOperator _EVSEOperator = null;
+
+            if (TryGetEVSEOperatorbyId(EVSEId.OperatorId, out _EVSEOperator))
+                _EVSEOperator.SetEVSEAdminStatus(EVSEId, NewAdminStatus);
+
+        }
+
+        #endregion
+
+        #region SetEVSEAdminStatus(EVSEId, Timestamp, NewAdminStatus)
+
+        public void SetEVSEAdminStatus(EVSE_Id              EVSEId,
+                                       DateTime             Timestamp,
+                                       EVSEAdminStatusType  NewAdminStatus)
+        {
+
+            EVSEOperator _EVSEOperator = null;
+
+            if (TryGetEVSEOperatorbyId(EVSEId.OperatorId, out _EVSEOperator))
+                _EVSEOperator.SetEVSEAdminStatus(EVSEId, NewAdminStatus);
+
+        }
+
+        #endregion
+
+        #region SetEVSEAdminStatus(EVSEId, AdminStatusList)
+
+        public void SetEVSEAdminStatus(EVSE_Id                                        EVSEId,
+                                       IEnumerable<Timestamped<EVSEAdminStatusType>>  AdminStatusList,
+                                       ChangeMethods                                  ChangeMethod  = ChangeMethods.Replace)
+        {
+
+            EVSEOperator _EVSEOperator = null;
+
+            if (TryGetEVSEOperatorbyId(EVSEId.OperatorId, out _EVSEOperator))
+                _EVSEOperator.SetEVSEAdminStatus(EVSEId, AdminStatusList, ChangeMethod);
 
         }
 
@@ -3323,6 +3388,8 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            #region Send OnRemoteEVSEStart event
+
             var OnRemoteEVSEStartLocal = OnRemoteEVSEStart;
             if (OnRemoteEVSEStartLocal != null)
                 OnRemoteEVSEStartLocal(this,
@@ -3334,6 +3401,8 @@ namespace org.GraphDefined.WWCP
                                        SessionId,
                                        ProviderId,
                                        eMAId);
+
+            #endregion
 
 
             EVSEOperator EVSEOperator = null;
@@ -3350,6 +3419,9 @@ namespace org.GraphDefined.WWCP
                                                         ProviderId,
                                                         eMAId);
 
+
+            #region Send OnRemoteEVSEStarted event
+
             var OnRemoteEVSEStartedLocal = OnRemoteEVSEStarted;
             if (OnRemoteEVSEStartedLocal != null)
                 OnRemoteEVSEStartedLocal(this,
@@ -3357,6 +3429,8 @@ namespace org.GraphDefined.WWCP
                                          Id,
                                          EVSEId,
                                          result);
+
+            #endregion
 
             return result;
 
@@ -3393,6 +3467,8 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            #region Send OnRemoteChargingStationStart event
+
             var OnRemoteChargingStationStartLocal = OnRemoteChargingStationStart;
             if (OnRemoteChargingStationStartLocal != null)
                 OnRemoteChargingStationStartLocal(this,
@@ -3404,6 +3480,9 @@ namespace org.GraphDefined.WWCP
                                                   SessionId,
                                                   ProviderId,
                                                   eMAId);
+
+            #endregion
+
 
             EVSEOperator EVSEOperator = null;
 
@@ -3419,6 +3498,9 @@ namespace org.GraphDefined.WWCP
                                                         ProviderId,
                                                         eMAId);
 
+
+            #region Send OnRemoteChargingStationStarted
+
             var OnRemoteChargingStationStartedLocal = OnRemoteChargingStationStarted;
             if (OnRemoteChargingStationStartedLocal != null)
                 OnRemoteChargingStationStartedLocal(this,
@@ -3426,6 +3508,8 @@ namespace org.GraphDefined.WWCP
                                                     Id,
                                                     ChargingStationId,
                                                     result);
+
+            #endregion
 
             return result;
 
@@ -3455,6 +3539,8 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            #region Send OnRemoteStop event
+
             var OnRemoteStopLocal = OnRemoteStop;
             if (OnRemoteStopLocal != null)
                 OnRemoteStopLocal(this,
@@ -3463,6 +3549,8 @@ namespace org.GraphDefined.WWCP
                                   SessionId,
                                   ReservationHandling,
                                   ProviderId);
+
+            #endregion
 
 
             EVSEOperator EVSEOperator = null;
@@ -3476,12 +3564,17 @@ namespace org.GraphDefined.WWCP
                                                        SessionId,
                                                        ProviderId);
 
+
+            #region Send OnRemoteStopped event
+
             var OnRemoteStoppedLocal = OnRemoteStopped;
             if (OnRemoteStoppedLocal != null)
                 OnRemoteStoppedLocal(this,
                                      DateTime.Now,
                                      Id,
                                      result);
+
+            #endregion
 
             return result;
 
@@ -3512,6 +3605,8 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            #region Send OnRemoteEVSEStop event
+
             var OnRemoteEVSEStopLocal = OnRemoteEVSEStop;
             if (OnRemoteEVSEStopLocal != null)
                 OnRemoteEVSEStopLocal(this,
@@ -3521,6 +3616,8 @@ namespace org.GraphDefined.WWCP
                                       SessionId,
                                       ReservationHandling,
                                       ProviderId);
+
+            #endregion
 
 
             EVSEOperator EVSEOperator = null;
@@ -3535,6 +3632,9 @@ namespace org.GraphDefined.WWCP
                                                        ProviderId,
                                                        EVSEId);
 
+
+            #region Send OnRemoteEVSEStopped event
+
             var OnRemoteEVSEStoppedLocal = OnRemoteEVSEStopped;
             if (OnRemoteEVSEStoppedLocal != null)
                 OnRemoteEVSEStoppedLocal(this,
@@ -3542,6 +3642,8 @@ namespace org.GraphDefined.WWCP
                                          Id,
                                          EVSEId,
                                          result);
+
+            #endregion
 
             return result;
 
@@ -3572,6 +3674,8 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            #region Send OnRemoteChargingStationStop event
+
             var OnRemoteChargingStationStopLocal = OnRemoteChargingStationStop;
             if (OnRemoteChargingStationStopLocal != null)
                 OnRemoteChargingStationStopLocal(this,
@@ -3581,6 +3685,8 @@ namespace org.GraphDefined.WWCP
                                                  SessionId,
                                                  ReservationHandling,
                                                  ProviderId);
+
+            #endregion
 
 
             EVSEOperator EVSEOperator = null;
@@ -3595,6 +3701,9 @@ namespace org.GraphDefined.WWCP
                                                        ProviderId,
                                                        ChargingStationId);
 
+
+            #region Send OnRemoteChargingStationStopped event
+
             var OnRemoteChargingStationStoppedLocal = OnRemoteChargingStationStopped;
             if (OnRemoteChargingStationStoppedLocal != null)
                 OnRemoteChargingStationStoppedLocal(this,
@@ -3602,6 +3711,8 @@ namespace org.GraphDefined.WWCP
                                                     Id,
                                                     ChargingStationId,
                                                     result);
+
+            #endregion
 
             return result;
 
@@ -3844,6 +3955,15 @@ namespace org.GraphDefined.WWCP
 
         internal void SendEVSEStatusDiff(EVSEStatusDiff StatusDiff)
         {
+
+            foreach (var _EVSEOperator in EVSEOperators)
+            {
+
+//                var _EVSEStatusDiff = new EVSEStatusDiff(StatusDiff.Timestamp, _EVSEOperator.Id, _EVSEOperator.)
+
+
+            }
+
 
             var OnEVSEStatusDiffLocal = OnEVSEStatusDiff;
             if (OnEVSEStatusDiffLocal != null)
