@@ -3323,6 +3323,8 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            #region Send OnRemoteEVSEStart event
+
             var OnRemoteEVSEStartLocal = OnRemoteEVSEStart;
             if (OnRemoteEVSEStartLocal != null)
                 OnRemoteEVSEStartLocal(this,
@@ -3334,6 +3336,8 @@ namespace org.GraphDefined.WWCP
                                        SessionId,
                                        ProviderId,
                                        eMAId);
+
+            #endregion
 
 
             EVSEOperator EVSEOperator = null;
@@ -3350,6 +3354,17 @@ namespace org.GraphDefined.WWCP
                                                         ProviderId,
                                                         eMAId);
 
+
+            if (result.Result == RemoteStartEVSEResultType.Success)
+            {
+                _ChargingSessions.TryAdd(result.SessionId,
+                                         new ChargingSession(Id:      result.SessionId,
+                                                             EVSE:    EVSEOperator.GetEVSEbyId(EVSEId)));
+            }
+
+
+            #region Send OnRemoteEVSEStarted event
+
             var OnRemoteEVSEStartedLocal = OnRemoteEVSEStarted;
             if (OnRemoteEVSEStartedLocal != null)
                 OnRemoteEVSEStartedLocal(this,
@@ -3357,6 +3372,8 @@ namespace org.GraphDefined.WWCP
                                          Id,
                                          EVSEId,
                                          result);
+
+            #endregion
 
             return result;
 
@@ -3393,6 +3410,8 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            #region Send OnRemoteChargingStationStart event
+
             var OnRemoteChargingStationStartLocal = OnRemoteChargingStationStart;
             if (OnRemoteChargingStationStartLocal != null)
                 OnRemoteChargingStationStartLocal(this,
@@ -3404,6 +3423,9 @@ namespace org.GraphDefined.WWCP
                                                   SessionId,
                                                   ProviderId,
                                                   eMAId);
+
+            #endregion
+
 
             EVSEOperator EVSEOperator = null;
 
@@ -3419,6 +3441,9 @@ namespace org.GraphDefined.WWCP
                                                         ProviderId,
                                                         eMAId);
 
+
+            #region Send OnRemoteChargingStationStarted event
+
             var OnRemoteChargingStationStartedLocal = OnRemoteChargingStationStarted;
             if (OnRemoteChargingStationStartedLocal != null)
                 OnRemoteChargingStationStartedLocal(this,
@@ -3426,6 +3451,8 @@ namespace org.GraphDefined.WWCP
                                                     Id,
                                                     ChargingStationId,
                                                     result);
+
+            #endregion
 
             return result;
 
