@@ -234,7 +234,8 @@ namespace org.GraphDefined.WWCP
                                                                   OrderByDescending(status => status.Timestamp).
                                                                   First()).
                                             OrderByDescending(v => v.Timestamp).
-                                            Take((Int32) _MaxStatusHistorySize);
+                                            Take((Int32) _MaxStatusHistorySize).
+                                            ToArray();
 
                 _StatusSchedule.Clear();
                 _StatusSchedule.AddRange(NewStatusSchedule);

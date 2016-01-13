@@ -1907,7 +1907,7 @@ namespace org.GraphDefined.WWCP
 
             EVSEOperator _EVSEOperator = null;
 
-            if (TryGetEVSEOperatorbyId(EVSE_Id.Parse(EVSEId.ToString()).OperatorId, out _EVSEOperator))
+            if (TryGetEVSEOperatorbyId(EVSEId.OperatorId, out _EVSEOperator))
                 _EVSEOperator.SetEVSEStatus(EVSEId, StatusList);
 
         }
@@ -1922,7 +1922,7 @@ namespace org.GraphDefined.WWCP
 
             EVSEOperator _EVSEOperator = null;
 
-            if (TryGetEVSEOperatorbyId(EVSE_Id.Parse(EVSEId.ToString()).OperatorId, out _EVSEOperator))
+            if (TryGetEVSEOperatorbyId(EVSEId.OperatorId, out _EVSEOperator))
                 _EVSEOperator.SetEVSEAdminStatus(EVSEId, StatusList);
 
         }
