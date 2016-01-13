@@ -251,20 +251,12 @@ namespace org.GraphDefined.WWCP.Importer
         /// <summary>
         /// Create a new WWCP importer.
         /// </summary>
-        /// <param name="Id"></param>
-        /// <param name="ConfigFilenamePrefix"></param>
-        /// <param name="DNSClient"></param>
-        /// <param name="UpdateEvery"></param>
-        /// <param name="GetXMLData"></param>
-        /// <param name="OnFirstRun"></param>
-        /// <param name="OnEveryRun"></param>
-        /// <param name="MaxNumberOfCachedXMLExports"></param>
         public WWCPImporter(String                                          Id,
                             String                                          ConfigFilenamePrefix,
                             DNSClient                                       DNSClient                    = null,
                             TimeSpan?                                       UpdateEvery                  = null,
 
-                            Func<DNSClient, Task<HTTPResponse<T>>>          GetXMLData                   = null,
+                            Func<DNSClient, Task<HTTPResponse<T>>>          DownloadData                 = null,
                             Action<WWCPImporter<T>, Task<HTTPResponse<T>>>  OnFirstRun                   = null,
                             Action<WWCPImporter<T>, Task<HTTPResponse<T>>>  OnEveryRun                   = null,
 
@@ -280,7 +272,7 @@ namespace org.GraphDefined.WWCP.Importer
             if (ConfigFilenamePrefix.IsNullOrEmpty())
                 throw new ArgumentNullException("ConfigFilenamePrefix", "The given config file name must not be null or empty!");
 
-            if (GetXMLData == null)
+            if (DownloadData == null)
                 throw new ArgumentNullException("GetXMLData", "The given delegate must not be null or empty!");
 
             if (OnFirstRun == null)
@@ -296,7 +288,7 @@ namespace org.GraphDefined.WWCP.Importer
             this._DNSClient                    = DNSClient   != null ? DNSClient         : new DNSClient();
             this._UpdateEvery                  = UpdateEvery != null ? UpdateEvery.Value : DefaultImportEvery;
 
-            this.DownloadData               = GetXMLData;
+            this.DownloadData                  = DownloadData;
             this.OnFirstRun                    = OnFirstRun;
             this.OnEveryRun                    = OnEveryRun;
 
@@ -431,6 +423,30 @@ namespace org.GraphDefined.WWCP.Importer
                                                         if (CurrentSettings.TryGetValue("Adminstatus", out JSONToken3))
                                                             if (!Enum.TryParse<ChargingStationAdminStatusType>(JSONToken3.Value<String>(), true, out AdminStatus))
                                                                 DebugX.Log("Invalid admin status '" + JSONToken3.Value<String>() + "' for charging station '" + ChargingStationId.ToString() + "'!");
+
+                                                        if (CurrentSettings.TryGetValue("Group", out JSONToken3))
+                                                        {
+
+                                                            var JV = JSONToken3 as JValue;
+                                                            var JA = JSONToken3 as JArray;
+
+                                                            var GroupList = JV != null
+                                                                                ? new String[] { JV.Value<String>() }
+                                                                                : JA != null
+                                                                                    ? JA.AsEnumerable().Select(v => v.Value<String>())
+                                                                                    : null;
+
+                                                            if (GroupList != null)
+                                                            {
+                                                                foreach (var GroupId in GroupList)
+                                                                {
+                                                                    CurrentOperator.
+                                                                        GetOrCreateChargingStationGroup(ChargingStationGroup_Id.Parse(CurrentOperator.Id, GroupId)).
+                                                                        Add(ChargingStationId);
+                                                                }
+                                                            }
+
+                                                        }
 
                                                         if (!_AllForwardingInfos.ContainsKey(ChargingStationId))
                                                         {

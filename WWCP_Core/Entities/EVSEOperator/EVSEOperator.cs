@@ -587,23 +587,6 @@ namespace org.GraphDefined.WWCP
 
         // EVSEOperator events
 
-        #region ChargingStationGroupAddition
-
-        internal readonly IVotingNotificator<DateTime, EVSEOperator, ChargingStationGroup, Boolean> ChargingStationGroupAddition;
-
-        /// <summary>
-        /// Called whenever a charging station group will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, EVSEOperator, ChargingStationGroup, Boolean> OnChargingStationGroupAddition
-        {
-            get
-            {
-                return ChargingStationGroupAddition;
-            }
-        }
-
-        #endregion
-
         #region OnAggregatedStatusChanged
 
         /// <summary>
@@ -640,12 +623,46 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ChargingStationGroupAddition
+
+        internal readonly IVotingNotificator<DateTime, EVSEOperator, ChargingStationGroup, Boolean> ChargingStationGroupAddition;
+
+        /// <summary>
+        /// Called whenever a charging station group will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, EVSEOperator, ChargingStationGroup, Boolean> OnChargingStationGroupAddition
+        {
+            get
+            {
+                return ChargingStationGroupAddition;
+            }
+        }
+
+        #endregion
+
+        #region ChargingStationGroupRemoval
+
+        internal readonly IVotingNotificator<DateTime, EVSEOperator, ChargingStationGroup, Boolean> ChargingStationGroupRemoval;
+
+        /// <summary>
+        /// Called whenever an charging station group will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, EVSEOperator, ChargingStationGroup, Boolean> OnChargingStationGroupRemoval
+        {
+            get
+            {
+                return ChargingStationGroupRemoval;
+            }
+        }
+
+        #endregion
+
         #region ChargingPoolAddition
 
         internal readonly IVotingNotificator<DateTime, EVSEOperator, ChargingPool, Boolean> ChargingPoolAddition;
 
         /// <summary>
-        /// Called whenever an EVS pool will be or was added.
+        /// Called whenever an charging pool will be or was added.
         /// </summary>
         public IVotingSender<DateTime, EVSEOperator, ChargingPool, Boolean> OnChargingPoolAddition
         {
@@ -662,7 +679,7 @@ namespace org.GraphDefined.WWCP
         internal readonly IVotingNotificator<DateTime, EVSEOperator, ChargingPool, Boolean> ChargingPoolRemoval;
 
         /// <summary>
-        /// Called whenever an EVS pool will be or was removed.
+        /// Called whenever an charging pool will be or was removed.
         /// </summary>
         public IVotingSender<DateTime, EVSEOperator, ChargingPool, Boolean> OnChargingPoolRemoval
         {
@@ -1151,21 +1168,25 @@ namespace org.GraphDefined.WWCP
 
             #region Init events
 
-            // EVSEOperator events
-            this.ChargingPoolAddition     = new VotingNotificator<DateTime, EVSEOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
-            this.ChargingPoolRemoval      = new VotingNotificator<DateTime, EVSEOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
+            // EVSE operator events
+            this.ChargingPoolAddition          = new VotingNotificator<DateTime, EVSEOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolRemoval           = new VotingNotificator<DateTime, EVSEOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
 
-            // ChargingPool events
-            this.ChargingStationAddition  = new VotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
-            this.ChargingStationRemoval   = new VotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
+            // Charging station group events
+            this.ChargingStationGroupAddition  = new VotingNotificator<DateTime, EVSEOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationGroupRemoval   = new VotingNotificator<DateTime, EVSEOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
 
-            // ChargingStation events
-            this.EVSEAddition             = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
-            this.EVSERemoval              = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            // Charging pool events
+            this.ChargingStationAddition       = new VotingNotificator<DateTime, ChargingPool,    ChargingStation,      Boolean>(() => new VetoVote(), true);
+            this.ChargingStationRemoval        = new VotingNotificator<DateTime, ChargingPool,    ChargingStation,      Boolean>(() => new VetoVote(), true);
+
+            // Charging station events
+            this.EVSEAddition                  = new VotingNotificator<DateTime, ChargingStation, EVSE,                 Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval                   = new VotingNotificator<DateTime, ChargingStation, EVSE,                 Boolean>(() => new VetoVote(), true);
 
             // EVSE events
-            this.SocketOutletAddition     = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
-            this.SocketOutletRemoval      = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            this.SocketOutletAddition          = new VotingNotificator<DateTime, EVSE,            SocketOutlet,         Boolean>(() => new VetoVote(), true);
+            this.SocketOutletRemoval           = new VotingNotificator<DateTime, EVSE,            SocketOutlet,         Boolean>(() => new VetoVote(), true);
 
             #endregion
 
@@ -1296,6 +1317,33 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+
+        public Boolean TryGetChargingStationGroup(ChargingStationGroup_Id   ChargingStationGroupId,
+                                                  out ChargingStationGroup  ChargingStationGroup)
+        {
+
+            return _ChargingStationGroups.TryGetValue(ChargingStationGroupId, out ChargingStationGroup);
+
+        }
+
+        public ChargingStationGroup GetOrCreateChargingStationGroup(ChargingStationGroup_Id                        ChargingStationGroupId,
+                                                                    Action<ChargingStationGroup>                   Configurator            = null,
+                                                                    Action<ChargingStationGroup>                   OnSuccess               = null,
+                                                                    Action<EVSEOperator, ChargingStationGroup_Id>  OnError                 = null)
+        {
+
+            ChargingStationGroup _ChargingStationGroup = null;
+
+            if (_ChargingStationGroups.TryGetValue(ChargingStationGroupId, out _ChargingStationGroup))
+                return _ChargingStationGroup;
+
+            return CreateNewChargingStationGroup(ChargingStationGroupId,
+                                                 Configurator,
+                                                 OnSuccess,
+                                                 OnError);
+
+        }
 
 
         #region CreateNewChargingPool(ChargingPoolId = null, Configurator = null, OnSuccess = null, OnError = null)

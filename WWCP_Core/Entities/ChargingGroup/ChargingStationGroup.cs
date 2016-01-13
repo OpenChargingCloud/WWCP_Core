@@ -129,38 +129,38 @@ namespace org.GraphDefined.WWCP
 
         #region OpeningTime
 
-        private OpeningTimes _OpeningTime;
+        //private OpeningTimes _OpeningTime;
 
-        /// <summary>
-        /// The opening time of this charging pool.
-        /// </summary>
-        [Optional]
-        public OpeningTimes OpeningTime
-        {
+        ///// <summary>
+        ///// The opening time of this charging pool.
+        ///// </summary>
+        //[Optional]
+        //public OpeningTimes OpeningTime
+        //{
 
-            get
-            {
-                return _OpeningTime;
-            }
+        //    get
+        //    {
+        //        return _OpeningTime;
+        //    }
 
-            set
-            {
+        //    set
+        //    {
 
-                if (value == null)
-                    value = OpeningTimes.Open24Hours;
+        //        if (value == null)
+        //            value = OpeningTimes.Open24Hours;
 
-                if (_OpeningTime != value)
-                {
+        //        if (_OpeningTime != value)
+        //        {
 
-                    SetProperty(ref _OpeningTime, value);
+        //            SetProperty(ref _OpeningTime, value);
 
-                    _ChargingStations.Values.ForEach(station => station._OpeningTimes = null);
+        //            _ChargingStations.Values.ForEach(station => station._OpeningTimes = null);
 
-                }
+        //        }
 
-            }
+        //    }
 
-        }
+        //}
 
         #endregion
 
@@ -220,7 +220,7 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingStations
 
-        private readonly ConcurrentDictionary<ChargingStation_Id, ChargingStation> _ChargingStations;
+     //   private readonly ConcurrentDictionary<ChargingStation_Id, ChargingStation> _ChargingStations;
 
         /// <summary>
         /// Return all charging stations registered within this charing pool.
@@ -229,7 +229,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _ChargingStations.Select(KVP => KVP.Value);
+                return _EVSEOperator.SelectMany(pool => pool.ChargingStations);
             }
         }
 
@@ -244,7 +244,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _ChargingStations.Select(KVP => KVP.Value.Id);
+                return ChargingStations.Select(station => station.Id);
             }
         }
 
@@ -261,8 +261,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return _ChargingStations.
-                           Values.
+                return ChargingStations.
                            SelectMany(station => station.EVSEs);
 
             }
@@ -281,15 +280,25 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return _ChargingStations.
-                           Values.
+                return ChargingStations.
                            SelectMany(station => station.EVSEs).
-                           Select    (evse    => evse.Id);
+                           Select    (evse    => evse.   Id);
 
             }
         }
 
         #endregion
+
+
+        private readonly HashSet<ChargingStation_Id> _AllowedChargingStationIds;
+
+        public IEnumerable<ChargingStation_Id> AllowedChargingStationIds
+        {
+            get
+            {
+                return _AllowedChargingStationIds;
+            }
+        }
 
         #endregion
 
@@ -582,13 +591,15 @@ namespace org.GraphDefined.WWCP
 
             this._EVSEOperator               = EVSEOperator;
 
-            this._ChargingStations           = new ConcurrentDictionary<ChargingStation_Id, ChargingStation>();
+            //this._ChargingStations           = new ConcurrentDictionary<ChargingStation_Id, ChargingStation>();
 
             this.Name                        = new I18NString();
             this.Description                 = new I18NString();
 
             this._AdminStatusSchedule        = new StatusSchedule<ChargingStationGroupAdminStatusType>(MaxPoolAdminStatusListSize);
             this._AdminStatusSchedule.Insert(ChargingStationGroupAdminStatusType.Unspecified);
+
+            this._AllowedChargingStationIds  = new HashSet<ChargingStation_Id>();
 
             #endregion
 
@@ -641,116 +652,71 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region ContainsChargingStation(ChargingStation)
+        #region Add(ChargingStation)
+
+        public Boolean Add(ChargingStation ChargingStation)
+        {
+
+            return _AllowedChargingStationIds.Add(ChargingStation.Id);
+
+        }
+
+        #endregion
+
+        #region Add(ChargingStationId)
+
+        public Boolean Add(ChargingStation_Id ChargingStationId)
+        {
+
+            return _AllowedChargingStationIds.Add(ChargingStationId);
+
+        }
+
+        #endregion
+
+        #region Contains(ChargingStation)
 
         /// <summary>
         /// Check if the given ChargingStation is already present within the charging pool.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
-        public Boolean ContainsChargingStationId(ChargingStation ChargingStation)
+        public Boolean Contains(ChargingStation ChargingStation)
         {
-            return _ChargingStations.ContainsKey(ChargingStation.Id);
+            return _AllowedChargingStationIds.Contains(ChargingStation.Id);
         }
 
         #endregion
 
-        #region ContainsChargingStation(ChargingStationId)
+        #region Contains(ChargingStationId)
 
         /// <summary>
         /// Check if the given ChargingStation identification is already present within the charging pool.
         /// </summary>
         /// <param name="ChargingStationId">The unique identification of the charging station.</param>
-        public Boolean ContainsChargingStation(ChargingStation_Id ChargingStationId)
+        public Boolean Contains(ChargingStation_Id ChargingStationId)
         {
-            return _ChargingStations.ContainsKey(ChargingStationId);
+            return _AllowedChargingStationIds.Contains(ChargingStationId);
         }
 
         #endregion
 
-        #region GetChargingStationById(ChargingStationId)
+        #region Remove(ChargingStation)
 
-        public ChargingStation GetChargingStationById(ChargingStation_Id ChargingStationId)
+        public Boolean Remove(ChargingStation ChargingStation)
         {
 
-            ChargingStation _ChargingStation = null;
-
-            if (_ChargingStations.TryGetValue(ChargingStationId, out _ChargingStation))
-                return _ChargingStation;
-
-            return null;
+            return _AllowedChargingStationIds.Remove(ChargingStation.Id);
 
         }
 
         #endregion
 
-        #region TryGetChargingStationbyId(ChargingStationId, out ChargingStation)
+        #region Remove(ChargingStationId)
 
-        public Boolean TryGetChargingStationbyId(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
-        {
-            return _ChargingStations.TryGetValue(ChargingStationId, out ChargingStation);
-        }
-
-        #endregion
-
-        #region RemoveChargingStation(ChargingStationId)
-
-        public ChargingStation RemoveChargingStation(ChargingStation_Id ChargingStationId)
+        public Boolean Remove(ChargingStation_Id ChargingStationId)
         {
 
-            ChargingStation _ChargingStation = null;
-
-            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
-            {
-
-                if (ChargingStationRemoval.SendVoting(DateTime.Now, this, _ChargingStation))
-                {
-
-                    if (_ChargingStations.TryRemove(ChargingStationId, out _ChargingStation))
-                    {
-
-                        ChargingStationRemoval.SendNotification(DateTime.Now, this, _ChargingStation);
-
-                        return _ChargingStation;
-
-                    }
-
-                }
-
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region TryRemoveChargingStation(ChargingStationId, out ChargingStation)
-
-        public Boolean TryRemoveChargingStation(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
-        {
-
-            if (TryGetChargingStationbyId(ChargingStationId, out ChargingStation))
-            {
-
-                if (ChargingStationRemoval.SendVoting(DateTime.Now, this, ChargingStation))
-                {
-
-                    if (_ChargingStations.TryRemove(ChargingStationId, out ChargingStation))
-                    {
-
-                        ChargingStationRemoval.SendNotification(DateTime.Now, this, ChargingStation);
-
-                        return true;
-
-                    }
-
-                }
-
-                return false;
-
-            }
-
-            return true;
+            return _AllowedChargingStationIds.Remove(ChargingStationId);
 
         }
 
@@ -815,7 +781,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">An EVSE.</param>
         public Boolean ContainsEVSE(EVSE EVSE)
         {
-            return _ChargingStations.Values.Any(ChargingStation => ChargingStation.EVSEIds.Contains(EVSE.Id));
+            return ChargingStations.Any(ChargingStation => ChargingStation.EVSEIds.Contains(EVSE.Id));
         }
 
         #endregion
@@ -828,38 +794,38 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         public Boolean ContainsEVSE(EVSE_Id EVSEId)
         {
-            return _ChargingStations.Values.Any(ChargingStation => ChargingStation.EVSEIds.Contains(EVSEId));
+            return ChargingStations.Any(ChargingStation => ChargingStation.EVSEIds.Contains(EVSEId));
         }
 
         #endregion
 
         #region GetEVSEbyId(EVSEId)
 
-        public EVSE GetEVSEbyId(EVSE_Id EVSEId)
-        {
+        //public EVSE GetEVSEbyId(EVSE_Id EVSEId)
+        //{
 
-            return _ChargingStations.Values.
-                       SelectMany(station => station.EVSEs).
-                       Where     (EVSE    => EVSE.Id == EVSEId).
-                       FirstOrDefault();
+        //    return _ChargingStations.Values.
+        //               SelectMany(station => station.EVSEs).
+        //               Where     (EVSE    => EVSE.Id == EVSEId).
+        //               FirstOrDefault();
 
-        }
+        //}
 
         #endregion
 
         #region TryGetEVSEbyId(EVSEId, out EVSE)
 
-        public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
-        {
+        //public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
+        //{
 
-            EVSE = _ChargingStations.Values.
-                       SelectMany(station => station.EVSEs).
-                       Where     (_EVSE   => _EVSE.Id == EVSEId).
-                       FirstOrDefault();
+        //    EVSE = _ChargingStations.Values.
+        //               SelectMany(station => station.EVSEs).
+        //               Where     (_EVSE   => _EVSE.Id == EVSEId).
+        //               FirstOrDefault();
 
-            return EVSE != null;
+        //    return EVSE != null;
 
-        }
+        //}
 
         #endregion
 
@@ -1038,12 +1004,12 @@ namespace org.GraphDefined.WWCP
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return _ChargingStations.Values.GetEnumerator();
+            return ChargingStations.GetEnumerator();
         }
 
         public IEnumerator<ChargingStation> GetEnumerator()
         {
-            return _ChargingStations.Values.GetEnumerator();
+            return ChargingStations.GetEnumerator();
         }
 
         #endregion

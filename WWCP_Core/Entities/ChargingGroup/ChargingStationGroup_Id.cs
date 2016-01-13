@@ -282,10 +282,10 @@ namespace org.GraphDefined.WWCP
         public static ChargingStationGroup_Id Parse(EVSEOperator_Id OperatorId, String IdSuffix)
         {
 
-            ChargingStationGroup_Id _ChargingPoolId = null;
+            ChargingStationGroup_Id _ChargingStationGroupId = null;
 
-            if (ChargingStationGroup_Id.TryParse(OperatorId, IdSuffix, out _ChargingPoolId))
-                return _ChargingPoolId;
+            if (ChargingStationGroup_Id.TryParse(OperatorId, IdSuffix, out _ChargingStationGroupId))
+                return _ChargingStationGroupId;
 
             return null;
 
@@ -293,21 +293,21 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region TryParse(Text, out ChargingPoolId)
+        #region TryParse(Text, out ChargingStationGroupId)
 
         /// <summary>
         /// Parse the given string as a charging station group identification (EVCS Id).
         /// </summary>
         /// <param name="Text">A text representation of a charging station group identification.</param>
-        /// <param name="ChargingPoolId">The parsed charging station group identification.</param>
-        public static Boolean TryParse(String Text, out ChargingStationGroup_Id ChargingPoolId)
+        /// <param name="ChargingStationGroupId">The parsed charging station group identification.</param>
+        public static Boolean TryParse(String Text, out ChargingStationGroup_Id ChargingStationGroupId)
         {
 
             #region Initial checks
 
             if (Text.IsNullOrEmpty())
             {
-                ChargingPoolId = null;
+                ChargingStationGroupId = null;
                 return false;
             }
 
@@ -316,7 +316,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                ChargingPoolId = null;
+                ChargingStationGroupId = null;
 
                 var _MatchCollection = Regex.Matches(Text.Trim().ToUpper(),
                                                      ChargingGroupId_RegEx,
@@ -331,7 +331,7 @@ namespace org.GraphDefined.WWCP
                 if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
                 {
 
-                    ChargingPoolId = new ChargingStationGroup_Id(__EVSEOperatorId,
+                    ChargingStationGroupId = new ChargingStationGroup_Id(__EVSEOperatorId,
                                                          _MatchCollection[0].Groups[2].Value,
                                                          IdFormatType.NEW);
 
@@ -343,7 +343,7 @@ namespace org.GraphDefined.WWCP
                 else if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
                 {
 
-                    ChargingPoolId = new ChargingStationGroup_Id(__EVSEOperatorId,
+                    ChargingStationGroupId = new ChargingStationGroup_Id(__EVSEOperatorId,
                                                          _MatchCollection[0].Groups[4].Value,
                                                          IdFormatType.OLD);
 
@@ -355,31 +355,31 @@ namespace org.GraphDefined.WWCP
             catch (Exception e)
             { }
 
-            ChargingPoolId = null;
+            ChargingStationGroupId = null;
             return false;
 
         }
 
         #endregion
 
-        #region TryParse(OperatorId, IdSuffix, out ChargingPoolId)
+        #region TryParse(OperatorId, IdSuffix, out ChargingStationGroupId)
 
         /// <summary>
         /// Parse the given string as a charging station group identification (EVCS Id).
         /// </summary>
         /// <param name="OperatorId">The unique identification of an EVSE operator.</param>
         /// <param name="IdSuffix">A text representation of a charging station group identification.</param>
-        /// <param name="ChargingPoolId">The parsed charging station group identification.</param>
+        /// <param name="ChargingStationGroupId">The parsed charging station group identification.</param>
         public static Boolean TryParse(EVSEOperator_Id      OperatorId,
                                        String               IdSuffix,
-                                       out ChargingStationGroup_Id  ChargingPoolId)
+                                       out ChargingStationGroup_Id  ChargingStationGroupId)
         {
 
             #region Initial checks
 
             if (OperatorId == null || IdSuffix.IsNullOrEmpty())
             {
-                ChargingPoolId = null;
+                ChargingStationGroupId = null;
                 return false;
             }
 
@@ -388,7 +388,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                ChargingPoolId = null;
+                ChargingStationGroupId = null;
 
                 var _MatchCollection = Regex.Matches(IdSuffix.Trim().ToUpper(),
                                                      IdSuffix_RegEx,
@@ -397,9 +397,9 @@ namespace org.GraphDefined.WWCP
                 if (_MatchCollection.Count != 1)
                     return false;
 
-                ChargingPoolId = new ChargingStationGroup_Id(OperatorId,
-                                                     _MatchCollection[0].Groups[0].Value,
-                                                     OperatorId.Format);
+                ChargingStationGroupId = new ChargingStationGroup_Id(OperatorId,
+                                                                     _MatchCollection[0].Groups[0].Value,
+                                                                     OperatorId.Format);
 
                 return true;
 
@@ -407,7 +407,7 @@ namespace org.GraphDefined.WWCP
             catch (Exception e)
             { }
 
-            ChargingPoolId = null;
+            ChargingStationGroupId = null;
             return false;
 
         }
@@ -466,112 +466,112 @@ namespace org.GraphDefined.WWCP
 
         #region Operator overloading
 
-        #region Operator == (ChargingPoolId1, ChargingPoolId2)
+        #region Operator == (ChargingStationGroupId1, ChargingStationGroupId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolId1">A ChargingPoolId.</param>
-        /// <param name="ChargingPoolId2">Another ChargingPoolId.</param>
+        /// <param name="ChargingStationGroupId1">A ChargingStationGroupId.</param>
+        /// <param name="ChargingStationGroupId2">Another ChargingStationGroupId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingStationGroup_Id ChargingPoolId1, ChargingStationGroup_Id ChargingPoolId2)
+        public static Boolean operator == (ChargingStationGroup_Id ChargingStationGroupId1, ChargingStationGroup_Id ChargingStationGroupId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(ChargingPoolId1, ChargingPoolId2))
+            if (Object.ReferenceEquals(ChargingStationGroupId1, ChargingStationGroupId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChargingPoolId1 == null) || ((Object) ChargingPoolId2 == null))
+            if (((Object) ChargingStationGroupId1 == null) || ((Object) ChargingStationGroupId2 == null))
                 return false;
 
-            return ChargingPoolId1.Equals(ChargingPoolId2);
+            return ChargingStationGroupId1.Equals(ChargingStationGroupId2);
 
         }
 
         #endregion
 
-        #region Operator != (ChargingPoolId1, ChargingPoolId2)
+        #region Operator != (ChargingStationGroupId1, ChargingStationGroupId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolId1">A ChargingPoolId.</param>
-        /// <param name="ChargingPoolId2">Another ChargingPoolId.</param>
+        /// <param name="ChargingStationGroupId1">A ChargingStationGroupId.</param>
+        /// <param name="ChargingStationGroupId2">Another ChargingStationGroupId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingStationGroup_Id ChargingPoolId1, ChargingStationGroup_Id ChargingPoolId2)
+        public static Boolean operator != (ChargingStationGroup_Id ChargingStationGroupId1, ChargingStationGroup_Id ChargingStationGroupId2)
         {
-            return !(ChargingPoolId1 == ChargingPoolId2);
+            return !(ChargingStationGroupId1 == ChargingStationGroupId2);
         }
 
         #endregion
 
-        #region Operator <  (ChargingPoolId1, ChargingPoolId2)
+        #region Operator <  (ChargingStationGroupId1, ChargingStationGroupId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolId1">A ChargingPoolId.</param>
-        /// <param name="ChargingPoolId2">Another ChargingPoolId.</param>
+        /// <param name="ChargingStationGroupId1">A ChargingStationGroupId.</param>
+        /// <param name="ChargingStationGroupId2">Another ChargingStationGroupId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingStationGroup_Id ChargingPoolId1, ChargingStationGroup_Id ChargingPoolId2)
+        public static Boolean operator < (ChargingStationGroup_Id ChargingStationGroupId1, ChargingStationGroup_Id ChargingStationGroupId2)
         {
 
-            if ((Object) ChargingPoolId1 == null)
-                throw new ArgumentNullException("The given ChargingPoolId1 must not be null!");
+            if ((Object) ChargingStationGroupId1 == null)
+                throw new ArgumentNullException("The given ChargingStationGroupId1 must not be null!");
 
-            return ChargingPoolId1.CompareTo(ChargingPoolId2) < 0;
-
-        }
-
-        #endregion
-
-        #region Operator <= (ChargingPoolId1, ChargingPoolId2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="ChargingPoolId1">A ChargingPoolId.</param>
-        /// <param name="ChargingPoolId2">Another ChargingPoolId.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingStationGroup_Id ChargingPoolId1, ChargingStationGroup_Id ChargingPoolId2)
-        {
-            return !(ChargingPoolId1 > ChargingPoolId2);
-        }
-
-        #endregion
-
-        #region Operator >  (ChargingPoolId1, ChargingPoolId2)
-
-        /// <summary>
-        /// Compares two instances of this object.
-        /// </summary>
-        /// <param name="ChargingPoolId1">A ChargingPoolId.</param>
-        /// <param name="ChargingPoolId2">Another ChargingPoolId.</param>
-        /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingStationGroup_Id ChargingPoolId1, ChargingStationGroup_Id ChargingPoolId2)
-        {
-
-            if ((Object) ChargingPoolId1 == null)
-                throw new ArgumentNullException("The given ChargingPoolId1 must not be null!");
-
-            return ChargingPoolId1.CompareTo(ChargingPoolId2) > 0;
+            return ChargingStationGroupId1.CompareTo(ChargingStationGroupId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator >= (ChargingPoolId1, ChargingPoolId2)
+        #region Operator <= (ChargingStationGroupId1, ChargingStationGroupId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolId1">A ChargingPoolId.</param>
-        /// <param name="ChargingPoolId2">Another ChargingPoolId.</param>
+        /// <param name="ChargingStationGroupId1">A ChargingStationGroupId.</param>
+        /// <param name="ChargingStationGroupId2">Another ChargingStationGroupId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingStationGroup_Id ChargingPoolId1, ChargingStationGroup_Id ChargingPoolId2)
+        public static Boolean operator <= (ChargingStationGroup_Id ChargingStationGroupId1, ChargingStationGroup_Id ChargingStationGroupId2)
         {
-            return !(ChargingPoolId1 < ChargingPoolId2);
+            return !(ChargingStationGroupId1 > ChargingStationGroupId2);
+        }
+
+        #endregion
+
+        #region Operator >  (ChargingStationGroupId1, ChargingStationGroupId2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStationGroupId1">A ChargingStationGroupId.</param>
+        /// <param name="ChargingStationGroupId2">Another ChargingStationGroupId.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (ChargingStationGroup_Id ChargingStationGroupId1, ChargingStationGroup_Id ChargingStationGroupId2)
+        {
+
+            if ((Object) ChargingStationGroupId1 == null)
+                throw new ArgumentNullException("The given ChargingStationGroupId1 must not be null!");
+
+            return ChargingStationGroupId1.CompareTo(ChargingStationGroupId2) > 0;
+
+        }
+
+        #endregion
+
+        #region Operator >= (ChargingStationGroupId1, ChargingStationGroupId2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStationGroupId1">A ChargingStationGroupId.</param>
+        /// <param name="ChargingStationGroupId2">Another ChargingStationGroupId.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (ChargingStationGroup_Id ChargingStationGroupId1, ChargingStationGroup_Id ChargingStationGroupId2)
+        {
+            return !(ChargingStationGroupId1 < ChargingStationGroupId2);
         }
 
         #endregion
@@ -592,39 +592,39 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an ChargingPoolId.
-            var ChargingPoolId = Object as ChargingStationGroup_Id;
-            if ((Object) ChargingPoolId == null)
-                throw new ArgumentException("The given object is not a ChargingPoolId!");
+            // Check if the given object is an ChargingStationGroupId.
+            var ChargingStationGroupId = Object as ChargingStationGroup_Id;
+            if ((Object) ChargingStationGroupId == null)
+                throw new ArgumentException("The given object is not a ChargingStationGroupId!");
 
-            return CompareTo(ChargingPoolId);
+            return CompareTo(ChargingStationGroupId);
 
         }
 
         #endregion
 
-        #region CompareTo(ChargingPoolId)
+        #region CompareTo(ChargingStationGroupId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingPoolId">An object to compare with.</param>
-        public Int32 CompareTo(ChargingStationGroup_Id ChargingPoolId)
+        /// <param name="ChargingStationGroupId">An object to compare with.</param>
+        public Int32 CompareTo(ChargingStationGroup_Id ChargingStationGroupId)
         {
 
-            if ((Object) ChargingPoolId == null)
-                throw new ArgumentNullException("The given ChargingPoolId must not be null!");
+            if ((Object) ChargingStationGroupId == null)
+                throw new ArgumentNullException("The given ChargingStationGroupId must not be null!");
 
             // Compare the length of the ChargingStationIds
-            var _Result = this.Length.CompareTo(ChargingPoolId.Length);
+            var _Result = this.Length.CompareTo(ChargingStationGroupId.Length);
 
             // If equal: Compare OperatorIds
             if (_Result == 0)
-                _Result = _OperatorId.CompareTo(ChargingPoolId._OperatorId);
+                _Result = _OperatorId.CompareTo(ChargingStationGroupId._OperatorId);
 
             // If equal: Compare ChargingStationId suffix
             if (_Result == 0)
-                _Result = _Suffix.CompareTo(ChargingPoolId._Suffix);
+                _Result = _Suffix.CompareTo(ChargingStationGroupId._Suffix);
 
             return _Result;
 
@@ -649,32 +649,32 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an ChargingPoolId.
-            var ChargingPoolId = Object as ChargingStationGroup_Id;
-            if ((Object) ChargingPoolId == null)
+            // Check if the given object is an ChargingStationGroupId.
+            var ChargingStationGroupId = Object as ChargingStationGroup_Id;
+            if ((Object) ChargingStationGroupId == null)
                 return false;
 
-            return this.Equals(ChargingPoolId);
+            return this.Equals(ChargingStationGroupId);
 
         }
 
         #endregion
 
-        #region Equals(ChargingPoolId)
+        #region Equals(ChargingStationGroupId)
 
         /// <summary>
-        /// Compares two ChargingPoolIds for equality.
+        /// Compares two ChargingStationGroupIds for equality.
         /// </summary>
-        /// <param name="ChargingPoolId">A ChargingPoolId to compare with.</param>
+        /// <param name="ChargingStationGroupId">A ChargingStationGroupId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingStationGroup_Id ChargingPoolId)
+        public Boolean Equals(ChargingStationGroup_Id ChargingStationGroupId)
         {
 
-            if ((Object) ChargingPoolId == null)
+            if ((Object) ChargingStationGroupId == null)
                 return false;
 
-            return _OperatorId.Equals(ChargingPoolId._OperatorId) &&
-                   _Suffix.  Equals(ChargingPoolId._Suffix);
+            return _OperatorId.Equals(ChargingStationGroupId._OperatorId) &&
+                   _Suffix.  Equals(ChargingStationGroupId._Suffix);
 
         }
 
@@ -702,7 +702,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return String.Concat(_OperatorId, "*P", _Suffix);
+            return String.Concat(_OperatorId, "*G", _Suffix);
         }
 
         #endregion
