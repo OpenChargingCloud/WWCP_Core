@@ -3420,6 +3420,14 @@ namespace org.GraphDefined.WWCP
                                                         eMAId);
 
 
+            if (result.Result == RemoteStartEVSEResultType.Success)
+            {
+                _ChargingSessions.TryAdd(result.SessionId,
+                                         new ChargingSession(Id:      result.SessionId,
+                                                             EVSE:    EVSEOperator.GetEVSEbyId(EVSEId)));
+            }
+
+
             #region Send OnRemoteEVSEStarted event
 
             var OnRemoteEVSEStartedLocal = OnRemoteEVSEStarted;
@@ -3499,7 +3507,7 @@ namespace org.GraphDefined.WWCP
                                                         eMAId);
 
 
-            #region Send OnRemoteChargingStationStarted
+            #region Send OnRemoteChargingStationStarted event
 
             var OnRemoteChargingStationStartedLocal = OnRemoteChargingStationStarted;
             if (OnRemoteChargingStationStartedLocal != null)

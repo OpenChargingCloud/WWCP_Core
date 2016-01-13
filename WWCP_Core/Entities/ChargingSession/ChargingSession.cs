@@ -310,6 +310,9 @@ namespace org.GraphDefined.WWCP
         /// 
         /// <param name="EnergyMeterId">An optional unique identification of the energy meter.</param>
         /// <param name="EnergyMeterValueStart">The optional start value of the energy meter used for charging.</param>
+        /// 
+        /// <param name="AuthService">The authentication service of this charging session.</param>
+        /// <param name="OperatorRoamingService">The roaming provider of this charging session.</param>
         internal ChargingSession(ChargingSession_Id       Id,
                                  EVSE                     EVSE                    = null,
                                  ChargingProduct_Id       ChargingProductId       = null,
