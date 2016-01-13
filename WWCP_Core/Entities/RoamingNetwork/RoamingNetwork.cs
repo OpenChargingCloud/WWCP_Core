@@ -1779,7 +1779,7 @@ namespace org.GraphDefined.WWCP
 
             EVSEOperator _EVSEOperator  = null;
 
-            if (TryGetEVSEOperatorbyId(EVSE.ChargingStation.ChargingPool.EVSEOperator.Id, out _EVSEOperator))
+            if (TryGetEVSEOperatorbyId(EVSE.Operator.Id, out _EVSEOperator))
                 return _EVSEOperator.ContainsEVSE(EVSE.Id);
 
             return false;
@@ -2122,7 +2122,7 @@ namespace org.GraphDefined.WWCP
                                                            Duration. HasValue ? Duration. Value : MaxReservationDuration,
                                                            ProviderId,
                                                            ChargingReservationType.AtChargingStation,
-                                                           _EVSE.ChargingStation.ChargingPool.EVSEOperator.RoamingNetwork,
+                                                           _EVSE.Operator.RoamingNetwork,
                                                            _EVSE.ChargingStation.ChargingPool.Id,
                                                            _EVSE.ChargingStation.Id,
                                                            _EVSE.Id,
@@ -2287,7 +2287,7 @@ namespace org.GraphDefined.WWCP
                                                            Duration. HasValue ? Duration. Value : MaxReservationDuration,
                                                            ProviderId,
                                                            ChargingReservationType.AtChargingPool,
-                                                           _EVSE.ChargingStation.ChargingPool.EVSEOperator.RoamingNetwork,
+                                                           _EVSE.Operator.RoamingNetwork,
                                                            _EVSE.ChargingStation.ChargingPool.Id,
                                                            _EVSE.ChargingStation.Id,
                                                            _EVSE.Id,
@@ -2471,8 +2471,6 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    //_SessionIdAuthenticatorCache.TryAdd(result.SessionId, AuthenticationService);
-
                     _ChargingSessions.TryAdd(result.SessionId, new ChargingSession(result.SessionId, AuthService: AuthenticationService));
 
                     break;
@@ -2509,8 +2507,6 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    //_SessionIdOperatorRoamingServiceCache.TryAdd(result.SessionId, OperatorRoamingService);
-
                     _ChargingSessions.TryAdd(result.SessionId, new ChargingSession(result.SessionId, OperatorRoamingService: OperatorRoamingService));
 
                     break;
@@ -2631,8 +2627,6 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    //_SessionIdAuthenticatorCache.TryAdd(result.SessionId, AuthenticationService);
-
                     _ChargingSessions.TryAdd(result.SessionId, new ChargingSession(result.SessionId, AuthService: AuthenticationService));
 
                     break;
@@ -2670,8 +2664,6 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    //_SessionIdOperatorRoamingServiceCache.TryAdd(result.SessionId, OperatorRoamingService);
-
                     _ChargingSessions.TryAdd(result.SessionId, new ChargingSession(result.SessionId, OperatorRoamingService: OperatorRoamingService));
 
                     break;
@@ -2793,8 +2785,6 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    //_SessionIdAuthenticatorCache.TryAdd(result.SessionId, AuthenticationService);
-
                     _ChargingSessions.TryAdd(result.SessionId, new ChargingSession(result.SessionId, AuthService: AuthenticationService));
 
                     break;
@@ -2832,8 +2822,6 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    //_SessionIdOperatorRoamingServiceCache.TryAdd(result.SessionId, OperatorRoamingService);
-
                     _ChargingSessions.TryAdd(result.SessionId, new ChargingSession(result.SessionId, OperatorRoamingService: OperatorRoamingService));
 
                     break;
@@ -2944,28 +2932,6 @@ namespace org.GraphDefined.WWCP
                     result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(OperatorId, SessionId, AuthToken);
 
             }
-
-            //IAuthServices AuthenticationService;
-            //
-            //if (_SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
-            //{
-            //
-            //    result = await AuthenticationService.AuthorizeStop(OperatorId, SessionId, AuthToken);
-            //
-            //    //ToDo: Delete the session id from the cache?
-            //
-            //}
-            //
-            //IOperatorRoamingService OperatorRoamingService;
-            //
-            //if (_SessionIdOperatorRoamingServiceCache.TryGetValue(SessionId, out OperatorRoamingService))
-            //{
-            //
-            //    result = await OperatorRoamingService.AuthorizeStop(OperatorId, SessionId, AuthToken);
-            //
-            //    //ToDo: Delete the session id from the cache?
-            //
-            //}
 
             #endregion
 
@@ -3104,28 +3070,6 @@ namespace org.GraphDefined.WWCP
                     result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(OperatorId, EVSEId, SessionId, AuthToken);
 
             }
-
-            //IAuthServices AuthenticationService;
-            //
-            //if (_SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
-            //{
-            //
-            //    result = await AuthenticationService.AuthorizeStop(OperatorId, EVSEId, SessionId, AuthToken);
-            //
-            //    //ToDo: Delete the session id from the cache?
-            //
-            //}
-            //
-            //IOperatorRoamingService OperatorRoamingService;
-            //
-            //if (_SessionIdOperatorRoamingServiceCache.TryGetValue(SessionId, out OperatorRoamingService))
-            //{
-            //
-            //    result = await OperatorRoamingService.AuthorizeStop(OperatorId, EVSEId, SessionId, AuthToken);
-            //
-            //    //ToDo: Delete the session id from the cache?
-            //
-            //}
 
             #endregion
 
@@ -3267,28 +3211,6 @@ namespace org.GraphDefined.WWCP
                     result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(OperatorId, ChargingStationId, SessionId, AuthToken);
 
             }
-
-            //IAuthServices AuthenticationService;
-            //
-            //if (_SessionIdAuthenticatorCache.TryGetValue(SessionId, out AuthenticationService))
-            //{
-            //
-            //    result = await AuthenticationService.AuthorizeStop(OperatorId, ChargingStationId, SessionId, AuthToken);
-            //
-            //    //ToDo: Delete the session id from the cache?
-            //
-            //}
-            //
-            //IOperatorRoamingService OperatorRoamingService;
-            //
-            //if (_SessionIdOperatorRoamingServiceCache.TryGetValue(SessionId, out OperatorRoamingService))
-            //{
-            //
-            //    result = await OperatorRoamingService.AuthorizeStop(OperatorId, ChargingStationId, SessionId, AuthToken);
-            //
-            //    //ToDo: Delete the session id from the cache?
-            //
-            //}
 
             #endregion
 
@@ -4040,7 +3962,7 @@ namespace org.GraphDefined.WWCP
 
                     result = await AuthenticationService.PushEVSEStatus(EVSE,
                                                                         ActionType.update,
-                                                                        EVSE.ChargingStation.ChargingPool.EVSEOperator.Id);
+                                                                        EVSE.Operator.Id);
 
                 }
 
@@ -4051,7 +3973,7 @@ namespace org.GraphDefined.WWCP
 
                     result = await OperatorRoamingService.PushEVSEStatus(EVSE,
                                                                          ActionType.update,
-                                                                         EVSE.ChargingStation.ChargingPool.EVSEOperator.Id);
+                                                                         EVSE.Operator.Id);
 
                 }
 

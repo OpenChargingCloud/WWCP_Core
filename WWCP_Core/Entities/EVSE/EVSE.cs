@@ -19,14 +19,14 @@
 
 using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using System.Threading.Tasks;
-using System.Threading;
 
 #endregion
 
@@ -526,17 +526,17 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEOperator
+        #region Operator
 
         /// <summary>
-        /// The EVSE operator of this EVSE.
+        /// The operator of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public EVSEOperator EVSEOperator
+        public EVSEOperator Operator
         {
             get
             {
-                return ChargingStation.ChargingPool.EVSEOperator;
+                return _ChargingStation.ChargingPool.EVSEOperator;
             }
         }
 
