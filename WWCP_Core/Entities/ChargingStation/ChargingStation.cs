@@ -547,9 +547,9 @@ namespace org.GraphDefined.WWCP
 
         #region AuthenticationModes
 
-        internal ReactiveSet<AuthenticationModes> _AuthenticationModes;
+        internal ReactiveSet<AuthenticationMode> _AuthenticationModes;
 
-        public ReactiveSet<AuthenticationModes> AuthenticationModes
+        public ReactiveSet<AuthenticationMode> AuthenticationModes
         {
 
             get
@@ -571,7 +571,7 @@ namespace org.GraphDefined.WWCP
                 {
 
                     if (_AuthenticationModes == null)
-                        _AuthenticationModes = new ReactiveSet<AuthenticationModes>();
+                        _AuthenticationModes = new ReactiveSet<AuthenticationMode>();
 
                     if (value == null)
                         DeleteProperty(ref _AuthenticationModes);
@@ -854,31 +854,6 @@ namespace org.GraphDefined.WWCP
             set
             {
                 SetProperty<ChargingStationUIFeatures>(ref _UIFeatures, value);
-            }
-
-        }
-
-        #endregion
-
-        #region AuthorizationOptions
-
-        private AuthorizationOptions _AuthorizationOptions;
-
-        /// <summary>
-        /// The authorization options of the charging station.
-        /// </summary>
-        [Optional]
-        public AuthorizationOptions AuthorizationOptions
-        {
-
-            get
-            {
-                return _AuthorizationOptions;
-            }
-
-            set
-            {
-                SetProperty<AuthorizationOptions>(ref _AuthorizationOptions, value);
             }
 
         }

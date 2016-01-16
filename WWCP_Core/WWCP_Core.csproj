@@ -101,7 +101,7 @@
     <Compile Include="Entities\ChargingStation\ChargingStationAdminStatusType.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationAdminStatusReport.cs" />
     <Compile Include="Entities\ChargingStation\PaymentOptions.cs" />
-    <Compile Include="Entities\ChargingStation\AuthenticationModes.cs" />
+    <Compile Include="Entities\ChargingStation\AuthenticationMode.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationStatusReport.cs" />
     <Compile Include="Entities\ChargingStation\RedirectedChargingStations.cs" />
     <Compile Include="Entities\EVSEOperator\EVSEOperatorAdminStatusReport.cs" />
@@ -133,7 +133,6 @@
     <Compile Include="CommonTypes\Attributes\ChargeWithoutContract.cs" />
     <Compile Include="CommonTypes\Attributes\FreeCharge.cs" />
     <Compile Include="CommonTypes\Address.cs" />
-    <Compile Include="CommonTypes\AuthorizationOptions.cs" />
     <Compile Include="CommonTypes\WWCPException.cs" />
     <Compile Include="Entities\ChargingServicePlan\ChargingServicePlan.cs" />
     <Compile Include="Entities\ChargingServicePlan\ChargingServicePlan_Id.cs" />

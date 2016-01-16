@@ -460,9 +460,9 @@ namespace org.GraphDefined.WWCP
 
         #region AuthenticationModes
 
-        private ReactiveSet<AuthenticationModes> _AuthenticationModes;
+        private ReactiveSet<AuthenticationMode> _AuthenticationModes;
 
-        public ReactiveSet<AuthenticationModes> AuthenticationModes
+        public ReactiveSet<AuthenticationMode> AuthenticationModes
         {
 
             get
@@ -474,7 +474,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value == null)
-                    value = new ReactiveSet<AuthenticationModes>();
+                    value = new ReactiveSet<AuthenticationMode>();
 
                 if (_AuthenticationModes != value)
                 {
@@ -1217,7 +1217,7 @@ namespace org.GraphDefined.WWCP
             this._Address                    = new Address();
             this._EntranceAddress            = new Address();
 
-            this._AuthenticationModes        = new ReactiveSet<AuthenticationModes>();
+            this._AuthenticationModes        = new ReactiveSet<AuthenticationMode>();
 
             this._StatusSchedule             = new StatusSchedule<ChargingPoolStatusType>(MaxPoolStatusListSize);
             this._StatusSchedule.Insert(ChargingPoolStatusType.Unspecified);
