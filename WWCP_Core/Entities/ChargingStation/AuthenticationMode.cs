@@ -39,7 +39,9 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public class AuthenticationMode
+    public class AuthenticationMode : IEquatable<AuthenticationMode>,
+                                      IComparable<AuthenticationMode>,
+                                      IComparable
     {
 
         #region Properties
@@ -144,11 +146,118 @@ namespace org.GraphDefined.WWCP
         }
 
 
+
+
+
+        #region IComparable<AuthenticationMode> Members
+
+        #region CompareTo(Object)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Object">An object to compare with.</param>
+        public Int32 CompareTo(Object Object)
+        {
+
+            if (Object == null)
+                throw new ArgumentNullException("The given object must not be null!");
+
+            // Check if the given object is an authentication mode.
+            var AuthenticationMode = Object as AuthenticationMode;
+            if ((Object) AuthenticationMode == null)
+                throw new ArgumentException("The given object is not an authentication mode!");
+
+            return CompareTo(AuthenticationMode);
+
+        }
+
+        #endregion
+
+        #region CompareTo(AuthenticationMode)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="AuthenticationMode">An authentication mode to compare with.</param>
+        public Int32 CompareTo(AuthenticationMode AuthenticationMode)
+        {
+
+            if ((Object) AuthenticationMode == null)
+                throw new ArgumentNullException("The given authentication mode must not be null!");
+
+            return _Type.CompareTo(AuthenticationMode._Type);
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region IEquatable<AuthenticationMode> Members
+
+        #region Equals(Object)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Object">An object to compare with.</param>
+        /// <returns>true|false</returns>
+        public override Boolean Equals(Object Object)
+        {
+
+            if (Object == null)
+                return false;
+
+            // Check if the given object is an authentication mode.
+            var AuthenticationMode = Object as AuthenticationMode;
+            if ((Object) AuthenticationMode == null)
+                return false;
+
+            return this.Equals(AuthenticationMode);
+
+        }
+
+        #endregion
+
+        #region Equals(AuthenticationMode)
+
+        /// <summary>
+        /// Compares two EVSEs for equality.
+        /// </summary>
+        /// <param name="AuthenticationMode">An authentication mode to compare with.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public Boolean Equals(AuthenticationMode AuthenticationMode)
+        {
+
+            if ((Object) AuthenticationMode == null)
+                return false;
+
+            return _Type.Equals(AuthenticationMode._Type);
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region GetHashCode()
+
+        /// <summary>
+        /// Get the hashcode of this object.
+        /// </summary>
+        public override Int32 GetHashCode()
+        {
+            return _Type.GetHashCode();
+        }
+
+        #endregion
+
+
         public virtual JObject ToJSON()
         {
             return new JObject(new JProperty("Type", _Type));
         }
-
 
         public override String ToString()
         {
