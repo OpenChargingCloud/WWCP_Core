@@ -71,26 +71,26 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Logo
+        #region LogoURI
 
-        private String _Logo;
+        private String _LogoURI;
 
         /// <summary>
-        /// The logo of this brand.
+        /// An URI to the logo of this brand.
         /// </summary>
         [Optional]
-        public String Logo
+        public String LogoURI
         {
 
             get
             {
-                return _Logo;
+                return _LogoURI;
             }
 
             set
             {
-                if (_Logo != value)
-                    SetProperty<String>(ref _Logo, value);
+                if (_LogoURI != value)
+                    SetProperty<String>(ref _LogoURI, value);
             }
 
         }
@@ -151,7 +151,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             this._Name      = Name;
-            this._Logo      = Logo;
+            this._LogoURI      = Logo;
             this._Homepage  = Homepage;
 
         }

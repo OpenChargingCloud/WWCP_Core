@@ -140,9 +140,9 @@ namespace org.GraphDefined.WWCP
             return new SMS(Number, StationCode);
         }
 
-        public static AuthenticationMode Phone(String Number)
+        public static AuthenticationMode PhoneCall(String Number)
         {
-            return new Phone(Number);
+            return new PhoneCall(Number);
         }
 
 
@@ -526,7 +526,7 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public class Phone : AuthenticationMode
+    public class PhoneCall : AuthenticationMode
     {
 
         #region Properties
@@ -549,9 +549,9 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        public Phone(String Number)
+        public PhoneCall(String Number)
 
-            : base("Phone")
+            : base("PhoneCall")
 
         {
 
@@ -570,7 +570,7 @@ namespace org.GraphDefined.WWCP
 
         public override String ToString()
         {
-            return String.Concat("Phone: ", _Number);
+            return String.Concat("Phone call: ", _Number);
         }
 
     }
