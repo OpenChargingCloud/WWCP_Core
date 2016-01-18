@@ -84,6 +84,7 @@
     <Compile Include="Entities\Brand\Brand.cs" />
     <Compile Include="Entities\Brand\Brand_Id.cs" />
     <Compile Include="Entities\EVSE\EVSEAdminStatusDiff.cs" />
+    <Compile Include="Entities\RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="Entities\StatusSchedule.cs" />
     <Compile Include="Entities\AuthInfo.cs" />
     <Compile Include="Entities\ChargingSession\ChargeDetailRecord.cs" />
@@ -160,7 +161,6 @@
     <Compile Include="Entities\ChargingStation\RegisterEVSEResult.cs" />
     <Compile Include="CommonTypes\Auth_Token.cs" />
     <Compile Include="Entities\ChargingSession\ChargingSession_Id.cs" />
-    <Compile Include="Entities\RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="Entities\EVSEOperator\EVSEOperatorExceptions.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkExceptions.cs" />
     <Compile Include="Entities\EVSEOperator\EVSEOperator.cs" />
