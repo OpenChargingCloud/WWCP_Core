@@ -409,6 +409,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                                                         var CurrentSettings = StationConfig.Value as JObject;
 
+                                                        // - Redirect ----------------------------------------
                                                         JToken JSONToken2;
                                                         if (CurrentSettings.TryGetValue("Redirect", out JSONToken2))
                                                         {
@@ -417,18 +418,37 @@ namespace org.GraphDefined.WWCP.Importer
                                                             var JO = JSONToken2 as JObject;
                                                         }
 
-                                                        JToken JSONToken3;
-                                                        var AdminStatus = ChargingStationAdminStatusType.Operational;
 
-                                                        if (CurrentSettings.TryGetValue("Adminstatus", out JSONToken3))
-                                                            if (!Enum.TryParse<ChargingStationAdminStatusType>(JSONToken3.Value<String>(), true, out AdminStatus))
-                                                                DebugX.Log("Invalid admin status '" + JSONToken3.Value<String>() + "' for charging station '" + ChargingStationId.ToString() + "'!");
-
-                                                        if (CurrentSettings.TryGetValue("Group", out JSONToken3))
+                                                        // - PhoneNumber -------------------------------------
+                                                        if (CurrentSettings.TryGetValue("PhoneNumber", out JSONToken2))
                                                         {
 
-                                                            var JV = JSONToken3 as JValue;
-                                                            var JA = JSONToken3 as JArray;
+                                                            var JS = JSONToken2 as JValue;
+
+                                                            ChargingStation _ChargingStation = null;
+                                                            if (CurrentOperator.TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
+                                                            {
+
+
+                                                            }
+
+                                                        }
+
+
+                                                        // - AdminStatus -------------------------------------
+                                                        var AdminStatus = ChargingStationAdminStatusType.Operational;
+
+                                                        if (CurrentSettings.TryGetValue("Adminstatus", out JSONToken2))
+                                                            if (!Enum.TryParse<ChargingStationAdminStatusType>(JSONToken2.Value<String>(), true, out AdminStatus))
+                                                                DebugX.Log("Invalid admin status '" + JSONToken2.Value<String>() + "' for charging station '" + ChargingStationId.ToString() + "'!");
+
+
+                                                        // - Group -------------------------------------------
+                                                        if (CurrentSettings.TryGetValue("Group", out JSONToken2))
+                                                        {
+
+                                                            var JV = JSONToken2 as JValue;
+                                                            var JA = JSONToken2 as JArray;
 
                                                             var GroupList = JV != null
                                                                                 ? new String[] { JV.Value<String>() }
