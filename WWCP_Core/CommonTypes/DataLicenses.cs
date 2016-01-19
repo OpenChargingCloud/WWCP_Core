@@ -15,8 +15,68 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP
 {
+
+    public static class Mappy
+    {
+
+        public static String AsShort(this DataLicenses DataLicense)
+        {
+
+            switch (DataLicense)
+            {
+
+                case DataLicenses.CreativeCommons_BY_SA_4:
+                    return "CC BY-SA 4.0";
+
+                default:
+                    return "";
+
+            }
+
+        }
+
+        public static String AsText(this DataLicenses DataLicense)
+        {
+
+            switch (DataLicense)
+            {
+
+                case DataLicenses.CreativeCommons_BY_SA_4:
+                    return "Creative Commons Attribution-ShareAlike 4.0 International";
+
+                default:
+                    return "";
+
+            }
+
+        }
+
+        public static String AsLink(this DataLicenses DataLicense)
+        {
+
+            switch (DataLicense)
+            {
+
+                case DataLicenses.CreativeCommons_BY_SA_4:
+                    return "http://creativecommons.org/licenses/by-sa/4.0/";
+
+                default:
+                    return "";
+
+            }
+
+        }
+
+    }
+
 
     /// <summary>
     /// The data licenses within the electric vehicle domain.
