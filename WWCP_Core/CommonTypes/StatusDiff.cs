@@ -190,13 +190,14 @@ namespace org.GraphDefined.WWCP
                           I18NString       EVSEOperatorName = null)
         {
 
-            this._Timestamp          = Timestamp;
-            this._EVSEOperatorId     = EVSEOperatorId;
-            this._EVSEOperatorName   = EVSEOperatorName != null ? EVSEOperatorName : new I18NString();
+            this._Timestamp         = Timestamp;
+            this._EVSEOperatorId    = EVSEOperatorId;
 
-            this._NewStatus      = new List<KeyValuePair<TId, TStatusType>>();
-            this._ChangedStatus  = new List<KeyValuePair<TId, TStatusType>>();
-            this._RemovedIds     = new List<TId>();
+            this._NewStatus         = NewStatus        != null ? new List<KeyValuePair<TId, TStatusType>>(NewStatus)     : new List<KeyValuePair<TId, TStatusType>>();
+            this._ChangedStatus     = ChangedStatus    != null ? new List<KeyValuePair<TId, TStatusType>>(ChangedStatus) : new List<KeyValuePair<TId, TStatusType>>();
+            this._RemovedIds        = RemovedIds       != null ? new List<TId>(RemovedIds)                               : new List<TId>();
+
+            this._EVSEOperatorName  = EVSEOperatorName != null ? EVSEOperatorName                                        : new I18NString();
 
         }
 
@@ -221,13 +222,14 @@ namespace org.GraphDefined.WWCP
                           I18NString                                   EVSEOperatorName = null)
         {
 
-            this._Timestamp          = Timestamp;
-            this._EVSEOperatorId     = EVSEOperatorId;
-            this._EVSEOperatorName   = EVSEOperatorName != null ? EVSEOperatorName : new I18NString();
+            this._Timestamp         = Timestamp;
+            this._EVSEOperatorId    = EVSEOperatorId;
 
-            this._NewStatus      = new List<KeyValuePair<TId, TStatusType>>(NewStatus);
-            this._ChangedStatus  = new List<KeyValuePair<TId, TStatusType>>(ChangedStatus);
-            this._RemovedIds     = new List<TId>(RemovedIds);
+            this._NewStatus         = NewStatus        != null ? new List<KeyValuePair<TId, TStatusType>>(NewStatus)     : new List<KeyValuePair<TId, TStatusType>>();
+            this._ChangedStatus     = ChangedStatus    != null ? new List<KeyValuePair<TId, TStatusType>>(ChangedStatus) : new List<KeyValuePair<TId, TStatusType>>();
+            this._RemovedIds        = RemovedIds       != null ? new List<TId>(RemovedIds)                               : new List<TId>();
+
+            this._EVSEOperatorName  = EVSEOperatorName != null ? EVSEOperatorName                                        : new I18NString();
 
         }
 

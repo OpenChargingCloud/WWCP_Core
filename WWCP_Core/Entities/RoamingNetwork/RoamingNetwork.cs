@@ -60,6 +60,7 @@ namespace org.GraphDefined.WWCP
 
         private readonly ConcurrentDictionary<UInt32,                        IAuthServices>              _AuthenticationServices;
         private readonly ConcurrentDictionary<UInt32,                        IOperatorRoamingService>    _OperatorRoamingServices;
+        private readonly ConcurrentDictionary<UInt32,                        IPushEVSEStatusServices>    _PushEVSEStatusServices;
 
         private readonly ConcurrentDictionary<ChargingSession_Id,            ChargingSession>            _ChargingSessions;
 
@@ -1404,6 +1405,7 @@ namespace org.GraphDefined.WWCP
             this._ChargingReservations                  = new ConcurrentDictionary<ChargingReservation_Id,       ChargingReservation>();
             this._AuthenticationServices                = new ConcurrentDictionary<UInt32,                       IAuthServices>();
             this._OperatorRoamingServices               = new ConcurrentDictionary<UInt32,                       IOperatorRoamingService>();
+            this._PushEVSEStatusServices                = new ConcurrentDictionary<UInt32,                       IPushEVSEStatusServices>();
             this._ChargingSessions                      = new ConcurrentDictionary<ChargingSession_Id,           ChargingSession>();
             //this._SessionIdAuthenticatorCache           = new ConcurrentDictionary<ChargingSession_Id,           IAuthServices>();
             //this._SessionIdOperatorRoamingServiceCache  = new ConcurrentDictionary<ChargingSession_Id,           IOperatorRoamingService>();
@@ -2383,18 +2385,35 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RegisterAuthService(Priority, OperatorRoamingService)
+        #region RegisterOperatorRoamingService(Priority, OperatorRoamingService)
 
         /// <summary>
         /// Register the given EVSE operator roaming service.
         /// </summary>
         /// <param name="Priority">The priority of the service.</param>
         /// <param name="OperatorRoamingService">The EVSE operator roaming service.</param>
-        public Boolean RegisterAuthService(UInt32                   Priority,
-                                           IOperatorRoamingService  OperatorRoamingService)
+        public Boolean RegisterOperatorRoamingService(UInt32                   Priority,
+                                                      IOperatorRoamingService  OperatorRoamingService)
         {
 
             return _OperatorRoamingServices.TryAdd(Priority, OperatorRoamingService);
+
+        }
+
+        #endregion
+
+        #region RegisterPushEVSEStatusService(Priority, OperatorRoamingService)
+
+        /// <summary>
+        /// Register the given EVSE operator roaming service.
+        /// </summary>
+        /// <param name="Priority">The priority of the service.</param>
+        /// <param name="PushEVSEStatusServices">The EVSE operator roaming service.</param>
+        public Boolean RegisterPushEVSEStatusService(UInt32                   Priority,
+                                                     IPushEVSEStatusServices  PushEVSEStatusServices)
+        {
+
+            return _PushEVSEStatusServices.TryAdd(Priority, PushEVSEStatusServices);
 
         }
 
@@ -3965,6 +3984,17 @@ namespace org.GraphDefined.WWCP
                     result = await OperatorRoamingService.PushEVSEStatus(EVSE,
                                                                          ActionType.update,
                                                                          EVSE.Operator.Id);
+
+                }
+
+                foreach (var PushEVSEStatusService in _PushEVSEStatusServices.
+                                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+                                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+                {
+
+                    result = await PushEVSEStatusService.PushEVSEStatus(EVSE,
+                                                                        ActionType.update,
+                                                                        EVSE.Operator.Id);
 
                 }
 
