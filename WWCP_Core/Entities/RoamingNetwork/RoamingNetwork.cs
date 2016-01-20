@@ -3886,15 +3886,6 @@ namespace org.GraphDefined.WWCP
         internal void SendEVSEStatusDiff(EVSEStatusDiff StatusDiff)
         {
 
-            foreach (var _EVSEOperator in EVSEOperators)
-            {
-
-//                var _EVSEStatusDiff = new EVSEStatusDiff(StatusDiff.Timestamp, _EVSEOperator.Id, _EVSEOperator.)
-
-
-            }
-
-
             var OnEVSEStatusDiffLocal = OnEVSEStatusDiff;
             if (OnEVSEStatusDiffLocal != null)
                 OnEVSEStatusDiffLocal(StatusDiff);
