@@ -27,6 +27,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
+using System.Threading;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -1177,6 +1179,29 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+
+        /// <summary>
+        /// An event sent whenever an EVSE should start charging.
+        /// </summary>
+        public event OnRemoteEVSEStartDelegate OnRemoteEVSEStart;
+
+        /// <summary>
+        /// An event sent whenever an EVSE started charging.
+        /// </summary>
+        public event OnRemoteEVSEStartedDelegate OnRemoteEVSEStarted;
+
+
+        /// <summary>
+        /// An event sent whenever an charging station should start charging.
+        /// </summary>
+        public event OnRemoteStartChargingStationDelegate OnRemoteStartChargingStation;
+
+        /// <summary>
+        /// An event sent whenever a charging session should stop.
+        /// </summary>
+        public event OnRemoteStopEVSEDelegate OnRemoteStop;
+
         #endregion
 
         #region Constructor(s)
@@ -1771,6 +1796,68 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+
+
+        #region (internal) RemoteStart(..., EVSEId, ...)
+
+        internal async Task<RemoteStartEVSEResult> RemoteStart(DateTime                Timestamp,
+                                                               CancellationToken       CancellationToken,
+                                                               EVSE_Id                 EVSEId,
+                                                               ChargingProduct_Id      ChargingProductId,
+                                                               ChargingReservation_Id  ReservationId,
+                                                               ChargingSession_Id      SessionId,
+                                                               EVSP_Id                 ProviderId,
+                                                               eMA_Id                  eMAId)
+        {
+
+            var OnRemoteEVSEStartLocal = OnRemoteEVSEStart;
+            if (OnRemoteEVSEStartLocal == null)
+                OnRemoteEVSEStartLocal(this,
+                                       Timestamp,
+                                       null, //RoamingNetworkId,
+                                       EVSEId,
+                                       ChargingProductId,
+                                       ReservationId,
+                                       SessionId,
+                                       ProviderId,
+                                       eMAId);
+
+            // Add RemoteChargingPool!
+
+            var result = RemoteStartEVSEResult.UnknownEVSE;
+
+            var _ChargingStation = _ChargingStations.SelectMany(kvp  => kvp.Value.EVSEs).
+                                                     Where     (evse => evse.Id == EVSEId).
+                                                     Select    (evse => evse.ChargingStation).
+                                                     FirstOrDefault();
+
+            if (_ChargingStation != null)
+                result = await _ChargingStation.RemoteStart(Timestamp,
+                                                            CancellationToken,
+                                                            EVSEId,
+                                                            ChargingProductId,
+                                                            ReservationId,
+                                                            SessionId,
+                                                        //    ProviderId,
+                                                            eMAId);
+
+
+            var OnRemoteEVSEStartedLocal = OnRemoteEVSEStarted;
+            if (OnRemoteEVSEStartedLocal == null)
+                OnRemoteEVSEStartedLocal(this,
+                                         Timestamp,
+                                         null, //RoamingNetworkId,
+                                         EVSEId,
+                                         result);
+
+            return result;
+
+        }
+
+        #endregion
+
+
 
 
         #region IEnumerable<ChargingStation> Members

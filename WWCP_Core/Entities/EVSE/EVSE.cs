@@ -939,7 +939,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if (_ChargingStation.RemoteChargingStation == null)
-                return RemoteStopEVSEResult.Offline;
+                return RemoteStopEVSEResult.Offline(SessionId);
 
             return await _ChargingStation.RemoteChargingStation.
                              RemoteStop(Timestamp,

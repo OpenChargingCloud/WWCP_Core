@@ -2371,7 +2371,7 @@ namespace org.GraphDefined.WWCP
 
             var OnRemoteStopLocal = OnRemoteStop;
             if (OnRemoteStopLocal == null)
-                return RemoteStopResult.Error();
+                return RemoteStopResult.Error(SessionId);
 
             var results = await Task.WhenAll(OnRemoteStopLocal.
                                                  GetInvocationList().
@@ -2403,7 +2403,7 @@ namespace org.GraphDefined.WWCP
 
             var OnRemoteStopLocal = OnRemoteStop;
             if (OnRemoteStopLocal == null)
-                return RemoteStopEVSEResult.Error();
+                return RemoteStopEVSEResult.Error(SessionId);
 
             var results = await Task.WhenAll(OnRemoteStopLocal.
                                                  GetInvocationList().
@@ -2436,7 +2436,7 @@ namespace org.GraphDefined.WWCP
 
             var OnRemoteStopLocal = OnRemoteStop;
             if (OnRemoteStopLocal == null)
-                return RemoteStopChargingStationResult.Error();
+                return RemoteStopChargingStationResult.Error(SessionId);
 
             var results = await Task.WhenAll(OnRemoteStopLocal.
                                                  GetInvocationList().

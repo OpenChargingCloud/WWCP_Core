@@ -87,169 +87,181 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (private) RemoteStopChargingStationResult(Result)
-
         /// <summary>
         /// Create a new remote stop result.
-        /// </summary>
-        /// <param name="Result">The result of the remote Stop operation.</param>
-        private RemoteStopChargingStationResult(RemoteStopChargingStationResultType  Result)
-        {
-
-            this._Result        = Result;
-            this._ErrorMessage  = null;
-
-        }
-
-        #endregion
-
-        #region (private) RemoteStopChargingStationResult(SessionId)
-
-        /// <summary>
-        /// Create a new remote stop result caused by an invalid session identification.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        private RemoteStopChargingStationResult(ChargingSession_Id SessionId)
-        {
-
-            this._Result        = RemoteStopChargingStationResultType.InvalidSessionId;
-            this._SessionId     = SessionId;
-            this._ErrorMessage  = "The session identification is invalid!";
-
-        }
-
-        #endregion
-
-        #region (private) RemoteStopChargingStationResult(ErrorMessage = null)
-
-        /// <summary>
-        /// Create a new remote stop result.
-        /// </summary>
+        /// <param name="Result">The result of the remote stop request.</param>
         /// <param name="ErrorMessage">A optional error message.</param>
-        private RemoteStopChargingStationResult(String ErrorMessage = null)
+        private RemoteStopChargingStationResult(ChargingSession_Id                   SessionId,
+                                                RemoteStopChargingStationResultType  Result,
+                                                String                               ErrorMessage = null)
         {
 
-            this._Result        = RemoteStopChargingStationResultType.Error;
+            #region Initial checks
+
+            if (SessionId == null)
+                throw new ArgumentNullException("SessionId", "The given charging session identification must not be null!");
+
+            #endregion
+
+            this._SessionId     = SessionId;
+            this._Result        = Result;
             this._ErrorMessage  = ErrorMessage;
 
         }
 
         #endregion
 
-        #endregion
 
-
-        #region (static) Unspecified
+        #region (static) Unspecified(SessionId)
 
         /// <summary>
         /// The result is unknown and/or should be ignored.
         /// </summary>
-        public static RemoteStopChargingStationResult Unspecified
+        /// <param name="SessionId">The unique charging session identification.</param>
+        public static RemoteStopChargingStationResult Unspecified(ChargingSession_Id SessionId)
         {
-            get
-            {
-                return new RemoteStopChargingStationResult(RemoteStopChargingStationResultType.Unspecified);
-            }
+
+            return new RemoteStopChargingStationResult(SessionId,
+                                                       RemoteStopChargingStationResultType.Unspecified);
+
         }
 
         #endregion
 
-        #region (static) UnknownChargingStation
+        #region (static) UnknownChargingStationOperator(SessionId)
+
+        /// <summary>
+        /// The charging station operator is unknown.
+        /// </summary>
+        /// <param name="SessionId">The unique charging session identification.</param>
+        public static RemoteStopChargingStationResult UnknownChargingStationOperator(ChargingSession_Id SessionId)
+        {
+
+            return new RemoteStopChargingStationResult(SessionId,
+                                                       RemoteStopChargingStationResultType.UnknownChargingStationOperator,
+                                                       "The charging station operator is unknown!");
+
+        }
+
+        #endregion
+
+        #region (static) UnknownChargingStation(SessionId)
 
         /// <summary>
         /// The charging station is unknown.
         /// </summary>
-        public static RemoteStopChargingStationResult UnknownChargingStation
+        /// <param name="SessionId">The unique charging session identification.</param>
+        public static RemoteStopChargingStationResult UnknownChargingStation(ChargingSession_Id SessionId)
         {
-            get
-            {
-                return new RemoteStopChargingStationResult(RemoteStopChargingStationResultType.UnknownChargingStation);
-            }
+
+            return new RemoteStopChargingStationResult(SessionId,
+                                                       RemoteStopChargingStationResultType.UnknownChargingStation,
+                                                       "The charging station is unknown!");
+
         }
 
         #endregion
 
-        #region (static) InvalidSessionId
+        #region (static) InvalidSessionId(SessionId)
 
         /// <summary>
         /// The charging session identification is unknown or invalid.
         /// </summary>
+        /// <param name="SessionId">The unique charging session identification.</param>
         public static RemoteStopChargingStationResult InvalidSessionId(ChargingSession_Id SessionId)
         {
-            return new RemoteStopChargingStationResult(SessionId);
+
+            return new RemoteStopChargingStationResult(SessionId,
+                                                       RemoteStopChargingStationResultType.InvalidSessionId,
+                                                       "The session identification is invalid!");
+
         }
 
         #endregion
 
-        #region (static) OutOfService
+        #region (static) OutOfService(SessionId)
 
         /// <summary>
         /// The charging station is out of service.
         /// </summary>
-        public static RemoteStopChargingStationResult OutOfService
+        /// <param name="SessionId">The unique charging session identification.</param>
+        public static RemoteStopChargingStationResult OutOfService(ChargingSession_Id SessionId)
         {
-            get
-            {
-                return new RemoteStopChargingStationResult(RemoteStopChargingStationResultType.OutOfService);
-            }
+
+            return new RemoteStopChargingStationResult(SessionId,
+                                                       RemoteStopChargingStationResultType.OutOfService,
+                                                       "The charging station is out of service!");
+
         }
 
         #endregion
 
-        #region (static) Offline
+        #region (static) Offline(SessionId)
 
         /// <summary>
         /// The charging station is offline.
         /// </summary>
-        public static RemoteStopChargingStationResult Offline
+        /// <param name="SessionId">The unique charging session identification.</param>
+        public static RemoteStopChargingStationResult Offline(ChargingSession_Id SessionId)
         {
-            get
-            {
-                return new RemoteStopChargingStationResult(RemoteStopChargingStationResultType.Offline);
-            }
+
+            return new RemoteStopChargingStationResult(SessionId,
+                                                       RemoteStopChargingStationResultType.Offline,
+                                                       "The charging station is offline!");
+
         }
 
         #endregion
 
-        #region (static) Success
+        #region (static) Success(SessionId)
 
         /// <summary>
         /// The remote stop was successful.
         /// </summary>
-        public static RemoteStopChargingStationResult Success
+        /// <param name="SessionId">The unique charging session identification.</param>
+        public static RemoteStopChargingStationResult Success(ChargingSession_Id SessionId)
         {
-            get
-            {
-                return new RemoteStopChargingStationResult(RemoteStopChargingStationResultType.Success);
-            }
+
+            return new RemoteStopChargingStationResult(SessionId,
+                                                       RemoteStopChargingStationResultType.Success);
+
         }
 
         #endregion
 
-        #region (static) Timeout
+        #region (static) Timeout(SessionId)
 
         /// <summary>
         /// The remote stop ran into a timeout.
         /// </summary>
-        public static RemoteStopChargingStationResult Timeout
+        /// <param name="SessionId">The unique charging session identification.</param>
+        public static RemoteStopChargingStationResult Timeout(ChargingSession_Id SessionId)
         {
-            get
-            {
-                return new RemoteStopChargingStationResult(RemoteStopChargingStationResultType.Timeout);
-            }
+
+            return new RemoteStopChargingStationResult(SessionId,
+                                                       RemoteStopChargingStationResultType.Timeout);
+
         }
 
         #endregion
 
-        #region (static) Error(Message = null)
+        #region (static) Error(SessionId, Message = null)
 
         /// <summary>
         /// The remote stop led to an error.
         /// </summary>
+        /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="Message">An optional error message.</param>
-        public static RemoteStopChargingStationResult Error(String Message = null)
+        public static RemoteStopChargingStationResult Error(ChargingSession_Id  SessionId,
+                                                            String              Message  = null)
         {
-            return new RemoteStopChargingStationResult(Message);
+
+            return new RemoteStopChargingStationResult(SessionId,
+                                                       RemoteStopChargingStationResultType.Error,
+                                                       Message);
+
         }
 
         #endregion
@@ -280,6 +292,11 @@ namespace org.GraphDefined.WWCP
         /// The result is unknown and/or should be ignored.
         /// </summary>
         Unspecified,
+
+        /// <summary>
+        /// The charging station operator is unknown.
+        /// </summary>
+        UnknownChargingStationOperator,
 
         /// <summary>
         /// The charging station is unknown.

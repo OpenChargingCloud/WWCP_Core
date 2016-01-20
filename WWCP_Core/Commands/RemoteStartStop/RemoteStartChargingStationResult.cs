@@ -159,10 +159,25 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) UnknownChargingStationOperator
+
+        /// <summary>
+        /// The charging session operator is unknown.
+        /// </summary>
+        public static RemoteStartChargingStationResult UnknownChargingStationOperator
+        {
+            get
+            {
+                return new RemoteStartChargingStationResult(RemoteStartChargingStationResultType.UnknownChargingStationOperator);
+            }
+        }
+
+        #endregion
+
         #region (static) UnknownChargingStation
 
         /// <summary>
-        /// The EVSE is unknown.
+        /// The charging session is unknown.
         /// </summary>
         public static RemoteStartChargingStationResult UnknownChargingStation
         {
@@ -325,6 +340,11 @@ namespace org.GraphDefined.WWCP
         /// The result is unknown and/or should be ignored.
         /// </summary>
         Unspecified,
+
+        /// <summary>
+        /// The charging station operator is unknown.
+        /// </summary>
+        UnknownChargingStationOperator,
 
         /// <summary>
         /// The charging station is unknown.

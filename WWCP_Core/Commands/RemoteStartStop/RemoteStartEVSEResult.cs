@@ -159,6 +159,21 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) UnknownEVSEOperator
+
+        /// <summary>
+        /// The EVSE operator is unknown.
+        /// </summary>
+        public static RemoteStartEVSEResult UnknownEVSEOperator
+        {
+            get
+            {
+                return new RemoteStartEVSEResult(RemoteStartEVSEResultType.UnknownEVSEOperator);
+            }
+        }
+
+        #endregion
+
         #region (static) UnknownEVSE
 
         /// <summary>
@@ -325,6 +340,11 @@ namespace org.GraphDefined.WWCP
         /// The result is unknown and/or should be ignored.
         /// </summary>
         Unspecified,
+
+        /// <summary>
+        /// The EVSE operator is unknown.
+        /// </summary>
+        UnknownEVSEOperator,
 
         /// <summary>
         /// The EVSE is unknown.

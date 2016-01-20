@@ -1641,6 +1641,43 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="eMAId">The unique identification of the e-mobility account.</param>
         /// <returns>A RemoteStartResult task.</returns>
+        public async Task<RemoteStartEVSEResult> RemoteStart(DateTime                Timestamp,
+                                                             CancellationToken       CancellationToken,
+                                                             EVSE_Id                 EVSEId,
+                                                             ChargingProduct_Id      ChargingProductId,
+                                                             ChargingReservation_Id  ReservationId,
+                                                             ChargingSession_Id      SessionId,
+                                                             eMA_Id                  eMAId)
+        {
+
+            if (_RemoteChargingStation == null)
+                return RemoteStartEVSEResult.Offline;
+
+            return await _RemoteChargingStation.
+                             RemoteStart(Timestamp,
+                                         CancellationToken,
+                                         EVSEId,
+                                         ChargingProductId,
+                                         ReservationId,
+                                         SessionId,
+                                         eMAId);
+
+        }
+
+        #endregion
+
+        #region RemoteStart(Timestamp, CancellationToken, ChargingStationId, ChargingProductId, ReservationId, SessionId, eMAId)
+
+        /// <summary>
+        /// Initiate a remote start of the given charging session at the given charging station
+        /// and for the given provider/eMAId.
+        /// </summary>
+        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
+        /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
+        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <returns>A RemoteStartResult task.</returns>
         public async Task<RemoteStartChargingStationResult> RemoteStart(DateTime                Timestamp,
                                                                         CancellationToken       CancellationToken,
                                                                         ChargingStation_Id      ChargingStationId,
@@ -1683,7 +1720,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if (RemoteChargingStation == null)
-                return RemoteStopChargingStationResult.Offline;
+                return RemoteStopChargingStationResult.Offline(SessionId);
 
             return await RemoteChargingStation.
                              RemoteStop(Timestamp,

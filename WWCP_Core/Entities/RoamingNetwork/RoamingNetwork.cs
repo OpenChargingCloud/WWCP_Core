@@ -3329,6 +3329,13 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            #region Initial checks
+
+            if (EVSEId == null)
+                throw new ArgumentNullException("EVSEId",  "The given EVSE identification must not be null!");
+
+            #endregion
+
             #region Send OnRemoteEVSEStart event
 
             var OnRemoteEVSEStartLocal = OnRemoteEVSEStart;
@@ -3349,7 +3356,7 @@ namespace org.GraphDefined.WWCP
             EVSEOperator EVSEOperator = null;
 
             if (!TryGetEVSEOperatorbyId(EVSEId.OperatorId, out EVSEOperator))
-                return RemoteStartEVSEResult.Error("Unknown EVSE Operator!");
+                return RemoteStartEVSEResult.UnknownEVSEOperator;
 
             var result = await EVSEOperator.RemoteStart(Timestamp,
                                                         CancellationToken,
@@ -3364,8 +3371,8 @@ namespace org.GraphDefined.WWCP
             if (result.Result == RemoteStartEVSEResultType.Success)
             {
                 _ChargingSessions.TryAdd(result.SessionId,
-                                         new ChargingSession(Id:      result.SessionId,
-                                                             EVSE:    EVSEOperator.GetEVSEbyId(EVSEId)));
+                                         new ChargingSession(Id:    result.SessionId,
+                                                             EVSE:  EVSEOperator.GetEVSEbyId(EVSEId)));
             }
 
 
@@ -3416,6 +3423,13 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            #region Initial checks
+
+            if (ChargingStationId == null)
+                throw new ArgumentNullException("ChargingStationId",  "The given charging station identification must not be null!");
+
+            #endregion
+
             #region Send OnRemoteChargingStationStart event
 
             var OnRemoteChargingStationStartLocal = OnRemoteChargingStationStart;
@@ -3436,7 +3450,8 @@ namespace org.GraphDefined.WWCP
             EVSEOperator EVSEOperator = null;
 
             if (!TryGetEVSEOperatorbyId(ChargingStationId.OperatorId, out EVSEOperator))
-                return RemoteStartChargingStationResult.Error("Unknown EVSE Operator!");
+                return RemoteStartChargingStationResult.UnknownChargingStationOperator;
+
 
             var result = await EVSEOperator.RemoteStart(Timestamp,
                                                         CancellationToken,
@@ -3488,6 +3503,13 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            #region Initial checks
+
+            if (SessionId == null)
+                throw new ArgumentNullException("SessionId", "The given charging session identification must not be null!");
+
+            #endregion
+
             #region Send OnRemoteStop event
 
             var OnRemoteStopLocal = OnRemoteStop;
@@ -3502,16 +3524,22 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            EVSEOperator EVSEOperator = null;
+            ChargingSession _ChargingSession = null;
 
-            //if (!TryGetEVSEOperatorbyId(EVSEId.OperatorId, out EVSEOperator))
-            //    return RemoteStopEVSEResult.Error("Unknown EVSE Operator!");
+            if (!_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
+                return RemoteStopResult.InvalidSessionId(SessionId);
 
-            var result = await EVSEOperator.RemoteStop(Timestamp,
-                                                       CancellationToken,
-                                                       ReservationHandling,
-                                                       SessionId,
-                                                       ProviderId);
+            if (_ChargingSession.EVSE == null)
+                return RemoteStopResult.UnknownOperator(SessionId);
+
+
+            var result = await _ChargingSession.
+                                   EVSE.Operator.
+                                   RemoteStop(Timestamp,
+                                              CancellationToken,
+                                              ReservationHandling,
+                                              SessionId,
+                                              ProviderId);
 
 
             #region Send OnRemoteStopped event
@@ -3554,6 +3582,16 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            #region Initial checks
+
+            if (EVSEId == null)
+                throw new ArgumentNullException("EVSEId",     "The given EVSE identification must not be null!");
+
+            if (SessionId == null)
+                throw new ArgumentNullException("SessionId",  "The given charging session identification must not be null!");
+
+            #endregion
+
             #region Send OnRemoteEVSEStop event
 
             var OnRemoteEVSEStopLocal = OnRemoteEVSEStop;
@@ -3572,7 +3610,7 @@ namespace org.GraphDefined.WWCP
             EVSEOperator EVSEOperator = null;
 
             if (!TryGetEVSEOperatorbyId(EVSEId.OperatorId, out EVSEOperator))
-                return RemoteStopEVSEResult.Error("Unknown EVSE Operator!");
+                return RemoteStopEVSEResult.UnknownEVSEOperator(SessionId);
 
             var result = await EVSEOperator.RemoteStop(Timestamp,
                                                        CancellationToken,
@@ -3623,6 +3661,16 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            #region Initial checks
+
+            if (ChargingStationId == null)
+                throw new ArgumentNullException("ChargingStationId",  "The given charging station identification must not be null!");
+
+            if (SessionId == null)
+                throw new ArgumentNullException("SessionId",          "The given charging session identification must not be null!");
+
+            #endregion
+
             #region Send OnRemoteChargingStationStop event
 
             var OnRemoteChargingStationStopLocal = OnRemoteChargingStationStop;
@@ -3641,7 +3689,8 @@ namespace org.GraphDefined.WWCP
             EVSEOperator EVSEOperator = null;
 
             if (!TryGetEVSEOperatorbyId(ChargingStationId.OperatorId, out EVSEOperator))
-                return RemoteStopChargingStationResult.Error("Unknown EVSE Operator!");
+                return RemoteStopChargingStationResult.UnknownChargingStationOperator(SessionId);
+
 
             var result = await EVSEOperator.RemoteStop(Timestamp,
                                                        CancellationToken,
