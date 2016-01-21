@@ -21,7 +21,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using org.GraphDefined.WWCP;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -39,6 +39,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender..</param>
     public delegate void OnRemoteStopDelegate(Object               Sender,
                                               DateTime             Timestamp,
+                                              EventTracking_Id     EventTrackingId,
                                               RoamingNetwork_Id    RoamingNetworkId,
                                               ChargingSession_Id   SessionId,
                                               ReservationHandling  ReservationHandling,
@@ -51,10 +52,14 @@ namespace org.GraphDefined.WWCP
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="Result">The remote stop result.</param>
-    public delegate void OnRemoteStoppedDelegate(Object             Sender,
-                                                 DateTime           Timestamp,
-                                                 RoamingNetwork_Id  RoamingNetworkId,
-                                                 RemoteStopResult   Result);
+    public delegate void OnRemoteStoppedDelegate(Object               Sender,
+                                                 DateTime             Timestamp,
+                                                 EventTracking_Id     EventTrackingId,
+                                                 RoamingNetwork_Id    RoamingNetworkId,
+                                                 ChargingSession_Id   SessionId,
+                                                 ReservationHandling  ReservationHandling,
+                                                 EVSP_Id              ProviderId,
+                                                 RemoteStopResult     Result);
 
 
     /// <summary>
@@ -90,6 +95,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender..</param>
     public delegate void OnRemoteEVSEStopDelegate(Object               Sender,
                                                   DateTime             Timestamp,
+                                                  EventTracking_Id     EventTrackingId,
                                                   RoamingNetwork_Id    RoamingNetworkId,
                                                   EVSE_Id              EVSEId,
                                                   ChargingSession_Id   SessionId,
@@ -107,8 +113,12 @@ namespace org.GraphDefined.WWCP
     /// <param name="Result">The remote stop result.</param>
     public delegate void OnRemoteEVSEStoppedDelegate(Object                Sender,
                                                      DateTime              Timestamp,
+                                                     EventTracking_Id      EventTrackingId,
                                                      RoamingNetwork_Id     RoamingNetworkId,
                                                      EVSE_Id               EVSEId,
+                                                     ChargingSession_Id    SessionId,
+                                                     ReservationHandling   ReservationHandling,
+                                                     EVSP_Id               ProviderId,
                                                      RemoteStopEVSEResult  Result);
 
 
@@ -147,6 +157,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender..</param>
     public delegate void OnRemoteChargingStationStopDelegate(Object               Sender,
                                                              DateTime             Timestamp,
+                                                             EventTracking_Id     EventTrackingId,
                                                              RoamingNetwork_Id    RoamingNetworkId,
                                                              ChargingStation_Id   ChargingStationId,
                                                              ChargingSession_Id   SessionId,
@@ -164,8 +175,12 @@ namespace org.GraphDefined.WWCP
     /// <param name="Result">The remote stop result.</param>
     public delegate void OnRemoteChargingStationStoppedDelegate(Object                           Sender,
                                                                 DateTime                         Timestamp,
+                                                                EventTracking_Id                 EventTrackingId,
                                                                 RoamingNetwork_Id                RoamingNetworkId,
                                                                 ChargingStation_Id               ChargingStationId,
+                                                                ChargingSession_Id               SessionId,
+                                                                ReservationHandling              ReservationHandling,
+                                                                EVSP_Id                          ProviderId,
                                                                 RemoteStopChargingStationResult  Result);
 
 

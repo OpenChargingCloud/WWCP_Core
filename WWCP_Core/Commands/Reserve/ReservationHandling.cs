@@ -29,9 +29,9 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region KeepAlive
+        #region IsKeepAlive
 
-        public Boolean KeepAlive
+        public Boolean IsKeepAlive
         {
             get
             {
@@ -69,6 +69,21 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #endregion
+
+        #region Constructor(s)
+
+        public ReservationHandling(TimeSpan KeepAliveTime)
+        {
+
+            this._KeepAliveTime  = KeepAliveTime;
+            this._Timeout        = DateTime.Now + KeepAliveTime;
+
+        }
+
+        #endregion
+
+
         #region (static) Close
 
         public static ReservationHandling Close
@@ -81,16 +96,11 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #endregion
+        #region (static) KeepAlive(KeepAliveTime)
 
-        #region Constructor(s)
-
-        public ReservationHandling(TimeSpan KeepAliveTime)
+        public static ReservationHandling KeepAlive(TimeSpan KeepAliveTime)
         {
-
-            this._KeepAliveTime  = KeepAliveTime;
-            this._Timeout        = DateTime.Now + KeepAliveTime;
-
+            return new ReservationHandling(KeepAliveTime);
         }
 
         #endregion

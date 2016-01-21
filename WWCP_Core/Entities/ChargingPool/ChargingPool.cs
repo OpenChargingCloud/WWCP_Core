@@ -64,6 +64,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static readonly TimeSpan MaxReservationDuration = TimeSpan.FromMinutes(30);
 
+
+        private readonly ConcurrentDictionary<ChargingReservation_Id, ChargingReservation>  _ChargingReservations;
+        private readonly ConcurrentDictionary<ChargingSession_Id,     ChargingSession>      _ChargingSessions;
+
         #endregion
 
         #region Properties
@@ -1181,26 +1185,112 @@ namespace org.GraphDefined.WWCP
 
 
 
+        ///// <summary>
+        ///// An event sent whenever an EVSE should start charging.
+        ///// </summary>
+        //public event OnRemoteEVSEStartDelegate OnRemoteEVSEStart;
+        //
+        ///// <summary>
+        ///// An event sent whenever an EVSE started charging.
+        ///// </summary>
+        //public event OnRemoteEVSEStartedDelegate OnRemoteEVSEStarted;
+        //
+        //
+        ///// <summary>
+        ///// An event sent whenever an charging station should start charging.
+        ///// </summary>
+        //public event OnRemoteStartChargingStationDelegate OnRemoteStartChargingStation;
+        //
+        ///// <summary>
+        ///// An event sent whenever a charging session should stop.
+        ///// </summary>
+        //public event OnRemoteStopEVSEDelegate OnRemoteStop;
+
+        #region OnReserveEVSE / OnReservedEVSE
+
         /// <summary>
-        /// An event sent whenever an EVSE should start charging.
+        /// An event fired whenever a remote start EVSE command was received.
+        /// </summary>
+        public event OnReserveEVSEDelegate OnReserveEVSE;
+
+        /// <summary>
+        /// An event fired whenever a remote start EVSE command completed.
+        /// </summary>
+        public event OnEVSEReservedDelegate OnEVSEReserved;
+
+        #endregion
+
+
+        #region OnRemoteEVSEStart / OnRemoteEVSEStarted
+
+        /// <summary>
+        /// An event fired whenever a remote start EVSE command was received.
         /// </summary>
         public event OnRemoteEVSEStartDelegate OnRemoteEVSEStart;
 
         /// <summary>
-        /// An event sent whenever an EVSE started charging.
+        /// An event fired whenever a remote start EVSE command completed.
         /// </summary>
         public event OnRemoteEVSEStartedDelegate OnRemoteEVSEStarted;
 
+        #endregion
+
+        #region OnRemoteChargingStationStart / OnRemoteChargingStationStarted
 
         /// <summary>
-        /// An event sent whenever an charging station should start charging.
+        /// An event fired whenever a remote start charging station command was received.
         /// </summary>
-        public event OnRemoteStartChargingStationDelegate OnRemoteStartChargingStation;
+        public event OnRemoteChargingStationStartDelegate OnRemoteChargingStationStart;
 
         /// <summary>
-        /// An event sent whenever a charging session should stop.
+        /// An event fired whenever a remote start charging station command completed.
         /// </summary>
-        public event OnRemoteStopEVSEDelegate OnRemoteStop;
+        public event OnRemoteChargingStationStartedDelegate OnRemoteChargingStationStarted;
+
+        #endregion
+
+
+        #region OnRemoteStop / OnRemoteStopped
+
+        /// <summary>
+        /// An event fired whenever a remote stop command was received.
+        /// </summary>
+        public event OnRemoteStopDelegate OnRemoteStop;
+
+        /// <summary>
+        /// An event fired whenever a remote stop command completed.
+        /// </summary>
+        public event OnRemoteStoppedDelegate OnRemoteStopped;
+
+        #endregion
+
+        #region OnRemoteEVSEStop / OnRemoteEVSEStopped
+
+        /// <summary>
+        /// An event fired whenever a remote stop EVSE command was received.
+        /// </summary>
+        public event OnRemoteEVSEStopDelegate OnRemoteEVSEStop;
+
+        /// <summary>
+        /// An event fired whenever a remote stop EVSE command completed.
+        /// </summary>
+        public event OnRemoteEVSEStoppedDelegate OnRemoteEVSEStopped;
+
+        #endregion
+
+        #region OnRemoteChargingStationStop / OnRemoteChargingStationStopped
+
+        /// <summary>
+        /// An event fired whenever a remote stop charging station command was received.
+        /// </summary>
+        public event OnRemoteChargingStationStopDelegate OnRemoteChargingStationStop;
+
+        /// <summary>
+        /// An event fired whenever a remote stop charging station command completed.
+        /// </summary>
+        public event OnRemoteChargingStationStoppedDelegate OnRemoteChargingStationStopped;
+
+        #endregion
 
         #endregion
 
@@ -1249,6 +1339,9 @@ namespace org.GraphDefined.WWCP
 
             this._AdminStatusSchedule        = new StatusSchedule<ChargingPoolAdminStatusType>(MaxPoolAdminStatusListSize);
             this._AdminStatusSchedule.Insert(ChargingPoolAdminStatusType.Unspecified);
+
+            this._ChargingReservations       = new ConcurrentDictionary<ChargingReservation_Id, ChargingReservation>();
+            this._ChargingSessions           = new ConcurrentDictionary<ChargingSession_Id,     ChargingSession>();
 
             #endregion
 
@@ -1799,23 +1892,167 @@ namespace org.GraphDefined.WWCP
 
 
 
-        #region (internal) RemoteStart(..., EVSEId, ...)
+        #region ReserveEVSE(...)
 
-        internal async Task<RemoteStartEVSEResult> RemoteStart(DateTime                Timestamp,
-                                                               CancellationToken       CancellationToken,
-                                                               EVSE_Id                 EVSEId,
-                                                               ChargingProduct_Id      ChargingProductId,
-                                                               ChargingReservation_Id  ReservationId,
-                                                               ChargingSession_Id      SessionId,
-                                                               EVSP_Id                 ProviderId,
-                                                               eMA_Id                  eMAId)
+        public async Task<ReservationResult> ReserveEVSE(DateTime                 Timestamp,
+                                                         CancellationToken        CancellationToken,
+                                                         EVSP_Id                  ProviderId,
+                                                         ChargingReservation_Id   ReservationId,
+                                                         DateTime?                StartTime,
+                                                         TimeSpan?                Duration,
+                                                         EVSE_Id                  EVSEId,
+                                                         ChargingProduct_Id       ChargingProductId  = null,
+                                                         IEnumerable<Auth_Token>  RFIDIds            = null,
+                                                         IEnumerable<eMA_Id>      eMAIds             = null,
+                                                         IEnumerable<UInt32>      PINs               = null,
+                                                         EventTracking_Id         EventTrackingId    = null)
         {
 
+            #region Initial checks
+
+            if (EVSEId == null)
+                throw new ArgumentNullException("EVSEId",  "The given EVSE identification must not be null!");
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            #endregion
+
+            #region Send OnReserveEVSE event
+
+            var OnReserveEVSELocal = OnReserveEVSE;
+            if (OnReserveEVSELocal != null)
+                OnReserveEVSELocal(this,
+                                   Timestamp,
+                                   _EVSEOperator.RoamingNetwork.Id,
+                                   ProviderId,
+                                   ReservationId,
+                                   StartTime,
+                                   Duration,
+                                   EVSEId,
+                                   ChargingProductId,
+                                   RFIDIds,
+                                   eMAIds,
+                                   PINs,
+                                   EventTrackingId);
+
+            #endregion
+
+            #region Try to remove an existing reservation if this is an update!
+
+            if (ReservationId != null)
+            {
+
+                ChargingReservation _Reservation = null;
+
+                if (!_ChargingReservations.TryRemove(ReservationId, out _Reservation))
+                    return ReservationResult.UnknownChargingReservationId;
+
+            }
+
+            #endregion
+
+
+            var result = ReservationResult.UnknownEVSE;
+
+            var _ChargingStation = _ChargingStations.SelectMany(kvp  => kvp.Value.EVSEs).
+                                                     Where     (evse => evse.Id == EVSEId).
+                                                     Select    (evse => evse.ChargingStation).
+                                                     FirstOrDefault();
+
+            if (_ChargingStation != null)
+                result = await _ChargingStation.ReserveEVSE(Timestamp,
+                                                            CancellationToken,
+                                                            ProviderId,
+                                                            ReservationId,
+                                                            StartTime,
+                                                            Duration,
+                                                            EVSEId,
+                                                            ChargingProductId,
+                                                            RFIDIds,
+                                                            eMAIds,
+                                                            PINs,
+                                                            EventTrackingId);
+
+            if (result.Result == ReservationResultType.Success)
+                _ChargingReservations.TryAdd(result.Reservation.Id, result.Reservation);
+
+
+            #region Send OnEVSEReserved event
+
+            var OnEVSEReservedLocal = OnEVSEReserved;
+            if (OnEVSEReservedLocal != null)
+                OnEVSEReservedLocal(this,
+                                    Timestamp,
+                                    _EVSEOperator.RoamingNetwork.Id,
+                                    ProviderId,
+                                    ReservationId,
+                                    StartTime,
+                                    Duration,
+                                    EVSEId,
+                                    result,
+                                    ChargingProductId,
+                                    RFIDIds,
+                                    eMAIds,
+                                    PINs,
+                                    EventTrackingId);
+
+            #endregion
+
+            return result;
+
+        }
+
+        #endregion
+
+
+        #region RemoteStart(Timestamp, CancellationToken, EVSEId, ChargingProductId, ReservationId, SessionId, ProviderId, eMAId)
+
+        /// <summary>
+        /// Initiate a remote start of the given charging session at the given EVSE
+        /// and for the given provider-/eMAId.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this task.</param>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
+        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <returns>A remote start result object.</returns>
+        public async Task<RemoteStartEVSEResult>
+
+            RemoteStart(DateTime                Timestamp,
+                        CancellationToken       CancellationToken,
+                        EVSE_Id                 EVSEId,
+                        ChargingProduct_Id      ChargingProductId,
+                        ChargingReservation_Id  ReservationId,
+                        ChargingSession_Id      SessionId,
+                        EVSP_Id                 ProviderId,
+                        eMA_Id                  eMAId,
+                        EventTracking_Id        EventTrackingId = null)
+
+        {
+
+            #region Initial checks
+
+            if (EVSEId == null)
+                throw new ArgumentNullException("EVSEId", "The given EVSE identification must not be null!");
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            #endregion
+
+            #region Send OnRemoteEVSEStart event
+
             var OnRemoteEVSEStartLocal = OnRemoteEVSEStart;
-            if (OnRemoteEVSEStartLocal == null)
+            if (OnRemoteEVSEStartLocal != null)
                 OnRemoteEVSEStartLocal(this,
                                        Timestamp,
-                                       null, //RoamingNetworkId,
+                                       EventTrackingId,
+                                       _EVSEOperator.RoamingNetwork.Id,
                                        EVSEId,
                                        ChargingProductId,
                                        ReservationId,
@@ -1823,13 +2060,14 @@ namespace org.GraphDefined.WWCP
                                        ProviderId,
                                        eMAId);
 
-            // Add RemoteChargingPool!
+            #endregion
+
 
             var result = RemoteStartEVSEResult.UnknownEVSE;
 
             var _ChargingStation = _ChargingStations.SelectMany(kvp  => kvp.Value.EVSEs).
-                                                     Where     (evse => evse.Id == EVSEId).
-                                                     Select    (evse => evse.ChargingStation).
+                                                     Where  (evse => evse.Id == EVSEId).
+                                                     Select (evse => evse.ChargingStation).
                                                      FirstOrDefault();
 
             if (_ChargingStation != null)
@@ -1839,17 +2077,41 @@ namespace org.GraphDefined.WWCP
                                                             ChargingProductId,
                                                             ReservationId,
                                                             SessionId,
-                                                        //    ProviderId,
-                                                            eMAId);
+                                                            ProviderId,
+                                                            eMAId,
+                                                            EventTrackingId);
 
+
+            if (result.Result == RemoteStartEVSEResultType.Success)
+            {
+
+                _ChargingSessions.TryAdd(result.SessionId,
+                                         new ChargingSession(Id:               result.SessionId,
+                                                             ChargingStation:  _ChargingStation,
+                                                             EVSEId:           EVSEId,
+                                                             ReservationId:    ReservationId,
+                                                             ProviderId:       ProviderId));
+
+            }
+
+
+            #region Send OnRemoteEVSEStarted event
 
             var OnRemoteEVSEStartedLocal = OnRemoteEVSEStarted;
-            if (OnRemoteEVSEStartedLocal == null)
+            if (OnRemoteEVSEStartedLocal != null)
                 OnRemoteEVSEStartedLocal(this,
                                          Timestamp,
-                                         null, //RoamingNetworkId,
+                                         EventTrackingId,
+                                         _EVSEOperator.RoamingNetwork.Id,
                                          EVSEId,
+                                         ChargingProductId,
+                                         ReservationId,
+                                         SessionId,
+                                         ProviderId,
+                                         eMAId,
                                          result);
+
+            #endregion
 
             return result;
 
@@ -1857,6 +2119,395 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region RemoteStart(Timestamp, CancellationToken, ChargingStationId, ChargingProductId, ReservationId, SessionId, ProviderId, eMAId)
+
+        /// <summary>
+        /// Initiate a remote start of the given charging session at the given charging station
+        /// and for the given provider-/eMAId.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this task.</param>
+        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
+        /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
+        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <returns>A remote start result object.</returns>
+        /// <returns>A remote start result object.</returns>
+        public async Task<RemoteStartChargingStationResult>
+
+            RemoteStart(DateTime                Timestamp,
+                        CancellationToken       CancellationToken,
+                        ChargingStation_Id      ChargingStationId,
+                        ChargingProduct_Id      ChargingProductId,
+                        ChargingReservation_Id  ReservationId,
+                        ChargingSession_Id      SessionId,
+                        EVSP_Id                 ProviderId,
+                        eMA_Id                  eMAId,
+                        EventTracking_Id        EventTrackingId = null)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStationId == null)
+                throw new ArgumentNullException("ChargingStationId",  "The given charging station identification must not be null!");
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            #endregion
+
+            #region Send OnRemoteChargingStationStart event
+
+            var OnRemoteChargingStationStartLocal = OnRemoteChargingStationStart;
+            if (OnRemoteChargingStationStartLocal != null)
+                OnRemoteChargingStationStartLocal(this,
+                                                  Timestamp,
+                                                  EventTrackingId,
+                                                  _EVSEOperator.RoamingNetwork.Id,
+                                                  ChargingStationId,
+                                                  ChargingProductId,
+                                                  ReservationId,
+                                                  SessionId,
+                                                  ProviderId,
+                                                  eMAId);
+
+            #endregion
+
+
+            var result = RemoteStartChargingStationResult.UnknownChargingStation;
+
+            var _ChargingStation = _ChargingStations.Select(kvp     => kvp.Value).
+                                                     Where (station => station.Id == ChargingStationId).
+                                                     FirstOrDefault();
+
+            if (_ChargingStation != null)
+                result = await _ChargingStation.RemoteStart(Timestamp,
+                                                            CancellationToken,
+                                                            ChargingStationId,
+                                                            ChargingProductId,
+                                                            ReservationId,
+                                                            SessionId,
+                                                            ProviderId,
+                                                            eMAId,
+                                                            EventTrackingId);
+
+
+            if (result.Result == RemoteStartChargingStationResultType.Success)
+            {
+
+                _ChargingSessions.TryAdd(result.SessionId,
+                                         new ChargingSession(Id:               result.SessionId,
+                                                             ChargingStation: _ChargingStation));
+
+            }
+
+            #region Send OnRemoteChargingStationStarted event
+
+            var OnRemoteChargingStationStartedLocal = OnRemoteChargingStationStarted;
+            if (OnRemoteChargingStationStartedLocal != null)
+                OnRemoteChargingStationStartedLocal(this,
+                                                    Timestamp,
+                                                    EventTrackingId,
+                                                    _EVSEOperator.RoamingNetwork.Id,
+                                                    ChargingStationId,
+                                                    ChargingProductId,
+                                                    ReservationId,
+                                                    SessionId,
+                                                    ProviderId,
+                                                    eMAId,
+                                                    result);
+
+            #endregion
+
+            return result;
+
+        }
+
+        #endregion
+
+
+        #region RemoteStop(Timestamp, CancellationToken, SessionId, ReservationHandling, ProviderId)
+
+        /// <summary>
+        /// Initiate a remote stop of the given charging session.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this task.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <returns>A remote stop result object.</returns>
+        public async Task<RemoteStopResult>
+
+            RemoteStop(DateTime             Timestamp,
+                       CancellationToken    CancellationToken,
+                       ChargingSession_Id   SessionId,
+                       ReservationHandling  ReservationHandling,
+                       EVSP_Id              ProviderId,
+                       EventTracking_Id     EventTrackingId = null)
+
+        {
+
+            #region Initial checks
+
+            if (SessionId == null)
+                throw new ArgumentNullException("SessionId", "The given charging session identification must not be null!");
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            #endregion
+
+            #region Send OnRemoteStop event
+
+            var OnRemoteStopLocal = OnRemoteStop;
+            if (OnRemoteStopLocal != null)
+                OnRemoteStopLocal(this,
+                                  Timestamp,
+                                  EventTrackingId,
+                                  _EVSEOperator.RoamingNetwork.Id,
+                                  SessionId,
+                                  ReservationHandling,
+                                  ProviderId);
+
+            #endregion
+
+
+            RemoteStopResult result = null;
+            ChargingSession _ChargingSession = null;
+
+            if (!_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
+                result = RemoteStopResult.InvalidSessionId(SessionId);
+
+            if (result == null && _ChargingSession.ChargingStation == null)
+                result = RemoteStopResult.UnknownOperator(SessionId);
+
+            if (result == null)
+                result = await _ChargingSession.
+                                   ChargingStation.
+                                   RemoteStop(Timestamp,
+                                              CancellationToken,
+                                              SessionId,
+                                              ReservationHandling,
+                                              ProviderId,
+                                              EventTrackingId);
+
+
+            #region Send OnRemoteStopped event
+
+            var OnRemoteStoppedLocal = OnRemoteStopped;
+            if (OnRemoteStoppedLocal != null)
+                OnRemoteStoppedLocal(this,
+                                     Timestamp,
+                                     EventTrackingId,
+                                     _EVSEOperator.RoamingNetwork.Id,
+                                     SessionId,
+                                     ReservationHandling,
+                                     ProviderId,
+                                     result);
+
+            #endregion
+
+            return result;
+
+        }
+
+        #endregion
+
+        #region RemoteStop(Timestamp, CancellationToken, EVSEId, SessionId, ReservationHandling, ProviderId)
+
+        /// <summary>
+        /// Initiate a remote stop of the given charging session at the given EVSE.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this task.</param>
+        /// <param name="EVSEId">An optional unique identification of an EVSE.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <returns>A remote stop result object.</returns>
+        public async Task<RemoteStopEVSEResult>
+
+            RemoteStop(DateTime             Timestamp,
+                       CancellationToken    CancellationToken,
+                       EVSE_Id              EVSEId,
+                       ChargingSession_Id   SessionId,
+                       ReservationHandling  ReservationHandling,
+                       EVSP_Id              ProviderId,
+                       EventTracking_Id     EventTrackingId = null)
+
+        {
+
+            #region Initial checks
+
+            if (EVSEId == null)
+                throw new ArgumentNullException("EVSEId",     "The given EVSE identification must not be null!");
+
+            if (SessionId == null)
+                throw new ArgumentNullException("SessionId",  "The given charging session identification must not be null!");
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            #endregion
+
+            #region Send OnRemoteEVSEStop event
+
+            var OnRemoteEVSEStopLocal = OnRemoteEVSEStop;
+            if (OnRemoteEVSEStopLocal != null)
+                OnRemoteEVSEStopLocal(this,
+                                      Timestamp,
+                                      EventTrackingId,
+                                      _EVSEOperator.RoamingNetwork.Id,
+                                      EVSEId,
+                                      SessionId,
+                                      ReservationHandling,
+                                      ProviderId);
+
+            #endregion
+
+
+            RemoteStopEVSEResult result = null;
+            ChargingSession _ChargingSession = null;
+
+            if (!_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
+                result = RemoteStopEVSEResult.InvalidSessionId(SessionId);
+
+            if (result == null && _ChargingSession.ChargingStation == null)
+                result = RemoteStopEVSEResult.UnknownEVSEOperator(SessionId);
+
+            if (result == null)
+                result = await _ChargingSession.
+                                   ChargingStation.
+                                   RemoteStop(Timestamp,
+                                              CancellationToken,
+                                              EVSEId,
+                                              SessionId,
+                                              ReservationHandling,
+                                              ProviderId,
+                                              EventTrackingId);
+
+
+            #region Send OnRemoteEVSEStopped event
+
+            var OnRemoteEVSEStoppedLocal = OnRemoteEVSEStopped;
+            if (OnRemoteEVSEStoppedLocal != null)
+                OnRemoteEVSEStoppedLocal(this,
+                                         Timestamp,
+                                         EventTrackingId,
+                                         _EVSEOperator.RoamingNetwork.Id,
+                                         EVSEId,
+                                         SessionId,
+                                         ReservationHandling,
+                                         ProviderId,
+                                         result);
+
+            #endregion
+
+            return result;
+
+        }
+
+        #endregion
+
+        #region RemoteStop(Timestamp, CancellationToken, ChargingStationId, SessionId, ReservationHandling, ProviderId)
+
+        /// <summary>
+        /// Initiate a remote stop of the given charging session at the given EVSE.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this task.</param>
+        /// <param name="ChargingStationId">An optional unique identification of a charging station.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <returns>A remote stop result object.</returns>
+        public async Task<RemoteStopChargingStationResult>
+
+            RemoteStop(DateTime             Timestamp,
+                       CancellationToken    CancellationToken,
+                       ChargingStation_Id   ChargingStationId,
+                       ChargingSession_Id   SessionId,
+                       ReservationHandling  ReservationHandling,
+                       EVSP_Id              ProviderId,
+                       EventTracking_Id     EventTrackingId = null)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStationId == null)
+                throw new ArgumentNullException("ChargingStationId",  "The given charging station identification must not be null!");
+
+            if (SessionId == null)
+                throw new ArgumentNullException("SessionId",          "The given charging session identification must not be null!");
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            #endregion
+
+            #region Send OnRemoteChargingStationStop event
+
+            var OnRemoteChargingStationStopLocal = OnRemoteChargingStationStop;
+            if (OnRemoteChargingStationStopLocal != null)
+                OnRemoteChargingStationStopLocal(this,
+                                                 Timestamp,
+                                                 EventTrackingId,
+                                                 _EVSEOperator.RoamingNetwork.Id,
+                                                 ChargingStationId,
+                                                 SessionId,
+                                                 ReservationHandling,
+                                                 ProviderId);
+
+            #endregion
+
+
+            RemoteStopChargingStationResult result = null;
+            ChargingSession _ChargingSession = null;
+
+            if (!_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
+                result = RemoteStopChargingStationResult.InvalidSessionId(SessionId);
+
+            if (result == null && _ChargingSession.ChargingStation == null)
+                result = RemoteStopChargingStationResult.UnknownChargingStationOperator(SessionId);
+
+            if (result == null)
+                result = await _ChargingSession.
+                                   ChargingStation.
+                                   RemoteStop(Timestamp,
+                                              CancellationToken,
+                                              ChargingStationId,
+                                              SessionId,
+                                              ReservationHandling,
+                                              ProviderId,
+                                              EventTrackingId);
+
+
+            #region Send OnRemoteChargingStationStopped event
+
+            var OnRemoteChargingStationStoppedLocal = OnRemoteChargingStationStopped;
+            if (OnRemoteChargingStationStoppedLocal != null)
+                OnRemoteChargingStationStoppedLocal(this,
+                                                    Timestamp,
+                                                    EventTrackingId,
+                                                    _EVSEOperator.RoamingNetwork.Id,
+                                                    ChargingStationId,
+                                                    SessionId,
+                                                    ReservationHandling,
+                                                    ProviderId,
+                                                    result);
+
+            #endregion
+
+            return result;
+
+        }
+
+        #endregion
 
 
 

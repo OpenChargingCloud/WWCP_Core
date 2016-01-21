@@ -21,7 +21,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using org.GraphDefined.WWCP;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -43,6 +43,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
     public delegate void OnRemoteEVSEStartDelegate(Object                  Sender,
                                                    DateTime                Timestamp,
+                                                   EventTracking_Id        EventTrackingId,
                                                    RoamingNetwork_Id       RoamingNetworkId,
                                                    EVSE_Id                 EVSEId,
                                                    ChargingProduct_Id      ChargingProductId,
@@ -60,11 +61,17 @@ namespace org.GraphDefined.WWCP
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="Result">The remote start result.</param>
-    public delegate void OnRemoteEVSEStartedDelegate(Object                 Sender,
-                                                     DateTime               Timestamp,
-                                                     RoamingNetwork_Id      RoamingNetworkId,
-                                                     EVSE_Id                EVSEId,
-                                                     RemoteStartEVSEResult  Result);
+    public delegate void OnRemoteEVSEStartedDelegate(Object                  Sender,
+                                                     DateTime                Timestamp,
+                                                     EventTracking_Id        EventTrackingId,
+                                                     RoamingNetwork_Id       RoamingNetworkId,
+                                                     EVSE_Id                 EVSEId,
+                                                     ChargingProduct_Id      ChargingProductId,
+                                                     ChargingReservation_Id  ReservationId,
+                                                     ChargingSession_Id      SessionId,
+                                                     EVSP_Id                 ProviderId,
+                                                     eMA_Id                  eMAId,
+                                                     RemoteStartEVSEResult   Result);
 
 
 
@@ -111,6 +118,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     public delegate void OnRemoteChargingStationStartDelegate(Object                  Sender,
                                                               DateTime                Timestamp,
+                                                              EventTracking_Id        EventTrackingId,
                                                               RoamingNetwork_Id       RoamingNetworkId,
                                                               ChargingStation_Id      ChargingStationId,
                                                               ChargingProduct_Id      ChargingProductId,
@@ -130,8 +138,14 @@ namespace org.GraphDefined.WWCP
     /// <param name="Result">The remote start result.</param>
     public delegate void OnRemoteChargingStationStartedDelegate(Object                            Sender,
                                                                 DateTime                          Timestamp,
+                                                                EventTracking_Id                  EventTrackingId,
                                                                 RoamingNetwork_Id                 RoamingNetworkId,
                                                                 ChargingStation_Id                ChargingStationId,
+                                                                ChargingProduct_Id                ChargingProductId,
+                                                                ChargingReservation_Id            ReservationId,
+                                                                ChargingSession_Id                SessionId,
+                                                                EVSP_Id                           ProviderId,
+                                                                eMA_Id                            eMAId,
                                                                 RemoteStartChargingStationResult  Result);
 
 

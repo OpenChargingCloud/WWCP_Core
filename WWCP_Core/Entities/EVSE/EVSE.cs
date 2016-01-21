@@ -62,6 +62,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static readonly TimeSpan MaxReservationDuration = TimeSpan.FromMinutes(15);
 
+        internal IRemoteEVSE _RemoteEVSE;
+
         #endregion
 
         #region Properties
@@ -395,13 +397,13 @@ namespace org.GraphDefined.WWCP
 
         #region CurrentChargingSession
 
-        private ChargingSession_Id _CurrentChargingSession;
+        private ChargingSession _CurrentChargingSession;
 
         /// <summary>
         /// The current charging session at this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public ChargingSession_Id CurrentChargingSession
+        public ChargingSession CurrentChargingSession
         {
 
             get
@@ -737,7 +739,12 @@ namespace org.GraphDefined.WWCP
         /// <param name="NewStatus">A new timestamped status.</param>
         public void SetStatus(Timestamped<EVSEStatusType>  NewStatus)
         {
+
+            if (_RemoteEVSE != null)
+                _RemoteEVSE.SetStatus(NewStatus);
+
             _StatusSchedule.Insert(NewStatus);
+
         }
 
         #endregion
@@ -891,7 +898,6 @@ namespace org.GraphDefined.WWCP
         /// Initiate a remote start of the given charging session at the given EVSE
         /// and for the given Provider/eMAId.
         /// </summary>
-        /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
         /// <param name="ReservationId">The unique identification for a charging reservation.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
@@ -899,11 +905,12 @@ namespace org.GraphDefined.WWCP
         /// <returns>A RemoteStartResult task.</returns>
         public async Task<RemoteStartEVSEResult> RemoteStart(DateTime                Timestamp,
                                                              CancellationToken       CancellationToken,
-                                                             EVSE_Id                 EVSEId,
                                                              ChargingProduct_Id      ChargingProductId,
                                                              ChargingReservation_Id  ReservationId,
                                                              ChargingSession_Id      SessionId,
-                                                             eMA_Id                  eMAId)
+                                                             EVSP_Id                 ProviderId,
+                                                             eMA_Id                  eMAId,
+                                                             EventTracking_Id        EventTrackingId = null)
         {
 
             if (_ChargingStation.RemoteChargingStation == null)
@@ -912,11 +919,13 @@ namespace org.GraphDefined.WWCP
             return await _ChargingStation.RemoteChargingStation.
                              RemoteStart(Timestamp,
                                          CancellationToken,
-                                         EVSEId,
+                                         Id,
                                          ChargingProductId,
                                          ReservationId,
                                          SessionId,
-                                         eMAId);
+                                         ProviderId,
+                                         eMAId,
+                                         EventTrackingId);
 
         }
 
@@ -931,22 +940,38 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <returns>A RemoteStopResult task.</returns>
-        public async Task<RemoteStopEVSEResult> RemoteStart(DateTime             Timestamp,
-                                                            CancellationToken    CancellationToken,
-                                                            EVSE_Id              EVSEId,
-                                                            ReservationHandling  ReservationHandling,
-                                                            ChargingSession_Id   SessionId)
+        public async Task<RemoteStopEVSEResult> RemoteStop(DateTime             Timestamp,
+                                                           CancellationToken    CancellationToken,
+                                                           ChargingSession_Id   SessionId,
+                                                           ReservationHandling  ReservationHandling,
+                                                           EVSP_Id              ProviderId,
+                                                           EventTracking_Id     EventTrackingId = null)
         {
 
             if (_ChargingStation.RemoteChargingStation == null)
                 return RemoteStopEVSEResult.Offline(SessionId);
 
-            return await _ChargingStation.RemoteChargingStation.
-                             RemoteStop(Timestamp,
-                                        CancellationToken, 
-                                        EVSEId,
-                                        ReservationHandling,
-                                        SessionId);
+            RemoteStopEVSEResult result = null;
+
+            var result2 = await _ChargingStation.RemoteChargingStation.
+                                    RemoteStop(Timestamp,
+                                               CancellationToken,
+                                               SessionId,
+                                               ReservationHandling,
+                                               ProviderId,
+                                               EventTrackingId);
+
+            switch (result2.Result)
+            {
+
+                case RemoteStopResultType.Error:
+                    result = RemoteStopEVSEResult.Error(SessionId, result2.ErrorMessage);
+                    break;
+
+
+            }
+
+            return result;
 
         }
 

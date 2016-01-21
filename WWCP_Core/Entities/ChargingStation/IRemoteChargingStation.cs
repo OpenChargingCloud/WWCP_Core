@@ -18,11 +18,12 @@
 #region Usings
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 
+using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
-using System.Threading;
 
 #endregion
 
@@ -49,17 +50,24 @@ namespace org.GraphDefined.WWCP
         TCPDisconnectResult Disconnect();
 
 
+        IRemoteEVSE CreateNewEVSE(EVSE_Id                           EVSEId,
+                                  Action<EVSE>                      Configurator  = null,
+                                  Action<EVSE>                      OnSuccess     = null,
+                                  Action<ChargingStation, EVSE_Id>  OnError       = null);
 
-        Task<ReservationResult> Reserve(DateTime                 Timestamp,
-                                        CancellationToken        CancellationToken,
-                                        EVSP_Id                  ProviderId,
-                                        ChargingReservation_Id   ReservationId,
-                                        DateTime?                StartTime,
-                                        TimeSpan?                Duration,
-                                        ChargingProduct_Id       ChargingProductId  = null,
-                                        IEnumerable<Auth_Token>  RFIDIds            = null,
-                                        IEnumerable<eMA_Id>      eMAIds             = null,
-                                        IEnumerable<UInt32>      PINs               = null);
+
+        Task<ReservationResult> ReserveEVSE(DateTime                 Timestamp,
+                                            CancellationToken        CancellationToken,
+                                            EVSP_Id                  ProviderId,
+                                            ChargingReservation_Id   ReservationId,
+                                            DateTime?                StartTime,
+                                            TimeSpan?                Duration,
+                                            EVSE_Id                  EVSEId,
+                                            ChargingProduct_Id       ChargingProductId  = null,
+                                            IEnumerable<Auth_Token>  RFIDIds            = null,
+                                            IEnumerable<eMA_Id>      eMAIds             = null,
+                                            IEnumerable<UInt32>      PINs               = null,
+                                            EventTracking_Id         EventTrackingId    = null);
 
 
 
@@ -79,7 +87,9 @@ namespace org.GraphDefined.WWCP
                                                            ChargingProduct_Id      ChargingProductId,
                                                            ChargingReservation_Id  ReservationId,
                                                            ChargingSession_Id      SessionId,
-                                                           eMA_Id                  eMAId);
+                                                           EVSP_Id                 ProviderId,
+                                                           eMA_Id                  eMAId,
+                                                           EventTracking_Id        EventTrackingId = null);
 
         /// <summary>
         /// Initiate a remote start of the given charging session at the given EVSE
@@ -97,7 +107,11 @@ namespace org.GraphDefined.WWCP
                                                 ChargingProduct_Id      ChargingProductId,
                                                 ChargingReservation_Id  ReservationId,
                                                 ChargingSession_Id      SessionId,
-                                                eMA_Id                  eMAId);
+                                                EVSP_Id                 ProviderId,
+                                                eMA_Id                  eMAId,
+                                                EventTracking_Id        EventTrackingId = null);
+
+
 
         /// <summary>
         /// Initiate a remote stop of the given charging session at the given charging station.
@@ -106,11 +120,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <returns>A RemoteStopResult task.</returns>
-        Task<RemoteStopChargingStationResult> RemoteStop(DateTime             Timestamp,
-                                                         CancellationToken    CancellationToken,
-                                                         ChargingStation_Id   ChargingStationId,
-                                                         ReservationHandling  ReservationHandling,
-                                                         ChargingSession_Id   SessionId);
+        Task<RemoteStopResult> RemoteStop(DateTime             Timestamp,
+                                          CancellationToken    CancellationToken,
+                                          ChargingSession_Id   SessionId,
+                                          ReservationHandling  ReservationHandling,
+                                          EVSP_Id              ProviderId,
+                                          EventTracking_Id     EventTrackingId = null);
+
 
         /// <summary>
         /// Initiate a remote stop of the given charging session at the given EVSE.
@@ -122,8 +138,28 @@ namespace org.GraphDefined.WWCP
         Task<RemoteStopEVSEResult> RemoteStop(DateTime             Timestamp,
                                               CancellationToken    CancellationToken,
                                               EVSE_Id              EVSEId,
+                                              ChargingSession_Id   SessionId,
                                               ReservationHandling  ReservationHandling,
-                                              ChargingSession_Id   SessionId);
+                                              EVSP_Id              ProviderId,
+                                              EventTracking_Id     EventTrackingId = null);
+
+
+        /// <summary>
+        /// Initiate a remote stop of the given charging session at the given charging station.
+        /// </summary>
+        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
+        /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <returns>A RemoteStopResult task.</returns>
+        Task<RemoteStopChargingStationResult> RemoteStop(DateTime             Timestamp,
+                                                         CancellationToken    CancellationToken,
+                                                         ChargingStation_Id   ChargingStationId,
+                                                         ChargingSession_Id   SessionId,
+                                                         ReservationHandling  ReservationHandling,
+                                                         EVSP_Id              ProviderId,
+                                                         EventTracking_Id     EventTrackingId = null);
+
+
 
 
         Boolean AuthenticateToken(Auth_Token AuthToken);

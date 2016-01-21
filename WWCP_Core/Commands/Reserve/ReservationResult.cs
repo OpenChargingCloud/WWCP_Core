@@ -74,6 +74,18 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region (static) UnknownEVSEOperator
+
+        public static ReservationResult UnknownEVSEOperator
+        {
+            get
+            {
+                return new ReservationResult(ReservationResultType.UnknownEVSE);
+            }
+        }
+
+        #endregion
+
         #region (static) UnknownChargingReservationId
 
         public static ReservationResult UnknownChargingReservationId
@@ -237,6 +249,7 @@ namespace org.GraphDefined.WWCP
 
         Unspecified,
 
+        UnknownEVSEOperator,
         UnknownChargingReservationId,
         UnknownChargingPool,
         UnknownChargingStation,
