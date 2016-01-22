@@ -1407,10 +1407,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
-        public ChargingStation CreateNewStation(ChargingStation_Id                        ChargingStationId      = null,
-                                                Action<ChargingStation>                   Configurator           = null,
-                                                Action<ChargingStation>                   OnSuccess              = null,
-                                                Action<ChargingPool, ChargingStation_Id>  OnError                = null)
+        public ChargingStation CreateNewStation(ChargingStation_Id                             ChargingStationId             = null,
+                                                Action<ChargingStation>                        Configurator                  = null,
+                                                Action<ChargingStation>                        OnSuccess                     = null,
+                                                Action<ChargingPool, ChargingStation_Id>       OnError                       = null,
+                                                Func<ChargingStation, IRemoteChargingStation>  RemoteChargingStationCreator  = null)
         {
 
             #region Initial checks
@@ -1459,6 +1460,11 @@ namespace org.GraphDefined.WWCP
 
                     OnSuccess.FailSafeInvoke(_ChargingStation);
                     ChargingStationAddition.SendNotification(DateTime.Now, this, _ChargingStation);
+
+
+                    if (RemoteChargingStationCreator != null)
+                        _ChargingStation.RemoteChargingStation = RemoteChargingStationCreator(_ChargingStation);
+
                     return _ChargingStation;
 
                 }

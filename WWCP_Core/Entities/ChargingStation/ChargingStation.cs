@@ -73,7 +73,10 @@ namespace org.GraphDefined.WWCP
 
         private IRemoteChargingStation _RemoteChargingStation;
 
-        internal IRemoteChargingStation RemoteChargingStation
+        /// <summary>
+        /// An optional remote charging station.
+        /// </summary>
+        public IRemoteChargingStation RemoteChargingStation
         {
 
             get
@@ -81,14 +84,9 @@ namespace org.GraphDefined.WWCP
                 return _RemoteChargingStation;
             }
 
-            set
+            internal set
             {
-
-                if (value == null)
-                    throw new ArgumentNullException("RemoteChargingStation", "The given parameter must not be null!");
-
                 _RemoteChargingStation = value;
-
             }
 
         }
