@@ -24,6 +24,8 @@ using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -33,21 +35,22 @@ namespace org.GraphDefined.WWCP
     public interface IRemoteChargingStation
     {
 
-        String EVSEOperatorDNS { get; }
-        TimeSpan EVSEOperatorTimeout { get; set; }
+        //IPTransport IPTransport { get; }
+        //DNSClient DNSClient { get; }
+        //String Hostname { get; }
+        //IPPort TCPPort { get; }
+        //String VirtualHost { get; }
+        //String URIPrefix { get; }
+        //TimeSpan QueryTimeout { get; }
+
         IEnumerable<EVSE> EVSEs { get; }
         ChargingStation_Id Id { get; }
         ChargingStationStatusType Status { get; }
-        bool UseIPv4 { get; }
-        bool UseIPv6 { get; }
 
         event CSConnectedDelegate Connected;
         event CSDisconnectedDelegate Disconnected;
         event CSEVSEOperatorTimeoutReachedDelegate EVSEOperatorTimeoutReached;
         event CSStateChangedDelegate StateChanged;
-
-        TCPConnectResult    Connect();
-        TCPDisconnectResult Disconnect();
 
 
         IRemoteEVSE CreateNewEVSE(EVSE_Id                           EVSEId,
@@ -163,10 +166,6 @@ namespace org.GraphDefined.WWCP
                                                          EVSP_Id              ProviderId,
                                                          TimeSpan?            QueryTimeout  = null);
 
-
-
-
-        Boolean AuthenticateToken(Auth_Token AuthToken);
 
     }
 
