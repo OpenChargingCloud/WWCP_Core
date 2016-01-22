@@ -2240,12 +2240,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
-
-
-
         #endregion
-
 
 
         #region RegisterAuthService(Priority, AuthenticationService)
@@ -2316,6 +2311,7 @@ namespace org.GraphDefined.WWCP
 
             AuthorizeStart(DateTime            Timestamp,
                            CancellationToken   CancellationToken,
+                           EventTracking_Id    EventTrackingId,
                            EVSEOperator_Id     OperatorId,
                            Auth_Token          AuthToken,
                            ChargingProduct_Id  ChargingProductId  = null,
@@ -2340,11 +2336,13 @@ namespace org.GraphDefined.WWCP
             if (OnAuthorizeStartLocal != null)
                 OnAuthorizeStartLocal(this,
                                       Timestamp,
+                                      EventTrackingId,
                                       Id,
                                       OperatorId,
                                       AuthToken,
                                       ChargingProductId,
-                                      SessionId);
+                                      SessionId,
+                                      QueryTimeout);
 
             #endregion
 
@@ -2356,7 +2354,10 @@ namespace org.GraphDefined.WWCP
                                                       Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
             {
 
-                result = await AuthenticationService.AuthorizeStart(OperatorId,
+                result = await AuthenticationService.AuthorizeStart(Timestamp,
+                                                                    CancellationToken,
+                                                                    EventTrackingId,
+                                                                    OperatorId,
                                                                     AuthToken,
                                                                     ChargingProductId,
                                                                     SessionId,
@@ -2392,7 +2393,10 @@ namespace org.GraphDefined.WWCP
                                                       Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
             {
 
-                result = await OperatorRoamingService.AuthorizeStart(OperatorId,
+                result = await OperatorRoamingService.AuthorizeStart(Timestamp,
+                                                                     CancellationToken,
+                                                                     EventTrackingId,
+                                                                     OperatorId,
                                                                      AuthToken,
                                                                      ChargingProductId,
                                                                      SessionId,
@@ -2437,8 +2441,14 @@ namespace org.GraphDefined.WWCP
             var OnAuthorizeStartedLocal = OnAuthorizeStarted;
             if (OnAuthorizeStartedLocal != null)
                 OnAuthorizeStartedLocal(this,
-                                        DateTime.Now,
+                                        Timestamp,
+                                        EventTrackingId,
                                         Id,
+                                        OperatorId,
+                                        AuthToken,
+                                        ChargingProductId,
+                                        SessionId,
+                                        QueryTimeout,
                                         result);
 
             #endregion
@@ -2466,6 +2476,7 @@ namespace org.GraphDefined.WWCP
 
             AuthorizeStart(DateTime            Timestamp,
                            CancellationToken   CancellationToken,
+                           EventTracking_Id    EventTrackingId,
                            EVSEOperator_Id     OperatorId,
                            Auth_Token          AuthToken,
                            EVSE_Id             EVSEId,
@@ -2494,12 +2505,14 @@ namespace org.GraphDefined.WWCP
             if (OnAuthorizeEVSEStartLocal != null)
                 OnAuthorizeEVSEStartLocal(this,
                                           Timestamp,
+                                          EventTrackingId,
                                           Id,
                                           OperatorId,
                                           AuthToken,
                                           EVSEId,
                                           ChargingProductId,
-                                          SessionId);
+                                          SessionId,
+                                          QueryTimeout);
 
             #endregion
 
@@ -2511,7 +2524,10 @@ namespace org.GraphDefined.WWCP
                                                       Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
             {
 
-                result = await AuthenticationService.AuthorizeStart(OperatorId,
+                result = await AuthenticationService.AuthorizeStart(Timestamp,
+                                                                    CancellationToken,
+                                                                    EventTrackingId,
+                                                                    OperatorId,
                                                                     AuthToken,
                                                                     EVSEId,
                                                                     ChargingProductId,
@@ -2548,7 +2564,10 @@ namespace org.GraphDefined.WWCP
                                                        Select (OperatorRoamingServiceWithPriority => OperatorRoamingServiceWithPriority.Value))
             {
 
-                result = await OperatorRoamingService.AuthorizeStart(OperatorId,
+                result = await OperatorRoamingService.AuthorizeStart(Timestamp,
+                                                                     CancellationToken,
+                                                                     EventTrackingId,
+                                                                     OperatorId,
                                                                      AuthToken,
                                                                      EVSEId,
                                                                      ChargingProductId,
@@ -2594,9 +2613,15 @@ namespace org.GraphDefined.WWCP
             var OnAuthorizeEVSEStartedLocal = OnAuthorizeEVSEStarted;
             if (OnAuthorizeEVSEStartedLocal != null)
                 OnAuthorizeEVSEStartedLocal(this,
-                                            DateTime.Now,
+                                            Timestamp,
+                                            EventTrackingId,
                                             Id,
+                                            OperatorId,
+                                            AuthToken,
                                             EVSEId,
+                                            ChargingProductId,
+                                            SessionId,
+                                            QueryTimeout,
                                             result);
 
             #endregion
@@ -2624,6 +2649,7 @@ namespace org.GraphDefined.WWCP
 
             AuthorizeStart(DateTime            Timestamp,
                            CancellationToken   CancellationToken,
+                           EventTracking_Id    EventTrackingId,
                            EVSEOperator_Id     OperatorId,
                            Auth_Token          AuthToken,
                            ChargingStation_Id  ChargingStationId,
@@ -2652,12 +2678,14 @@ namespace org.GraphDefined.WWCP
             if (OnAuthorizeChargingStationStartLocal != null)
                 OnAuthorizeChargingStationStartLocal(this,
                                                      Timestamp,
+                                                     EventTrackingId,
                                                      Id,
                                                      OperatorId,
                                                      AuthToken,
                                                      ChargingStationId,
                                                      ChargingProductId,
-                                                     SessionId);
+                                                     SessionId,
+                                                     QueryTimeout);
 
             #endregion
 
@@ -2669,7 +2697,10 @@ namespace org.GraphDefined.WWCP
                                                       Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
             {
 
-                result = await AuthenticationService.AuthorizeStart(OperatorId,
+                result = await AuthenticationService.AuthorizeStart(Timestamp,
+                                                                    CancellationToken,
+                                                                    EventTrackingId,
+                                                                    OperatorId,
                                                                     AuthToken,
                                                                     ChargingStationId,
                                                                     ChargingProductId,
@@ -2706,7 +2737,10 @@ namespace org.GraphDefined.WWCP
                                                       Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
             {
 
-                result = await OperatorRoamingService.AuthorizeStart(OperatorId,
+                result = await OperatorRoamingService.AuthorizeStart(Timestamp,
+                                                                     CancellationToken,
+                                                                     EventTrackingId,
+                                                                     OperatorId,
                                                                      AuthToken,
                                                                      ChargingStationId,
                                                                      ChargingProductId,
@@ -2752,9 +2786,15 @@ namespace org.GraphDefined.WWCP
             var OnAuthorizeChargingStationStartedLocal = OnAuthorizeChargingStationStarted;
             if (OnAuthorizeChargingStationStartedLocal != null)
                 OnAuthorizeChargingStationStartedLocal(this,
-                                                       DateTime.Now,
+                                                       Timestamp,
+                                                       EventTrackingId,
                                                        Id,
+                                                       OperatorId,
+                                                       AuthToken,
                                                        ChargingStationId,
+                                                       ChargingProductId,
+                                                       SessionId,
+                                                       QueryTimeout,
                                                        result);
 
             #endregion
@@ -2781,6 +2821,7 @@ namespace org.GraphDefined.WWCP
 
             AuthorizeStop(DateTime            Timestamp,
                           CancellationToken   CancellationToken,
+                          EventTracking_Id    EventTrackingId,
                           EVSEOperator_Id     OperatorId,
                           ChargingSession_Id  SessionId,
                           Auth_Token          AuthToken,
@@ -2807,10 +2848,12 @@ namespace org.GraphDefined.WWCP
             if (OnAuthorizeStopLocal != null)
                 OnAuthorizeStopLocal(this,
                                      Timestamp,
+                                     EventTrackingId,
                                      Id,
                                      OperatorId,
                                      SessionId,
-                                     AuthToken);
+                                     AuthToken,
+                                     QueryTimeout);
 
             #endregion
 
@@ -2825,10 +2868,22 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (_ChargingSession.AuthService != null)
-                    result = await _ChargingSession.AuthService.           AuthorizeStop(OperatorId, SessionId, AuthToken);
+                    result = await _ChargingSession.AuthService.           AuthorizeStop(Timestamp,
+                                                                                         CancellationToken,
+                                                                                         EventTrackingId,
+                                                                                         OperatorId,
+                                                                                         SessionId,
+                                                                                         AuthToken,
+                                                                                         QueryTimeout);
 
                 else if (_ChargingSession.OperatorRoamingService != null)
-                    result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(OperatorId, SessionId, AuthToken);
+                    result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(Timestamp,
+                                                                                         CancellationToken,
+                                                                                         EventTrackingId,
+                                                                                         OperatorId,
+                                                                                         SessionId,
+                                                                                         AuthToken,
+                                                                                         QueryTimeout);
 
             }
 
@@ -2839,11 +2894,14 @@ namespace org.GraphDefined.WWCP
             if (result == null || result.AuthorizationResult != AuthStopResultType.Authorized)
                 foreach (var OtherAuthenticationService in _AuthenticationServices.
                                                                OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-                                                               Select(AuthServiceWithPriority => AuthServiceWithPriority.Value).
+                                                               Select (AuthServiceWithPriority => AuthServiceWithPriority.Value).
                                                                ToArray())
                 {
 
-                    result = await OtherAuthenticationService.AuthorizeStop(OperatorId,
+                    result = await OtherAuthenticationService.AuthorizeStop(Timestamp,
+                                                                            CancellationToken,
+                                                                            EventTrackingId,
+                                                                            OperatorId,
                                                                             SessionId,
                                                                             AuthToken,
                                                                             QueryTimeout);
@@ -2856,11 +2914,14 @@ namespace org.GraphDefined.WWCP
             if (result == null || result.AuthorizationResult != AuthStopResultType.Authorized)
                 foreach (var OtherOperatorRoamingServices in _OperatorRoamingServices.
                                                                  OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-                                                                 Select(AuthServiceWithPriority => AuthServiceWithPriority.Value).
+                                                                 Select (AuthServiceWithPriority => AuthServiceWithPriority.Value).
                                                                  ToArray())
                 {
 
-                    result = await OtherOperatorRoamingServices.AuthorizeStop(OperatorId,
+                    result = await OtherOperatorRoamingServices.AuthorizeStop(Timestamp,
+                                                                              CancellationToken,
+                                                                              EventTrackingId,
+                                                                              OperatorId,
                                                                               SessionId,
                                                                               AuthToken,
                                                                               QueryTimeout);
@@ -2886,8 +2947,13 @@ namespace org.GraphDefined.WWCP
             var OnAuthorizeStoppedLocal = OnAuthorizeStopped;
             if (OnAuthorizeStoppedLocal != null)
                 OnAuthorizeStoppedLocal(this,
-                                        DateTime.Now,
+                                        Timestamp,
+                                        EventTrackingId,
                                         Id,
+                                        OperatorId,
+                                        SessionId,
+                                        AuthToken,
+                                        QueryTimeout,
                                         result);
 
             #endregion
@@ -2914,6 +2980,7 @@ namespace org.GraphDefined.WWCP
 
             AuthorizeStop(DateTime            Timestamp,
                           CancellationToken   CancellationToken,
+                          EventTracking_Id    EventTrackingId,
                           EVSEOperator_Id     OperatorId,
                           ChargingSession_Id  SessionId,
                           Auth_Token          AuthToken,
@@ -2944,11 +3011,13 @@ namespace org.GraphDefined.WWCP
             if (OnAuthorizeEVSEStopLocal != null)
                 OnAuthorizeEVSEStopLocal(this,
                                          Timestamp,
+                                         EventTrackingId,
                                          Id,
                                          OperatorId,
                                          EVSEId,
                                          SessionId,
-                                         AuthToken);
+                                         AuthToken,
+                                         QueryTimeout);
 
             #endregion
 
@@ -2963,10 +3032,24 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (_ChargingSession.AuthService != null)
-                    result = await _ChargingSession.AuthService.           AuthorizeStop(OperatorId, EVSEId, SessionId, AuthToken);
+                    result = await _ChargingSession.AuthService.           AuthorizeStop(Timestamp,
+                                                                                         CancellationToken,
+                                                                                         EventTrackingId,
+                                                                                         OperatorId,
+                                                                                         EVSEId,
+                                                                                         SessionId,
+                                                                                         AuthToken,
+                                                                                         QueryTimeout);
 
                 else if (_ChargingSession.OperatorRoamingService != null)
-                    result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(OperatorId, EVSEId, SessionId, AuthToken);
+                    result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(Timestamp,
+                                                                                         CancellationToken,
+                                                                                         EventTrackingId,
+                                                                                         OperatorId,
+                                                                                         EVSEId,
+                                                                                         SessionId,
+                                                                                         AuthToken,
+                                                                                         QueryTimeout);
 
             }
 
@@ -2981,7 +3064,10 @@ namespace org.GraphDefined.WWCP
                                                                ToArray())
                 {
 
-                    result = await OtherAuthenticationService.AuthorizeStop(OperatorId,
+                    result = await OtherAuthenticationService.AuthorizeStop(Timestamp,
+                                                                            CancellationToken,
+                                                                            EventTrackingId,
+                                                                            OperatorId,
                                                                             EVSEId,
                                                                             SessionId,
                                                                             AuthToken,
@@ -2999,7 +3085,10 @@ namespace org.GraphDefined.WWCP
                                                                  ToArray())
                 {
 
-                    result = await OtherOperatorRoamingServices.AuthorizeStop(OperatorId,
+                    result = await OtherOperatorRoamingServices.AuthorizeStop(Timestamp,
+                                                                              CancellationToken,
+                                                                              EventTrackingId,
+                                                                              OperatorId,
                                                                               EVSEId,
                                                                               SessionId,
                                                                               AuthToken,
@@ -3026,9 +3115,14 @@ namespace org.GraphDefined.WWCP
             var OnAuthorizeEVSEStoppedLocal = OnAuthorizeEVSEStopped;
             if (OnAuthorizeEVSEStoppedLocal != null)
                 OnAuthorizeEVSEStoppedLocal(this,
-                                            DateTime.Now,
+                                            Timestamp,
+                                            EventTrackingId,
                                             Id,
+                                            OperatorId,
                                             EVSEId,
+                                            SessionId,
+                                            AuthToken,
+                                            QueryTimeout,
                                             result);
 
             #endregion
@@ -3055,6 +3149,7 @@ namespace org.GraphDefined.WWCP
 
             AuthorizeStop(DateTime            Timestamp,
                           CancellationToken   CancellationToken,
+                          EventTracking_Id    EventTrackingId,
                           EVSEOperator_Id     OperatorId,
                           ChargingSession_Id  SessionId,
                           Auth_Token          AuthToken,
@@ -3085,11 +3180,13 @@ namespace org.GraphDefined.WWCP
             if (OnAuthorizeChargingStationStopLocal != null)
                 OnAuthorizeChargingStationStopLocal(this,
                                                     Timestamp,
+                                                    EventTrackingId,
                                                     Id,
                                                     OperatorId,
                                                     ChargingStationId,
                                                     SessionId,
-                                                    AuthToken);
+                                                    AuthToken,
+                                                    QueryTimeout);
 
             #endregion
 
@@ -3104,10 +3201,24 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (_ChargingSession.AuthService != null)
-                    result = await _ChargingSession.AuthService.           AuthorizeStop(OperatorId, ChargingStationId, SessionId, AuthToken);
+                    result = await _ChargingSession.AuthService.           AuthorizeStop(Timestamp,
+                                                                                         CancellationToken,
+                                                                                         EventTrackingId,
+                                                                                         OperatorId,
+                                                                                         ChargingStationId,
+                                                                                         SessionId,
+                                                                                         AuthToken,
+                                                                                         QueryTimeout);
 
                 else if (_ChargingSession.OperatorRoamingService != null)
-                    result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(OperatorId, ChargingStationId, SessionId, AuthToken);
+                    result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(Timestamp,
+                                                                                         CancellationToken,
+                                                                                         EventTrackingId,
+                                                                                         OperatorId,
+                                                                                         ChargingStationId,
+                                                                                         SessionId,
+                                                                                         AuthToken,
+                                                                                         QueryTimeout);
 
             }
 
@@ -3122,7 +3233,10 @@ namespace org.GraphDefined.WWCP
                                                                ToArray())
                 {
 
-                    result = await OtherAuthenticationService.AuthorizeStop(OperatorId,
+                    result = await OtherAuthenticationService.AuthorizeStop(Timestamp,
+                                                                            CancellationToken,
+                                                                            EventTrackingId,
+                                                                            OperatorId,
                                                                             ChargingStationId,
                                                                             SessionId,
                                                                             AuthToken,
@@ -3140,7 +3254,10 @@ namespace org.GraphDefined.WWCP
                                                                  ToArray())
                 {
 
-                    result = await OtherOperatorRoamingServices.AuthorizeStop(OperatorId,
+                    result = await OtherOperatorRoamingServices.AuthorizeStop(Timestamp,
+                                                                              CancellationToken,
+                                                                              EventTrackingId,
+                                                                              OperatorId,
                                                                               ChargingStationId,
                                                                               SessionId,
                                                                               AuthToken,
@@ -3167,9 +3284,14 @@ namespace org.GraphDefined.WWCP
             var OnAuthorizeChargingStationStoppedLocal = OnAuthorizeChargingStationStopped;
             if (OnAuthorizeChargingStationStoppedLocal != null)
                 OnAuthorizeChargingStationStoppedLocal(this,
-                                                       DateTime.Now,
+                                                       Timestamp,
+                                                       EventTrackingId,
                                                        Id,
+                                                       OperatorId,
                                                        ChargingStationId,
+                                                       SessionId,
+                                                       AuthToken,
+                                                       QueryTimeout,
                                                        result);
 
             #endregion
@@ -3186,6 +3308,7 @@ namespace org.GraphDefined.WWCP
 
         public async Task<ReservationResult> ReserveEVSE(DateTime                 Timestamp,
                                                          CancellationToken        CancellationToken,
+                                                         EventTracking_Id         EventTrackingId,
                                                          EVSP_Id                  ProviderId,
                                                          ChargingReservation_Id   ReservationId,
                                                          DateTime?                StartTime,
@@ -3195,7 +3318,7 @@ namespace org.GraphDefined.WWCP
                                                          IEnumerable<Auth_Token>  RFIDIds            = null,
                                                          IEnumerable<eMA_Id>      eMAIds             = null,
                                                          IEnumerable<UInt32>      PINs               = null,
-                                                         EventTracking_Id         EventTrackingId    = null)
+                                                         TimeSpan?                QueryTimeout       = null)
         {
 
             #region Initial checks
@@ -3214,6 +3337,7 @@ namespace org.GraphDefined.WWCP
             if (OnReserveEVSELocal != null)
                 OnReserveEVSELocal(this,
                                    Timestamp,
+                                   EventTrackingId,
                                    Id,
                                    ProviderId,
                                    ReservationId,
@@ -3223,8 +3347,7 @@ namespace org.GraphDefined.WWCP
                                    ChargingProductId,
                                    RFIDIds,
                                    eMAIds,
-                                   PINs,
-                                   EventTrackingId);
+                                   PINs);
 
             #endregion
 
@@ -3250,6 +3373,7 @@ namespace org.GraphDefined.WWCP
 
             var result = await _EVSEOperator.ReserveEVSE(Timestamp,
                                                          CancellationToken,
+                                                         EventTrackingId,
                                                          ProviderId,
                                                          ReservationId,
                                                          StartTime,
@@ -3259,7 +3383,7 @@ namespace org.GraphDefined.WWCP
                                                          RFIDIds,
                                                          eMAIds,
                                                          PINs,
-                                                         EventTrackingId);
+                                                         QueryTimeout);
 
             if (result.Result == ReservationResultType.Success)
                 _ChargingReservations.TryAdd(result.Reservation.Id, result.Reservation);
@@ -3271,18 +3395,18 @@ namespace org.GraphDefined.WWCP
             if (OnEVSEReservedLocal != null)
                 OnEVSEReservedLocal(this,
                                     Timestamp,
+                                    EventTrackingId,
                                     Id,
                                     ProviderId,
                                     ReservationId,
                                     StartTime,
                                     Duration,
                                     EVSEId,
-                                    result,
                                     ChargingProductId,
                                     RFIDIds,
                                     eMAIds,
                                     PINs,
-                                    EventTrackingId);
+                                    result);
 
             #endregion
 
@@ -3296,6 +3420,7 @@ namespace org.GraphDefined.WWCP
 
         public async Task<ReservationResult> ReserveChargingStation(DateTime                 Timestamp,
                                                                     CancellationToken        CancellationToken,
+                                                                    EventTracking_Id         EventTrackingId,
                                                                     EVSP_Id                  ProviderId,
                                                                     ChargingReservation_Id   ReservationId,
                                                                     DateTime?                StartTime,
@@ -3305,7 +3430,7 @@ namespace org.GraphDefined.WWCP
                                                                     IEnumerable<Auth_Token>  RFIDIds            = null,
                                                                     IEnumerable<eMA_Id>      eMAIds             = null,
                                                                     IEnumerable<UInt32>      PINs               = null,
-                                                                    EventTracking_Id         EventTrackingId    = null)
+                                                                    TimeSpan?                QueryTimeout       = null)
         {
 
             #region Initial checks
@@ -3396,13 +3521,14 @@ namespace org.GraphDefined.WWCP
 
             RemoteStart(DateTime                Timestamp,
                         CancellationToken       CancellationToken,
+                        EventTracking_Id        EventTrackingId,
                         EVSE_Id                 EVSEId,
                         ChargingProduct_Id      ChargingProductId,
                         ChargingReservation_Id  ReservationId,
                         ChargingSession_Id      SessionId,
                         EVSP_Id                 ProviderId,
                         eMA_Id                  eMAId,
-                        EventTracking_Id        EventTrackingId = null)
+                        TimeSpan?               QueryTimeout  = null)
 
         {
 
@@ -3429,7 +3555,8 @@ namespace org.GraphDefined.WWCP
                                        ReservationId,
                                        SessionId,
                                        ProviderId,
-                                       eMAId);
+                                       eMAId,
+                                       QueryTimeout);
 
             #endregion
 
@@ -3441,12 +3568,14 @@ namespace org.GraphDefined.WWCP
 
             var result = await _EVSEOperator.RemoteStart(Timestamp,
                                                          CancellationToken,
+                                                         EventTrackingId,
                                                          EVSEId,
                                                          ChargingProductId,
                                                          ReservationId,
                                                          SessionId,
                                                          ProviderId,
-                                                         eMAId);
+                                                         eMAId,
+                                                         QueryTimeout);
 
 
             if (result.Result == RemoteStartEVSEResultType.Success)
@@ -3476,6 +3605,7 @@ namespace org.GraphDefined.WWCP
                                          SessionId,
                                          ProviderId,
                                          eMAId,
+                                         QueryTimeout,
                                          result);
 
             #endregion
@@ -3506,13 +3636,14 @@ namespace org.GraphDefined.WWCP
 
             RemoteStart(DateTime                Timestamp,
                         CancellationToken       CancellationToken,
+                        EventTracking_Id        EventTrackingId,
                         ChargingStation_Id      ChargingStationId,
                         ChargingProduct_Id      ChargingProductId,
                         ChargingReservation_Id  ReservationId,
                         ChargingSession_Id      SessionId,
                         EVSP_Id                 ProviderId,
                         eMA_Id                  eMAId,
-                        EventTracking_Id        EventTrackingId = null)
+                        TimeSpan?               QueryTimeout  = null)
 
         {
 
@@ -3539,7 +3670,8 @@ namespace org.GraphDefined.WWCP
                                                   ReservationId,
                                                   SessionId,
                                                   ProviderId,
-                                                  eMAId);
+                                                  eMAId,
+                                                  QueryTimeout);
 
             #endregion
 
@@ -3552,13 +3684,14 @@ namespace org.GraphDefined.WWCP
 
             var result = await _EVSEOperator.RemoteStart(Timestamp,
                                                          CancellationToken,
+                                                         EventTrackingId,
                                                          ChargingStationId,
                                                          ChargingProductId,
                                                          ReservationId,
                                                          SessionId,
                                                          ProviderId,
                                                          eMAId,
-                                                         EventTrackingId);
+                                                         QueryTimeout);
 
 
             if (result.Result == RemoteStartChargingStationResultType.Success)
@@ -3584,6 +3717,7 @@ namespace org.GraphDefined.WWCP
                                                     SessionId,
                                                     ProviderId,
                                                     eMAId,
+                                                    QueryTimeout,
                                                     result);
 
             #endregion
@@ -3610,10 +3744,11 @@ namespace org.GraphDefined.WWCP
 
             RemoteStop(DateTime             Timestamp,
                        CancellationToken    CancellationToken,
+                       EventTracking_Id     EventTrackingId,
                        ChargingSession_Id   SessionId,
                        ReservationHandling  ReservationHandling,
                        EVSP_Id              ProviderId,
-                       EventTracking_Id     EventTrackingId = null)
+                       TimeSpan?            QueryTimeout  = null)
 
         {
 
@@ -3637,7 +3772,8 @@ namespace org.GraphDefined.WWCP
                                   Id,
                                   SessionId,
                                   ReservationHandling,
-                                  ProviderId);
+                                  ProviderId,
+                                  QueryTimeout);
 
             #endregion
 
@@ -3656,10 +3792,11 @@ namespace org.GraphDefined.WWCP
                                    EVSEOperator.
                                    RemoteStop(Timestamp,
                                               CancellationToken,
+                                              EventTrackingId,
                                               SessionId,
                                               ReservationHandling,
                                               ProviderId,
-                                              EventTrackingId);
+                                              QueryTimeout);
 
 
             #region Send OnRemoteStopped event
@@ -3673,6 +3810,7 @@ namespace org.GraphDefined.WWCP
                                      SessionId,
                                      ReservationHandling,
                                      ProviderId,
+                                     QueryTimeout,
                                      result);
 
             #endregion
@@ -3699,11 +3837,12 @@ namespace org.GraphDefined.WWCP
 
             RemoteStop(DateTime             Timestamp,
                        CancellationToken    CancellationToken,
+                       EventTracking_Id     EventTrackingId,
                        EVSE_Id              EVSEId,
                        ChargingSession_Id   SessionId,
                        ReservationHandling  ReservationHandling,
                        EVSP_Id              ProviderId,
-                       EventTracking_Id     EventTrackingId = null)
+                       TimeSpan?            QueryTimeout  = null)
 
         {
 
@@ -3731,7 +3870,8 @@ namespace org.GraphDefined.WWCP
                                       EVSEId,
                                       SessionId,
                                       ReservationHandling,
-                                      ProviderId);
+                                      ProviderId,
+                                      QueryTimeout);
 
             #endregion
 
@@ -3750,11 +3890,12 @@ namespace org.GraphDefined.WWCP
                                    EVSEOperator.
                                    RemoteStop(Timestamp,
                                               CancellationToken,
+                                              EventTrackingId,
                                               EVSEId,
                                               SessionId,
                                               ReservationHandling,
                                               ProviderId,
-                                              EventTrackingId);
+                                              QueryTimeout);
 
 
             #region Send OnRemoteEVSEStopped event
@@ -3769,6 +3910,7 @@ namespace org.GraphDefined.WWCP
                                          SessionId,
                                          ReservationHandling,
                                          ProviderId,
+                                         QueryTimeout,
                                          result);
 
             #endregion
@@ -3795,11 +3937,12 @@ namespace org.GraphDefined.WWCP
 
             RemoteStop(DateTime             Timestamp,
                        CancellationToken    CancellationToken,
+                       EventTracking_Id     EventTrackingId,
                        ChargingStation_Id   ChargingStationId,
                        ChargingSession_Id   SessionId,
                        ReservationHandling  ReservationHandling,
                        EVSP_Id              ProviderId,
-                       EventTracking_Id     EventTrackingId = null)
+                       TimeSpan?            QueryTimeout  = null)
 
         {
 
@@ -3827,7 +3970,8 @@ namespace org.GraphDefined.WWCP
                                                  ChargingStationId,
                                                  SessionId,
                                                  ReservationHandling,
-                                                 ProviderId);
+                                                 ProviderId,
+                                                 QueryTimeout);
 
             #endregion
 
@@ -3846,11 +3990,12 @@ namespace org.GraphDefined.WWCP
                                    EVSEOperator.
                                    RemoteStop(Timestamp,
                                               CancellationToken,
+                                              EventTrackingId,
                                               ChargingStationId,
                                               SessionId,
                                               ReservationHandling,
                                               ProviderId,
-                                              EventTrackingId);
+                                              QueryTimeout);
 
 
             #region Send OnRemoteChargingStationStopped event
@@ -3865,6 +4010,7 @@ namespace org.GraphDefined.WWCP
                                                     SessionId,
                                                     ReservationHandling,
                                                     ProviderId,
+                                                    QueryTimeout,
                                                     result);
 
             #endregion
@@ -3899,7 +4045,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
         public async Task<SendCDRResult>
 
-            SendChargeDetailRecord(EVSE_Id              EVSEId,
+            SendChargeDetailRecord(DateTime             Timestamp,
+                                   CancellationToken    CancellationToken,
+                                   EventTracking_Id     EventTrackingId,
+                                   EVSE_Id              EVSEId,
                                    ChargingSession_Id   ChargingSessionId,
                                    ChargingProduct_Id   ChargingProductId,
                                    DateTime             SessionStart,
@@ -3938,7 +4087,10 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return await SendChargeDetailRecord(new ChargeDetailRecord(ChargingSessionId),
+            return await SendChargeDetailRecord(Timestamp,
+                                                CancellationToken,
+                                                EventTrackingId,
+                                                new ChargeDetailRecord(ChargingSessionId),
                                                 QueryTimeout);
 
         }
@@ -3949,7 +4101,10 @@ namespace org.GraphDefined.WWCP
 
         public async Task<SendCDRResult>
 
-            SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
+            SendChargeDetailRecord(DateTime            Timestamp,
+                                   CancellationToken   CancellationToken,
+                                   EventTracking_Id    EventTrackingId,
+                                   ChargeDetailRecord  ChargeDetailRecord,
                                    TimeSpan?           QueryTimeout = null)
 
         {
@@ -3967,8 +4122,10 @@ namespace org.GraphDefined.WWCP
             if (OnSendCDRLocal != null)
                 OnSendCDRLocal(DateTime.Now,
                                this,
+                               EventTrackingId,
                                this.Id,
-                               ChargeDetailRecord);
+                               ChargeDetailRecord,
+                               QueryTimeout);
 
             #endregion
 
@@ -3994,11 +4151,17 @@ namespace org.GraphDefined.WWCP
                 {
 
                     if (_ChargingSession.AuthService != null)
-                        result = await _ChargingSession.AuthService.SendChargeDetailRecord(ChargeDetailRecord,
+                        result = await _ChargingSession.AuthService.SendChargeDetailRecord(Timestamp,
+                                                                                           CancellationToken,
+                                                                                           EventTrackingId,
+                                                                                           ChargeDetailRecord,
                                                                                            QueryTimeout);
 
                     else if (_ChargingSession.OperatorRoamingService != null)
-                        result = await _ChargingSession.OperatorRoamingService.SendChargeDetailRecord(ChargeDetailRecord,
+                        result = await _ChargingSession.OperatorRoamingService.SendChargeDetailRecord(Timestamp,
+                                                                                                      CancellationToken,
+                                                                                                      EventTrackingId,
+                                                                                                      ChargeDetailRecord,
                                                                                                       QueryTimeout);
 
                     _ChargingSession.RemoveMe = true;
@@ -4019,7 +4182,10 @@ namespace org.GraphDefined.WWCP
                                                                    ToArray())
                     {
 
-                        result = await OtherAuthenticationService.SendChargeDetailRecord(ChargeDetailRecord,
+                        result = await OtherAuthenticationService.SendChargeDetailRecord(Timestamp,
+                                                                                         CancellationToken,
+                                                                                         EventTrackingId,
+                                                                                         ChargeDetailRecord,
                                                                                          QueryTimeout);
 
                     }
@@ -4036,7 +4202,10 @@ namespace org.GraphDefined.WWCP
                                                                     ToArray())
                     {
 
-                        result = await OtherOperatorRoamingService.SendChargeDetailRecord(ChargeDetailRecord,
+                        result = await OtherOperatorRoamingService.SendChargeDetailRecord(Timestamp,
+                                                                                          CancellationToken,
+                                                                                          EventTrackingId,
+                                                                                          ChargeDetailRecord,
                                                                                           QueryTimeout);
 
                     }
@@ -4067,8 +4236,10 @@ namespace org.GraphDefined.WWCP
             if (OnCDRSentLocal != null)
                 OnCDRSentLocal(DateTime.Now,
                                this,
+                               EventTrackingId,
                                this.Id,
                                ChargeDetailRecord,
+                               QueryTimeout,
                                result);
 
             #endregion

@@ -17,7 +17,9 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Illias;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 #endregion
@@ -58,7 +60,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        Task<AuthStartResult> AuthorizeStart(EVSEOperator_Id      OperatorId,
+        Task<AuthStartResult> AuthorizeStart(DateTime             Timestamp,
+                                             CancellationToken    CancellationToken,
+                                             EventTracking_Id     EventTrackingId,
+                                             EVSEOperator_Id      OperatorId,
                                              Auth_Token           AuthToken,
                                              ChargingProduct_Id   ChargingProductId  = null,
                                              ChargingSession_Id   SessionId          = null,
@@ -73,7 +78,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        Task<AuthStartEVSEResult> AuthorizeStart(EVSEOperator_Id      OperatorId,
+        Task<AuthStartEVSEResult> AuthorizeStart(DateTime             Timestamp,
+                                                 CancellationToken    CancellationToken,
+                                                 EventTracking_Id     EventTrackingId,
+                                                 EVSEOperator_Id      OperatorId,
                                                  Auth_Token           AuthToken,
                                                  EVSE_Id              EVSEId,
                                                  ChargingProduct_Id   ChargingProductId  = null,
@@ -89,7 +97,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        Task<AuthStartChargingStationResult> AuthorizeStart(EVSEOperator_Id      OperatorId,
+        Task<AuthStartChargingStationResult> AuthorizeStart(DateTime             Timestamp,
+                                                            CancellationToken    CancellationToken,
+                                                            EventTracking_Id     EventTrackingId,
+                                                            EVSEOperator_Id      OperatorId,
                                                             Auth_Token           AuthToken,
                                                             ChargingStation_Id   ChargingStationId,
                                                             ChargingProduct_Id   ChargingProductId  = null,
@@ -107,7 +118,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        Task<AuthStopResult> AuthorizeStop(EVSEOperator_Id     OperatorId,
+        Task<AuthStopResult> AuthorizeStop(DateTime            Timestamp,
+                                           CancellationToken   CancellationToken,
+                                           EventTracking_Id    EventTrackingId,
+                                           EVSEOperator_Id     OperatorId,
                                            ChargingSession_Id  SessionId,
                                            Auth_Token          AuthToken,
                                            TimeSpan?           QueryTimeout  = null);
@@ -120,7 +134,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        Task<AuthStopEVSEResult> AuthorizeStop(EVSEOperator_Id     OperatorId,
+        Task<AuthStopEVSEResult> AuthorizeStop(DateTime            Timestamp,
+                                               CancellationToken   CancellationToken,
+                                               EventTracking_Id    EventTrackingId,
+                                               EVSEOperator_Id     OperatorId,
                                                EVSE_Id             EVSEId,
                                                ChargingSession_Id  SessionId,
                                                Auth_Token          AuthToken,
@@ -134,7 +151,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        Task<AuthStopChargingStationResult> AuthorizeStop(EVSEOperator_Id     OperatorId,
+        Task<AuthStopChargingStationResult> AuthorizeStop(DateTime            Timestamp,
+                                                          CancellationToken   CancellationToken,
+                                                          EventTracking_Id    EventTrackingId,
+                                                          EVSEOperator_Id     OperatorId,
                                                           ChargingStation_Id  ChargingStationId,
                                                           ChargingSession_Id  SessionId,
                                                           Auth_Token          AuthToken,
@@ -149,7 +169,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ChargeDetailRecord">A charge detail record.</param>
         /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        Task<SendCDRResult> SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
+        Task<SendCDRResult> SendChargeDetailRecord(DateTime            Timestamp,
+                                                   CancellationToken   CancellationToken,
+                                                   EventTracking_Id    EventTrackingId,
+                                                   ChargeDetailRecord  ChargeDetailRecord,
                                                    TimeSpan?           QueryTimeout = null);
 
         ///// <summary>

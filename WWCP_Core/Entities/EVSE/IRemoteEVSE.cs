@@ -66,9 +66,9 @@ namespace org.GraphDefined.WWCP
         bool Equals(object Object);
         IEnumerator<SocketOutlet> GetEnumerator();
         int GetHashCode();
-        Task<RemoteStartEVSEResult> RemoteStart(DateTime Timestamp, CancellationToken CancellationToken, ChargingProduct_Id ChargingProductId, ChargingReservation_Id ReservationId, ChargingSession_Id SessionId, EVSP_Id ProviderId, eMA_Id eMAId);
-        Task<RemoteStopEVSEResult> RemoteStop(DateTime Timestamp, CancellationToken CancellationToken, ChargingSession_Id SessionId, ReservationHandling ReservationHandling, EVSP_Id ProviderId);
-        Task<ReservationResult> Reserve(DateTime Timestamp, CancellationToken CancellationToken, EVSP_Id ProviderId, ChargingReservation_Id ReservationId, DateTime? StartTime, TimeSpan? Duration, ChargingProduct_Id ChargingProductId = null, IEnumerable<Auth_Token> RFIDIds = null, IEnumerable<eMA_Id> eMAIds = null, IEnumerable<uint> PINs = null);
+        Task<RemoteStartEVSEResult> RemoteStart(DateTime Timestamp, CancellationToken CancellationToken, EventTracking_Id EventTrackingId, ChargingProduct_Id ChargingProductId, ChargingReservation_Id ReservationId, ChargingSession_Id SessionId, EVSP_Id ProviderId, eMA_Id eMAId, TimeSpan? QueryTimeout = null);
+        Task<RemoteStopEVSEResult> RemoteStop(DateTime Timestamp, CancellationToken CancellationToken, EventTracking_Id EventTrackingId, ChargingSession_Id SessionId, ReservationHandling ReservationHandling, EVSP_Id ProviderId, TimeSpan? QueryTimeout = null);
+        Task<ReservationResult> Reserve(DateTime Timestamp, CancellationToken CancellationToken, EventTracking_Id EventTrackingId, EVSP_Id ProviderId, ChargingReservation_Id ReservationId, DateTime? StartTime, TimeSpan? Duration, ChargingProduct_Id ChargingProductId = null, IEnumerable<Auth_Token> RFIDIds = null, IEnumerable<eMA_Id> eMAIds = null, IEnumerable<uint> PINs = null, TimeSpan? QueryTimeout = null);
         void SetAdminStatus(Timestamped<EVSEAdminStatusType> NewAdminStatus);
         void SetAdminStatus(IEnumerable<Timestamped<EVSEAdminStatusType>> NewAdminStatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
         void SetAdminStatus(DateTime Timestamp, EVSEAdminStatusType NewAdminStatus);

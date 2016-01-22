@@ -18,10 +18,8 @@
 #region Usings
 
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 
-using org.GraphDefined.WWCP;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -40,11 +38,13 @@ namespace org.GraphDefined.WWCP
     /// <param name="SessionId">The unique identification for this charging session.</param>
     public delegate void OnAuthorizeStartDelegate(Object              Sender,
                                                   DateTime            Timestamp,
+                                                  EventTracking_Id    EventTrackingId,
                                                   RoamingNetwork_Id   RoamingNetworkId,
                                                   EVSEOperator_Id     OperatorId,
                                                   Auth_Token          AuthToken,
-                                                  ChargingProduct_Id  ChargingProductId  = null,
-                                                  ChargingSession_Id  SessionId          = null);
+                                                  ChargingProduct_Id  ChargingProductId,
+                                                  ChargingSession_Id  SessionId,
+                                                  TimeSpan?           QueryTimeout);
 
     /// <summary>
     /// Indicate an authorize start.
@@ -53,10 +53,16 @@ namespace org.GraphDefined.WWCP
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="Result">The authorize start result.</param>
-    public delegate void OnAuthorizeStartedDelegate(Object             Sender,
-                                                    DateTime           Timestamp,
-                                                    RoamingNetwork_Id  RoamingNetworkId,
-                                                    AuthStartResult    Result);
+    public delegate void OnAuthorizeStartedDelegate(Object              Sender,
+                                                    DateTime            Timestamp,
+                                                    EventTracking_Id    EventTrackingId,
+                                                    RoamingNetwork_Id   RoamingNetworkId,
+                                                    EVSEOperator_Id     OperatorId,
+                                                    Auth_Token          AuthToken,
+                                                    ChargingProduct_Id  ChargingProductId,
+                                                    ChargingSession_Id  SessionId,
+                                                    TimeSpan?           QueryTimeout,
+                                                    AuthStartResult     Result);
 
 
     // ----------------------------------------------------------------------------------------------------------
@@ -75,12 +81,14 @@ namespace org.GraphDefined.WWCP
     /// <param name="SessionId">The unique identification for this charging session.</param>
     public delegate void OnAuthorizeEVSEStartDelegate(Object              Sender,
                                                       DateTime            Timestamp,
+                                                      EventTracking_Id    EventTrackingId,
                                                       RoamingNetwork_Id   RoamingNetworkId,
                                                       EVSEOperator_Id     OperatorId,
                                                       Auth_Token          AuthToken,
                                                       EVSE_Id             EVSEId,
-                                                      ChargingProduct_Id  ChargingProductId  = null,
-                                                      ChargingSession_Id  SessionId          = null);
+                                                      ChargingProduct_Id  ChargingProductId,
+                                                      ChargingSession_Id  SessionId,
+                                                      TimeSpan?           QueryTimeout);
 
     /// <summary>
     /// Indicate an authorize start at the given EVSE.
@@ -92,8 +100,14 @@ namespace org.GraphDefined.WWCP
     /// <param name="Result">The authorize start result.</param>
     public delegate void OnAuthorizeEVSEStartedDelegate(Object               Sender,
                                                         DateTime             Timestamp,
+                                                        EventTracking_Id     EventTrackingId,
                                                         RoamingNetwork_Id    RoamingNetworkId,
+                                                        EVSEOperator_Id      OperatorId,
+                                                        Auth_Token           AuthToken,
                                                         EVSE_Id              EVSEId,
+                                                        ChargingProduct_Id   ChargingProductId,
+                                                        ChargingSession_Id   SessionId,
+                                                        TimeSpan?            QueryTimeout,
                                                         AuthStartEVSEResult  Result);
 
 
@@ -114,12 +128,14 @@ namespace org.GraphDefined.WWCP
     /// <param name="SessionId">The unique identification for this charging session.</param>
     public delegate void OnAuthorizeChargingStationStartDelegate(Object              Sender,
                                                                  DateTime            Timestamp,
+                                                                 EventTracking_Id    EventTrackingId,
                                                                  RoamingNetwork_Id   RoamingNetworkId,
                                                                  EVSEOperator_Id     OperatorId,
                                                                  Auth_Token          AuthToken,
                                                                  ChargingStation_Id  ChargingStationId,
-                                                                 ChargingProduct_Id  ChargingProductId  = null,
-                                                                 ChargingSession_Id  SessionId          = null);
+                                                                 ChargingProduct_Id  ChargingProductId,
+                                                                 ChargingSession_Id  SessionId,
+                                                                 TimeSpan?           QueryTimeout);
 
     /// <summary>
     /// Indicate an authorize start at the given charging station.
@@ -131,8 +147,14 @@ namespace org.GraphDefined.WWCP
     /// <param name="Result">The authorize start result.</param>
     public delegate void OnAuthorizeChargingStationStartedDelegate(Object                          Sender,
                                                                    DateTime                        Timestamp,
+                                                                   EventTracking_Id                EventTrackingId,
                                                                    RoamingNetwork_Id               RoamingNetworkId,
+                                                                   EVSEOperator_Id                 OperatorId,
+                                                                   Auth_Token                      AuthToken,
                                                                    ChargingStation_Id              ChargingStationId,
+                                                                   ChargingProduct_Id              ChargingProductId,
+                                                                   ChargingSession_Id              SessionId,
+                                                                   TimeSpan?                       QueryTimeout,
                                                                    AuthStartChargingStationResult  Result);
 
 

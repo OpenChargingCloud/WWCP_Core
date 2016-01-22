@@ -20,9 +20,9 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-
-using org.GraphDefined.WWCP;
 using System.Collections.Generic;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -49,7 +49,11 @@ namespace org.GraphDefined.WWCP
     /// <param name="HubOperatorId">An optional identification of the hub operator.</param>
     /// <param name="HubProviderId">An optional identification of the hub provider.</param>
     /// <param name="QueryTimeout">An optional timeout for this query.</param>
-    public delegate Task<SendCDRResult> SendChargeDetailRecordDelegate(EVSE_Id              EVSEId,
+    public delegate Task<SendCDRResult> SendChargeDetailRecordDelegate(DateTime             Timestamp,
+                                                                       Object               Sender,
+                                                                       CancellationToken    CancellationToken,
+                                                                       EventTracking_Id     EventTrackingId,
+                                                                       EVSE_Id              EVSEId,
                                                                        ChargingSession_Id   SessionId,
                                                                        ChargingProduct_Id   PartnerProductId,
                                                                        DateTime             SessionStart,
@@ -77,8 +81,10 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargeDetailRecord">A charge detail record.</param>
     public delegate void SendCDRDelegate(DateTime            Timestamp,
                                          Object              Sender,
+                                         EventTracking_Id    EventTrackingId,
                                          RoamingNetwork_Id   RoamingNetworkId,
-                                         ChargeDetailRecord  ChargeDetailRecord);
+                                         ChargeDetailRecord  ChargeDetailRecord,
+                                         TimeSpan?           QueryTimeout);
 
 
     /// <summary>
@@ -91,8 +97,10 @@ namespace org.GraphDefined.WWCP
     /// <param name="Result">The authorize stop result.</param>
     public delegate void CDRSentDelegate(DateTime            Timestamp,
                                          Object              Sender,
+                                         EventTracking_Id    EventTrackingId,
                                          RoamingNetwork_Id   RoamingNetworkId,
                                          ChargeDetailRecord  ChargeDetailRecord,
+                                         TimeSpan?           QueryTimeout,
                                          SendCDRResult       Result);
 
 }

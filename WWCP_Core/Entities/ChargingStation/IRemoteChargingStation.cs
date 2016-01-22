@@ -58,6 +58,7 @@ namespace org.GraphDefined.WWCP
 
         Task<ReservationResult> ReserveEVSE(DateTime                 Timestamp,
                                             CancellationToken        CancellationToken,
+                                            EventTracking_Id         EventTrackingId,
                                             EVSP_Id                  ProviderId,
                                             ChargingReservation_Id   ReservationId,
                                             DateTime?                StartTime,
@@ -67,7 +68,7 @@ namespace org.GraphDefined.WWCP
                                             IEnumerable<Auth_Token>  RFIDIds            = null,
                                             IEnumerable<eMA_Id>      eMAIds             = null,
                                             IEnumerable<UInt32>      PINs               = null,
-                                            EventTracking_Id         EventTrackingId    = null);
+                                            TimeSpan?                QueryTimeout       = null);
 
 
 
@@ -75,7 +76,6 @@ namespace org.GraphDefined.WWCP
         /// Initiate a remote start of the given charging session at the given charging station
         /// and for the given provider/eMAId.
         /// </summary>
-        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
         /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
         /// <param name="ReservationId">The unique identification for a charging reservation.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
@@ -83,13 +83,13 @@ namespace org.GraphDefined.WWCP
         /// <returns>A RemoteStartResult task.</returns>
         Task<RemoteStartChargingStationResult> RemoteStart(DateTime                Timestamp,
                                                            CancellationToken       CancellationToken,
-                                                           ChargingStation_Id      ChargingStationId,
+                                                           EventTracking_Id        EventTrackingId,
                                                            ChargingProduct_Id      ChargingProductId,
                                                            ChargingReservation_Id  ReservationId,
                                                            ChargingSession_Id      SessionId,
                                                            EVSP_Id                 ProviderId,
                                                            eMA_Id                  eMAId,
-                                                           EventTracking_Id        EventTrackingId = null);
+                                                           TimeSpan?               QueryTimeout  = null);
 
         /// <summary>
         /// Initiate a remote start of the given charging session at the given EVSE
@@ -103,13 +103,14 @@ namespace org.GraphDefined.WWCP
         /// <returns>A RemoteStartResult task.</returns>
         Task<RemoteStartEVSEResult> RemoteStart(DateTime                Timestamp,
                                                 CancellationToken       CancellationToken,
+                                                EventTracking_Id        EventTrackingId,
                                                 EVSE_Id                 EVSEId,
                                                 ChargingProduct_Id      ChargingProductId,
                                                 ChargingReservation_Id  ReservationId,
                                                 ChargingSession_Id      SessionId,
                                                 EVSP_Id                 ProviderId,
                                                 eMA_Id                  eMAId,
-                                                EventTracking_Id        EventTrackingId = null);
+                                                TimeSpan?               QueryTimeout  = null);
 
 
 
@@ -122,10 +123,11 @@ namespace org.GraphDefined.WWCP
         /// <returns>A RemoteStopResult task.</returns>
         Task<RemoteStopResult> RemoteStop(DateTime             Timestamp,
                                           CancellationToken    CancellationToken,
+                                          EventTracking_Id     EventTrackingId,
                                           ChargingSession_Id   SessionId,
                                           ReservationHandling  ReservationHandling,
                                           EVSP_Id              ProviderId,
-                                          EventTracking_Id     EventTrackingId = null);
+                                          TimeSpan?            QueryTimeout  = null);
 
 
         /// <summary>
@@ -137,11 +139,12 @@ namespace org.GraphDefined.WWCP
         /// <returns>A RemoteStopResult task.</returns>
         Task<RemoteStopEVSEResult> RemoteStop(DateTime             Timestamp,
                                               CancellationToken    CancellationToken,
+                                              EventTracking_Id     EventTrackingId,
                                               EVSE_Id              EVSEId,
                                               ChargingSession_Id   SessionId,
                                               ReservationHandling  ReservationHandling,
                                               EVSP_Id              ProviderId,
-                                              EventTracking_Id     EventTrackingId = null);
+                                              TimeSpan?            QueryTimeout  = null);
 
 
         /// <summary>
@@ -153,11 +156,12 @@ namespace org.GraphDefined.WWCP
         /// <returns>A RemoteStopResult task.</returns>
         Task<RemoteStopChargingStationResult> RemoteStop(DateTime             Timestamp,
                                                          CancellationToken    CancellationToken,
+                                                         EventTracking_Id     EventTrackingId,
                                                          ChargingStation_Id   ChargingStationId,
                                                          ChargingSession_Id   SessionId,
                                                          ReservationHandling  ReservationHandling,
                                                          EVSP_Id              ProviderId,
-                                                         EventTracking_Id     EventTrackingId = null);
+                                                         TimeSpan?            QueryTimeout  = null);
 
 
 

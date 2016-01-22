@@ -23,6 +23,7 @@ using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 using System.Threading;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -63,12 +64,14 @@ namespace org.GraphDefined.WWCP
         /// <returns>A RemoteStartResult task.</returns>
         Task<RemoteStartEVSEResult> RemoteStart(DateTime                Timestamp,
                                                 CancellationToken       CancellationToken,
+                                                EventTracking_Id        EventTrackingId,
                                                 EVSE_Id                 EVSEId,
                                                 ChargingProduct_Id      ChargingProductId,
                                                 ChargingReservation_Id  ReservationId,
                                                 ChargingSession_Id      SessionId,
                                                 EVSP_Id                 ProviderId,
-                                                eMA_Id                  eMAId);
+                                                eMA_Id                  eMAId,
+                                                TimeSpan?               QueryTimeout  = null);
 
 
 
@@ -81,9 +84,11 @@ namespace org.GraphDefined.WWCP
         /// <returns>A RemoteStopResult task.</returns>
         Task<RemoteStopEVSEResult> RemoteStop(DateTime             Timestamp,
                                               CancellationToken    CancellationToken,
+                                              EventTracking_Id     EventTrackingId,
                                               EVSE_Id              EVSEId,
                                               ReservationHandling  ReservationHandling,
-                                              ChargingSession_Id   SessionId);
+                                              ChargingSession_Id   SessionId,
+                                              TimeSpan?            QueryTimeout  = null);
 
 
     }

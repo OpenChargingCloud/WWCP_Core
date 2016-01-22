@@ -43,7 +43,8 @@ namespace org.GraphDefined.WWCP
                                               RoamingNetwork_Id    RoamingNetworkId,
                                               ChargingSession_Id   SessionId,
                                               ReservationHandling  ReservationHandling,
-                                              EVSP_Id              ProviderId);
+                                              EVSP_Id              ProviderId,
+                                              TimeSpan?            QueryTimeout);
 
     /// <summary>
     /// Indicate a remote stop of the given charging session.
@@ -59,6 +60,7 @@ namespace org.GraphDefined.WWCP
                                                  ChargingSession_Id   SessionId,
                                                  ReservationHandling  ReservationHandling,
                                                  EVSP_Id              ProviderId,
+                                                 TimeSpan?            QueryTimeout,
                                                  RemoteStopResult     Result);
 
 
@@ -75,9 +77,11 @@ namespace org.GraphDefined.WWCP
     public delegate Task<RemoteStopResult> OnRemoteStopDelegate2(DateTime             Timestamp,
                                                                  Object               Sender,
                                                                  CancellationToken    CancellationToken,
+                                                                 EventTracking_Id     EventTrackingId,
                                                                  ReservationHandling  ReservationHandling,
                                                                  ChargingSession_Id   SessionId,
-                                                                 EVSP_Id              ProviderId);
+                                                                 EVSP_Id              ProviderId,
+                                                                 TimeSpan?            QueryTimeout);
 
 
     // ----------------------------------------------------------------------------------------------------------
@@ -100,7 +104,8 @@ namespace org.GraphDefined.WWCP
                                                   EVSE_Id              EVSEId,
                                                   ChargingSession_Id   SessionId,
                                                   ReservationHandling  ReservationHandling,
-                                                  EVSP_Id              ProviderId);
+                                                  EVSP_Id              ProviderId,
+                                                  TimeSpan?            QueryTimeout);
 
     /// <summary>
     /// Indicate a remote stop of the given charging session at the given EVSE
@@ -119,6 +124,7 @@ namespace org.GraphDefined.WWCP
                                                      ChargingSession_Id    SessionId,
                                                      ReservationHandling   ReservationHandling,
                                                      EVSP_Id               ProviderId,
+                                                     TimeSpan?             QueryTimeout,
                                                      RemoteStopEVSEResult  Result);
 
 
@@ -136,10 +142,12 @@ namespace org.GraphDefined.WWCP
     public delegate Task<RemoteStopEVSEResult> OnRemoteStopEVSEDelegate(DateTime             Timestamp,
                                                                         Object               Sender,
                                                                         CancellationToken    CancellationToken,
+                                                                        EventTracking_Id     EventTrackingId,
                                                                         ReservationHandling  ReservationHandling,
                                                                         ChargingSession_Id   SessionId,
                                                                         EVSP_Id              ProviderId,
-                                                                        EVSE_Id              EVSEId);
+                                                                        EVSE_Id              EVSEId,
+                                                                        TimeSpan?            QueryTimeout  = null);
 
 
     // ----------------------------------------------------------------------------------------------------------
@@ -162,7 +170,8 @@ namespace org.GraphDefined.WWCP
                                                              ChargingStation_Id   ChargingStationId,
                                                              ChargingSession_Id   SessionId,
                                                              ReservationHandling  ReservationHandling,
-                                                             EVSP_Id              ProviderId);
+                                                             EVSP_Id              ProviderId,
+                                                             TimeSpan?            QueryTimeout);
 
     /// <summary>
     /// Indicate a remote stop of the given charging session at the given charging station
@@ -181,6 +190,7 @@ namespace org.GraphDefined.WWCP
                                                                 ChargingSession_Id               SessionId,
                                                                 ReservationHandling              ReservationHandling,
                                                                 EVSP_Id                          ProviderId,
+                                                                TimeSpan?                        QueryTimeout,
                                                                 RemoteStopChargingStationResult  Result);
 
 
@@ -198,10 +208,12 @@ namespace org.GraphDefined.WWCP
     public delegate Task<RemoteStopChargingStationResult> OnRemoteStopChargingStationDelegate(DateTime             Timestamp,
                                                                                               Object               Sender,
                                                                                               CancellationToken    CancellationToken,
+                                                                                              EventTracking_Id     EventTrackingId,
                                                                                               ReservationHandling  ReservationHandling,
                                                                                               ChargingSession_Id   SessionId,
                                                                                               EVSP_Id              ProviderId,
-                                                                                              ChargingStation_Id   ChargingStationId);
+                                                                                              ChargingStation_Id   ChargingStationId,
+                                                                                              TimeSpan?            QueryTimeout  = null);
 
 
 }

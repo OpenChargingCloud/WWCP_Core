@@ -2410,6 +2410,7 @@ namespace org.GraphDefined.WWCP
 
         public async Task<ReservationResult> ReserveEVSE(DateTime                 Timestamp,
                                                          CancellationToken        CancellationToken,
+                                                         EventTracking_Id         EventTrackingId,
                                                          EVSP_Id                  ProviderId,
                                                          ChargingReservation_Id   ReservationId,
                                                          DateTime?                StartTime,
@@ -2419,7 +2420,7 @@ namespace org.GraphDefined.WWCP
                                                          IEnumerable<Auth_Token>  RFIDIds            = null,
                                                          IEnumerable<eMA_Id>      eMAIds             = null,
                                                          IEnumerable<UInt32>      PINs               = null,
-                                                         EventTracking_Id         EventTrackingId    = null)
+                                                         TimeSpan?                QueryTimeout       = null)
         {
 
             #region Initial checks
@@ -2438,6 +2439,7 @@ namespace org.GraphDefined.WWCP
             if (OnReserveEVSELocal != null)
                 OnReserveEVSELocal(this,
                                    Timestamp,
+                                   EventTrackingId,
                                    RoamingNetwork.Id,
                                    ProviderId,
                                    ReservationId,
@@ -2447,8 +2449,7 @@ namespace org.GraphDefined.WWCP
                                    ChargingProductId,
                                    RFIDIds,
                                    eMAIds,
-                                   PINs,
-                                   EventTrackingId);
+                                   PINs);
 
             #endregion
 
@@ -2477,6 +2478,7 @@ namespace org.GraphDefined.WWCP
             if (_ChargingPool != null)
                 result = await _ChargingPool.ReserveEVSE(Timestamp,
                                                          CancellationToken,
+                                                         EventTrackingId,
                                                          ProviderId,
                                                          ReservationId,
                                                          StartTime,
@@ -2486,7 +2488,7 @@ namespace org.GraphDefined.WWCP
                                                          RFIDIds,
                                                          eMAIds,
                                                          PINs,
-                                                         EventTrackingId);
+                                                         QueryTimeout);
 
             if (result.Result == ReservationResultType.Success)
                 _ChargingReservations.TryAdd(result.Reservation.Id, result.Reservation);
@@ -2498,18 +2500,18 @@ namespace org.GraphDefined.WWCP
             if (OnEVSEReservedLocal != null)
                 OnEVSEReservedLocal(this,
                                     Timestamp,
+                                    EventTrackingId,
                                     RoamingNetwork.Id,
                                     ProviderId,
                                     ReservationId,
                                     StartTime,
                                     Duration,
                                     EVSEId,
-                                    result,
                                     ChargingProductId,
                                     RFIDIds,
                                     eMAIds,
                                     PINs,
-                                    EventTrackingId);
+                                    result);
 
             #endregion
 
@@ -2539,13 +2541,14 @@ namespace org.GraphDefined.WWCP
 
             RemoteStart(DateTime                Timestamp,
                         CancellationToken       CancellationToken,
+                        EventTracking_Id        EventTrackingId,
                         EVSE_Id                 EVSEId,
                         ChargingProduct_Id      ChargingProductId,
                         ChargingReservation_Id  ReservationId,
                         ChargingSession_Id      SessionId,
                         EVSP_Id                 ProviderId,
                         eMA_Id                  eMAId,
-                        EventTracking_Id        EventTrackingId = null)
+                        TimeSpan?               QueryTimeout  = null)
 
         {
 
@@ -2572,7 +2575,8 @@ namespace org.GraphDefined.WWCP
                                        ReservationId,
                                        SessionId,
                                        ProviderId,
-                                       eMAId);
+                                       eMAId,
+                                       QueryTimeout.Value);
 
             #endregion
 
@@ -2587,13 +2591,14 @@ namespace org.GraphDefined.WWCP
             if (_ChargingPool != null)
                 result = await _ChargingPool.RemoteStart(Timestamp,
                                                          CancellationToken,
+                                                         EventTrackingId,
                                                          EVSEId,
                                                          ChargingProductId,
                                                          ReservationId,
                                                          SessionId,
                                                          ProviderId,
                                                          eMAId,
-                                                         EventTrackingId);
+                                                         QueryTimeout);
 
 
             if (result.Result == RemoteStartEVSEResultType.Success)
@@ -2623,6 +2628,7 @@ namespace org.GraphDefined.WWCP
                                          SessionId,
                                          ProviderId,
                                          eMAId,
+                                         QueryTimeout,
                                          result);
 
             #endregion
@@ -2653,13 +2659,14 @@ namespace org.GraphDefined.WWCP
 
             RemoteStart(DateTime                Timestamp,
                         CancellationToken       CancellationToken,
+                        EventTracking_Id        EventTrackingId,
                         ChargingStation_Id      ChargingStationId,
                         ChargingProduct_Id      ChargingProductId,
                         ChargingReservation_Id  ReservationId,
                         ChargingSession_Id      SessionId,
                         EVSP_Id                 ProviderId,
                         eMA_Id                  eMAId,
-                        EventTracking_Id        EventTrackingId = null)
+                        TimeSpan?               QueryTimeout  = null)
 
         {
 
@@ -2686,7 +2693,8 @@ namespace org.GraphDefined.WWCP
                                                   ReservationId,
                                                   SessionId,
                                                   ProviderId,
-                                                  eMAId);
+                                                  eMAId,
+                                                  QueryTimeout.Value);
 
             #endregion
 
@@ -2701,13 +2709,14 @@ namespace org.GraphDefined.WWCP
             if (_ChargingPool != null)
                 result = await _ChargingPool.RemoteStart(Timestamp,
                                                          CancellationToken,
+                                                         EventTrackingId,
                                                          ChargingStationId,
                                                          ChargingProductId,
                                                          ReservationId,
                                                          SessionId,
                                                          ProviderId,
                                                          eMAId,
-                                                         EventTrackingId);
+                                                         QueryTimeout);
 
 
             if (result.Result == RemoteStartChargingStationResultType.Success)
@@ -2731,6 +2740,7 @@ namespace org.GraphDefined.WWCP
                                                     SessionId,
                                                     ProviderId,
                                                     eMAId,
+                                                    QueryTimeout,
                                                     result);
 
             #endregion
@@ -2757,10 +2767,11 @@ namespace org.GraphDefined.WWCP
 
             RemoteStop(DateTime             Timestamp,
                        CancellationToken    CancellationToken,
+                       EventTracking_Id     EventTrackingId,
                        ChargingSession_Id   SessionId,
                        ReservationHandling  ReservationHandling,
                        EVSP_Id              ProviderId,
-                       EventTracking_Id     EventTrackingId = null)
+                       TimeSpan?            QueryTimeout  = null)
 
         {
 
@@ -2784,7 +2795,8 @@ namespace org.GraphDefined.WWCP
                                   RoamingNetwork.Id,
                                   SessionId,
                                   ReservationHandling,
-                                  ProviderId);
+                                  ProviderId,
+                                  QueryTimeout.Value);
 
             #endregion
 
@@ -2803,10 +2815,11 @@ namespace org.GraphDefined.WWCP
                                    ChargingPool.
                                    RemoteStop(Timestamp,
                                               CancellationToken,
+                                              EventTrackingId,
                                               SessionId,
                                               ReservationHandling,
                                               ProviderId,
-                                              EventTrackingId);
+                                              QueryTimeout);
 
 
             #region Send OnRemoteStopped event
@@ -2820,6 +2833,7 @@ namespace org.GraphDefined.WWCP
                                      SessionId,
                                      ReservationHandling,
                                      ProviderId,
+                                     QueryTimeout,
                                      result);
 
             #endregion
@@ -2846,11 +2860,12 @@ namespace org.GraphDefined.WWCP
 
             RemoteStop(DateTime             Timestamp,
                        CancellationToken    CancellationToken,
+                       EventTracking_Id     EventTrackingId,
                        EVSE_Id              EVSEId,
                        ChargingSession_Id   SessionId,
                        ReservationHandling  ReservationHandling,
                        EVSP_Id              ProviderId,
-                       EventTracking_Id     EventTrackingId = null)
+                       TimeSpan?            QueryTimeout  = null)
 
         {
 
@@ -2878,7 +2893,8 @@ namespace org.GraphDefined.WWCP
                                       EVSEId,
                                       SessionId,
                                       ReservationHandling,
-                                      ProviderId);
+                                      ProviderId,
+                                      QueryTimeout.Value);
 
             #endregion
 
@@ -2897,11 +2913,12 @@ namespace org.GraphDefined.WWCP
                                    ChargingPool.
                                    RemoteStop(Timestamp,
                                               CancellationToken,
+                                              EventTrackingId,
                                               EVSEId,
                                               SessionId,
                                               ReservationHandling,
                                               ProviderId,
-                                              EventTrackingId);
+                                              QueryTimeout);
 
 
             #region Send OnRemoteEVSEStopped event
@@ -2916,6 +2933,7 @@ namespace org.GraphDefined.WWCP
                                          SessionId,
                                          ReservationHandling,
                                          ProviderId,
+                                         QueryTimeout,
                                          result);
 
             #endregion
@@ -2942,11 +2960,12 @@ namespace org.GraphDefined.WWCP
 
             RemoteStop(DateTime             Timestamp,
                        CancellationToken    CancellationToken,
+                       EventTracking_Id     EventTrackingId,
                        ChargingStation_Id   ChargingStationId,
                        ChargingSession_Id   SessionId,
                        ReservationHandling  ReservationHandling,
                        EVSP_Id              ProviderId,
-                       EventTracking_Id     EventTrackingId = null)
+                       TimeSpan?            QueryTimeout  = null)
 
         {
 
@@ -2974,7 +2993,8 @@ namespace org.GraphDefined.WWCP
                                                  ChargingStationId,
                                                  SessionId,
                                                  ReservationHandling,
-                                                 ProviderId);
+                                                 ProviderId,
+                                                 QueryTimeout.Value);
 
             #endregion
 
@@ -2993,11 +3013,12 @@ namespace org.GraphDefined.WWCP
                                    ChargingPool.
                                    RemoteStop(Timestamp,
                                               CancellationToken,
+                                              EventTrackingId,
                                               ChargingStationId,
                                               SessionId,
                                               ReservationHandling,
                                               ProviderId,
-                                              EventTrackingId);
+                                              QueryTimeout);
 
 
             #region Send OnRemoteChargingStationStopped event
@@ -3012,6 +3033,7 @@ namespace org.GraphDefined.WWCP
                                                     SessionId,
                                                     ReservationHandling,
                                                     ProviderId,
+                                                    QueryTimeout,
                                                     result);
 
             #endregion

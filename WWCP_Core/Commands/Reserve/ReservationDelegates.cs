@@ -41,17 +41,17 @@ namespace org.GraphDefined.WWCP
     /// <returns>A RemoteStartResult task.</returns>
     public delegate void OnReserveEVSEDelegate(Object                   Sender,
                                                DateTime                 Timestamp,
+                                               EventTracking_Id         EventTrackingId,
                                                RoamingNetwork_Id        RoamingNetworkId,
                                                EVSP_Id                  ProviderId,
                                                ChargingReservation_Id   ReservationId,
                                                DateTime?                StartTime,
                                                TimeSpan?                Duration,
                                                EVSE_Id                  EVSEId,
-                                               ChargingProduct_Id       ChargingProductId  = null,
-                                               IEnumerable<Auth_Token>  RFIDIds            = null,
-                                               IEnumerable<eMA_Id>      eMAIds             = null,
-                                               IEnumerable<UInt32>      PINs               = null,
-                                               EventTracking_Id         EventTrackingId    = null);
+                                               ChargingProduct_Id       ChargingProductId,
+                                               IEnumerable<Auth_Token>  RFIDIds,
+                                               IEnumerable<eMA_Id>      eMAIds,
+                                               IEnumerable<UInt32>      PINs);
 
     /// <summary>
     /// Reserve the possibility to charge anywhere within the given charging pool.
@@ -63,18 +63,18 @@ namespace org.GraphDefined.WWCP
     /// <returns>A RemoteStartResult task.</returns>
     public delegate void OnEVSEReservedDelegate(Object                   Sender,
                                                 DateTime                 Timestamp,
+                                                EventTracking_Id         EventTrackingId,
                                                 RoamingNetwork_Id        RoamingNetworkId,
                                                 EVSP_Id                  ProviderId,
                                                 ChargingReservation_Id   ReservationId,
                                                 DateTime?                StartTime,
                                                 TimeSpan?                Duration,
                                                 EVSE_Id                  EVSEId,
-                                                ReservationResult        Result,
-                                                ChargingProduct_Id       ChargingProductId  = null,
-                                                IEnumerable<Auth_Token>  RFIDIds            = null,
-                                                IEnumerable<eMA_Id>      eMAIds             = null,
-                                                IEnumerable<UInt32>      PINs               = null,
-                                                EventTracking_Id         EventTrackingId    = null);
+                                                ChargingProduct_Id       ChargingProductId,
+                                                IEnumerable<Auth_Token>  RFIDIds,
+                                                IEnumerable<eMA_Id>      eMAIds,
+                                                IEnumerable<UInt32>      PINs,
+                                                ReservationResult        Result);
 
 
     /// <summary>
@@ -85,10 +85,12 @@ namespace org.GraphDefined.WWCP
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
     /// <param name="CancellationToken">A token to cancel this task.</param>
     /// <returns>A RemoteStartResult task.</returns>
-    public delegate Task<RemoteStartEVSEResult> OnDeleteReservationDelegate(DateTime                Timestamp,
+    public delegate Task<RemoteStartEVSEResult> OnDeleteReservationDelegate(Object                  Sender,
+                                                                            DateTime                Timestamp,
+                                                                            CancellationToken       CancellationToken,
+                                                                            EventTracking_Id        EventTrackingId,
                                                                             RoamingNetwork_Id       RoamingNetworkId,
-                                                                            ChargingReservation_Id  ReservationId,
-                                                                            CancellationToken       CancellationToken);
+                                                                            ChargingReservation_Id  ReservationId);
 
 
 }

@@ -50,7 +50,8 @@ namespace org.GraphDefined.WWCP
                                                    ChargingReservation_Id  ReservationId,
                                                    ChargingSession_Id      SessionId,
                                                    EVSP_Id                 ProviderId,
-                                                   eMA_Id                  eMAId);
+                                                   eMA_Id                  eMAId,
+                                                   TimeSpan?               QueryTimeout);
 
     /// <summary>
     /// Indicate a remote start of the given charging session at the given EVSE
@@ -71,6 +72,7 @@ namespace org.GraphDefined.WWCP
                                                      ChargingSession_Id      SessionId,
                                                      EVSP_Id                 ProviderId,
                                                      eMA_Id                  eMAId,
+                                                     TimeSpan?               QueryTimeout,
                                                      RemoteStartEVSEResult   Result);
 
 
@@ -92,12 +94,14 @@ namespace org.GraphDefined.WWCP
     public delegate Task<RemoteStartEVSEResult> OnRemoteStartEVSEDelegate(DateTime                Timestamp,
                                                                           Object                  Sender,
                                                                           CancellationToken       CancellationToken,
+                                                                          EventTracking_Id        EventTrackingId,
                                                                           EVSE_Id                 EVSEId,
                                                                           ChargingProduct_Id      ChargingProductId,
                                                                           ChargingReservation_Id  ReservationId,
                                                                           ChargingSession_Id      SessionId,
                                                                           EVSP_Id                 ProviderId,
-                                                                          eMA_Id                  eMAId);
+                                                                          eMA_Id                  eMAId,
+                                                                          TimeSpan?               QueryTimeout  = null);
 
 
     // ----------------------------------------------------------------------------------------------------------
@@ -125,7 +129,8 @@ namespace org.GraphDefined.WWCP
                                                               ChargingReservation_Id  ReservationId,
                                                               ChargingSession_Id      SessionId,
                                                               EVSP_Id                 ProviderId,
-                                                              eMA_Id                  eMAId);
+                                                              eMA_Id                  eMAId,
+                                                              TimeSpan?               QueryTimeout);
 
     /// <summary>
     /// Indicate a remote start of the given charging session at the given charging station
@@ -146,6 +151,7 @@ namespace org.GraphDefined.WWCP
                                                                 ChargingSession_Id                SessionId,
                                                                 EVSP_Id                           ProviderId,
                                                                 eMA_Id                            eMAId,
+                                                                TimeSpan?                         QueryTimeout,
                                                                 RemoteStartChargingStationResult  Result);
 
 
@@ -166,12 +172,14 @@ namespace org.GraphDefined.WWCP
     public delegate Task<RemoteStartChargingStationResult> OnRemoteStartChargingStationDelegate(DateTime                Timestamp,
                                                                                                 Object                  Sender,
                                                                                                 CancellationToken       CancellationToken,
+                                                                                                EventTracking_Id        EventTrackingId,
                                                                                                 ChargingStation_Id      ChargingStationId,
                                                                                                 ChargingProduct_Id      ChargingProductId,
                                                                                                 ChargingReservation_Id  ReservationId,
                                                                                                 ChargingSession_Id      SessionId,
                                                                                                 EVSP_Id                 ProviderId,
-                                                                                                eMA_Id                  eMAId);
+                                                                                                eMA_Id                  eMAId,
+                                                                                                TimeSpan?               QueryTimeout  = null);
 
 }
 
