@@ -88,6 +88,7 @@
     <Compile Include="Entities\EVSEOperator\IRemoteEVSEOperator.cs" />
     <Compile Include="Entities\EVSE\EVSEAdminStatusDiff.cs" />
     <Compile Include="Entities\EVSE\IRemoteEVSE.cs" />
+    <Compile Include="Entities\EVSE\RemoteDelegates.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="Entities\StatusSchedule.cs" />
     <Compile Include="Entities\AuthInfo.cs" />
@@ -100,7 +101,7 @@
     <Compile Include="Entities\ChargingPool\RedirectedChargingPools.cs" />
     <Compile Include="Entities\ChargingProduct\ChargingProduct_Id.cs" />
     <Compile Include="Entities\ChargingReservation\ChargingReservation.cs" />
-    <Compile Include="Entities\ChargingReservation\ChargingReservationType.cs" />
+    <Compile Include="Entities\ChargingReservation\ChargingReservationLevel.cs" />
     <Compile Include="Entities\ChargingReservation\ChargingReservation_Id.cs" />
     <Compile Include="Entities\ChargingStation\AccessibilityTypes.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationAdminStatusType.cs" />

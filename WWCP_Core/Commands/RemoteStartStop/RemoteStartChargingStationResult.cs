@@ -49,18 +49,18 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SessionId
+        #region Session
 
-        private readonly ChargingSession_Id _SessionId;
+        private readonly ChargingSession _Session;
 
         /// <summary>
-        /// The charging session identification for the remote start operation.
+        /// The charging session for the remote start operation.
         /// </summary>
-        public ChargingSession_Id SessionId
+        public ChargingSession Session
         {
             get
             {
-                return _SessionId;
+                return _Session;
             }
         }
 
@@ -101,24 +101,24 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentException("Invalid parameter!");
 
             this._Result        = Result;
-            this._SessionId     = null;
+            this._Session       = null;
             this._ErrorMessage  = null;
 
         }
 
         #endregion
 
-        #region (private) RemoteStartResult(SessionId)
+        #region (private) RemoteStartResult(Session)
 
         /// <summary>
         /// Create a new successful remote start result.
         /// </summary>
-        /// <param name="SessionId">The unique charging session identification (mandatory for successful session starts).</param>
-        private RemoteStartChargingStationResult(ChargingSession_Id  SessionId)
+        /// <param name="Session">The charging session (mandatory for successful session starts).</param>
+        private RemoteStartChargingStationResult(ChargingSession  Session)
         {
 
             this._Result        = RemoteStartChargingStationResultType.Success;
-            this._SessionId     = SessionId;
+            this._Session       = Session;
             this._ErrorMessage  = null;
 
         }
@@ -264,23 +264,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Success(SessionId)
+        #region (static) Success(Session)
 
         /// <summary>
         /// The remote start was successful.
         /// </summary>
-        /// <param name="SessionId">The unique charging session identification.</param>
-        public static RemoteStartChargingStationResult Success(ChargingSession_Id SessionId)
+        /// <param name="Session">The charging session.</param>
+        public static RemoteStartChargingStationResult Success(ChargingSession Session)
         {
 
             #region Initial checks
 
-            if (SessionId == null)
-                throw new ArgumentNullException("SessionId", "The given parameter must not be null!");
+            if (Session == null)
+                throw new ArgumentNullException("Session", "The given charging session must not be null!");
 
             #endregion
 
-            return new RemoteStartChargingStationResult(SessionId);
+            return new RemoteStartChargingStationResult(Session);
 
         }
 

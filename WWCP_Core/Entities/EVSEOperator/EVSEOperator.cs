@@ -65,7 +65,7 @@ namespace org.GraphDefined.WWCP
         public const UInt16 DefaultEVSEOperatorAdminStatusHistorySize = 50;
 
 
-        private readonly ConcurrentDictionary<ChargingReservation_Id, ChargingReservation>  _ChargingReservations;
+        private readonly ConcurrentDictionary<ChargingReservation_Id, ChargingPool>     _ChargingReservations;
         private readonly ConcurrentDictionary<ChargingSession_Id,     ChargingSession>      _ChargingSessions;
 
         #endregion
@@ -1281,7 +1281,7 @@ namespace org.GraphDefined.WWCP
             this._AdminStatusSchedule        = new StatusSchedule<EVSEOperatorAdminStatusType>();
             this._AdminStatusSchedule.Insert(EVSEOperatorAdminStatusType.Unspecified);
 
-            this._ChargingReservations       = new ConcurrentDictionary<ChargingReservation_Id, ChargingReservation>();
+            this._ChargingReservations       = new ConcurrentDictionary<ChargingReservation_Id, ChargingPool>();
             this._ChargingSessions           = new ConcurrentDictionary<ChargingSession_Id,     ChargingSession>();
 
             #endregion
@@ -2453,20 +2453,6 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region Try to remove an existing reservation if this is an update!
-
-            if (ReservationId != null)
-            {
-
-                ChargingReservation _Reservation = null;
-
-                if (!_ChargingReservations.TryRemove(ReservationId, out _Reservation))
-                    return ReservationResult.UnknownChargingReservationId;
-
-            }
-
-            #endregion
-
 
             var result = ReservationResult.UnknownEVSE;
 
@@ -2491,7 +2477,7 @@ namespace org.GraphDefined.WWCP
                                                          QueryTimeout);
 
             if (result.Result == ReservationResultType.Success)
-                _ChargingReservations.TryAdd(result.Reservation.Id, result.Reservation);
+                _ChargingReservations.TryAdd(result.Reservation.Id, _ChargingPool);
 
 
             #region Send OnEVSEReserved event
@@ -2516,6 +2502,39 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             return result;
+
+        }
+
+        #endregion
+
+        #region TryGetReservationById(ReservationId, out Reservation)
+
+        public Boolean TryGetReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
+        {
+
+            ChargingPool _ChargingPool = null;
+
+            if (_ChargingReservations.TryGetValue(ReservationId, out _ChargingPool))
+                return _ChargingPool.TryGetReservationById(ReservationId, out Reservation);
+
+            Reservation = null;
+            return false;
+
+        }
+
+        #endregion
+
+        #region TryRemoveReservation(ReservationId)
+
+        public Boolean TryRemoveReservation(ChargingReservation_Id ReservationId)
+        {
+
+            ChargingPool _ChargingPool = null;
+
+            if (_ChargingReservations.TryRemove(ReservationId, out _ChargingPool))
+                return _ChargingPool.TryRemoveReservation(ReservationId);
+
+            return false;
 
         }
 
@@ -2557,6 +2576,8 @@ namespace org.GraphDefined.WWCP
             if (EVSEId == null)
                 throw new ArgumentNullException("EVSEId", "The given EVSE identification must not be null!");
 
+            RemoteStartEVSEResult result = null;
+
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
@@ -2581,14 +2602,14 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            var result = RemoteStartEVSEResult.UnknownEVSE;
-
             var _ChargingPool = _ChargingPools.SelectMany(kvp  => kvp.Value.EVSEs).
                                                   Where  (evse => evse.Id == EVSEId).
                                                   Select (evse => evse.ChargingStation.ChargingPool).
                                                   FirstOrDefault();
 
             if (_ChargingPool != null)
+            {
+
                 result = await _ChargingPool.RemoteStart(Timestamp,
                                                          CancellationToken,
                                                          EventTrackingId,
@@ -2601,17 +2622,19 @@ namespace org.GraphDefined.WWCP
                                                          QueryTimeout);
 
 
-            if (result.Result == RemoteStartEVSEResultType.Success)
-            {
+                if (result.Result == RemoteStartEVSEResultType.Success)
+                {
 
-                _ChargingSessions.TryAdd(result.SessionId,
-                                         new ChargingSession(Id:             result.SessionId,
-                                                             ChargingPool:   _ChargingPool,
-                                                             EVSEId:         EVSEId,
-                                                             ReservationId:  ReservationId,
-                                                             ProviderId:     ProviderId));
+                    _ChargingSessions.TryAdd(result.Session.Id, result.Session);
+
+                    result.Session.EVSEOperator = this;
+
+                }
 
             }
+
+            else
+                result = RemoteStartEVSEResult.UnknownEVSE;
 
 
             #region Send OnRemoteEVSEStarted event
@@ -2675,6 +2698,8 @@ namespace org.GraphDefined.WWCP
             if (ChargingStationId == null)
                 throw new ArgumentNullException("ChargingStationId",  "The given charging station identification must not be null!");
 
+            RemoteStartChargingStationResult result = null;
+
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
@@ -2699,14 +2724,14 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            var result = RemoteStartChargingStationResult.UnknownChargingStation;
-
             var _ChargingPool = _ChargingPools.SelectMany(kvp     => kvp.Value.ChargingStations).
                                                   Where  (station => station.Id == ChargingStationId).
                                                   Select (station => station.ChargingPool).
                                                   FirstOrDefault();
 
             if (_ChargingPool != null)
+            {
+
                 result = await _ChargingPool.RemoteStart(Timestamp,
                                                          CancellationToken,
                                                          EventTrackingId,
@@ -2718,13 +2743,14 @@ namespace org.GraphDefined.WWCP
                                                          eMAId,
                                                          QueryTimeout);
 
+                if (result.Result == RemoteStartChargingStationResultType.Success)
+                    _ChargingSessions.TryAdd(result.Session.Id, result.Session);
 
-            if (result.Result == RemoteStartChargingStationResultType.Success)
-            {
-                _ChargingSessions.TryAdd(result.SessionId,
-                                         new ChargingSession(Id:               result.SessionId,
-                                                             ChargingStation:  GetChargingStationbyId(ChargingStationId)));
             }
+
+            else
+                result = RemoteStartChargingStationResult.UnknownChargingStation;
+
 
             #region Send OnRemoteChargingStationStarted event
 

@@ -21,23 +21,23 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The charging reservation type.
     /// </summary>
-    public enum ChargingReservationType
+    public enum ChargingReservationLevel
     {
 
         /// <summary>
         /// The EVSE was reserved.
         /// </summary>
-        AtEVSE,
+        EVSE,
 
         /// <summary>
         /// The charging station was reserved.
         /// </summary>
-        AtChargingStation,
+        ChargingStation,
 
         /// <summary>
         /// The charging pool was reserved.
         /// </summary>
-        AtChargingPool
+        ChargingPool
 
     }
 

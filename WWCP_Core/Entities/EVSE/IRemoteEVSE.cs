@@ -33,32 +33,33 @@ namespace org.GraphDefined.WWCP
     public interface IRemoteEVSE
     {
 
+        event OnStatusChangedDelegate       OnStatusChanged;
+        event OnAdminStatusChangedDelegate  OnAdminStatusChanged;
+        event OnNewReservationDelegate      OnNewReservation;
+        event OnReservationDeletedDelegate  OnReservationDeleted;
+        event OnNewChargingSessionDelegate  OnNewChargingSession;
+
+
         Timestamped<EVSEAdminStatusType> AdminStatus { get; set; }
         IEnumerable<Timestamped<EVSEAdminStatusType>> AdminStatusSchedule { get; }
         double AverageVoltage { get; set; }
         ReactiveSet<ChargingFacilities> ChargingFacilities { get; set; }
         ReactiveSet<ChargingModes> ChargingModes { get; set; }
         IRemoteChargingStation ChargingStation { get; }
-        ChargingSession_Id CurrentChargingSession { get; set; }
+        ChargingSession ChargingSession { get; set; }
         I18NString Description { get; set; }
         double GuranteedMinPower { get; set; }
         double? MaxCapacity_kWh { get; set; }
         double MaxPower { get; set; }
-        IVotingSender<DateTime, EVSE, SocketOutlet, bool> OnSocketOutletAddition { get; }
-        IVotingSender<DateTime, EVSE, SocketOutlet, bool> OnSocketOutletRemoval { get; }
+        IVotingSender<DateTime, IRemoteEVSE, SocketOutlet, bool> OnSocketOutletAddition { get; }
+        IVotingSender<DateTime, IRemoteEVSE, SocketOutlet, bool> OnSocketOutletRemoval { get; }
         EVSEOperator Operator { get; }
         string PointOfDelivery { get; set; }
         double RealTimePower { get; set; }
         ChargingReservation Reservation { get; set; }
-        ChargingReservation_Id ReservationId { get; }
         ReactiveSet<SocketOutlet> SocketOutlets { get; set; }
         Timestamped<EVSEStatusType> Status { get; set; }
         IEnumerable<Timestamped<EVSEStatusType>> StatusSchedule { get; }
-
-        //event VirtualEVSE.OnAdminStatusChangedDelegate OnAdminStatusChanged;
-        //event VirtualEVSE.OnNewReservationDelegate OnNewReservation;
-        //event VirtualEVSE.OnReservationDeletedDelegate OnReservationDeleted;
-        //event VirtualEVSE.OnStatusChangedDelegate OnStatusChanged;
 
      //   int CompareTo(VirtualEVSE VirtualEVSE);
         int CompareTo(object Object);

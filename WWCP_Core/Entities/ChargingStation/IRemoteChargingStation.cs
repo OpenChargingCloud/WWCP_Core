@@ -26,6 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod.Sockets.TCP;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Styx.Arrows;
 
 #endregion
 
@@ -35,22 +36,85 @@ namespace org.GraphDefined.WWCP
     public interface IRemoteChargingStation
     {
 
-        //IPTransport IPTransport { get; }
-        //DNSClient DNSClient { get; }
-        //String Hostname { get; }
-        //IPPort TCPPort { get; }
-        //String VirtualHost { get; }
-        //String URIPrefix { get; }
-        //TimeSpan QueryTimeout { get; }
-
         IEnumerable<EVSE> EVSEs { get; }
         ChargingStation_Id Id { get; }
         ChargingStationStatusType Status { get; }
 
-        event CSConnectedDelegate Connected;
-        event CSDisconnectedDelegate Disconnected;
-        event CSEVSEOperatorTimeoutReachedDelegate EVSEOperatorTimeoutReached;
-        event CSStateChangedDelegate StateChanged;
+
+        #region OnEVSEDataChanged
+
+        /// <summary>
+        /// An event fired whenever the static data of any subordinated EVSE changed.
+        /// </summary>
+        event OnEVSEDataChangedDelegate OnEVSEDataChanged;
+
+        #endregion
+
+        #region OnEVSE(Admin)StatusChanged
+
+        /// <summary>
+        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
+        /// </summary>
+        event OnEVSEStatusChangedDelegate OnEVSEStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the admin status of any subordinated EVSE changed.
+        /// </summary>
+        event OnEVSEAdminStatusChangedDelegate OnEVSEAdminStatusChanged;
+
+        #endregion
+
+        #region OnReserveEVSE / OnReservedEVSE
+
+        /// <summary>
+        /// An event fired whenever a reserve EVSE command was received.
+        /// </summary>
+        event OnReserveEVSEDelegate OnReserveEVSE;
+
+        /// <summary>
+        /// An event fired whenever a reserve EVSE command completed.
+        /// </summary>
+        event OnEVSEReservedDelegate OnEVSEReserved;
+
+        #endregion
+
+        #region OnRemoteEVSEStart / OnRemoteEVSEStarted
+
+        /// <summary>
+        /// An event fired whenever a remote start EVSE command was received.
+        /// </summary>
+        event OnRemoteEVSEStartDelegate OnRemoteEVSEStart;
+
+        /// <summary>
+        /// An event fired whenever a remote start EVSE command completed.
+        /// </summary>
+        event OnRemoteEVSEStartedDelegate OnRemoteEVSEStarted;
+
+        #endregion
+
+        #region OnRemoteEVSEStop / OnRemoteEVSEStopped
+
+        /// <summary>
+        /// An event fired whenever a remote stop EVSE command was received.
+        /// </summary>
+        event OnRemoteEVSEStopDelegate OnRemoteEVSEStop;
+
+        /// <summary>
+        /// An event fired whenever a remote stop EVSE command completed.
+        /// </summary>
+        event OnRemoteEVSEStoppedDelegate OnRemoteEVSEStopped;
+
+        #endregion
+
+
+        #region EVSEAddition
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was added.
+        /// </summary>
+        IVotingSender<DateTime, IRemoteChargingStation, IRemoteEVSE, Boolean> OnEVSEAddition { get; }
+
+        #endregion
 
 
         IRemoteEVSE CreateNewEVSE(EVSE_Id                           EVSEId,

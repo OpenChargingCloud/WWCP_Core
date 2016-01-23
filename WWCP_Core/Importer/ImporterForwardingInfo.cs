@@ -131,7 +131,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                         // Also remove empty charging pools
                         if (_ChargingStationToMove.ChargingPool.ChargingStations.Count() == 0)
-                            _ChargingStationToMove.ChargingPool.EVSEOperator.RemoveChargingPool(_ChargingStationToMove.ChargingPool.Id);
+                            _ChargingStationToMove.ChargingPool.Operator.RemoveChargingPool(_ChargingStationToMove.ChargingPool.Id);
 
                     }
 

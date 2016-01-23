@@ -145,16 +145,16 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region ReservationType
+        #region ReservationLevel
 
-        private readonly ChargingReservationType _ReservationType;
+        private readonly ChargingReservationLevel _ReservationLevel;
 
         [Mandatory]
-        public ChargingReservationType ReservationType
+        public ChargingReservationLevel ReservationLevel
         {
             get
             {
-                return _ReservationType;
+                return _ReservationLevel;
             }
         }
 
@@ -290,21 +290,21 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a charging reservation.
         /// </summary>
-        public ChargingReservation(DateTime                 Timestamp,
-                                   DateTime                 StartTime,
-                                   TimeSpan                 Duration,
-                                   EVSP_Id                  ProviderId,
+        public ChargingReservation(DateTime                  Timestamp,
+                                   DateTime                  StartTime,
+                                   TimeSpan                  Duration,
+                                   EVSP_Id                   ProviderId,
 
-                                   ChargingReservationType  ChargingReservationType,
-                                   RoamingNetwork           RoamingNetwork,
-                                   ChargingPool_Id          ChargingPoolId     = null,
-                                   ChargingStation_Id       ChargingStationId  = null,
-                                   EVSE_Id                  EVSEId             = null,
-                                   ChargingProduct_Id       ChargingProductId  = null,
+                                   ChargingReservationLevel  ChargingReservationLevel,
+                                   RoamingNetwork            RoamingNetwork,
+                                   ChargingPool_Id           ChargingPoolId     = null,
+                                   ChargingStation_Id        ChargingStationId  = null,
+                                   EVSE_Id                   EVSEId             = null,
+                                   ChargingProduct_Id        ChargingProductId  = null,
 
-                                   IEnumerable<Auth_Token>  RFIDIds            = null,
-                                   IEnumerable<eMA_Id>      eMAIds             = null,
-                                   IEnumerable<UInt32>      PINs               = null)
+                                   IEnumerable<Auth_Token>   RFIDIds            = null,
+                                   IEnumerable<eMA_Id>       eMAIds             = null,
+                                   IEnumerable<UInt32>       PINs               = null)
 
             : this(ChargingReservation_Id.New,
                    Timestamp,
@@ -312,7 +312,7 @@ namespace org.GraphDefined.WWCP
                    Duration,
                    ProviderId,
 
-                   ChargingReservationType,
+                   ChargingReservationLevel,
                    RoamingNetwork,
                    ChargingPoolId,
                    ChargingStationId,
@@ -332,22 +332,22 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a charging reservation.
         /// </summary>
-        public ChargingReservation(ChargingReservation_Id   ReservationId,
-                                   DateTime                 Timestamp,
-                                   DateTime                 StartTime,
-                                   TimeSpan                 Duration,
-                                   EVSP_Id                  ProviderId,
+        public ChargingReservation(ChargingReservation_Id    ReservationId,
+                                   DateTime                  Timestamp,
+                                   DateTime                  StartTime,
+                                   TimeSpan                  Duration,
+                                   EVSP_Id                   ProviderId,
 
-                                   ChargingReservationType  ChargingReservationType,
-                                   RoamingNetwork           RoamingNetwork,
-                                   ChargingPool_Id          ChargingPoolId     = null,
-                                   ChargingStation_Id       ChargingStationId  = null,
-                                   EVSE_Id                  EVSEId             = null,
-                                   ChargingProduct_Id       ChargingProductId  = null,
+                                   ChargingReservationLevel  ReservationLevel,
+                                   RoamingNetwork            RoamingNetwork,
+                                   ChargingPool_Id           ChargingPoolId     = null,
+                                   ChargingStation_Id        ChargingStationId  = null,
+                                   EVSE_Id                   EVSEId             = null,
+                                   ChargingProduct_Id        ChargingProductId  = null,
 
-                                   IEnumerable<Auth_Token>  RFIDIds            = null,
-                                   IEnumerable<eMA_Id>      eMAIds             = null,
-                                   IEnumerable<UInt32>      PINs               = null)
+                                   IEnumerable<Auth_Token>   RFIDIds            = null,
+                                   IEnumerable<eMA_Id>       eMAIds             = null,
+                                   IEnumerable<UInt32>       PINs               = null)
 
         {
 
@@ -356,7 +356,7 @@ namespace org.GraphDefined.WWCP
             this._StartTime          = StartTime;
             this._Duration           = Duration;
 
-            this._ReservationType    = ReservationType;
+            this._ReservationLevel   = ReservationLevel;
             this._RoamingNetwork     = RoamingNetwork;
             this._ChargingPoolId     = ChargingPoolId;
             this._ChargingStationId  = ChargingStationId;

@@ -25,7 +25,7 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The unique identification of an Electric Mobility Account (driver contract) (eMA_Id).
+    /// The unique identification of an Electric Mobility Account (driver contract) (eMAId).
     /// </summary>
     public class eMA_Id : IEquatable<eMA_Id>, IComparable<eMA_Id>, IComparable
     {

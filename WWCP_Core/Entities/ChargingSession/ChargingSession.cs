@@ -19,14 +19,9 @@
 
 using System;
 using System.Linq;
-using System.Diagnostics;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Illias.Votes;
-using org.GraphDefined.Vanaheimr.Styx.Arrows;
-using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
@@ -43,87 +38,177 @@ namespace org.GraphDefined.WWCP
                                    IEquatable<ChargingSession>, IComparable<ChargingSession>, IComparable
     {
 
-        #region Data
-
-        #endregion
-
         #region Properties
 
         #region EVSEOperator
 
-        private readonly EVSEOperator _EVSEOperator;
+        private EVSEOperator _EVSEOperator;
 
-        /// <summary>
-        /// The Electric Vehicle Supply Equipment Operator for this charging session.
-        /// </summary>
-        [Optional]
         public EVSEOperator EVSEOperator
         {
+
             get
             {
                 return _EVSEOperator;
             }
+
+            set
+            {
+
+                _EVSEOperator = value;
+
+                if (value != null)
+                    _EVSEOperatorId  = value.Id;
+
+            }
+
+        }
+
+        #endregion
+
+        #region EVSEOperatorId
+
+        private EVSEOperator_Id _EVSEOperatorId;
+
+        public EVSEOperator_Id EVSEOperatorId
+        {
+
+            get
+            {
+                return _EVSEOperatorId;
+            }
+
+            set
+            {
+                _EVSEOperatorId = value;
+            }
+
         }
 
         #endregion
 
         #region ChargingPool
 
-        private readonly ChargingPool _ChargingPool;
+        private ChargingPool _ChargingPool;
 
-        /// <summary>
-        /// The charging pool for this charging session.
-        /// </summary>
-        [Optional]
         public ChargingPool ChargingPool
         {
+
             get
             {
                 return _ChargingPool;
             }
+
+            set
+            {
+
+                _ChargingPool = value;
+
+                if (value != null)
+                {
+                    _ChargingPoolId     = value.Id;
+                    _EVSEOperator       = value.Operator;
+                    _EVSEOperatorId     = value.Operator.Id;
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region ChargingPoolId
+
+        private ChargingPool_Id _ChargingPoolId;
+
+        public ChargingPool_Id ChargingPoolId
+        {
+
+            get
+            {
+
+                if (_EVSE != null)
+                    return _EVSE.ChargingStation.ChargingPool.Id;
+
+                return _ChargingPoolId;
+
+            }
+
+            set
+            {
+
+                _ChargingPoolId = value;
+
+                if (_EVSE != null && _EVSE.ChargingStation.ChargingPool.Id != value)
+                    _EVSE = null;
+
+            }
+
         }
 
         #endregion
 
         #region ChargingStation
 
-        private readonly ChargingStation _ChargingStation;
+        private ChargingStation _ChargingStation;
 
-        /// <summary>
-        /// The charging station for this charging session.
-        /// </summary>
-        [Optional]
         public ChargingStation ChargingStation
         {
+
             get
             {
                 return _ChargingStation;
             }
+
+            set
+            {
+
+                _ChargingStation = value;
+
+                if (value != null)
+                {
+                    _ChargingStationId  = value.Id;
+                    _ChargingPool       = value.ChargingPool;
+                    _ChargingPoolId     = value.ChargingPool.Id;
+                    _EVSEOperator       = value.Operator;
+                    _EVSEOperatorId     = value.Operator.Id;
+                }
+
+            }
+
         }
 
         #endregion
 
         #region ChargingStationId
 
-        private readonly ChargingStation_Id _ChargingStationId;
+        private ChargingStation_Id _ChargingStationId;
 
-        /// <summary>
-        /// The charging station identification for this charging session.
-        /// </summary>
-        [Optional]
         public ChargingStation_Id ChargingStationId
         {
+
             get
             {
                 return _ChargingStationId;
             }
+
+            set
+            {
+
+                _ChargingStationId = value;
+
+                if (_ChargingStation != null && _ChargingStation.Id != value)
+                    _ChargingStation = null;
+
+            }
+
         }
 
         #endregion
 
         #region EVSE
 
-        private readonly EVSE _EVSE;
+        private EVSE _EVSE;
 
         /// <summary>
         /// The Electric Vehicle Supply Equipments (EVSE) for this charging session.
@@ -131,219 +216,203 @@ namespace org.GraphDefined.WWCP
         [Optional]
         public EVSE EVSE
         {
+
             get
             {
                 return _EVSE;
             }
+
+            set
+            {
+
+                _EVSE  = value;
+
+                if (value != null)
+                {
+                    _EVSEId             = value.Id;
+                    _ChargingStation    = value.ChargingStation;
+                    _ChargingStationId  = value.ChargingStation.Id;
+                    _ChargingPool       = value.ChargingStation.ChargingPool;
+                    _ChargingPoolId     = value.ChargingStation.ChargingPool.Id;
+                    _EVSEOperator       = value.Operator;
+                    _EVSEOperatorId     = value.Operator.Id;
+                }
+
+            }
+
         }
 
         #endregion
 
         #region EVSEId
 
-        private readonly EVSE_Id _EVSEId;
+        private EVSE_Id _EVSEId;
 
-        /// <summary>
-        /// The Electric Vehicle Supply Equipment identification for this charging session.
-        /// </summary>
-        [Optional]
         public EVSE_Id EVSEId
         {
+
             get
             {
                 return _EVSEId;
             }
+
+            set
+            {
+
+                _EVSEId = value;
+
+                if (_EVSE != null && _EVSE.Id != value)
+                    _EVSE = null;
+
+            }
+
         }
 
         #endregion
 
 
-        #region ChargingReservation
+        #region Reservation
 
-        private readonly ChargingReservation _ChargingReservation;
+        private ChargingReservation _Reservation;
 
         /// <summary>
         /// An optional charging reservation for this charging session.
         /// </summary>
         [Optional]
-        public ChargingReservation ChargingReservation
+        public ChargingReservation Reservation
         {
+
             get
             {
-                return _ChargingReservation;
+                return _Reservation;
             }
+
+            set
+            {
+
+                _Reservation = value;
+
+                if (value != null)
+                    _ReservationId = value.Id;
+
+            }
+
         }
 
         #endregion
 
-        #region ChargingReservationId
+        #region ReservationId
 
-        private readonly ChargingReservation_Id _ChargingReservationId;
-
-        /// <summary>
-        /// An optional charging reservation identification for this charging session.
-        /// </summary>
-        [Optional]
-        public ChargingReservation_Id ChargingReservationId
-        {
-            get
-            {
-                return _ChargingReservationId;
-            }
-        }
-
-        #endregion
-
-        #region EVSP
-
-        private readonly EVSP _EVSP;
+        private ChargingReservation_Id _ReservationId;
 
         /// <summary>
-        /// The e-Mobility service provider for this charging session.
+        /// An optional charging reservation for this charging session.
         /// </summary>
         [Optional]
-        public EVSP EVSP
+        public ChargingReservation_Id ReservationId
         {
+
             get
             {
-                return _EVSP;
+                return _ReservationId;
             }
+
+            set
+            {
+
+                _ReservationId = value;
+
+                if (_Reservation != null && _Reservation.Id != value)
+                    _Reservation = null;
+
+            }
+
         }
 
         #endregion
 
         #region ProviderId
 
-        private readonly EVSP_Id _ProviderId;
-
         /// <summary>
         /// The e-Mobility service provider identification for this charging session.
         /// </summary>
         [Optional]
-        public EVSP_Id ProviderId
-        {
-            get
-            {
-                return _ProviderId;
-            }
-        }
+        public EVSP_Id ProviderId { get; set; }
+
+        #endregion
+
+        #region AuthToken
+
+        public Auth_Token AuthToken { get; set; }
+
+        #endregion
+
+        #region eMAId
+
+        /// <summary>
+        /// The unique identification of an Electric Mobility Account (driver contract) (eMAId).
+        /// </summary>
+        [Optional]
+        public eMA_Id eMAId { get; set; }
 
         #endregion
 
 
         #region ChargingProductId
 
-        private readonly ChargingProduct_Id _ChargingProductId;
-
         /// <summary>
         /// The charging product selected for this charging session.
         /// </summary>
         [Optional]
-        public ChargingProduct_Id ChargingProductId
-        {
-            get
-            {
-                return _ChargingProductId;
-            }
-        }
+        public ChargingProduct_Id ChargingProductId { get; set; }
 
         #endregion
 
-
-        #region ReservationTime
-
-        private StartEndDateTime? _ReservationTime;
-
-        /// <summary>
-        /// Optional timestamps when the reservation started and ended.
-        /// </summary>
-        [Optional]
-        public StartEndDateTime? ReservationTime
-        {
-            get
-            {
-                return _ReservationTime;
-            }
-        }
-
-        #endregion
 
         #region ParkingTime
-
-        private StartEndDateTime? _ParkingTime;
 
         /// <summary>
         /// Optional timestamps when the parking started and ended.
         /// </summary>
         [Optional]
-        public StartEndDateTime? ParkingTime
-        {
-            get
-            {
-                return _ParkingTime;
-            }
-        }
+        public StartEndDateTime? ParkingTime { get; set; }
 
         #endregion
 
         #region SessionTime
 
-        private StartEndDateTime? _SessionTime;
-
         /// <summary>
         /// Optional timestamps when the charging session started and ended.
         /// </summary>
         [Mandatory]
-        public StartEndDateTime? SessionTime
-        {
-            get
-            {
-                return _SessionTime;
-            }
-        }
+        public StartEndDateTime? SessionTime { get; set; }
 
         #endregion
 
         #region ChargingTime
 
-        private StartEndDateTime? _ChargingTime;
-
         /// <summary>
         /// Optional timestamps when the charging started and ended.
         /// </summary>
         [Optional]
-        public StartEndDateTime? ChargingTime
-        {
-            get
-            {
-                return _ChargingTime;
-            }
-        }
+        public StartEndDateTime? ChargingTime { get; set; }
 
         #endregion
 
 
         #region EnergyMeterId
 
-        private readonly EnergyMeter_Id _EnergyMeterId;
-
         /// <summary>
         /// An optional unique identification of the energy meter.
         /// </summary>
         [Optional]
-        public EnergyMeter_Id EnergyMeterId
-        {
-            get
-            {
-                return _EnergyMeterId;
-            }
-        }
+        public EnergyMeter_Id EnergyMeterId { get; set; }
 
         #endregion
 
         #region EnergyMeterValues
 
-        private readonly List<Timestamped<Double>> _EnergyMeterValues;
+        private List<Timestamped<Double>> _EnergyMeterValues;
 
         /// <summary>
         /// An optional enumeration of intermediate energy meter values.
@@ -351,7 +420,7 @@ namespace org.GraphDefined.WWCP
         /// and the last timestamp in watt-hours [Wh].
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<Double>> EnergyMeterValues
+        public List<Timestamped<Double>> EnergyMeterValues
         {
             get
             {
@@ -372,7 +441,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return _EnergyMeterValues.
+                return EnergyMeterValues.
                            Select(metervalue => metervalue.Value).
                            Sum() / 1000;
 
@@ -382,26 +451,17 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        private readonly IAuthServices _AuthService;
+        #region AuthService
 
-        public IAuthServices AuthService
-        {
-            get
-            {
-                return _AuthService;
-            }
-        }
+        public IAuthServices AuthService { get; set; }
 
+        #endregion
 
-        private readonly IOperatorRoamingService _OperatorRoamingService;
+        #region OperatorRoamingService
 
-        public IOperatorRoamingService OperatorRoamingService
-        {
-            get
-            {
-                return _OperatorRoamingService;
-            }
-        }
+        public IOperatorRoamingService OperatorRoamingService { get; set; }
+
+        #endregion
 
 
         private Boolean _RemoveMe;
@@ -446,46 +506,7 @@ namespace org.GraphDefined.WWCP
         /// Create a new group/pool of charging stations having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charing pool.</param>
-        /// <param name="EVSE">The Electric Vehicle Supply Equipment (EVSE) for this charging session.</param>
-        /// <param name="ChargingStation">The charging station for this charging session.</param>
-        /// <param name="ChargingProductId">An optional charging product selected for this charging session.</param>
-        /// <param name="ChargingReservation">An optional charging reservation for this charging session.</param>
-        /// 
-        /// <param name="ReservationStartTime">Optional timestamp when the reservation started.</param>
-        /// <param name="ParkingStartTime">Optional timestamp when the parking started.</param>
-        /// <param name="SessionStartTime">Optional timestamp when the charging session started.</param>
-        /// <param name="ChargingStartTime">Optional timestamp when the charging started.</param>
-        /// 
-        /// <param name="EnergyMeterId">An optional unique identification of the energy meter.</param>
-        /// <param name="EnergyMeterValueStart">The optional start value of the energy meter used for charging.</param>
-        /// 
-        /// <param name="AuthService">The authentication service of this charging session.</param>
-        /// <param name="OperatorRoamingService">The roaming provider of this charging session.</param>
-        internal ChargingSession(ChargingSession_Id       Id,
-                                 EVSEOperator             EVSEOperator            = null,
-                                 ChargingPool             ChargingPool            = null,
-                                 ChargingStation          ChargingStation         = null,
-                                 ChargingStation_Id       ChargingStationId       = null,
-                                 EVSE                     EVSE                    = null,
-                                 EVSE_Id                  EVSEId                  = null,
-
-                                 ChargingReservation      Reservation             = null,
-                                 ChargingReservation_Id   ReservationId           = null,
-                                 EVSP                     Provider                = null,
-                                 EVSP_Id                  ProviderId              = null,
-
-                                 ChargingProduct_Id       ChargingProductId       = null,
-
-                                 DateTime?                ReservationStartTime    = null,
-                                 DateTime?                ParkingStartTime        = null,
-                                 DateTime?                SessionStartTime        = null,
-                                 DateTime?                ChargingStartTime       = null,
-
-                                 EnergyMeter_Id           EnergyMeterId           = null,
-                                 Timestamped<Double>?     EnergyMeterValueStart   = null,
-
-                                 IAuthServices            AuthService             = null,
-                                 IOperatorRoamingService  OperatorRoamingService  = null)
+        public ChargingSession(ChargingSession_Id  Id)
 
             : base(Id)
 
@@ -496,35 +517,11 @@ namespace org.GraphDefined.WWCP
             if (Id   == null)
                 throw new ArgumentNullException("Id",    "The given charging session identification must not be null!");
 
-      //      if (EVSE == null)
-      //          throw new ArgumentNullException("EVSE",  "The given EVSE must not be null!");
-
             #endregion
 
-            this._EVSEOperator            = EVSEOperator;
-            this._ChargingPool            = ChargingPool;
-            this._ChargingStation         = ChargingStation;
-            this._ChargingStationId       = ChargingStationId;
-            this._EVSE                    = EVSE;
-            this._EVSEId                  = EVSEId;
+            this._EnergyMeterValues  = new List<Timestamped<double>>();
 
-            this._ChargingReservation     = Reservation;
-            this._ChargingReservationId   = ReservationId;
-            this._EVSP                    = Provider;
-            this._ProviderId                  = ProviderId;
-
-            this._ChargingProductId       = ChargingProductId;
-
-            this._ReservationTime         = ReservationStartTime. HasValue ? new StartEndDateTime(ReservationStartTime.Value)                : new StartEndDateTime?();
-            this._ParkingTime             = ParkingStartTime.     HasValue ? new StartEndDateTime(ParkingStartTime.    Value)                : new StartEndDateTime?();
-            this._SessionTime             = SessionStartTime.     HasValue ? new StartEndDateTime(SessionStartTime.    Value)                : new StartEndDateTime?();
-            this._ChargingTime            = ChargingStartTime.    HasValue ? new StartEndDateTime(ChargingStartTime.   Value)                : new StartEndDateTime?();
-
-            this._EnergyMeterId           = EnergyMeterId;
-            this._EnergyMeterValues       = EnergyMeterValueStart.HasValue ? new List<Timestamped<Double>>() { EnergyMeterValueStart.Value } : new List<Timestamped<Double>>();
-
-            this._AuthService             = AuthService;
-            this._OperatorRoamingService  = OperatorRoamingService;
+            this.SessionTime         = new StartEndDateTime(DateTime.Now);
 
         }
 
