@@ -33,11 +33,57 @@ namespace org.GraphDefined.WWCP
     public interface IRemoteEVSE
     {
 
+        #region Events
+
         event OnStatusChangedDelegate       OnStatusChanged;
         event OnAdminStatusChangedDelegate  OnAdminStatusChanged;
         event OnNewReservationDelegate      OnNewReservation;
         event OnReservationDeletedDelegate  OnReservationDeleted;
         event OnNewChargingSessionDelegate  OnNewChargingSession;
+
+        #endregion
+
+
+        #region Reserve/RemoteStart/RemoteStop
+
+        /// <summary>
+        /// Reserve the possibility to charge.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of this request.</param>
+        /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="StartTime">The starting time of the reservation.</param>
+        /// <param name="Duration">The duration of the reservation.</param>
+        /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
+        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
+        /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
+        /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
+        /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
+        /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        Task<ReservationResult> Reserve(DateTime                 Timestamp,
+                                        CancellationToken        CancellationToken,
+                                        EventTracking_Id         EventTrackingId,
+                                        DateTime?                StartTime,
+                                        TimeSpan?                Duration,
+                                        ChargingReservation_Id   ReservationId      = null,
+                                        EVSP_Id                  ProviderId         = null,
+                                        ChargingProduct_Id       ChargingProductId  = null,
+                                        IEnumerable<Auth_Token>  AuthTokens         = null,
+                                        IEnumerable<eMA_Id>      eMAIds             = null,
+                                        IEnumerable<UInt32>      PINs               = null,
+                                        TimeSpan?                QueryTimeout       = null);
+
+
+        Task<RemoteStartEVSEResult> RemoteStart(DateTime Timestamp, CancellationToken CancellationToken, EventTracking_Id EventTrackingId, ChargingProduct_Id ChargingProductId, ChargingReservation_Id ReservationId, ChargingSession_Id SessionId, EVSP_Id ProviderId, eMA_Id eMAId, TimeSpan? QueryTimeout = null);
+        Task<RemoteStopEVSEResult> RemoteStop(DateTime Timestamp, CancellationToken CancellationToken, EventTracking_Id EventTrackingId, ChargingSession_Id SessionId, ReservationHandling ReservationHandling, EVSP_Id ProviderId, TimeSpan? QueryTimeout = null);
+
+        #endregion
+
+
+
+
+
 
 
         Timestamped<EVSEAdminStatusType> AdminStatus { get; set; }
@@ -67,9 +113,6 @@ namespace org.GraphDefined.WWCP
         bool Equals(object Object);
         IEnumerator<SocketOutlet> GetEnumerator();
         int GetHashCode();
-        Task<RemoteStartEVSEResult> RemoteStart(DateTime Timestamp, CancellationToken CancellationToken, EventTracking_Id EventTrackingId, ChargingProduct_Id ChargingProductId, ChargingReservation_Id ReservationId, ChargingSession_Id SessionId, EVSP_Id ProviderId, eMA_Id eMAId, TimeSpan? QueryTimeout = null);
-        Task<RemoteStopEVSEResult> RemoteStop(DateTime Timestamp, CancellationToken CancellationToken, EventTracking_Id EventTrackingId, ChargingSession_Id SessionId, ReservationHandling ReservationHandling, EVSP_Id ProviderId, TimeSpan? QueryTimeout = null);
-        Task<ReservationResult> Reserve(DateTime Timestamp, CancellationToken CancellationToken, EventTracking_Id EventTrackingId, EVSP_Id ProviderId, ChargingReservation_Id ReservationId, DateTime? StartTime, TimeSpan? Duration, ChargingProduct_Id ChargingProductId = null, IEnumerable<Auth_Token> RFIDIds = null, IEnumerable<eMA_Id> eMAIds = null, IEnumerable<uint> PINs = null, TimeSpan? QueryTimeout = null);
         void SetAdminStatus(Timestamped<EVSEAdminStatusType> NewAdminStatus);
         void SetAdminStatus(IEnumerable<Timestamped<EVSEAdminStatusType>> NewAdminStatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
         void SetAdminStatus(DateTime Timestamp, EVSEAdminStatusType NewAdminStatus);

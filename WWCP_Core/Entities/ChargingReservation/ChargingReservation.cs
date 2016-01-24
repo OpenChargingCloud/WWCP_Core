@@ -236,16 +236,16 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region RFIDIds
+        #region AuthTokens
 
-        private readonly IEnumerable<Auth_Token> _RFIDIds;
+        private readonly IEnumerable<Auth_Token> _AuthTokens;
 
         [Optional]
-        public IEnumerable<Auth_Token> RFIDIds
+        public IEnumerable<Auth_Token> AuthTokens
         {
             get
             {
-                return _RFIDIds;
+                return _AuthTokens;
             }
         }
 
@@ -302,7 +302,7 @@ namespace org.GraphDefined.WWCP
                                    EVSE_Id                   EVSEId             = null,
                                    ChargingProduct_Id        ChargingProductId  = null,
 
-                                   IEnumerable<Auth_Token>   RFIDIds            = null,
+                                   IEnumerable<Auth_Token>   AuthTokens            = null,
                                    IEnumerable<eMA_Id>       eMAIds             = null,
                                    IEnumerable<UInt32>       PINs               = null)
 
@@ -319,7 +319,7 @@ namespace org.GraphDefined.WWCP
                    EVSEId,
                    ChargingProductId,
 
-                   RFIDIds,
+                   AuthTokens,
                    eMAIds,
                    PINs)
 
@@ -345,7 +345,7 @@ namespace org.GraphDefined.WWCP
                                    EVSE_Id                   EVSEId             = null,
                                    ChargingProduct_Id        ChargingProductId  = null,
 
-                                   IEnumerable<Auth_Token>   RFIDIds            = null,
+                                   IEnumerable<Auth_Token>   AuthTokens            = null,
                                    IEnumerable<eMA_Id>       eMAIds             = null,
                                    IEnumerable<UInt32>       PINs               = null)
 
@@ -363,7 +363,7 @@ namespace org.GraphDefined.WWCP
             this._EVSEId             = EVSEId;
             this._ChargingProductId  = ChargingProductId;
 
-            this._RFIDIds            = RFIDIds != null ? RFIDIds : new Auth_Token[0];
+            this._AuthTokens            = AuthTokens != null ? AuthTokens : new Auth_Token[0];
             this._eMAIds             = eMAIds  != null ? eMAIds  : new eMA_Id[0];
             this._PINs               = PINs    != null ? PINs    : new UInt32[0];
 
