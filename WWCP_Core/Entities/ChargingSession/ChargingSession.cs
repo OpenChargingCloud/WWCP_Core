@@ -453,7 +453,7 @@ namespace org.GraphDefined.WWCP
 
         #region AuthService
 
-        public IAuthServices AuthService { get; set; }
+        public IeMobilityServiceProvider AuthService { get; set; }
 
         #endregion
 

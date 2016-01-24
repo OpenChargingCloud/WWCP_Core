@@ -50,25 +50,28 @@ namespace org.GraphDefined.WWCP
     /// A delegate called whenever a charging reservation was created.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
-    /// <param name="EVSEId">The unique identification of an EVSE.</param>
+    /// <param name="Sender">The sender of the event.</param>
     /// <param name="Reservation">The new charging reservation.</param>
-    public delegate void OnNewReservationDelegate(DateTime Timestamp, EVSE_Id EVSEId, ChargingReservation Reservation);
+    public delegate void OnNewReservationDelegate(DateTime Timestamp, Object Sender, ChargingReservation Reservation);
+
+
+
 
     /// <summary>
     /// A delegate called whenever a charging reservation was deleted.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
-    /// <param name="EVSE">The EVSE.</param>
+    /// <param name="Sender">The sender of the event.</param>
     /// <param name="Reservation">The deleted charging reservation.</param>
-    public delegate void OnReservationDeletedDelegate(DateTime Timestamp, IRemoteEVSE EVSE, ChargingReservation Reservation);
+    public delegate void OnReservationDeletedDelegate(DateTime Timestamp, Object Sender, ChargingReservation Reservation);
 
     /// <summary>
     /// A delegate called whenever a charging session was created.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
-    /// <param name="EVSE">The EVSE.</param>
+    /// <param name="Sender">The sender of the event.</param>
     /// <param name="ChargingSession">The new charging session.</param>
-    public delegate void OnNewChargingSessionDelegate(DateTime Timestamp, IRemoteEVSE EVSE, ChargingSession ChargingSession);
+    public delegate void OnNewChargingSessionDelegate(DateTime Timestamp, Object EVSE, ChargingSession ChargingSession);
 
 
 

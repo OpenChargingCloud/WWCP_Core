@@ -57,7 +57,7 @@ namespace org.GraphDefined.WWCP
         /// and for the given Provider/eMAId.
         /// </summary>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
+        /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
         /// <param name="ReservationId">The unique identification for a charging reservation.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="eMAId">The unique identification of the e-mobility account.</param>
@@ -76,7 +76,7 @@ namespace org.GraphDefined.WWCP
 
 
         /// <summary>
-        /// Initiate a remote stop of the given charging session at the given EVSE.
+        /// Stop the given charging session at the given EVSE.
         /// </summary>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>

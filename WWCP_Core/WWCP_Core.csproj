@@ -179,7 +179,7 @@
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork.cs" />
     <Compile Include="Importer\ImporterForwardingInfo.cs" />
-    <Compile Include="Commands\IAuthServices.cs" />
+    <Compile Include="Commands\IeMobilityServiceProvider.cs" />
     <Compile Include="CommonTypes\AuthorizatorId.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStartEVSEResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopEVSEResult.cs" />

@@ -118,10 +118,10 @@ namespace org.GraphDefined.WWCP
                                                           DateTime                 Timestamp,
                                                           EventTracking_Id         EventTrackingId,
                                                           RoamingNetwork_Id        RoamingNetworkId,
-                                                          ChargingReservation_Id   ReservationId,
                                                           ChargingStation_Id       ChargingStationId,
                                                           DateTime?                StartTime,
                                                           TimeSpan?                Duration,
+                                                          ChargingReservation_Id   ReservationId,
                                                           EVSP_Id                  ProviderId,
                                                           ChargingProduct_Id       ChargingProductId,
                                                           IEnumerable<Auth_Token>  AuthTokens,
@@ -137,9 +137,9 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this event with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="ChargingStationId">The uniuqe identification of the reserved charging station.</param>
-    /// <param name="ReservationId">The unique identification for this charging reservation.</param>
     /// <param name="StartTime">The starting time of the reservation.</param>
     /// <param name="Duration">The duration of the reservation.</param>
+    /// <param name="ReservationId">The unique identification for this charging reservation.</param>
     /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
     /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
     /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
@@ -150,10 +150,10 @@ namespace org.GraphDefined.WWCP
                                                            DateTime                 Timestamp,
                                                            EventTracking_Id         EventTrackingId,
                                                            RoamingNetwork_Id        RoamingNetworkId,
-                                                           ChargingReservation_Id   ReservationId,
                                                            ChargingStation_Id       ChargingStationId,
                                                            DateTime?                StartTime,
                                                            TimeSpan?                Duration,
+                                                           ChargingReservation_Id   ReservationId,
                                                            EVSP_Id                  ProviderId,
                                                            ChargingProduct_Id       ChargingProductId,
                                                            IEnumerable<Auth_Token>  AuthTokens,
@@ -185,10 +185,10 @@ namespace org.GraphDefined.WWCP
                                                        DateTime                 Timestamp,
                                                        EventTracking_Id         EventTrackingId,
                                                        RoamingNetwork_Id        RoamingNetworkId,
-                                                       ChargingReservation_Id   ReservationId,
                                                        ChargingPool_Id          ChargingPoolId,
                                                        DateTime?                StartTime,
                                                        TimeSpan?                Duration,
+                                                       ChargingReservation_Id   ReservationId,
                                                        EVSP_Id                  ProviderId,
                                                        ChargingProduct_Id       ChargingProductId,
                                                        IEnumerable<Auth_Token>  AuthTokens,
@@ -217,11 +217,11 @@ namespace org.GraphDefined.WWCP
                                                         DateTime                 Timestamp,
                                                         EventTracking_Id         EventTrackingId,
                                                         RoamingNetwork_Id        RoamingNetworkId,
-                                                        EVSP_Id                  ProviderId,
-                                                        ChargingReservation_Id   ReservationId,
+                                                        ChargingPool_Id          ChargingPoolId,
                                                         DateTime?                StartTime,
                                                         TimeSpan?                Duration,
-                                                        ChargingPool_Id          ChargingPoolId,
+                                                        ChargingReservation_Id   ReservationId,
+                                                        EVSP_Id                  ProviderId,
                                                         ChargingProduct_Id       ChargingProductId,
                                                         IEnumerable<Auth_Token>  AuthTokens,
                                                         IEnumerable<eMA_Id>      eMAIds,
@@ -236,7 +236,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <returns>A RemoteStartResult task.</returns>
     public delegate Task<RemoteStartEVSEResult> OnDeleteReservationDelegate(Object                  Sender,
                                                                             DateTime                Timestamp,

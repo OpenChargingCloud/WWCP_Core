@@ -65,11 +65,11 @@ namespace org.GraphDefined.WWCP
 
 
     /// <summary>
-    /// Initiate a remote stop of the given charging session.
+    /// Stop the given charging session.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender..</param>
@@ -129,11 +129,11 @@ namespace org.GraphDefined.WWCP
 
 
     /// <summary>
-    /// Initiate a remote stop of the given charging session.
+    /// Stop the given charging session.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender..</param>
@@ -195,11 +195,11 @@ namespace org.GraphDefined.WWCP
 
 
     /// <summary>
-    /// Initiate a remote stop of the given charging session.
+    /// Stop the given charging session.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this task.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender..</param>

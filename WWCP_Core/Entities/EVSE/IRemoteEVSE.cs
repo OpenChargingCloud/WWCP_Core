@@ -37,9 +37,45 @@ namespace org.GraphDefined.WWCP
 
         event OnStatusChangedDelegate       OnStatusChanged;
         event OnAdminStatusChangedDelegate  OnAdminStatusChanged;
+
+
+        /// <summary>
+        /// An event fired whenever a reserve command was received.
+        /// </summary>
+        //event OnReserveEVSEDelegate         OnReserve;
+
+        /// <summary>
+        /// An event fired whenever a reserve command completed.
+        /// </summary>
+        //event OnEVSEReservedDelegate        OnReserved;
+
+        /// <summary>
+        /// An event fired whenever a new charging reservation was created.
+        /// </summary>
         event OnNewReservationDelegate      OnNewReservation;
+
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was deleted.
+        /// </summary>
         event OnReservationDeletedDelegate  OnReservationDeleted;
+
+
+        /// <summary>
+        /// An event fired whenever a remote start command was received.
+        /// </summary>
+        //event OnRemoteEVSEStartDelegate     OnRemoteStart;
+
+        /// <summary>
+        /// An event fired whenever a remote start command completed.
+        /// </summary>
+        //event OnRemoteEVSEStartedDelegate   OnRemoteStarted;
+
+        /// <summary>
+        /// An event fired whenever a new charging session was created.
+        /// </summary>
         event OnNewChargingSessionDelegate  OnNewChargingSession;
+
 
         #endregion
 
@@ -82,6 +118,13 @@ namespace org.GraphDefined.WWCP
 
 
 
+
+        /// <summary>
+        /// Try to remove the given charging reservation.
+        /// </summary>
+        /// <param name="ReservationId">The unique charging reservation identification.</param>
+        /// <returns>True when successful, false otherwise</returns>
+        Task<Boolean> TryRemoveReservation(ChargingReservation_Id ReservationId);
 
 
 

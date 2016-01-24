@@ -119,9 +119,9 @@ namespace org.GraphDefined.WWCP
 
         #region EMobilityService
 
-        private IAuthServices _EMobilityService;
+        private IeMobilityServiceProvider _EMobilityService;
 
-        public IAuthServices EMobilityService
+        public IeMobilityServiceProvider EMobilityService
         {
 
             get

@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="OperatorId">An EVSE operator identification.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
-    /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
+    /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     public delegate void OnAuthorizeStartDelegate(Object              Sender,
                                                   DateTime            Timestamp,
@@ -77,7 +77,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="OperatorId">An EVSE operator identification.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
-    /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given EVSE.</param>
+    /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     public delegate void OnAuthorizeEVSEStartDelegate(Object              Sender,
                                                       DateTime            Timestamp,
