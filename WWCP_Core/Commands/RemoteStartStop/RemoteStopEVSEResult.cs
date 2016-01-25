@@ -137,7 +137,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (SessionId == null)
-                throw new ArgumentNullException("SessionId", "The given charging session identification must not be null!");
+                throw new ArgumentNullException(nameof(SessionId), "The given charging session identification must not be null!");
 
             #endregion
 
@@ -167,7 +167,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (SessionId == null)
-                throw new ArgumentNullException("SessionId", "The given charging session identification must not be null!");
+                throw new ArgumentNullException(nameof(SessionId), "The given charging session identification must not be null!");
 
             #endregion
 
@@ -199,16 +199,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) UnknownEVSEOperator(SessionId)
+        #region (static) UnknownOperator(SessionId)
 
         /// <summary>
         /// The EVSE operator is unknown.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        public static RemoteStopEVSEResult UnknownEVSEOperator(ChargingSession_Id SessionId)
+        public static RemoteStopEVSEResult UnknownOperator(ChargingSession_Id SessionId)
         {
             return new RemoteStopEVSEResult(SessionId,
-                                            RemoteStopEVSEResultType.UnknownEVSEOperator,
+                                            RemoteStopEVSEResultType.UnknownOperator,
                                             "The EVSE operator is unknown!");
         }
 
@@ -367,7 +367,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The EVSE operator is unknown.
         /// </summary>
-        UnknownEVSEOperator,
+        UnknownOperator,
 
         /// <summary>
         /// The EVSE is unknown.

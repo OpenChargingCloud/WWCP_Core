@@ -236,7 +236,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("AuthorizatorId",  "The given parameter must not be null!");
 
             if (SessionId == null)
-                throw new ArgumentNullException("SessionId",       "The given parameter must not be null!");
+                throw new ArgumentNullException(nameof(SessionId),       "The given parameter must not be null!");
 
             if (ProviderId == null)
                 throw new ArgumentNullException("ProviderId",      "The given parameter must not be null!");

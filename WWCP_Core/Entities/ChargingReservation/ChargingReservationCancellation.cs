@@ -19,10 +19,26 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A remote charging station attached via a computer network (TCP/IP).
+    /// The charging reservation cancellation.
     /// </summary>
-    public interface INetworkChargingStation : IRemoteChargingStation,
-                                               INetworkAttached
-    { }
+    public enum ChargingReservationCancellation
+    {
+
+        /// <summary>
+        /// The charging reservation expired.
+        /// </summary>
+        Expired,
+
+        /// <summary>
+        /// The charging reservation was deleted from the client side.
+        /// </summary>
+        UserCancel,
+
+        /// <summary>
+        /// The charging reservation was aborted on the EVSE operator side.
+        /// </summary>
+        Aborted
+
+    }
 
 }

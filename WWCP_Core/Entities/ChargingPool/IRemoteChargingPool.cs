@@ -33,43 +33,8 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 namespace org.GraphDefined.WWCP
 {
 
-    public interface IRemoteChargingStation
+    public interface IRemoteChargingPool
     {
-
-        IEnumerable<EVSE> EVSEs { get; }
-        ChargingStation_Id Id { get; }
-        ChargingStationStatusType Status { get; }
-
-
-        #region OnEVSEDataChanged
-
-        /// <summary>
-        /// An event fired whenever the static data of any subordinated EVSE changed.
-        /// </summary>
-        event OnRemoteEVSEDataChangedDelegate OnRemoteEVSEDataChanged;
-
-        #endregion
-
-        #region OnEVSE(Admin)StatusChanged
-
-        /// <summary>
-        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
-        /// </summary>
-        event OnRemoteEVSEStatusChangedDelegate OnRemoteEVSEStatusChanged;
-
-        /// <summary>
-        /// An event fired whenever the admin status of any subordinated EVSE changed.
-        /// </summary>
-        event OnRemoteEVSEAdminStatusChangedDelegate OnRemoteEVSEAdminStatusChanged;
-
-        #endregion
-
-
-        IRemoteEVSE CreateNewEVSE(EVSE_Id                           EVSEId,
-                                  Action<EVSE>                      Configurator  = null,
-                                  Action<EVSE>                      OnSuccess     = null,
-                                  Action<ChargingStation, EVSE_Id>  OnError       = null);
-
 
         #region Reserve(...)
 
@@ -135,8 +100,7 @@ namespace org.GraphDefined.WWCP
 
         Boolean TryGetReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation);
 
-        Task<Boolean> CancelReservation(ChargingReservation_Id           ReservationId,
-                                        ChargingReservationCancellation  ReservationCancellation);
+        Task<Boolean> CancelReservation(ChargingReservation_Id ReservationId);
 
         /// <summary>
         /// Initiate a remote start of the given charging session at the given charging station

@@ -15,14 +15,33 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
+
+#endregion
+
 namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A remote charging station attached via a computer network (TCP/IP).
+    /// A remote entity attached via a computer network (TCP/IP).
     /// </summary>
-    public interface INetworkChargingStation : IRemoteChargingStation,
-                                               INetworkAttached
-    { }
+    public interface INetworkAttached
+    {
+
+        IPTransport IPTransport    { get; }
+        DNSClient   DNSClient      { get; }
+        String      Hostname       { get; }
+        IPPort      TCPPort        { get; }
+        Boolean     UseTLS         { get; }
+        String      VirtualHost    { get; }
+        String      URIPrefix      { get; }
+        TimeSpan    QueryTimeout   { get; }
+
+    }
 
 }

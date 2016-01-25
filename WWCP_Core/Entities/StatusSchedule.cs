@@ -179,21 +179,28 @@ namespace org.GraphDefined.WWCP
             lock (_StatusSchedule)
             {
 
-                var _OldStatus = _CurrentStatus;
+                // Ignore 'insert' if the values are the same
+                if (_StatusSchedule.Count == 0 ||
+                    !EqualityComparer<T>.Default.Equals(Value, _StatusSchedule.First().Value))
+                {
 
-                // Remove any old status having the same timestamp!
-                var NewStatusSchedule = _StatusSchedule.
-                                            Where(status => status.Timestamp != Timestamp).
-                                            ToList();
+                    var _OldStatus = _CurrentStatus;
 
-                NewStatusSchedule.Add(new Timestamped<T>(Timestamp, Value));
+                    // Remove any old status having the same timestamp!
+                    var NewStatusSchedule = _StatusSchedule.
+                                                Where(status => status.Timestamp != Timestamp).
+                                                ToList();
 
-                _StatusSchedule.Clear();
-                _StatusSchedule.AddRange(NewStatusSchedule.
-                                             OrderByDescending(v => v.Timestamp).
-                                             Take((Int32) _MaxStatusHistorySize));
+                    NewStatusSchedule.Add(new Timestamped<T>(Timestamp, Value));
 
-                CheckCurrentStatus();
+                    _StatusSchedule.Clear();
+                    _StatusSchedule.AddRange(NewStatusSchedule.
+                                                 OrderByDescending(v => v.Timestamp).
+                                                 Take((Int32)_MaxStatusHistorySize));
+
+                    CheckCurrentStatus();
+
+                }
 
             }
 
@@ -299,7 +306,11 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public IEnumerator<Timestamped<T>> GetEnumerator()
         {
-            return _StatusSchedule.OrderByDescending(status => status.Timestamp).GetEnumerator();
+
+            return _StatusSchedule.
+                       OrderByDescending(status => status.Timestamp).
+                       GetEnumerator();
+
         }
 
         /// <summary>
@@ -307,7 +318,11 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return _StatusSchedule.OrderByDescending(status => status.Timestamp).GetEnumerator();
+
+            return _StatusSchedule.
+                       OrderByDescending(status => status.Timestamp).
+                       GetEnumerator();
+
         }
 
         #endregion

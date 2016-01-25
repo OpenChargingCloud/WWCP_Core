@@ -19,10 +19,10 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A remote charging station attached via a computer network (TCP/IP).
+    /// A remote EVSE operator attached via a computer network (TCP/IP).
     /// </summary>
-    public interface INetworkChargingStation : IRemoteChargingStation,
-                                               INetworkAttached
+    public interface INetworkEVSEOperator : IRemoteEVSEOperator,
+                                            INetworkAttached
     { }
 
 }

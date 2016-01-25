@@ -137,7 +137,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (SessionId == null)
-                throw new ArgumentNullException("SessionId", "The given charging session identification must not be null!");
+                throw new ArgumentNullException(nameof(SessionId), "The given charging session identification must not be null!");
 
             #endregion
 
@@ -167,7 +167,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (SessionId == null)
-                throw new ArgumentNullException("SessionId", "The given charging session identification must not be null!");
+                throw new ArgumentNullException(nameof(SessionId), "The given charging session identification must not be null!");
 
             #endregion
 
@@ -199,17 +199,17 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) UnknownChargingStationOperator(SessionId)
+        #region (static) UnknownOperator(SessionId)
 
         /// <summary>
         /// The charging station operator is unknown.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        public static RemoteStopChargingStationResult UnknownChargingStationOperator(ChargingSession_Id SessionId)
+        public static RemoteStopChargingStationResult UnknownOperator(ChargingSession_Id SessionId)
         {
 
             return new RemoteStopChargingStationResult(SessionId,
-                                                       RemoteStopChargingStationResultType.UnknownChargingStationOperator,
+                                                       RemoteStopChargingStationResultType.UnknownOperator,
                                                        "The charging station operator is unknown!");
 
         }
@@ -371,7 +371,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The charging station operator is unknown.
         /// </summary>
-        UnknownChargingStationOperator,
+        UnknownOperator,
 
         /// <summary>
         /// The charging station is unknown.

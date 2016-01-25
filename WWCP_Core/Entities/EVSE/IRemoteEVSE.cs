@@ -56,10 +56,15 @@ namespace org.GraphDefined.WWCP
 
 
         /// <summary>
-        /// An event fired whenever a charging reservation was deleted.
+        /// An event fired whenever a charging reservation was cancelled.
         /// </summary>
-        event OnReservationDeletedDelegate  OnReservationDeleted;
+        event OnReservationCancelledDelegate  OnReservationCancelled;
 
+
+        /// <summary>
+        /// An event fired whenever a new charge detail record was created.
+        /// </summary>
+        event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord;
 
         /// <summary>
         /// An event fired whenever a remote start command was received.
@@ -124,7 +129,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <returns>True when successful, false otherwise</returns>
-        Task<Boolean> TryRemoveReservation(ChargingReservation_Id ReservationId);
+        Task<Boolean> CancelReservation(ChargingReservation_Id           ReservationId,
+                                        ChargingReservationCancellation  ReservationCancellation);
 
 
 
