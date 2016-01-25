@@ -71,6 +71,12 @@ namespace org.GraphDefined.WWCP
                                   Action<ChargingStation, EVSE_Id>  OnError       = null);
 
 
+        Task<IEnumerable<EVSEStatus>> GetEVSEStatus(DateTime                 Timestamp,
+                                                    CancellationToken        CancellationToken,
+                                                    EventTracking_Id         EventTrackingId,
+                                                    TimeSpan?                QueryTimeout = null);
+
+
         #region Reserve(...)
 
         /// <summary>
