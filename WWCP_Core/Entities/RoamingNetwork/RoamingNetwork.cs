@@ -299,6 +299,7 @@ namespace org.GraphDefined.WWCP
             this._OperatorRoamingServices                  = new ConcurrentDictionary<UInt32,                       IOperatorRoamingService>();
             this._PushEVSEStatusToOperatorRoamingServices  = new ConcurrentDictionary<UInt32,                       IPushEVSEStatusServices>();
             this._ChargingSessions                         = new ConcurrentDictionary<ChargingSession_Id,           ChargingSession>();
+            this._ChargeDetailRecords                      = new ConcurrentDictionary<ChargingSession_Id,           ChargeDetailRecord>();
 
             #endregion
 
@@ -3116,6 +3117,23 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region ChargeDetailRecords
+
+        private readonly ConcurrentDictionary<ChargingSession_Id, ChargeDetailRecord> _ChargeDetailRecords;
+
+        /// <summary>
+        /// Return all current charge detail records.
+        /// </summary>
+        public IEnumerable<ChargeDetailRecord> ChargeDetailRecords
+        {
+            get
+            {
+                return _ChargeDetailRecords.Select(kvp => kvp.Value);
+            }
+        }
+
+        #endregion
+
         #region OnRemote...Stop / OnRemote...Stopped / OnNewChargeDetailRecord
 
         /// <summary>
@@ -3481,6 +3499,8 @@ namespace org.GraphDefined.WWCP
                                                 Object              Sender,
                                                 ChargeDetailRecord  ChargeDetailRecord)
         {
+
+            _ChargeDetailRecords.TryAdd(ChargeDetailRecord.SessionId, ChargeDetailRecord);
 
             var OnNewChargeDetailRecordLocal = OnNewChargeDetailRecord;
             if (OnNewChargeDetailRecordLocal != null)

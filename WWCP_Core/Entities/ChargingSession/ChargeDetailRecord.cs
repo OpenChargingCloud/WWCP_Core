@@ -36,10 +36,6 @@ namespace org.GraphDefined.WWCP
                                       IComparable
     {
 
-        #region Data
-
-        #endregion
-
         #region Properties
 
         #region SessionId
@@ -67,7 +63,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An optional charging reservation used for charging.
         /// </summary>
-        [Mandatory]
+        [Optional]
         public ChargingReservation ChargingReservation
         {
             get
@@ -153,6 +149,22 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return _ChargingProductId;
+            }
+        }
+
+        #endregion
+
+
+        #region ProviderId
+
+        private readonly EVSP_Id _ProviderId;
+
+        [Optional]
+        public EVSP_Id ProviderId
+        {
+            get
+            {
+                return _ProviderId;
             }
         }
 
@@ -345,6 +357,8 @@ namespace org.GraphDefined.WWCP
                                   EVSEOperator                      EVSEOperator         = null,
                                   ChargingProduct_Id                ChargingProductId    = null,
 
+                                  EVSP_Id                           ProviderId           = null,
+
                                   StartEndDateTime?                 ReservationTime      = null,
                                   StartEndDateTime?                 ParkingTime          = null,
                                   StartEndDateTime?                 SessionTime          = null,
@@ -380,7 +394,7 @@ namespace org.GraphDefined.WWCP
             this._ChargingTime         = ChargingTime;
 
             this._EnergyMeterId        = EnergyMeterId;
-            this._EnergyMeterValues    = EnergyMeterValues;
+            this._EnergyMeterValues    = EnergyMeterValues != null ? EnergyMeterValues : new Timestamped<Double>[0];
 
         }
 
