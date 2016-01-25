@@ -3316,6 +3316,8 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (_ChargingSession.EVSEOperator != null)
+                {
+
                     result = await _ChargingSession.
                                        EVSEOperator.
                                        RemoteStop(Timestamp,
@@ -3326,6 +3328,14 @@ namespace org.GraphDefined.WWCP
                                                   ReservationHandling,
                                                   ProviderId,
                                                   QueryTimeout);
+
+
+                    ChargingSession _ChargingSessionToRemove = null;
+
+                    if (result.Result == RemoteStopEVSEResultType.Success)
+                        _ChargingSessions.TryRemove(result.SessionId, out _ChargingSessionToRemove);
+
+                }
 
                 else
                     result = RemoteStopEVSEResult.UnknownOperator(SessionId);
