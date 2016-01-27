@@ -49,14 +49,14 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizationResult
+        #region Result
 
         private readonly AuthStopEVSEResultType _Result;
 
         /// <summary>
         /// The result of the authorize stop operation.
         /// </summary>
-        public AuthStopEVSEResultType AuthorizationResult
+        public AuthStopEVSEResultType Result
         {
             get
             {
@@ -394,9 +394,9 @@ namespace org.GraphDefined.WWCP
         {
 
             if (ProviderId != null)
-                return String.Concat(AuthorizationResult.ToString(), ", ", ProviderId);
+                return String.Concat(Result.ToString(), ", ", ProviderId);
 
-            return String.Concat(AuthorizationResult.ToString());
+            return String.Concat(Result.ToString());
 
         }
 

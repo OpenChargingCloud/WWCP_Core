@@ -3769,7 +3769,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Authorized
 
-                if (result.AuthorizationResult == AuthStartEVSEResultType.Authorized)
+                if (result.Result == AuthStartEVSEResultType.Authorized)
                 {
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
@@ -3791,7 +3791,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Blocked
 
-                else if (result.AuthorizationResult == AuthStartEVSEResultType.Blocked)
+                else if (result.Result == AuthStartEVSEResultType.Blocked)
                     break;
 
                 #endregion
@@ -3816,7 +3816,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Authorized
 
-                if (result.AuthorizationResult == AuthStartEVSEResultType.Authorized)
+                if (result.Result == AuthStartEVSEResultType.Authorized)
                 {
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
@@ -3838,7 +3838,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Blocked
 
-                else if (result.AuthorizationResult == AuthStartEVSEResultType.Blocked)
+                else if (result.Result == AuthStartEVSEResultType.Blocked)
                     break;
 
                 #endregion
@@ -4361,7 +4361,7 @@ namespace org.GraphDefined.WWCP
 
             #region Try to find anyone who might kown anything about the given SessionId!
 
-            if (result == null || result.AuthorizationResult != AuthStopEVSEResultType.Authorized)
+            if (result == null || result.Result != AuthStopEVSEResultType.Authorized)
                 foreach (var OtherAuthenticationService in _IeMobilityServiceProviders.
                                                                OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
                                                                Select (AuthServiceWithPriority => AuthServiceWithPriority.Value).
@@ -4377,12 +4377,12 @@ namespace org.GraphDefined.WWCP
                                                                             AuthToken,
                                                                             QueryTimeout);
 
-                    if (result.AuthorizationResult == AuthStopEVSEResultType.Authorized)
+                    if (result.Result == AuthStopEVSEResultType.Authorized)
                         break;
 
                 }
 
-            if (result == null || result.AuthorizationResult != AuthStopEVSEResultType.Authorized)
+            if (result == null || result.Result != AuthStopEVSEResultType.Authorized)
                 foreach (var OtherOperatorRoamingServices in _OperatorRoamingServices.
                                                                  OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
                                                                  Select(AuthServiceWithPriority => AuthServiceWithPriority.Value).
@@ -4398,7 +4398,7 @@ namespace org.GraphDefined.WWCP
                                                                               AuthToken,
                                                                               QueryTimeout);
 
-                    if (result.AuthorizationResult == AuthStopEVSEResultType.Authorized)
+                    if (result.Result == AuthStopEVSEResultType.Authorized)
                         break;
 
                 }

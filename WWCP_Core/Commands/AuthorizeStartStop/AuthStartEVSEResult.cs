@@ -50,14 +50,14 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizationResult
+        #region Result
 
         private readonly AuthStartEVSEResultType _Result;
 
         /// <summary>
         /// The result of the authorize start operation.
         /// </summary>
-        public AuthStartEVSEResultType  AuthorizationResult
+        public AuthStartEVSEResultType  Result
         {
             get
             {
@@ -503,9 +503,9 @@ namespace org.GraphDefined.WWCP
         {
 
             if (ProviderId != null)
-                return String.Concat(AuthorizationResult.ToString(), ", ", ProviderId);
+                return String.Concat(Result.ToString(), ", ", ProviderId);
 
-            return String.Concat(AuthorizationResult.ToString());
+            return String.Concat(Result.ToString());
 
         }
 
