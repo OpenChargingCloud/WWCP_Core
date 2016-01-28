@@ -2913,34 +2913,59 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            var _ChargingPool = _ChargingPools.SelectMany(kvp  => kvp.Value.EVSEs).
-                                                  Where  (evse => evse.Id == EVSEId).
-                                                  Select (evse => evse.ChargingStation.ChargingPool).
-                                                  FirstOrDefault();
-
-            if (_ChargingPool != null)
+            if (_RemoteEVSEOperator != null)
             {
 
-                result = await _ChargingPool.RemoteStart(Timestamp,
-                                                         CancellationToken,
-                                                         EventTrackingId,
-                                                         EVSEId,
-                                                         ChargingProductId,
-                                                         ReservationId,
-                                                         SessionId,
-                                                         ProviderId,
-                                                         eMAId,
-                                                         QueryTimeout);
+                result = await _RemoteEVSEOperator.RemoteStart(Timestamp,
+                                                             CancellationToken,
+                                                             EventTrackingId,
+                                                             EVSEId,
+                                                             ChargingProductId,
+                                                             ReservationId,
+                                                             SessionId,
+                                                             ProviderId,
+                                                             eMAId,
+                                                             QueryTimeout);
 
 
-                if (result.Result == RemoteStartEVSEResultType.Success)
-                    _ChargingSessions.TryAdd(result.Session.Id, _ChargingPool);
+                //if (result.Result == RemoteStartEVSEResultType.Success)
+                //    _ChargingSessions.TryAdd(result.Session.Id, _ChargingPool);
+
 
             }
 
             else
-                result = RemoteStartEVSEResult.UnknownEVSE;
+            {
 
+                var _ChargingPool = _ChargingPools.SelectMany(kvp => kvp.Value.EVSEs).
+                                                      Where(evse => evse.Id == EVSEId).
+                                                      Select(evse => evse.ChargingStation.ChargingPool).
+                                                      FirstOrDefault();
+
+                if (_ChargingPool != null)
+                {
+
+                    result = await _ChargingPool.RemoteStart(Timestamp,
+                                                             CancellationToken,
+                                                             EventTrackingId,
+                                                             EVSEId,
+                                                             ChargingProductId,
+                                                             ReservationId,
+                                                             SessionId,
+                                                             ProviderId,
+                                                             eMAId,
+                                                             QueryTimeout);
+
+
+                    if (result.Result == RemoteStartEVSEResultType.Success)
+                        _ChargingSessions.TryAdd(result.Session.Id, _ChargingPool);
+
+                }
+
+                else
+                    result = RemoteStartEVSEResult.UnknownEVSE;
+
+            }
 
             #region Send OnRemoteEVSEStarted event
 
