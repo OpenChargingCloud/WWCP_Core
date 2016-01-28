@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -36,6 +37,25 @@ namespace org.GraphDefined.WWCP
     {
 
         Authorizator_Id AuthorizatorId { get; }
+
+        #region Properties
+
+        /// <summary>
+        /// The unique identification of the roaming provider.
+        /// </summary>
+        RoamingProvider_Id Id                { get; }
+
+        /// <summary>
+        /// The offical (multi-language) name of the roaming provider.
+        /// </summary>
+        I18NString         Name              { get; }
+
+        /// <summary>
+        /// The hosting WWCP roaming network.
+        /// </summary>
+        RoamingNetwork_Id  RoamingNetworkId  { get; }
+
+        #endregion
 
     }
 

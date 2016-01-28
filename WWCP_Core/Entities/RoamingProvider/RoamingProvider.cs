@@ -129,8 +129,8 @@ namespace org.GraphDefined.WWCP
             if (RoamingNetwork         == null)
                 throw new ArgumentNullException("RoamingNetwork",          "The given roaming network must not be null!");
 
-            if (OperatorRoamingService == null)
-                throw new ArgumentNullException("OperatorRoamingService",  "The given EVSE operator roaming service must not be null!");
+            //if (OperatorRoamingService == null)
+            //    throw new ArgumentNullException("OperatorRoamingService",  "The given EVSE operator roaming service must not be null!");
 
             #endregion
 

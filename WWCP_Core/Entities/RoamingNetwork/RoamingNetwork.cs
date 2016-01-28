@@ -297,6 +297,7 @@ namespace org.GraphDefined.WWCP
             this._ChargingReservations                     = new ConcurrentDictionary<ChargingReservation_Id,       EVSEOperator>();
             this._IeMobilityServiceProviders               = new ConcurrentDictionary<UInt32,                       IeMobilityServiceProvider>();
             this._OperatorRoamingServices                  = new ConcurrentDictionary<UInt32,                       IOperatorRoamingService>();
+            this._eMobilityRoamingServices                 = new ConcurrentDictionary<UInt32,                       IeMobilityRoamingService>();
             this._PushEVSEStatusToOperatorRoamingServices  = new ConcurrentDictionary<UInt32,                       IPushEVSEStatusServices>();
             this._ChargingSessions                         = new ConcurrentDictionary<ChargingSession_Id,           ChargingSession>();
             this._ChargeDetailRecords                      = new ConcurrentDictionary<ChargingSession_Id,           ChargeDetailRecord>();
@@ -607,9 +608,10 @@ namespace org.GraphDefined.WWCP
 
         #region Operator Roaming Providers...
 
-        private readonly ConcurrentDictionary<UInt32, IOperatorRoamingService> _OperatorRoamingServices;
+        private readonly ConcurrentDictionary<UInt32, IOperatorRoamingService>   _OperatorRoamingServices;
+        private readonly ConcurrentDictionary<UInt32, IeMobilityRoamingService>  _eMobilityRoamingServices;
 
-        private readonly ConcurrentDictionary<UInt32, IPushEVSEStatusServices> _PushEVSEStatusToOperatorRoamingServices;
+        private readonly ConcurrentDictionary<UInt32, IPushEVSEStatusServices>   _PushEVSEStatusToOperatorRoamingServices;
 
         #region RoamingProviders
 
@@ -734,13 +736,86 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RegisterPushEVSEStatusService(Priority, OperatorRoamingService)
+
+        #region CreateNewRoamingProvider(eMobilityRoamingService, Configurator = null)
 
         /// <summary>
-        /// Register the given EVSE operator roaming service.
+        /// Create and register a new electric vehicle roaming provider having the given
+        /// unique electric vehicle roaming provider identification.
+        /// </summary>
+        /// <param name="eMobilityRoamingService">A e-mobility roaming service.</param>
+        /// <param name="Configurator">An optional delegate to configure the new roaming provider after its creation.</param>
+        public RoamingProvider CreateNewRoamingProvider(IeMobilityRoamingService  eMobilityRoamingService,
+                                                        Action<RoamingProvider>   Configurator = null)
+        {
+
+            #region Initial checks
+
+            if (eMobilityRoamingService.Id == null)
+                throw new ArgumentNullException("eMobilityRoamingService.Id",    "The given roaming provider identification must not be null!");
+
+            if (eMobilityRoamingService.Name.IsNullOrEmpty())
+                throw new ArgumentNullException("eMobilityRoamingService.Name",  "The given roaming provider name must not be null or empty!");
+
+            if (_RoamingProviders.ContainsKey(eMobilityRoamingService.Id))
+                throw new RoamingProviderAlreadyExists(eMobilityRoamingService.Id, this.Id);
+
+            if (eMobilityRoamingService.RoamingNetworkId != this.Id)
+                throw new ArgumentException("The given operator roaming service is not part of this roaming network!", "eMobilityRoamingService");
+
+            #endregion
+
+            var _RoamingProvider = new RoamingProvider(eMobilityRoamingService.Id,
+                                                       eMobilityRoamingService.Name,
+                                                       this,
+                                                       null,
+                                                       eMobilityRoamingService);
+
+            Configurator.FailSafeInvoke(_RoamingProvider);
+
+            if (RoamingProviderAddition.SendVoting(this, _RoamingProvider))
+            {
+                if (_RoamingProviders.TryAdd(eMobilityRoamingService.Id, _RoamingProvider))
+                {
+
+                    RoamingProviderAddition.SendNotification(this, _RoamingProvider);
+
+                    return _RoamingProvider;
+
+                }
+            }
+
+            throw new Exception("Could not create new roaming provider '" + eMobilityRoamingService.Id + "'!");
+
+        }
+
+        #endregion
+
+        #region RegistereMobilityRoamingService(Priority, eMobilityRoamingService)
+
+        /// <summary>
+        /// Register the given e-mobility roaming service.
         /// </summary>
         /// <param name="Priority">The priority of the service.</param>
-        /// <param name="PushEVSEStatusServices">The EVSE operator roaming service.</param>
+        /// <param name="eMobilityRoamingService">The e-mobility roaming service.</param>
+        public Boolean RegistereMobilityRoamingService(UInt32                    Priority,
+                                                       IeMobilityRoamingService  eMobilityRoamingService)
+        {
+
+            return _eMobilityRoamingServices.TryAdd(Priority, eMobilityRoamingService);
+
+        }
+
+        #endregion
+
+
+        #region RegisterPushEVSEStatusService(Priority, PushEVSEStatusServices)
+
+        /// <summary>
+        /// Register the given push-status service.
+        /// </summary>
+        /// <param name="Priority">The priority of the service.</param>
+        /// <param name="PushEVSEStatusServices">The push-status service.</param>
         public Boolean RegisterPushEVSEStatusService(UInt32                   Priority,
                                                      IPushEVSEStatusServices  PushEVSEStatusServices)
         {
