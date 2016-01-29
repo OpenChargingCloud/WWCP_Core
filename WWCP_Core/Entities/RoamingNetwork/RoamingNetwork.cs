@@ -4924,8 +4924,8 @@ namespace org.GraphDefined.WWCP
                     result.Status == SendCDRResultType.InvalidSessionId)
                 {
 
-                    return SendCDRResult.False(AuthorizatorId,
-                                               "No authorization service returned a positiv result!");
+                    return SendCDRResult.NotForwared(AuthorizatorId,
+                                                     "No authorization service returned a positiv result!");
 
                 }
 
