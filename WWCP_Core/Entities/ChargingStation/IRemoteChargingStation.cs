@@ -37,8 +37,8 @@ namespace org.GraphDefined.WWCP
     {
 
         IEnumerable<EVSE> EVSEs { get; }
-        ChargingStation_Id Id { get; }
-        ChargingStationStatusType Status { get; }
+        ChargingStation_Id        Id      { get; }
+        ChargingStationStatusType Status  { get; }
 
 
         #region OnEVSEDataChanged
