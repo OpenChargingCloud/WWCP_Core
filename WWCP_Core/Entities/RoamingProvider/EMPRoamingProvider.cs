@@ -49,6 +49,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        public Authorizator_Id AuthorizatorId
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public RoamingNetwork_Id RoamingNetworkId
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         #endregion
 
         #region Constructor(s)
@@ -200,27 +217,6 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
-
-
-
-
-        public Authorizator_Id AuthorizatorId
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public RoamingNetwork_Id RoamingNetworkId
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-
 
     }
 

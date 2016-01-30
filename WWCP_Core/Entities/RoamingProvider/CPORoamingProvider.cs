@@ -31,34 +31,21 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A e-Mobility Roaming Provider (EMRP).
+    /// A EVSE operator roaming provider.
     /// </summary>
     public class CPORoamingProvider : ARoamingProvider,
                                       IOperatorRoamingService
     {
 
-        #region Properties
-
-        #region OperatorRoamingService
+        #region Data
 
         private readonly IOperatorRoamingService _OperatorRoamingService;
-
-        /// <summary>
-        /// The wrapped operator roaming service.
-        /// </summary>
-        public IOperatorRoamingService OperatorRoamingService
-        {
-            get
-            {
-                return _OperatorRoamingService;
-            }
-        }
-
-        #endregion
 
         #endregion
 
         #region Events
+
+        // Client methods (logging)
 
         #region OnEVSEDataPush/-Pushed
 
@@ -140,23 +127,328 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region OnAuthorizeStart/-Started
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified for charging.
+        /// </summary>
+        public event OnAuthorizeStartDelegate OnAuthorizeStart
+        {
+
+            add
+            {
+                _OperatorRoamingService.OnAuthorizeStart += value;
+            }
+
+            remove
+            {
+                _OperatorRoamingService.OnAuthorizeStart -= value;
+            }
+
+        }
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified for charging.
+        /// </summary>
+        public event OnAuthorizeStartedDelegate OnAuthorizeStarted
+        {
+
+            add
+            {
+                _OperatorRoamingService.OnAuthorizeStarted += value;
+            }
+
+            remove
+            {
+                _OperatorRoamingService.OnAuthorizeStarted -= value;
+            }
+
+        }
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified for charging at the given EVSE.
+        /// </summary>
+        public event OnAuthorizeEVSEStartDelegate OnAuthorizeEVSEStart
+        {
+
+            add
+            {
+                _OperatorRoamingService.OnAuthorizeEVSEStart += value;
+            }
+
+            remove
+            {
+                _OperatorRoamingService.OnAuthorizeEVSEStart -= value;
+            }
+
+        }
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified for charging at the given EVSE.
+        /// </summary>
+        public event OnAuthorizeEVSEStartedDelegate OnAuthorizeEVSEStarted
+        {
+
+            add
+            {
+                _OperatorRoamingService.OnAuthorizeEVSEStarted += value;
+            }
+
+            remove
+            {
+                _OperatorRoamingService.OnAuthorizeEVSEStarted -= value;
+            }
+
+        }
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified for charging at the given charging station.
+        /// </summary>
+        public event OnAuthorizeChargingStationStartDelegate OnAuthorizeChargingStationStart
+        {
+
+            add
+            {
+                _OperatorRoamingService.OnAuthorizeChargingStationStart += value;
+            }
+
+            remove
+            {
+                _OperatorRoamingService.OnAuthorizeChargingStationStart -= value;
+            }
+
+        }
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified for charging at the given charging station.
+        /// </summary>
+        public event OnAuthorizeChargingStationStartedDelegate OnAuthorizeChargingStationStarted
+        {
+
+            add
+            {
+                _OperatorRoamingService.OnAuthorizeChargingStationStarted += value;
+            }
+
+            remove
+            {
+                _OperatorRoamingService.OnAuthorizeChargingStationStarted -= value;
+            }
+
+        }
+
+        #endregion
+
+        #region OnAuthorizeStop/-Stopped
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified to stop a charging process.
+        /// </summary>
+        public event OnAuthorizeStopDelegate OnAuthorizeStop
+        {
+
+            add
+            {
+                _OperatorRoamingService.OnAuthorizeStop += value;
+            }
+
+            remove
+            {
+                _OperatorRoamingService.OnAuthorizeStop -= value;
+            }
+
+        }
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified to stop a charging process.
+        /// </summary>
+        public event OnAuthorizeStoppedDelegate OnAuthorizeStopped
+        {
+
+            add
+            {
+                _OperatorRoamingService.OnAuthorizeStopped += value;
+            }
+
+            remove
+            {
+                _OperatorRoamingService.OnAuthorizeStopped -= value;
+            }
+
+        }
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified to stop a charging process at the given EVSE.
+        /// </summary>
+        public event OnAuthorizeEVSEStopDelegate OnAuthorizeEVSEStop
+        {
+
+            add
+            {
+                _OperatorRoamingService.OnAuthorizeEVSEStop += value;
+            }
+
+            remove
+            {
+                _OperatorRoamingService.OnAuthorizeEVSEStop -= value;
+            }
+
+        }
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified to stop a charging process at the given EVSE.
+        /// </summary>
+        public event OnAuthorizeEVSEStoppedDelegate OnAuthorizeEVSEStopped
+        {
+
+            add
+            {
+                _OperatorRoamingService.OnAuthorizeEVSEStopped += value;
+            }
+
+            remove
+            {
+                _OperatorRoamingService.OnAuthorizeEVSEStopped -= value;
+            }
+
+        }
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified to stop a charging process at the given charging station.
+        /// </summary>
+        public event OnAuthorizeChargingStationStopDelegate OnAuthorizeChargingStationStop
+        {
+
+            add
+            {
+                _OperatorRoamingService.OnAuthorizeChargingStationStop += value;
+            }
+
+            remove
+            {
+                _OperatorRoamingService.OnAuthorizeChargingStationStop -= value;
+            }
+
+        }
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified to stop a charging process at the given charging station.
+        /// </summary>
+        public event OnAuthorizeChargingStationStoppedDelegate OnAuthorizeChargingStationStopped
+        {
+
+            add
+            {
+                _OperatorRoamingService.OnAuthorizeChargingStationStopped += value;
+            }
+
+            remove
+            {
+                _OperatorRoamingService.OnAuthorizeChargingStationStopped -= value;
+            }
+
+        }
+
+        #endregion
+
+        #region OnChargeDetailRecordSend/-Sent
+
+        /// <summary>
+        /// An event fired whenever a charge detail record will be send.
+        /// </summary>
+        public event OnChargeDetailRecordSendDelegate OnChargeDetailRecordSend
+        {
+
+            add
+            {
+                _OperatorRoamingService.OnChargeDetailRecordSend += value;
+            }
+
+            remove
+            {
+                _OperatorRoamingService.OnChargeDetailRecordSend -= value;
+            }
+
+        }
+
+        /// <summary>
+        /// An event fired whenever a charge detail record had been sent.
+        /// </summary>
+        public event OnChargeDetailRecordSentDelegate OnChargeDetailRecordSent
+        {
+
+            add
+            {
+                _OperatorRoamingService.OnChargeDetailRecordSent += value;
+            }
+
+            remove
+            {
+                _OperatorRoamingService.OnChargeDetailRecordSent -= value;
+            }
+
+        }
+
+        #endregion
+
+
+        // Server methods
+
+        #region OnRemoteStart/-Stop
+
+        /// <summary>
+        /// An event sent whenever a remote start command was received.
+        /// </summary>
+        public event OnRemoteStartEVSEDelegate OnRemoteStart
+        {
+
+            add
+            {
+                _OperatorRoamingService.OnRemoteStart += value;
+            }
+
+            remove
+            {
+                _OperatorRoamingService.OnRemoteStart -= value;
+            }
+
+        }
+
+        /// <summary>
+        /// An event sent whenever a remote stop command was received.
+        /// </summary>
+        public event OnRemoteStopEVSEDelegate OnRemoteStop
+        {
+
+            add
+            {
+                _OperatorRoamingService.OnRemoteStop += value;
+            }
+
+            remove
+            {
+                _OperatorRoamingService.OnRemoteStop -= value;
+            }
+
+        }
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new e-Mobility Roaming Provider (EMRP)
-        /// having the given unique roaming provider identification and name.
+        /// Create an EVSE operator roaming provider.
         /// </summary>
         /// <param name="Id">The unique identification of the roaming provider.</param>
         /// <param name="Name">The offical (multi-language) name of the roaming provider.
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         /// <param name="OperatorRoamingService">The attached local or remote EVSE operator roaming service.</param>
-        /// <param name="eMobilityRoamingService">The attached local or remote e-mobility roaming service.</param>
-        public CPORoamingProvider(RoamingProvider_Id        Id,
-                                  I18NString                Name,
-                                  RoamingNetwork            RoamingNetwork,
-                                  IOperatorRoamingService   OperatorRoamingService)
+        public CPORoamingProvider(RoamingProvider_Id       Id,
+                                  I18NString               Name,
+                                  RoamingNetwork           RoamingNetwork,
+                                  IOperatorRoamingService  OperatorRoamingService)
 
             : base(Id, Name, RoamingNetwork)
 
@@ -169,73 +461,727 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._OperatorRoamingService   = OperatorRoamingService;
+
+            this._OperatorRoamingService  = OperatorRoamingService;
+
+
+            #region Link RemoteStart/-Stop to the roaming network
+
+            this.OnRemoteStart += (Timestamp,
+                                   CancellationToken,
+                                   EventTrackingId,
+                                   EVSEId,
+                                   ChargingProductId,
+                                   ReservationId,
+                                   SessionId,
+                                   ProviderId,
+                                   eMAId,
+                                   QueryTimeout) => RoamingNetwork.RemoteStart(Timestamp,
+                                                                               CancellationToken,
+                                                                               EventTrackingId,
+                                                                               EVSEId,
+                                                                               ChargingProductId,
+                                                                               null,
+                                                                               SessionId,
+                                                                               ProviderId,
+                                                                               eMAId,
+                                                                               QueryTimeout);
+
+            this.OnRemoteStop += (Timestamp,
+                                  CancellationToken,
+                                  EventTrackingId,
+                                  ReservationHandling,
+                                  SessionId,
+                                  ProviderId,
+                                  EVSEId,
+                                  QueryTimeout) => RoamingNetwork.RemoteStop(Timestamp,
+                                                                             CancellationToken,
+                                                                             EventTrackingId,
+                                                                             EVSEId,
+                                                                             SessionId,
+                                                                             ReservationHandling.Close,
+                                                                             ProviderId,
+                                                                             QueryTimeout);
+
+            #endregion
 
         }
 
         #endregion
 
 
-        #region PushEVSEData
+        #region PushEVSEData...
+
+        #region PushEVSEData(GroupedEVSEs,     ActionType = fullLoad, OperatorId = null, OperatorName = null,                      QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the EVSE data of the given lookup of EVSEs grouped by their EVSE operator.
+        /// </summary>
+        /// <param name="GroupedEVSEs">A lookup of EVSEs grouped by their EVSE operator.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEData(ILookup<EVSEOperator, EVSE>  GroupedEVSEs,
+                         ActionType                   ActionType    = WWCP.ActionType.fullLoad,
+                         EVSEOperator_Id              OperatorId    = null,
+                         String                       OperatorName  = null,
+                         TimeSpan?                    QueryTimeout  = null)
+
+        {
+
+            return await _OperatorRoamingService.PushEVSEData(GroupedEVSEs,
+                                                              ActionType,
+                                                              OperatorId,
+                                                              OperatorName,
+                                                              QueryTimeout);
+
+        }
 
         #endregion
 
-        #region PushEVSEStatus
+        #region PushEVSEData(EVSE,             ActionType = insert,   OperatorId = null, OperatorName = null,                      QueryTimeout = null)
 
-        public Task<Acknowledgement> PushEVSEStatus(ILookup<EVSEOperator, EVSE> GroupedEVSEs, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, TimeSpan? QueryTimeout = default(TimeSpan?))
+        /// <summary>
+        /// Upload the EVSE data of the given EVSE.
+        /// </summary>
+        /// <param name="EVSE">An EVSE.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEData(EVSE             EVSE,
+                         ActionType       ActionType    = WWCP.ActionType.insert,
+                         EVSEOperator_Id  OperatorId    = null,
+                         String           OperatorName  = null,
+                         TimeSpan?        QueryTimeout  = null)
+
         {
-            throw new NotImplementedException();
+
+            return await _OperatorRoamingService.PushEVSEData(EVSE,
+                                                              ActionType,
+                                                              OperatorId,
+                                                              OperatorName,
+                                                              QueryTimeout);
+
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(EVSE EVSE, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, TimeSpan? QueryTimeout = default(TimeSpan?))
+        #endregion
+
+        #region PushEVSEData(EVSEs,            ActionType = fullLoad, OperatorId = null, OperatorName = null, IncludeEVSEs = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the EVSE data of the given enumeration of EVSEs.
+        /// </summary>
+        /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEData(IEnumerable<EVSE>    EVSEs,
+                         ActionType           ActionType    = WWCP.ActionType.fullLoad,
+                         EVSEOperator_Id      OperatorId    = null,
+                         String               OperatorName  = null,
+                         Func<EVSE, Boolean>  IncludeEVSEs  = null,
+                         TimeSpan?            QueryTimeout  = null)
+
         {
-            throw new NotImplementedException();
+
+            return await _OperatorRoamingService.PushEVSEData(EVSEs,
+                                                              ActionType,
+                                                              OperatorId,
+                                                              OperatorName,
+                                                              IncludeEVSEs,
+                                                              QueryTimeout);
+
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(IEnumerable<EVSE> EVSEs, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
+        #endregion
+
+        #region PushEVSEData(ChargingStation,  ActionType = fullLoad, OperatorId = null, OperatorName = null, IncludeEVSEs = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the EVSE data of the given charging station.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEData(ChargingStation      ChargingStation,
+                         ActionType           ActionType    = WWCP.ActionType.fullLoad,
+                         EVSEOperator_Id      OperatorId    = null,
+                         String               OperatorName  = null,
+                         Func<EVSE, Boolean>  IncludeEVSEs  = null,
+                         TimeSpan?            QueryTimeout  = null)
+
         {
-            throw new NotImplementedException();
+
+            return await _OperatorRoamingService.PushEVSEData(ChargingStation,
+                                                              ActionType,
+                                                              OperatorId,
+                                                              OperatorName,
+                                                              IncludeEVSEs,
+                                                              QueryTimeout);
+
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(ChargingStation ChargingStation, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
+        #endregion
+
+        #region PushEVSEData(ChargingStations, ActionType = fullLoad, OperatorId = null, OperatorName = null, IncludeEVSEs = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the EVSE data of the given charging stations.
+        /// </summary>
+        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEData(IEnumerable<ChargingStation>  ChargingStations,
+                         ActionType                    ActionType    = WWCP.ActionType.fullLoad,
+                         EVSEOperator_Id               OperatorId    = null,
+                         String                        OperatorName  = null,
+                         Func<EVSE, Boolean>           IncludeEVSEs  = null,
+                         TimeSpan?                     QueryTimeout  = null)
+
         {
-            throw new NotImplementedException();
+
+            return await _OperatorRoamingService.PushEVSEData(ChargingStations,
+                                                              ActionType,
+                                                              OperatorId,
+                                                              OperatorName,
+                                                              IncludeEVSEs,
+                                                              QueryTimeout);
+
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(IEnumerable<ChargingStation> ChargingStations, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
+        #endregion
+
+        #region PushEVSEData(ChargingPool,     ActionType = fullLoad, OperatorId = null, OperatorName = null, IncludeEVSEs = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the EVSE data of the given charging pool.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEData(ChargingPool         ChargingPool,
+                         ActionType           ActionType    = WWCP.ActionType.fullLoad,
+                         EVSEOperator_Id      OperatorId    = null,
+                         String               OperatorName  = null,
+                         Func<EVSE, Boolean>  IncludeEVSEs  = null,
+                         TimeSpan?            QueryTimeout  = null)
+
         {
-            throw new NotImplementedException();
+
+            return await _OperatorRoamingService.PushEVSEData(ChargingPool,
+                                                              ActionType,
+                                                              OperatorId,
+                                                              OperatorName,
+                                                              IncludeEVSEs,
+                                                              QueryTimeout);
+
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(ChargingPool ChargingPool, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
+        #endregion
+
+        #region PushEVSEData(ChargingPools,    ActionType = fullLoad, OperatorId = null, OperatorName = null, IncludeEVSEs = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the EVSE data of the given charging pools.
+        /// </summary>
+        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEData(IEnumerable<ChargingPool>  ChargingPools,
+                         ActionType                 ActionType    = WWCP.ActionType.fullLoad,
+                         EVSEOperator_Id            OperatorId    = null,
+                         String                     OperatorName  = null,
+                         Func<EVSE, Boolean>        IncludeEVSEs  = null,
+                         TimeSpan?                  QueryTimeout  = null)
+
         {
-            throw new NotImplementedException();
+
+            return await _OperatorRoamingService.PushEVSEData(ChargingPools,
+                                                              ActionType,
+                                                              OperatorId,
+                                                              OperatorName,
+                                                              IncludeEVSEs,
+                                                              QueryTimeout);
+
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(IEnumerable<ChargingPool> ChargingPools, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
+        #endregion
+
+        #region PushEVSEData(EVSEOperator,     ActionType = fullLoad, OperatorId = null, OperatorName = null, IncludeEVSEs = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the EVSE data of the given EVSE operator.
+        /// </summary>
+        /// <param name="EVSEOperator">An EVSE operator.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEData(EVSEOperator         EVSEOperator,
+                         ActionType           ActionType    = WWCP.ActionType.fullLoad,
+                         EVSEOperator_Id      OperatorId    = null,
+                         String               OperatorName  = null,
+                         Func<EVSE, Boolean>  IncludeEVSEs  = null,
+                         TimeSpan?            QueryTimeout  = null)
+
         {
-            throw new NotImplementedException();
+
+            return await _OperatorRoamingService.PushEVSEData(EVSEOperator,
+                                                              ActionType,
+                                                              OperatorId,
+                                                              OperatorName,
+                                                              IncludeEVSEs,
+                                                              QueryTimeout);
+
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(EVSEOperator EVSEOperator, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
+        #endregion
+
+        #region PushEVSEData(EVSEOperators,    ActionType = fullLoad, OperatorId = null, OperatorName = null, IncludeEVSEs = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the EVSE data of the given EVSE operators.
+        /// </summary>
+        /// <param name="EVSEOperators">An enumeration of EVSE operators.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId"></param>
+        /// <param name="OperatorName">An optional alternative EVSE operator name used for uploading all EVSEs.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEData(IEnumerable<EVSEOperator>  EVSEOperators,
+                         ActionType                 ActionType    = WWCP.ActionType.fullLoad,
+                         EVSEOperator_Id            OperatorId    = null,
+                         String                     OperatorName  = null,
+                         Func<EVSE, Boolean>        IncludeEVSEs  = null,
+                         TimeSpan?                  QueryTimeout  = null)
+
         {
-            throw new NotImplementedException();
+
+            return await _OperatorRoamingService.PushEVSEData(EVSEOperators,
+                                                              ActionType,
+                                                              OperatorId,
+                                                              OperatorName,
+                                                              IncludeEVSEs,
+                                                              QueryTimeout);
+
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(IEnumerable<EVSEOperator> EVSEOperators, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
+        #endregion
+
+        #region PushEVSEData(RoamingNetwork,   ActionType = fullLoad, OperatorId = null, OperatorName = null, IncludeEVSEs = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the EVSE data of the given roaming network.
+        /// </summary>
+        /// <param name="RoamingNetwork">A roaming network.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEData(RoamingNetwork       RoamingNetwork,
+                         ActionType           ActionType    = WWCP.ActionType.fullLoad,
+                         EVSEOperator_Id      OperatorId    = null,
+                         String               OperatorName  = null,
+                         Func<EVSE, Boolean>  IncludeEVSEs  = null,
+                         TimeSpan?            QueryTimeout  = null)
+
         {
-            throw new NotImplementedException();
+
+            return await _OperatorRoamingService.PushEVSEData(RoamingNetwork,
+                                                              ActionType,
+                                                              OperatorId,
+                                                              OperatorName,
+                                                              IncludeEVSEs,
+                                                              QueryTimeout);
+
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(RoamingNetwork RoamingNetwork, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
+        #endregion
+
+        #endregion
+
+        #region PushEVSEStatus...
+
+        #region PushEVSEStatus(GroupedEVSEs,     ActionType = update, OperatorId = null, OperatorName = null,                      QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the EVSE status of the given lookup of EVSE status types grouped by their EVSE operator.
+        /// </summary>
+        /// <param name="GroupedEVSEs">A lookup of EVSEs grouped by their EVSE operator.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEStatus(ILookup<EVSEOperator, EVSE>  GroupedEVSEs,
+                           ActionType                   ActionType    = WWCP.ActionType.update,
+                           EVSEOperator_Id              OperatorId    = null,
+                           String                       OperatorName  = null,
+                           TimeSpan?                    QueryTimeout  = null)
+
         {
-            throw new NotImplementedException();
+
+            return await _OperatorRoamingService.PushEVSEStatus(GroupedEVSEs,
+                                                                ActionType,
+                                                                OperatorId,
+                                                                OperatorName,
+                                                                QueryTimeout);
+
         }
 
-        public Task PushEVSEStatus(EVSEStatusDiff EVSEStatusDiff, TimeSpan? QueryTimeout = default(TimeSpan?))
+        #endregion
+
+        #region PushEVSEStatus(EVSE,             ActionType = update, OperatorId = null, OperatorName = null,                      QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the given EVSE.
+        /// </summary>
+        /// <param name="EVSE">An EVSE.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEStatus(EVSE             EVSE,
+                           ActionType       ActionType    = WWCP.ActionType.update,
+                           EVSEOperator_Id  OperatorId    = null,
+                           String           OperatorName  = null,
+                           TimeSpan?        QueryTimeout  = null)
+
         {
-            throw new NotImplementedException();
+
+            return await _OperatorRoamingService.PushEVSEStatus(EVSE,
+                                                                ActionType,
+                                                                OperatorId,
+                                                                OperatorName,
+                                                                QueryTimeout);
+
         }
+
+        #endregion
+
+        #region PushEVSEStatus(EVSEs,            ActionType = update, OperatorId = null, OperatorName = null, IncludeEVSEs = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the status of the given enumeration of EVSEs.
+        /// </summary>
+        /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEStatus(IEnumerable<EVSE>    EVSEs,
+                           ActionType           ActionType    = WWCP.ActionType.update,
+                           EVSEOperator_Id      OperatorId    = null,
+                           String               OperatorName  = null,
+                           Func<EVSE, Boolean>  IncludeEVSEs  = null,
+                           TimeSpan?            QueryTimeout  = null)
+
+        {
+
+            return await _OperatorRoamingService.PushEVSEStatus(EVSEs,
+                                                                ActionType,
+                                                                OperatorId,
+                                                                OperatorName,
+                                                                IncludeEVSEs,
+                                                                QueryTimeout);
+
+        }
+
+        #endregion
+
+        #region PushEVSEStatus(ChargingStation,  ActionType = update, OperatorId = null, OperatorName = null, IncludeEVSEs = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the EVSE status of the given charging station.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEStatus(ChargingStation      ChargingStation,
+                           WWCP.ActionType      ActionType    = WWCP.ActionType.update,
+                           EVSEOperator_Id      OperatorId    = null,
+                           String               OperatorName  = null,
+                           Func<EVSE, Boolean>  IncludeEVSEs  = null,
+                           TimeSpan?            QueryTimeout  = null)
+
+        {
+
+            return await _OperatorRoamingService.PushEVSEStatus(ChargingStation,
+                                                                ActionType,
+                                                                OperatorId,
+                                                                OperatorName,
+                                                                IncludeEVSEs,
+                                                                QueryTimeout);
+
+        }
+
+        #endregion
+
+        #region PushEVSEStatus(ChargingStations, ActionType = update, OperatorId = null, OperatorName = null, IncludeEVSEs = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the EVSE status of the given charging stations.
+        /// </summary>
+        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEStatus(IEnumerable<ChargingStation>  ChargingStations,
+                           ActionType                    ActionType    = WWCP.ActionType.update,
+                           EVSEOperator_Id               OperatorId    = null,
+                           String                        OperatorName  = null,
+                           Func<EVSE, Boolean>           IncludeEVSEs  = null,
+                           TimeSpan?                     QueryTimeout  = null)
+
+        {
+
+            return await _OperatorRoamingService.PushEVSEStatus(ChargingStations,
+                                                                ActionType,
+                                                                OperatorId,
+                                                                OperatorName,
+                                                                IncludeEVSEs,
+                                                                QueryTimeout);
+
+        }
+
+        #endregion
+
+        #region PushEVSEStatus(ChargingPool,     ActionType = update, OperatorId = null, OperatorName = null, IncludeEVSEs = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the EVSE status of the given charging pool.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEStatus(ChargingPool         ChargingPool,
+                           ActionType           ActionType    = WWCP.ActionType.update,
+                           EVSEOperator_Id      OperatorId    = null,
+                           String               OperatorName  = null,
+                           Func<EVSE, Boolean>  IncludeEVSEs  = null,
+                           TimeSpan?            QueryTimeout  = null)
+
+        {
+
+            return await _OperatorRoamingService.PushEVSEStatus(ChargingPool,
+                                                                ActionType,
+                                                                OperatorId,
+                                                                OperatorName,
+                                                                IncludeEVSEs,
+                                                                QueryTimeout);
+
+        }
+
+        #endregion
+
+        #region PushEVSEStatus(ChargingPools,    ActionType = update, OperatorId = null, OperatorName = null, IncludeEVSEs = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the EVSE status of the given charging pools.
+        /// </summary>
+        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEStatus(IEnumerable<ChargingPool>  ChargingPools,
+                           ActionType                 ActionType    = WWCP.ActionType.update,
+                           EVSEOperator_Id            OperatorId    = null,
+                           String                     OperatorName  = null,
+                           Func<EVSE, Boolean>        IncludeEVSEs  = null,
+                           TimeSpan?                  QueryTimeout  = null)
+
+        {
+
+            return await _OperatorRoamingService.PushEVSEStatus(ChargingPools,
+                                                                ActionType,
+                                                                OperatorId,
+                                                                OperatorName,
+                                                                IncludeEVSEs,
+                                                                QueryTimeout);
+
+        }
+
+        #endregion
+
+        #region PushEVSEStatus(EVSEOperator,     ActionType = update, OperatorId = null, OperatorName = null, IncludeEVSEs = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the EVSE status of the given EVSE operator.
+        /// </summary>
+        /// <param name="EVSEOperator">An EVSE operator.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEStatus(EVSEOperator         EVSEOperator,
+                           ActionType           ActionType    = WWCP.ActionType.update,
+                           EVSEOperator_Id      OperatorId    = null,
+                           String               OperatorName  = null,
+                           Func<EVSE, Boolean>  IncludeEVSEs  = null,
+                           TimeSpan?            QueryTimeout  = null)
+
+        {
+
+            return await _OperatorRoamingService.PushEVSEStatus(EVSEOperator,
+                                                                ActionType,
+                                                                OperatorId,
+                                                                OperatorName,
+                                                                IncludeEVSEs,
+                                                                QueryTimeout);
+
+        }
+
+        #endregion
+
+        #region PushEVSEStatus(EVSEOperators,    ActionType = update, OperatorId = null, OperatorName = null, IncludeEVSEs = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the EVSE status of the given EVSE operators.
+        /// </summary>
+        /// <param name="EVSEOperators">An enumeration of EVSES operators.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEStatus(IEnumerable<EVSEOperator>  EVSEOperators,
+                           ActionType                 ActionType    = WWCP.ActionType.update,
+                           EVSEOperator_Id            OperatorId    = null,
+                           String                     OperatorName  = null,
+                           Func<EVSE, Boolean>        IncludeEVSEs  = null,
+                           TimeSpan?                  QueryTimeout  = null)
+
+        {
+
+            return await _OperatorRoamingService.PushEVSEStatus(EVSEOperators,
+                                                                ActionType,
+                                                                OperatorId,
+                                                                OperatorName,
+                                                                IncludeEVSEs,
+                                                                QueryTimeout);
+
+        }
+
+        #endregion
+
+        #region PushEVSEStatus(RoamingNetwork,   ActionType = update, OperatorId = null, OperatorName = null, IncludeEVSEs = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Upload the EVSE status of the given roaming network.
+        /// </summary>
+        /// <param name="RoamingNetwork">A roaming network.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        public async Task<Acknowledgement>
+
+            PushEVSEStatus(RoamingNetwork       RoamingNetwork,
+                           ActionType           ActionType    = WWCP.ActionType.update,
+                           EVSEOperator_Id      OperatorId    = null,
+                           String               OperatorName  = null,
+                           Func<EVSE, Boolean>  IncludeEVSEs  = null,
+                           TimeSpan?            QueryTimeout  = null)
+
+        {
+
+            return await _OperatorRoamingService.PushEVSEStatus(RoamingNetwork,
+                                                                ActionType,
+                                                                OperatorId,
+                                                                OperatorName,
+                                                                IncludeEVSEs,
+                                                                QueryTimeout);
+
+        }
+
+        #endregion
+
+        #region PushEVSEStatus(EVSEStatusDiff, QueryTimeout = null)
+
+        /// <summary>
+        /// Send EVSE status updates.
+        /// </summary>
+        /// <param name="EVSEStatusDiff">An EVSE status diff.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        public async Task PushEVSEStatus(EVSEStatusDiff  EVSEStatusDiff,
+                                         TimeSpan?       QueryTimeout  = null)
+
+        {
+
+            await _OperatorRoamingService.PushEVSEStatus(EVSEStatusDiff,
+                                                         QueryTimeout);
+
+        }
+
+        #endregion
 
         #endregion
 
@@ -267,14 +1213,14 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return await OperatorRoamingService.AuthorizeStart(Timestamp,
-                                                               CancellationToken,
-                                                               EventTrackingId,
-                                                               OperatorId,
-                                                               AuthToken,
-                                                               ChargingProductId,
-                                                               SessionId,
-                                                               QueryTimeout);
+            return await _OperatorRoamingService.AuthorizeStart(Timestamp,
+                                                                CancellationToken,
+                                                                EventTrackingId,
+                                                                OperatorId,
+                                                                AuthToken,
+                                                                ChargingProductId,
+                                                                SessionId,
+                                                                QueryTimeout);
 
         }
 
@@ -308,15 +1254,15 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return await OperatorRoamingService.AuthorizeStart(Timestamp,
-                                                               CancellationToken,
-                                                               EventTrackingId,
-                                                               OperatorId,
-                                                               AuthToken,
-                                                               EVSEId,
-                                                               ChargingProductId,
-                                                               SessionId,
-                                                               QueryTimeout);
+            return await _OperatorRoamingService.AuthorizeStart(Timestamp,
+                                                                CancellationToken,
+                                                                EventTrackingId,
+                                                                OperatorId,
+                                                                AuthToken,
+                                                                EVSEId,
+                                                                ChargingProductId,
+                                                                SessionId,
+                                                                QueryTimeout);
 
         }
 
@@ -350,15 +1296,15 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return await OperatorRoamingService.AuthorizeStart(Timestamp,
-                                                               CancellationToken,
-                                                               EventTrackingId,
-                                                               OperatorId,
-                                                               AuthToken,
-                                                               ChargingStationId,
-                                                               ChargingProductId,
-                                                               SessionId,
-                                                               QueryTimeout);
+            return await _OperatorRoamingService.AuthorizeStart(Timestamp,
+                                                                CancellationToken,
+                                                                EventTrackingId,
+                                                                OperatorId,
+                                                                AuthToken,
+                                                                ChargingStationId,
+                                                                ChargingProductId,
+                                                                SessionId,
+                                                                QueryTimeout);
 
         }
 
@@ -393,13 +1339,13 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return await OperatorRoamingService.AuthorizeStop(Timestamp,
-                                                              CancellationToken,
-                                                              EventTrackingId,
-                                                              OperatorId,
-                                                              SessionId,
-                                                              AuthToken,
-                                                              QueryTimeout);
+            return await _OperatorRoamingService.AuthorizeStop(Timestamp,
+                                                               CancellationToken,
+                                                               EventTrackingId,
+                                                               OperatorId,
+                                                               SessionId,
+                                                               AuthToken,
+                                                               QueryTimeout);
 
         }
 
@@ -435,14 +1381,14 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return await OperatorRoamingService.AuthorizeStop(Timestamp,
-                                                              CancellationToken,
-                                                              EventTrackingId,
-                                                              OperatorId,
-                                                              EVSEId,
-                                                              SessionId,
-                                                              AuthToken,
-                                                              QueryTimeout);
+            return await _OperatorRoamingService.AuthorizeStop(Timestamp,
+                                                               CancellationToken,
+                                                               EventTrackingId,
+                                                               OperatorId,
+                                                               EVSEId,
+                                                               SessionId,
+                                                               AuthToken,
+                                                               QueryTimeout);
 
         }
 
@@ -478,14 +1424,14 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return await OperatorRoamingService.AuthorizeStop(Timestamp,
-                                                              CancellationToken,
-                                                              EventTrackingId,
-                                                              OperatorId,
-                                                              ChargingStationId,
-                                                              SessionId,
-                                                              AuthToken,
-                                                              QueryTimeout);
+            return await _OperatorRoamingService.AuthorizeStop(Timestamp,
+                                                               CancellationToken,
+                                                               EventTrackingId,
+                                                               OperatorId,
+                                                               ChargingStationId,
+                                                               SessionId,
+                                                               AuthToken,
+                                                               QueryTimeout);
 
         }
 

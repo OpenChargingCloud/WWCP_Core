@@ -20,7 +20,6 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -32,6 +31,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// Create a SendChargeDetailRecord request.
     /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="EVSEId">An EVSE identification.</param>
     /// <param name="SessionId">The session identification from the Authorize Start request.</param>
     /// <param name="PartnerProductId"></param>
@@ -48,9 +50,8 @@ namespace org.GraphDefined.WWCP
     /// <param name="MeteringSignature">An optional signature for the metering values.</param>
     /// <param name="HubOperatorId">An optional identification of the hub operator.</param>
     /// <param name="HubProviderId">An optional identification of the hub provider.</param>
-    /// <param name="QueryTimeout">An optional timeout for this query.</param>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate Task<SendCDRResult> OnChargeDetailRecordDelegate(DateTime            Timestamp,
-                                                                     Object              Sender,
                                                                      CancellationToken   CancellationToken,
                                                                      EventTracking_Id    EventTrackingId,
                                                                      ChargeDetailRecord  ChargeDetailRecord,
@@ -74,35 +75,39 @@ namespace org.GraphDefined.WWCP
 
 
     /// <summary>
-    /// Indicate the reception of a charge detail record.
+    /// An event fired whenever a charge detail record will be send.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="ChargeDetailRecord">A charge detail record.</param>
-    public delegate void SendCDRDelegate(DateTime            Timestamp,
-                                         Object              Sender,
-                                         EventTracking_Id    EventTrackingId,
-                                         RoamingNetwork_Id   RoamingNetworkId,
-                                         ChargeDetailRecord  ChargeDetailRecord,
-                                         TimeSpan?           QueryTimeout);
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    public delegate void OnChargeDetailRecordSendDelegate(DateTime            Timestamp,
+                                                        Object              Sender,
+                                                        EventTracking_Id    EventTrackingId,
+                                                        RoamingNetwork_Id   RoamingNetworkId,
+                                                        ChargeDetailRecord  ChargeDetailRecord,
+                                                        TimeSpan?           QueryTimeout);
 
 
     /// <summary>
-    /// Indicate an authorize stop at the given charging station.
+    /// An event fired whenever a charge detail record had been sent.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="Sender">The sender of the request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="ChargeDetailRecord">A charge detail record.</param>
     /// <param name="Result">The authorize stop result.</param>
-    public delegate void CDRSentDelegate(DateTime            Timestamp,
-                                         Object              Sender,
-                                         EventTracking_Id    EventTrackingId,
-                                         RoamingNetwork_Id   RoamingNetworkId,
-                                         ChargeDetailRecord  ChargeDetailRecord,
-                                         TimeSpan?           QueryTimeout,
-                                         SendCDRResult       Result);
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    public delegate void OnChargeDetailRecordSentDelegate(DateTime            Timestamp,
+                                                        Object              Sender,
+                                                        EventTracking_Id    EventTrackingId,
+                                                        RoamingNetwork_Id   RoamingNetworkId,
+                                                        ChargeDetailRecord  ChargeDetailRecord,
+                                                        TimeSpan?           QueryTimeout,
+                                                        SendCDRResult       Result);
 
 }
 

@@ -31,12 +31,14 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// Indicate a remote stop of the given charging session.
     /// </summary>
-    /// <param name="Sender">The sender of the request.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
-    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender..</param>
+    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate void OnRemoteStopDelegate(Object               Sender,
                                               DateTime             Timestamp,
                                               EventTracking_Id     EventTrackingId,
@@ -49,9 +51,14 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// Indicate a remote stop of the given charging session.
     /// </summary>
-    /// <param name="Sender">The sender of the request.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
+    /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote stop result.</param>
     public delegate void OnRemoteStoppedDelegate(Object               Sender,
                                                  DateTime             Timestamp,
@@ -68,14 +75,13 @@ namespace org.GraphDefined.WWCP
     /// Stop the given charging session.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender..</param>
-    /// <returns>A RemoteStopResult task.</returns>
+    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate Task<RemoteStopResult> OnRemoteStopDelegate2(DateTime             Timestamp,
-                                                                 Object               Sender,
                                                                  CancellationToken    CancellationToken,
                                                                  EventTracking_Id     EventTrackingId,
                                                                  ReservationHandling  ReservationHandling,
@@ -90,13 +96,15 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// Indicate a remote stop of the given charging session at the given EVSE.
     /// </summary>
-    /// <param name="Sender">The sender of the request.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
-    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender..</param>
+    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate void OnRemoteEVSEStopDelegate(Object               Sender,
                                                   DateTime             Timestamp,
                                                   EventTracking_Id     EventTrackingId,
@@ -111,10 +119,15 @@ namespace org.GraphDefined.WWCP
     /// Indicate a remote stop of the given charging session at the given EVSE
     /// and for the given provider/eMAId.
     /// </summary>
-    /// <param name="Sender">The sender of the request.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
+    /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote stop result.</param>
     public delegate void OnRemoteEVSEStoppedDelegate(Object                Sender,
                                                      DateTime              Timestamp,
@@ -132,15 +145,14 @@ namespace org.GraphDefined.WWCP
     /// Stop the given charging session.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender..</param>
+    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
-    /// <returns>A RemoteStopResult task.</returns>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate Task<RemoteStopEVSEResult> OnRemoteStopEVSEDelegate(DateTime             Timestamp,
-                                                                        Object               Sender,
                                                                         CancellationToken    CancellationToken,
                                                                         EventTracking_Id     EventTrackingId,
                                                                         ReservationHandling  ReservationHandling,
@@ -156,13 +168,15 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// Indicate a remote stop of the given charging session at the given charging station.
     /// </summary>
-    /// <param name="Sender">The sender of the request.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="ChargingStationId">The unique identification of a charging station.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
-    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender..</param>
+    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate void OnRemoteChargingStationStopDelegate(Object               Sender,
                                                              DateTime             Timestamp,
                                                              EventTracking_Id     EventTrackingId,
@@ -177,10 +191,15 @@ namespace org.GraphDefined.WWCP
     /// Indicate a remote stop of the given charging session at the given charging station
     /// and for the given provider/eMAId.
     /// </summary>
-    /// <param name="Sender">The sender of the request.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="ChargingStationId">The unique identification of a charging station.</param>
+    /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote stop result.</param>
     public delegate void OnRemoteChargingStationStoppedDelegate(Object                           Sender,
                                                                 DateTime                         Timestamp,
@@ -198,15 +217,14 @@ namespace org.GraphDefined.WWCP
     /// Stop the given charging session.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender..</param>
+    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="ChargingStationId">The unique identification of a charging station.</param>
-    /// <returns>A RemoteStopResult task.</returns>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate Task<RemoteStopChargingStationResult> OnRemoteStopChargingStationDelegate(DateTime             Timestamp,
-                                                                                              Object               Sender,
                                                                                               CancellationToken    CancellationToken,
                                                                                               EventTracking_Id     EventTrackingId,
                                                                                               ReservationHandling  ReservationHandling,

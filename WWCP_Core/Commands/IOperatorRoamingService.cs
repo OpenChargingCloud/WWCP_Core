@@ -52,6 +52,111 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Events
+
+        // Client methods (logging)
+
+        #region OnAuthorizeStart/-Started
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified for charging.
+        /// </summary>
+        event OnAuthorizeStartDelegate                   OnAuthorizeStart;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified for charging.
+        /// </summary>
+        event OnAuthorizeStartedDelegate                 OnAuthorizeStarted;
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified for charging at the given EVSE.
+        /// </summary>
+        event OnAuthorizeEVSEStartDelegate               OnAuthorizeEVSEStart;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified for charging at the given EVSE.
+        /// </summary>
+        event OnAuthorizeEVSEStartedDelegate             OnAuthorizeEVSEStarted;
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified for charging at the given charging station.
+        /// </summary>
+        event OnAuthorizeChargingStationStartDelegate    OnAuthorizeChargingStationStart;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified for charging at the given charging station.
+        /// </summary>
+        event OnAuthorizeChargingStationStartedDelegate  OnAuthorizeChargingStationStarted;
+
+        #endregion
+
+        #region OnAuthorizeStop/-Stopped
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified to stop a charging process.
+        /// </summary>
+        event OnAuthorizeStopDelegate                    OnAuthorizeStop;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified to stop a charging process.
+        /// </summary>
+        event OnAuthorizeStoppedDelegate                 OnAuthorizeStopped;
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified to stop a charging process at the given EVSE.
+        /// </summary>
+        event OnAuthorizeEVSEStopDelegate                OnAuthorizeEVSEStop;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified to stop a charging process at the given EVSE.
+        /// </summary>
+        event OnAuthorizeEVSEStoppedDelegate             OnAuthorizeEVSEStopped;
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified to stop a charging process at the given charging station.
+        /// </summary>
+        event OnAuthorizeChargingStationStopDelegate     OnAuthorizeChargingStationStop;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified to stop a charging process at the given charging station.
+        /// </summary>
+        event OnAuthorizeChargingStationStoppedDelegate  OnAuthorizeChargingStationStopped;
+
+        #endregion
+
+        #region OnChargeDetailRecordSend/-Sent
+
+        /// <summary>
+        /// An event fired whenever a charge detail record will be send.
+        /// </summary>
+        event OnChargeDetailRecordSendDelegate  OnChargeDetailRecordSend;
+
+        /// <summary>
+        /// An event fired whenever a charge detail record had been sent.
+        /// </summary>
+        event OnChargeDetailRecordSentDelegate  OnChargeDetailRecordSent;
+
+        #endregion
+
+
+        // Server methods
+
+        #region OnRemoteStart/-Stop
+
+        /// <summary>
+        /// An event sent whenever a remote start command was received.
+        /// </summary>
+        event OnRemoteStartEVSEDelegate OnRemoteStart;
+
+        /// <summary>
+        /// An event sent whenever a remote stop command was received.
+        /// </summary>
+        event OnRemoteStopEVSEDelegate  OnRemoteStop;
+
+        #endregion
+
+        #endregion
+
     }
 
 }

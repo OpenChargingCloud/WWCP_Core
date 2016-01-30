@@ -52,12 +52,14 @@
     <Compile Include="Commands\AuthorizeStartStop\AuthStartResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStopChargingStationResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStopResult.cs" />
-    <Compile Include="Commands\IPushEVSEStatus.cs" />
+    <Compile Include="Commands\IPushDataAndStatus.cs" />
     <Compile Include="Commands\IGeneralServices.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStopDelegates.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStartDelegates.cs" />
     <Compile Include="Commands\IeMobilityRoamingService.cs" />
     <Compile Include="Commands\IOperatorRoamingService.cs" />
+    <Compile Include="Commands\PushDataAndStatus\AnonymousPushEVSEStatusService.cs" />
+    <Compile Include="Commands\PushDataAndStatus\PushDataAndStatusDelegates.cs" />
     <Compile Include="Commands\RemoteStartStop\OnRemoteStopDelegates.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStartChargingStationResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopChargingStationResult.cs" />
@@ -197,7 +199,7 @@
     <Compile Include="Entities\RoamingProvider\RoamingProvider_Id.cs" />
     <Compile Include="Entities\NavigationServiceProvider\NavigationServiceProvider.cs" />
     <Compile Include="Entities\NavigationServiceProvider\NavigationServiceProvider_Id.cs" />
-    <Compile Include="Commands\TokenAuthorizationResultType.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\TokenAuthorizationResultType.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStartEVSEResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStopEVSEResult.cs" />
     <Compile Include="Commands\SendCDR\SendCDRResult.cs" />

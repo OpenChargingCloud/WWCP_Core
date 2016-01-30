@@ -299,7 +299,7 @@ namespace org.GraphDefined.WWCP
             this._IeMobilityServiceProviders               = new ConcurrentDictionary<UInt32,                       IeMobilityServiceProvider>();
             this._OperatorRoamingServices                  = new ConcurrentDictionary<UInt32,                       IOperatorRoamingService>();
             this._eMobilityRoamingServices                 = new ConcurrentDictionary<UInt32,                       IeMobilityRoamingService>();
-            this._PushEVSEStatusToOperatorRoamingServices  = new ConcurrentDictionary<UInt32,                       IPushEVSEStatusServices>();
+            this._PushEVSEStatusToOperatorRoamingServices  = new ConcurrentDictionary<UInt32,                       IPushDataAndStatus>();
             this._ChargingSessions                         = new ConcurrentDictionary<ChargingSession_Id,           ChargingSession>();
             this._ChargeDetailRecords                      = new ConcurrentDictionary<ChargingSession_Id,           ChargeDetailRecord>();
 
@@ -614,7 +614,7 @@ namespace org.GraphDefined.WWCP
 
         private readonly ConcurrentDictionary<UInt32, IOperatorRoamingService>   _OperatorRoamingServices;
         private readonly ConcurrentDictionary<UInt32, IeMobilityRoamingService>  _eMobilityRoamingServices;
-        private readonly ConcurrentDictionary<UInt32, IPushEVSEStatusServices>   _PushEVSEStatusToOperatorRoamingServices;
+        private readonly ConcurrentDictionary<UInt32, IPushDataAndStatus>   _PushEVSEStatusToOperatorRoamingServices;
 
         #region CPORoamingProviders
 
@@ -865,7 +865,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Priority">The priority of the service.</param>
         /// <param name="PushEVSEStatusServices">The push-status service.</param>
         public Boolean RegisterPushEVSEStatusService(UInt32                   Priority,
-                                                     IPushEVSEStatusServices  PushEVSEStatusServices)
+                                                     IPushDataAndStatus  PushEVSEStatusServices)
         {
 
             return _PushEVSEStatusToOperatorRoamingServices.TryAdd(Priority, PushEVSEStatusServices);
@@ -3049,8 +3049,8 @@ namespace org.GraphDefined.WWCP
 
             var OnRemoteEVSEStartLocal = OnRemoteEVSEStart;
             if (OnRemoteEVSEStartLocal != null)
-                OnRemoteEVSEStartLocal(this,
-                                       Timestamp,
+                OnRemoteEVSEStartLocal(Timestamp,
+                                       this,
                                        EventTrackingId,
                                        Id,
                                        EVSEId,
@@ -3092,8 +3092,8 @@ namespace org.GraphDefined.WWCP
 
             var OnRemoteEVSEStartedLocal = OnRemoteEVSEStarted;
             if (OnRemoteEVSEStartedLocal != null)
-                OnRemoteEVSEStartedLocal(this,
-                                         Timestamp,
+                OnRemoteEVSEStartedLocal(Timestamp,
+                                         this,
                                          EventTrackingId,
                                          Id,
                                          EVSEId,
@@ -3160,8 +3160,8 @@ namespace org.GraphDefined.WWCP
 
             var OnRemoteChargingStationStartLocal = OnRemoteChargingStationStart;
             if (OnRemoteChargingStationStartLocal != null)
-                OnRemoteChargingStationStartLocal(this,
-                                                  Timestamp,
+                OnRemoteChargingStationStartLocal(Timestamp,
+                                                  this,
                                                   EventTrackingId,
                                                   Id,
                                                   ChargingStationId,
@@ -3203,8 +3203,8 @@ namespace org.GraphDefined.WWCP
 
             var OnRemoteChargingStationStartedLocal = OnRemoteChargingStationStarted;
             if (OnRemoteChargingStationStartedLocal != null)
-                OnRemoteChargingStationStartedLocal(this,
-                                                    Timestamp,
+                OnRemoteChargingStationStartedLocal(Timestamp,
+                                                    this,
                                                     EventTrackingId,
                                                     Id,
                                                     ChargingStationId,
@@ -3677,8 +3677,8 @@ namespace org.GraphDefined.WWCP
 
             var OnAuthorizeStartLocal = OnAuthorizeStart;
             if (OnAuthorizeStartLocal != null)
-                OnAuthorizeStartLocal(this,
-                                      Timestamp,
+                OnAuthorizeStartLocal(Timestamp,
+                                      this,
                                       EventTrackingId,
                                       Id,
                                       OperatorId,
@@ -3795,8 +3795,8 @@ namespace org.GraphDefined.WWCP
 
             var OnAuthorizeStartedLocal = OnAuthorizeStarted;
             if (OnAuthorizeStartedLocal != null)
-                OnAuthorizeStartedLocal(this,
-                                        Timestamp,
+                OnAuthorizeStartedLocal(Timestamp,
+                                        this,
                                         EventTrackingId,
                                         Id,
                                         OperatorId,
@@ -3858,8 +3858,8 @@ namespace org.GraphDefined.WWCP
 
             var OnAuthorizeEVSEStartLocal = OnAuthorizeEVSEStart;
             if (OnAuthorizeEVSEStartLocal != null)
-                OnAuthorizeEVSEStartLocal(this,
-                                          Timestamp,
+                OnAuthorizeEVSEStartLocal(Timestamp,
+                                          this,
                                           EventTrackingId,
                                           Id,
                                           OperatorId,
@@ -3981,8 +3981,8 @@ namespace org.GraphDefined.WWCP
 
             var OnAuthorizeEVSEStartedLocal = OnAuthorizeEVSEStarted;
             if (OnAuthorizeEVSEStartedLocal != null)
-                OnAuthorizeEVSEStartedLocal(this,
-                                            Timestamp,
+                OnAuthorizeEVSEStartedLocal(Timestamp,
+                                            this,
                                             EventTrackingId,
                                             Id,
                                             OperatorId,
@@ -4045,8 +4045,8 @@ namespace org.GraphDefined.WWCP
 
             var OnAuthorizeChargingStationStartLocal = OnAuthorizeChargingStationStart;
             if (OnAuthorizeChargingStationStartLocal != null)
-                OnAuthorizeChargingStationStartLocal(this,
-                                                     Timestamp,
+                OnAuthorizeChargingStationStartLocal(Timestamp,
+                                                     this,
                                                      EventTrackingId,
                                                      Id,
                                                      OperatorId,
@@ -4168,8 +4168,8 @@ namespace org.GraphDefined.WWCP
 
             var OnAuthorizeChargingStationStartedLocal = OnAuthorizeChargingStationStarted;
             if (OnAuthorizeChargingStationStartedLocal != null)
-                OnAuthorizeChargingStationStartedLocal(this,
-                                                       Timestamp,
+                OnAuthorizeChargingStationStartedLocal(Timestamp,
+                                                       this,
                                                        EventTrackingId,
                                                        Id,
                                                        OperatorId,
@@ -4273,8 +4273,8 @@ namespace org.GraphDefined.WWCP
 
             var OnAuthorizeStopLocal = OnAuthorizeStop;
             if (OnAuthorizeStopLocal != null)
-                OnAuthorizeStopLocal(this,
-                                     Timestamp,
+                OnAuthorizeStopLocal(Timestamp,
+                                     this,
                                      EventTrackingId,
                                      Id,
                                      OperatorId,
@@ -4373,8 +4373,8 @@ namespace org.GraphDefined.WWCP
 
             var OnAuthorizeStoppedLocal = OnAuthorizeStopped;
             if (OnAuthorizeStoppedLocal != null)
-                OnAuthorizeStoppedLocal(this,
-                                        Timestamp,
+                OnAuthorizeStoppedLocal(Timestamp,
+                                        this,
                                         EventTrackingId,
                                         Id,
                                         OperatorId,
@@ -4436,8 +4436,8 @@ namespace org.GraphDefined.WWCP
 
             var OnAuthorizeEVSEStopLocal = OnAuthorizeEVSEStop;
             if (OnAuthorizeEVSEStopLocal != null)
-                OnAuthorizeEVSEStopLocal(this,
-                                         Timestamp,
+                OnAuthorizeEVSEStopLocal(Timestamp,
+                                         this,
                                          EventTrackingId,
                                          Id,
                                          OperatorId,
@@ -4541,8 +4541,8 @@ namespace org.GraphDefined.WWCP
 
             var OnAuthorizeEVSEStoppedLocal = OnAuthorizeEVSEStopped;
             if (OnAuthorizeEVSEStoppedLocal != null)
-                OnAuthorizeEVSEStoppedLocal(this,
-                                            Timestamp,
+                OnAuthorizeEVSEStoppedLocal(Timestamp,
+                                            this,
                                             EventTrackingId,
                                             Id,
                                             OperatorId,
@@ -4605,8 +4605,8 @@ namespace org.GraphDefined.WWCP
 
             var OnAuthorizeChargingStationStopLocal = OnAuthorizeChargingStationStop;
             if (OnAuthorizeChargingStationStopLocal != null)
-                OnAuthorizeChargingStationStopLocal(this,
-                                                    Timestamp,
+                OnAuthorizeChargingStationStopLocal(Timestamp,
+                                                    this,
                                                     EventTrackingId,
                                                     Id,
                                                     OperatorId,
@@ -4710,8 +4710,8 @@ namespace org.GraphDefined.WWCP
 
             var OnAuthorizeChargingStationStoppedLocal = OnAuthorizeChargingStationStopped;
             if (OnAuthorizeChargingStationStoppedLocal != null)
-                OnAuthorizeChargingStationStoppedLocal(this,
-                                                       Timestamp,
+                OnAuthorizeChargingStationStoppedLocal(Timestamp,
+                                                       this,
                                                        EventTrackingId,
                                                        Id,
                                                        OperatorId,
@@ -5008,12 +5008,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a charge detail record was received.
         /// </summary>
-        public event SendCDRDelegate OnSendCDR;
+        public event OnChargeDetailRecordSendDelegate OnSendCDR;
 
         /// <summary>
         /// An event fired whenever a charge detail record result was sent.
         /// </summary>
-        public event CDRSentDelegate OnCDRSent;
+        public event OnChargeDetailRecordSentDelegate OnCDRSent;
 
         #endregion
 
