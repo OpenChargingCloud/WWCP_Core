@@ -19,6 +19,7 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -38,28 +39,19 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        //#region PullAuthenticationData
-        //
-        ///// <summary>
-        ///// Create an OICP v2.0 PullAuthenticationData request.
-        ///// </summary>
-        ///// <param name="OperatorId">An EVSE operator identification.</param>
-        ///// <param name="QueryTimeout">An optional timeout for this query.</param>
-        //Task<eRoamingAuthenticationData> PullAuthenticationData(EVSEOperator_Id  OperatorId,
-        //                                                        TimeSpan?        QueryTimeout = null);
-        //
-        //#endregion
-
         #region AuthorizeStart
 
         /// <summary>
         /// Create an authorize start request.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
-        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
         Task<AuthStartResult> AuthorizeStart(DateTime             Timestamp,
                                              CancellationToken    CancellationToken,
                                              EventTracking_Id     EventTrackingId,
@@ -72,12 +64,15 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create an authorize start request at the given EVSE.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
-        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
         Task<AuthStartEVSEResult> AuthorizeStart(DateTime             Timestamp,
                                                  CancellationToken    CancellationToken,
                                                  EventTracking_Id     EventTrackingId,
@@ -91,12 +86,15 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create an authorize start request at the given charging station.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="ChargingStationId">The unique identification of a charging station.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
-        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
         Task<AuthStartChargingStationResult> AuthorizeStart(DateTime             Timestamp,
                                                             CancellationToken    CancellationToken,
                                                             EventTracking_Id     EventTrackingId,
@@ -114,10 +112,13 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create an authorize stop request.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
         Task<AuthStopResult> AuthorizeStop(DateTime            Timestamp,
                                            CancellationToken   CancellationToken,
                                            EventTracking_Id    EventTrackingId,
@@ -129,11 +130,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create an authorize stop request at the given EVSE.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
         Task<AuthStopEVSEResult> AuthorizeStop(DateTime            Timestamp,
                                                CancellationToken   CancellationToken,
                                                EventTracking_Id    EventTrackingId,
@@ -146,11 +150,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create an authorize stop request at the given charging station.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="ChargingStationId">A charging station identification.</param>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
         Task<AuthStopChargingStationResult> AuthorizeStop(DateTime            Timestamp,
                                                           CancellationToken   CancellationToken,
                                                           EventTracking_Id    EventTrackingId,
@@ -165,47 +172,57 @@ namespace org.GraphDefined.WWCP
         #region SendChargeDetailRecord
 
         /// <summary>
-        /// Create an SendChargeDetailRecord request.
+        /// Send a charge detail record.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
         Task<SendCDRResult> SendChargeDetailRecord(DateTime            Timestamp,
                                                    CancellationToken   CancellationToken,
                                                    EventTracking_Id    EventTrackingId,
                                                    ChargeDetailRecord  ChargeDetailRecord,
                                                    TimeSpan?           QueryTimeout = null);
 
-        ///// <summary>
-        ///// Create a SendChargeDetailRecord request.
-        ///// </summary>
-        ///// <param name="EVSEId">An EVSE identification.</param>
-        ///// <param name="SessionId">The session identification from the Authorize Start request.</param>
-        ///// <param name="ChargingProductId">An optional charging product identification.</param>
-        ///// <param name="SessionStart">The timestamp of the session start.</param>
-        ///// <param name="SessionEnd">The timestamp of the session end.</param>
-        ///// <param name="AuthInfo">AuthInfo</param>.
-        ///// <param name="ChargingStart">An optional charging start timestamp.</param>
-        ///// <param name="ChargingEnd">An optional charging end timestamp.</param>
-        ///// <param name="MeterValueStart">An optional initial value of the energy meter.</param>
-        ///// <param name="MeterValueEnd">An optional final value of the energy meter.</param>
-        ///// <param name="MeterValuesInBetween">An optional enumeration of meter values during the charging session.</param>
-        ///// <param name="ConsumedEnergy">The optional amount of consumed energy.</param>
-        ///// <param name="MeteringSignature">An optional signature for the metering values.</param>
-        ///// <param name="QueryTimeout">An optional timeout for this query.</param>
-        //Task<SendCDRResult> SendChargeDetailRecord(EVSE_Id              EVSEId,
-        //                                           ChargingSession_Id   SessionId,
-        //                                           ChargingProduct_Id   ChargingProductId,
-        //                                           DateTime             SessionStart,
-        //                                           DateTime             SessionEnd,
-        //                                           AuthInfo             AuthInfo,
-        //                                           DateTime?            ChargingStart         = null,
-        //                                           DateTime?            ChargingEnd           = null,
-        //                                           Double?              MeterValueStart       = null,
-        //                                           Double?              MeterValueEnd         = null,
-        //                                           IEnumerable<Double>  MeterValuesInBetween  = null,
-        //                                           Double?              ConsumedEnergy        = null,
-        //                                           String               MeteringSignature     = null,
-        //                                           TimeSpan?            QueryTimeout          = null);
+
+        /// <summary>
+        /// Send a charge detail record.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="EVSEId">The EVSE identification.</param>
+        /// <param name="SessionId">The OICP session identification from the Authorize Start request.</param>
+        /// <param name="PartnerProductId">The ev charging product identification.</param>
+        /// <param name="SessionStart">The session start timestamp.</param>
+        /// <param name="SessionEnd">The session end timestamp.</param>
+        /// <param name="Identification">An identification.</param>
+        /// <param name="ChargingStart">An optional charging start timestamp.</param>
+        /// <param name="ChargingEnd">An optional charging end timestamp.</param>
+        /// <param name="MeterValueStart">An optional initial value of the energy meter.</param>
+        /// <param name="MeterValueEnd">An optional final value of the energy meter.</param>
+        /// <param name="MeterValuesInBetween">An optional enumeration of meter values during the charging session.</param>
+        /// <param name="ConsumedEnergy">The optional amount of consumed energy.</param>
+        /// <param name="MeteringSignature">An optional signature for the metering values.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        Task<SendCDRResult> SendChargeDetailRecord(DateTime             Timestamp,
+                                                   CancellationToken    CancellationToken,
+                                                   EventTracking_Id     EventTrackingId,
+                                                   EVSE_Id              EVSEId,
+                                                   ChargingSession_Id   SessionId,
+                                                   ChargingProduct_Id   PartnerProductId,
+                                                   DateTime             SessionStart,
+                                                   DateTime             SessionEnd,
+                                                   AuthInfo             Identification,
+                                                   DateTime?            ChargingStart         = null,
+                                                   DateTime?            ChargingEnd           = null,
+                                                   Double?              MeterValueStart       = null,
+                                                   Double?              MeterValueEnd         = null,
+                                                   IEnumerable<Double>  MeterValuesInBetween  = null,
+                                                   Double?              ConsumedEnergy        = null,
+                                                   String               MeteringSignature     = null,
+                                                   TimeSpan?            QueryTimeout          = null);
 
         #endregion
 

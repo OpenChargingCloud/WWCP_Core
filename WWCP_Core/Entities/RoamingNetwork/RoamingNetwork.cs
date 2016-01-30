@@ -292,7 +292,8 @@ namespace org.GraphDefined.WWCP
 
             this._EVSEOperators                            = new ConcurrentDictionary<EVSEOperator_Id,              EVSEOperator>();
             this._EVServiceProviders                       = new ConcurrentDictionary<EVSP_Id,                      EVSP>();
-            this._RoamingProviders                         = new ConcurrentDictionary<RoamingProvider_Id,           RoamingProvider>();
+            this._CPORoamingProviders                      = new ConcurrentDictionary<RoamingProvider_Id,           CPORoamingProvider>();
+            this._EMPRoamingProviders                      = new ConcurrentDictionary<RoamingProvider_Id,           EMPRoamingProvider>();
             this._SearchProviders                          = new ConcurrentDictionary<NavigationServiceProvider_Id, NavigationServiceProvider>();
             this._ChargingReservations                     = new ConcurrentDictionary<ChargingReservation_Id,       EVSEOperator>();
             this._IeMobilityServiceProviders               = new ConcurrentDictionary<UInt32,                       IeMobilityServiceProvider>();
@@ -307,33 +308,36 @@ namespace org.GraphDefined.WWCP
             #region Init events
 
             // RoamingNetwork events
-            this.EVSEOperatorAddition       = new VotingNotificator<DateTime, RoamingNetwork,  EVSEOperator,              Boolean>(() => new VetoVote(), true);
-            this.EVSEOperatorRemoval        = new VotingNotificator<DateTime, RoamingNetwork,  EVSEOperator,              Boolean>(() => new VetoVote(), true);
+            this.EVSEOperatorAddition        = new VotingNotificator<DateTime, RoamingNetwork,  EVSEOperator,              Boolean>(() => new VetoVote(), true);
+            this.EVSEOperatorRemoval         = new VotingNotificator<DateTime, RoamingNetwork,  EVSEOperator,              Boolean>(() => new VetoVote(), true);
 
-            this.EVServiceProviderAddition  = new VotingNotificator<RoamingNetwork,  EVSP,         Boolean>(() => new VetoVote(), true);
-            this.EVServiceProviderRemoval   = new VotingNotificator<RoamingNetwork,  EVSP,         Boolean>(() => new VetoVote(), true);
+            this.EVServiceProviderAddition   = new VotingNotificator<RoamingNetwork,  EVSP,                                Boolean>(() => new VetoVote(), true);
+            this.EVServiceProviderRemoval    = new VotingNotificator<RoamingNetwork,  EVSP,                                Boolean>(() => new VetoVote(), true);
 
-            this.RoamingProviderAddition    = new VotingNotificator<RoamingNetwork,  RoamingProvider,           Boolean>(() => new VetoVote(), true);
-            this.RoamingProviderRemoval     = new VotingNotificator<RoamingNetwork,  RoamingProvider,           Boolean>(() => new VetoVote(), true);
+            this.CPORoamingProviderAddition  = new VotingNotificator<RoamingNetwork,  CPORoamingProvider,                  Boolean>(() => new VetoVote(), true);
+            this.CPORoamingProviderRemoval   = new VotingNotificator<RoamingNetwork,  CPORoamingProvider,                  Boolean>(() => new VetoVote(), true);
 
-            this.SearchProviderAddition     = new VotingNotificator<RoamingNetwork,  NavigationServiceProvider, Boolean>(() => new VetoVote(), true);
-            this.SearchProviderRemoval      = new VotingNotificator<RoamingNetwork,  NavigationServiceProvider, Boolean>(() => new VetoVote(), true);
+            this.EMPRoamingProviderAddition  = new VotingNotificator<RoamingNetwork,  EMPRoamingProvider,                  Boolean>(() => new VetoVote(), true);
+            this.EMPRoamingProviderRemoval   = new VotingNotificator<RoamingNetwork,  EMPRoamingProvider,                  Boolean>(() => new VetoVote(), true);
+
+            this.SearchProviderAddition      = new VotingNotificator<RoamingNetwork,  NavigationServiceProvider,           Boolean>(() => new VetoVote(), true);
+            this.SearchProviderRemoval       = new VotingNotificator<RoamingNetwork,  NavigationServiceProvider,           Boolean>(() => new VetoVote(), true);
 
             // EVSEOperator events
-            this.ChargingPoolAddition       = new VotingNotificator<DateTime, EVSEOperator,    ChargingPool,              Boolean>(() => new VetoVote(), true);
-            this.ChargingPoolRemoval        = new VotingNotificator<DateTime, EVSEOperator,    ChargingPool,              Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolAddition        = new VotingNotificator<DateTime, EVSEOperator,    ChargingPool,              Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolRemoval         = new VotingNotificator<DateTime, EVSEOperator,    ChargingPool,              Boolean>(() => new VetoVote(), true);
 
             // ChargingPool events
-            this.ChargingStationAddition    = new VotingNotificator<DateTime, ChargingPool,    ChargingStation,           Boolean>(() => new VetoVote(), true);
-            this.ChargingStationRemoval     = new VotingNotificator<DateTime, ChargingPool,    ChargingStation,           Boolean>(() => new VetoVote(), true);
+            this.ChargingStationAddition     = new VotingNotificator<DateTime, ChargingPool,    ChargingStation,           Boolean>(() => new VetoVote(), true);
+            this.ChargingStationRemoval      = new VotingNotificator<DateTime, ChargingPool,    ChargingStation,           Boolean>(() => new VetoVote(), true);
 
             // ChargingStation events
-            this.EVSEAddition               = new VotingNotificator<DateTime, ChargingStation, EVSE,                      Boolean>(() => new VetoVote(), true);
-            this.EVSERemoval                = new VotingNotificator<DateTime, ChargingStation, EVSE,                      Boolean>(() => new VetoVote(), true);
+            this.EVSEAddition                = new VotingNotificator<DateTime, ChargingStation, EVSE,                      Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval                 = new VotingNotificator<DateTime, ChargingStation, EVSE,                      Boolean>(() => new VetoVote(), true);
 
             // EVSE events
-            this.SocketOutletAddition       = new VotingNotificator<DateTime, EVSE,            SocketOutlet,              Boolean>(() => new VetoVote(), true);
-            this.SocketOutletRemoval        = new VotingNotificator<DateTime, EVSE,            SocketOutlet,              Boolean>(() => new VetoVote(), true);
+            this.SocketOutletAddition        = new VotingNotificator<DateTime, EVSE,            SocketOutlet,              Boolean>(() => new VetoVote(), true);
+            this.SocketOutletRemoval         = new VotingNotificator<DateTime, EVSE,            SocketOutlet,              Boolean>(() => new VetoVote(), true);
 
             #endregion
 
@@ -610,60 +614,24 @@ namespace org.GraphDefined.WWCP
 
         private readonly ConcurrentDictionary<UInt32, IOperatorRoamingService>   _OperatorRoamingServices;
         private readonly ConcurrentDictionary<UInt32, IeMobilityRoamingService>  _eMobilityRoamingServices;
-
         private readonly ConcurrentDictionary<UInt32, IPushEVSEStatusServices>   _PushEVSEStatusToOperatorRoamingServices;
 
-        #region RoamingProviders
+        #region CPORoamingProviders
 
-        private readonly ConcurrentDictionary<RoamingProvider_Id, RoamingProvider> _RoamingProviders;
+        private readonly ConcurrentDictionary<RoamingProvider_Id, CPORoamingProvider> _CPORoamingProviders;
 
         /// <summary>
         /// Return all roaming providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<RoamingProvider> RoamingProviders
+        public IEnumerable<CPORoamingProvider> CPORoamingProviders
         {
             get
             {
-                return _RoamingProviders.Values;
+                return _CPORoamingProviders.Values;
             }
         }
 
         #endregion
-
-        #region RoamingProviderAddition
-
-        private readonly IVotingNotificator<RoamingNetwork, RoamingProvider, Boolean> RoamingProviderAddition;
-
-        /// <summary>
-        /// Called whenever a RoamingProvider will be or was added.
-        /// </summary>
-        public IVotingSender<RoamingNetwork, RoamingProvider, Boolean> OnRoamingProviderAddition
-        {
-            get
-            {
-                return RoamingProviderAddition;
-            }
-        }
-
-        #endregion
-
-        #region RoamingProviderRemoval
-
-        private readonly IVotingNotificator<RoamingNetwork, RoamingProvider, Boolean> RoamingProviderRemoval;
-
-        /// <summary>
-        /// Called whenever a RoamingProvider will be or was removed.
-        /// </summary>
-        public IVotingSender<RoamingNetwork, RoamingProvider, Boolean> OnRoamingProviderRemoval
-        {
-            get
-            {
-                return RoamingProviderRemoval;
-            }
-        }
-
-        #endregion
-
 
         #region CreateNewRoamingProvider(OperatorRoamingService, Configurator = null)
 
@@ -673,51 +641,187 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="OperatorRoamingService">The attached E-Mobility service.</param>
         /// <param name="Configurator">An optional delegate to configure the new roaming provider after its creation.</param>
-        public RoamingProvider CreateNewRoamingProvider(IOperatorRoamingService  OperatorRoamingService,
-                                                        Action<RoamingProvider>  Configurator = null)
+        public CPORoamingProvider CreateNewRoamingProvider(CPORoamingProvider          CPORoamingProvider)
+                                                           //Action<CPORoamingProvider>  Configurator = null)
         {
 
             #region Initial checks
 
-            if (OperatorRoamingService.Id == null)
-                throw new ArgumentNullException("OperatorRoamingService.Id",    "The given roaming provider identification must not be null!");
+            if (CPORoamingProvider == null)
+                throw new ArgumentNullException(nameof(CPORoamingProvider),  "The given CPO roaming provider must not be null!");
 
-            if (OperatorRoamingService.Name.IsNullOrEmpty())
-                throw new ArgumentNullException("OperatorRoamingService.Name",  "The given roaming provider name must not be null or empty!");
+            if (_CPORoamingProviders.ContainsKey(CPORoamingProvider.Id))
+                throw new RoamingProviderAlreadyExists(CPORoamingProvider.Id, this.Id);
 
-            if (_RoamingProviders.ContainsKey(OperatorRoamingService.Id))
-                throw new RoamingProviderAlreadyExists(OperatorRoamingService.Id, this.Id);
-
-            if (OperatorRoamingService.RoamingNetworkId != this.Id)
-                throw new ArgumentException("The given operator roaming service is not part of this roaming network!", "OperatorRoamingService");
+            if (CPORoamingProvider.RoamingNetworkId != this.Id)
+                throw new ArgumentException("The given CPO roaming provider is not part of this roaming network!", nameof(CPORoamingProvider));
 
             #endregion
 
-            var _RoamingProvider = new RoamingProvider(OperatorRoamingService.Id,
-                                                       OperatorRoamingService.Name,
-                                                       this,
-                                                       OperatorRoamingService,
-                                                       null);
+        //    var _RoamingProvider = new CPORoamingProvider(OperatorRoamingService.Id,
+        //                                                  OperatorRoamingService.Name,
+        //                                                  this,
+        //                                                  OperatorRoamingService);
 
-            Configurator.FailSafeInvoke(_RoamingProvider);
+         //   Configurator.FailSafeInvoke(_RoamingProvider);
 
-            if (RoamingProviderAddition.SendVoting(this, _RoamingProvider))
+            if (CPORoamingProviderAddition.SendVoting(this, CPORoamingProvider))
             {
-                if (_RoamingProviders.TryAdd(OperatorRoamingService.Id, _RoamingProvider))
+                if (_CPORoamingProviders.TryAdd(CPORoamingProvider.Id, CPORoamingProvider))
                 {
 
-                    RoamingProviderAddition.SendNotification(this, _RoamingProvider);
+                    CPORoamingProviderAddition.SendNotification(this, CPORoamingProvider);
 
-                    return _RoamingProvider;
+                    return CPORoamingProvider;
 
                 }
             }
 
-            throw new Exception("Could not create new roaming provider '" + OperatorRoamingService.Id + "'!");
+            throw new Exception("Could not create new roaming provider '" + CPORoamingProvider.Id + "'!");
 
         }
 
         #endregion
+
+        #region CPORoamingProviderAddition
+
+        private readonly IVotingNotificator<RoamingNetwork, CPORoamingProvider, Boolean> CPORoamingProviderAddition;
+
+        /// <summary>
+        /// Called whenever a RoamingProvider will be or was added.
+        /// </summary>
+        public IVotingSender<RoamingNetwork, CPORoamingProvider, Boolean> OnCPORoamingProviderAddition
+        {
+            get
+            {
+                return CPORoamingProviderAddition;
+            }
+        }
+
+        #endregion
+
+        #region CPORoamingProviderRemoval
+
+        private readonly IVotingNotificator<RoamingNetwork, CPORoamingProvider, Boolean> CPORoamingProviderRemoval;
+
+        /// <summary>
+        /// Called whenever a RoamingProvider will be or was removed.
+        /// </summary>
+        public IVotingSender<RoamingNetwork, CPORoamingProvider, Boolean> OnCPORoamingProviderRemoval
+        {
+            get
+            {
+                return CPORoamingProviderRemoval;
+            }
+        }
+
+        #endregion
+
+
+        #region EMPRoamingProviders
+
+        private readonly ConcurrentDictionary<RoamingProvider_Id, EMPRoamingProvider> _EMPRoamingProviders;
+
+        /// <summary>
+        /// Return all roaming providers registered within this roaming network.
+        /// </summary>
+        public IEnumerable<EMPRoamingProvider> EMPRoamingProviders
+        {
+            get
+            {
+                return _EMPRoamingProviders.Values;
+            }
+        }
+
+        #endregion
+
+        #region CreateNewRoamingProvider(eMobilityRoamingService, Configurator = null)
+
+        /// <summary>
+        /// Create and register a new electric vehicle roaming provider having the given
+        /// unique electric vehicle roaming provider identification.
+        /// </summary>
+        /// <param name="eMobilityRoamingService">A e-mobility roaming service.</param>
+        /// <param name="Configurator">An optional delegate to configure the new roaming provider after its creation.</param>
+        public EMPRoamingProvider CreateNewRoamingProvider(IeMobilityRoamingService    eMobilityRoamingService,
+                                                           Action<EMPRoamingProvider>  Configurator = null)
+        {
+
+            #region Initial checks
+
+            if (eMobilityRoamingService.Id == null)
+                throw new ArgumentNullException("eMobilityRoamingService.Id",    "The given roaming provider identification must not be null!");
+
+            if (eMobilityRoamingService.Name.IsNullOrEmpty())
+                throw new ArgumentNullException("eMobilityRoamingService.Name",  "The given roaming provider name must not be null or empty!");
+
+            if (_EMPRoamingProviders.ContainsKey(eMobilityRoamingService.Id))
+                throw new RoamingProviderAlreadyExists(eMobilityRoamingService.Id, this.Id);
+
+            if (eMobilityRoamingService.RoamingNetworkId != this.Id)
+                throw new ArgumentException("The given operator roaming service is not part of this roaming network!", "eMobilityRoamingService");
+
+            #endregion
+
+            var _EMPRoamingProvider = new EMPRoamingProvider(eMobilityRoamingService.Id,
+                                                             eMobilityRoamingService.Name,
+                                                             this,
+                                                             eMobilityRoamingService);
+
+            Configurator.FailSafeInvoke(_EMPRoamingProvider);
+
+            if (EMPRoamingProviderAddition.SendVoting(this, _EMPRoamingProvider))
+            {
+                if (_EMPRoamingProviders.TryAdd(eMobilityRoamingService.Id, _EMPRoamingProvider))
+                {
+
+                    EMPRoamingProviderAddition.SendNotification(this, _EMPRoamingProvider);
+
+                    return _EMPRoamingProvider;
+
+                }
+            }
+
+            throw new Exception("Could not create new roaming provider '" + eMobilityRoamingService.Id + "'!");
+
+        }
+
+        #endregion
+
+        #region EMPRoamingProviderAddition
+
+        private readonly IVotingNotificator<RoamingNetwork, EMPRoamingProvider, Boolean> EMPRoamingProviderAddition;
+
+        /// <summary>
+        /// Called whenever a RoamingProvider will be or was added.
+        /// </summary>
+        public IVotingSender<RoamingNetwork, EMPRoamingProvider, Boolean> OnEMPRoamingProviderAddition
+        {
+            get
+            {
+                return EMPRoamingProviderAddition;
+            }
+        }
+
+        #endregion
+
+        #region EMPRoamingProviderRemoval
+
+        private readonly IVotingNotificator<RoamingNetwork, EMPRoamingProvider, Boolean> EMPRoamingProviderRemoval;
+
+        /// <summary>
+        /// Called whenever a RoamingProvider will be or was removed.
+        /// </summary>
+        public IVotingSender<RoamingNetwork, EMPRoamingProvider, Boolean> OnEMPRoamingProviderRemoval
+        {
+            get
+            {
+                return EMPRoamingProviderRemoval;
+            }
+        }
+
+        #endregion
+
 
         #region RegisterOperatorRoamingService(Priority, OperatorRoamingService)
 
@@ -731,61 +835,6 @@ namespace org.GraphDefined.WWCP
         {
 
             return _OperatorRoamingServices.TryAdd(Priority, OperatorRoamingService);
-
-        }
-
-        #endregion
-
-
-        #region CreateNewRoamingProvider(eMobilityRoamingService, Configurator = null)
-
-        /// <summary>
-        /// Create and register a new electric vehicle roaming provider having the given
-        /// unique electric vehicle roaming provider identification.
-        /// </summary>
-        /// <param name="eMobilityRoamingService">A e-mobility roaming service.</param>
-        /// <param name="Configurator">An optional delegate to configure the new roaming provider after its creation.</param>
-        public RoamingProvider CreateNewRoamingProvider(IeMobilityRoamingService  eMobilityRoamingService,
-                                                        Action<RoamingProvider>   Configurator = null)
-        {
-
-            #region Initial checks
-
-            if (eMobilityRoamingService.Id == null)
-                throw new ArgumentNullException("eMobilityRoamingService.Id",    "The given roaming provider identification must not be null!");
-
-            if (eMobilityRoamingService.Name.IsNullOrEmpty())
-                throw new ArgumentNullException("eMobilityRoamingService.Name",  "The given roaming provider name must not be null or empty!");
-
-            if (_RoamingProviders.ContainsKey(eMobilityRoamingService.Id))
-                throw new RoamingProviderAlreadyExists(eMobilityRoamingService.Id, this.Id);
-
-            if (eMobilityRoamingService.RoamingNetworkId != this.Id)
-                throw new ArgumentException("The given operator roaming service is not part of this roaming network!", "eMobilityRoamingService");
-
-            #endregion
-
-            var _RoamingProvider = new RoamingProvider(eMobilityRoamingService.Id,
-                                                       eMobilityRoamingService.Name,
-                                                       this,
-                                                       null,
-                                                       eMobilityRoamingService);
-
-            Configurator.FailSafeInvoke(_RoamingProvider);
-
-            if (RoamingProviderAddition.SendVoting(this, _RoamingProvider))
-            {
-                if (_RoamingProviders.TryAdd(eMobilityRoamingService.Id, _RoamingProvider))
-                {
-
-                    RoamingProviderAddition.SendNotification(this, _RoamingProvider);
-
-                    return _RoamingProvider;
-
-                }
-            }
-
-            throw new Exception("Could not create new roaming provider '" + eMobilityRoamingService.Id + "'!");
 
         }
 
@@ -807,7 +856,6 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
-
 
         #region RegisterPushEVSEStatusService(Priority, PushEVSEStatusServices)
 

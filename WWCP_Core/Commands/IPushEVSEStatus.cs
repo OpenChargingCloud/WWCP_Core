@@ -87,9 +87,13 @@ namespace org.GraphDefined.WWCP
 
         #region Events
 
-        event OnEVSEDataPushDelegate    OnEVSEDataPush;
+        event OnEVSEDataPushDelegate      OnEVSEDataPush;
 
-        event OnEVSEDataPushedDelegate  OnEVSEDataPushed;
+        event OnEVSEDataPushedDelegate    OnEVSEDataPushed;
+
+        event OnEVSEStatusPushDelegate    OnEVSEStatusPush;
+
+        event OnEVSEStatusPushedDelegate  OnEVSEStatusPushed;
 
         #endregion
 
@@ -270,8 +274,10 @@ namespace org.GraphDefined.WWCP
     public class AnonymousPushEVSEStatusService : IPushEVSEStatusServices
     {
 
-        public event OnEVSEDataPushDelegate    OnEVSEDataPush;
-        public event OnEVSEDataPushedDelegate  OnEVSEDataPushed;
+        public event OnEVSEDataPushDelegate     OnEVSEDataPush;
+        public event OnEVSEDataPushedDelegate   OnEVSEDataPushed;
+        public event OnEVSEStatusPushDelegate   OnEVSEStatusPush;
+        public event OnEVSEStatusPushedDelegate OnEVSEStatusPushed;
 
         private readonly Action<EVSEStatusDiff> _EVSEStatusDiffDelegate;
 

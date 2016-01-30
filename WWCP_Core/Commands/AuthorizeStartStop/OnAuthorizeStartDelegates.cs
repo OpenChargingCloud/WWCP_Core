@@ -27,15 +27,17 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// Indicate an authorize start.
+    /// An event fired whenever an authentication token will be verified.
     /// </summary>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="OperatorId">An EVSE operator identification.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate void OnAuthorizeStartDelegate(Object              Sender,
                                                   DateTime            Timestamp,
                                                   EventTracking_Id    EventTrackingId,
@@ -46,12 +48,19 @@ namespace org.GraphDefined.WWCP
                                                   ChargingSession_Id  SessionId,
                                                   TimeSpan?           QueryTimeout);
 
+
     /// <summary>
-    /// Indicate an authorize start.
+    /// An event fired whenever an authentication token had been verified.
     /// </summary>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
+    /// <param name="OperatorId">An EVSE operator identification.</param>
+    /// <param name="AuthToken">A (RFID) user identification.</param>
+    /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
+    /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize start result.</param>
     public delegate void OnAuthorizeStartedDelegate(Object              Sender,
                                                     DateTime            Timestamp,
@@ -69,16 +78,18 @@ namespace org.GraphDefined.WWCP
 
 
     /// <summary>
-    /// Indicate an authorize start at the given EVSE.
+    /// An event fired whenever an authentication token will be verified at the given EVSE.
     /// </summary>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="OperatorId">An EVSE operator identification.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate void OnAuthorizeEVSEStartDelegate(Object              Sender,
                                                       DateTime            Timestamp,
                                                       EventTracking_Id    EventTrackingId,
@@ -90,13 +101,20 @@ namespace org.GraphDefined.WWCP
                                                       ChargingSession_Id  SessionId,
                                                       TimeSpan?           QueryTimeout);
 
+
     /// <summary>
-    /// Indicate an authorize start at the given EVSE.
+    /// An event fired whenever an authentication token had been verified at the given EVSE.
     /// </summary>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
+    /// <param name="OperatorId">An EVSE operator identification.</param>
+    /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
+    /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
+    /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize start result.</param>
     public delegate void OnAuthorizeEVSEStartedDelegate(Object               Sender,
                                                         DateTime             Timestamp,
@@ -116,16 +134,18 @@ namespace org.GraphDefined.WWCP
 
 
     /// <summary>
-    /// Indicate an authorize start at the given charging station.
+    /// An event fired whenever an authentication token will be verified at the given charging station.
     /// </summary>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="OperatorId">An EVSE operator identification.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="ChargingStationId">The unique identification of a charging station.</param>
-    /// <param name="ChargingProductId">The unique identification of the choosen charging product at the given charging station.</param>
+    /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate void OnAuthorizeChargingStationStartDelegate(Object              Sender,
                                                                  DateTime            Timestamp,
                                                                  EventTracking_Id    EventTrackingId,
@@ -137,13 +157,20 @@ namespace org.GraphDefined.WWCP
                                                                  ChargingSession_Id  SessionId,
                                                                  TimeSpan?           QueryTimeout);
 
+
     /// <summary>
-    /// Indicate an authorize start at the given charging station.
+    /// An event fired whenever an authentication token had been verified at the given charging station.
     /// </summary>
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
+    /// <param name="OperatorId">An EVSE operator identification.</param>
+    /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="ChargingStationId">The unique identification of a charging station.</param>
+    /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
+    /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize start result.</param>
     public delegate void OnAuthorizeChargingStationStartedDelegate(Object                          Sender,
                                                                    DateTime                        Timestamp,
@@ -157,9 +184,4 @@ namespace org.GraphDefined.WWCP
                                                                    TimeSpan?                       QueryTimeout,
                                                                    AuthStartChargingStationResult  Result);
 
-
-
-
 }
-
-

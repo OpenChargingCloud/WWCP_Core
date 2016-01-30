@@ -90,6 +90,21 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region EVSEId
+
+        private readonly EVSE_Id _EVSEId;
+
+        [Optional]
+        public EVSE_Id EVSEId
+        {
+            get
+            {
+                return _EVSEId;
+            }
+        }
+
+        #endregion
+
         #region ChargingStation
 
         private readonly ChargingStation _ChargingStation;
@@ -351,10 +366,11 @@ namespace org.GraphDefined.WWCP
         public ChargeDetailRecord(ChargingSession_Id                SessionId,
                                   ChargingReservation               ChargingReservation  = null,
 
-                                  EVSE                              EVSE                 = null,
-                                  ChargingStation                   ChargingStation      = null,
-                                  ChargingPool                      ChargingPool         = null,
                                   EVSEOperator                      EVSEOperator         = null,
+                                  ChargingPool                      ChargingPool         = null,
+                                  ChargingStation                   ChargingStation      = null,
+                                  EVSE                              EVSE                 = null,
+                                  EVSE_Id                           EVSEId               = null,
                                   ChargingProduct_Id                ChargingProductId    = null,
 
                                   EVSP_Id                           ProviderId           = null,
@@ -383,6 +399,7 @@ namespace org.GraphDefined.WWCP
             this._ChargingReservation  = ChargingReservation;
 
             this._EVSE                 = EVSE;
+            this._EVSEId               = EVSE != null ? EVSE.Id : EVSEId;
             this._ChargingStation      = ChargingStation;
             this._ChargingPool         = ChargingPool;
             this._EVSEOperator         = EVSEOperator;
@@ -395,6 +412,8 @@ namespace org.GraphDefined.WWCP
 
             this._EnergyMeterId        = EnergyMeterId;
             this._EnergyMeterValues    = EnergyMeterValues != null ? EnergyMeterValues : new Timestamped<Double>[0];
+
+            this._Identification       = Identification;
 
         }
 

@@ -29,8 +29,8 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A e-Mobility Roaming Provider (EMRP).
     /// </summary>
-    public class RoamingProvider : AEMobilityEntity<RoamingProvider_Id>,
-                                   IEquatable<RoamingProvider>, IComparable<RoamingProvider>, IComparable
+    public abstract class ARoamingProvider : AEMobilityEntity<RoamingProvider_Id>,
+                                             IEquatable<EMPRoamingProvider>, IComparable<EMPRoamingProvider>, IComparable
     {
 
         #region Properties
@@ -70,29 +70,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region OperatorRoamingService
+        #region RoamingNetworkId
 
-        private readonly IOperatorRoamingService _OperatorRoamingService;
-
-        public IOperatorRoamingService OperatorRoamingService
+        /// <summary>
+        /// The associated EV Roaming Network of the Electric Vehicle Supply Equipment Operator.
+        /// </summary>
+        public RoamingNetwork_Id RoamingNetworkId
         {
             get
             {
-                return _OperatorRoamingService;
-            }
-        }
-
-        #endregion
-
-        #region eMobilityRoamingService
-
-        private readonly IeMobilityRoamingService _eMobilityRoamingService;
-
-        public IeMobilityRoamingService eMobilityRoamingService
-        {
-            get
-            {
-                return _eMobilityRoamingService;
+                return _RoamingNetwork.Id;
             }
         }
 
@@ -111,11 +98,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         /// <param name="OperatorRoamingService">The attached local or remote EVSE operator roaming service.</param>
         /// <param name="eMobilityRoamingService">The attached local or remote e-mobility roaming service.</param>
-        internal RoamingProvider(RoamingProvider_Id        Id,
-                                 I18NString                Name,
-                                 RoamingNetwork            RoamingNetwork,
-                                 IOperatorRoamingService   OperatorRoamingService,
-                                 IeMobilityRoamingService  eMobilityRoamingService)
+        internal ARoamingProvider(RoamingProvider_Id        Id,
+                                  I18NString                Name,
+                                  RoamingNetwork            RoamingNetwork)
 
             : base(Id)
 
@@ -124,20 +109,15 @@ namespace org.GraphDefined.WWCP
             #region Initial Checks
 
             if (Name.IsNullOrEmpty())
-                throw new ArgumentNullException("Name",                    "The given roaming network must not be null!");
+                throw new ArgumentNullException(nameof(Name),            "The given roaming network must not be null!");
 
-            if (RoamingNetwork         == null)
-                throw new ArgumentNullException("RoamingNetwork",          "The given roaming network must not be null!");
-
-            //if (OperatorRoamingService == null)
-            //    throw new ArgumentNullException("OperatorRoamingService",  "The given EVSE operator roaming service must not be null!");
+            if (RoamingNetwork == null)
+                throw new ArgumentNullException(nameof(RoamingNetwork),  "The given roaming network must not be null!");
 
             #endregion
 
-            this._Name                     = Name;
-            this._RoamingNetwork           = RoamingNetwork;
-            this._OperatorRoamingService   = OperatorRoamingService;
-            this._eMobilityRoamingService  = eMobilityRoamingService;
+            this._Name            = Name;
+            this._RoamingNetwork  = RoamingNetwork;
 
         }
 
@@ -159,7 +139,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is a roaming provider.
-            var RoamingProvider = Object as RoamingProvider;
+            var RoamingProvider = Object as EMPRoamingProvider;
             if ((Object) RoamingProvider == null)
                 throw new ArgumentException("The given object is not a roaming provider!");
 
@@ -175,7 +155,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="RoamingProvider">A roaming provider object to compare with.</param>
-        public Int32 CompareTo(RoamingProvider RoamingProvider)
+        public Int32 CompareTo(EMPRoamingProvider RoamingProvider)
         {
 
             if ((Object) RoamingProvider == null)
@@ -205,7 +185,7 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is a roaming provider.
-            var RoamingProvider = Object as RoamingProvider;
+            var RoamingProvider = Object as EMPRoamingProvider;
             if ((Object) RoamingProvider == null)
                 return false;
 
@@ -222,7 +202,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="RoamingProvider">A roaming provider to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(RoamingProvider RoamingProvider)
+        public Boolean Equals(EMPRoamingProvider RoamingProvider)
         {
 
             if ((Object) RoamingProvider == null)
