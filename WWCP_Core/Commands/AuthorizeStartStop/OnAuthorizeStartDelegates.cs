@@ -20,6 +20,8 @@
 using System;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Threading.Tasks;
+using System.Threading;
 
 #endregion
 
@@ -127,6 +129,29 @@ namespace org.GraphDefined.WWCP
                                                         ChargingSession_Id   SessionId,
                                                         TimeSpan?            QueryTimeout,
                                                         AuthStartEVSEResult  Result);
+
+
+    /// <summary>
+    /// An event fired whenever an authentication token will be verified for charging at the given EVSE.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// <param name="OperatorId">An EVSE operator identification.</param>
+    /// <param name="AuthToken">A (RFID) user identification.</param>
+    /// <param name="EVSEId">The unique identification of an EVSE.</param>
+    /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
+    /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    public delegate Task<AuthStartEVSEResult> OnAuthorizeStartEVSEDelegate(DateTime            Timestamp,
+                                                                           CancellationToken   CancellationToken,
+                                                                           EventTracking_Id    EventTrackingId,
+                                                                           EVSEOperator_Id     OperatorId,
+                                                                           Auth_Token          AuthToken,
+                                                                           EVSE_Id             EVSEId,
+                                                                           ChargingProduct_Id  ChargingProductId,
+                                                                           ChargingSession_Id  SessionId,
+                                                                           TimeSpan?           QueryTimeout);
 
 
     // ----------------------------------------------------------------------------------------------------------

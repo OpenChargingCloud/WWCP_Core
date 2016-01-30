@@ -57,6 +57,38 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Events
+
+        // Client methods (logging)
+
+
+        // Server methods
+
+        #region OnAuthorizeStart/-Stop
+
+        /// <summary>
+        /// An event sent whenever a authorize start command was received.
+        /// </summary>
+        event OnAuthorizeStartEVSEDelegate  OnAuthorizeStartEVSE;
+
+        /// <summary>
+        /// An event sent whenever a authorize start command was received.
+        /// </summary>
+        event OnAuthorizeStopEVSEDelegate   OnAuthorizeStopEVSE;
+
+        #endregion
+
+        #region OnChargeDetailRecord
+
+        /// <summary>
+        /// An event sent whenever a charge detail record was received.
+        /// </summary>
+        event OnChargeDetailRecordDelegate OnChargeDetailRecord;
+
+        #endregion
+
+        #endregion
+
     }
 
 }

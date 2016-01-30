@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A e-Mobility Roaming Provider (EMRP).
+    /// A e-mobility roaming provider.
     /// </summary>
     public class EMPRoamingProvider : ARoamingProvider,
                                       IeMobilityRoamingService
@@ -68,11 +68,85 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Events
+
+        // Client methods (logging)
+
+
+        // Server methods
+
+        #region OnAuthorizeStart/-Stop
+
+        /// <summary>
+        /// An event sent whenever a authorize start command was received.
+        /// </summary>
+        public event OnAuthorizeStartEVSEDelegate OnAuthorizeStartEVSE
+        {
+
+            add
+            {
+                _eMobilityRoamingService.OnAuthorizeStartEVSE += value;
+            }
+
+            remove
+            {
+                _eMobilityRoamingService.OnAuthorizeStartEVSE -= value;
+            }
+
+        }
+
+        #endregion
+
+        #region OnAuthorizeStop
+
+        /// <summary>
+        /// An event sent whenever a authorize start command was received.
+        /// </summary>
+        public event OnAuthorizeStopEVSEDelegate OnAuthorizeStopEVSE
+        {
+
+            add
+            {
+                _eMobilityRoamingService.OnAuthorizeStopEVSE += value;
+            }
+
+            remove
+            {
+                _eMobilityRoamingService.OnAuthorizeStopEVSE -= value;
+            }
+
+        }
+
+        #endregion
+
+        #region OnChargeDetailRecord
+
+        /// <summary>
+        /// An event sent whenever a charge detail record was received.
+        /// </summary>
+        public event OnChargeDetailRecordDelegate OnChargeDetailRecord
+        {
+
+            add
+            {
+                _eMobilityRoamingService.OnChargeDetailRecord += value;
+            }
+
+            remove
+            {
+                _eMobilityRoamingService.OnChargeDetailRecord -= value;
+            }
+
+        }
+
+        #endregion
+
+        #endregion
+
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new e-Mobility Roaming Provider (EMRP)
-        /// having the given unique roaming provider identification and name.
+        /// Create an e-mobility roaming provider.
         /// </summary>
         /// <param name="Id">The unique identification of the roaming provider.</param>
         /// <param name="Name">The offical (multi-language) name of the roaming provider.

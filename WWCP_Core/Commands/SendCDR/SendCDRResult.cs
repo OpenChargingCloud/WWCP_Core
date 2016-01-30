@@ -154,6 +154,20 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) OutOfService(AuthorizatorId, Description = null)
+
+        public static SendCDRResult OutOfService(Authorizator_Id  AuthorizatorId,
+                                                 String           Description = null)
+        {
+
+            return new SendCDRResult(SendCDRResultType.OutOfService,
+                                     AuthorizatorId,
+                                     Description);
+
+        }
+
+        #endregion
+
     }
 
 
@@ -166,7 +180,9 @@ namespace org.GraphDefined.WWCP
 
         InvalidSessionId,
 
-        UnknownEVSE
+        UnknownEVSE,
+
+        OutOfService
 
     }
 
