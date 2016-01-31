@@ -2546,21 +2546,30 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveEVSE event
 
-            var OnReserveEVSELocal = OnReserveEVSE;
-            if (OnReserveEVSELocal != null)
-                OnReserveEVSELocal(this,
-                                   Timestamp,
-                                   EventTrackingId,
-                                   Id,
-                                   ReservationId,
-                                   EVSEId,
-                                   StartTime,
-                                   Duration,
-                                   ProviderId,
-                                   ChargingProductId,
-                                   AuthTokens,
-                                   eMAIds,
-                                   PINs);
+            try
+            {
+
+                var OnReserveEVSELocal = OnReserveEVSE;
+                if (OnReserveEVSELocal != null)
+                    OnReserveEVSELocal(this,
+                                       Timestamp,
+                                       EventTrackingId,
+                                       Id,
+                                       ReservationId,
+                                       EVSEId,
+                                       StartTime,
+                                       Duration,
+                                       ProviderId,
+                                       ChargingProductId,
+                                       AuthTokens,
+                                       eMAIds,
+                                       PINs);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnReserveEVSE));
+            }
 
             #endregion
 
@@ -2593,22 +2602,31 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnEVSEReserved event
 
-            var OnEVSEReservedLocal = OnEVSEReserved;
-            if (OnEVSEReservedLocal != null)
-                OnEVSEReservedLocal(this,
-                                    Timestamp,
-                                    EventTrackingId,
-                                    Id,
-                                    ReservationId,
-                                    EVSEId,
-                                    StartTime,
-                                    Duration,
-                                    ProviderId,
-                                    ChargingProductId,
-                                    AuthTokens,
-                                    eMAIds,
-                                    PINs,
-                                    result);
+            try
+            {
+
+                var OnEVSEReservedLocal = OnEVSEReserved;
+                if (OnEVSEReservedLocal != null)
+                    OnEVSEReservedLocal(this,
+                                        Timestamp,
+                                        EventTrackingId,
+                                        Id,
+                                        ReservationId,
+                                        EVSEId,
+                                        StartTime,
+                                        Duration,
+                                        ProviderId,
+                                        ChargingProductId,
+                                        AuthTokens,
+                                        eMAIds,
+                                        PINs,
+                                        result);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnEVSEReserved));
+            }
 
             #endregion
 
@@ -2666,21 +2684,30 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveChargingStation event
 
-            var OnReserveChargingStationLocal = OnReserveChargingStation;
-            if (OnReserveChargingStationLocal != null)
-                OnReserveChargingStationLocal(this,
-                                              Timestamp,
-                                              EventTrackingId,
-                                              Id,
-                                              ChargingStationId,
-                                              StartTime,
-                                              Duration,
-                                              ReservationId,
-                                              ProviderId,
-                                              ChargingProductId,
-                                              AuthTokens,
-                                              eMAIds,
-                                              PINs);
+            try
+            {
+
+                var OnReserveChargingStationLocal = OnReserveChargingStation;
+                if (OnReserveChargingStationLocal != null)
+                    OnReserveChargingStationLocal(this,
+                                                  Timestamp,
+                                                  EventTrackingId,
+                                                  Id,
+                                                  ChargingStationId,
+                                                  StartTime,
+                                                  Duration,
+                                                  ReservationId,
+                                                  ProviderId,
+                                                  ChargingProductId,
+                                                  AuthTokens,
+                                                  eMAIds,
+                                                  PINs);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnReserveChargingStation));
+            }
 
             #endregion
 
@@ -2713,22 +2740,31 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnChargingStationReserved event
 
-            var OnChargingStationReservedLocal = OnChargingStationReserved;
-            if (OnChargingStationReservedLocal != null)
-                OnChargingStationReservedLocal(this,
-                                               Timestamp,
-                                               EventTrackingId,
-                                               Id,
-                                               ChargingStationId,
-                                               StartTime,
-                                               Duration,
-                                               ReservationId,
-                                               ProviderId,
-                                               ChargingProductId,
-                                               AuthTokens,
-                                               eMAIds,
-                                               PINs,
-                                               result);
+            try
+            {
+
+                var OnChargingStationReservedLocal = OnChargingStationReserved;
+                if (OnChargingStationReservedLocal != null)
+                    OnChargingStationReservedLocal(this,
+                                                   Timestamp,
+                                                   EventTrackingId,
+                                                   Id,
+                                                   ChargingStationId,
+                                                   StartTime,
+                                                   Duration,
+                                                   ReservationId,
+                                                   ProviderId,
+                                                   ChargingProductId,
+                                                   AuthTokens,
+                                                   eMAIds,
+                                                   PINs,
+                                                   result);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnChargingStationReserved));
+            }
 
             #endregion
 
@@ -2786,21 +2822,30 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveChargingPool event
 
-            var OnReserveChargingPoolLocal = OnReserveChargingPool;
-            if (OnReserveChargingPoolLocal != null)
-                OnReserveChargingPoolLocal(this,
-                                           Timestamp,
-                                           EventTrackingId,
-                                           Id,
-                                           ChargingPoolId,
-                                           StartTime,
-                                           Duration,
-                                           ReservationId,
-                                           ProviderId,
-                                           ChargingProductId,
-                                           AuthTokens,
-                                           eMAIds,
-                                           PINs);
+            try
+            {
+
+                var OnReserveChargingPoolLocal = OnReserveChargingPool;
+                if (OnReserveChargingPoolLocal != null)
+                    OnReserveChargingPoolLocal(this,
+                                               Timestamp,
+                                               EventTrackingId,
+                                               Id,
+                                               ChargingPoolId,
+                                               StartTime,
+                                               Duration,
+                                               ReservationId,
+                                               ProviderId,
+                                               ChargingProductId,
+                                               AuthTokens,
+                                               eMAIds,
+                                               PINs);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnReserveChargingPool));
+            }
 
             #endregion
 
@@ -2833,22 +2878,31 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnEVSEReserved event
 
-            var OnChargingPoolReservedLocal = OnChargingPoolReserved;
-            if (OnChargingPoolReservedLocal != null)
-                OnChargingPoolReservedLocal(this,
-                                            Timestamp,
-                                            EventTrackingId,
-                                            Id,
-                                            ChargingPoolId,
-                                            StartTime,
-                                            Duration,
-                                            ReservationId,
-                                            ProviderId,
-                                            ChargingProductId,
-                                            AuthTokens,
-                                            eMAIds,
-                                            PINs,
-                                            result);
+            try
+            {
+
+                var OnChargingPoolReservedLocal = OnChargingPoolReserved;
+                if (OnChargingPoolReservedLocal != null)
+                    OnChargingPoolReservedLocal(this,
+                                                Timestamp,
+                                                EventTrackingId,
+                                                Id,
+                                                ChargingPoolId,
+                                                StartTime,
+                                                Duration,
+                                                ReservationId,
+                                                ProviderId,
+                                                ChargingProductId,
+                                                AuthTokens,
+                                                eMAIds,
+                                                PINs,
+                                                result);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnChargingPoolReserved));
+            }
 
             #endregion
 
@@ -2956,24 +3010,7 @@ namespace org.GraphDefined.WWCP
 
         #region RemoteStart/-Stop
 
-        #region ChargingSessions
-
-        private readonly ConcurrentDictionary<ChargingSession_Id, ChargingSession> _ChargingSessions;
-
-        /// <summary>
-        /// Return all current charging sessions.
-        /// </summary>
-        public IEnumerable<ChargingSession> ChargingSessions
-        {
-            get
-            {
-                return _ChargingSessions.Select(kvp => kvp.Value);
-            }
-        }
-
-        #endregion
-
-        #region OnRemote...Start / OnRemote...Started / OnNewChargingSession
+        #region OnRemote...Start / OnRemote...Started
 
         /// <summary>
         /// An event fired whenever a remote start EVSE command was received.
@@ -2994,11 +3031,6 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever a remote start charging station command completed.
         /// </summary>
         public event OnRemoteChargingStationStartedDelegate  OnRemoteChargingStationStarted;
-
-        /// <summary>
-        /// An event fired whenever a new charging session was created.
-        /// </summary>
-        public event OnNewChargingSessionDelegate            OnNewChargingSession;
 
         #endregion
 
@@ -3047,19 +3079,28 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStart event
 
-            var OnRemoteEVSEStartLocal = OnRemoteEVSEStart;
-            if (OnRemoteEVSEStartLocal != null)
-                OnRemoteEVSEStartLocal(Timestamp,
-                                       this,
-                                       EventTrackingId,
-                                       Id,
-                                       EVSEId,
-                                       ChargingProductId,
-                                       ReservationId,
-                                       SessionId,
-                                       ProviderId,
-                                       eMAId,
-                                       QueryTimeout);
+            try
+            {
+
+                var OnRemoteEVSEStartLocal = OnRemoteEVSEStart;
+                if (OnRemoteEVSEStartLocal != null)
+                    OnRemoteEVSEStartLocal(Timestamp,
+                                           this,
+                                           EventTrackingId,
+                                           Id,
+                                           EVSEId,
+                                           ChargingProductId,
+                                           ReservationId,
+                                           SessionId,
+                                           ProviderId,
+                                           eMAId,
+                                           QueryTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnRemoteEVSEStart));
+            }
 
             #endregion
 
@@ -3090,20 +3131,29 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStarted event
 
-            var OnRemoteEVSEStartedLocal = OnRemoteEVSEStarted;
-            if (OnRemoteEVSEStartedLocal != null)
-                OnRemoteEVSEStartedLocal(Timestamp,
-                                         this,
-                                         EventTrackingId,
-                                         Id,
-                                         EVSEId,
-                                         ChargingProductId,
-                                         ReservationId,
-                                         SessionId,
-                                         ProviderId,
-                                         eMAId,
-                                         QueryTimeout,
-                                         result);
+            try
+            {
+
+                var OnRemoteEVSEStartedLocal = OnRemoteEVSEStarted;
+                if (OnRemoteEVSEStartedLocal != null)
+                    OnRemoteEVSEStartedLocal(Timestamp,
+                                             this,
+                                             EventTrackingId,
+                                             Id,
+                                             EVSEId,
+                                             ChargingProductId,
+                                             ReservationId,
+                                             SessionId,
+                                             ProviderId,
+                                             eMAId,
+                                             QueryTimeout,
+                                             result);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnRemoteEVSEStarted));
+            }
 
             #endregion
 
@@ -3158,19 +3208,28 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStart event
 
-            var OnRemoteChargingStationStartLocal = OnRemoteChargingStationStart;
-            if (OnRemoteChargingStationStartLocal != null)
-                OnRemoteChargingStationStartLocal(Timestamp,
-                                                  this,
-                                                  EventTrackingId,
-                                                  Id,
-                                                  ChargingStationId,
-                                                  ChargingProductId,
-                                                  ReservationId,
-                                                  SessionId,
-                                                  ProviderId,
-                                                  eMAId,
-                                                  QueryTimeout);
+            try
+            {
+
+                var OnRemoteChargingStationStartLocal = OnRemoteChargingStationStart;
+                if (OnRemoteChargingStationStartLocal != null)
+                    OnRemoteChargingStationStartLocal(Timestamp,
+                                                      this,
+                                                      EventTrackingId,
+                                                      Id,
+                                                      ChargingStationId,
+                                                      ChargingProductId,
+                                                      ReservationId,
+                                                      SessionId,
+                                                      ProviderId,
+                                                      eMAId,
+                                                      QueryTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnRemoteChargingStationStart));
+            }
 
             #endregion
 
@@ -3201,20 +3260,29 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStarted event
 
-            var OnRemoteChargingStationStartedLocal = OnRemoteChargingStationStarted;
-            if (OnRemoteChargingStationStartedLocal != null)
-                OnRemoteChargingStationStartedLocal(Timestamp,
-                                                    this,
-                                                    EventTrackingId,
-                                                    Id,
-                                                    ChargingStationId,
-                                                    ChargingProductId,
-                                                    ReservationId,
-                                                    SessionId,
-                                                    ProviderId,
-                                                    eMAId,
-                                                    QueryTimeout,
-                                                    result);
+            try
+            {
+
+                var OnRemoteChargingStationStartedLocal = OnRemoteChargingStationStarted;
+                if (OnRemoteChargingStationStartedLocal != null)
+                    OnRemoteChargingStationStartedLocal(Timestamp,
+                                                        this,
+                                                        EventTrackingId,
+                                                        Id,
+                                                        ChargingStationId,
+                                                        ChargingProductId,
+                                                        ReservationId,
+                                                        SessionId,
+                                                        ProviderId,
+                                                        eMAId,
+                                                        QueryTimeout,
+                                                        result);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnRemoteChargingStationStarted));
+            }
 
             #endregion
 
@@ -3224,40 +3292,8 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (internal) SendNewChargingSession(Timestamp, Sender, ChargingSession)
 
-        internal void SendNewChargingSession(DateTime         Timestamp,
-                                             Object           Sender,
-                                             ChargingSession  ChargingSession)
-        {
-
-            var OnNewChargingSessionLocal = OnNewChargingSession;
-            if (OnNewChargingSessionLocal != null)
-                OnNewChargingSessionLocal(Timestamp, Sender, ChargingSession);
-
-        }
-
-        #endregion
-
-
-        #region ChargeDetailRecords
-
-        private readonly ConcurrentDictionary<ChargingSession_Id, ChargeDetailRecord> _ChargeDetailRecords;
-
-        /// <summary>
-        /// Return all current charge detail records.
-        /// </summary>
-        public IEnumerable<ChargeDetailRecord> ChargeDetailRecords
-        {
-            get
-            {
-                return _ChargeDetailRecords.Select(kvp => kvp.Value);
-            }
-        }
-
-        #endregion
-
-        #region OnRemote...Stop / OnRemote...Stopped / OnNewChargeDetailRecord
+        #region OnRemote...Stop / OnRemote...Stopped
 
         /// <summary>
         /// An event fired whenever a remote stop command was received.
@@ -3288,11 +3324,6 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever a remote stop charging station command completed.
         /// </summary>
         public event OnRemoteChargingStationStoppedDelegate  OnRemoteChargingStationStopped;
-
-        /// <summary>
-        /// An event fired whenever a new charge detail record was created.
-        /// </summary>
-        public event OnNewChargeDetailRecordDelegate         OnNewChargeDetailRecord;
 
         #endregion
 
@@ -3335,16 +3366,25 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStop event
 
-            var OnRemoteStopLocal = OnRemoteStop;
-            if (OnRemoteStopLocal != null)
-                OnRemoteStopLocal(this,
-                                  Timestamp,
-                                  EventTrackingId,
-                                  Id,
-                                  SessionId,
-                                  ReservationHandling,
-                                  ProviderId,
-                                  QueryTimeout);
+            try
+            {
+
+                var OnRemoteStopLocal = OnRemoteStop;
+                if (OnRemoteStopLocal != null)
+                    OnRemoteStopLocal(this,
+                                      Timestamp,
+                                      EventTrackingId,
+                                      Id,
+                                      SessionId,
+                                      ReservationHandling,
+                                      ProviderId,
+                                      QueryTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnRemoteStop));
+            }
 
             #endregion
 
@@ -3374,17 +3414,26 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopped event
 
-            var OnRemoteStoppedLocal = OnRemoteStopped;
-            if (OnRemoteStoppedLocal != null)
-                OnRemoteStoppedLocal(this,
-                                     Timestamp,
-                                     EventTrackingId,
-                                     Id,
-                                     SessionId,
-                                     ReservationHandling,
-                                     ProviderId,
-                                     QueryTimeout,
-                                     result);
+            try
+            {
+
+                var OnRemoteStoppedLocal = OnRemoteStopped;
+                if (OnRemoteStoppedLocal != null)
+                    OnRemoteStoppedLocal(this,
+                                         Timestamp,
+                                         EventTrackingId,
+                                         Id,
+                                         SessionId,
+                                         ReservationHandling,
+                                         ProviderId,
+                                         QueryTimeout,
+                                         result);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnRemoteStopped));
+            }
 
             #endregion
 
@@ -3438,17 +3487,26 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStop event
 
-            var OnRemoteEVSEStopLocal = OnRemoteEVSEStop;
-            if (OnRemoteEVSEStopLocal != null)
-                OnRemoteEVSEStopLocal(this,
-                                      Timestamp,
-                                      EventTrackingId,
-                                      Id,
-                                      EVSEId,
-                                      SessionId,
-                                      ReservationHandling,
-                                      ProviderId,
-                                      QueryTimeout);
+            try
+            {
+
+                var OnRemoteEVSEStopLocal = OnRemoteEVSEStop;
+                if (OnRemoteEVSEStopLocal != null)
+                    OnRemoteEVSEStopLocal(this,
+                                          Timestamp,
+                                          EventTrackingId,
+                                          Id,
+                                          EVSEId,
+                                          SessionId,
+                                          ReservationHandling,
+                                          ProviderId,
+                                          QueryTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnRemoteEVSEStop));
+            }
 
             #endregion
 
@@ -3489,18 +3547,27 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStopped event
 
-            var OnRemoteEVSEStoppedLocal = OnRemoteEVSEStopped;
-            if (OnRemoteEVSEStoppedLocal != null)
-                OnRemoteEVSEStoppedLocal(this,
-                                         Timestamp,
-                                         EventTrackingId,
-                                         Id,
-                                         EVSEId,
-                                         SessionId,
-                                         ReservationHandling,
-                                         ProviderId,
-                                         QueryTimeout,
-                                         result);
+            try
+            {
+
+                var OnRemoteEVSEStoppedLocal = OnRemoteEVSEStopped;
+                if (OnRemoteEVSEStoppedLocal != null)
+                    OnRemoteEVSEStoppedLocal(this,
+                                             Timestamp,
+                                             EventTrackingId,
+                                             Id,
+                                             EVSEId,
+                                             SessionId,
+                                             ReservationHandling,
+                                             ProviderId,
+                                             QueryTimeout,
+                                             result);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnRemoteEVSEStopped));
+            }
 
             #endregion
 
@@ -3554,17 +3621,26 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStop event
 
-            var OnRemoteChargingStationStopLocal = OnRemoteChargingStationStop;
-            if (OnRemoteChargingStationStopLocal != null)
-                OnRemoteChargingStationStopLocal(this,
-                                                 Timestamp,
-                                                 EventTrackingId,
-                                                 Id,
-                                                 ChargingStationId,
-                                                 SessionId,
-                                                 ReservationHandling,
-                                                 ProviderId,
-                                                 QueryTimeout);
+            try
+            {
+
+                var OnRemoteChargingStationStopLocal = OnRemoteChargingStationStop;
+                if (OnRemoteChargingStationStopLocal != null)
+                    OnRemoteChargingStationStopLocal(this,
+                                                     Timestamp,
+                                                     EventTrackingId,
+                                                     Id,
+                                                     ChargingStationId,
+                                                     SessionId,
+                                                     ReservationHandling,
+                                                     ProviderId,
+                                                     QueryTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnRemoteChargingStationStop));
+            }
 
             #endregion
 
@@ -3595,18 +3671,27 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStopped event
 
-            var OnRemoteChargingStationStoppedLocal = OnRemoteChargingStationStopped;
-            if (OnRemoteChargingStationStoppedLocal != null)
-                OnRemoteChargingStationStoppedLocal(this,
-                                                    Timestamp,
-                                                    EventTrackingId,
-                                                    Id,
-                                                    ChargingStationId,
-                                                    SessionId,
-                                                    ReservationHandling,
-                                                    ProviderId,
-                                                    QueryTimeout,
-                                                    result);
+            try
+            {
+
+                var OnRemoteChargingStationStoppedLocal = OnRemoteChargingStationStopped;
+                if (OnRemoteChargingStationStoppedLocal != null)
+                    OnRemoteChargingStationStoppedLocal(this,
+                                                        Timestamp,
+                                                        EventTrackingId,
+                                                        Id,
+                                                        ChargingStationId,
+                                                        SessionId,
+                                                        ReservationHandling,
+                                                        ProviderId,
+                                                        QueryTimeout,
+                                                        result);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnRemoteChargingStationStopped));
+            }
 
             #endregion
 
@@ -3616,28 +3701,11 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (internal) SendNewChargeDetailRecord(Timestamp, Sender, ChargeDetailRecord)
-
-        internal void SendNewChargeDetailRecord(DateTime            Timestamp,
-                                                Object              Sender,
-                                                ChargeDetailRecord  ChargeDetailRecord)
-        {
-
-            _ChargeDetailRecords.TryAdd(ChargeDetailRecord.SessionId, ChargeDetailRecord);
-
-            var OnNewChargeDetailRecordLocal = OnNewChargeDetailRecord;
-            if (OnNewChargeDetailRecordLocal != null)
-                OnNewChargeDetailRecordLocal(Timestamp, Sender, ChargeDetailRecord);
-
-        }
-
-        #endregion
-
         #endregion
 
         #region AuthorizeStart/-Stop
 
-        #region AuthorizeStart(Timestamp, CancellationToken, OperatorId, AuthToken, ChargingProductId = null, SessionId = null)
+        #region AuthorizeStart(...OperatorId, AuthToken, ChargingProductId = null, SessionId = null, ...)
 
         /// <summary>
         /// Create an authorize start request.
@@ -3649,7 +3717,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
-        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public async Task<AuthStartResult>
 
             AuthorizeStart(DateTime            Timestamp,
@@ -3675,17 +3743,26 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeStart event
 
-            var OnAuthorizeStartLocal = OnAuthorizeStart;
-            if (OnAuthorizeStartLocal != null)
-                OnAuthorizeStartLocal(Timestamp,
-                                      this,
-                                      EventTrackingId,
-                                      Id,
-                                      OperatorId,
-                                      AuthToken,
-                                      ChargingProductId,
-                                      SessionId,
-                                      QueryTimeout);
+            try
+            {
+
+                var OnAuthorizeStartLocal = OnAuthorizeStart;
+                if (OnAuthorizeStartLocal != null)
+                    OnAuthorizeStartLocal(Timestamp,
+                                          this,
+                                          EventTrackingId,
+                                          Id,
+                                          OperatorId,
+                                          AuthToken,
+                                          ChargingProductId,
+                                          SessionId,
+                                          QueryTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnAuthorizeStart));
+            }
 
             #endregion
 
@@ -3793,18 +3870,27 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeStarted event
 
-            var OnAuthorizeStartedLocal = OnAuthorizeStarted;
-            if (OnAuthorizeStartedLocal != null)
-                OnAuthorizeStartedLocal(Timestamp,
-                                        this,
-                                        EventTrackingId,
-                                        Id,
-                                        OperatorId,
-                                        AuthToken,
-                                        ChargingProductId,
-                                        SessionId,
-                                        QueryTimeout,
-                                        result);
+            try
+            {
+
+                var OnAuthorizeStartedLocal = OnAuthorizeStarted;
+                if (OnAuthorizeStartedLocal != null)
+                    OnAuthorizeStartedLocal(Timestamp,
+                                            this,
+                                            EventTrackingId,
+                                            Id,
+                                            OperatorId,
+                                            AuthToken,
+                                            ChargingProductId,
+                                            SessionId,
+                                            QueryTimeout,
+                                            result);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnAuthorizeStarted));
+            }
 
             #endregion
 
@@ -3814,19 +3900,20 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStart(Timestamp, CancellationToken, OperatorId, AuthToken, EVSEId, ChargingProductId = null, SessionId = null)
+        #region AuthorizeStart(...OperatorId, AuthToken, EVSEId, ChargingProductId = null, SessionId = null, ...)
 
         /// <summary>
         /// Create an authorize start request at the given EVSE.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
-        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public async Task<AuthStartEVSEResult>
 
             AuthorizeStart(DateTime            Timestamp,
@@ -3856,18 +3943,27 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeEVSEStart event
 
-            var OnAuthorizeEVSEStartLocal = OnAuthorizeEVSEStart;
-            if (OnAuthorizeEVSEStartLocal != null)
-                OnAuthorizeEVSEStartLocal(Timestamp,
-                                          this,
-                                          EventTrackingId,
-                                          Id,
-                                          OperatorId,
-                                          AuthToken,
-                                          EVSEId,
-                                          ChargingProductId,
-                                          SessionId,
-                                          QueryTimeout);
+            try
+            {
+
+                var OnAuthorizeEVSEStartLocal = OnAuthorizeEVSEStart;
+                if (OnAuthorizeEVSEStartLocal != null)
+                    OnAuthorizeEVSEStartLocal(Timestamp,
+                                              this,
+                                              EventTrackingId,
+                                              Id,
+                                              OperatorId,
+                                              AuthToken,
+                                              EVSEId,
+                                              ChargingProductId,
+                                              SessionId,
+                                              QueryTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnAuthorizeEVSEStart));
+            }
 
             #endregion
 
@@ -3979,19 +4075,28 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeEVSEStarted event
 
-            var OnAuthorizeEVSEStartedLocal = OnAuthorizeEVSEStarted;
-            if (OnAuthorizeEVSEStartedLocal != null)
-                OnAuthorizeEVSEStartedLocal(Timestamp,
-                                            this,
-                                            EventTrackingId,
-                                            Id,
-                                            OperatorId,
-                                            AuthToken,
-                                            EVSEId,
-                                            ChargingProductId,
-                                            SessionId,
-                                            QueryTimeout,
-                                            result);
+            try
+            {
+
+                var OnAuthorizeEVSEStartedLocal = OnAuthorizeEVSEStarted;
+                if (OnAuthorizeEVSEStartedLocal != null)
+                    OnAuthorizeEVSEStartedLocal(Timestamp,
+                                                this,
+                                                EventTrackingId,
+                                                Id,
+                                                OperatorId,
+                                                AuthToken,
+                                                EVSEId,
+                                                ChargingProductId,
+                                                SessionId,
+                                                QueryTimeout,
+                                                result);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnAuthorizeEVSEStarted));
+            }
 
             #endregion
 
@@ -4001,19 +4106,20 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStart(Timestamp, CancellationToken, OperatorId, AuthToken, ChargingStationId, ChargingProductId = null, SessionId = null)
+        #region AuthorizeStart(...OperatorId, AuthToken, ChargingStationId, ChargingProductId = null, SessionId = null, ...)
 
         /// <summary>
         /// Create an authorize start request at the given charging station.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="ChargingStationId">The unique identification charging station.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
-        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public async Task<AuthStartChargingStationResult>
 
             AuthorizeStart(DateTime            Timestamp,
@@ -4043,18 +4149,27 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeChargingStationStart event
 
-            var OnAuthorizeChargingStationStartLocal = OnAuthorizeChargingStationStart;
-            if (OnAuthorizeChargingStationStartLocal != null)
-                OnAuthorizeChargingStationStartLocal(Timestamp,
-                                                     this,
-                                                     EventTrackingId,
-                                                     Id,
-                                                     OperatorId,
-                                                     AuthToken,
-                                                     ChargingStationId,
-                                                     ChargingProductId,
-                                                     SessionId,
-                                                     QueryTimeout);
+            try
+            {
+
+                var OnAuthorizeChargingStationStartLocal = OnAuthorizeChargingStationStart;
+                if (OnAuthorizeChargingStationStartLocal != null)
+                    OnAuthorizeChargingStationStartLocal(Timestamp,
+                                                         this,
+                                                         EventTrackingId,
+                                                         Id,
+                                                         OperatorId,
+                                                         AuthToken,
+                                                         ChargingStationId,
+                                                         ChargingProductId,
+                                                         SessionId,
+                                                         QueryTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnAuthorizeChargingStationStart));
+            }
 
             #endregion
 
@@ -4166,19 +4281,28 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeChargingStationStarted event
 
-            var OnAuthorizeChargingStationStartedLocal = OnAuthorizeChargingStationStarted;
-            if (OnAuthorizeChargingStationStartedLocal != null)
-                OnAuthorizeChargingStationStartedLocal(Timestamp,
-                                                       this,
-                                                       EventTrackingId,
-                                                       Id,
-                                                       OperatorId,
-                                                       AuthToken,
-                                                       ChargingStationId,
-                                                       ChargingProductId,
-                                                       SessionId,
-                                                       QueryTimeout,
-                                                       result);
+            try
+            {
+
+                var OnAuthorizeChargingStationStartedLocal = OnAuthorizeChargingStationStarted;
+                if (OnAuthorizeChargingStationStartedLocal != null)
+                    OnAuthorizeChargingStationStartedLocal(Timestamp,
+                                                           this,
+                                                           EventTrackingId,
+                                                           Id,
+                                                           OperatorId,
+                                                           AuthToken,
+                                                           ChargingStationId,
+                                                           ChargingProductId,
+                                                           SessionId,
+                                                           QueryTimeout,
+                                                           result);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnAuthorizeChargingStationStarted));
+            }
 
             #endregion
 
@@ -4233,17 +4357,18 @@ namespace org.GraphDefined.WWCP
 
 
 
-        #region AuthorizeStop(Timestamp, CancellationToken, OperatorId, SessionId, AuthToken)
+        #region AuthorizeStop(...OperatorId, SessionId, AuthToken, ...)
 
         /// <summary>
         /// Create an authorize stop request.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public async Task<AuthStopResult>
 
             AuthorizeStop(DateTime            Timestamp,
@@ -4271,16 +4396,25 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeStop event
 
-            var OnAuthorizeStopLocal = OnAuthorizeStop;
-            if (OnAuthorizeStopLocal != null)
-                OnAuthorizeStopLocal(Timestamp,
-                                     this,
-                                     EventTrackingId,
-                                     Id,
-                                     OperatorId,
-                                     SessionId,
-                                     AuthToken,
-                                     QueryTimeout);
+            try
+            {
+
+                var OnAuthorizeStopLocal = OnAuthorizeStop;
+                if (OnAuthorizeStopLocal != null)
+                    OnAuthorizeStopLocal(Timestamp,
+                                         this,
+                                         EventTrackingId,
+                                         Id,
+                                         OperatorId,
+                                         SessionId,
+                                         AuthToken,
+                                         QueryTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnAuthorizeStop));
+            }
 
             #endregion
 
@@ -4371,17 +4505,26 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeStopped event
 
-            var OnAuthorizeStoppedLocal = OnAuthorizeStopped;
-            if (OnAuthorizeStoppedLocal != null)
-                OnAuthorizeStoppedLocal(Timestamp,
-                                        this,
-                                        EventTrackingId,
-                                        Id,
-                                        OperatorId,
-                                        SessionId,
-                                        AuthToken,
-                                        QueryTimeout,
-                                        result);
+            try
+            {
+
+                var OnAuthorizeStoppedLocal = OnAuthorizeStopped;
+                if (OnAuthorizeStoppedLocal != null)
+                    OnAuthorizeStoppedLocal(Timestamp,
+                                            this,
+                                            EventTrackingId,
+                                            Id,
+                                            OperatorId,
+                                            SessionId,
+                                            AuthToken,
+                                            QueryTimeout,
+                                            result);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnAuthorizeStopped));
+            }
 
             #endregion
 
@@ -4391,18 +4534,19 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStop(Timestamp, CancellationToken, OperatorId, SessionId, AuthToken, EVSEId)
+        #region AuthorizeStop(...OperatorId, SessionId, AuthToken, EVSEId, ...)
 
         /// <summary>
         /// Create an authorize stop request at the given EVSE.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public async Task<AuthStopEVSEResult>
 
             AuthorizeStop(DateTime            Timestamp,
@@ -4434,17 +4578,26 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeEVSEStop event
 
-            var OnAuthorizeEVSEStopLocal = OnAuthorizeEVSEStop;
-            if (OnAuthorizeEVSEStopLocal != null)
-                OnAuthorizeEVSEStopLocal(Timestamp,
-                                         this,
-                                         EventTrackingId,
-                                         Id,
-                                         OperatorId,
-                                         EVSEId,
-                                         SessionId,
-                                         AuthToken,
-                                         QueryTimeout);
+            try
+            {
+
+                var OnAuthorizeEVSEStopLocal = OnAuthorizeEVSEStop;
+                if (OnAuthorizeEVSEStopLocal != null)
+                    OnAuthorizeEVSEStopLocal(Timestamp,
+                                             this,
+                                             EventTrackingId,
+                                             Id,
+                                             OperatorId,
+                                             EVSEId,
+                                             SessionId,
+                                             AuthToken,
+                                             QueryTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnAuthorizeEVSEStop));
+            }
 
             #endregion
 
@@ -4539,18 +4692,27 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeEVSEStopped event
 
-            var OnAuthorizeEVSEStoppedLocal = OnAuthorizeEVSEStopped;
-            if (OnAuthorizeEVSEStoppedLocal != null)
-                OnAuthorizeEVSEStoppedLocal(Timestamp,
-                                            this,
-                                            EventTrackingId,
-                                            Id,
-                                            OperatorId,
-                                            EVSEId,
-                                            SessionId,
-                                            AuthToken,
-                                            QueryTimeout,
-                                            result);
+            try
+            {
+
+                var OnAuthorizeEVSEStoppedLocal = OnAuthorizeEVSEStopped;
+                if (OnAuthorizeEVSEStoppedLocal != null)
+                    OnAuthorizeEVSEStoppedLocal(Timestamp,
+                                                this,
+                                                EventTrackingId,
+                                                Id,
+                                                OperatorId,
+                                                EVSEId,
+                                                SessionId,
+                                                AuthToken,
+                                                QueryTimeout,
+                                                result);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnAuthorizeEVSEStopped));
+            }
 
             #endregion
 
@@ -4560,18 +4722,19 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStop(Timestamp, CancellationToken, OperatorId, SessionId, AuthToken, EVSEId = null)
+        #region AuthorizeStop(...OperatorId, SessionId, AuthToken, EVSEId = null, ...)
 
         /// <summary>
         /// Create an authorize stop request at the given charging station.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="OperatorId">An EVSE operator identification.</param>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="ChargingStationId">The unique identification of a charging station.</param>
-        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public async Task<AuthStopChargingStationResult>
 
             AuthorizeStop(DateTime            Timestamp,
@@ -4603,17 +4766,26 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeChargingStationStop event
 
-            var OnAuthorizeChargingStationStopLocal = OnAuthorizeChargingStationStop;
-            if (OnAuthorizeChargingStationStopLocal != null)
-                OnAuthorizeChargingStationStopLocal(Timestamp,
-                                                    this,
-                                                    EventTrackingId,
-                                                    Id,
-                                                    OperatorId,
-                                                    ChargingStationId,
-                                                    SessionId,
-                                                    AuthToken,
-                                                    QueryTimeout);
+            try
+            {
+
+                var OnAuthorizeChargingStationStopLocal = OnAuthorizeChargingStationStop;
+                if (OnAuthorizeChargingStationStopLocal != null)
+                    OnAuthorizeChargingStationStopLocal(Timestamp,
+                                                        this,
+                                                        EventTrackingId,
+                                                        Id,
+                                                        OperatorId,
+                                                        ChargingStationId,
+                                                        SessionId,
+                                                        AuthToken,
+                                                        QueryTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnAuthorizeChargingStationStop));
+            }
 
             #endregion
 
@@ -4708,18 +4880,27 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeChargingStationStopped event
 
-            var OnAuthorizeChargingStationStoppedLocal = OnAuthorizeChargingStationStopped;
-            if (OnAuthorizeChargingStationStoppedLocal != null)
-                OnAuthorizeChargingStationStoppedLocal(Timestamp,
-                                                       this,
-                                                       EventTrackingId,
-                                                       Id,
-                                                       OperatorId,
-                                                       ChargingStationId,
-                                                       SessionId,
-                                                       AuthToken,
-                                                       QueryTimeout,
-                                                       result);
+            try
+            {
+
+                var OnAuthorizeChargingStationStoppedLocal = OnAuthorizeChargingStationStopped;
+                if (OnAuthorizeChargingStationStoppedLocal != null)
+                    OnAuthorizeChargingStationStoppedLocal(Timestamp,
+                                                           this,
+                                                           EventTrackingId,
+                                                           Id,
+                                                           OperatorId,
+                                                           ChargingStationId,
+                                                           SessionId,
+                                                           AuthToken,
+                                                           QueryTimeout,
+                                                           result);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnAuthorizeChargingStationStopped));
+            }
 
             #endregion
 
@@ -4776,44 +4957,123 @@ namespace org.GraphDefined.WWCP
 
         #region Charging Sessions / Charge Detail Records...
 
-        #region SendChargeDetailRecord(EVSEId, ChargingSessionId, ChargingProductId, SessionStart, SessionEnd, AuthToken = null, eMAId = null, ..., QueryTimeout = null)
+        #region ChargingSessions
+
+        private readonly ConcurrentDictionary<ChargingSession_Id, ChargingSession> _ChargingSessions;
 
         /// <summary>
-        /// Create a SendChargeDetailRecord request.
+        /// Return all current charging sessions.
         /// </summary>
+        public IEnumerable<ChargingSession> ChargingSessions
+        {
+            get
+            {
+                return _ChargingSessions.Select(kvp => kvp.Value);
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// An event fired whenever a new charging session was created.
+        /// </summary>
+        public event OnNewChargingSessionDelegate OnNewChargingSession;
+
+        #region (internal) SendNewChargingSession(Timestamp, Sender, ChargingSession)
+
+        internal void SendNewChargingSession(DateTime         Timestamp,
+                                             Object           Sender,
+                                             ChargingSession  ChargingSession)
+        {
+
+            var OnNewChargingSessionLocal = OnNewChargingSession;
+            if (OnNewChargingSessionLocal != null)
+                OnNewChargingSessionLocal(Timestamp, Sender, ChargingSession);
+
+        }
+
+        #endregion
+
+
+        #region ChargeDetailRecords
+
+        private readonly ConcurrentDictionary<ChargingSession_Id, ChargeDetailRecord> _ChargeDetailRecords;
+
+        /// <summary>
+        /// Return all current charge detail records.
+        /// </summary>
+        public IEnumerable<ChargeDetailRecord> ChargeDetailRecords
+        {
+            get
+            {
+                return _ChargeDetailRecords.Select(kvp => kvp.Value);
+            }
+        }
+
+        #endregion
+
+        #region OnSendCDR / OnCDRSent
+
+        /// <summary>
+        /// An event fired whenever a charge detail record was received.
+        /// </summary>
+        public event OnChargeDetailRecordSendDelegate OnSendCDR;
+
+        /// <summary>
+        /// An event fired whenever a charge detail record result was sent.
+        /// </summary>
+        public event OnChargeDetailRecordSentDelegate OnCDRSent;
+
+        #endregion
+
+        ///// <summary>
+        ///// An event fired whenever a new charge detail record was created.
+        ///// </summary>
+        //public event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord;
+
+
+        #region OnFilterCDRRecords
+
+        public delegate SendCDRResult OnFilterCDRRecordsDelegate(Authorizator_Id AuthorizatorId, AuthInfo AuthInfo);
+
+        /// <summary>
+        /// An event fired whenever a CDR needs to be filtered.
+        /// </summary>
+        public event OnFilterCDRRecordsDelegate OnFilterCDRRecords;
+
+        #endregion
+
+        #region SendChargeDetailRecord(...EVSEId, ChargingSessionId, ChargingProductId, SessionStart, SessionEnd, AuthInfo, ...)
+
+        /// <summary>
+        /// Send a charge detail record.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="EVSEId">An EVSE identification.</param>
         /// <param name="ChargingSessionId">The session identification from the Authorize Start request.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionStart">The timestamp of the session start.</param>
         /// <param name="SessionEnd">The timestamp of the session end.</param>
         /// <param name="AuthInfo">An optional ev customer or e-Mobility account identification.</param>
-        /// <param name="ChargingStart">An optional charging start timestamp.</param>
-        /// <param name="ChargingEnd">An optional charging end timestamp.</param>
-        /// <param name="MeterValueStart">An optional initial value of the energy meter.</param>
-        /// <param name="MeterValueEnd">An optional final value of the energy meter.</param>
-        /// <param name="MeterValuesInBetween">An optional enumeration of meter values during the charging session.</param>
-        /// <param name="ConsumedEnergy">The optional amount of consumed energy.</param>
+        /// <param name="MeterValues">An optional enumeration of meter values during the charging session.</param>
         /// <param name="MeteringSignature">An optional signature for the metering values.</param>
-        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public async Task<SendCDRResult>
 
-            SendChargeDetailRecord(DateTime             Timestamp,
-                                   CancellationToken    CancellationToken,
-                                   EventTracking_Id     EventTrackingId,
-                                   EVSE_Id              EVSEId,
-                                   ChargingSession_Id   ChargingSessionId,
-                                   ChargingProduct_Id   ChargingProductId,
-                                   DateTime             SessionStart,
-                                   DateTime             SessionEnd,
-                                   AuthInfo             AuthInfo,
-                                   DateTime?            ChargingStart         = null,
-                                   DateTime?            ChargingEnd           = null,
-                                   Double?              MeterValueStart       = null,
-                                   Double?              MeterValueEnd         = null,
-                                   IEnumerable<Double>  MeterValuesInBetween  = null,
-                                   Double?              ConsumedEnergy        = null,
-                                   String               MeteringSignature     = null,
-                                   TimeSpan?            QueryTimeout          = null)
+            SendChargeDetailRecord(DateTime                          Timestamp,
+                                   CancellationToken                 CancellationToken,
+                                   EventTracking_Id                  EventTrackingId,
+                                   EVSE_Id                           EVSEId,
+                                   ChargingSession_Id                ChargingSessionId,
+                                   ChargingProduct_Id                ChargingProductId,
+                                   DateTime                          SessionStart,
+                                   DateTime                          SessionEnd,
+                                   AuthInfo                          AuthInfo,
+                                   IEnumerable<Timestamped<Double>>  MeterValues        = null,
+                                   String                            MeteringSignature  = null,
+                                   TimeSpan?                         QueryTimeout       = null)
 
         {
 
@@ -4842,15 +5102,32 @@ namespace org.GraphDefined.WWCP
             return await SendChargeDetailRecord(Timestamp,
                                                 CancellationToken,
                                                 EventTrackingId,
-                                                new ChargeDetailRecord(ChargingSessionId),
+                                                new ChargeDetailRecord(SessionId:          ChargingSessionId,
+                                                                       EVSEId:             EVSEId,
+                                                                       ChargingProductId:  ChargingProductId,
+                                                                       SessionTime:        new StartEndDateTime(SessionStart, SessionEnd),
+                                                                       Identification:     AuthInfo,
+                                                                       //ChargingTime:       new StartEndDateTime(ChargingStart.Value, ChargingEnd.Value),
+                                                                       EnergyMeterValues:  MeterValues,
+                                                                       //ConsumedEnergy
+                                                                       MeteringSignature:  MeteringSignature),
+
                                                 QueryTimeout);
 
         }
 
         #endregion
 
-        #region SendChargeDetailRecord(ChargeDetailRecord, QueryTimeout = null)
+        #region SendChargeDetailRecord(...ChargeDetailRecord, ...)
 
+        /// <summary>
+        /// Send a charge detail record.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="ChargeDetailRecord"></param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public async Task<SendCDRResult>
 
             SendChargeDetailRecord(DateTime            Timestamp,
@@ -4870,14 +5147,23 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnSendCDR event
 
-            var OnSendCDRLocal = OnSendCDR;
-            if (OnSendCDRLocal != null)
-                OnSendCDRLocal(DateTime.Now,
-                               this,
-                               EventTrackingId,
-                               this.Id,
-                               ChargeDetailRecord,
-                               QueryTimeout);
+            try
+            {
+
+                var OnSendCDRLocal = OnSendCDR;
+                if (OnSendCDRLocal != null)
+                    OnSendCDRLocal(DateTime.Now,
+                                   this,
+                                   EventTrackingId,
+                                   this.Id,
+                                   ChargeDetailRecord,
+                                   QueryTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnSendCDR));
+            }
 
             #endregion
 
@@ -4984,15 +5270,24 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnCDRSent event
 
-            var OnCDRSentLocal = OnCDRSent;
-            if (OnCDRSentLocal != null)
-                OnCDRSentLocal(DateTime.Now,
-                               this,
-                               EventTrackingId,
-                               this.Id,
-                               ChargeDetailRecord,
-                               QueryTimeout,
-                               result);
+            try
+            {
+
+                var OnCDRSentLocal = OnCDRSent;
+                if (OnCDRSentLocal != null)
+                    OnCDRSentLocal(DateTime.Now,
+                                   this,
+                                   EventTrackingId,
+                                   this.Id,
+                                   ChargeDetailRecord,
+                                   QueryTimeout,
+                                   result);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("RoamingNetwork." + nameof(OnCDRSent));
+            }
 
             #endregion
 
@@ -5002,29 +5297,25 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (internal) SendNewChargeDetailRecord(Timestamp, Sender, ChargeDetailRecord)
 
-        #region OnSendCDR / OnCDRSent
+        internal void SendNewChargeDetailRecord(DateTime            Timestamp,
+                                                Object              Sender,
+                                                ChargeDetailRecord  ChargeDetailRecord)
+        {
 
-        /// <summary>
-        /// An event fired whenever a charge detail record was received.
-        /// </summary>
-        public event OnChargeDetailRecordSendDelegate OnSendCDR;
+            _ChargeDetailRecords.TryAdd(ChargeDetailRecord.SessionId, ChargeDetailRecord);
 
-        /// <summary>
-        /// An event fired whenever a charge detail record result was sent.
-        /// </summary>
-        public event OnChargeDetailRecordSentDelegate OnCDRSent;
+            var OnNewChargeDetailRecordLocal = OnSendCDR;
+            if (OnNewChargeDetailRecordLocal != null)
+                OnNewChargeDetailRecordLocal(Timestamp,
+                                             Sender,
+                                             EventTracking_Id.New,
+                                             this.Id,
+                                             ChargeDetailRecord,
+                                             TimeSpan.FromMinutes(1));
 
-        #endregion
-
-        #region OnFilterCDRRecords
-
-        public delegate SendCDRResult OnFilterCDRRecordsDelegate(Authorizator_Id AuthorizatorId, AuthInfo AuthInfo);
-
-        /// <summary>
-        /// An event fired whenever a CDR needs to be filtered.
-        /// </summary>
-        public event OnFilterCDRRecordsDelegate OnFilterCDRRecords;
+        }
 
         #endregion
 

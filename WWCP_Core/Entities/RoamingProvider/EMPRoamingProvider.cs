@@ -169,9 +169,60 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
+
             this._eMobilityRoamingService  = eMobilityRoamingService;
 
+
+            #region Link AuthorizeStart/-Stop and SendCDR to the roaming network
+
+            this.OnAuthorizeStartEVSE += (Timestamp,
+                                          CancellationToken,
+                                          EventTrackingId,
+                                          OperatorId,
+                                          AuthToken,
+                                          EVSEId,
+                                          ChargingProductId,
+                                          SessionId,
+                                          QueryTimeout) => RoamingNetwork.AuthorizeStart(Timestamp,
+                                                                                         CancellationToken,
+                                                                                         EventTrackingId,
+                                                                                         OperatorId,
+                                                                                         AuthToken,
+                                                                                         EVSEId,
+                                                                                         ChargingProductId,
+                                                                                         SessionId,
+                                                                                         QueryTimeout);
+
+            this.OnAuthorizeStopEVSE += (Timestamp,
+                                         CancellationToken,
+                                         EventTrackingId,
+                                         OperatorId,
+                                         EVSEId,
+                                         SessionId,
+                                         AuthToken,
+                                         QueryTimeout) => RoamingNetwork.AuthorizeStop(Timestamp,
+                                                                                       CancellationToken,
+                                                                                       EventTrackingId,
+                                                                                       OperatorId,
+                                                                                       SessionId,
+                                                                                       AuthToken,
+                                                                                       EVSEId,
+                                                                                       QueryTimeout);
+
+            this.OnChargeDetailRecord += (Timestamp,
+                                          CancellationToken,
+                                          EventTrackingId,
+                                          ChargeDetailRecord,
+                                          QueryTimeout) => RoamingNetwork.SendChargeDetailRecord(Timestamp,
+                                                                                                 CancellationToken,
+                                                                                                 EventTrackingId,
+                                                                                                 ChargeDetailRecord,
+                                                                                                 QueryTimeout);
+
+            #endregion
+
         }
+
 
         #endregion
 

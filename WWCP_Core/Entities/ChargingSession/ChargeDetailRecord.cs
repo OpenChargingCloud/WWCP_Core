@@ -231,21 +231,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChargingTime
-
-        private readonly StartEndDateTime? _ChargingTime;
-
-        [Mandatory]
-        public StartEndDateTime? ChargingTime
-        {
-            get
-            {
-                return _ChargingTime;
-            }
-        }
-
-        #endregion
-
 
         #region EnergyMeterId
 
@@ -278,26 +263,6 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return _EnergyMeterValues;
-            }
-        }
-
-        #endregion
-
-        #region ConsumedEnergy
-
-        /// <summary>
-        /// The current amount of energy consumed while charging in [kWh].
-        /// </summary>
-        [Mandatory]
-        public Double ConsumedEnergy
-        {
-            get
-            {
-
-                return _EnergyMeterValues.
-                           Select(metervalue => metervalue.Value).
-                           Sum() / 1000;
-
             }
         }
 
@@ -356,7 +321,6 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationTime">Optional timestamps when the reservation started and ended.</param>
         /// <param name="ParkingTime">Optional timestamps when the parking started and ended.</param>
         /// <param name="SessionTime">Optional timestamps when the charging session started and ended.</param>
-        /// <param name="ChargingTime">Optional timestamps when the charging started and ended.</param>
         /// 
         /// <param name="EnergyMeterId">An optional unique identification of the energy meter.</param>
         /// <param name="EnergyMeterValues">An optional enumeration of intermediate energy meter values.</param>
@@ -378,7 +342,6 @@ namespace org.GraphDefined.WWCP
                                   StartEndDateTime?                 ReservationTime      = null,
                                   StartEndDateTime?                 ParkingTime          = null,
                                   StartEndDateTime?                 SessionTime          = null,
-                                  StartEndDateTime?                 ChargingTime         = null,
 
                                   EnergyMeter_Id                    EnergyMeterId        = null,
                                   IEnumerable<Timestamped<Double>>  EnergyMeterValues    = null,
@@ -408,7 +371,6 @@ namespace org.GraphDefined.WWCP
             this._ReservationTime      = ReservationTime;
             this._ParkingTime          = ParkingTime;
             this._SessionTime          = SessionTime;
-            this._ChargingTime         = ChargingTime;
 
             this._EnergyMeterId        = EnergyMeterId;
             this._EnergyMeterValues    = EnergyMeterValues != null ? EnergyMeterValues : new Timestamped<Double>[0];

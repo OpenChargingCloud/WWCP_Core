@@ -168,6 +168,20 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) Error(AuthorizatorId, Description = null)
+
+        public static SendCDRResult Error(Authorizator_Id  AuthorizatorId,
+                                          String           Description = null)
+        {
+
+            return new SendCDRResult(SendCDRResultType.Error,
+                                     AuthorizatorId,
+                                     Description);
+
+        }
+
+        #endregion
+
     }
 
 
@@ -182,7 +196,9 @@ namespace org.GraphDefined.WWCP
 
         UnknownEVSE,
 
-        OutOfService
+        OutOfService,
+
+        Error
 
     }
 

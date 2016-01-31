@@ -37,9 +37,21 @@ namespace org.GraphDefined.WWCP
                                       IOperatorRoamingService
     {
 
-        #region Data
+        #region Properties
+
+        #region OperatorRoamingService
 
         private readonly IOperatorRoamingService _OperatorRoamingService;
+
+        public IOperatorRoamingService OperatorRoamingService
+        {
+            get
+            {
+                return _OperatorRoamingService;
+            }
+        }
+
+        #endregion
 
         #endregion
 

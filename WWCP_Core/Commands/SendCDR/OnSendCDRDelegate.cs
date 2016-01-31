@@ -84,11 +84,11 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargeDetailRecord">A charge detail record.</param>
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate void OnChargeDetailRecordSendDelegate(DateTime            Timestamp,
-                                                        Object              Sender,
-                                                        EventTracking_Id    EventTrackingId,
-                                                        RoamingNetwork_Id   RoamingNetworkId,
-                                                        ChargeDetailRecord  ChargeDetailRecord,
-                                                        TimeSpan?           QueryTimeout);
+                                                          Object              Sender,
+                                                          EventTracking_Id    EventTrackingId,
+                                                          RoamingNetwork_Id   RoamingNetworkId,
+                                                          ChargeDetailRecord  ChargeDetailRecord,
+                                                          TimeSpan?           QueryTimeout);
 
 
     /// <summary>
@@ -102,12 +102,12 @@ namespace org.GraphDefined.WWCP
     /// <param name="Result">The authorize stop result.</param>
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     public delegate void OnChargeDetailRecordSentDelegate(DateTime            Timestamp,
-                                                        Object              Sender,
-                                                        EventTracking_Id    EventTrackingId,
-                                                        RoamingNetwork_Id   RoamingNetworkId,
-                                                        ChargeDetailRecord  ChargeDetailRecord,
-                                                        TimeSpan?           QueryTimeout,
-                                                        SendCDRResult       Result);
+                                                          Object              Sender,
+                                                          EventTracking_Id    EventTrackingId,
+                                                          RoamingNetwork_Id   RoamingNetworkId,
+                                                          ChargeDetailRecord  ChargeDetailRecord,
+                                                          TimeSpan?           QueryTimeout,
+                                                          SendCDRResult       Result);
 
 }
 
