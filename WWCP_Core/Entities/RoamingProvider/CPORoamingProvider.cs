@@ -454,7 +454,7 @@ namespace org.GraphDefined.WWCP
         /// Create an EVSE operator roaming provider.
         /// </summary>
         /// <param name="Id">The unique identification of the roaming provider.</param>
-        /// <param name="Name">The offical (multi-language) name of the roaming provider.
+        /// <param name="Name">The offical (multi-language) name of the roaming provider.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         /// <param name="OperatorRoamingService">The attached local or remote EVSE operator roaming service.</param>
         public CPORoamingProvider(RoamingProvider_Id       Id,

@@ -614,7 +614,7 @@ namespace org.GraphDefined.WWCP
 
         private readonly ConcurrentDictionary<UInt32, IOperatorRoamingService>   _OperatorRoamingServices;
         private readonly ConcurrentDictionary<UInt32, IeMobilityRoamingService>  _eMobilityRoamingServices;
-        private readonly ConcurrentDictionary<UInt32, IPushDataAndStatus>   _PushEVSEStatusToOperatorRoamingServices;
+        private readonly ConcurrentDictionary<UInt32, IPushDataAndStatus>        _PushEVSEStatusToOperatorRoamingServices;
 
         #region CPORoamingProviders
 
@@ -641,43 +641,46 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="OperatorRoamingService">The attached E-Mobility service.</param>
         /// <param name="Configurator">An optional delegate to configure the new roaming provider after its creation.</param>
-        public CPORoamingProvider CreateNewRoamingProvider(CPORoamingProvider          CPORoamingProvider)
-                                                           //Action<CPORoamingProvider>  Configurator = null)
+        public CPORoamingProvider CreateNewRoamingProvider(IOperatorRoamingService     OperatorRoamingService,
+                                                           Action<CPORoamingProvider>  Configurator = null)
         {
 
             #region Initial checks
 
-            if (CPORoamingProvider == null)
-                throw new ArgumentNullException(nameof(CPORoamingProvider),  "The given CPO roaming provider must not be null!");
+            if (OperatorRoamingService.Id == null)
+                throw new ArgumentNullException("OperatorRoamingService.Id",    "The given roaming provider identification must not be null!");
 
-            if (_CPORoamingProviders.ContainsKey(CPORoamingProvider.Id))
-                throw new RoamingProviderAlreadyExists(CPORoamingProvider.Id, this.Id);
+            if (OperatorRoamingService.Name.IsNullOrEmpty())
+                throw new ArgumentNullException("OperatorRoamingService.Name",  "The given roaming provider name must not be null or empty!");
 
-            if (CPORoamingProvider.RoamingNetworkId != this.Id)
-                throw new ArgumentException("The given CPO roaming provider is not part of this roaming network!", nameof(CPORoamingProvider));
+            if (_CPORoamingProviders.ContainsKey(OperatorRoamingService.Id))
+                throw new RoamingProviderAlreadyExists(OperatorRoamingService.Id, this.Id);
+
+            if (OperatorRoamingService.RoamingNetworkId != this.Id)
+                throw new ArgumentException("The given operator roaming service is not part of this roaming network!", "OperatorRoamingService");
 
             #endregion
 
-        //    var _RoamingProvider = new CPORoamingProvider(OperatorRoamingService.Id,
-        //                                                  OperatorRoamingService.Name,
-        //                                                  this,
-        //                                                  OperatorRoamingService);
+            var _CPORoamingProvider = new CPORoamingProvider(OperatorRoamingService.Id,
+                                                             OperatorRoamingService.Name,
+                                                             this,
+                                                             OperatorRoamingService);
 
-         //   Configurator.FailSafeInvoke(_RoamingProvider);
+            Configurator.FailSafeInvoke(_CPORoamingProvider);
 
-            if (CPORoamingProviderAddition.SendVoting(this, CPORoamingProvider))
+            if (CPORoamingProviderAddition.SendVoting(this, _CPORoamingProvider))
             {
-                if (_CPORoamingProviders.TryAdd(CPORoamingProvider.Id, CPORoamingProvider))
+                if (_CPORoamingProviders.TryAdd(OperatorRoamingService.Id, _CPORoamingProvider))
                 {
 
-                    CPORoamingProviderAddition.SendNotification(this, CPORoamingProvider);
+                    CPORoamingProviderAddition.SendNotification(this, _CPORoamingProvider);
 
-                    return CPORoamingProvider;
+                    return _CPORoamingProvider;
 
                 }
             }
 
-            throw new Exception("Could not create new roaming provider '" + CPORoamingProvider.Id + "'!");
+            throw new Exception("Could not create new roaming provider '" + OperatorRoamingService.Id + "'!");
 
         }
 
