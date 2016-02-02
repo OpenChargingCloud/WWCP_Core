@@ -3495,9 +3495,15 @@ namespace org.GraphDefined.WWCP
                 if (result.Result == RemoteStopEVSEResultType.Success)
                 {
 
-                    var OnNewChargeDetailRecordLocal = OnNewChargeDetailRecord;
-                    if (OnNewChargeDetailRecordLocal != null)
-                        OnNewChargeDetailRecordLocal(DateTime.Now, this, result.ChargeDetailRecord);
+                    // The CDR can also be send separately!
+                    if (result.ChargeDetailRecord != null)
+                    {
+
+                        var OnNewChargeDetailRecordLocal = OnNewChargeDetailRecord;
+                        if (OnNewChargeDetailRecordLocal != null)
+                            OnNewChargeDetailRecordLocal(DateTime.Now, this, result.ChargeDetailRecord);
+
+                    }
 
                 }
 

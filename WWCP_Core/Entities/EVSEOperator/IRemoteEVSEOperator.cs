@@ -40,17 +40,17 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever an EVSE is being reserved.
         /// </summary>
-        event OnReserveEVSEDelegate                 OnReserveEVSE;
+        event OnReserveEVSEDelegate         OnReserveEVSE;
 
         /// <summary>
         /// An event sent whenever an EVSE should start charging.
         /// </summary>
-        event OnRemoteStartEVSEDelegate             OnRemoteStartEVSE;
+        event OnRemoteStartEVSEDelegate     OnRemoteStartEVSE;
 
         /// <summary>
         /// An event sent whenever a charging session should stop.
         /// </summary>
-        event OnRemoteStopEVSEDelegate              OnRemoteStopEVSE;
+        event OnRemoteStopEVSEDelegate      OnRemoteStopEVSE;
 
         #endregion
 
