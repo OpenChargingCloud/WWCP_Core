@@ -47,7 +47,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
     /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
     /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
-    public delegate void OnReserveEVSEDelegate(Object                   Sender,
+    public delegate void OnEVSEReserveDelegate(Object                   Sender,
                                                DateTime                 Timestamp,
                                                EventTracking_Id         EventTrackingId,
                                                RoamingNetwork_Id        RoamingNetworkId,
@@ -79,6 +79,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
     /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
     /// <param name="Result">The result of the reservation.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
     public delegate void OnEVSEReservedDelegate(Object                   Sender,
                                                 DateTime                 Timestamp,
                                                 EventTracking_Id         EventTrackingId,
@@ -92,7 +93,38 @@ namespace org.GraphDefined.WWCP
                                                 IEnumerable<Auth_Token>  AuthTokens,
                                                 IEnumerable<eMA_Id>      eMAIds,
                                                 IEnumerable<UInt32>      PINs,
-                                                ReservationResult        Result);
+                                                ReservationResult        Result,
+                                                TimeSpan                 Runtime);
+
+    /// <summary>
+    /// An event send whenever a reservation at an EVSE is being made.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="CancellationToken">A token to cancel this request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
+    /// <param name="EVSEId">The uniuqe identification of the reserved EVSE.</param>
+    /// <param name="ReservationId">The unique identification for this charging reservation.</param>
+    /// <param name="StartTime">The starting time of the reservation.</param>
+    /// <param name="Duration">The duration of the reservation.</param>
+    /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
+    /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
+    /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
+    /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
+    /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
+    public delegate Task<ReservationResult> OnReserveEVSEDelegate(DateTime                 Timestamp,
+                                                                  CancellationToken        CancellationToken,
+                                                                  EventTracking_Id         EventTrackingId,
+                                                                  RoamingNetwork_Id        RoamingNetworkId,
+                                                                  ChargingReservation_Id   ReservationId,
+                                                                  EVSE_Id                  EVSEId,
+                                                                  DateTime?                StartTime,
+                                                                  TimeSpan?                Duration,
+                                                                  EVSP_Id                  ProviderId,
+                                                                  ChargingProduct_Id       ChargingProductId,
+                                                                  IEnumerable<Auth_Token>  AuthTokens,
+                                                                  IEnumerable<eMA_Id>      eMAIds,
+                                                                  IEnumerable<UInt32>      PINs);
 
     #endregion
 

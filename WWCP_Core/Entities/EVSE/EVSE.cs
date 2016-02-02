@@ -836,7 +836,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a reserve command was received.
         /// </summary>
-        public event OnReserveEVSEDelegate     OnReserve;
+        public event OnEVSEReserveDelegate     OnReserve;
 
         /// <summary>
         /// An event fired whenever a reserve command completed.
@@ -902,21 +902,32 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserve event
 
-            var OnReserveLocal = OnReserve;
-            if (OnReserveLocal != null)
-                OnReserveLocal(this,
-                               Timestamp,
-                               EventTrackingId,
-                               _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
-                               ReservationId,
-                               Id,
-                               StartTime,
-                               Duration,
-                               ProviderId,
-                               ChargingProductId,
-                               AuthTokens,
-                               eMAIds,
-                               PINs);
+            var Runtime = Stopwatch.StartNew();
+
+            try
+            {
+
+                var OnReserveLocal = OnReserve;
+                if (OnReserveLocal != null)
+                    OnReserveLocal(this,
+                                   Timestamp,
+                                   EventTrackingId,
+                                   _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
+                                   ReservationId,
+                                   Id,
+                                   StartTime,
+                                   Duration,
+                                   ProviderId,
+                                   ChargingProductId,
+                                   AuthTokens,
+                                   eMAIds,
+                                   PINs);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("EVSE." + nameof(OnReserve));
+            }
 
             #endregion
 
@@ -957,22 +968,34 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserved event
 
-            var OnReservedLocal = OnReserved;
-            if (OnReservedLocal != null)
-                OnReservedLocal(this,
-                                Timestamp,
-                                EventTrackingId,
-                                _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
-                                ReservationId,
-                                Id,
-                                StartTime,
-                                Duration,
-                                ProviderId,
-                                ChargingProductId,
-                                AuthTokens,
-                                eMAIds,
-                                PINs,
-                                result);
+            Runtime.Stop();
+
+            try
+            {
+
+                var OnReservedLocal = OnReserved;
+                if (OnReservedLocal != null)
+                    OnReservedLocal(this,
+                                    Timestamp,
+                                    EventTrackingId,
+                                    _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
+                                    ReservationId,
+                                    Id,
+                                    StartTime,
+                                    Duration,
+                                    ProviderId,
+                                    ChargingProductId,
+                                    AuthTokens,
+                                    eMAIds,
+                                    PINs,
+                                    result,
+                                    Runtime.Elapsed);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("EVSE." + nameof(OnReserved));
+            }
 
             #endregion
 
