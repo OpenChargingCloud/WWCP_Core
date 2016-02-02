@@ -3495,7 +3495,7 @@ namespace org.GraphDefined.WWCP
                 if (result.Result == RemoteStopEVSEResultType.Success)
                 {
 
-                    // The CDR can also be send separately!
+                    // The CDR could also be sent separately!
                     if (result.ChargeDetailRecord != null)
                     {
 
