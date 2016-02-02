@@ -19,7 +19,9 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
@@ -27,8 +29,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
-using System.Threading;
-using System.Threading.Tasks;
 
 #endregion
 
@@ -2411,19 +2411,30 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStart event
 
-            var OnRemoteEVSEStartLocal = OnRemoteEVSEStart;
-            if (OnRemoteEVSEStartLocal != null)
-                OnRemoteEVSEStartLocal(Timestamp,
-                                       this,
-                                       EventTrackingId,
-                                       _Operator.RoamingNetwork.Id,
-                                       EVSEId,
-                                       ChargingProductId,
-                                       ReservationId,
-                                       SessionId,
-                                       ProviderId,
-                                       eMAId,
-                                       QueryTimeout.Value);
+            var Runtime = Stopwatch.StartNew();
+
+            try
+            {
+
+                var OnRemoteEVSEStartLocal = OnRemoteEVSEStart;
+                if (OnRemoteEVSEStartLocal != null)
+                    OnRemoteEVSEStartLocal(Timestamp,
+                                           this,
+                                           EventTrackingId,
+                                           _Operator.RoamingNetwork.Id,
+                                           EVSEId,
+                                           ChargingProductId,
+                                           ReservationId,
+                                           SessionId,
+                                           ProviderId,
+                                           eMAId,
+                                           QueryTimeout.Value);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("ChargingPool." + nameof(OnRemoteEVSEStart));
+            }
 
             #endregion
 
@@ -2458,20 +2469,32 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStarted event
 
-            var OnRemoteEVSEStartedLocal = OnRemoteEVSEStarted;
-            if (OnRemoteEVSEStartedLocal != null)
-                OnRemoteEVSEStartedLocal(Timestamp,
-                                         this,
-                                         EventTrackingId,
-                                         _Operator.RoamingNetwork.Id,
-                                         EVSEId,
-                                         ChargingProductId,
-                                         ReservationId,
-                                         SessionId,
-                                         ProviderId,
-                                         eMAId,
-                                         QueryTimeout,
-                                         result);
+            Runtime.Stop();
+
+            try
+            {
+
+                var OnRemoteEVSEStartedLocal = OnRemoteEVSEStarted;
+                if (OnRemoteEVSEStartedLocal != null)
+                    OnRemoteEVSEStartedLocal(Timestamp,
+                                             this,
+                                             EventTrackingId,
+                                             _Operator.RoamingNetwork.Id,
+                                             EVSEId,
+                                             ChargingProductId,
+                                             ReservationId,
+                                             SessionId,
+                                             ProviderId,
+                                             eMAId,
+                                             QueryTimeout,
+                                             result,
+                                             Runtime.Elapsed);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("ChargingPool." + nameof(OnRemoteEVSEStarted));
+            }
 
             #endregion
 
@@ -2525,19 +2548,30 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStart event
 
-            var OnRemoteChargingStationStartLocal = OnRemoteChargingStationStart;
-            if (OnRemoteChargingStationStartLocal != null)
-                OnRemoteChargingStationStartLocal(Timestamp,
-                                                  this,
-                                                  EventTrackingId,
-                                                  _Operator.RoamingNetwork.Id,
-                                                  ChargingStationId,
-                                                  ChargingProductId,
-                                                  ReservationId,
-                                                  SessionId,
-                                                  ProviderId,
-                                                  eMAId,
-                                                  QueryTimeout.Value);
+            var Runtime = Stopwatch.StartNew();
+
+            try
+            {
+
+                var OnRemoteChargingStationStartLocal = OnRemoteChargingStationStart;
+                if (OnRemoteChargingStationStartLocal != null)
+                    OnRemoteChargingStationStartLocal(Timestamp,
+                                                      this,
+                                                      EventTrackingId,
+                                                      _Operator.RoamingNetwork.Id,
+                                                      ChargingStationId,
+                                                      ChargingProductId,
+                                                      ReservationId,
+                                                      SessionId,
+                                                      ProviderId,
+                                                      eMAId,
+                                                      QueryTimeout.Value);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("ChargingPool." + nameof(OnRemoteChargingStationStart));
+            }
 
             #endregion
 
@@ -2569,20 +2603,32 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStarted event
 
-            var OnRemoteChargingStationStartedLocal = OnRemoteChargingStationStarted;
-            if (OnRemoteChargingStationStartedLocal != null)
-                OnRemoteChargingStationStartedLocal(Timestamp,
-                                                    this,
-                                                    EventTrackingId,
-                                                    _Operator.RoamingNetwork.Id,
-                                                    ChargingStationId,
-                                                    ChargingProductId,
-                                                    ReservationId,
-                                                    SessionId,
-                                                    ProviderId,
-                                                    eMAId,
-                                                    QueryTimeout,
-                                                    result);
+            Runtime.Stop();
+
+            try
+            {
+
+                var OnRemoteChargingStationStartedLocal = OnRemoteChargingStationStarted;
+                if (OnRemoteChargingStationStartedLocal != null)
+                    OnRemoteChargingStationStartedLocal(Timestamp,
+                                                        this,
+                                                        EventTrackingId,
+                                                        _Operator.RoamingNetwork.Id,
+                                                        ChargingStationId,
+                                                        ChargingProductId,
+                                                        ReservationId,
+                                                        SessionId,
+                                                        ProviderId,
+                                                        eMAId,
+                                                        QueryTimeout,
+                                                        result,
+                                                        Runtime.Elapsed);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("ChargingPool." + nameof(OnRemoteChargingStationStarted));
+            }
 
             #endregion
 
@@ -2686,16 +2732,27 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStop event
 
-            var OnRemoteStopLocal = OnRemoteStop;
-            if (OnRemoteStopLocal != null)
-                OnRemoteStopLocal(this,
-                                  Timestamp,
-                                  EventTrackingId,
-                                  _Operator.RoamingNetwork.Id,
-                                  SessionId,
-                                  ReservationHandling,
-                                  ProviderId,
-                                  QueryTimeout.Value);
+            var Runtime = Stopwatch.StartNew();
+
+            try
+            {
+
+                var OnRemoteStopLocal = OnRemoteStop;
+                if (OnRemoteStopLocal != null)
+                    OnRemoteStopLocal(this,
+                                      Timestamp,
+                                      EventTrackingId,
+                                      _Operator.RoamingNetwork.Id,
+                                      SessionId,
+                                      ReservationHandling,
+                                      ProviderId,
+                                      QueryTimeout.Value);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("ChargingPool." + nameof(OnRemoteStop));
+            }
 
             #endregion
 
@@ -2719,17 +2776,29 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopped event
 
-            var OnRemoteStoppedLocal = OnRemoteStopped;
-            if (OnRemoteStoppedLocal != null)
-                OnRemoteStoppedLocal(this,
-                                     Timestamp,
-                                     EventTrackingId,
-                                     _Operator.RoamingNetwork.Id,
-                                     SessionId,
-                                     ReservationHandling,
-                                     ProviderId,
-                                     QueryTimeout,
-                                     result);
+            Runtime.Stop();
+
+            try
+            {
+
+                var OnRemoteStoppedLocal = OnRemoteStopped;
+                if (OnRemoteStoppedLocal != null)
+                    OnRemoteStoppedLocal(this,
+                                         Timestamp,
+                                         EventTrackingId,
+                                         _Operator.RoamingNetwork.Id,
+                                         SessionId,
+                                         ReservationHandling,
+                                         ProviderId,
+                                         QueryTimeout,
+                                         result,
+                                         Runtime.Elapsed);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("ChargingPool." + nameof(OnRemoteStopped));
+            }
 
             #endregion
 
@@ -2783,17 +2852,28 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStop event
 
-            var OnRemoteEVSEStopLocal = OnRemoteEVSEStop;
-            if (OnRemoteEVSEStopLocal != null)
-                OnRemoteEVSEStopLocal(this,
-                                      Timestamp,
-                                      EventTrackingId,
-                                      _Operator.RoamingNetwork.Id,
-                                      EVSEId,
-                                      SessionId,
-                                      ReservationHandling,
-                                      ProviderId,
-                                      QueryTimeout.Value);
+            var Runtime = Stopwatch.StartNew();
+
+            try
+            {
+
+                var OnRemoteEVSEStopLocal = OnRemoteEVSEStop;
+                if (OnRemoteEVSEStopLocal != null)
+                    OnRemoteEVSEStopLocal(this,
+                                          Timestamp,
+                                          EventTrackingId,
+                                          _Operator.RoamingNetwork.Id,
+                                          EVSEId,
+                                          SessionId,
+                                          ReservationHandling,
+                                          ProviderId,
+                                          QueryTimeout.Value);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("ChargingPool." + nameof(OnRemoteEVSEStop));
+            }
 
             #endregion
 
@@ -2818,18 +2898,30 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStopped event
 
-            var OnRemoteEVSEStoppedLocal = OnRemoteEVSEStopped;
-            if (OnRemoteEVSEStoppedLocal != null)
-                OnRemoteEVSEStoppedLocal(this,
-                                         Timestamp,
-                                         EventTrackingId,
-                                         _Operator.RoamingNetwork.Id,
-                                         EVSEId,
-                                         SessionId,
-                                         ReservationHandling,
-                                         ProviderId,
-                                         QueryTimeout,
-                                         result);
+            Runtime.Stop();
+
+            try
+            {
+
+                var OnRemoteEVSEStoppedLocal = OnRemoteEVSEStopped;
+                if (OnRemoteEVSEStoppedLocal != null)
+                    OnRemoteEVSEStoppedLocal(this,
+                                             Timestamp,
+                                             EventTrackingId,
+                                             _Operator.RoamingNetwork.Id,
+                                             EVSEId,
+                                             SessionId,
+                                             ReservationHandling,
+                                             ProviderId,
+                                             QueryTimeout,
+                                             result,
+                                             Runtime.Elapsed);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("ChargingPool." + nameof(OnRemoteEVSEStopped));
+            }
 
             #endregion
 
@@ -2883,17 +2975,28 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStop event
 
-            var OnRemoteChargingStationStopLocal = OnRemoteChargingStationStop;
-            if (OnRemoteChargingStationStopLocal != null)
-                OnRemoteChargingStationStopLocal(this,
-                                                 Timestamp,
-                                                 EventTrackingId,
-                                                 _Operator.RoamingNetwork.Id,
-                                                 ChargingStationId,
-                                                 SessionId,
-                                                 ReservationHandling,
-                                                 ProviderId,
-                                                 QueryTimeout.Value);
+            var Runtime = Stopwatch.StartNew();
+
+            try
+            {
+
+                var OnRemoteChargingStationStopLocal = OnRemoteChargingStationStop;
+                if (OnRemoteChargingStationStopLocal != null)
+                    OnRemoteChargingStationStopLocal(this,
+                                                     Timestamp,
+                                                     EventTrackingId,
+                                                     _Operator.RoamingNetwork.Id,
+                                                     ChargingStationId,
+                                                     SessionId,
+                                                     ReservationHandling,
+                                                     ProviderId,
+                                                     QueryTimeout.Value);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("ChargingPool." + nameof(OnRemoteChargingStationStop));
+            }
 
             #endregion
 
@@ -2918,18 +3021,30 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStopped event
 
-            var OnRemoteChargingStationStoppedLocal = OnRemoteChargingStationStopped;
-            if (OnRemoteChargingStationStoppedLocal != null)
-                OnRemoteChargingStationStoppedLocal(this,
-                                                    Timestamp,
-                                                    EventTrackingId,
-                                                    _Operator.RoamingNetwork.Id,
-                                                    ChargingStationId,
-                                                    SessionId,
-                                                    ReservationHandling,
-                                                    ProviderId,
-                                                    QueryTimeout,
-                                                    result);
+            Runtime.Stop();
+
+            try
+            {
+
+                var OnRemoteChargingStationStoppedLocal = OnRemoteChargingStationStopped;
+                if (OnRemoteChargingStationStoppedLocal != null)
+                    OnRemoteChargingStationStoppedLocal(this,
+                                                        Timestamp,
+                                                        EventTrackingId,
+                                                        _Operator.RoamingNetwork.Id,
+                                                        ChargingStationId,
+                                                        SessionId,
+                                                        ReservationHandling,
+                                                        ProviderId,
+                                                        QueryTimeout,
+                                                        result,
+                                                        Runtime.Elapsed);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("ChargingPool." + nameof(OnRemoteChargingStationStopped));
+            }
 
             #endregion
 

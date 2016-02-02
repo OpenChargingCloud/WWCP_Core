@@ -27,6 +27,7 @@ using System.Collections.Concurrent;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using System.Diagnostics;
 
 #endregion
 
@@ -3082,6 +3083,8 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStart event
 
+            var Runtime = Stopwatch.StartNew();
+
             try
             {
 
@@ -3134,6 +3137,8 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStarted event
 
+            Runtime.Stop();
+
             try
             {
 
@@ -3150,7 +3155,8 @@ namespace org.GraphDefined.WWCP
                                              ProviderId,
                                              eMAId,
                                              QueryTimeout,
-                                             result);
+                                             result,
+                                             Runtime.Elapsed);
 
             }
             catch (Exception e)
@@ -3210,6 +3216,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             #region Send OnRemoteChargingStationStart event
+
+            var Runtime = Stopwatch.StartNew();
 
             try
             {
@@ -3279,7 +3287,8 @@ namespace org.GraphDefined.WWCP
                                                         ProviderId,
                                                         eMAId,
                                                         QueryTimeout,
-                                                        result);
+                                                        result,
+                                                        Runtime.Elapsed);
 
             }
             catch (Exception e)
@@ -3369,6 +3378,8 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStop event
 
+            var Runtime = Stopwatch.StartNew();
+
             try
             {
 
@@ -3417,6 +3428,8 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopped event
 
+            Runtime.Stop();
+
             try
             {
 
@@ -3430,7 +3443,8 @@ namespace org.GraphDefined.WWCP
                                          ReservationHandling,
                                          ProviderId,
                                          QueryTimeout,
-                                         result);
+                                         result,
+                                         Runtime.Elapsed);
 
             }
             catch (Exception e)
@@ -3489,6 +3503,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             #region Send OnRemoteEVSEStop event
+
+            var Runtime = Stopwatch.StartNew();
 
             try
             {
@@ -3550,6 +3566,8 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStopped event
 
+            Runtime.Stop();
+
             try
             {
 
@@ -3564,7 +3582,8 @@ namespace org.GraphDefined.WWCP
                                              ReservationHandling,
                                              ProviderId,
                                              QueryTimeout,
-                                             result);
+                                             result,
+                                             Runtime.Elapsed);
 
             }
             catch (Exception e)
@@ -3624,6 +3643,8 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStop event
 
+            var Runtime = Stopwatch.StartNew();
+
             try
             {
 
@@ -3674,6 +3695,8 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStopped event
 
+            Runtime.Stop();
+
             try
             {
 
@@ -3688,7 +3711,8 @@ namespace org.GraphDefined.WWCP
                                                         ReservationHandling,
                                                         ProviderId,
                                                         QueryTimeout,
-                                                        result);
+                                                        result,
+                                                        Runtime.Elapsed);
 
             }
             catch (Exception e)
@@ -3745,6 +3769,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             #region Send OnAuthorizeStart event
+
+            var Runtime = Stopwatch.StartNew();
 
             try
             {
@@ -3873,6 +3899,8 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeStarted event
 
+            Runtime.Stop();
+
             try
             {
 
@@ -3887,7 +3915,8 @@ namespace org.GraphDefined.WWCP
                                             ChargingProductId,
                                             SessionId,
                                             QueryTimeout,
-                                            result);
+                                            result,
+                                            Runtime.Elapsed);
 
             }
             catch (Exception e)
@@ -3945,6 +3974,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             #region Send OnAuthorizeEVSEStart event
+
+            var Runtime = Stopwatch.StartNew();
 
             try
             {
@@ -4078,6 +4109,8 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeEVSEStarted event
 
+            Runtime.Stop();
+
             try
             {
 
@@ -4093,7 +4126,8 @@ namespace org.GraphDefined.WWCP
                                                 ChargingProductId,
                                                 SessionId,
                                                 QueryTimeout,
-                                                result);
+                                                result,
+                                                Runtime.Elapsed);
 
             }
             catch (Exception e)
@@ -4151,6 +4185,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             #region Send OnAuthorizeChargingStationStart event
+
+            var Runtime = Stopwatch.StartNew();
 
             try
             {
@@ -4284,6 +4320,8 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeChargingStationStarted event
 
+            Runtime.Stop();
+
             try
             {
 
@@ -4299,7 +4337,8 @@ namespace org.GraphDefined.WWCP
                                                            ChargingProductId,
                                                            SessionId,
                                                            QueryTimeout,
-                                                           result);
+                                                           result,
+                                                           Runtime.Elapsed);
 
             }
             catch (Exception e)

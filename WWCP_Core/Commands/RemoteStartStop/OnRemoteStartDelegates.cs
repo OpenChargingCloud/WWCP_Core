@@ -71,6 +71,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote start result.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
     public delegate void OnRemoteEVSEStartedDelegate(DateTime                Timestamp,
                                                      Object                  Sender,
                                                      EventTracking_Id        EventTrackingId,
@@ -82,7 +83,8 @@ namespace org.GraphDefined.WWCP
                                                      EVSP_Id                 ProviderId,
                                                      eMA_Id                  eMAId,
                                                      TimeSpan?               QueryTimeout,
-                                                     RemoteStartEVSEResult   Result);
+                                                     RemoteStartEVSEResult   Result,
+                                                     TimeSpan                Runtime);
 
 
 
@@ -158,6 +160,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote start result.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
     public delegate void OnRemoteChargingStationStartedDelegate(DateTime                          Timestamp,
                                                                 Object                            Sender,
                                                                 EventTracking_Id                  EventTrackingId,
@@ -169,7 +172,8 @@ namespace org.GraphDefined.WWCP
                                                                 EVSP_Id                           ProviderId,
                                                                 eMA_Id                            eMAId,
                                                                 TimeSpan?                         QueryTimeout,
-                                                                RemoteStartChargingStationResult  Result);
+                                                                RemoteStartChargingStationResult  Result,
+                                                                TimeSpan                          Runtime);
 
 
     /// <summary>

@@ -64,6 +64,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize start result.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
     public delegate void OnAuthorizeStartedDelegate(DateTime            Timestamp,
                                                     Object              Sender,
                                                     EventTracking_Id    EventTrackingId,
@@ -73,7 +74,8 @@ namespace org.GraphDefined.WWCP
                                                     ChargingProduct_Id  ChargingProductId,
                                                     ChargingSession_Id  SessionId,
                                                     TimeSpan?           QueryTimeout,
-                                                    AuthStartResult     Result);
+                                                    AuthStartResult     Result,
+                                                    TimeSpan            Runtime);
 
 
     // ----------------------------------------------------------------------------------------------------------
@@ -118,6 +120,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize start result.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
     public delegate void OnAuthorizeEVSEStartedDelegate(DateTime             Timestamp,
                                                         Object               Sender,
                                                         EventTracking_Id     EventTrackingId,
@@ -128,7 +131,8 @@ namespace org.GraphDefined.WWCP
                                                         ChargingProduct_Id   ChargingProductId,
                                                         ChargingSession_Id   SessionId,
                                                         TimeSpan?            QueryTimeout,
-                                                        AuthStartEVSEResult  Result);
+                                                        AuthStartEVSEResult  Result,
+                                                        TimeSpan             Runtime);
 
 
     /// <summary>
@@ -197,6 +201,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize start result.</param>
+    /// <param name="Runtime">The runtime of the request.</param>
     public delegate void OnAuthorizeChargingStationStartedDelegate(DateTime                        Timestamp,
                                                                    Object                          Sender,
                                                                    EventTracking_Id                EventTrackingId,
@@ -207,6 +212,7 @@ namespace org.GraphDefined.WWCP
                                                                    ChargingProduct_Id              ChargingProductId,
                                                                    ChargingSession_Id              SessionId,
                                                                    TimeSpan?                       QueryTimeout,
-                                                                   AuthStartChargingStationResult  Result);
+                                                                   AuthStartChargingStationResult  Result,
+                                                                   TimeSpan                        Runtime);
 
 }

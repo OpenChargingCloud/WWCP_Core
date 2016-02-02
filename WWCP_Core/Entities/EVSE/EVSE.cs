@@ -20,9 +20,9 @@
 using System;
 using System.Linq;
 using System.Threading;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
@@ -1141,19 +1141,30 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStart event
 
-            var OnRemoteStartLocal = OnRemoteStart;
-            if (OnRemoteStartLocal != null)
-                OnRemoteStartLocal(Timestamp,
-                                   this,
-                                   EventTrackingId,
-                                   _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
-                                   Id,
-                                   ChargingProductId,
-                                   ReservationId,
-                                   SessionId,
-                                   ProviderId,
-                                   eMAId,
-                                   QueryTimeout.Value);
+            var Runtime = Stopwatch.StartNew();
+
+            try
+            {
+
+                var OnRemoteStartLocal = OnRemoteStart;
+                if (OnRemoteStartLocal != null)
+                    OnRemoteStartLocal(Timestamp,
+                                       this,
+                                       EventTrackingId,
+                                       _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
+                                       Id,
+                                       ChargingProductId,
+                                       ReservationId,
+                                       SessionId,
+                                       ProviderId,
+                                       eMAId,
+                                       QueryTimeout.Value);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("EVSE." + nameof(OnRemoteStart));
+            }
 
             #endregion
 
@@ -1185,20 +1196,32 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStarted event
 
-            var OnRemoteStartedLocal = OnRemoteStarted;
-            if (OnRemoteStartedLocal != null)
-                OnRemoteStartedLocal(Timestamp,
-                                     this,
-                                     EventTrackingId,
-                                     _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
-                                     Id,
-                                     ChargingProductId,
-                                     ReservationId,
-                                     SessionId,
-                                     ProviderId,
-                                     eMAId,
-                                     QueryTimeout,
-                                     result);
+            Runtime.Stop();
+
+            try
+            {
+
+                var OnRemoteStartedLocal = OnRemoteStarted;
+                if (OnRemoteStartedLocal != null)
+                    OnRemoteStartedLocal(Timestamp,
+                                         this,
+                                         EventTrackingId,
+                                         _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
+                                         Id,
+                                         ChargingProductId,
+                                         ReservationId,
+                                         SessionId,
+                                         ProviderId,
+                                         eMAId,
+                                         QueryTimeout,
+                                         result,
+                                         Runtime.Elapsed);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("EVSE." + nameof(OnRemoteStart));
+            }
 
             #endregion
 
@@ -1280,17 +1303,28 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStop event
 
-            var OnRemoteStopLocal = OnRemoteStop;
-            if (OnRemoteStopLocal != null)
-                OnRemoteStopLocal(this,
-                                  Timestamp,
-                                  EventTrackingId,
-                                  _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
-                                  Id,
-                                  SessionId,
-                                  ReservationHandling,
-                                  ProviderId,
-                                  QueryTimeout.Value);
+            var Runtime = Stopwatch.StartNew();
+
+            try
+            {
+
+                var OnRemoteStopLocal = OnRemoteStop;
+                if (OnRemoteStopLocal != null)
+                    OnRemoteStopLocal(this,
+                                      Timestamp,
+                                      EventTrackingId,
+                                      _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
+                                      Id,
+                                      SessionId,
+                                      ReservationHandling,
+                                      ProviderId,
+                                      QueryTimeout.Value);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("EVSE." + nameof(OnRemoteStop));
+            }
 
             #endregion
 
@@ -1317,18 +1351,30 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopped event
 
-            var OnRemoteStoppedLocal = OnRemoteStopped;
-            if (OnRemoteStoppedLocal != null)
-                OnRemoteStoppedLocal(this,
-                                     Timestamp,
-                                     EventTrackingId,
-                                     _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
-                                     Id,
-                                     SessionId,
-                                     ReservationHandling,
-                                     ProviderId,
-                                     QueryTimeout,
-                                     result);
+            Runtime.Stop();
+
+            try
+            {
+
+                var OnRemoteStoppedLocal = OnRemoteStopped;
+                if (OnRemoteStoppedLocal != null)
+                    OnRemoteStoppedLocal(this,
+                                         Timestamp,
+                                         EventTrackingId,
+                                         _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
+                                         Id,
+                                         SessionId,
+                                         ReservationHandling,
+                                         ProviderId,
+                                         QueryTimeout,
+                                         result,
+                                         Runtime.Elapsed);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("EVSE." + nameof(OnRemoteStopped));
+            }
 
             #endregion
 
