@@ -267,40 +267,44 @@ namespace org.GraphDefined.WWCP.Importer
             #region Initial checks
 
             if (Id.IsNullOrEmpty())
-                throw new ArgumentNullException("ImporterId", "The given config file name must not be null or empty!");
+                throw new ArgumentNullException(nameof(Id),                    "The given config file name must not be null or empty!");
 
             if (ConfigFilenamePrefix.IsNullOrEmpty())
-                throw new ArgumentNullException("ConfigFilenamePrefix", "The given config file name must not be null or empty!");
+                throw new ArgumentNullException(nameof(ConfigFilenamePrefix),  "The given config file name must not be null or empty!");
 
             if (DownloadData == null)
-                throw new ArgumentNullException("GetXMLData", "The given delegate must not be null or empty!");
+                throw new ArgumentNullException(nameof(DownloadData),          "The given delegate must not be null or empty!");
 
             if (OnFirstRun == null)
-                throw new ArgumentNullException("OnFirstRun", "The given delegate must not be null or empty!");
+                throw new ArgumentNullException(nameof(OnFirstRun),            "The given delegate must not be null or empty!");
 
             if (OnEveryRun == null)
-                throw new ArgumentNullException("OnEveryRun", "The given delegate must not be null or empty!");
+                throw new ArgumentNullException(nameof(OnEveryRun),            "The given delegate must not be null or empty!");
 
             #endregion
 
-            this._Id                           = Id;
-            this._ConfigFilenamePrefix         = ConfigFilenamePrefix;
-            this._DNSClient                    = DNSClient   != null ? DNSClient         : new DNSClient();
-            this._UpdateEvery                  = UpdateEvery != null ? UpdateEvery.Value : DefaultImportEvery;
+            this._Id                            = Id;
+            this._ConfigFilenamePrefix          = ConfigFilenamePrefix;
+            this._DNSClient                     = DNSClient   != null ? DNSClient         : new DNSClient();
+            this._UpdateEvery                   = UpdateEvery != null ? UpdateEvery.Value : DefaultImportEvery;
 
-            this.DownloadData                  = DownloadData;
-            this.OnFirstRun                    = OnFirstRun;
-            this.OnEveryRun                    = OnEveryRun;
+            this.DownloadData                   = DownloadData;
+            this.OnFirstRun                     = OnFirstRun;
+            this.OnEveryRun                     = OnEveryRun;
 
             this._MaxNumberOfCachedDataImports  = MaxNumberOfCachedXMLExports;
 
-            this._EVSEOperators                = new List<EVSEOperator>();
-            this._AllForwardingInfos           = new Dictionary<ChargingStation_Id, ImporterForwardingInfo>();
-            this._ImportedData                   = new List<Timestamped<T>>();
+            this._EVSEOperators                 = new List<EVSEOperator>();
+            this._AllForwardingInfos            = new Dictionary<ChargingStation_Id, ImporterForwardingInfo>();
+            this._ImportedData                  = new List<Timestamped<T>>();
 
             // Start not now but veeeeery later!
-            UpdateEVSEDataAndStatusLock        = new Object();
-            UpdateEVSEStatusTimer              = new Timer(ImportEvery, null, TimeSpan.FromDays(30), _UpdateEvery);
+            UpdateEVSEDataAndStatusLock         = new Object();
+            UpdateEVSEStatusTimer               = new Timer(ImportEvery, null, TimeSpan.FromDays(30), _UpdateEvery);
+
+            this.OnForwardingChanged += (Timestamp, Importer, ForwardingInfo, OldRN, NewRN) => {
+                SaveForwardingDataInFile();
+            };
 
         }
 
@@ -309,6 +313,7 @@ namespace org.GraphDefined.WWCP.Importer
 
 
         //ToDo: Store on disc after OnChargingStationAdminStatusChanged!!!
+
         #region RegisterEVSEOperator(EVSEOperator)
 
         public WWCPImporter<T> RegisterEVSEOperator(EVSEOperator EVSEOperator)
@@ -473,7 +478,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                                                             _AllForwardingInfos.Add(ChargingStationId,
                                                                                     new ImporterForwardingInfo(
-                                                                                        OnChangedCallback:       OnForwardingChangedCallback,
+                                                                                        OnChangedCallback:       SendOnForwardingChanged,
                                                                                         EVSEOperators:           _EVSEOperators,
                                                                                         //EVSEIds:                 new EVSE_Id[] { EVSEId },
                                                                                         StationId:               ChargingStationId,
@@ -528,7 +533,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                                                         _AllForwardingInfos.Add(ChargingStationId,
                                                                                 new ImporterForwardingInfo(
-                                                                                    OnChangedCallback:       OnForwardingChangedCallback,
+                                                                                    OnChangedCallback:       SendOnForwardingChanged,
                                                                                     EVSEOperators:           _EVSEOperators,
                                                                                     StationId:               ChargingStationId,
                                                                                     StationName:             "",
@@ -589,7 +594,16 @@ namespace org.GraphDefined.WWCP.Importer
             lock (_EVSEOperators)
             {
 
-                var _ConfigFilename = _ConfigFilenamePrefix + "-" + DateTime.Now.ToUnixTimestamp() + ".json";
+                var Now             = DateTime.Now;
+
+                var _ConfigFilename = String.Concat(_ConfigFilenamePrefix,     "_",
+                                                    Now.Year,                  "-",
+                                                    Now.Month. ToString("D2"), "-",
+                                                    Now.Day.   ToString("D2"), "_",
+                                                    Now.Hour.  ToString("D2"), "-",
+                                                    Now.Minute.ToString("D2"), "-",
+                                                    Now.Second.ToString("D2"),
+                                                    ".json");
 
                 try
                 {
@@ -861,12 +875,12 @@ namespace org.GraphDefined.WWCP.Importer
         #endregion
 
 
-        #region OnForwardingChangedCallback(Timestamp, ForwardingInfo, OldRN, NewRN)
+        #region SendOnForwardingChanged(Timestamp, ForwardingInfo, OldRN, NewRN)
 
-        public void OnForwardingChangedCallback(DateTime                Timestamp,
-                                                ImporterForwardingInfo  ForwardingInfo,
-                                                RoamingNetwork_Id       OldRN,
-                                                RoamingNetwork_Id       NewRN)
+        public void SendOnForwardingChanged(DateTime                Timestamp,
+                                             ImporterForwardingInfo  ForwardingInfo,
+                                             RoamingNetwork_Id       OldRN,
+                                             RoamingNetwork_Id       NewRN)
         {
 
             var OnForwardingChangedLocal = OnForwardingChanged;

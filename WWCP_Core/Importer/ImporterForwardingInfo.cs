@@ -23,7 +23,6 @@ using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Aegir;
-using org.GraphDefined.WWCP;
 
 #endregion
 
@@ -35,7 +34,7 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region Data
 
-        private Action<DateTime, ImporterForwardingInfo, RoamingNetwork_Id, RoamingNetwork_Id> _OnForwardingChangeCallback;
+        private Action<DateTime, ImporterForwardingInfo, RoamingNetwork_Id, RoamingNetwork_Id> _OnForwardingChanged;
 
         public String         StationName;
         public String         StationServiceTag;
@@ -143,10 +142,10 @@ namespace org.GraphDefined.WWCP.Importer
 
                 _ForwardedToEVSEOperator = value;
 
-                this._OnForwardingChangeCallback(DateTime.Now,
-                                                 this,
-                                                 Old_ForwardedToEVSEOperator != null ? Old_ForwardedToEVSEOperator.RoamingNetwork.Id : null,
-                                                 value                       != null ? value.RoamingNetwork.Id                       : null);
+                this._OnForwardingChanged(DateTime.Now,
+                                          this,
+                                          Old_ForwardedToEVSEOperator != null ? Old_ForwardedToEVSEOperator.RoamingNetwork.Id : null,
+                                          value                       != null ? value.RoamingNetwork.Id                       : null);
 
             }
 
@@ -258,7 +257,7 @@ namespace org.GraphDefined.WWCP.Importer
                                       EVSEOperator                                  ForwardedToEVSEOperator   = null)
         {
 
-            this._OnForwardingChangeCallback  = OnChangedCallback;
+            this._OnForwardingChanged  = OnChangedCallback;
             this._EVSEOperators               = EVSEOperators;
             this._EVSEIds                     = EVSEIds              != null ? new HashSet<EVSE_Id>(EVSEIds) : new HashSet<EVSE_Id>();
             this._StationId                   = StationId            != null ? StationId                     : ChargingStation_Id.Create(EVSEIds);
