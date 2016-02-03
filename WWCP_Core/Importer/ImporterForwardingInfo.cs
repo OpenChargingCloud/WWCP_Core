@@ -169,6 +169,27 @@ namespace org.GraphDefined.WWCP.Importer
 
         #endregion
 
+        #region PhoneNumber
+
+        private String _PhoneNumber;
+
+        public String PhoneNumber
+        {
+
+            get
+            {
+                return _PhoneNumber;
+            }
+
+            set
+            {
+                _PhoneNumber = value;
+            }
+
+        }
+
+        #endregion
+
         #region AdminStatus
 
         private Timestamped<ChargingStationAdminStatusType> _AdminStatus;
@@ -251,13 +272,14 @@ namespace org.GraphDefined.WWCP.Importer
                                       Address                                       StationAddress            = null,
                                       GeoCoordinate                                 StationGeoCoordinate      = null,
                                       IEnumerable<EVSE_Id>                          EVSEIds                   = null,
+                                      String                                        PhoneNumber               = null,
                                       Timestamped<ChargingStationAdminStatusType>?  AdminStatus               = null,
                                       DateTime?                                     Created                   = null,
                                       Boolean                                       OutOfService              = false,
                                       EVSEOperator                                  ForwardedToEVSEOperator   = null)
         {
 
-            this._OnForwardingChanged  = OnChangedCallback;
+            this._OnForwardingChanged         = OnChangedCallback;
             this._EVSEOperators               = EVSEOperators;
             this._EVSEIds                     = EVSEIds              != null ? new HashSet<EVSE_Id>(EVSEIds) : new HashSet<EVSE_Id>();
             this._StationId                   = StationId            != null ? StationId                     : ChargingStation_Id.Create(EVSEIds);
@@ -266,6 +288,7 @@ namespace org.GraphDefined.WWCP.Importer
             this.StationAddress               = StationAddress;
             this.StationGeoCoordinate         = StationGeoCoordinate != null ? StationGeoCoordinate          : new GeoCoordinate(new Latitude(0), new Longitude(0));
             this._AdminStatus                 = AdminStatus          != null ? AdminStatus.Value             : new Timestamped<ChargingStationAdminStatusType>(ChargingStationAdminStatusType.Operational);
+            this._PhoneNumber                 = PhoneNumber;
             this._Created                     = Created              != null ? Created.Value                 : DateTime.Now;
             this._OutOfService                = OutOfService;
             this._LastTimeSeen                = _Created;
