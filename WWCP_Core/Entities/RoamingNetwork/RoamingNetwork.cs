@@ -329,8 +329,8 @@ namespace org.GraphDefined.WWCP
             this.ChargingPoolRemoval         = new VotingNotificator<DateTime, EVSEOperator,    ChargingPool,              Boolean>(() => new VetoVote(), true);
 
             // ChargingPool events
-            this.ChargingStationAddition     = new VotingNotificator<DateTime, ChargingPool,    ChargingStation,           Boolean>(() => new VetoVote(), true);
-            this.ChargingStationRemoval      = new VotingNotificator<DateTime, ChargingPool,    ChargingStation,           Boolean>(() => new VetoVote(), true);
+            this.ChargingStationAddition     = new VotingNotificator    <DateTime, ChargingPool,    ChargingStation,       Boolean>(() => new VetoVote(), true);
+            this.ChargingStationRemoval      = new AggregatedNotificator<                           ChargingStation>               (                          );
 
             // ChargingStation events
             this.EVSEAddition                = new VotingNotificator<DateTime, ChargingStation, EVSE,                      Boolean>(() => new VetoVote(), true);
@@ -531,8 +531,11 @@ namespace org.GraphDefined.WWCP
             {
                 if (_EVServiceProviders.TryAdd(EVServiceProviderId, _EVServiceProvider))
                 {
+
                     EVServiceProviderAddition.SendNotification(this, _EVServiceProvider);
+
                     return _EVServiceProvider;
+
                 }
             }
 
@@ -553,7 +556,18 @@ namespace org.GraphDefined.WWCP
                                                         IeMobilityServiceProvider  eMobilityServiceProvider)
         {
 
-            return _IeMobilityServiceProviders.TryAdd(Priority, eMobilityServiceProvider);
+            var result = _IeMobilityServiceProviders.TryAdd(Priority, eMobilityServiceProvider);
+
+            if (result)
+            {
+
+                this.OnChargingStationRemoval.OnNotification += (Timestamp, ChargingStations) => {
+                    eMobilityServiceProvider.RemoveChargingStations(Timestamp, ChargingStations);
+                };
+
+            }
+
+            return result;
 
         }
 
@@ -609,7 +623,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
         #endregion
-
 
         #region Operator Roaming Providers...
 
@@ -673,6 +686,10 @@ namespace org.GraphDefined.WWCP
             {
                 if (_CPORoamingProviders.TryAdd(OperatorRoamingService.Id, _CPORoamingProvider))
                 {
+
+                    this.OnChargingStationRemoval.OnNotification += (Timestamp, ChargingStations) => {
+                        OperatorRoamingService.RemoveChargingStations(Timestamp, ChargingStations);
+                    };
 
                     CPORoamingProviderAddition.SendNotification(this, _CPORoamingProvider);
 
@@ -1538,12 +1555,12 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingStationRemoval
 
-        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationRemoval;
+        internal readonly AggregatedNotificator<ChargingStation> ChargingStationRemoval;
 
         /// <summary>
         /// Called whenever a charging station will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationRemoval
+        public AggregatedNotificator<ChargingStation> OnChargingStationRemoval
         {
             get
             {

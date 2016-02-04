@@ -153,6 +153,16 @@ namespace org.GraphDefined.WWCP
         {
             throw new NotImplementedException();
         }
+
+        public void RemoveChargingStations(DateTime                      Timestamp,
+                                           IEnumerable<ChargingStation>  ChargingStations)
+        {
+
+            foreach (var ChargingStation in ChargingStations)
+                Console.WriteLine("AnonymousPushEVSEStatusService says: " + ChargingStation.Id + " was removed!");
+
+        }
+
     }
 
 

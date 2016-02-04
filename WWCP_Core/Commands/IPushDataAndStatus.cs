@@ -416,6 +416,10 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        void RemoveChargingStations(DateTime                      Timestamp,
+                                   IEnumerable<ChargingStation>  ChargingStations);
+
     }
 
 }

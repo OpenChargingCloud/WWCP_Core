@@ -1552,6 +1552,15 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        public void RemoveChargingStations(DateTime                      Timestamp,
+                                           IEnumerable<ChargingStation>  ChargingStations)
+        {
+
+            _OperatorRoamingService.RemoveChargingStations(Timestamp, ChargingStations);
+
+        }
+
+
         #region IComparable<RoamingProvider> Members
 
         #region CompareTo(Object)

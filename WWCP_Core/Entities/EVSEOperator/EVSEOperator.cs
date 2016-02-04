@@ -605,11 +605,11 @@ namespace org.GraphDefined.WWCP
             this.OnChargingPoolRemoval.    OnNotification += (timestamp, evseoperator, pool)       => RoamingNetwork.ChargingPoolRemoval.    SendNotification(timestamp, evseoperator, pool);
 
             // ChargingPool events
-            this.OnChargingStationAddition.OnVoting       += (timestamp, evseoperator, pool, vote) => RoamingNetwork.ChargingStationAddition.SendVoting      (timestamp, evseoperator, pool, vote);
-            this.OnChargingStationAddition.OnNotification += (timestamp, evseoperator, pool)       => RoamingNetwork.ChargingStationAddition.SendNotification(timestamp, evseoperator, pool);
+            this.OnChargingStationAddition.OnVoting       += (timestamp, pool, station, vote)      => RoamingNetwork.ChargingStationAddition.SendVoting      (timestamp, pool, station, vote);
+            this.OnChargingStationAddition.OnNotification += (timestamp, pool, station)            => RoamingNetwork.ChargingStationAddition.SendNotification(timestamp, pool, station);
 
-            this.OnChargingStationRemoval. OnVoting       += (timestamp, evseoperator, pool, vote) => RoamingNetwork.ChargingStationRemoval. SendVoting      (timestamp, evseoperator, pool, vote);
-            this.OnChargingStationRemoval. OnNotification += (timestamp, evseoperator, pool)       => RoamingNetwork.ChargingStationRemoval. SendNotification(timestamp, evseoperator, pool);
+            //this.OnChargingStationRemoval. OnVoting       += (timestamp, pool, station, vote)      => RoamingNetwork.ChargingStationRemoval. SendVoting      (timestamp, pool, station, vote);
+            this.OnChargingStationRemoval. OnNotification += (timestamp, pool, station)            => RoamingNetwork.ChargingStationRemoval. SendNotification(timestamp,       station);
 
             // ChargingStation events
             this.OnEVSEAddition.           OnVoting       += (timestamp, station, evse, vote)      => RoamingNetwork.EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
