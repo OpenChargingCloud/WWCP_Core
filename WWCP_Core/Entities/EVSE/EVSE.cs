@@ -850,12 +850,12 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region OnReservationDeleted
+        #region OnReservationCancelled
 
         /// <summary>
         /// An event fired whenever a charging reservation was deleted.
         /// </summary>
-        public event OnReservationCancelledDelegate OnCancelReservation;
+        public event OnReservationCancelledDelegate OnReservationCancelled;
 
         #endregion
 
@@ -1042,15 +1042,31 @@ namespace org.GraphDefined.WWCP
 
                 _Reservation = null;
 
-                var OnReservationDeletedLocal = OnCancelReservation;
-                if (OnReservationDeletedLocal != null)
-                    OnReservationDeletedLocal(DateTime.Now, this, OldReservation, ReservationCancellation);
+                SendOnReservationCancelled(DateTime.Now, this, OldReservation, ReservationCancellation);
 
                 SetStatus(EVSEStatusType.Available);
 
                 return true;
 
             }
+
+        }
+
+        #endregion
+
+        #region (internal) SendOnReservationCancelled(...)
+
+        internal void SendOnReservationCancelled(DateTime                         Timestamp,
+                                                 Object                           Sender,
+                                                 ChargingReservation              Reservation,
+                                                 ChargingReservationCancellation  ReservationCancellation)
+        {
+
+            _Reservation = null;
+
+            var OnReservationCancelledLocal = OnReservationCancelled;
+            if (OnReservationCancelledLocal != null)
+                OnReservationCancelledLocal(Timestamp, Sender, Reservation, ReservationCancellation);
 
         }
 

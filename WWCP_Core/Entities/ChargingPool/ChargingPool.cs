@@ -1209,6 +1209,7 @@ namespace org.GraphDefined.WWCP
                     _ChargingStation.OnAdminStatusChanged      += UpdateChargingStationAdminStatus;
 
                     _ChargingStation.OnNewReservation          += SendNewReservation;
+                    _ChargingStation.OnReservationCancelled    += SendOnReservationCancelled;
                     _ChargingStation.OnNewChargingSession      += SendNewChargingSession;
                     _ChargingStation.OnNewChargeDetailRecord   += SendNewChargeDetailRecord;
 
@@ -1840,7 +1841,16 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _ChargingReservations.SelectMany(kvp => kvp.Value.ChargingReservations);
+
+                return _RemoteChargingPool == null
+
+                           ? _ChargingReservations.SelectMany(kvp => kvp.Value.ChargingReservations)
+
+                           : _ChargingReservations.SelectMany(kvp => kvp.Value.ChargingReservations).
+                                                       Concat(_RemoteChargingPool.
+                                                                  ChargingReservations.
+                                                                  Where(Reservation => Reservation != null));
+
             }
         }
 
@@ -2309,15 +2319,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region OnReservationDeleted
-
-        /// <summary>
-        /// An event fired whenever a charging reservation was deleted.
-        /// </summary>
-        public event OnReservationCancelledDelegate OnReservationDeleted;
-
-        #endregion
-
         #region CancelReservation(ReservationId)
 
         /// <summary>
@@ -2335,6 +2336,31 @@ namespace org.GraphDefined.WWCP
                 return await _ChargingStation.CancelReservation(ReservationId, ReservationCancellation);
 
             return false;
+
+        }
+
+        #endregion
+
+        #region OnReservationCancelled
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was deleted.
+        /// </summary>
+        public event OnReservationCancelledDelegate OnReservationCancelled;
+
+        #endregion
+
+        #region SendOnReservationCancelled(...)
+
+        private void SendOnReservationCancelled(DateTime                         Timestamp,
+                                                Object                           Sender,
+                                                ChargingReservation              Reservation,
+                                                ChargingReservationCancellation  ReservationCancellation)
+        {
+
+            var OnReservationCancelledLocal = OnReservationCancelled;
+            if (OnReservationCancelledLocal != null)
+                OnReservationCancelledLocal(Timestamp, Sender, Reservation, ReservationCancellation);
 
         }
 

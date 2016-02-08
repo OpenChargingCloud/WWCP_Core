@@ -975,7 +975,17 @@ namespace org.GraphDefined.WWCP
 
             internal set
             {
+
                 _RemoteChargingStation = value;
+
+                if (_RemoteChargingStation != null)
+                {
+
+                    _RemoteChargingStation.OnReservationCancelled    += SendOnReservationCancelled;
+                    _RemoteChargingStation.OnRemoteEVSEStatusChanged += (Timestamp, EVSE, OldStatus, NewStatus) => UpdateEVSEStatus(Timestamp, GetEVSEbyId(EVSE.Id), OldStatus, NewStatus);
+
+                }
+
             }
 
         }
@@ -1359,6 +1369,7 @@ namespace org.GraphDefined.WWCP
                                                       => UpdateEVSEAdminStatus(Timestamp, EVSE, OldEVSEStatus, NewEVSEStatus);
 
                     _EVSE.OnNewReservation        += SendNewReservation;
+                    _EVSE.OnReservationCancelled  += SendOnReservationCancelled;
                     _EVSE.OnNewChargingSession    += SendNewChargingSession;
                     _EVSE.OnNewChargeDetailRecord += SendNewChargeDetailRecord;
 
@@ -1374,11 +1385,13 @@ namespace org.GraphDefined.WWCP
                         _EVSE.OnStatusChanged                    += (Timestamp, RemoteEVSE, OldStatus, NewStatus) => _EVSE.RemoteEVSE.Status           = NewStatus;
                         _EVSE.OnAdminStatusChanged               += (Timestamp, RemoteEVSE, OldStatus, NewStatus) => _EVSE.RemoteEVSE.AdminStatus      = NewStatus;
                         _EVSE.OnNewReservation                   += (Timestamp, RemoteEVSE, Reservation)          => _EVSE.RemoteEVSE.Reservation      = Reservation;
+                        //_EVSE.OnReservationCancelled             += (Timestamp, Sender, Reservation, ReservationCancellation) => _EVSE.RemoteEVSE.Send
                         _EVSE.OnNewChargingSession               += (Timestamp, RemoteEVSE, ChargingSession)      => _EVSE.RemoteEVSE.ChargingSession  = ChargingSession;
 
                         _EVSE.RemoteEVSE.OnStatusChanged         += (Timestamp, RemoteEVSE, OldStatus, NewStatus) => _EVSE.Status                      = NewStatus;
                         _EVSE.RemoteEVSE.OnAdminStatusChanged    += (Timestamp, RemoteEVSE, OldStatus, NewStatus) => _EVSE.AdminStatus                 = NewStatus;
                         _EVSE.RemoteEVSE.OnNewReservation        += (Timestamp, RemoteEVSE, Reservation)          => _EVSE.Reservation                 = Reservation;
+                        _EVSE.RemoteEVSE.OnReservationCancelled  += _EVSE.SendOnReservationCancelled;
                         _EVSE.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession)      => _EVSE.ChargingSession             = ChargingSession;
                         _EVSE.RemoteEVSE.OnNewChargeDetailRecord += (Timestamp, RemoteEVSE, ChargeDetailRecord)   => _EVSE.SendNewChargeDetailRecord(Timestamp, RemoteEVSE, ChargeDetailRecord);
 
@@ -1680,9 +1693,18 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return _EVSEs.
-                           Select(evse        => evse.Reservation).
-                           Where (reservation => reservation != null);
+                return _RemoteChargingStation == null
+
+                           ? _EVSEs.
+                                 Select(evse => evse.Reservation).
+                                 Where(reservation => reservation != null)
+
+                           : _EVSEs.
+                                 Select(evse        => evse.Reservation).
+                                 Where (reservation => reservation != null).
+                                 Concat(_RemoteChargingStation.
+                                            ChargingReservations.
+                                            Where(Reservation => Reservation != null));
 
             }
         }
@@ -2009,15 +2031,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region OnReservationDeleted
-
-        /// <summary>
-        /// An event fired whenever a charging reservation was deleted.
-        /// </summary>
-        public event OnReservationCancelledDelegate OnReservationDeleted;
-
-        #endregion
-
         #region CancelReservation(ReservationId)
 
         /// <summary>
@@ -2036,11 +2049,35 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-
             return await _EVSEs.Where   (evse => evse.Reservation    != null &&
                                                  evse.Reservation.Id == ReservationId).
                                 MapFirst(evse => evse.CancelReservation(ReservationId, ReservationCancellation),
                                          Task.FromResult(false));
+
+        }
+
+        #endregion
+
+        #region OnReservationCancelled
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was deleted.
+        /// </summary>
+        public event OnReservationCancelledDelegate OnReservationCancelled;
+
+        #endregion
+
+        #region SendOnReservationCancelled(...)
+
+        private void SendOnReservationCancelled(DateTime                         Timestamp,
+                                                Object                           Sender,
+                                                ChargingReservation              Reservation,
+                                                ChargingReservationCancellation  ReservationCancellation)
+        {
+
+            var OnReservationCancelledLocal = OnReservationCancelled;
+            if (OnReservationCancelledLocal != null)
+                OnReservationCancelledLocal(Timestamp, Sender, Reservation, ReservationCancellation);
 
         }
 

@@ -33,6 +33,12 @@ namespace org.GraphDefined.WWCP
     public interface IRemoteEVSE
     {
 
+        #region Properties
+
+        EVSE_Id Id { get; }
+
+        #endregion
+
         #region Events
 
         event OnStatusChangedDelegate       OnStatusChanged;

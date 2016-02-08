@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Net.Security;
 
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
@@ -33,14 +34,14 @@ namespace org.GraphDefined.WWCP
     public interface INetworkAttached
     {
 
-        IPTransport IPTransport    { get; }
-        DNSClient   DNSClient      { get; }
-        String      Hostname       { get; }
-        IPPort      TCPPort        { get; }
-        Boolean     UseTLS         { get; }
-        String      VirtualHost    { get; }
-        String      URIPrefix      { get; }
-        TimeSpan    QueryTimeout   { get; }
+        IPTransport                          IPTransport                { get; }
+        DNSClient                            DNSClient                  { get; }
+        String                               Hostname                   { get; }
+        IPPort                               TCPPort                    { get; }
+        RemoteCertificateValidationCallback  RemoteCertificateValidator { get; }
+        String                               VirtualHost                { get; }
+        String                               URIPrefix                  { get; }
+        TimeSpan                             QueryTimeout               { get; }
 
     }
 

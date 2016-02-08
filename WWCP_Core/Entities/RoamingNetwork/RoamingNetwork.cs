@@ -1015,6 +1015,7 @@ namespace org.GraphDefined.WWCP
                     _EVSEOperator.OnAggregatedAdminStatusChanged                += UpdateAdminStatus;
 
                     _EVSEOperator.OnNewReservation                              += SendNewReservation;
+                    _EVSEOperator.OnReservationCancelled                        += SendOnReservationCancelled;
                     _EVSEOperator.OnNewChargingSession                          += SendNewChargingSession;
                     _EVSEOperator.OnNewChargeDetailRecord                       += SendNewChargeDetailRecord;
 
@@ -3009,35 +3010,28 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region OnReservationExpired
+        #region OnReservationCancelled
 
         /// <summary>
-        /// A delegate called whenever a reservation expired.
+        /// An event fired whenever a charging reservation was deleted.
         /// </summary>
-        /// <param name="Timestamp">The timestamp when this reservation expired.</param>
-        /// <param name="Reservation">The charging reservation.</param>
-        public delegate void OnReservationExpiredDelegate(DateTime Timestamp, ChargingReservation Reservation);
-
-        /// <summary>
-        /// An event fired whenever a reservation expired.
-        /// </summary>
-        public event OnReservationExpiredDelegate OnReservationExpired;
+        public event OnReservationCancelledDelegate OnReservationCancelled;
 
         #endregion
 
-        #region OnReservationDeleted
+        #region SendOnReservationCancelled(...)
 
-        /// <summary>
-        /// A delegate called whenever a reservation was deleted.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this reservation was deleted.</param>
-        /// <param name="Reservation">The charging reservation.</param>
-        public delegate void OnReservationDeletedDelegate(DateTime Timestamp, ChargingReservation Reservation);
+        private void SendOnReservationCancelled(DateTime                         Timestamp,
+                                                Object                           Sender,
+                                                ChargingReservation              Reservation,
+                                                ChargingReservationCancellation  ReservationCancellation)
+        {
 
-        /// <summary>
-        /// An event fired whenever a reservation was deleted.
-        /// </summary>
-        public event OnReservationDeletedDelegate OnReservationDeleted;
+            var OnReservationCancelledLocal = OnReservationCancelled;
+            if (OnReservationCancelledLocal != null)
+                OnReservationCancelledLocal(Timestamp, Sender, Reservation, ReservationCancellation);
+
+        }
 
         #endregion
 

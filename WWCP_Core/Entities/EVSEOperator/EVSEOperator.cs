@@ -778,6 +778,7 @@ namespace org.GraphDefined.WWCP
                     _ChargingPool.OnAggregatedAdminStatusChanged                += UpdateAggregatedChargingPoolAdminStatus;
 
                     _ChargingPool.OnNewReservation                              += SendNewReservation;
+                    _ChargingPool.OnReservationCancelled                        += SendOnReservationCancelled;
                     _ChargingPool.OnNewChargingSession                          += SendNewChargingSession;
                     _ChargingPool.OnNewChargeDetailRecord                       += SendNewChargeDetailRecord;
 
@@ -2317,8 +2318,16 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _ChargingReservations.SelectMany(kvp => kvp.Value.ChargingReservations).
-                                                 Concat(_RemoteEVSEOperator.ChargingReservations);
+
+                return _RemoteEVSEOperator == null
+
+                           ? _ChargingReservations.SelectMany(kvp => kvp.Value.ChargingReservations)
+
+                           : _ChargingReservations.SelectMany(kvp => kvp.Value.ChargingReservations).
+                                                       Concat(_RemoteEVSEOperator.
+                                                                  ChargingReservations.
+                                                                  Where(Reservation => Reservation != null));
+
             }
         }
 
@@ -2474,7 +2483,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            if (result != null)
+            if (result == null)
             {
 
                 var _ChargingPool = EVSEs.Where(evse => evse.Id == EVSEId).
@@ -2841,15 +2850,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region OnReservationDeleted
-
-        /// <summary>
-        /// An event fired whenever a charging reservation was deleted.
-        /// </summary>
-        public event OnReservationCancelledDelegate OnReservationDeleted;
-
-        #endregion
-
         #region CancelReservation(ReservationId)
 
         /// <summary>
@@ -2867,6 +2867,31 @@ namespace org.GraphDefined.WWCP
                 return await _ChargingPool.CancelReservation(ReservationId, ReservationCancellation);
 
             return false;
+
+        }
+
+        #endregion
+
+        #region OnReservationCancelled
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was deleted.
+        /// </summary>
+        public event OnReservationCancelledDelegate OnReservationCancelled;
+
+        #endregion
+
+        #region SendOnReservationCancelled(...)
+
+        private void SendOnReservationCancelled(DateTime                         Timestamp,
+                                                Object                           Sender,
+                                                ChargingReservation              Reservation,
+                                                ChargingReservationCancellation  ReservationCancellation)
+        {
+
+            var OnReservationCancelledLocal = OnReservationCancelled;
+            if (OnReservationCancelledLocal != null)
+                OnReservationCancelledLocal(Timestamp, Sender, Reservation, ReservationCancellation);
 
         }
 
@@ -3704,7 +3729,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
         #endregion
-
 
 
         #region IComparable<EVSEOperator> Members

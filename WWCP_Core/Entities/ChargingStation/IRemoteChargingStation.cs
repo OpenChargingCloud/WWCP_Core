@@ -64,6 +64,8 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        event OnReservationCancelledDelegate OnReservationCancelled;
+
 
         IRemoteEVSE CreateNewEVSE(EVSE_Id                           EVSEId,
                                   Action<EVSE>                      Configurator  = null,
@@ -136,6 +138,11 @@ namespace org.GraphDefined.WWCP
                                         IEnumerable<eMA_Id>      eMAIds             = null,
                                         IEnumerable<UInt32>      PINs               = null,
                                         TimeSpan?                QueryTimeout       = null);
+
+        /// <summary>
+        /// Remote charging reservations.
+        /// </summary>
+        IEnumerable<ChargingReservation> ChargingReservations { get; }
 
         #endregion
 

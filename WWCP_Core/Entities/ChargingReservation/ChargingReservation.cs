@@ -73,28 +73,16 @@ namespace org.GraphDefined.WWCP
 
         #region IsExpired
 
-        private Boolean _IsExpired;
-
         /// <summary>
         /// returns true if the charging reservation is expired.
         /// </summary>
         [InternalUseOnly]
         public Boolean IsExpired
         {
-
             get
             {
-                return _IsExpired;
+                return DateTime.Now > _EndTime;
             }
-
-            set
-            {
-                if (_IsExpired == false && value == true)
-                {
-                    _IsExpired = true;
-                }
-            }
-
         }
 
         #endregion
@@ -139,6 +127,21 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return _Duration;
+            }
+        }
+
+        #endregion
+
+        #region EndTime
+
+        private readonly DateTime _EndTime;
+
+        [Mandatory]
+        public DateTime EndTime
+        {
+            get
+            {
+                return _EndTime;
             }
         }
 
@@ -355,6 +358,7 @@ namespace org.GraphDefined.WWCP
             this._ReservationId      = ReservationId;
             this._StartTime          = StartTime;
             this._Duration           = Duration;
+            this._EndTime            = StartTime + Duration;
 
             this._ReservationLevel   = ReservationLevel;
             this._RoamingNetwork     = RoamingNetwork;

@@ -214,8 +214,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (SessionId == null)
-                throw new ArgumentNullException(nameof(SessionId), "The given charging session identification must not be null!");
+            if (ChargeDetailRecord == null)
+                throw new ArgumentNullException(nameof(ChargeDetailRecord), "The given charge detail record must not be null!");
 
             #endregion
 

@@ -39,6 +39,11 @@ namespace org.GraphDefined.WWCP
         #region Reserve(...)
 
         /// <summary>
+        /// Remote charging reservations.
+        /// </summary>
+        IEnumerable<ChargingReservation> ChargingReservations { get; }
+
+        /// <summary>
         /// Reserve the possibility to charge at the given EVSE.
         /// </summary>
         /// <param name="Timestamp">The timestamp of this request.</param>
