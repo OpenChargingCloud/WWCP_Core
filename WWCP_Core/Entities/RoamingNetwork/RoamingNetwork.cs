@@ -1365,6 +1365,31 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ChargingPoolAdminStatus
+
+        /// <summary>
+        /// Return the admin status of all charging pools registered within this roaming network.
+        /// </summary>
+        public IEnumerable<KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusType>>>> ChargingPoolAdminStatus
+        {
+            get
+            {
+
+                return _EVSEOperators.Values.
+                           SelectMany(evseoperator =>
+                               evseoperator.Select(pool =>
+
+                                           new KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusType>>>(
+                                               pool.Id,
+                                               pool.AdminStatusSchedule)
+
+                                       ));
+
+            }
+        }
+
+        #endregion
+
 
         #region ContainsChargingPool(ChargingPool)
 
@@ -1680,6 +1705,32 @@ namespace org.GraphDefined.WWCP
                                            new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusType>>>(
                                                station.Id,
                                                station.StatusSchedule)
+
+                                       )));
+
+            }
+        }
+
+        #endregion
+
+        #region ChargingStationAdminStatus
+
+        /// <summary>
+        /// Return the admin status of all charging stations registered within this roaming network.
+        /// </summary>
+        public IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusType>>>> ChargingStationAdminStatus
+        {
+            get
+            {
+
+                return _EVSEOperators.Values.
+                           SelectMany(evseoperator =>
+                               evseoperator.SelectMany(pool =>
+                                   pool.Select(station =>
+
+                                           new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusType>>>(
+                                               station.Id,
+                                               station.AdminStatusSchedule)
 
                                        )));
 
@@ -2045,6 +2096,33 @@ namespace org.GraphDefined.WWCP
                                            new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>(
                                                evse.Id,
                                                evse.StatusSchedule)
+
+                                       ))));
+
+            }
+        }
+
+        #endregion
+
+        #region EVSEAdminStatus
+
+        /// <summary>
+        /// Return the admin status of all EVSEs registered within this roaming network.
+        /// </summary>
+        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatus
+        {
+            get
+            {
+
+                return _EVSEOperators.Values.
+                           SelectMany(evseoperator =>
+                               evseoperator.SelectMany(pool =>
+                                   pool.SelectMany(station =>
+                                       station.Select(evse =>
+
+                                           new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>(
+                                               evse.Id,
+                                               evse.AdminStatusSchedule)
 
                                        ))));
 

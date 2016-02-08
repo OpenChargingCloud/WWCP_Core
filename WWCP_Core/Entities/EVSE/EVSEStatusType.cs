@@ -60,25 +60,30 @@ namespace org.GraphDefined.WWCP
         Reserved            = 6,
 
         /// <summary>
+        /// The EVSE is unlocked and waiting for customer plugin.
+        /// </summary>
+        WaitingForPlugin    = 7,
+
+        /// <summary>
         /// An ongoing charging session.
         /// </summary>
-        Charging            = 7,
+        Charging            = 8,
 
         /// <summary>
         /// An error has occured.
         /// </summary>
-        Faulted             = 8,
+        Faulted             = 9,
 
         /// <summary>
         /// Private or internal use.
         /// </summary>
-        Other               = 9,
+        Other               = 10,
 
         /// <summary>
         /// The EVSE was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownEVSE         = 10
+        UnknownEVSE         = 11
 
     }
 
