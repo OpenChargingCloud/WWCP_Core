@@ -46,24 +46,46 @@ namespace org.GraphDefined.WWCP
     /// <param name="NewValue">The new value of the changed property.</param>
     public delegate void OnRemoteEVSEDataChangedDelegate(DateTime Timestamp, IRemoteEVSE EVSE, String PropertyName, Object OldValue, Object NewValue);
 
-    /// <summary>
-    /// A delegate called whenever the dynamic status of any subordinated EVSE changed.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp when this change was detected.</param>
-    /// <param name="EVSE">The updated remote EVSE.</param>
-    /// <param name="OldStatus">The old timestamped status of the EVSE.</param>
-    /// <param name="NewStatus">The new timestamped status of the EVSE.</param>
-    public delegate void OnRemoteEVSEStatusChangedDelegate(DateTime Timestamp, IRemoteEVSE EVSE, Timestamped<EVSEStatusType> OldStatus, Timestamped<EVSEStatusType> NewStatus);
+    ///// <summary>
+    ///// A delegate called whenever the dynamic status of any subordinated EVSE changed.
+    ///// </summary>
+    ///// <param name="Timestamp">The timestamp when this change was detected.</param>
+    ///// <param name="EVSE">The updated remote EVSE.</param>
+    ///// <param name="OldStatus">The old timestamped status of the EVSE.</param>
+    ///// <param name="NewStatus">The new timestamped status of the EVSE.</param>
+    //public delegate void OnRemoteEVSEStatusChangedDelegate(DateTime Timestamp, IRemoteEVSE EVSE, Timestamped<EVSEStatusType> OldStatus, Timestamped<EVSEStatusType> NewStatus);
+
+
+    ///// <summary>
+    ///// A delegate called whenever the admin status of any subordinated EVSE changed.
+    ///// </summary>
+    ///// <param name="Timestamp">The timestamp when this change was detected.</param>
+    ///// <param name="EVSE">The updated remote EVSE.</param>
+    ///// <param name="OldStatus">The old timestamped admin status of the EVSE.</param>
+    ///// <param name="NewStatus">The new timestamped admin status of the EVSE.</param>
+    //public delegate void OnRemoteEVSEAdminStatusChangedDelegate(DateTime Timestamp, IRemoteEVSE EVSE, Timestamped<EVSEAdminStatusType> OldStatus, Timestamped<EVSEAdminStatusType> NewStatus);
+
+
 
 
     /// <summary>
-    /// A delegate called whenever the admin status of any subordinated EVSE changed.
+    /// A delegate called whenever the dynamic status of the charging station changed.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
-    /// <param name="EVSE">The updated remote EVSE.</param>
-    /// <param name="OldStatus">The old timestamped admin status of the EVSE.</param>
-    /// <param name="NewStatus">The new timestamped admin status of the EVSE.</param>
-    public delegate void OnRemoteEVSEAdminStatusChangedDelegate(DateTime Timestamp, IRemoteEVSE EVSE, Timestamped<EVSEAdminStatusType> OldStatus, Timestamped<EVSEAdminStatusType> NewStatus);
+    /// <param name="ChargingStation">The charging station.</param>
+    /// <param name="OldEVSEStatus">The old timestamped status of the charging station.</param>
+    /// <param name="NewEVSEStatus">The new timestamped status of the charging station.</param>
+    public delegate void OnChargingStationStatusChangedDelegate(DateTime Timestamp, IRemoteChargingStation ChargingStation, Timestamped<ChargingStationStatusType> OldEVSEStatus, Timestamped<ChargingStationStatusType> NewEVSEStatus);
+
+
+    /// <summary>
+    /// A delegate called whenever the admin status of the charging station changed.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="ChargingStation">The charging station.</param>
+    /// <param name="OldEVSEStatus">The old timestamped status of the charging station.</param>
+    /// <param name="NewEVSEStatus">The new timestamped status of the charging station.</param>
+    public delegate void OnChargingStationAdminStatusChangedDelegate(DateTime Timestamp, IRemoteChargingStation ChargingStation, Timestamped<ChargingStationAdminStatusType> OldEVSEStatus, Timestamped<ChargingStationAdminStatusType> NewEVSEStatus);
 
 
 

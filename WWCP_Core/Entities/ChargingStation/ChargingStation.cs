@@ -981,8 +981,8 @@ namespace org.GraphDefined.WWCP
                 if (_RemoteChargingStation != null)
                 {
 
-                    _RemoteChargingStation.OnReservationCancelled    += SendOnReservationCancelled;
-                    _RemoteChargingStation.OnRemoteEVSEStatusChanged += (Timestamp, EVSE, OldStatus, NewStatus) => UpdateEVSEStatus(Timestamp, GetEVSEbyId(EVSE.Id), OldStatus, NewStatus);
+                    _RemoteChargingStation.OnReservationCancelled += SendOnReservationCancelled;
+                    _RemoteChargingStation.OnEVSEStatusChanged    += (Timestamp, EVSE, OldStatus, NewStatus) => UpdateEVSEStatus(Timestamp, GetEVSEbyId(EVSE.Id), OldStatus, NewStatus);
 
                 }
 
@@ -1762,8 +1762,8 @@ namespace org.GraphDefined.WWCP
                                                      CancellationToken        CancellationToken,
                                                      EventTracking_Id         EventTrackingId,
                                                      EVSE_Id                  EVSEId,
-                                                     DateTime?                StartTime,
-                                                     TimeSpan?                Duration,
+                                                     DateTime?                StartTime          = null,
+                                                     TimeSpan?                Duration           = null,
                                                      ChargingReservation_Id   ReservationId      = null,
                                                      EVSP_Id                  ProviderId         = null,
                                                      ChargingProduct_Id       ChargingProductId  = null,

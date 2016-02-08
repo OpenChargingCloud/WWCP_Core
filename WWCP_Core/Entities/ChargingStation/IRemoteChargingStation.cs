@@ -36,9 +36,9 @@ namespace org.GraphDefined.WWCP
     public interface IRemoteChargingStation
     {
 
-        IEnumerable<EVSE> EVSEs { get; }
-        ChargingStation_Id        Id      { get; }
-        ChargingStationStatusType Status  { get; }
+        IEnumerable<EVSE>                      EVSEs   { get; }
+        ChargingStation_Id                     Id      { get; }
+        Timestamped<ChargingStationStatusType> Status  { get; }
 
 
         #region OnEVSEDataChanged
@@ -55,12 +55,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever the dynamic status of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteEVSEStatusChangedDelegate OnRemoteEVSEStatusChanged;
+        event OnEVSEStatusChangedDelegate OnEVSEStatusChanged;
 
         /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteEVSEAdminStatusChangedDelegate OnRemoteEVSEAdminStatusChanged;
+        event OnEVSEAdminStatusChangedDelegate OnEVSEAdminStatusChanged;
 
         #endregion
 

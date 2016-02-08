@@ -26,6 +26,7 @@ namespace org.GraphDefined.WWCP
 {
 
 
+
     /// <summary>
     /// A delegate called whenever the dynamic status of the EVSE changed.
     /// </summary>
@@ -33,7 +34,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EVSE">The EVSE.</param>
     /// <param name="OldEVSEStatus">The old timestamped status of the EVSE.</param>
     /// <param name="NewEVSEStatus">The new timestamped status of the EVSE.</param>
-    public delegate void OnStatusChangedDelegate(DateTime Timestamp, IRemoteEVSE EVSE, Timestamped<EVSEStatusType> OldEVSEStatus, Timestamped<EVSEStatusType> NewEVSEStatus);
+    public delegate void OnEVSEStatusChangedDelegate(DateTime Timestamp, IRemoteEVSE EVSE, Timestamped<EVSEStatusType> OldEVSEStatus, Timestamped<EVSEStatusType> NewEVSEStatus);
 
 
     /// <summary>
@@ -43,9 +44,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EVSE">The EVSE.</param>
     /// <param name="OldEVSEStatus">The old timestamped status of the EVSE.</param>
     /// <param name="NewEVSEStatus">The new timestamped status of the EVSE.</param>
-    public delegate void OnAdminStatusChangedDelegate(DateTime Timestamp, IRemoteEVSE EVSE, Timestamped<EVSEAdminStatusType> OldEVSEStatus, Timestamped<EVSEAdminStatusType> NewEVSEStatus);
-
-
+    public delegate void OnEVSEAdminStatusChangedDelegate(DateTime Timestamp, IRemoteEVSE EVSE, Timestamped<EVSEAdminStatusType> OldEVSEStatus, Timestamped<EVSEAdminStatusType> NewEVSEStatus);
 
 
     /// <summary>

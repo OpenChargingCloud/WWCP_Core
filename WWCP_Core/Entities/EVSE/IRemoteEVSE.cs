@@ -41,8 +41,8 @@ namespace org.GraphDefined.WWCP
 
         #region Events
 
-        event OnStatusChangedDelegate       OnStatusChanged;
-        event OnAdminStatusChangedDelegate  OnAdminStatusChanged;
+        event OnEVSEStatusChangedDelegate       OnStatusChanged;
+        event OnEVSEAdminStatusChangedDelegate  OnAdminStatusChanged;
 
 
         /// <summary>
