@@ -2392,19 +2392,19 @@ namespace org.GraphDefined.WWCP
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public async Task<ReservationResult>
 
-            Reserve(DateTime Timestamp,
-                    CancellationToken CancellationToken,
-                    EventTracking_Id EventTrackingId,
-                    EVSE_Id EVSEId,
-                    DateTime? StartTime,
-                    TimeSpan? Duration,
-                    ChargingReservation_Id ReservationId = null,
-                    EVSP_Id ProviderId = null,
-                    ChargingProduct_Id ChargingProductId = null,
-                    IEnumerable<Auth_Token> AuthTokens = null,
-                    IEnumerable<eMA_Id> eMAIds = null,
-                    IEnumerable<UInt32> PINs = null,
-                    TimeSpan? QueryTimeout = null)
+            Reserve(DateTime                 Timestamp,
+                    CancellationToken        CancellationToken,
+                    EventTracking_Id         EventTrackingId,
+                    EVSE_Id                  EVSEId,
+                    DateTime?                StartTime          = null,
+                    TimeSpan?                Duration           = null,
+                    ChargingReservation_Id   ReservationId      = null,
+                    EVSP_Id                  ProviderId         = null,
+                    ChargingProduct_Id       ChargingProductId  = null,
+                    IEnumerable<Auth_Token>  AuthTokens         = null,
+                    IEnumerable<eMA_Id>      eMAIds             = null,
+                    IEnumerable<UInt32>      PINs               = null,
+                    TimeSpan?                QueryTimeout       = null)
 
         {
 
@@ -2581,8 +2581,8 @@ namespace org.GraphDefined.WWCP
                     CancellationToken        CancellationToken,
                     EventTracking_Id         EventTrackingId,
                     ChargingStation_Id       ChargingStationId,
-                    DateTime?                StartTime,
-                    TimeSpan?                Duration,
+                    DateTime?                StartTime          = null,
+                    TimeSpan?                Duration           = null,
                     ChargingReservation_Id   ReservationId      = null,
                     EVSP_Id                  ProviderId         = null,
                     ChargingProduct_Id       ChargingProductId  = null,
@@ -2708,8 +2708,8 @@ namespace org.GraphDefined.WWCP
                     CancellationToken        CancellationToken,
                     EventTracking_Id         EventTrackingId,
                     ChargingPool_Id          ChargingPoolId,
-                    DateTime?                StartTime,
-                    TimeSpan?                Duration,
+                    DateTime?                StartTime          = null,
+                    TimeSpan?                Duration           = null,
                     ChargingReservation_Id   ReservationId      = null,
                     EVSP_Id                  ProviderId         = null,
                     ChargingProduct_Id       ChargingProductId  = null,
