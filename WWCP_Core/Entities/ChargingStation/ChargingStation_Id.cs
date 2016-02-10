@@ -506,6 +506,30 @@ namespace org.GraphDefined.WWCP
 
                 }
 
+                // New format without the 'S'...
+                else if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[5].Value, out __EVSEOperatorId))
+                {
+
+                    ChargingStationId = new ChargingStation_Id(__EVSEOperatorId,
+                                                               _MatchCollection[0].Groups[6].Value,
+                                                               IdFormatType.NEW);
+
+                    return true;
+
+                }
+
+                // Old format without the 'S'...
+                else if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[7].Value, out __EVSEOperatorId))
+                {
+
+                    ChargingStationId = new ChargingStation_Id(__EVSEOperatorId,
+                                                               _MatchCollection[0].Groups[8].Value,
+                                                               IdFormatType.OLD);
+
+                    return true;
+
+                }
+
             }
             catch (Exception e)
             { }

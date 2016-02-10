@@ -215,6 +215,10 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        public Func<ChargingStation_Id, ChargingStation_Id> MapChargingStationIds { get; set; }
+        public Func<EVSE_Id, EVSE_Id>                       MapEVSEIds            { get; set; }
+
         #endregion
 
         #region Events
