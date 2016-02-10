@@ -46,7 +46,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The regular expression for parsing a charging station identification.
         /// </summary>
-        public    const    String  ChargingStationId_RegEx  = @"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?S([A-Z0-9][A-Z0-9\*]{0,30})$ | ^(\+?[0-9]{1,3}\*?[0-9]{3})\*?S([A-Z0-9][A-Z0-9\*]{0,30})$";
+        public    const    String  ChargingStationId_RegEx  = @"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?S([A-Z0-9][A-Z0-9\*]{0,30})$ | ^(\+?[0-9]{1,3}\*?[0-9]{3})\*?S([A-Z0-9][A-Z0-9\*]{0,30}) | " +
+                                                              @"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?([A-Z0-9][A-Z0-9\*]{0,30})$ | ^(\+?[0-9]{1,3}\*?[0-9]{3})\*?([A-Z0-9][A-Z0-9\*]{0,30})$";
 
         /// <summary>
         /// The regular expression for parsing a charging station identification.
