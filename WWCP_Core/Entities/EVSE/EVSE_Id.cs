@@ -146,10 +146,10 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (OperatorId == null)
-                throw new ArgumentNullException("OperatorId", "The parameter must not be null!");
+                throw new ArgumentNullException(nameof(OperatorId),  "The parameter must not be null!");
 
             if (IdSuffix.IsNullOrEmpty())
-                throw new ArgumentNullException("IdSuffix", "The parameter must not be null or empty!");
+                throw new ArgumentNullException(nameof(IdSuffix),    "The parameter must not be null or empty!");
 
             #endregion
 
@@ -158,7 +158,7 @@ namespace org.GraphDefined.WWCP
                                                  RegexOptions.IgnorePatternWhitespace);
 
             if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal EVSE identification '" + OperatorId.ToString() + "' with suffix '" + IdSuffix + "'!", "IdSuffix");
+                throw new ArgumentException("Illegal EVSE identification '" + OperatorId.ToString() + "' with suffix '" + IdSuffix + "'!");
 
             this._OperatorId  = OperatorId;
             this._Suffix      = _MatchCollection[0].Value;
@@ -180,7 +180,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (Text.IsNullOrEmpty())
-                throw new ArgumentException("The parameter must not be null or empty!", "Text");
+                throw new ArgumentNullException(nameof(Text), "The parameter must not be null or empty!");
 
             #endregion
 
@@ -189,7 +189,7 @@ namespace org.GraphDefined.WWCP
                                                  RegexOptions.IgnorePatternWhitespace);
 
             if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal EVSE identification '" + Text + "'!", "EVSEId");
+                throw new ArgumentException("Illegal EVSE identification '" + Text + "'!");
 
             EVSEOperator_Id __EVSEOperatorId = null;
 
@@ -204,7 +204,7 @@ namespace org.GraphDefined.WWCP
                                    IdFormatType.OLD);
 
 
-            throw new ArgumentException("Illegal EVSE identification '" + Text + "'!", "EVSEId");
+            throw new ArgumentException("Illegal EVSE identification '" + Text + "'!");
 
         }
 
@@ -221,10 +221,10 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (OperatorId == null)
-                throw new ArgumentException("The parameter must not be null or empty!", "OperatorId");
+                throw new ArgumentNullException(nameof(OperatorId),  "The EVSE operator identification must not be null or empty!");
 
             if (IdSuffix.IsNullOrEmpty())
-                throw new ArgumentException("The parameter must not be null or empty!", "IdSuffix");
+                throw new ArgumentNullException(nameof(IdSuffix),    "The parameter must not be null or empty!");
 
             #endregion
 
