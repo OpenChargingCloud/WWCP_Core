@@ -65,7 +65,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        event OnReservationCancelledDelegate OnReservationCancelled;
+        event OnReservationCancelledInternalDelegate OnReservationCancelled;
 
 
         IRemoteEVSE CreateNewEVSE(EVSE_Id                           EVSEId,
@@ -106,6 +106,7 @@ namespace org.GraphDefined.WWCP
                                         TimeSpan?                Duration,
                                         ChargingReservation_Id   ReservationId      = null,
                                         EVSP_Id                  ProviderId         = null,
+                                        eMA_Id                   eMAId              = null,
                                         ChargingProduct_Id       ChargingProductId  = null,
                                         IEnumerable<Auth_Token>  AuthTokens         = null,
                                         IEnumerable<eMA_Id>      eMAIds             = null,
@@ -150,7 +151,7 @@ namespace org.GraphDefined.WWCP
         Boolean TryGetReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation);
 
         Task<Boolean> CancelReservation(ChargingReservation_Id           ReservationId,
-                                        ChargingReservationCancellation  ReservationCancellation);
+                                        ChargingReservationCancellationReason  ReservationCancellation);
 
         /// <summary>
         /// Initiate a remote start of the given charging session at the given charging station

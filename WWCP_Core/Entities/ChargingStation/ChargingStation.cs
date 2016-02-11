@@ -1726,7 +1726,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a charging station is being reserved.
         /// </summary>
-        public event OnReserveChargingStationDelegate   OnReserveChargingStation;
+        public event OnChargingStationReserveDelegate   OnReserveChargingStation;
 
         /// <summary>
         /// An event fired whenever a charging station was reserved.
@@ -1753,24 +1753,29 @@ namespace org.GraphDefined.WWCP
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
+        /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
-        public async Task<ReservationResult> Reserve(DateTime                 Timestamp,
-                                                     CancellationToken        CancellationToken,
-                                                     EventTracking_Id         EventTrackingId,
-                                                     EVSE_Id                  EVSEId,
-                                                     DateTime?                StartTime          = null,
-                                                     TimeSpan?                Duration           = null,
-                                                     ChargingReservation_Id   ReservationId      = null,
-                                                     EVSP_Id                  ProviderId         = null,
-                                                     ChargingProduct_Id       ChargingProductId  = null,
-                                                     IEnumerable<Auth_Token>  AuthTokens         = null,
-                                                     IEnumerable<eMA_Id>      eMAIds             = null,
-                                                     IEnumerable<UInt32>      PINs               = null,
-                                                     TimeSpan?                QueryTimeout       = null)
+        public async Task<ReservationResult>
+
+            Reserve(DateTime                 Timestamp,
+                    CancellationToken        CancellationToken,
+                    EventTracking_Id         EventTrackingId,
+                    EVSE_Id                  EVSEId,
+                    DateTime?                StartTime          = null,
+                    TimeSpan?                Duration           = null,
+                    ChargingReservation_Id   ReservationId      = null,
+                    EVSP_Id                  ProviderId         = null,
+                    eMA_Id                   eMAId              = null,
+                    ChargingProduct_Id       ChargingProductId  = null,
+                    IEnumerable<Auth_Token>  AuthTokens         = null,
+                    IEnumerable<eMA_Id>      eMAIds             = null,
+                    IEnumerable<UInt32>      PINs               = null,
+                    TimeSpan?                QueryTimeout       = null)
+
         {
 
             #region Initial checks
@@ -1803,10 +1808,12 @@ namespace org.GraphDefined.WWCP
                                        StartTime,
                                        Duration,
                                        ProviderId,
+                                       eMAId,
                                        ChargingProductId,
                                        AuthTokens,
                                        eMAIds,
-                                       PINs);
+                                       PINs,
+                                       QueryTimeout);
 
             }
             catch (Exception e)
@@ -1830,6 +1837,7 @@ namespace org.GraphDefined.WWCP
                                              Duration,
                                              ReservationId,
                                              ProviderId,
+                                             eMAId,
                                              ChargingProductId,
                                              AuthTokens,
                                              eMAIds,
@@ -1860,12 +1868,14 @@ namespace org.GraphDefined.WWCP
                                         StartTime,
                                         Duration,
                                         ProviderId,
+                                        eMAId,
                                         ChargingProductId,
                                         AuthTokens,
                                         eMAIds,
                                         PINs,
                                         result,
-                                        Runtime.Elapsed);
+                                        Runtime.Elapsed,
+                                        QueryTimeout);
 
             }
             catch (Exception e)
@@ -1893,23 +1903,28 @@ namespace org.GraphDefined.WWCP
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
+        /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
-        public async Task<ReservationResult> Reserve(DateTime                 Timestamp,
-                                                     CancellationToken        CancellationToken,
-                                                     EventTracking_Id         EventTrackingId,
-                                                     DateTime?                StartTime          = null,
-                                                     TimeSpan?                Duration           = null,
-                                                     ChargingReservation_Id   ReservationId      = null,
-                                                     EVSP_Id                  ProviderId         = null,
-                                                     ChargingProduct_Id       ChargingProductId  = null,
-                                                     IEnumerable<Auth_Token>  AuthTokens         = null,
-                                                     IEnumerable<eMA_Id>      eMAIds             = null,
-                                                     IEnumerable<UInt32>      PINs               = null,
-                                                     TimeSpan?                QueryTimeout       = null)
+        public async Task<ReservationResult>
+
+            Reserve(DateTime                 Timestamp,
+                    CancellationToken        CancellationToken,
+                    EventTracking_Id         EventTrackingId,
+                    DateTime?                StartTime          = null,
+                    TimeSpan?                Duration           = null,
+                    ChargingReservation_Id   ReservationId      = null,
+                    EVSP_Id                  ProviderId         = null,
+                    eMA_Id                   eMAId              = null,
+                    ChargingProduct_Id       ChargingProductId  = null,
+                    IEnumerable<Auth_Token>  AuthTokens         = null,
+                    IEnumerable<eMA_Id>      eMAIds             = null,
+                    IEnumerable<UInt32>      PINs               = null,
+                    TimeSpan?                QueryTimeout       = null)
+
         {
 
             #region Initial checks
@@ -1923,21 +1938,34 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveChargingStation event
 
-            var OnReserveChargingStationLocal = OnReserveChargingStation;
-            if (OnReserveChargingStationLocal != null)
-                OnReserveChargingStationLocal(this,
-                                              Timestamp,
-                                              EventTrackingId,
-                                              _ChargingPool.Operator.RoamingNetwork.Id,
-                                              Id,
-                                              StartTime,
-                                              Duration,
-                                              ReservationId,
-                                              ProviderId,
-                                              ChargingProductId,
-                                              AuthTokens,
-                                              eMAIds,
-                                              PINs);
+            var Runtime = Stopwatch.StartNew();
+
+            try
+            {
+
+                var OnReserveChargingStationLocal = OnReserveChargingStation;
+                if (OnReserveChargingStationLocal != null)
+                    OnReserveChargingStationLocal(this,
+                                                  Timestamp,
+                                                  EventTrackingId,
+                                                  _ChargingPool.Operator.RoamingNetwork.Id,
+                                                  Id,
+                                                  StartTime,
+                                                  Duration,
+                                                  ReservationId,
+                                                  ProviderId,
+                                                  eMAId,
+                                                  ChargingProductId,
+                                                  AuthTokens,
+                                                  eMAIds,
+                                                  PINs,
+                                                  QueryTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("ChargingStation." + nameof(OnReserveChargingStation));
+            }
 
             #endregion
 
@@ -1967,22 +1995,36 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnChargingStationReserved event
 
-            var OnChargingStationReservedLocal = OnChargingStationReserved;
-            if (OnChargingStationReservedLocal != null)
-                OnChargingStationReservedLocal(this,
-                                               Timestamp,
-                                               EventTrackingId,
-                                               _ChargingPool.Operator.RoamingNetwork.Id,
-                                               Id,
-                                               StartTime,
-                                               Duration,
-                                               ReservationId,
-                                               ProviderId,
-                                               ChargingProductId,
-                                               AuthTokens,
-                                               eMAIds,
-                                               PINs,
-                                               result);
+            Runtime.Stop();
+
+            try
+            {
+
+                var OnChargingStationReservedLocal = OnChargingStationReserved;
+                if (OnChargingStationReservedLocal != null)
+                    OnChargingStationReservedLocal(this,
+                                                   Timestamp,
+                                                   EventTrackingId,
+                                                   _ChargingPool.Operator.RoamingNetwork.Id,
+                                                   Id,
+                                                   StartTime,
+                                                   Duration,
+                                                   ReservationId,
+                                                   ProviderId,
+                                                   eMAId,
+                                                   ChargingProductId,
+                                                   AuthTokens,
+                                                   eMAIds,
+                                                   PINs,
+                                                   result,
+                                                   Runtime.Elapsed,
+                                                   QueryTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log("ChargingStation." + nameof(OnChargingStationReserved));
+            }
 
             #endregion
 
@@ -2031,15 +2073,16 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CancelReservation(ReservationId)
+        #region CancelReservation(ReservationId, Reason)
 
         /// <summary>
         /// Try to remove the given charging reservation.
         /// </summary>
         /// <param name="ReservationId">The unique charging reservation identification.</param>
+        /// <param name="Reason">A reason for this cancellation.</param>
         /// <returns>True when successful, false otherwise</returns>
-        public async Task<Boolean> CancelReservation(ChargingReservation_Id           ReservationId,
-                                                     ChargingReservationCancellation  ReservationCancellation)
+        public async Task<Boolean> CancelReservation(ChargingReservation_Id                 ReservationId,
+                                                     ChargingReservationCancellationReason  Reason)
         {
 
             #region Initial checks
@@ -2051,7 +2094,7 @@ namespace org.GraphDefined.WWCP
 
             return await _EVSEs.Where   (evse => evse.Reservation    != null &&
                                                  evse.Reservation.Id == ReservationId).
-                                MapFirst(evse => evse.CancelReservation(ReservationId, ReservationCancellation),
+                                MapFirst(evse => evse.CancelReservation(ReservationId, Reason),
                                          Task.FromResult(false));
 
         }
@@ -2063,21 +2106,26 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a charging reservation was deleted.
         /// </summary>
-        public event OnReservationCancelledDelegate OnReservationCancelled;
+        public event OnReservationCancelledInternalDelegate OnReservationCancelled;
 
         #endregion
 
-        #region SendOnReservationCancelled(...)
+        #region (internal) SendOnReservationCancelled(...)
 
-        private void SendOnReservationCancelled(DateTime                         Timestamp,
-                                                Object                           Sender,
-                                                ChargingReservation              Reservation,
-                                                ChargingReservationCancellation  ReservationCancellation)
+        internal void SendOnReservationCancelled(DateTime                               Timestamp,
+                                                 Object                                 Sender,
+                                                 EventTracking_Id                       EventTrackingId,
+                                                 ChargingReservation                    Reservation,
+                                                 ChargingReservationCancellationReason  Reason)
         {
 
             var OnReservationCancelledLocal = OnReservationCancelled;
             if (OnReservationCancelledLocal != null)
-                OnReservationCancelledLocal(Timestamp, Sender, Reservation, ReservationCancellation);
+                OnReservationCancelledLocal(Timestamp,
+                                            Sender,
+                                            EventTrackingId,
+                                            Reservation,
+                                            Reason);
 
         }
 
@@ -2196,7 +2244,7 @@ namespace org.GraphDefined.WWCP
                                            SessionId,
                                            ProviderId,
                                            eMAId,
-                                           QueryTimeout.Value);
+                                           QueryTimeout);
 
             }
             catch (Exception e)
@@ -2323,7 +2371,7 @@ namespace org.GraphDefined.WWCP
                                                       SessionId,
                                                       ProviderId,
                                                       eMAId,
-                                                      QueryTimeout.Value);
+                                                      QueryTimeout);
 
             }
             catch (Exception e)
@@ -2555,7 +2603,7 @@ namespace org.GraphDefined.WWCP
                                       SessionId,
                                       ReservationHandling,
                                       ProviderId,
-                                      QueryTimeout.Value);
+                                      QueryTimeout);
 
             }
             catch (Exception e)
@@ -2705,7 +2753,7 @@ namespace org.GraphDefined.WWCP
                                           SessionId,
                                           ReservationHandling,
                                           ProviderId,
-                                          QueryTimeout.Value);
+                                          QueryTimeout);
 
             }
             catch (Exception e)
@@ -2827,7 +2875,7 @@ namespace org.GraphDefined.WWCP
                                                      SessionId,
                                                      ReservationHandling,
                                                      ProviderId,
-                                                     QueryTimeout.Value);
+                                                     QueryTimeout);
 
             }
             catch (Exception e)

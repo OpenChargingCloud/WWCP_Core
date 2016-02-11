@@ -21,7 +21,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The charging reservation cancellation.
     /// </summary>
-    public enum ChargingReservationCancellation
+    public enum ChargingReservationCancellationReason
     {
 
         /// <summary>

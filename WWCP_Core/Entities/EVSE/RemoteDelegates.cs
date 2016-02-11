@@ -55,14 +55,14 @@ namespace org.GraphDefined.WWCP
     /// <param name="Reservation">The new charging reservation.</param>
     public delegate void OnNewReservationDelegate(DateTime Timestamp, Object Sender, ChargingReservation Reservation);
 
-    /// <summary>
-    /// A delegate called whenever a charging reservation was cancelled.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp when this cancellation was detected.</param>
-    /// <param name="Sender">The sender of the event.</param>
-    /// <param name="Reservation">The cancelled charging reservation.</param>
-    /// <param name="ReservationCancellation">The reason for the cancellation.</param>
-    public delegate void OnReservationCancelledDelegate(DateTime Timestamp, Object Sender, ChargingReservation Reservation, ChargingReservationCancellation ReservationCancellation);
+    ///// <summary>
+    ///// A delegate called whenever a charging reservation was cancelled.
+    ///// </summary>
+    ///// <param name="Timestamp">The timestamp when this cancellation was detected.</param>
+    ///// <param name="Sender">The sender of the event.</param>
+    ///// <param name="Reservation">The cancelled charging reservation.</param>
+    ///// <param name="ReservationCancellation">The reason for the cancellation.</param>
+    //public delegate void OnReservationCancelledDelegate(DateTime Timestamp, Object Sender, ChargingReservation Reservation, ChargingReservationCancellation ReservationCancellation);
 
     /// <summary>
     /// A delegate called whenever a charging session was created.

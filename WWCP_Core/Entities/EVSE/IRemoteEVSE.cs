@@ -64,7 +64,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a charging reservation was cancelled.
         /// </summary>
-        event OnReservationCancelledDelegate  OnReservationCancelled;
+        event OnReservationCancelledInternalDelegate  OnReservationCancelled;
 
 
         /// <summary>
@@ -115,6 +115,7 @@ namespace org.GraphDefined.WWCP
                                         TimeSpan?                Duration,
                                         ChargingReservation_Id   ReservationId      = null,
                                         EVSP_Id                  ProviderId         = null,
+                                        eMA_Id                   eMAId              = null,
                                         ChargingProduct_Id       ChargingProductId  = null,
                                         IEnumerable<Auth_Token>  AuthTokens         = null,
                                         IEnumerable<eMA_Id>      eMAIds             = null,
@@ -136,7 +137,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <returns>True when successful, false otherwise</returns>
         Task<Boolean> CancelReservation(ChargingReservation_Id           ReservationId,
-                                        ChargingReservationCancellation  ReservationCancellation);
+                                        ChargingReservationCancellationReason  ReservationCancellation);
 
 
 

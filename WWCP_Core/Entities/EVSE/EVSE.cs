@@ -855,7 +855,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a charging reservation was deleted.
         /// </summary>
-        public event OnReservationCancelledDelegate OnReservationCancelled;
+        public event OnReservationCancelledInternalDelegate OnReservationCancelled;
 
         #endregion
 
@@ -872,6 +872,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
+        /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
@@ -884,6 +885,7 @@ namespace org.GraphDefined.WWCP
                                                      TimeSpan?                Duration           = null,
                                                      ChargingReservation_Id   ReservationId      = null,
                                                      EVSP_Id                  ProviderId         = null,
+                                                     eMA_Id                   eMAId              = null,
                                                      ChargingProduct_Id       ChargingProductId  = null,
                                                      IEnumerable<Auth_Token>  AuthTokens         = null,
                                                      IEnumerable<eMA_Id>      eMAIds             = null,
@@ -918,10 +920,12 @@ namespace org.GraphDefined.WWCP
                                    StartTime,
                                    Duration,
                                    ProviderId,
+                                   eMAId,
                                    ChargingProductId,
                                    AuthTokens,
                                    eMAIds,
-                                   PINs);
+                                   PINs,
+                                   QueryTimeout);
 
             }
             catch (Exception e)
@@ -945,6 +949,7 @@ namespace org.GraphDefined.WWCP
                                            Duration,
                                            ReservationId,
                                            ProviderId,
+                                           eMAId,
                                            ChargingProductId,
                                            AuthTokens,
                                            eMAIds,
@@ -984,12 +989,14 @@ namespace org.GraphDefined.WWCP
                                     StartTime,
                                     Duration,
                                     ProviderId,
+                                    eMAId,
                                     ChargingProductId,
                                     AuthTokens,
                                     eMAIds,
                                     PINs,
                                     result,
-                                    Runtime.Elapsed);
+                                    Runtime.Elapsed,
+                                    QueryTimeout);
 
             }
             catch (Exception e)
@@ -1011,9 +1018,10 @@ namespace org.GraphDefined.WWCP
         /// Try to remove the given charging reservation.
         /// </summary>
         /// <param name="ReservationId">The unique charging reservation identification.</param>
+        /// <param name="Reason">A reason for this cancellation.</param>
         /// <returns>True when successful, false otherwise</returns>
-        public async Task<Boolean> CancelReservation(ChargingReservation_Id           ReservationId,
-                                                     ChargingReservationCancellation  ReservationCancellation)
+        public async Task<Boolean> CancelReservation(ChargingReservation_Id                 ReservationId,
+                                                     ChargingReservationCancellationReason  Reason)
         {
 
             #region Initial checks
@@ -1033,7 +1041,7 @@ namespace org.GraphDefined.WWCP
             if (_RemoteEVSE != null)
                 return await _RemoteEVSE.
                                    ChargingStation.
-                                   CancelReservation(ReservationId, ReservationCancellation);
+                                   CancelReservation(ReservationId, Reason);
 
             else
             {
@@ -1042,7 +1050,11 @@ namespace org.GraphDefined.WWCP
 
                 _Reservation = null;
 
-                SendOnReservationCancelled(DateTime.Now, this, OldReservation, ReservationCancellation);
+                SendOnReservationCancelled(DateTime.Now,
+                                           this,
+                                           EventTracking_Id.New,
+                                           OldReservation,
+                                           Reason);
 
                 SetStatus(EVSEStatusType.Available);
 
@@ -1056,17 +1068,22 @@ namespace org.GraphDefined.WWCP
 
         #region (internal) SendOnReservationCancelled(...)
 
-        internal void SendOnReservationCancelled(DateTime                         Timestamp,
-                                                 Object                           Sender,
-                                                 ChargingReservation              Reservation,
-                                                 ChargingReservationCancellation  ReservationCancellation)
+        internal void SendOnReservationCancelled(DateTime                               Timestamp,
+                                                 Object                                 Sender,
+                                                 EventTracking_Id                       EventTrackingId,
+                                                 ChargingReservation                    Reservation,
+                                                 ChargingReservationCancellationReason  Reason)
         {
 
             _Reservation = null;
 
             var OnReservationCancelledLocal = OnReservationCancelled;
             if (OnReservationCancelledLocal != null)
-                OnReservationCancelledLocal(Timestamp, Sender, Reservation, ReservationCancellation);
+                OnReservationCancelledLocal(Timestamp,
+                                            Sender,
+                                            EventTrackingId,
+                                            Reservation,
+                                            Reason);
 
         }
 
@@ -1197,7 +1214,7 @@ namespace org.GraphDefined.WWCP
                                        SessionId,
                                        ProviderId,
                                        eMAId,
-                                       QueryTimeout.Value);
+                                       QueryTimeout);
 
             }
             catch (Exception e)
@@ -1357,7 +1374,7 @@ namespace org.GraphDefined.WWCP
                                       SessionId,
                                       ReservationHandling,
                                       ProviderId,
-                                      QueryTimeout.Value);
+                                      QueryTimeout);
 
             }
             catch (Exception e)
