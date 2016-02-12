@@ -2491,8 +2491,8 @@ namespace org.GraphDefined.WWCP
             {
 
                 var _ChargingPool = EVSEs.Where(evse => evse.Id == EVSEId).
-                                           Select(evse => evse.ChargingStation.ChargingPool).
-                                           FirstOrDefault();
+                                          Select(evse => evse.ChargingStation.ChargingPool).
+                                          FirstOrDefault();
 
                 if (_ChargingPool != null)
                 {
@@ -2516,6 +2516,9 @@ namespace org.GraphDefined.WWCP
                         _ChargingReservations.TryAdd(result.Reservation.Id, _ChargingPool);
 
                 }
+
+                else
+                    result = ReservationResult.UnknownEVSE;
 
             }
 

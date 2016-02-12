@@ -348,14 +348,21 @@ namespace org.GraphDefined.WWCP
                                    EVSE_Id                   EVSEId             = null,
                                    ChargingProduct_Id        ChargingProductId  = null,
 
-                                   IEnumerable<Auth_Token>   AuthTokens            = null,
+                                   IEnumerable<Auth_Token>   AuthTokens         = null,
                                    IEnumerable<eMA_Id>       eMAIds             = null,
                                    IEnumerable<UInt32>       PINs               = null)
 
         {
 
-            this._Timestamp          = Timestamp;
+            #region Initial checks
+
+            if (ReservationId == null)
+                throw new ArgumentNullException(nameof(ReservationId), "The given charging reservation identification must not be null!");
+
+            #endregion
+
             this._ReservationId      = ReservationId;
+            this._Timestamp          = Timestamp;
             this._StartTime          = StartTime;
             this._Duration           = Duration;
             this._EndTime            = StartTime + Duration;

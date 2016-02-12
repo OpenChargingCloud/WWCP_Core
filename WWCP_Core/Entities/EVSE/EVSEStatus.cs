@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
+#region Usings
+
 using System;
+
+#endregion
 
 namespace org.GraphDefined.WWCP
 {
@@ -23,7 +27,8 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current status of an EVSE.
     /// </summary>
-    public class EVSEStatus
+    public class EVSEStatus : IEquatable<EVSEStatus>,
+                              IComparable<EVSEStatus>
     {
 
         #region Properties
@@ -137,6 +142,251 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region Operator overloading
+
+        #region Operator == (EVSEStatus1, EVSEStatus2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EVSEStatus1">A EVSEStatus.</param>
+        /// <param name="EVSEStatus2">Another EVSEStatus.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
+        {
+
+            // If both are null, or both are same instance, return true.
+            if (Object.ReferenceEquals(EVSEStatus1, EVSEStatus2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (((Object) EVSEStatus1 == null) || ((Object) EVSEStatus2 == null))
+                return false;
+
+            return EVSEStatus1.Equals(EVSEStatus2);
+
+        }
+
+        #endregion
+
+        #region Operator != (EVSEStatus1, EVSEStatus2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EVSEStatus1">A EVSEStatus.</param>
+        /// <param name="EVSEStatus2">Another EVSEStatus.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
+        {
+            return !(EVSEStatus1 == EVSEStatus2);
+        }
+
+        #endregion
+
+        #region Operator <  (EVSEStatus1, EVSEStatus2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EVSEStatus1">A EVSEStatus.</param>
+        /// <param name="EVSEStatus2">Another EVSEStatus.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
+        {
+
+            if ((Object) EVSEStatus1 == null)
+                throw new ArgumentNullException("The given EVSEStatus1 must not be null!");
+
+            return EVSEStatus1.CompareTo(EVSEStatus2) < 0;
+
+        }
+
+        #endregion
+
+        #region Operator <= (EVSEStatus1, EVSEStatus2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EVSEStatus1">A EVSEStatus.</param>
+        /// <param name="EVSEStatus2">Another EVSEStatus.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
+        {
+            return !(EVSEStatus1 > EVSEStatus2);
+        }
+
+        #endregion
+
+        #region Operator >  (EVSEStatus1, EVSEStatus2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EVSEStatus1">A EVSEStatus.</param>
+        /// <param name="EVSEStatus2">Another EVSEStatus.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
+        {
+
+            if ((Object) EVSEStatus1 == null)
+                throw new ArgumentNullException("The given EVSEStatus1 must not be null!");
+
+            return EVSEStatus1.CompareTo(EVSEStatus2) > 0;
+
+        }
+
+        #endregion
+
+        #region Operator >= (EVSEStatus1, EVSEStatus2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EVSEStatus1">A EVSEStatus.</param>
+        /// <param name="EVSEStatus2">Another EVSEStatus.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
+        {
+            return !(EVSEStatus1 < EVSEStatus2);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region IComparable<EVSEStatus> Members
+
+        #region CompareTo(Object)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Object">An object to compare with.</param>
+        public Int32 CompareTo(Object Object)
+        {
+
+            if (Object == null)
+                throw new ArgumentNullException("The given object must not be null!");
+
+            // Check if the given object is an EVSEStatus.
+            var EVSEStatus = Object as EVSEStatus;
+            if ((Object) EVSEStatus == null)
+                throw new ArgumentException("The given object is not a EVSEStatus!");
+
+            return CompareTo(EVSEStatus);
+
+        }
+
+        #endregion
+
+        #region CompareTo(EVSEStatus)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EVSEStatus">An object to compare with.</param>
+        public Int32 CompareTo(EVSEStatus EVSEStatus)
+        {
+
+            if ((Object) EVSEStatus == null)
+                throw new ArgumentNullException("The given EVSEStatus must not be null!");
+
+            // Compare EVSE Ids
+            var _Result = _Id.CompareTo(EVSEStatus._Id);
+
+            // If equal: Compare EVSE status
+            if (_Result == 0)
+                _Result = _Status.CompareTo(EVSEStatus._Status);
+
+            return _Result;
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region IEquatable<EVSEStatus> Members
+
+        #region Equals(Object)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Object">An object to compare with.</param>
+        /// <returns>true|false</returns>
+        public override Boolean Equals(Object Object)
+        {
+
+            if (Object == null)
+                return false;
+
+            // Check if the given object is an EVSEStatus.
+            var EVSEStatus = Object as EVSEStatus;
+            if ((Object) EVSEStatus == null)
+                return false;
+
+            return this.Equals(EVSEStatus);
+
+        }
+
+        #endregion
+
+        #region Equals(EVSEStatus)
+
+        /// <summary>
+        /// Compares two EVSE identifications for equality.
+        /// </summary>
+        /// <param name="EVSEStatus">An EVSE identification to compare with.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public Boolean Equals(EVSEStatus EVSEStatus)
+        {
+
+            if ((Object) EVSEStatus == null)
+                return false;
+
+            return _Id.    Equals(EVSEStatus._Id) &&
+                   _Status.Equals(EVSEStatus._Status);
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region (override) GetHashCode()
+
+        /// <summary>
+        /// Return the HashCode of this object.
+        /// </summary>
+        /// <returns>The HashCode of this object.</returns>
+        public override Int32 GetHashCode()
+        {
+            unchecked
+            {
+                return _Id.GetHashCode() * 17 ^ _Status.GetHashCode();
+            }
+        }
+
+        #endregion
+
+        #region (override) ToString()
+
+        /// <summary>
+        /// Return a string representation of this object.
+        /// ISO-IEC-15118 – Annex H "Specification of Identifiers"
+        /// </summary>
+        public override String ToString()
+        {
+
+            return String.Concat(_Id, " -> ", _Status.ToString());
+
+        }
+
+        #endregion
 
     }
 
