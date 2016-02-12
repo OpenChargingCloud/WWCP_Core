@@ -18,24 +18,86 @@
 namespace org.GraphDefined.WWCP
 {
 
+    /// <summary>
+    /// Charging facilities
+    /// </summary>
     public enum ChargingFacilities
     {
 
-        Unspecified,                 // Unspecified
-        CF_100_120V_1Phase_less10A,  // 100 - 120V, 1-Phase ≤ 10A
-        CF_100_120V_1Phase_less16A,  // 100 - 120V, 1-Phase ≤ 16A
-        CF_100_120V_1Phase_less32A,  // 100 - 120V, 1-Phase ≤ 32A
-        CF_200_240V_1Phase_less10A,  // 200 - 240V, 1-Phase ≤ 10A
-        CF_200_240V_1Phase_less16A,  // 200 - 240V, 1-Phase ≤ 16A
-        CF_200_240V_1Phase_less32A,  // 200 - 240V, 1-Phase ≤ 32A
-        CF_200_240V_1Phase_over32A,  // 200 - 240V, 1-Phase > 32A
-        CF_380_480V_3Phase_less16A,  // 380 - 480V, 3-Phase ≤ 16A
-        CF_380_480V_3Phase_less32A,  // 380 - 480V, 3-Phase ≤ 32A
-        CF_380_480V_3Phase_less63A,  // 380 - 480V, 3-Phase ≤ 63A
-        Battery_exchange,            // Battery exchange
-        DCCharging_less20kW,         // DC Charging ≤ 20kW
-        DCCharging_less50kW,         // DC Charging ≤ 50kW
-        DCCharging_over50kW          // DC Charging > 50kW
+        /// <summary>
+        /// Unspecified
+        /// </summary>
+        Unspecified,
+
+        /// <summary>
+        /// 100 - 120V, 1-Phase ≤ 10A
+        /// </summary>
+        CF_100_120V_1Phase_lessOrEquals10A,
+
+        /// <summary>
+        /// 100 - 120V, 1-Phase ≤ 16A
+        /// </summary>
+        CF_100_120V_1Phase_lessOrEquals16A,
+
+        /// <summary>
+        /// 100 - 120V, 1-Phase ≤ 32A
+        /// </summary>
+        CF_100_120V_1Phase_lessOrEquals32A,
+
+        /// <summary>
+        /// 200 - 240V, 1-Phase ≤ 10A
+        /// </summary>
+        CF_200_240V_1Phase_lessOrEquals10A,
+
+        /// <summary>
+        /// 200 - 240V, 1-Phase ≤ 16A
+        /// </summary>
+        CF_200_240V_1Phase_lessOrEquals16A,
+
+        /// <summary>
+        /// 200 - 240V, 1-Phase ≤ 32A
+        /// </summary>
+        CF_200_240V_1Phase_lessOrEquals32A,
+
+        /// <summary>
+        /// 200 - 240V, 1-Phase > 32A
+        /// </summary>
+        CF_200_240V_1Phase_moreThan32A,
+
+        /// <summary>
+        /// 380 - 480V, 3-Phase ≤ 16A
+        /// </summary>
+        CF_380_480V_3Phase_lessOrEquals16A,
+
+        /// <summary>
+        /// 380 - 480V, 3-Phase ≤ 32A
+        /// </summary>
+        CF_380_480V_3Phase_lessOrEquals32A,
+
+        /// <summary>
+        /// 380 - 480V, 3-Phase ≤ 63A
+        /// </summary>
+        CF_380_480V_3Phase_lessOrEquals63A,
+
+        /// <summary>
+        /// Battery exchange
+        /// </summary>
+        Battery_exchange,
+
+        /// <summary>
+        /// DC Charging ≤ 20kW
+        /// </summary>
+        DCCharging_lessOrEquals20kW,
+
+        /// <summary>
+        /// DC Charging ≤ 50kW
+        /// </summary>
+        DCCharging_lessOrEquals50kW,
+
+        /// <summary>
+        /// DC Charging > 50kW
+        /// </summary>
+        DCCharging_moreThan50kW
 
     }
 

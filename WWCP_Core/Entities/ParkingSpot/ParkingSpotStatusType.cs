@@ -19,74 +19,56 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The current status of an EVSE.
+    /// The current status of a parking spot.
     /// </summary>
-    public enum EVSEStatusType
+    public enum ParkingSpotStatusType
     {
 
         /// <summary>
-        /// Unclear or unknown status of the EVSE.
+        /// Unclear or unknown status of the parking spot.
         /// </summary>
         Unspecified         = 0,
 
         /// <summary>
-        /// The EVSE is planned for the future.
+        /// The parking spot is planned for the future.
         /// </summary>
         Planned             = 1,
 
         /// <summary>
-        /// The EVSE is currently in deployment, but not fully operational yet.
+        /// The parking spot is currently in deployment.
         /// </summary>
         InDeployment        = 2,
 
         /// <summary>
-        /// The EVSE is not ready for charging because it is under maintenance.
+        /// The parking spot is currently blocked.
         /// </summary>
-        OutOfService        = 3,
+        Blocked             = 3,
 
         /// <summary>
-        /// Currently no communication with the EVSE possible, but charging in offline mode might be available.
+        /// The parking spot is available.
         /// </summary>
-        Offline             = 4,
+        Available           = 4,
 
         /// <summary>
-        /// The EVSE is ready to charge.
+        /// The parking spot was reserved.
         /// </summary>
-        Available           = 5,
+        Reserved            = 5,
 
         /// <summary>
-        /// The EVSE was reserved by an ev customer.
+        /// The parking spot is currently in use.
         /// </summary>
-        Reserved            = 6,
-
-        /// <summary>
-        /// The EVSE is unlocked and waiting for customer plugin.
-        /// </summary>
-        WaitingForPlugin    = 7,
-
-        /// <summary>
-        /// An ongoing charging session.
-        /// </summary>
-        Charging            = 8,
-
-        /// <summary>
-        /// An error has occured.
-        /// </summary>
-        Faulted             = 9,
-
-
-        AVAILABLE_DOOR_NOT_CLOSED = 10,
+        InUse               = 6,
 
         /// <summary>
         /// Private or internal use.
         /// </summary>
-        Other               = 11,
+        Other               = 7,
 
         /// <summary>
-        /// The EVSE was not found!
+        /// The parking spot was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownEVSE         = 12
+        UnknownParkingSpot  = 8
 
     }
 

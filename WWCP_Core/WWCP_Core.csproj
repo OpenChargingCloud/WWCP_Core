@@ -98,6 +98,7 @@
     <Compile Include="Entities\EVSE\IRemoteEVSE.cs" />
     <Compile Include="Entities\EVSE\RemoteDelegates.cs" />
     <Compile Include="Entities\INetworkAttached.cs" />
+    <Compile Include="Entities\ParkingSpot\ParkingSpotStatusType.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="Entities\RoamingProvider\ARoamingProvider.cs" />
     <Compile Include="Entities\RoamingProvider\CPORoamingProvider.cs" />
