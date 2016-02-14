@@ -499,43 +499,6 @@ namespace org.GraphDefined.WWCP
 
         #region Events
 
-        #region OnStatusChanged
-
-        /// <summary>
-        /// A delegate called whenever the dynamic status of the EVSE changed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EVSE">The EVSE.</param>
-        /// <param name="OldEVSEStatus">The old timestamped status of the EVSE.</param>
-        /// <param name="NewEVSEStatus">The new timestamped status of the EVSE.</param>
-        public delegate void OnStatusChangedDelegate(DateTime Timestamp, EVSE EVSE, Timestamped<EVSEStatusType> OldEVSEStatus, Timestamped<EVSEStatusType> NewEVSEStatus);
-
-        /// <summary>
-        /// An event fired whenever the dynamic status of the EVSE changed.
-        /// </summary>
-        public event OnStatusChangedDelegate OnStatusChanged;
-
-        #endregion
-
-        #region OnAdminStatusChanged
-
-        /// <summary>
-        /// A delegate called whenever the admin status of the EVSE changed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EVSE">The EVSE.</param>
-        /// <param name="OldEVSEStatus">The old timestamped status of the EVSE.</param>
-        /// <param name="NewEVSEStatus">The new timestamped status of the EVSE.</param>
-        public delegate void OnAdminStatusChangedDelegate(DateTime Timestamp, EVSE EVSE, Timestamped<EVSEAdminStatusType> OldEVSEStatus, Timestamped<EVSEAdminStatusType> NewEVSEStatus);
-
-        /// <summary>
-        /// An event fired whenever the admin status of the EVSE changed.
-        /// </summary>
-        public event OnAdminStatusChangedDelegate OnAdminStatusChanged;
-
-        #endregion
-
-
         #region SocketOutletAddition
 
         internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletAddition;
@@ -644,10 +607,33 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
+            this.OnPropertyChanged += UpdateData;
+
         }
 
         #endregion
 
+
+        #region Data/(Admin-)Status management
+
+        #region OnData/(Admin)StatusChanged
+
+        /// <summary>
+        /// An event fired whenever the static data changed.
+        /// </summary>
+        public event OnEVSEDataChangedDelegate         OnDataChanged;
+
+        /// <summary>
+        /// An event fired whenever the dynamic status changed.
+        /// </summary>
+        public event OnEVSEStatusChangedDelegate       OnStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the admin status changed.
+        /// </summary>
+        public event OnEVSEAdminStatusChangedDelegate  OnAdminStatusChanged;
+
+        #endregion
 
 
         #region SetStatus(NewStatus)
@@ -738,6 +724,31 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region (internal) UpdateData(Timestamp, Sender, PropertyName, OldValue, NewValue)
+
+        /// <summary>
+        /// Update the static data of the EVSE.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="Sender">The changed EVSE.</param>
+        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="OldValue">The old value of the changed property.</param>
+        /// <param name="NewValue">The new value of the changed property.</param>
+        internal async Task UpdateData(DateTime  Timestamp,
+                                       Object    Sender,
+                                       String    PropertyName,
+                                       Object    OldValue,
+                                       Object    NewValue)
+        {
+
+            var OnDataChangedLocal = OnDataChanged;
+            if (OnDataChangedLocal != null)
+                await OnDataChangedLocal(Timestamp, Sender as EVSE, PropertyName, OldValue, NewValue);
+
+        }
+
+        #endregion
+
         #region (internal) UpdateStatus(Timestamp, OldStatus, NewStatus)
 
         /// <summary>
@@ -746,14 +757,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal void UpdateStatus(DateTime                     Timestamp,
-                                   Timestamped<EVSEStatusType>  OldStatus,
-                                   Timestamped<EVSEStatusType>  NewStatus)
+        internal async Task UpdateStatus(DateTime                     Timestamp,
+                                         Timestamped<EVSEStatusType>  OldStatus,
+                                         Timestamped<EVSEStatusType>  NewStatus)
         {
 
             var OnStatusChangedLocal = OnStatusChanged;
             if (OnStatusChangedLocal != null)
-                OnStatusChangedLocal(Timestamp, this, OldStatus, NewStatus);
+                await OnStatusChangedLocal(Timestamp, this, OldStatus, NewStatus);
 
         }
 
@@ -767,22 +778,22 @@ namespace org.GraphDefined.WWCP
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="OldStatus">The old EVSE admin status.</param>
         /// <param name="NewStatus">The new EVSE admin status.</param>
-        internal void UpdateAdminStatus(DateTime                          Timestamp,
-                                        Timestamped<EVSEAdminStatusType>  OldStatus,
-                                        Timestamped<EVSEAdminStatusType>  NewStatus)
+        internal async Task UpdateAdminStatus(DateTime                          Timestamp,
+                                              Timestamped<EVSEAdminStatusType>  OldStatus,
+                                              Timestamped<EVSEAdminStatusType>  NewStatus)
         {
 
             var OnAdminStatusChangedLocal = OnAdminStatusChanged;
             if (OnAdminStatusChangedLocal != null)
-                OnAdminStatusChangedLocal(Timestamp, this, OldStatus, NewStatus);
+                await OnAdminStatusChangedLocal(Timestamp, this, OldStatus, NewStatus);
 
         }
 
         #endregion
 
+        #endregion
 
-
-        #region Reservations...
+        #region Reservations
 
         #region Reservation
 
@@ -1456,7 +1467,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
         #endregion
-
 
 
         #region IEnumerable<SocketOutlet> Members

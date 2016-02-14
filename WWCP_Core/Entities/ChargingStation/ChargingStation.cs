@@ -1028,46 +1028,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Events
-
-        #region OnStatusChanged
-
-        /// <summary>
-        /// A delegate called whenever the dynamic status changed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="ChargingStation">The updated charging station.</param>
-        /// <param name="OldStatus">The old timestamped status of the charging station.</param>
-        /// <param name="NewStatus">The new timestamped status of the charging station.</param>
-        public delegate void OnStatusChangedDelegate(DateTime Timestamp, ChargingStation ChargingStation, Timestamped<ChargingStationStatusType> OldStatus, Timestamped<ChargingStationStatusType> NewStatus);
-
-        /// <summary>
-        /// An event fired whenever the aggregated dynamic status changed.
-        /// </summary>
-        public event OnStatusChangedDelegate OnStatusChanged;
-
-        #endregion
-
-        #region OnAdminStatusChanged
-
-        /// <summary>
-        /// A delegate called whenever the admin status changed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="ChargingStation">The updated charging station.</param>
-        /// <param name="OldStatus">The old timestamped admin status of the charging station.</param>
-        /// <param name="NewStatus">The new timestamped admin status of the charging station.</param>
-        public delegate void OnAdminStatusChangedDelegate(DateTime Timestamp, ChargingStation ChargingStation, Timestamped<ChargingStationAdminStatusType> OldStatus, Timestamped<ChargingStationAdminStatusType> NewStatus);
-
-        /// <summary>
-        /// An event fired whenever the admin status changed.
-        /// </summary>
-        public event OnAdminStatusChangedDelegate OnAdminStatusChanged;
-
-        #endregion
-
-        #endregion
-
         #region Constructor(s)
 
         /// <summary>
@@ -1152,7 +1112,31 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
+            this.OnPropertyChanged += UpdateData;
+
         }
+
+        #endregion
+
+
+        #region Data/(Admin-)Status management
+
+        #region OnData/(Admin)StatusChanged
+
+        /// <summary>
+        /// An event fired whenever the static data changed.
+        /// </summary>
+        public event OnChargingStationDataChangedDelegate         OnDataChanged;
+
+        /// <summary>
+        /// An event fired whenever the dynamic status changed.
+        /// </summary>
+        public event OnChargingStationStatusChangedDelegate       OnStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the admin status changed.
+        /// </summary>
+        public event OnChargingStationAdminStatusChangedDelegate  OnAdminStatusChanged;
 
         #endregion
 
@@ -1207,6 +1191,31 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region (internal) UpdateData(Timestamp, Sender, PropertyName, OldValue, NewValue)
+
+        /// <summary>
+        /// Update the static data.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="Sender">The changed charging station.</param>
+        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="OldValue">The old value of the changed property.</param>
+        /// <param name="NewValue">The new value of the changed property.</param>
+        internal async Task UpdateData(DateTime  Timestamp,
+                                       Object    Sender,
+                                       String    PropertyName,
+                                       Object    OldValue,
+                                       Object    NewValue)
+        {
+
+            var OnDataChangedLocal = OnDataChanged;
+            if (OnDataChangedLocal != null)
+                await OnDataChangedLocal(Timestamp, Sender as ChargingStation, PropertyName, OldValue, NewValue);
+
+        }
+
+        #endregion
+
         #region (internal) UpdateStatus(Timestamp, OldStatus, NewStatus)
 
         /// <summary>
@@ -1231,7 +1240,7 @@ namespace org.GraphDefined.WWCP
         #region (internal) UpdateAdminStatus(Timestamp, OldStatus, NewStatus)
 
         /// <summary>
-        /// Update the current status.
+        /// Update the current admin status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
@@ -1249,8 +1258,9 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #endregion
 
-        #region EVSEs...
+        #region EVSEs
 
         #region EVSEs
 
@@ -1359,14 +1369,9 @@ namespace org.GraphDefined.WWCP
                 if (_EVSEs.Add(_EVSE))
                 {
 
-                    _EVSE.OnPropertyChanged       += (Timestamp, Sender, PropertyName, OldValue, NewValue)
-                                                      => UpdateEVSEData       (Timestamp, Sender as EVSE, PropertyName, OldValue, NewValue);
-
-                    _EVSE.OnStatusChanged         += (Timestamp, EVSE, OldEVSEStatus, NewEVSEStatus)
-                                                      => UpdateEVSEStatus     (Timestamp, EVSE, OldEVSEStatus, NewEVSEStatus);
-
-                    _EVSE.OnAdminStatusChanged    += (Timestamp, EVSE, OldEVSEStatus, NewEVSEStatus)
-                                                      => UpdateEVSEAdminStatus(Timestamp, EVSE, OldEVSEStatus, NewEVSEStatus);
+                    _EVSE.OnDataChanged           += UpdateEVSEData;
+                    _EVSE.OnStatusChanged         += UpdateEVSEStatus;
+                    _EVSE.OnAdminStatusChanged    += UpdateEVSEAdminStatus;
 
                     _EVSE.OnNewReservation        += SendNewReservation;
                     _EVSE.OnReservationCancelled  += SendOnReservationCancelled;
@@ -1375,18 +1380,18 @@ namespace org.GraphDefined.WWCP
 
                     OnSuccess.FailSafeInvoke(_EVSE);
                     EVSEAddition.SendNotification(Now, this, _EVSE);
-                    UpdateEVSEStatus(Now, _EVSE, new Timestamped<EVSEStatusType>(Now, EVSEStatusType.Unspecified), _EVSE.Status);
+                    UpdateEVSEStatus(Now, _EVSE, new Timestamped<EVSEStatusType>(Now, EVSEStatusType.Unspecified), _EVSE.Status).Wait();
 
                     if (_RemoteChargingStation != null)
                     {
 
                         _EVSE.RemoteEVSE = _RemoteChargingStation.CreateNewEVSE(EVSEId);
 
-                        _EVSE.OnStatusChanged                    += (Timestamp, RemoteEVSE, OldStatus, NewStatus) => _EVSE.RemoteEVSE.Status           = NewStatus;
-                        _EVSE.OnAdminStatusChanged               += (Timestamp, RemoteEVSE, OldStatus, NewStatus) => _EVSE.RemoteEVSE.AdminStatus      = NewStatus;
-                        _EVSE.OnNewReservation                   += (Timestamp, RemoteEVSE, Reservation)          => _EVSE.RemoteEVSE.Reservation      = Reservation;
+                        _EVSE.OnStatusChanged                    += async (Timestamp, EVSE,   OldStatus, NewStatus) => _EVSE.RemoteEVSE.Status           = NewStatus;
+                        _EVSE.OnAdminStatusChanged               += async (Timestamp, EVSE,   OldStatus, NewStatus) => _EVSE.RemoteEVSE.AdminStatus      = NewStatus;
+                        _EVSE.OnNewReservation                   += (Timestamp, Sender, Reservation)          => _EVSE.RemoteEVSE.Reservation      = Reservation;
                         //_EVSE.OnReservationCancelled             += (Timestamp, Sender, Reservation, ReservationCancellation) => _EVSE.RemoteEVSE.Send
-                        _EVSE.OnNewChargingSession               += (Timestamp, RemoteEVSE, ChargingSession)      => _EVSE.RemoteEVSE.ChargingSession  = ChargingSession;
+                        _EVSE.OnNewChargingSession               += (Timestamp, Sender, ChargingSession)      => _EVSE.RemoteEVSE.ChargingSession  = ChargingSession;
 
                         _EVSE.RemoteEVSE.OnStatusChanged         += (Timestamp, RemoteEVSE, OldStatus, NewStatus) => _EVSE.Status                      = NewStatus;
                         _EVSE.RemoteEVSE.OnAdminStatusChanged    += (Timestamp, RemoteEVSE, OldStatus, NewStatus) => _EVSE.AdminStatus                 = NewStatus;
@@ -1493,58 +1498,22 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region OnEVSEDataChanged
-
-        /// <summary>
-        /// A delegate called whenever the static data of any subordinated EVSE changed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EVSE">The updated EVSE.</param>
-        /// <param name="PropertyName">The name of the changed property.</param>
-        /// <param name="OldValue">The old value of the changed property.</param>
-        /// <param name="NewValue">The new value of the changed property.</param>
-        public delegate void OnEVSEDataChangedDelegate(DateTime Timestamp, EVSE EVSE, String PropertyName, Object OldValue, Object NewValue);
+        #region OnEVSEData/(Admin)StatusChanged
 
         /// <summary>
         /// An event fired whenever the static data of any subordinated EVSE changed.
         /// </summary>
-        public event OnEVSEDataChangedDelegate OnEVSEDataChanged;
-
-        #endregion
-
-        #region OnEVSEStatusChanged
-
-        /// <summary>
-        /// A delegate called whenever the dynamic status of any subordinated EVSE changed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EVSE">The updated EVSE.</param>
-        /// <param name="OldStatus">The old timestamped status of the EVSE.</param>
-        /// <param name="NewStatus">The new timestamped status of the EVSE.</param>
-        public delegate void OnEVSEStatusChangedDelegate(DateTime Timestamp, EVSE EVSE, Timestamped<EVSEStatusType> OldStatus, Timestamped<EVSEStatusType> NewStatus);
+        public event OnEVSEDataChangedDelegate         OnEVSEDataChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status of any subordinated EVSE changed.
         /// </summary>
-        public event OnEVSEStatusChangedDelegate OnEVSEStatusChanged;
-
-        #endregion
-
-        #region OnEVSEAdminStatusChanged
-
-        /// <summary>
-        /// A delegate called whenever the admin status of any subordinated EVSE changed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EVSE">The updated EVSE.</param>
-        /// <param name="OldStatus">The old timestamped admin status of the EVSE.</param>
-        /// <param name="NewStatus">The new timestamped admin status of the EVSE.</param>
-        public delegate void OnEVSEAdminStatusChangedDelegate(DateTime Timestamp, EVSE EVSE, Timestamped<EVSEAdminStatusType> OldStatus, Timestamped<EVSEAdminStatusType> NewStatus);
+        public event OnEVSEStatusChangedDelegate       OnEVSEStatusChanged;
 
         /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
-        public event OnEVSEAdminStatusChangedDelegate OnEVSEAdminStatusChanged;
+        public event OnEVSEAdminStatusChangedDelegate  OnEVSEAdminStatusChanged;
 
         #endregion
 
@@ -1593,16 +1562,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal void UpdateEVSEData(DateTime  Timestamp,
-                                     EVSE      EVSE,
-                                     String    PropertyName,
-                                     Object    OldValue,
-                                     Object    NewValue)
+        internal async Task UpdateEVSEData(DateTime  Timestamp,
+                                           EVSE      EVSE,
+                                           String    PropertyName,
+                                           Object    OldValue,
+                                           Object    NewValue)
         {
 
             var OnEVSEDataChangedLocal = OnEVSEDataChanged;
             if (OnEVSEDataChangedLocal != null)
-                OnEVSEDataChangedLocal(Timestamp, EVSE, PropertyName, OldValue, NewValue);
+                await OnEVSEDataChangedLocal(Timestamp, EVSE, PropertyName, OldValue, NewValue);
 
         }
 
@@ -1617,15 +1586,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal void UpdateEVSEStatus(DateTime                     Timestamp,
-                                       EVSE                         EVSE,
-                                       Timestamped<EVSEStatusType>  OldStatus,
-                                       Timestamped<EVSEStatusType>  NewStatus)
+        internal async Task UpdateEVSEStatus(DateTime                     Timestamp,
+                                             EVSE                         EVSE,
+                                             Timestamped<EVSEStatusType>  OldStatus,
+                                             Timestamped<EVSEStatusType>  NewStatus)
         {
 
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
             if (OnEVSEStatusChangedLocal != null)
-                OnEVSEStatusChangedLocal(Timestamp, EVSE, OldStatus, NewStatus);
+                await OnEVSEStatusChangedLocal(Timestamp, EVSE, OldStatus, NewStatus);
 
             if (StatusAggregationDelegate != null)
                 _StatusSchedule.Insert(Timestamp,
@@ -1644,15 +1613,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal void UpdateEVSEAdminStatus(DateTime                          Timestamp,
-                                            EVSE                              EVSE,
-                                            Timestamped<EVSEAdminStatusType>  OldStatus,
-                                            Timestamped<EVSEAdminStatusType>  NewStatus)
+        internal async Task UpdateEVSEAdminStatus(DateTime                          Timestamp,
+                                                  EVSE                              EVSE,
+                                                  Timestamped<EVSEAdminStatusType>  OldStatus,
+                                                  Timestamped<EVSEAdminStatusType>  NewStatus)
         {
 
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
             if (OnEVSEAdminStatusChangedLocal != null)
-                OnEVSEAdminStatusChangedLocal(Timestamp, EVSE, OldStatus, NewStatus);
+                await OnEVSEAdminStatusChangedLocal(Timestamp, EVSE, OldStatus, NewStatus);
 
         }
 
@@ -1676,7 +1645,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Reservations...
+        #region Reservations
 
         /// <summary>
         /// The maximum time span for a reservation.
@@ -2133,7 +2102,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RemoteStart/-Stop
+        #region RemoteStart/-Stop and Sessions
 
         #region ChargingSessions
 

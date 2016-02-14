@@ -42,28 +42,45 @@ namespace org.GraphDefined.WWCP
 
         Timestamped<ChargingStationAdminStatusType> AdminStatus { get; set; }
 
-        #region OnEVSEDataChanged
+        #region OnEVSEData/(Admin)StatusChanged
 
         /// <summary>
         /// An event fired whenever the static data of any subordinated EVSE changed.
         /// </summary>
-        event OnRemoteEVSEDataChangedDelegate OnRemoteEVSEDataChanged;
-
-        #endregion
-
-        #region OnEVSE(Admin)StatusChanged
+        event OnRemoteEVSEDataChangedDelegate         OnEVSEDataChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status of any subordinated EVSE changed.
         /// </summary>
-        event OnEVSEStatusChangedDelegate OnEVSEStatusChanged;
+        event OnRemoteEVSEStatusChangedDelegate       OnEVSEStatusChanged;
 
         /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
-        event OnEVSEAdminStatusChangedDelegate OnEVSEAdminStatusChanged;
+        event OnRemoteEVSEAdminStatusChangedDelegate  OnEVSEAdminStatusChanged;
 
         #endregion
+
+        #region OnChargingStationData/(Admin)StatusChanged
+
+        /// <summary>
+        /// An event fired whenever the static data of any subordinated EVSE changed.
+        /// </summary>
+        event OnRemoteChargingStationDataChangedDelegate         OnDataChanged;
+
+        /// <summary>
+        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
+        /// </summary>
+        event OnRemoteChargingStationStatusChangedDelegate       OnStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the admin status of any subordinated EVSE changed.
+        /// </summary>
+        event OnRemoteChargingStationAdminStatusChangedDelegate  OnAdminStatusChanged;
+
+        #endregion
+
+
 
         event OnReservationCancelledInternalDelegate OnReservationCancelled;
 

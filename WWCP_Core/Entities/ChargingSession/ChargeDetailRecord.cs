@@ -56,24 +56,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChargingReservation
-
-        private readonly ChargingReservation _ChargingReservation;
-
-        /// <summary>
-        /// An optional charging reservation used for charging.
-        /// </summary>
-        [Optional]
-        public ChargingReservation ChargingReservation
-        {
-            get
-            {
-                return _ChargingReservation;
-            }
-        }
-
-        #endregion
-
 
         #region EVSE
 
@@ -201,6 +183,25 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Reservation
+
+        private readonly ChargingReservation _ChargingReservation;
+
+        /// <summary>
+        /// An optional charging reservation used for charging.
+        /// </summary>
+        [Optional]
+        public ChargingReservation Reservation
+        {
+            get
+            {
+                return _ChargingReservation;
+            }
+        }
+
+        #endregion
+
+
         #region SessionTime
 
         private readonly StartEndDateTime? _SessionTime;
@@ -216,6 +217,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
         #region ParkingTime
 
         private readonly StartEndDateTime? _ParkingTime;
@@ -226,6 +228,21 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return _ParkingTime;
+            }
+        }
+
+        #endregion
+
+        #region ParkingSpotId
+
+        private readonly ParkingSpot_Id _ParkingSpotId;
+
+        [Optional]
+        public ParkingSpot_Id ParkingSpotId
+        {
+            get
+            {
+                return _ParkingSpotId;
             }
         }
 
@@ -252,7 +269,7 @@ namespace org.GraphDefined.WWCP
 
         #region EnergyMeterValues
 
-        private readonly IEnumerable<Timestamped<Double>> _EnergyMeterValues;
+        private readonly IEnumerable<Timestamped<Double>> _EnergyMeteringValues;
 
         /// <summary>
         /// An optional enumeration of intermediate energy meter values.
@@ -262,7 +279,33 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _EnergyMeterValues;
+                return _EnergyMeteringValues;
+            }
+        }
+
+        #endregion
+
+        #region ConsumedEnergy
+
+        /// <summary>
+        /// The optional sum of the consumed energy based on the meter values.
+        /// </summary>
+        [Optional]
+        public Double ConsumedEnergy
+        {
+            get
+            {
+
+                if (_EnergyMeteringValues == null)
+                    return 0;
+
+                var FirstMeterValue = _EnergyMeteringValues.First().Value;
+
+                return _EnergyMeteringValues.
+                           Skip(1).
+                           Select(metervalue => metervalue.Value - FirstMeterValue).
+                           Sum();
+
             }
         }
 
@@ -323,31 +366,31 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionTime">Optional timestamps when the charging session started and ended.</param>
         /// 
         /// <param name="EnergyMeterId">An optional unique identification of the energy meter.</param>
-        /// <param name="EnergyMeterValues">An optional enumeration of intermediate energy meter values.</param>
+        /// <param name="EnergyMeteringValues">An optional enumeration of intermediate energy metering values.</param>
         /// <param name="MeteringSignature">An optional signature for the metering values.</param>
         /// 
         /// <param name="Identification">An identification.</param>
         public ChargeDetailRecord(ChargingSession_Id                SessionId,
-                                  ChargingReservation               ChargingReservation  = null,
+                                  ChargingReservation               ChargingReservation   = null,
 
-                                  EVSEOperator                      EVSEOperator         = null,
-                                  ChargingPool                      ChargingPool         = null,
-                                  ChargingStation                   ChargingStation      = null,
-                                  EVSE                              EVSE                 = null,
-                                  EVSE_Id                           EVSEId               = null,
-                                  ChargingProduct_Id                ChargingProductId    = null,
+                                  EVSEOperator                      EVSEOperator          = null,
+                                  ChargingPool                      ChargingPool          = null,
+                                  ChargingStation                   ChargingStation       = null,
+                                  EVSE                              EVSE                  = null,
+                                  EVSE_Id                           EVSEId                = null,
+                                  ChargingProduct_Id                ChargingProductId     = null,
 
-                                  EVSP_Id                           ProviderId           = null,
+                                  EVSP_Id                           ProviderId            = null,
 
-                                  StartEndDateTime?                 ReservationTime      = null,
-                                  StartEndDateTime?                 ParkingTime          = null,
-                                  StartEndDateTime?                 SessionTime          = null,
+                                  StartEndDateTime?                 ReservationTime       = null,
+                                  StartEndDateTime?                 ParkingTime           = null,
+                                  StartEndDateTime?                 SessionTime           = null,
 
-                                  EnergyMeter_Id                    EnergyMeterId        = null,
-                                  IEnumerable<Timestamped<Double>>  EnergyMeterValues    = null,
-                                  String                            MeteringSignature    = null,
+                                  EnergyMeter_Id                    EnergyMeterId         = null,
+                                  IEnumerable<Timestamped<Double>>  EnergyMeteringValues  = null,
+                                  String                            MeteringSignature     = null,
 
-                                  AuthInfo                          Identification       = null)
+                                  AuthInfo                          Identification        = null)
 
         {
 
@@ -358,24 +401,24 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._SessionId            = SessionId;
-            this._ChargingReservation  = ChargingReservation;
+            this._SessionId             = SessionId;
+            this._ChargingReservation   = ChargingReservation;
 
-            this._EVSE                 = EVSE;
-            this._EVSEId               = EVSE != null ? EVSE.Id : EVSEId;
-            this._ChargingStation      = ChargingStation;
-            this._ChargingPool         = ChargingPool;
-            this._EVSEOperator         = EVSEOperator;
-            this._ChargingProductId    = ChargingProductId;
+            this._EVSE                  = EVSE;
+            this._EVSEId                = EVSE != null ? EVSE.Id : EVSEId;
+            this._ChargingStation       = ChargingStation;
+            this._ChargingPool          = ChargingPool;
+            this._EVSEOperator          = EVSEOperator;
+            this._ChargingProductId     = ChargingProductId;
 
-            this._ReservationTime      = ReservationTime;
-            this._ParkingTime          = ParkingTime;
-            this._SessionTime          = SessionTime;
+            this._ReservationTime       = ReservationTime;
+            this._ParkingTime           = ParkingTime;
+            this._SessionTime           = SessionTime;
 
-            this._EnergyMeterId        = EnergyMeterId;
-            this._EnergyMeterValues    = EnergyMeterValues != null ? EnergyMeterValues : new Timestamped<Double>[0];
+            this._EnergyMeterId         = EnergyMeterId;
+            this._EnergyMeteringValues  = EnergyMeteringValues != null ? EnergyMeteringValues : new Timestamped<Double>[0];
 
-            this._Identification       = Identification;
+            this._Identification        = Identification;
 
         }
 

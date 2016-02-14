@@ -41,8 +41,24 @@ namespace org.GraphDefined.WWCP
 
         #region Events
 
-        event OnEVSEStatusChangedDelegate       OnStatusChanged;
-        event OnEVSEAdminStatusChangedDelegate  OnAdminStatusChanged;
+        #region OnEVSEData/(Admin)StatusChanged
+
+        /// <summary>
+        /// An event fired whenever the static data of any subordinated EVSE changed.
+        /// </summary>
+        event OnRemoteEVSEDataChangedDelegate         OnDataChanged;
+
+        /// <summary>
+        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
+        /// </summary>
+        event OnRemoteEVSEStatusChangedDelegate       OnStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the admin status of any subordinated EVSE changed.
+        /// </summary>
+        event OnRemoteEVSEAdminStatusChangedDelegate  OnAdminStatusChanged;
+
+        #endregion
 
 
         /// <summary>

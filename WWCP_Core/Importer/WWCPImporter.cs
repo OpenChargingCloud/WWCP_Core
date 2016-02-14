@@ -317,7 +317,7 @@ namespace org.GraphDefined.WWCP.Importer
 
             _EVSEOperators.Add(EVSEOperator);
 
-            EVSEOperator.OnChargingStationAdminStatusChanged += (Timestamp, ChargingStation, OldStatus, NewStatus) => {
+            EVSEOperator.OnChargingStationAdminStatusChanged += async (Timestamp, ChargingStation, OldStatus, NewStatus) => {
 
                 var fwd = AllForwardingInfos.FirstOrDefault(fwdinfo => fwdinfo.StationId == ChargingStation.Id);
                 if (fwd != null)

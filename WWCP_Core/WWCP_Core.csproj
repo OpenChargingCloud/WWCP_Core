@@ -79,7 +79,8 @@
     <Compile Include="CommonTypes\ChangeMethods.cs" />
     <Compile Include="CommonTypes\IStatus.cs" />
     <Compile Include="CommonTypes\StatusReport.cs" />
-    <Compile Include="Entities\ChargingGroup\ChargingStationGroupAdminStatusType.cs" />
+    <Compile Include="Entities\Delegates.cs" />
+    <Compile Include="Entities\ChargingStationGroup\ChargingStationGroupAdminStatusType.cs" />
     <Compile Include="Entities\ChargingPool\INetworkChargingPool.cs" />
     <Compile Include="Entities\ChargingPool\IRemoteChargingPool.cs" />
     <Compile Include="Entities\ChargingReservation\ChargingReservationCancellation.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="Entities\EVSE\RemoteDelegates.cs" />
     <Compile Include="Entities\INetworkAttached.cs" />
     <Compile Include="Entities\ParkingSpot\ParkingSpotStatusType.cs" />
+    <Compile Include="Entities\RoamingNetwork\Delegates.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="Entities\RoamingProvider\ARoamingProvider.cs" />
     <Compile Include="Entities\RoamingProvider\CPORoamingProvider.cs" />
@@ -157,10 +159,10 @@
     <Compile Include="Entities\ChargingStation\ChargingStationStatusType.cs" />
     <Compile Include="Entities\ParkingSpot\ParkingSpot.cs" />
     <Compile Include="Entities\ParkingSpot\ParkingSpot_Id.cs" />
-    <Compile Include="Entities\ChargingGroup\ChargingGroupExceptions.cs" />
+    <Compile Include="Entities\ChargingStationGroup\ChargingGroupExceptions.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationExceptions.cs" />
-    <Compile Include="Entities\ChargingGroup\ChargingStationGroup.cs" />
-    <Compile Include="Entities\ChargingGroup\ChargingStationGroup_Id.cs" />
+    <Compile Include="Entities\ChargingStationGroup\ChargingStationGroup.cs" />
+    <Compile Include="Entities\ChargingStationGroup\ChargingStationGroup_Id.cs" />
     <Compile Include="Entities\EVSE\EVSEExceptions.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolExceptions.cs" />
     <Compile Include="CommonTypes\OpeningTimes.cs" />

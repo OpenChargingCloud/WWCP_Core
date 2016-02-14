@@ -18,26 +18,21 @@
 #region Usings
 
 using System;
+using System.Threading.Tasks;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
-    public interface IEntity
-    {
-
-        DateTime                                    LastChange { get; }
-
-        event OnPropertyChangedDelegate          OnPropertyChanged;
-
-    }
-
-    public interface IEntity<TId> : IEntity
-        where TId : IId
-
-    {
-        TId Id { get; }
-    }
+    /// <summary>
+    /// A delegate called whenever a property of the given object changed.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the event.</param>
+    /// <param name="Sender">The changed object.</param>
+    /// <param name="PropertyName">The name of the changed property.</param>
+    /// <param name="OldValue">The old value of the changed property.</param>
+    /// <param name="NewValue">The new value of the changed property.</param>
+    public delegate Task OnPropertyChangedDelegate(DateTime Timestamp, Object Sender, String PropertyName, Object OldValue, Object NewValue);
 
 }

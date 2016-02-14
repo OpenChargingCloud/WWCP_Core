@@ -18,16 +18,14 @@
 #region Usings
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
-
-    public delegate void PropertyChanged_EventHandler(DateTime Timestamp, Object Sender, String PropertyName, Object OldValue, Object NewValue);
 
     /// <summary>
     /// An abstract e-mobility entity.
@@ -121,7 +119,10 @@ namespace org.GraphDefined.WWCP
 
         #region Events
 
-        public event PropertyChanged_EventHandler OnPropertyChanged;
+        /// <summary>
+        /// An event called whenever a property of this entity changed.
+        /// </summary>
+        public event OnPropertyChangedDelegate OnPropertyChanged;
 
         #endregion
 
