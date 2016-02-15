@@ -374,9 +374,9 @@ namespace org.GraphDefined.WWCP
             this._EVSEId             = EVSEId;
             this._ChargingProductId  = ChargingProductId;
 
-            this._AuthTokens            = AuthTokens != null ? AuthTokens : new Auth_Token[0];
-            this._eMAIds             = eMAIds  != null ? eMAIds  : new eMA_Id[0];
-            this._PINs               = PINs    != null ? PINs    : new UInt32[0];
+            this._AuthTokens         = AuthTokens != null ? AuthTokens : new Auth_Token[0];
+            this._eMAIds             = eMAIds     != null ? eMAIds     : new eMA_Id[0];
+            this._PINs               = PINs       != null ? PINs       : new UInt32[0];
 
         }
 

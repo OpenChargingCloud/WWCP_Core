@@ -81,6 +81,9 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        event OnNewReservationDelegate        OnNewReservation;
+        event OnNewChargingSessionDelegate    OnNewChargingSession;
+        event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord;
 
         event OnReservationCancelledInternalDelegate OnReservationCancelled;
 

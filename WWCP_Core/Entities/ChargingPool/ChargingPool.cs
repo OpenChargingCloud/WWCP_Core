@@ -1209,7 +1209,37 @@ namespace org.GraphDefined.WWCP
 
 
                     if (RemoteChargingStationCreator != null)
+                    {
+
                         _ChargingStation.RemoteChargingStation = RemoteChargingStationCreator(_ChargingStation);
+
+//                        _ChargingStation.RemoteChargingStation.OnNewReservation += SendNewReservation;
+
+                        _ChargingStation.RemoteChargingStation.OnNewReservation += (a, b, reservation) => {
+
+                            var __EVSE = GetEVSEbyId(reservation.EVSEId);
+
+                            __EVSE.Reservation = reservation;
+
+                        };
+
+                        _ChargingStation.RemoteChargingStation.OnNewChargingSession += (a, b, session) => {
+
+                            var __EVSE = GetEVSEbyId(session.EVSEId);
+
+                            __EVSE.ChargingSession = session;
+
+                        };
+
+                        _ChargingStation.RemoteChargingStation.OnNewChargeDetailRecord += (a, b, cdr) => {
+
+                            var __EVSE = GetEVSEbyId(cdr.EVSEId);
+
+                            __EVSE.SendNewChargeDetailRecord(DateTime.Now, this, cdr);
+
+                        };
+
+                    }
 
                     return _ChargingStation;
 
