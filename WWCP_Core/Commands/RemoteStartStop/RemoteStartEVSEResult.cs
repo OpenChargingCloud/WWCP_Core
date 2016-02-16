@@ -204,6 +204,21 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) InvalidCredentials
+
+        /// <summary>
+        /// Unauthorized remote start or invalid credentials.
+        /// </summary>
+        public static RemoteStartEVSEResult InvalidCredentials
+        {
+            get
+            {
+                return new RemoteStartEVSEResult(RemoteStartEVSEResultType.InvalidCredentials);
+            }
+        }
+
+        #endregion
+
         #region (static) AlreadyInUse
 
         /// <summary>
@@ -355,6 +370,11 @@ namespace org.GraphDefined.WWCP
         /// The given charging session identification is unknown or invalid.
         /// </summary>
         InvalidSessionId,
+
+        /// <summary>
+        /// Unauthorized remote start or invalid credentials.
+        /// </summary>
+        InvalidCredentials,
 
         /// <summary>
         /// The EVSE is already in use.
