@@ -1751,6 +1751,36 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region SetChargingStationStatus(ChargingStationId, CurrentStatus)
+
+        public void SetChargingStationStatus(ChargingStation_Id                      ChargingStationId,
+                                             Timestamped<ChargingStationStatusType>  CurrentStatus)
+        {
+
+            EVSEOperator _EVSEOperator  = null;
+
+            if (TryGetEVSEOperatorbyId(ChargingStation_Id.Parse(ChargingStationId.ToString()).OperatorId, out _EVSEOperator))
+                _EVSEOperator.SetChargingStationStatus(ChargingStationId, CurrentStatus);
+
+        }
+
+        #endregion
+
+        #region SetChargingStationAdminStatus(ChargingStationId, CurrentStatus)
+
+        public void SetChargingStationAdminStatus(ChargingStation_Id                           ChargingStationId,
+                                                  Timestamped<ChargingStationAdminStatusType>  CurrentStatus)
+        {
+
+            EVSEOperator _EVSEOperator  = null;
+
+            if (TryGetEVSEOperatorbyId(ChargingStation_Id.Parse(ChargingStationId.ToString()).OperatorId, out _EVSEOperator))
+                _EVSEOperator.SetChargingStationAdminStatus(ChargingStationId, CurrentStatus);
+
+        }
+
+        #endregion
+
         #region SetChargingStationAdminStatus(ChargingStationId, StatusList)
 
         public void SetChargingStationAdminStatus(ChargingStation_Id                                        ChargingStationId,
@@ -2915,23 +2945,33 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CancelReservation(ReservationId)
+        #region CancelReservation(ReservationId, Reason)
 
         /// <summary>
         /// Try to remove the given charging reservation.
         /// </summary>
         /// <param name="ReservationId">The unique charging reservation identification.</param>
+        /// <param name="Reason">The reason for the reservation cancellation.</param>
         /// <returns>True when successful, false otherwise</returns>
-        public async Task<Boolean> CancelReservation(ChargingReservation_Id           ReservationId,
-                                                     ChargingReservationCancellationReason  ReservationCancellation)
+        public async Task<Boolean> CancelReservation(ChargingReservation_Id                 ReservationId,
+                                                     ChargingReservationCancellationReason  Reason)
         {
 
-            EVSEOperator _EVSEOperator = null;
+            Boolean      result         = false;
+            EVSEOperator _EVSEOperator  = null;
 
             if (_ChargingReservations.TryRemove(ReservationId, out _EVSEOperator))
-                return await _EVSEOperator.CancelReservation(ReservationId, ReservationCancellation);
+                result = await _EVSEOperator.CancelReservation(ReservationId, Reason);
 
-            return false;
+            var OnReservationCancelledLocal = OnReservationCancelled;
+            if (OnReservationCancelledLocal != null)
+                OnReservationCancelledLocal(DateTime.Now,
+                                            this,
+                                            EventTracking_Id.New,
+                                            ReservationId,
+                                            Reason);
+
+            return true;
 
         }
 
@@ -2951,7 +2991,7 @@ namespace org.GraphDefined.WWCP
         internal void SendOnReservationCancelled(DateTime                               Timestamp,
                                                  Object                                 Sender,
                                                  EventTracking_Id                       EventTrackingId,
-                                                 ChargingReservation                    Reservation,
+                                                 ChargingReservation_Id                 ReservationId,
                                                  ChargingReservationCancellationReason  Reason)
         {
 
@@ -2960,7 +3000,7 @@ namespace org.GraphDefined.WWCP
                 OnReservationCancelledLocal(Timestamp,
                                             Sender,
                                             EventTrackingId,
-                                            Reservation,
+                                            ReservationId,
                                             Reason);
 
         }
@@ -4984,6 +5024,38 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public event OnNewChargingSessionDelegate OnNewChargingSession;
 
+        #region RegisterExternalChargingSession(Timestamp, Sender, ChargingSession)
+
+        /// <summary>
+        /// Register an external charging session which was not registered
+        /// via the RemoteStart or AuthStart mechanisms.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="Sender">The sender of the charging session.</param>
+        /// <param name="ChargingSession">The charging session.</param>
+        public void RegisterExternalChargingSession(DateTime         Timestamp,
+                                                    Object           Sender,
+                                                    ChargingSession  ChargingSession)
+        {
+
+            if (ChargingSession == null)
+                return;
+
+            if (!_ChargingSessions.ContainsKey(ChargingSession.Id))
+            {
+
+                DebugX.LogT("Registered external charging session '" + ChargingSession.Id + "'!");
+
+                _ChargingSessions.TryAdd(ChargingSession.Id, ChargingSession);
+
+                SendNewChargingSession(Timestamp, Sender, ChargingSession);
+
+            }
+
+        }
+
+        #endregion
+
         #region (internal) SendNewChargingSession(Timestamp, Sender, ChargingSession)
 
         internal void SendNewChargingSession(DateTime         Timestamp,
@@ -5022,7 +5094,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a charge detail record was received.
         /// </summary>
-        public event OnChargeDetailRecordSendDelegate OnSendCDR;
+        public event OnChargeDetailRecordSendDelegate OnCDRSend;
 
         /// <summary>
         /// An event fired whenever a charge detail record result was sent.
@@ -5045,81 +5117,6 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever a CDR needs to be filtered.
         /// </summary>
         public event OnFilterCDRRecordsDelegate OnFilterCDRRecords;
-
-        #endregion
-
-        #region SendChargeDetailRecord(...EVSEId, ChargingSessionId, ChargingProductId, SessionStart, SessionEnd, AuthInfo, ...)
-
-        /// <summary>
-        /// Send a charge detail record.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        /// <param name="EVSEId">An EVSE identification.</param>
-        /// <param name="ChargingSessionId">The session identification from the Authorize Start request.</param>
-        /// <param name="ChargingProductId">An optional charging product identification.</param>
-        /// <param name="SessionStart">The timestamp of the session start.</param>
-        /// <param name="SessionEnd">The timestamp of the session end.</param>
-        /// <param name="AuthInfo">An optional ev customer or e-Mobility account identification.</param>
-        /// <param name="MeterValues">An optional enumeration of meter values during the charging session.</param>
-        /// <param name="MeteringSignature">An optional signature for the metering values.</param>
-        /// <param name="QueryTimeout">An optional timeout for this request.</param>
-        public async Task<SendCDRResult>
-
-            SendChargeDetailRecord(DateTime                          Timestamp,
-                                   CancellationToken                 CancellationToken,
-                                   EventTracking_Id                  EventTrackingId,
-                                   EVSE_Id                           EVSEId,
-                                   ChargingSession_Id                ChargingSessionId,
-                                   ChargingProduct_Id                ChargingProductId,
-                                   DateTime                          SessionStart,
-                                   DateTime                          SessionEnd,
-                                   AuthInfo                          AuthInfo,
-                                   IEnumerable<Timestamped<Double>>  MeterValues        = null,
-                                   String                            MeteringSignature  = null,
-                                   TimeSpan?                         QueryTimeout       = null)
-
-        {
-
-            #region Initial checks
-
-            if (ChargingSessionId == null)
-                throw new ArgumentNullException("ChargingSessionId", "The given charging session identification must not be null!");
-
-            #endregion
-
-            #region Some CDR should perhaps be filtered...
-
-            var OnFilterCDRRecordsLocal = OnFilterCDRRecords;
-            if (OnFilterCDRRecordsLocal != null)
-            {
-
-                var _SENDCDRResult = OnFilterCDRRecordsLocal(AuthorizatorId, AuthInfo);
-
-                if (_SENDCDRResult != null)
-                    return _SENDCDRResult;
-
-            }
-
-            #endregion
-
-            return await SendChargeDetailRecord(Timestamp,
-                                                CancellationToken,
-                                                EventTrackingId,
-                                                new ChargeDetailRecord(SessionId:          ChargingSessionId,
-                                                                       EVSEId:             EVSEId,
-                                                                       ChargingProductId:  ChargingProductId,
-                                                                       SessionTime:        new StartEndDateTime(SessionStart, SessionEnd),
-                                                                       Identification:     AuthInfo,
-                                                                       //ChargingTime:       new StartEndDateTime(ChargingStart.Value, ChargingEnd.Value),
-                                                                       EnergyMeteringValues:  MeterValues,
-                                                                       //ConsumedEnergy
-                                                                       MeteringSignature:  MeteringSignature),
-
-                                                QueryTimeout);
-
-        }
 
         #endregion
 
@@ -5146,16 +5143,19 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (ChargeDetailRecord == null)
-                throw new ArgumentNullException("ChargeDetailRecord", "The given charge detail record must not be null!");
+                throw new ArgumentNullException(nameof(ChargeDetailRecord),  "The given charge detail record must not be null!");
 
             #endregion
+
+            //ToDo: Merge information if required!
+            _ChargeDetailRecords.TryAdd(ChargeDetailRecord.SessionId, ChargeDetailRecord);
 
             #region Send OnSendCDR event
 
             try
             {
 
-                var OnSendCDRLocal = OnSendCDR;
+                var OnSendCDRLocal = OnCDRSend;
                 if (OnSendCDRLocal != null)
                     OnSendCDRLocal(DateTime.Now,
                                    this,
@@ -5167,7 +5167,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnSendCDR));
+                e.Log("RoamingNetwork." + nameof(OnCDRSend));
             }
 
             #endregion
@@ -5305,20 +5305,17 @@ namespace org.GraphDefined.WWCP
         #region (internal) SendNewChargeDetailRecord(Timestamp, Sender, ChargeDetailRecord)
 
         internal void SendNewChargeDetailRecord(DateTime            Timestamp,
-                                                Object              Sender,
-                                                ChargeDetailRecord  ChargeDetailRecord)
+                                              Object              Sender,
+                                              ChargeDetailRecord  ChargeDetailRecord)
         {
 
-            _ChargeDetailRecords.TryAdd(ChargeDetailRecord.SessionId, ChargeDetailRecord);
+            SendChargeDetailRecord(Timestamp,
+                                   new CancellationTokenSource().Token,
+                                   EventTracking_Id.New,
+                                   ChargeDetailRecord,
+                                   TimeSpan.FromMinutes(1)).
 
-            var OnNewChargeDetailRecordLocal = OnSendCDR;
-            if (OnNewChargeDetailRecordLocal != null)
-                OnNewChargeDetailRecordLocal(Timestamp,
-                                             Sender,
-                                             EventTracking_Id.New,
-                                             this.Id,
-                                             ChargeDetailRecord,
-                                             TimeSpan.FromMinutes(1));
+                                   Wait(TimeSpan.FromMinutes(1));
 
         }
 

@@ -410,6 +410,15 @@ namespace org.GraphDefined.WWCP
                                               _MatchCollection[0].Groups[4].Value,
                                               IdFormatType.OLD);
 
+            if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[5].Value, out __EVSEOperatorId))
+                return new ChargingStation_Id(__EVSEOperatorId,
+                                              _MatchCollection[0].Groups[6].Value,
+                                              IdFormatType.OLD);
+
+            if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[7].Value, out __EVSEOperatorId))
+                return new ChargingStation_Id(__EVSEOperatorId,
+                                              _MatchCollection[0].Groups[8].Value,
+                                              IdFormatType.OLD);
 
             throw new ArgumentException("Illegal charging station identification '" + Text + "'!", "Text");
 

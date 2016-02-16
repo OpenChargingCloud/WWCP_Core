@@ -1328,6 +1328,21 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region SetChargingStationStatus(ChargingStationId, NewStatus)
+
+        public void SetChargingStationStatus(ChargingStation_Id                      ChargingStationId,
+                                             Timestamped<ChargingStationStatusType>  NewStatus)
+        {
+
+            ChargingStation _ChargingStation  = null;
+            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
+                _ChargingStation.SetStatus(NewStatus);
+
+        }
+
+        #endregion
+
+
         #region SetChargingStationAdminStatus(ChargingStationId, NewStatus)
 
         public void SetChargingStationAdminStatus(ChargingStation_Id                           ChargingStationId,
@@ -2374,7 +2389,7 @@ namespace org.GraphDefined.WWCP
             if (result == null)
             {
 
-                var _ChargingPool = EVSEs.Where(evse => evse.Id == EVSEId).
+                var _ChargingPool = EVSEs.Where (evse => evse.Id == EVSEId).
                                           Select(evse => evse.ChargingStation.ChargingPool).
                                           FirstOrDefault();
 
@@ -2840,7 +2855,7 @@ namespace org.GraphDefined.WWCP
         private void SendOnReservationCancelled(DateTime                               Timestamp,
                                                 Object                                 Sender,
                                                 EventTracking_Id                       EventTrackingId,
-                                                ChargingReservation                    Reservation,
+                                                ChargingReservation_Id                 ReservationId,
                                                 ChargingReservationCancellationReason  Reason)
         {
 
@@ -2849,7 +2864,7 @@ namespace org.GraphDefined.WWCP
                 OnReservationCancelledLocal(Timestamp,
                                             Sender,
                                             EventTrackingId,
-                                            Reservation,
+                                            ReservationId,
                                             Reason);
 
         }

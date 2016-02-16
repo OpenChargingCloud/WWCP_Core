@@ -2362,7 +2362,7 @@ namespace org.GraphDefined.WWCP
         internal void SendOnReservationCancelled(DateTime                               Timestamp,
                                                  Object                                 Sender,
                                                  EventTracking_Id                       EventTrackingId,
-                                                 ChargingReservation                    Reservation,
+                                                 ChargingReservation_Id                 ReservationId,
                                                  ChargingReservationCancellationReason  Reason)
         {
 
@@ -2371,7 +2371,7 @@ namespace org.GraphDefined.WWCP
                 OnReservationCancelledLocal(Timestamp,
                                             Sender,
                                             EventTrackingId,
-                                            Reservation,
+                                            ReservationId,
                                             Reason);
 
         }

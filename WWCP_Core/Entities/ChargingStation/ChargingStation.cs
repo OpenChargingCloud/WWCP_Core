@@ -1141,6 +1141,22 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region SetStatus(NewStatus)
+
+        /// <summary>
+        /// Set the status.
+        /// </summary>
+        /// <param name="NewStatus">A new timestamped status.</param>
+        public void SetStatus(Timestamped<ChargingStationStatusType>  NewStatus)
+        {
+
+            _StatusSchedule.Insert(NewStatus);
+
+        }
+
+        #endregion
+
+
         #region SetAdminStatus(NewAdminStatus)
 
         /// <summary>
@@ -2084,7 +2100,7 @@ namespace org.GraphDefined.WWCP
         internal void SendOnReservationCancelled(DateTime                               Timestamp,
                                                  Object                                 Sender,
                                                  EventTracking_Id                       EventTrackingId,
-                                                 ChargingReservation                    Reservation,
+                                                 ChargingReservation_Id                 ReservationId,
                                                  ChargingReservationCancellationReason  Reason)
         {
 
@@ -2093,7 +2109,7 @@ namespace org.GraphDefined.WWCP
                 OnReservationCancelledLocal(Timestamp,
                                             Sender,
                                             EventTrackingId,
-                                            Reservation,
+                                            ReservationId,
                                             Reason);
 
         }

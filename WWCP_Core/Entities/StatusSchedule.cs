@@ -198,6 +198,7 @@ namespace org.GraphDefined.WWCP
                                                  OrderByDescending(v => v.Timestamp).
                                                  Take((Int32)_MaxStatusHistorySize));
 
+                    // Will call the change-events.
                     CheckCurrentStatus();
 
                 }

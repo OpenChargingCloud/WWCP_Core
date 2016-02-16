@@ -421,7 +421,7 @@ namespace org.GraphDefined.WWCP
     public delegate void OnReservationCancelledInternalDelegate(DateTime                               Timestamp,
                                                                 Object                                 Sender,
                                                                 EventTracking_Id                       EventTrackingId,
-                                                                ChargingReservation                    Reservation,
+                                                                ChargingReservation_Id                 ReservationId,
                                                                 ChargingReservationCancellationReason  Reason);
 
 

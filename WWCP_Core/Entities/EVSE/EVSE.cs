@@ -1057,14 +1057,14 @@ namespace org.GraphDefined.WWCP
             else
             {
 
-                var OldReservation = _Reservation;
+                var OldReservationId = _Reservation.Id;
 
                 _Reservation = null;
 
                 SendOnReservationCancelled(DateTime.Now,
                                            this,
                                            EventTracking_Id.New,
-                                           OldReservation,
+                                           OldReservationId,
                                            Reason);
 
                 SetStatus(EVSEStatusType.Available);
@@ -1082,7 +1082,7 @@ namespace org.GraphDefined.WWCP
         internal void SendOnReservationCancelled(DateTime                               Timestamp,
                                                  Object                                 Sender,
                                                  EventTracking_Id                       EventTrackingId,
-                                                 ChargingReservation                    Reservation,
+                                                 ChargingReservation_Id                 ReservationId,
                                                  ChargingReservationCancellationReason  Reason)
         {
 
@@ -1093,7 +1093,7 @@ namespace org.GraphDefined.WWCP
                 OnReservationCancelledLocal(Timestamp,
                                             Sender,
                                             EventTrackingId,
-                                            Reservation,
+                                            ReservationId,
                                             Reason);
 
         }

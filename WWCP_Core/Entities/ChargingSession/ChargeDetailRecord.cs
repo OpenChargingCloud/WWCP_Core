@@ -168,6 +168,39 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region Reservation
+
+        private readonly ChargingReservation _Reservation;
+
+        /// <summary>
+        /// An optional charging reservation used for charging.
+        /// </summary>
+        [Optional]
+        public ChargingReservation Reservation
+        {
+            get
+            {
+                return _Reservation;
+            }
+        }
+
+        #endregion
+
+        #region ReservationId
+
+        private readonly ChargingReservation_Id _ReservationId;
+
+        [Mandatory]
+        public ChargingReservation_Id ReservationId
+        {
+            get
+            {
+                return _ReservationId;
+            }
+        }
+
+        #endregion
+
         #region ReservationTime
 
         private readonly StartEndDateTime? _ReservationTime;
@@ -183,23 +216,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Reservation
-
-        private readonly ChargingReservation _ChargingReservation;
-
-        /// <summary>
-        /// An optional charging reservation used for charging.
-        /// </summary>
-        [Optional]
-        public ChargingReservation Reservation
-        {
-            get
-            {
-                return _ChargingReservation;
-            }
-        }
-
-        #endregion
 
 
         #region SessionTime
@@ -296,15 +312,16 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                if (_EnergyMeteringValues == null)
+                if (_EnergyMeteringValues == null ||
+                    _EnergyMeteringValues.Count() < 1)
                     return 0;
 
-                var FirstMeterValue = _EnergyMeteringValues.First().Value;
+                return _EnergyMeteringValues.Last().Value - _EnergyMeteringValues.First().Value;
 
-                return _EnergyMeteringValues.
-                           Skip(1).
-                           Select(metervalue => metervalue.Value - FirstMeterValue).
-                           Sum();
+                //return _EnergyMeteringValues.
+                //           Skip(1).
+                //           Select(metervalue => metervalue.Value - FirstMeterValue).
+                //           Sum();
 
             }
         }
@@ -371,26 +388,27 @@ namespace org.GraphDefined.WWCP
         /// 
         /// <param name="Identification">An identification.</param>
         public ChargeDetailRecord(ChargingSession_Id                SessionId,
-                                  ChargingReservation               ChargingReservation   = null,
+                                  ChargingReservation               Reservation            = null,
+                                  ChargingReservation_Id            ReservationId          = null,
 
-                                  EVSEOperator                      EVSEOperator          = null,
-                                  ChargingPool                      ChargingPool          = null,
-                                  ChargingStation                   ChargingStation       = null,
-                                  EVSE                              EVSE                  = null,
-                                  EVSE_Id                           EVSEId                = null,
-                                  ChargingProduct_Id                ChargingProductId     = null,
+                                  EVSEOperator                      EVSEOperator           = null,
+                                  ChargingPool                      ChargingPool           = null,
+                                  ChargingStation                   ChargingStation        = null,
+                                  EVSE                              EVSE                   = null,
+                                  EVSE_Id                           EVSEId                 = null,
+                                  ChargingProduct_Id                ChargingProductId      = null,
 
-                                  EVSP_Id                           ProviderId            = null,
+                                  EVSP_Id                           ProviderId             = null,
 
-                                  StartEndDateTime?                 ReservationTime       = null,
-                                  StartEndDateTime?                 ParkingTime           = null,
-                                  StartEndDateTime?                 SessionTime           = null,
+                                  StartEndDateTime?                 ReservationTime        = null,
+                                  StartEndDateTime?                 ParkingTime            = null,
+                                  StartEndDateTime?                 SessionTime            = null,
 
-                                  EnergyMeter_Id                    EnergyMeterId         = null,
-                                  IEnumerable<Timestamped<Double>>  EnergyMeteringValues  = null,
-                                  String                            MeteringSignature     = null,
+                                  EnergyMeter_Id                    EnergyMeterId          = null,
+                                  IEnumerable<Timestamped<Double>>  EnergyMeteringValues   = null,
+                                  String                            MeteringSignature      = null,
 
-                                  AuthInfo                          Identification        = null)
+                                  AuthInfo                          Identification         = null)
 
         {
 
@@ -401,24 +419,26 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._SessionId             = SessionId;
-            this._ChargingReservation   = ChargingReservation;
+            this._SessionId              = SessionId;
 
-            this._EVSE                  = EVSE;
-            this._EVSEId                = EVSE != null ? EVSE.Id : EVSEId;
-            this._ChargingStation       = ChargingStation;
-            this._ChargingPool          = ChargingPool;
-            this._EVSEOperator          = EVSEOperator;
-            this._ChargingProductId     = ChargingProductId;
+            this._Reservation            = Reservation;
+            this._ReservationId          = ReservationId != null ? ReservationId : Reservation != null ? Reservation.Id : null;
+            this._ReservationTime        = ReservationTime;
 
-            this._ReservationTime       = ReservationTime;
-            this._ParkingTime           = ParkingTime;
-            this._SessionTime           = SessionTime;
+            this._EVSE                   = EVSE;
+            this._EVSEId                 = EVSE != null ? EVSE.Id : EVSEId;
+            this._ChargingStation        = ChargingStation;
+            this._ChargingPool           = ChargingPool;
+            this._EVSEOperator           = EVSEOperator;
+            this._ChargingProductId      = ChargingProductId;
 
-            this._EnergyMeterId         = EnergyMeterId;
-            this._EnergyMeteringValues  = EnergyMeteringValues != null ? EnergyMeteringValues : new Timestamped<Double>[0];
+            this._ParkingTime            = ParkingTime;
+            this._SessionTime            = SessionTime;
 
-            this._Identification        = Identification;
+            this._EnergyMeterId          = EnergyMeterId;
+            this._EnergyMeteringValues   = EnergyMeteringValues != null ? EnergyMeteringValues : new Timestamped<Double>[0];
+
+            this._Identification         = Identification;
 
         }
 
