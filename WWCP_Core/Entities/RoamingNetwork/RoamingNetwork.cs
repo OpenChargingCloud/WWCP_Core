@@ -5038,8 +5038,13 @@ namespace org.GraphDefined.WWCP
                                                     ChargingSession  ChargingSession)
         {
 
+            #region Initial checks
+
             if (ChargingSession == null)
-                return;
+                throw new ArgumentNullException(nameof(ChargingSession), "The given charging session must not be null!");
+
+            #endregion
+
 
             if (!_ChargingSessions.ContainsKey(ChargingSession.Id))
             {
@@ -5047,6 +5052,23 @@ namespace org.GraphDefined.WWCP
                 DebugX.LogT("Registered external charging session '" + ChargingSession.Id + "'!");
 
                 _ChargingSessions.TryAdd(ChargingSession.Id, ChargingSession);
+
+                if (ChargingSession.EVSEId != null)
+                {
+
+                    EVSE _EVSE = null;
+
+                    if (TryGetEVSEbyId(ChargingSession.EVSEId, out _EVSE))
+                    {
+
+                        ChargingSession.EVSE = _EVSE;
+
+                        // Will also set the EVSE status
+                        _EVSE.ChargingSession = ChargingSession;
+
+                    }
+
+                }
 
                 SendNewChargingSession(Timestamp, Sender, ChargingSession);
 
@@ -5185,6 +5207,26 @@ namespace org.GraphDefined.WWCP
 
             if (result == null)
             {
+
+                if (ChargeDetailRecord.EVSEId != null)
+                {
+
+                    EVSE _EVSE = null;
+
+                    if (TryGetEVSEbyId(ChargeDetailRecord.EVSEId, out _EVSE))
+                    {
+
+                        //ChargeDetailRecord.EVSE = _EVSE;
+
+                        if (_EVSE.Status.Value       == EVSEStatusType.Charging &&
+                            _EVSE.ChargingSession    != null &&
+                            _EVSE.ChargingSession.Id == ChargeDetailRecord.SessionId)
+                            _EVSE.Status = EVSEStatusType.Available;
+
+                    }
+
+                }
+
 
                 #region An authenticator was found for the upstream SessionId!
 
