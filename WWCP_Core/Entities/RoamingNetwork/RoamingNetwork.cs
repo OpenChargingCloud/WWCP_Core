@@ -2530,6 +2530,10 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
+            EVSE _EVSE = null;
+            if (TryGetEVSEbyId(EVSEId, out _EVSE) && _EVSE.AdminStatus != EVSEAdminStatusType.Operational)
+                result = ReservationResult.OutOfService;
+
 
             if (TryGetEVSEOperatorbyId(EVSEId.OperatorId, out EVSEOperator))
             {
@@ -3107,6 +3111,9 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
+            EVSE _EVSE = null;
+            if (TryGetEVSEbyId(EVSEId, out _EVSE) && _EVSE.AdminStatus != EVSEAdminStatusType.Operational)
+                result = RemoteStartEVSEResult.OutOfService;
 
             if (TryGetEVSEOperatorbyId(EVSEId.OperatorId, out _EVSEOperator))
             {
@@ -3525,6 +3532,12 @@ namespace org.GraphDefined.WWCP
             }
 
             #endregion
+
+
+            EVSE _EVSE = null;
+            if (TryGetEVSEbyId(EVSEId, out _EVSE) && _EVSE.AdminStatus != EVSEAdminStatusType.Operational)
+                result = RemoteStopEVSEResult.OutOfService(SessionId);
+
 
 
             if (_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
