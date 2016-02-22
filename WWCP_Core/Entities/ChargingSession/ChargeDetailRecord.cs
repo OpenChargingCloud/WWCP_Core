@@ -362,16 +362,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IdentificationEnd
+        #region IdentificationStop
 
-        private readonly AuthInfo _IdentificationEnd;
+        private readonly AuthInfo _IdentificationStop;
 
         [Optional]
-        public AuthInfo IdentificationEnd
+        public AuthInfo IdentificationStop
         {
             get
             {
-                return _IdentificationEnd;
+                return _IdentificationStop;
             }
         }
 
@@ -402,7 +402,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="MeteringSignature">An optional signature for the metering values.</param>
         /// 
         /// <param name="IdentificationStart">The identification for the start of the charging process.</param>
-        /// <param name="IdentificationEnd">The identification for the stop of the charging process.</param>
+        /// <param name="IdentificationStop">The identification for the stop of the charging process.</param>
         public ChargeDetailRecord(ChargingSession_Id                SessionId,
                                   ChargingReservation               Reservation            = null,
                                   ChargingReservation_Id            ReservationId          = null,
@@ -425,7 +425,7 @@ namespace org.GraphDefined.WWCP
                                   String                            MeteringSignature      = null,
 
                                   AuthInfo                          IdentificationStart    = null,
-                                  AuthInfo                          IdentificationEnd      = null)
+                                  AuthInfo                          IdentificationStop     = null)
 
         {
 
@@ -456,7 +456,7 @@ namespace org.GraphDefined.WWCP
             this._EnergyMeteringValues   = EnergyMeteringValues != null ? EnergyMeteringValues : new Timestamped<Double>[0];
 
             this._IdentificationStart    = IdentificationStart;
-            this._IdentificationEnd      = IdentificationEnd;
+            this._IdentificationStop     = IdentificationStop;
 
         }
 
