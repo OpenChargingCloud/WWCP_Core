@@ -3498,6 +3498,7 @@ namespace org.GraphDefined.WWCP
             if (SessionId == null)
                 throw new ArgumentNullException(nameof(SessionId),  "The given charging session identification must not be null!");
 
+            EVSEOperator _EVSEOperator = null;
             RemoteStopEVSEResult result           = null;
             ChargingSession     _ChargingSession  = null;
 
@@ -3534,16 +3535,16 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            EVSE _EVSE = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE) && _EVSE.AdminStatus != EVSEAdminStatusType.Operational)
-                result = RemoteStopEVSEResult.OutOfService(SessionId);
+            //    EVSE _EVSE = null;
+            //    if (TryGetEVSEbyId(EVSEId, out _EVSE) && _EVSE.AdminStatus.Value != EVSEAdminStatusType.Operational)
+            //        result = RemoteStopEVSEResult.OutOfService(SessionId);
 
 
 
             if (_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
             {
 
-                var _EVSEOperator = _ChargingSession.EVSEOperator;
+                _EVSEOperator = _ChargingSession.EVSEOperator;
 
                 // Fallback
                 if (_EVSEOperator == null)
@@ -3577,7 +3578,23 @@ namespace org.GraphDefined.WWCP
             }
 
             else
-                result = RemoteStopEVSEResult.InvalidSessionId(SessionId);
+            {
+
+                var __EO = EVSEOperators.Where(eop => eop.ContainsEVSE(EVSEId)).FirstOrDefault();
+
+                if (__EO != null)
+                    result = await __EO.RemoteStop(Timestamp,
+                                                   CancellationToken,
+                                                   EventTrackingId,
+                                                   EVSEId,
+                                                   SessionId,
+                                                   ReservationHandling,
+                                                   ProviderId,
+                                                   QueryTimeout);
+
+                else
+                    result = RemoteStopEVSEResult.InvalidSessionId(SessionId);
+            }
 
 
             #region Send OnRemoteEVSEStopped event
