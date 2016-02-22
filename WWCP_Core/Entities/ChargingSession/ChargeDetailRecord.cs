@@ -347,16 +347,31 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Identification
+        #region IdentificationStart
 
-        private readonly AuthInfo _Identification;
+        private readonly AuthInfo _IdentificationStart;
 
         [Optional]
-        public AuthInfo Identification
+        public AuthInfo IdentificationStart
         {
             get
             {
-                return _Identification;
+                return _IdentificationStart;
+            }
+        }
+
+        #endregion
+
+        #region IdentificationEnd
+
+        private readonly AuthInfo _IdentificationEnd;
+
+        [Optional]
+        public AuthInfo IdentificationEnd
+        {
+            get
+            {
+                return _IdentificationEnd;
             }
         }
 
@@ -386,7 +401,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="EnergyMeteringValues">An optional enumeration of intermediate energy metering values.</param>
         /// <param name="MeteringSignature">An optional signature for the metering values.</param>
         /// 
-        /// <param name="Identification">An identification.</param>
+        /// <param name="IdentificationStart">The identification for the start of the charging process.</param>
+        /// <param name="IdentificationEnd">The identification for the stop of the charging process.</param>
         public ChargeDetailRecord(ChargingSession_Id                SessionId,
                                   ChargingReservation               Reservation            = null,
                                   ChargingReservation_Id            ReservationId          = null,
@@ -408,7 +424,8 @@ namespace org.GraphDefined.WWCP
                                   IEnumerable<Timestamped<Double>>  EnergyMeteringValues   = null,
                                   String                            MeteringSignature      = null,
 
-                                  AuthInfo                          Identification         = null)
+                                  AuthInfo                          IdentificationStart    = null,
+                                  AuthInfo                          IdentificationEnd      = null)
 
         {
 
@@ -438,7 +455,8 @@ namespace org.GraphDefined.WWCP
             this._EnergyMeterId          = EnergyMeterId;
             this._EnergyMeteringValues   = EnergyMeteringValues != null ? EnergyMeteringValues : new Timestamped<Double>[0];
 
-            this._Identification         = Identification;
+            this._IdentificationStart    = IdentificationStart;
+            this._IdentificationEnd      = IdentificationEnd;
 
         }
 

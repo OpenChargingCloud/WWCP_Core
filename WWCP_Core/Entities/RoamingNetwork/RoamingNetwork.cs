@@ -5201,7 +5201,7 @@ namespace org.GraphDefined.WWCP
 
             var OnFilterCDRRecordsLocal = OnFilterCDRRecords;
             if (OnFilterCDRRecordsLocal != null)
-                result = OnFilterCDRRecordsLocal(AuthorizatorId, ChargeDetailRecord.Identification);
+                result = OnFilterCDRRecordsLocal(AuthorizatorId, ChargeDetailRecord.IdentificationStart);
 
             #endregion
 
