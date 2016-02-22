@@ -2953,8 +2953,27 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            else
-                result = RemoteStopEVSEResult.InvalidSessionId(SessionId);
+            //else
+            //result = RemoteStopEVSEResult.InvalidSessionId(SessionId);
+
+            else {
+
+                var __CS = ChargingStations.Where(cp => cp.ContainsEVSE(EVSEId)).FirstOrDefault();
+
+                if (__CS != null)
+                    result = await __CS.RemoteStop(Timestamp,
+                                                   CancellationToken,
+                                                   EventTrackingId,
+                                                   EVSEId,
+                                                   SessionId,
+                                                   ReservationHandling,
+                                                   ProviderId,
+                                                   QueryTimeout);
+
+                else
+                    result = RemoteStopEVSEResult.InvalidSessionId(SessionId);
+
+            }
 
 
             #region Send OnRemoteEVSEStopped event

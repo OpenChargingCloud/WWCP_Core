@@ -3640,8 +3640,27 @@ namespace org.GraphDefined.WWCP
 
                 }
 
-                else
-                    result = RemoteStopEVSEResult.InvalidSessionId(SessionId);
+                else {
+
+                    var __CP = ChargingPools.Where(cp => cp.ContainsEVSE(EVSEId)).FirstOrDefault();
+
+                    if (__CP != null)
+                      result = await __CP.RemoteStop(Timestamp,
+                                            CancellationToken,
+                                            EventTrackingId,
+                                            EVSEId,
+                                            SessionId,
+                                            ReservationHandling,
+                                            ProviderId,
+                                            QueryTimeout);
+
+                    else
+                        result = RemoteStopEVSEResult.InvalidSessionId(SessionId);
+
+                }
+
+                //else
+                  //  result = RemoteStopEVSEResult.InvalidSessionId(SessionId);
 
             }
 
