@@ -2957,15 +2957,45 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">The reason for the reservation cancellation.</param>
         /// <returns>True when successful, false otherwise</returns>
-        public async Task<Boolean> CancelReservation(ChargingReservation_Id                 ReservationId,
-                                                     ChargingReservationCancellationReason  Reason)
+        public async Task<Boolean> CancelReservation(DateTime                               Timestamp,
+                                                     CancellationToken                      CancellationToken,
+                                                     EventTracking_Id                       EventTrackingId,
+                                                     ChargingReservation_Id                 ReservationId,
+                                                     ChargingReservationCancellationReason  Reason,
+                                                     TimeSpan?                              QueryTimeout  = null)
         {
 
             Boolean      result         = false;
             EVSEOperator _EVSEOperator  = null;
 
             if (_ChargingReservations.TryRemove(ReservationId, out _EVSEOperator))
-                result = await _EVSEOperator.CancelReservation(ReservationId, Reason);
+                result = await _EVSEOperator.CancelReservation(Timestamp,
+                                                               CancellationToken,
+                                                               EventTrackingId,
+                                                               ReservationId,
+                                                               Reason,
+                                                               QueryTimeout);
+
+            else
+            {
+
+                foreach (var __EVSEOperator in _EVSEOperators)
+                {
+
+                    result = await __EVSEOperator.Value.CancelReservation(Timestamp,
+                                                                          CancellationToken,
+                                                                          EventTrackingId,
+                                                                          ReservationId,
+                                                                          Reason,
+                                                                          QueryTimeout);
+
+                    if (result)
+                        break;
+
+                }
+
+            }
+
 
             var OnReservationCancelledLocal = OnReservationCancelled;
             if (OnReservationCancelledLocal != null)
@@ -2975,7 +3005,7 @@ namespace org.GraphDefined.WWCP
                                             ReservationId,
                                             Reason);
 
-            return true;
+            return result;
 
         }
 

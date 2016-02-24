@@ -2826,16 +2826,46 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <returns>True when successful, false otherwise</returns>
-        public async Task<Boolean> CancelReservation(ChargingReservation_Id           ReservationId,
-                                                     ChargingReservationCancellationReason  ReservationCancellation)
+        public async Task<Boolean> CancelReservation(DateTime                               Timestamp,
+                                                     CancellationToken                      CancellationToken,
+                                                     EventTracking_Id                       EventTrackingId,
+                                                     ChargingReservation_Id                 ReservationId,
+                                                     ChargingReservationCancellationReason  Reason,
+                                                     TimeSpan?                              QueryTimeout  = null)
         {
 
-            ChargingPool _ChargingPool = null;
+            Boolean      result         = false;
+            ChargingPool _ChargingPool  = null;
 
             if (_ChargingReservations.TryRemove(ReservationId, out _ChargingPool))
-                return await _ChargingPool.CancelReservation(ReservationId, ReservationCancellation);
+                result = await _ChargingPool.CancelReservation(Timestamp,
+                                                               CancellationToken,
+                                                               EventTrackingId,
+                                                               ReservationId,
+                                                               Reason,
+                                                               QueryTimeout);
 
-            return false;
+            else
+            {
+
+                foreach (var __ChargingPool in _ChargingPools)
+                {
+
+                    result = await __ChargingPool.Value.CancelReservation(Timestamp,
+                                                                          CancellationToken,
+                                                                          EventTrackingId,
+                                                                          ReservationId,
+                                                                          Reason,
+                                                                          QueryTimeout);
+
+                    if (result)
+                        break;
+
+                }
+
+            }
+
+            return result;
 
         }
 

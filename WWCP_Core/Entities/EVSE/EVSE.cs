@@ -1031,20 +1031,18 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">A reason for this cancellation.</param>
         /// <returns>True when successful, false otherwise</returns>
-        public async Task<Boolean> CancelReservation(ChargingReservation_Id                 ReservationId,
-                                                     ChargingReservationCancellationReason  Reason)
+        public async Task<Boolean> CancelReservation(DateTime                               Timestamp,
+                                                     CancellationToken                      CancellationToken,
+                                                     EventTracking_Id                       EventTrackingId,
+                                                     ChargingReservation_Id                 ReservationId,
+                                                     ChargingReservationCancellationReason  Reason,
+                                                     TimeSpan?                              QueryTimeout  = null)
         {
 
             #region Initial checks
 
-            if (_Reservation == null)
-                return true;
-
             if (ReservationId == null)
                 throw new ArgumentNullException(nameof(ReservationId),  "The given charging reservation identification must not be null!");
-
-            if (_Reservation.Id != ReservationId)
-                return false;
 
             #endregion
 
@@ -1052,18 +1050,30 @@ namespace org.GraphDefined.WWCP
             if (_RemoteEVSE != null)
                 return await _RemoteEVSE.
                                    ChargingStation.
-                                   CancelReservation(ReservationId, Reason);
+                                   CancelReservation(Timestamp,
+                                                     CancellationToken,
+                                                     EventTrackingId,
+                                                     ReservationId,
+                                                     Reason,
+                                                     QueryTimeout);
 
             else
             {
+
+                if (_Reservation == null)
+                    return true;
+
+                if (_Reservation.Id != ReservationId)
+                    return false;
+
 
                 var OldReservationId = _Reservation.Id;
 
                 _Reservation = null;
 
-                SendOnReservationCancelled(DateTime.Now,
+                SendOnReservationCancelled(Timestamp,
                                            this,
-                                           EventTracking_Id.New,
+                                           EventTrackingId,
                                            OldReservationId,
                                            Reason);
 

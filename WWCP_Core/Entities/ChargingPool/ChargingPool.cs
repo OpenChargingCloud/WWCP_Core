@@ -2333,16 +2333,46 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">A reason for this cancellation.</param>
         /// <returns>True when successful, false otherwise</returns>
-        public async Task<Boolean> CancelReservation(ChargingReservation_Id                 ReservationId,
-                                                     ChargingReservationCancellationReason  Reason)
+        public async Task<Boolean> CancelReservation(DateTime                               Timestamp,
+                                                     CancellationToken                      CancellationToken,
+                                                     EventTracking_Id                       EventTrackingId,
+                                                     ChargingReservation_Id                 ReservationId,
+                                                     ChargingReservationCancellationReason  Reason,
+                                                     TimeSpan?                              QueryTimeout  = null)
         {
 
-            ChargingStation _ChargingStation = null;
+            Boolean         result            = false;
+            ChargingStation _ChargingStation  = null;
 
             if (_ChargingReservations.TryRemove(ReservationId, out _ChargingStation))
-                return await _ChargingStation.CancelReservation(ReservationId, Reason);
+                result = await _ChargingStation.CancelReservation(Timestamp,
+                                                                  CancellationToken,
+                                                                  EventTrackingId,
+                                                                  ReservationId,
+                                                                  Reason,
+                                                                  QueryTimeout);
 
-            return false;
+            else
+            {
+
+                foreach (var __ChargingStation in _ChargingStations)
+                {
+
+                    result = await __ChargingStation.Value.CancelReservation(Timestamp,
+                                                                             CancellationToken,
+                                                                             EventTrackingId,
+                                                                             ReservationId,
+                                                                             Reason,
+                                                                             QueryTimeout);
+
+                    if (result)
+                        break;
+
+                }
+
+            }
+
+            return result;
 
         }
 
