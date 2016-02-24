@@ -1966,6 +1966,7 @@ namespace org.GraphDefined.WWCP
                                            Duration,
                                            ReservationId,
                                            ProviderId,
+                                           eMAId,
                                            ChargingProductId,
                                            AuthTokens,
                                            eMAIds,
