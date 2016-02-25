@@ -167,6 +167,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         Task<RemoteStopResult> RemoteStop(DateTime             Timestamp,
                                           CancellationToken    CancellationToken,
@@ -174,6 +175,7 @@ namespace org.GraphDefined.WWCP
                                           ChargingSession_Id   SessionId,
                                           ReservationHandling  ReservationHandling,
                                           EVSP_Id              ProviderId    = null,
+                                          eMA_Id               eMAId         = null,
                                           TimeSpan?            QueryTimeout  = null);
 
         /// <summary>
@@ -186,6 +188,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         Task<RemoteStopEVSEResult> RemoteStop(DateTime             Timestamp,
                                               CancellationToken    CancellationToken,
@@ -194,6 +197,7 @@ namespace org.GraphDefined.WWCP
                                               ChargingSession_Id   SessionId,
                                               ReservationHandling  ReservationHandling,
                                               EVSP_Id              ProviderId    = null,
+                                              eMA_Id               eMAId         = null,
                                               TimeSpan?            QueryTimeout  = null);
 
         /// <summary>
@@ -206,6 +210,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         Task<RemoteStopChargingStationResult> RemoteStop(DateTime             Timestamp,
                                                          CancellationToken    CancellationToken,
@@ -214,6 +219,7 @@ namespace org.GraphDefined.WWCP
                                                          ChargingSession_Id   SessionId,
                                                          ReservationHandling  ReservationHandling,
                                                          EVSP_Id              ProviderId    = null,
+                                                         eMA_Id               eMAId         = null,
                                                          TimeSpan?            QueryTimeout  = null);
 
         #endregion

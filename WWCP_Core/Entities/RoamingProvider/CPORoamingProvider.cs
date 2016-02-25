@@ -505,6 +505,7 @@ namespace org.GraphDefined.WWCP
                                   ReservationHandling,
                                   SessionId,
                                   ProviderId,
+                                  eMAId,
                                   EVSEId,
                                   QueryTimeout) => RoamingNetwork.RemoteStop(Timestamp,
                                                                              CancellationToken,
@@ -513,6 +514,7 @@ namespace org.GraphDefined.WWCP
                                                                              SessionId,
                                                                              ReservationHandling.Close,
                                                                              ProviderId,
+                                                                             null,
                                                                              QueryTimeout);
 
             #endregion

@@ -107,7 +107,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Reserve/RemoteStart/RemoteStop
+        #region Reserve
 
         /// <summary>
         /// Reserve the possibility to charge.
@@ -139,21 +139,72 @@ namespace org.GraphDefined.WWCP
                                         TimeSpan?                QueryTimeout       = null);
 
 
-        Task<RemoteStartEVSEResult> RemoteStart(DateTime Timestamp, CancellationToken CancellationToken, EventTracking_Id EventTrackingId, ChargingProduct_Id ChargingProductId, ChargingReservation_Id ReservationId, ChargingSession_Id SessionId, EVSP_Id ProviderId, eMA_Id eMAId, TimeSpan? QueryTimeout = null);
-        Task<RemoteStopEVSEResult> RemoteStop(DateTime Timestamp, CancellationToken CancellationToken, EventTracking_Id EventTrackingId, ChargingSession_Id SessionId, ReservationHandling ReservationHandling, EVSP_Id ProviderId, TimeSpan? QueryTimeout = null);
-
-        #endregion
-
-
-
-
         /// <summary>
         /// Try to remove the given charging reservation.
         /// </summary>
+        /// <param name="Timestamp">The timestamp of this request.</param>
+        /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="ReservationId">The unique charging reservation identification.</param>
-        /// <returns>True when successful, false otherwise</returns>
-        Task<Boolean> CancelReservation(ChargingReservation_Id           ReservationId,
-                                        ChargingReservationCancellationReason  ReservationCancellation);
+        /// <param name="Reason">A reason for this cancellation.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        Task<CancelReservationResult> CancelReservation(DateTime                               Timestamp,
+                                                        CancellationToken                      CancellationToken,
+                                                        EventTracking_Id                       EventTrackingId,
+                                                        ChargingReservation_Id                 ReservationId,
+                                                        ChargingReservationCancellationReason  Reason,
+                                                        TimeSpan?                              QueryTimeout  = null);
+
+
+        #endregion
+
+        #region RemoteStart/-Stop
+
+        /// <summary>
+        /// Start a charging session.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
+        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        Task<RemoteStartEVSEResult> RemoteStart(DateTime                Timestamp,
+                                                CancellationToken       CancellationToken,
+                                                EventTracking_Id        EventTrackingId,
+                                                ChargingProduct_Id      ChargingProductId,
+                                                ChargingReservation_Id  ReservationId,
+                                                ChargingSession_Id      SessionId,
+                                                EVSP_Id                 ProviderId    = null,
+                                                eMA_Id                  eMAId         = null,
+                                                TimeSpan?               QueryTimeout  = null);
+
+
+        /// <summary>
+        /// Stop the given charging session.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="SessionId">The unique identification for this charging session.</param>
+        /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        Task<RemoteStopEVSEResult> RemoteStop(DateTime             Timestamp,
+                                              CancellationToken    CancellationToken,
+                                              EventTracking_Id     EventTrackingId,
+                                              ChargingSession_Id   SessionId,
+                                              ReservationHandling  ReservationHandling,
+                                              EVSP_Id              ProviderId    = null,
+                                              eMA_Id               eMAId         = null,
+                                              TimeSpan?            QueryTimeout  = null);
+
+        #endregion
+
 
 
 

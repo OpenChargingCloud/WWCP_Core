@@ -64,6 +64,7 @@
     <Compile Include="Commands\RemoteStartStop\RemoteStartChargingStationResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopChargingStationResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopResult.cs" />
+    <Compile Include="Commands\Reserve\CancelReservationResult.cs" />
     <Compile Include="Commands\SendCDR\OnSendCDRDelegate.cs" />
     <Compile Include="CommonTypes\ActionType.cs" />
     <Compile Include="CommonTypes\Attributes\Mandatory.cs" />

@@ -105,7 +105,22 @@ namespace org.GraphDefined.WWCP
 
         Boolean TryGetReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation);
 
-        Task<Boolean> CancelReservation(ChargingReservation_Id ReservationId);
+
+        /// <summary>
+        /// Try to remove the given charging reservation.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of this request.</param>
+        /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="ReservationId">The unique charging reservation identification.</param>
+        /// <param name="Reason">A reason for this cancellation.</param>
+        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        Task<CancelReservationResult> CancelReservation(DateTime                               Timestamp,
+                                                        CancellationToken                      CancellationToken,
+                                                        EventTracking_Id                       EventTrackingId,
+                                                        ChargingReservation_Id                 ReservationId,
+                                                        ChargingReservationCancellationReason  Reason,
+                                                        TimeSpan?                              QueryTimeout  = null);
 
         /// <summary>
         /// Initiate a remote start of the given charging session at the given charging station
