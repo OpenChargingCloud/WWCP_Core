@@ -24,6 +24,8 @@ namespace org.GraphDefined.WWCP
     public enum ChargingReservationLevel
     {
 
+        Default,
+
         /// <summary>
         /// The EVSE was reserved.
         /// </summary>
