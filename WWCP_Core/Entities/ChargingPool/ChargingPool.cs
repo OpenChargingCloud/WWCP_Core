@@ -2424,7 +2424,10 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _ChargingSessions.SelectMany(kvp => kvp.Value.ChargingSessions);
+
+                return _ChargingStations.Values.
+                           SelectMany(station => station.ChargingSessions);
+
             }
         }
 

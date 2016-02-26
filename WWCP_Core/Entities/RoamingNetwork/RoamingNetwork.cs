@@ -239,8 +239,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the roaming network.</param>
         /// <param name="AuthorizatorId">The unique identification for the Auth service.</param>
-        public RoamingNetwork(RoamingNetwork_Id Id,
-                              Authorizator_Id AuthorizatorId = null)
+        public RoamingNetwork(RoamingNetwork_Id  Id,
+                              Authorizator_Id    AuthorizatorId = null)
 
             : base(Id)
 
@@ -248,21 +248,21 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this._AuthorizatorId = (AuthorizatorId == null) ? Authorizator_Id.Parse("GraphDefined E-Mobility Gateway") : AuthorizatorId;
-            this._Description = new I18NString();
+            this._AuthorizatorId                           = (AuthorizatorId == null) ? Authorizator_Id.Parse("GraphDefined E-Mobility Gateway") : AuthorizatorId;
+            this._Description                              = new I18NString();
 
-            this._EVSEOperators = new ConcurrentDictionary<EVSEOperator_Id, EVSEOperator>();
-            this._EVServiceProviders = new ConcurrentDictionary<EVSP_Id, EVSP>();
-            this._CPORoamingProviders = new ConcurrentDictionary<RoamingProvider_Id, CPORoamingProvider>();
-            this._EMPRoamingProviders = new ConcurrentDictionary<RoamingProvider_Id, EMPRoamingProvider>();
-            this._SearchProviders = new ConcurrentDictionary<NavigationServiceProvider_Id, NavigationServiceProvider>();
-            this._ChargingReservations = new ConcurrentDictionary<ChargingReservation_Id, EVSEOperator>();
-            this._IeMobilityServiceProviders = new ConcurrentDictionary<UInt32, IeMobilityServiceProvider>();
-            this._OperatorRoamingServices = new ConcurrentDictionary<UInt32, IOperatorRoamingService>();
-            this._eMobilityRoamingServices = new ConcurrentDictionary<UInt32, IeMobilityRoamingService>();
-            this._PushEVSEStatusToOperatorRoamingServices = new ConcurrentDictionary<UInt32, IPushDataAndStatus>();
-            this._ChargingSessions = new ConcurrentDictionary<ChargingSession_Id, ChargingSession>();
-            this._ChargeDetailRecords = new ConcurrentDictionary<ChargingSession_Id, ChargeDetailRecord>();
+            this._EVSEOperators                            = new ConcurrentDictionary<EVSEOperator_Id, EVSEOperator>();
+            this._EVServiceProviders                       = new ConcurrentDictionary<EVSP_Id, EVSP>();
+            this._CPORoamingProviders                      = new ConcurrentDictionary<RoamingProvider_Id, CPORoamingProvider>();
+            this._EMPRoamingProviders                      = new ConcurrentDictionary<RoamingProvider_Id, EMPRoamingProvider>();
+            this._SearchProviders                          = new ConcurrentDictionary<NavigationServiceProvider_Id, NavigationServiceProvider>();
+            this._ChargingReservations                     = new ConcurrentDictionary<ChargingReservation_Id, EVSEOperator>();
+            this._IeMobilityServiceProviders               = new ConcurrentDictionary<UInt32, IeMobilityServiceProvider>();
+            this._OperatorRoamingServices                  = new ConcurrentDictionary<UInt32, IOperatorRoamingService>();
+            this._eMobilityRoamingServices                 = new ConcurrentDictionary<UInt32, IeMobilityRoamingService>();
+            this._PushEVSEStatusToOperatorRoamingServices  = new ConcurrentDictionary<UInt32, IPushDataAndStatus>();
+            this._ChargingSessions                         = new ConcurrentDictionary<ChargingSession_Id, EVSEOperator>();
+            this._ChargeDetailRecords                      = new ConcurrentDictionary<ChargingSession_Id, ChargeDetailRecord>();
 
             #endregion
 
@@ -3171,7 +3171,7 @@ namespace org.GraphDefined.WWCP
 
 
                 if (result.Result == RemoteStartEVSEResultType.Success)
-                    _ChargingSessions.TryAdd(result.Session.Id, result.Session);
+                    _ChargingSessions.TryAdd(result.Session.Id, _EVSEOperator);
 
             }
 
@@ -3305,7 +3305,7 @@ namespace org.GraphDefined.WWCP
 
 
                 if (result.Result == RemoteStartChargingStationResultType.Success)
-                    _ChargingSessions.TryAdd(result.Session.Id, result.Session);
+                    _ChargingSessions.TryAdd(result.Session.Id, _EVSEOperator);
 
             }
 
@@ -3414,8 +3414,8 @@ namespace org.GraphDefined.WWCP
             if (SessionId == null)
                 throw new ArgumentNullException(nameof(SessionId), "The given charging session identification must not be null!");
 
-            RemoteStopResult result           = null;
-            ChargingSession _ChargingSession  = null;
+            RemoteStopResult result         = null;
+            EVSEOperator     _EVSEOperator  = null;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -3450,23 +3450,18 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
+            if (_ChargingSessions.TryRemove(SessionId, out _EVSEOperator))
             {
 
-                if (_ChargingSession.EVSEOperator != null)
-                    result = await _ChargingSession.
-                                       EVSEOperator.
-                                       RemoteStop(Timestamp,
-                                                  CancellationToken,
-                                                  EventTrackingId,
-                                                  SessionId,
-                                                  ReservationHandling,
-                                                  ProviderId,
-                                                  eMAId,
-                                                  QueryTimeout);
-
-                else
-                    result = RemoteStopResult.UnknownOperator(SessionId);
+                result = await _EVSEOperator.
+                                   RemoteStop(Timestamp,
+                                              CancellationToken,
+                                              EventTrackingId,
+                                              SessionId,
+                                              ReservationHandling,
+                                              ProviderId,
+                                              eMAId,
+                                              QueryTimeout);
 
             }
 
@@ -3545,9 +3540,8 @@ namespace org.GraphDefined.WWCP
             if (SessionId == null)
                 throw new ArgumentNullException(nameof(SessionId),  "The given charging session identification must not be null!");
 
-            EVSEOperator _EVSEOperator = null;
-            RemoteStopEVSEResult result           = null;
-            ChargingSession     _ChargingSession  = null;
+            EVSEOperator         _EVSEOperator     = null;
+            RemoteStopEVSEResult  result           = null;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -3583,68 +3577,42 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            //    EVSE _EVSE = null;
-            //    if (TryGetEVSEbyId(EVSEId, out _EVSE) && _EVSE.AdminStatus.Value != EVSEAdminStatusType.Operational)
-            //        result = RemoteStopEVSEResult.OutOfService(SessionId);
-
-
-
-            if (_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
+            if (_ChargingSessions.TryRemove(SessionId, out _EVSEOperator))
             {
 
-                _EVSEOperator = _ChargingSession.EVSEOperator;
-
-                // Fallback
-                if (_EVSEOperator == null)
-                    _EVSEOperator = GetEVSEOperatorbyId(EVSEId.OperatorId);
-
-                if (_EVSEOperator != null)
-                {
-
-                    result = await _ChargingSession.
-                                       EVSEOperator.
-                                       RemoteStop(Timestamp,
-                                                  CancellationToken,
-                                                  EventTrackingId,
-                                                  EVSEId,
-                                                  SessionId,
-                                                  ReservationHandling,
-                                                  ProviderId,
-                                                  eMAId,
-                                                  QueryTimeout);
-
-
-                    ChargingSession _ChargingSessionToRemove = null;
-
-                    if (result.Result == RemoteStopEVSEResultType.Success)
-                        _ChargingSessions.TryRemove(result.SessionId, out _ChargingSessionToRemove);
-
-                }
-
-                else
-                    result = RemoteStopEVSEResult.UnknownOperator(SessionId);
+                result = await _EVSEOperator.
+                                   RemoteStop(Timestamp,
+                                              CancellationToken,
+                                              EventTrackingId,
+                                              EVSEId,
+                                              SessionId,
+                                              ReservationHandling,
+                                              ProviderId,
+                                              eMAId,
+                                              QueryTimeout);
 
             }
 
-            else
+            if (result == null)
             {
 
-                var __EO = EVSEOperators.Where(eop => eop.ContainsEVSE(EVSEId)).FirstOrDefault();
+                _EVSEOperator = GetEVSEOperatorbyId(EVSEId.OperatorId);
 
-                if (__EO != null)
-                    result = await __EO.RemoteStop(Timestamp,
-                                                   CancellationToken,
-                                                   EventTrackingId,
-                                                   EVSEId,
-                                                   SessionId,
-                                                   ReservationHandling,
-                                                   ProviderId,
-                                                   eMAId,
-                                                   QueryTimeout);
+                result = await _EVSEOperator.
+                                   RemoteStop(Timestamp,
+                                              CancellationToken,
+                                              EventTrackingId,
+                                              EVSEId,
+                                              SessionId,
+                                              ReservationHandling,
+                                              ProviderId,
+                                              eMAId,
+                                              QueryTimeout);
 
-                else
-                    result = RemoteStopEVSEResult.InvalidSessionId(SessionId);
             }
+
+            if (result == null)
+                result = RemoteStopEVSEResult.InvalidSessionId(SessionId);
 
 
             #region Send OnRemoteEVSEStopped event
@@ -3719,8 +3687,8 @@ namespace org.GraphDefined.WWCP
             if (SessionId == null)
                 throw new ArgumentNullException(nameof(SessionId),          "The given charging session identification must not be null!");
 
-            RemoteStopChargingStationResult result           = null;
-            ChargingSession                _ChargingSession  = null;
+            EVSEOperator                    _EVSEOperator  = null;
+            RemoteStopChargingStationResult  result        = null;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -3756,28 +3724,41 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
+            if (_ChargingSessions.TryGetValue(SessionId, out _EVSEOperator))
             {
 
-                if (_ChargingSession.EVSEOperator != null)
-                    result = await _ChargingSession.
-                                       EVSEOperator.
-                                       RemoteStop(Timestamp,
-                                                  CancellationToken,
-                                                  EventTrackingId,
-                                                  ChargingStationId,
-                                                  SessionId,
-                                                  ReservationHandling,
-                                                  ProviderId,
-                                                  eMAId,
-                                                  QueryTimeout);
-
-                else
-                    result = RemoteStopChargingStationResult.UnknownOperator(SessionId);
+                result = await _EVSEOperator.
+                                   RemoteStop(Timestamp,
+                                              CancellationToken,
+                                              EventTrackingId,
+                                              ChargingStationId,
+                                              SessionId,
+                                              ReservationHandling,
+                                              ProviderId,
+                                              eMAId,
+                                              QueryTimeout);
 
             }
 
-            else
+            if (result == null)
+            {
+
+                _EVSEOperator = GetEVSEOperatorbyId(ChargingStationId.OperatorId);
+
+                result = await _EVSEOperator.
+                                   RemoteStop(Timestamp,
+                                              CancellationToken,
+                                              EventTrackingId,
+                                              ChargingStationId,
+                                              SessionId,
+                                              ReservationHandling,
+                                              ProviderId,
+                                              eMAId,
+                                              QueryTimeout);
+
+            }
+
+            if (result == null)
                 result = RemoteStopChargingStationResult.InvalidSessionId(SessionId);
 
 
@@ -3909,13 +3890,13 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    _ChargingSessions.TryAdd(result.SessionId,
-                                             new ChargingSession(result.SessionId) {
-                                                 AuthService        = AuthenticationService,
-                                                 EVSEOperatorId     = OperatorId,
-                                                 AuthToken          = AuthToken,
-                                                 ChargingProductId  = ChargingProductId
-                                             });
+                    //_ChargingSessions.TryAdd(result.SessionId,
+                    //                         new ChargingSession(result.SessionId) {
+                    //                             AuthService        = AuthenticationService,
+                    //                             EVSEOperatorId     = OperatorId,
+                    //                             AuthToken          = AuthToken,
+                    //                             ChargingProductId  = ChargingProductId
+                    //                         });
 
                     break;
 
@@ -3954,13 +3935,13 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    _ChargingSessions.TryAdd(result.SessionId,
-                                             new ChargingSession(result.SessionId) {
-                                                 OperatorRoamingService  = OperatorRoamingService,
-                                                 EVSEOperatorId          = OperatorId,
-                                                 AuthToken               = AuthToken,
-                                                 ChargingProductId       = ChargingProductId
-                                             });
+                    //_ChargingSessions.TryAdd(result.SessionId,
+                    //                         new ChargingSession(result.SessionId) {
+                    //                             OperatorRoamingService  = OperatorRoamingService,
+                    //                             EVSEOperatorId          = OperatorId,
+                    //                             AuthToken               = AuthToken,
+                    //                             ChargingProductId       = ChargingProductId
+                    //                         });
 
                     break;
 
@@ -4116,14 +4097,15 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    _ChargingSessions.TryAdd(result.SessionId,
-                                             new ChargingSession(result.SessionId) {
-                                                 AuthService        = AuthenticationService,
-                                                 EVSEOperatorId     = OperatorId,
-                                                 EVSEId             = EVSEId,
-                                                 AuthToken          = AuthToken,
-                                                 ChargingProductId  = ChargingProductId
-                                             });
+                    RegisterExternalChargingSession(DateTime.Now,
+                                                    this,
+                                                    new ChargingSession(result.SessionId) {
+                                                        AuthService        = AuthenticationService,
+                                                        EVSEOperatorId     = OperatorId,
+                                                        EVSEId             = EVSEId,
+                                                        AuthToken          = AuthToken,
+                                                        ChargingProductId  = ChargingProductId
+                                                    });
 
                     break;
 
@@ -4163,14 +4145,15 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    _ChargingSessions.TryAdd(result.SessionId,
-                                             new ChargingSession(result.SessionId) {
-                                                 OperatorRoamingService  = OperatorRoamingService,
-                                                 EVSEOperatorId          = OperatorId,
-                                                 EVSEId                  = EVSEId,
-                                                 AuthToken               = AuthToken,
-                                                 ChargingProductId       = ChargingProductId
-                                             });
+                    RegisterExternalChargingSession(DateTime.Now,
+                                                    this,
+                                                    new ChargingSession(result.SessionId) {
+                                                        OperatorRoamingService  = OperatorRoamingService,
+                                                        EVSEOperatorId          = OperatorId,
+                                                        EVSEId                  = EVSEId,
+                                                        AuthToken               = AuthToken,
+                                                        ChargingProductId       = ChargingProductId
+                                                    });
 
                     break;
 
@@ -4327,14 +4310,14 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    _ChargingSessions.TryAdd(result.SessionId,
-                                             new ChargingSession(result.SessionId) {
-                                                 AuthService        = AuthenticationService,
-                                                 EVSEOperatorId     = OperatorId,
-                                                 ChargingStationId  = ChargingStationId,
-                                                 AuthToken          = AuthToken,
-                                                 ChargingProductId  = ChargingProductId
-                                             });
+                    //_ChargingSessions.TryAdd(result.SessionId,
+                    //                         new ChargingSession(result.SessionId) {
+                    //                             AuthService        = AuthenticationService,
+                    //                             EVSEOperatorId     = OperatorId,
+                    //                             ChargingStationId  = ChargingStationId,
+                    //                             AuthToken          = AuthToken,
+                    //                             ChargingProductId  = ChargingProductId
+                    //                         });
 
                     break;
 
@@ -4374,14 +4357,14 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    _ChargingSessions.TryAdd(result.SessionId,
-                                             new ChargingSession(result.SessionId) {
-                                                 OperatorRoamingService  = OperatorRoamingService,
-                                                 EVSEOperatorId          = OperatorId,
-                                                 ChargingStationId       = ChargingStationId,
-                                                 AuthToken               = AuthToken,
-                                                 ChargingProductId       = ChargingProductId
-                                             });
+                    //_ChargingSessions.TryAdd(result.SessionId,
+                    //                         new ChargingSession(result.SessionId) {
+                    //                             OperatorRoamingService  = OperatorRoamingService,
+                    //                             EVSEOperatorId          = OperatorId,
+                    //                             ChargingStationId       = ChargingStationId,
+                    //                             AuthToken               = AuthToken,
+                    //                             ChargingProductId       = ChargingProductId
+                    //                         });
 
                     break;
 
@@ -4556,28 +4539,28 @@ namespace org.GraphDefined.WWCP
 
             ChargingSession _ChargingSession = null;
 
-            if (_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
-            {
+            //if (_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
+            //{
 
-                if (_ChargingSession.AuthService != null)
-                    result = await _ChargingSession.AuthService.           AuthorizeStop(Timestamp,
-                                                                                         CancellationToken,
-                                                                                         EventTrackingId,
-                                                                                         OperatorId,
-                                                                                         SessionId,
-                                                                                         AuthToken,
-                                                                                         QueryTimeout);
+            //    if (_ChargingSession.AuthService != null)
+            //        result = await _ChargingSession.AuthService.           AuthorizeStop(Timestamp,
+            //                                                                             CancellationToken,
+            //                                                                             EventTrackingId,
+            //                                                                             OperatorId,
+            //                                                                             SessionId,
+            //                                                                             AuthToken,
+            //                                                                             QueryTimeout);
 
-                else if (_ChargingSession.OperatorRoamingService != null)
-                    result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(Timestamp,
-                                                                                         CancellationToken,
-                                                                                         EventTrackingId,
-                                                                                         OperatorId,
-                                                                                         SessionId,
-                                                                                         AuthToken,
-                                                                                         QueryTimeout);
+            //    else if (_ChargingSession.OperatorRoamingService != null)
+            //        result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(Timestamp,
+            //                                                                             CancellationToken,
+            //                                                                             EventTrackingId,
+            //                                                                             OperatorId,
+            //                                                                             SessionId,
+            //                                                                             AuthToken,
+            //                                                                             QueryTimeout);
 
-            }
+            //}
 
             #endregion
 
@@ -4739,30 +4722,30 @@ namespace org.GraphDefined.WWCP
 
             ChargingSession _ChargingSession = null;
 
-            if (_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
-            {
+            //if (_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
+            //{
 
-                if (_ChargingSession.AuthService != null)
-                    result = await _ChargingSession.AuthService.           AuthorizeStop(Timestamp,
-                                                                                         CancellationToken,
-                                                                                         EventTrackingId,
-                                                                                         OperatorId,
-                                                                                         EVSEId,
-                                                                                         SessionId,
-                                                                                         AuthToken,
-                                                                                         QueryTimeout);
+            //    if (_ChargingSession.AuthService != null)
+            //        result = await _ChargingSession.AuthService.           AuthorizeStop(Timestamp,
+            //                                                                             CancellationToken,
+            //                                                                             EventTrackingId,
+            //                                                                             OperatorId,
+            //                                                                             EVSEId,
+            //                                                                             SessionId,
+            //                                                                             AuthToken,
+            //                                                                             QueryTimeout);
 
-                else if (_ChargingSession.OperatorRoamingService != null)
-                    result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(Timestamp,
-                                                                                         CancellationToken,
-                                                                                         EventTrackingId,
-                                                                                         OperatorId,
-                                                                                         EVSEId,
-                                                                                         SessionId,
-                                                                                         AuthToken,
-                                                                                         QueryTimeout);
+            //    else if (_ChargingSession.OperatorRoamingService != null)
+            //        result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(Timestamp,
+            //                                                                             CancellationToken,
+            //                                                                             EventTrackingId,
+            //                                                                             OperatorId,
+            //                                                                             EVSEId,
+            //                                                                             SessionId,
+            //                                                                             AuthToken,
+            //                                                                             QueryTimeout);
 
-            }
+            //}
 
             #endregion
 
@@ -4927,30 +4910,30 @@ namespace org.GraphDefined.WWCP
 
             ChargingSession _ChargingSession = null;
 
-            if (_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
-            {
+            //if (_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
+            //{
 
-                if (_ChargingSession.AuthService != null)
-                    result = await _ChargingSession.AuthService.           AuthorizeStop(Timestamp,
-                                                                                         CancellationToken,
-                                                                                         EventTrackingId,
-                                                                                         OperatorId,
-                                                                                         ChargingStationId,
-                                                                                         SessionId,
-                                                                                         AuthToken,
-                                                                                         QueryTimeout);
+            //    if (_ChargingSession.AuthService != null)
+            //        result = await _ChargingSession.AuthService.           AuthorizeStop(Timestamp,
+            //                                                                             CancellationToken,
+            //                                                                             EventTrackingId,
+            //                                                                             OperatorId,
+            //                                                                             ChargingStationId,
+            //                                                                             SessionId,
+            //                                                                             AuthToken,
+            //                                                                             QueryTimeout);
 
-                else if (_ChargingSession.OperatorRoamingService != null)
-                    result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(Timestamp,
-                                                                                         CancellationToken,
-                                                                                         EventTrackingId,
-                                                                                         OperatorId,
-                                                                                         ChargingStationId,
-                                                                                         SessionId,
-                                                                                         AuthToken,
-                                                                                         QueryTimeout);
+            //    else if (_ChargingSession.OperatorRoamingService != null)
+            //        result = await _ChargingSession.OperatorRoamingService.AuthorizeStop(Timestamp,
+            //                                                                             CancellationToken,
+            //                                                                             EventTrackingId,
+            //                                                                             OperatorId,
+            //                                                                             ChargingStationId,
+            //                                                                             SessionId,
+            //                                                                             AuthToken,
+            //                                                                             QueryTimeout);
 
-            }
+            //}
 
             #endregion
 
@@ -5090,7 +5073,7 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingSessions
 
-        private readonly ConcurrentDictionary<ChargingSession_Id, ChargingSession> _ChargingSessions;
+        private readonly ConcurrentDictionary<ChargingSession_Id, EVSEOperator> _ChargingSessions;
 
         /// <summary>
         /// Return all current charging sessions.
@@ -5099,7 +5082,8 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _ChargingSessions.Select(kvp => kvp.Value);
+                return _EVSEOperators.Values.
+                           SelectMany(evseoperator => evseoperator.ChargingSessions);
             }
         }
 
@@ -5137,7 +5121,7 @@ namespace org.GraphDefined.WWCP
 
                 DebugX.LogT("Registered external charging session '" + ChargingSession.Id + "'!");
 
-                _ChargingSessions.TryAdd(ChargingSession.Id, ChargingSession);
+                //_ChargingSessions.TryAdd(ChargingSession.Id, ChargingSession);
 
                 if (ChargingSession.EVSEId != null)
                 {
@@ -5318,26 +5302,26 @@ namespace org.GraphDefined.WWCP
 
                 ChargingSession _ChargingSession = null;
 
-                if (_ChargingSessions.TryGetValue(ChargeDetailRecord.SessionId, out _ChargingSession))
-                {
+                //if (_ChargingSessions.TryGetValue(ChargeDetailRecord.SessionId, out _ChargingSession))
+                //{
 
-                    if (_ChargingSession.AuthService != null)
-                        result = await _ChargingSession.AuthService.SendChargeDetailRecord(Timestamp,
-                                                                                           CancellationToken,
-                                                                                           EventTrackingId,
-                                                                                           ChargeDetailRecord,
-                                                                                           QueryTimeout);
+                //    if (_ChargingSession.AuthService != null)
+                //        result = await _ChargingSession.AuthService.SendChargeDetailRecord(Timestamp,
+                //                                                                           CancellationToken,
+                //                                                                           EventTrackingId,
+                //                                                                           ChargeDetailRecord,
+                //                                                                           QueryTimeout);
 
-                    else if (_ChargingSession.OperatorRoamingService != null)
-                        result = await _ChargingSession.OperatorRoamingService.SendChargeDetailRecord(Timestamp,
-                                                                                                      CancellationToken,
-                                                                                                      EventTrackingId,
-                                                                                                      ChargeDetailRecord,
-                                                                                                      QueryTimeout);
+                //    else if (_ChargingSession.OperatorRoamingService != null)
+                //        result = await _ChargingSession.OperatorRoamingService.SendChargeDetailRecord(Timestamp,
+                //                                                                                      CancellationToken,
+                //                                                                                      EventTrackingId,
+                //                                                                                      ChargeDetailRecord,
+                //                                                                                      QueryTimeout);
 
-                    _ChargingSession.RemoveMe = true;
+                //    _ChargingSession.RemoveMe = true;
 
-                }
+                //}
 
                 #endregion
 

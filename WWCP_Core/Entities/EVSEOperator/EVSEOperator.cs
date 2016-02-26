@@ -2920,10 +2920,8 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return _RemoteEVSEOperator == null
-                           ? _ChargingSessions.SelectMany(kvp => kvp.Value.ChargingSessions)
-                           : _ChargingSessions.SelectMany(kvp => kvp.Value.ChargingSessions).
-                                               Concat(_RemoteEVSEOperator.ChargingSessions);
+                return _ChargingPools.Values.
+                           SelectMany(pool => pool.ChargingSessions);
 
             }
         }
