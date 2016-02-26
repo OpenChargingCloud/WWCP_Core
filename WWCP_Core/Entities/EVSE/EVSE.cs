@@ -889,19 +889,22 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
-        public async Task<ReservationResult> Reserve(DateTime                 Timestamp,
-                                                     CancellationToken        CancellationToken,
-                                                     EventTracking_Id         EventTrackingId,
-                                                     DateTime?                StartTime          = null,
-                                                     TimeSpan?                Duration           = null,
-                                                     ChargingReservation_Id   ReservationId      = null,
-                                                     EVSP_Id                  ProviderId         = null,
-                                                     eMA_Id                   eMAId              = null,
-                                                     ChargingProduct_Id       ChargingProductId  = null,
-                                                     IEnumerable<Auth_Token>  AuthTokens         = null,
-                                                     IEnumerable<eMA_Id>      eMAIds             = null,
-                                                     IEnumerable<UInt32>      PINs               = null,
-                                                     TimeSpan?                QueryTimeout       = null)
+        public async Task<ReservationResult>
+
+            Reserve(DateTime                 Timestamp,
+                    CancellationToken        CancellationToken,
+                    EventTracking_Id         EventTrackingId,
+                    DateTime?                StartTime          = null,
+                    TimeSpan?                Duration           = null,
+                    ChargingReservation_Id   ReservationId      = null,
+                    EVSP_Id                  ProviderId         = null,
+                    eMA_Id                   eMAId              = null,
+                    ChargingProduct_Id       ChargingProductId  = null,
+                    IEnumerable<Auth_Token>  AuthTokens         = null,
+                    IEnumerable<eMA_Id>      eMAIds             = null,
+                    IEnumerable<UInt32>      PINs               = null,
+                    TimeSpan?                QueryTimeout       = null)
+
         {
 
             #region Initial checks
@@ -1031,20 +1034,18 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">A reason for this cancellation.</param>
         /// <returns>True when successful, false otherwise</returns>
-        public async Task<Boolean> CancelReservation(ChargingReservation_Id                 ReservationId,
-                                                     ChargingReservationCancellationReason  Reason)
+        public async Task<CancelReservationResult> CancelReservation(DateTime                               Timestamp,
+                                                                     CancellationToken                      CancellationToken,
+                                                                     EventTracking_Id                       EventTrackingId,
+                                                                     ChargingReservation_Id                 ReservationId,
+                                                                     ChargingReservationCancellationReason  Reason,
+                                                                     TimeSpan?                              QueryTimeout  = null)
         {
 
             #region Initial checks
 
-            if (_Reservation == null)
-                return true;
-
             if (ReservationId == null)
                 throw new ArgumentNullException(nameof(ReservationId),  "The given charging reservation identification must not be null!");
-
-            if (_Reservation.Id != ReservationId)
-                return false;
 
             #endregion
 
@@ -1052,24 +1053,36 @@ namespace org.GraphDefined.WWCP
             if (_RemoteEVSE != null)
                 return await _RemoteEVSE.
                                    ChargingStation.
-                                   CancelReservation(ReservationId, Reason);
+                                   CancelReservation(Timestamp,
+                                                     CancellationToken,
+                                                     EventTrackingId,
+                                                     ReservationId,
+                                                     Reason,
+                                                     QueryTimeout);
 
             else
             {
+
+                if (_Reservation == null)
+                    return CancelReservationResult.Success(ReservationId);
+
+                if (_Reservation.Id != ReservationId)
+                    return CancelReservationResult.UnknownReservationId(ReservationId);
+
 
                 var OldReservationId = _Reservation.Id;
 
                 _Reservation = null;
 
-                SendOnReservationCancelled(DateTime.Now,
+                SendOnReservationCancelled(Timestamp,
                                            this,
-                                           EventTracking_Id.New,
+                                           EventTrackingId,
                                            OldReservationId,
                                            Reason);
 
                 SetStatus(EVSEStatusType.Available);
 
-                return true;
+                return CancelReservationResult.Success(ReservationId);
 
             }
 
@@ -1333,7 +1346,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RemoteStop(...SessionId, ReservationHandling, ProviderId = null, QueryTimeout = null)
+        #region RemoteStop(...SessionId, ReservationHandling, ProviderId = null, eMAId = null, ...)
 
         /// <summary>
         /// Stop the given charging session.
@@ -1344,6 +1357,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public async Task<RemoteStopEVSEResult>
 
@@ -1353,6 +1367,7 @@ namespace org.GraphDefined.WWCP
                        ChargingSession_Id   SessionId,
                        ReservationHandling  ReservationHandling,
                        EVSP_Id              ProviderId    = null,
+                       eMA_Id               eMAId         = null,
                        TimeSpan?            QueryTimeout  = null)
         {
 
@@ -1385,6 +1400,7 @@ namespace org.GraphDefined.WWCP
                                       SessionId,
                                       ReservationHandling,
                                       ProviderId,
+                                      eMAId,
                                       QueryTimeout);
 
             }
@@ -1408,6 +1424,7 @@ namespace org.GraphDefined.WWCP
                                               SessionId,
                                               ReservationHandling,
                                               ProviderId,
+                                              eMAId,
                                               QueryTimeout);
 
             }
@@ -1433,6 +1450,7 @@ namespace org.GraphDefined.WWCP
                                          SessionId,
                                          ReservationHandling,
                                          ProviderId,
+                                         eMAId,
                                          QueryTimeout,
                                          result,
                                          Runtime.Elapsed);

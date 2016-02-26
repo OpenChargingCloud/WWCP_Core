@@ -87,21 +87,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ProviderId
-
-        private readonly EVSP_Id _ProviderId;
-
-        [Optional]
-        public EVSP_Id ProviderId
-        {
-            get
-            {
-                return _ProviderId;
-            }
-        }
-
-        #endregion
-
         #region StartTime
 
         private readonly DateTime _StartTime;
@@ -147,7 +132,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
         #region ReservationLevel
 
         private readonly ChargingReservationLevel _ReservationLevel;
@@ -162,6 +146,38 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+
+        #region ProviderId
+
+        private readonly EVSP_Id _ProviderId;
+
+        [Optional]
+        public EVSP_Id ProviderId
+        {
+            get
+            {
+                return _ProviderId;
+            }
+        }
+
+        #endregion
+
+        #region eMAId
+
+        private readonly eMA_Id _eMAId;
+
+        [Optional]
+        public eMA_Id eMAId
+        {
+            get
+            {
+                return _eMAId;
+            }
+        }
+
+        #endregion
+
 
         #region RoamingNetwork
 
@@ -296,16 +312,19 @@ namespace org.GraphDefined.WWCP
         public ChargingReservation(DateTime                  Timestamp,
                                    DateTime                  StartTime,
                                    TimeSpan                  Duration,
-                                   EVSP_Id                   ProviderId,
-
+                                   DateTime                  EndTime,
                                    ChargingReservationLevel  ChargingReservationLevel,
-                                   RoamingNetwork            RoamingNetwork,
+
+                                   EVSP_Id                   ProviderId         = null,
+                                   eMA_Id                    eMAId              = null,
+
+                                   RoamingNetwork            RoamingNetwork     = null,
                                    ChargingPool_Id           ChargingPoolId     = null,
                                    ChargingStation_Id        ChargingStationId  = null,
                                    EVSE_Id                   EVSEId             = null,
                                    ChargingProduct_Id        ChargingProductId  = null,
 
-                                   IEnumerable<Auth_Token>   AuthTokens            = null,
+                                   IEnumerable<Auth_Token>   AuthTokens         = null,
                                    IEnumerable<eMA_Id>       eMAIds             = null,
                                    IEnumerable<UInt32>       PINs               = null)
 
@@ -313,9 +332,12 @@ namespace org.GraphDefined.WWCP
                    Timestamp,
                    StartTime,
                    Duration,
-                   ProviderId,
-
+                   EndTime,
                    ChargingReservationLevel,
+
+                   ProviderId,
+                   eMAId,
+
                    RoamingNetwork,
                    ChargingPoolId,
                    ChargingStationId,
@@ -339,10 +361,13 @@ namespace org.GraphDefined.WWCP
                                    DateTime                  Timestamp,
                                    DateTime                  StartTime,
                                    TimeSpan                  Duration,
-                                   EVSP_Id                   ProviderId,
+                                   DateTime                  EndTime,
+                                   ChargingReservationLevel  ChargingReservationLevel,
 
-                                   ChargingReservationLevel  ReservationLevel,
-                                   RoamingNetwork            RoamingNetwork,
+                                   EVSP_Id                   ProviderId         = null,
+                                   eMA_Id                    eMAId              = null,
+
+                                   RoamingNetwork            RoamingNetwork     = null,
                                    ChargingPool_Id           ChargingPoolId     = null,
                                    ChargingStation_Id        ChargingStationId  = null,
                                    EVSE_Id                   EVSEId             = null,
@@ -366,8 +391,11 @@ namespace org.GraphDefined.WWCP
             this._StartTime          = StartTime;
             this._Duration           = Duration;
             this._EndTime            = StartTime + Duration;
-
             this._ReservationLevel   = ReservationLevel;
+
+            this._ProviderId         = ProviderId;
+            this._eMAId              = eMAId;
+
             this._RoamingNetwork     = RoamingNetwork;
             this._ChargingPoolId     = ChargingPoolId;
             this._ChargingStationId  = ChargingStationId;
