@@ -2401,7 +2401,10 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _ChargingReservations.SelectMany(kvp => kvp.Value.ChargingReservations);
+
+                return _EVSEOperators.Values.
+                           SelectMany(evseoperator => evseoperator.ChargingReservations);
+
             }
         }
 
@@ -3000,13 +3003,13 @@ namespace org.GraphDefined.WWCP
             }
 
 
-            var OnReservationCancelledLocal = OnReservationCancelled;
-            if (OnReservationCancelledLocal != null)
-                OnReservationCancelledLocal(DateTime.Now,
-                                            this,
-                                            EventTracking_Id.New,
-                                            ReservationId,
-                                            Reason);
+            //var OnReservationCancelledLocal = OnReservationCancelled;
+            //if (OnReservationCancelledLocal != null)
+            //    OnReservationCancelledLocal(DateTime.Now,
+            //                                this,
+            //                                EventTracking_Id.New,
+            //                                ReservationId,
+            //                                Reason);
 
             return result;
 
@@ -3031,6 +3034,10 @@ namespace org.GraphDefined.WWCP
                                                  ChargingReservation_Id                 ReservationId,
                                                  ChargingReservationCancellationReason  Reason)
         {
+
+            EVSEOperator _EVSEOperator = null;
+
+            _ChargingReservations.TryRemove(ReservationId, out _EVSEOperator);
 
             var OnReservationCancelledLocal = OnReservationCancelled;
             if (OnReservationCancelledLocal != null)

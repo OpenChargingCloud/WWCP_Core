@@ -1678,18 +1678,9 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return _RemoteChargingStation == null
-
-                           ? _EVSEs.
-                                 Select(evse => evse.Reservation).
-                                 Where(reservation => reservation != null)
-
-                           : _EVSEs.
-                                 Select(evse        => evse.Reservation).
-                                 Where (reservation => reservation != null).
-                                 Concat(_RemoteChargingStation.
-                                            ChargingReservations.
-                                            Where(Reservation => Reservation != null));
+                return _EVSEs.
+                           Select(evse        => evse.Reservation).
+                           Where (reservation => reservation != null);
 
             }
         }

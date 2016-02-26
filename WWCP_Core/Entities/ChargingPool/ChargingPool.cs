@@ -1773,14 +1773,8 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return _RemoteChargingPool == null
-
-                           ? _ChargingReservations.SelectMany(kvp => kvp.Value.ChargingReservations)
-
-                           : _ChargingReservations.SelectMany(kvp => kvp.Value.ChargingReservations).
-                                                       Concat(_RemoteChargingPool.
-                                                                  ChargingReservations.
-                                                                  Where(Reservation => Reservation != null));
+                return _ChargingStations.Values.
+                           SelectMany(station => station.ChargingReservations);
 
             }
         }
@@ -2398,6 +2392,10 @@ namespace org.GraphDefined.WWCP
                                                  ChargingReservation_Id                 ReservationId,
                                                  ChargingReservationCancellationReason  Reason)
         {
+
+            ChargingStation _ChargingStation = null;
+
+            _ChargingReservations.TryRemove(ReservationId, out _ChargingStation);
 
             var OnReservationCancelledLocal = OnReservationCancelled;
             if (OnReservationCancelledLocal != null)
