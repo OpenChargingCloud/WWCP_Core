@@ -313,7 +313,7 @@ namespace org.GraphDefined.WWCP
                                    DateTime                  StartTime,
                                    TimeSpan                  Duration,
                                    DateTime                  EndTime,
-                                   ChargingReservationLevel  ChargingReservationLevel,
+                                   ChargingReservationLevel  ReservationLevel,
 
                                    EVSP_Id                   ProviderId         = null,
                                    eMA_Id                    eMAId              = null,
@@ -333,7 +333,7 @@ namespace org.GraphDefined.WWCP
                    StartTime,
                    Duration,
                    EndTime,
-                   ChargingReservationLevel,
+                   ReservationLevel,
 
                    ProviderId,
                    eMAId,
@@ -362,7 +362,7 @@ namespace org.GraphDefined.WWCP
                                    DateTime                  StartTime,
                                    TimeSpan                  Duration,
                                    DateTime                  EndTime,
-                                   ChargingReservationLevel  ChargingReservationLevel,
+                                   ChargingReservationLevel  ReservationLevel,
 
                                    EVSP_Id                   ProviderId         = null,
                                    eMA_Id                    eMAId              = null,
