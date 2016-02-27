@@ -66,18 +66,18 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ErrorMessage
+        #region Message
 
-        private readonly String _ErrorMessage;
+        private readonly String _Message;
 
         /// <summary>
-        /// An optional error message.
+        /// An optional (error) message.
         /// </summary>
-        public String ErrorMessage
+        public String Message
         {
             get
             {
-                return _ErrorMessage;
+                return _Message;
             }
         }
 
@@ -96,13 +96,9 @@ namespace org.GraphDefined.WWCP
         private RemoteStartChargingStationResult(RemoteStartChargingStationResultType Result)
         {
 
-            if (Result == RemoteStartChargingStationResultType.Success ||
-                Result == RemoteStartChargingStationResultType.Error)
-                throw new ArgumentException("Invalid parameter!");
-
-            this._Result        = Result;
-            this._Session       = null;
-            this._ErrorMessage  = null;
+            this._Result   = Result;
+            this._Session  = null;
+            this._Message  = null;
 
         }
 
@@ -119,23 +115,23 @@ namespace org.GraphDefined.WWCP
 
             this._Result        = RemoteStartChargingStationResultType.Success;
             this._Session       = Session;
-            this._ErrorMessage  = null;
+            this._Message  = null;
 
         }
 
         #endregion
 
-        #region (private) RemoteStartResult(ErrorMessage = null)
+        #region (private) RemoteStartResult(Message)
 
         /// <summary>
         /// Create a new remote start result.
         /// </summary>
-        /// <param name="ErrorMessage">A optional error message.</param>
-        private RemoteStartChargingStationResult(String ErrorMessage = null)
+        /// <param name="Message">A optional (error) message.</param>
+        private RemoteStartChargingStationResult(String Message)
         {
 
-            this._Result        = RemoteStartChargingStationResultType.Error;
-            this._ErrorMessage  = ErrorMessage;
+            this._Result   = RemoteStartChargingStationResultType.Error;
+            this._Message  = Message;
 
         }
 
@@ -159,16 +155,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) UnknownChargingStationOperator
+        #region (static) UnknownOperator
 
         /// <summary>
         /// The charging session operator is unknown.
         /// </summary>
-        public static RemoteStartChargingStationResult UnknownChargingStationOperator
+        public static RemoteStartChargingStationResult UnknownOperator
         {
             get
             {
-                return new RemoteStartChargingStationResult(RemoteStartChargingStationResultType.UnknownChargingStationOperator);
+                return new RemoteStartChargingStationResult(RemoteStartChargingStationResultType.UnknownOperator);
             }
         }
 
@@ -204,16 +200,31 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) AlreadyInUse
+        #region (static) InvalidCredentials
 
         /// <summary>
-        /// The EVSE is already in use.
+        /// Unauthorized remote start or invalid credentials.
         /// </summary>
-        public static RemoteStartChargingStationResult AlreadyInUse
+        public static RemoteStartChargingStationResult InvalidCredentials
         {
             get
             {
-                return new RemoteStartChargingStationResult(RemoteStartChargingStationResultType.AlreadyInUse);
+                return new RemoteStartChargingStationResult(RemoteStartChargingStationResultType.InvalidCredentials);
+            }
+        }
+
+        #endregion
+
+        #region (static) NoEVSEsAvailable
+
+        /// <summary>
+        /// The charging station does not have any available EVSEs for charging.
+        /// </summary>
+        public static RemoteStartChargingStationResult NoEVSEsAvailable
+        {
+            get
+            {
+                return new RemoteStartChargingStationResult(RemoteStartChargingStationResultType.NoEVSEsAvailable);
             }
         }
 
@@ -222,7 +233,7 @@ namespace org.GraphDefined.WWCP
         #region (static) Reserved
 
         /// <summary>
-        /// The EVSE is reserved.
+        /// The charging station is reserved.
         /// </summary>
         public static RemoteStartChargingStationResult Reserved
         {
@@ -234,10 +245,25 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) InternalUse
+
+        /// <summary>
+        /// The charging station is reserved for internal use.
+        /// </summary>
+        public static RemoteStartChargingStationResult InternalUse
+        {
+            get
+            {
+                return new RemoteStartChargingStationResult(RemoteStartChargingStationResultType.InternalUse);
+            }
+        }
+
+        #endregion
+
         #region (static) OutOfService
 
         /// <summary>
-        /// The EVSE is out of service.
+        /// The charging station is out of service.
         /// </summary>
         public static RemoteStartChargingStationResult OutOfService
         {
@@ -252,7 +278,7 @@ namespace org.GraphDefined.WWCP
         #region (static) Offline
 
         /// <summary>
-        /// The EVSE is offline.
+        /// The charging station is offline.
         /// </summary>
         public static RemoteStartChargingStationResult Offline
         {
@@ -260,6 +286,20 @@ namespace org.GraphDefined.WWCP
             {
                 return new RemoteStartChargingStationResult(RemoteStartChargingStationResultType.Offline);
             }
+        }
+
+        #endregion
+
+        #region (static) Success()
+
+        /// <summary>
+        /// The remote start was successful.
+        /// </summary>
+        public static RemoteStartChargingStationResult Success()
+        {
+
+            return new RemoteStartChargingStationResult(RemoteStartChargingStationResultType.Success);
+
         }
 
         #endregion
@@ -276,7 +316,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (Session == null)
-                throw new ArgumentNullException("Session", "The given charging session must not be null!");
+                throw new ArgumentNullException(nameof(Session), "The given charging session must not be null!");
 
             #endregion
 
@@ -301,15 +341,15 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Error(Message = null)
+        #region (static) Error(ErrorMessage = null)
 
         /// <summary>
         /// The remote stop led to an error.
         /// </summary>
-        /// <param name="Message">An optional error message.</param>
-        public static RemoteStartChargingStationResult Error(String Message = null)
+        /// <param name="ErrorMessage">An optional (error) message.</param>
+        public static RemoteStartChargingStationResult Error(String ErrorMessage = null)
         {
-            return new RemoteStartChargingStationResult(Message);
+            return new RemoteStartChargingStationResult(ErrorMessage);
         }
 
         #endregion
@@ -344,7 +384,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The charging station operator is unknown.
         /// </summary>
-        UnknownChargingStationOperator,
+        UnknownOperator,
 
         /// <summary>
         /// The charging station is unknown.
@@ -357,14 +397,24 @@ namespace org.GraphDefined.WWCP
         InvalidSessionId,
 
         /// <summary>
-        /// The charging station is already in use.
+        /// Unauthorized remote start or invalid credentials.
         /// </summary>
-        AlreadyInUse,
+        InvalidCredentials,
+
+        /// <summary>
+        /// The charging station does not have any available EVSEs for charging.
+        /// </summary>
+        NoEVSEsAvailable,
 
         /// <summary>
         /// The charging station is reserved.
         /// </summary>
         Reserved,
+
+        /// <summary>
+        /// The charging station is reserved for internal use.
+        /// </summary>
+        InternalUse,
 
         /// <summary>
         /// The charging station is out of service.

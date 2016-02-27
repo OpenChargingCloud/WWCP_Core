@@ -3310,7 +3310,7 @@ namespace org.GraphDefined.WWCP
             }
 
             else
-                result = RemoteStartChargingStationResult.UnknownChargingStationOperator;
+                result = RemoteStartChargingStationResult.UnknownOperator;
 
 
             #region Send OnRemoteChargingStationStarted event

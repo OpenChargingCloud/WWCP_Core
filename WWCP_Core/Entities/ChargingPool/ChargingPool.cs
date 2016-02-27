@@ -3134,16 +3134,52 @@ namespace org.GraphDefined.WWCP
             if (_ChargingSessions.TryGetValue(SessionId, out _ChargingStation))
             {
 
-                result = await _ChargingStation.
-                                   RemoteStop(Timestamp,
-                                              CancellationToken,
-                                              EventTrackingId,
-                                              ChargingStationId,
-                                              SessionId,
-                                              ReservationHandling,
-                                              ProviderId,
-                                              eMAId,
-                                              QueryTimeout);
+                var result1 = await _ChargingStation.
+                                        RemoteStop(Timestamp,
+                                                   CancellationToken,
+                                                   EventTrackingId,
+                                                   SessionId,
+                                                   ReservationHandling,
+                                                   ProviderId,
+                                                   eMAId,
+                                                   QueryTimeout);
+
+                switch (result1.Result)
+                {
+
+                    case RemoteStopResultType.Error:
+                        result = RemoteStopChargingStationResult.Error(result1.SessionId, result1.ErrorMessage);
+                        break;
+
+                    case RemoteStopResultType.InvalidSessionId:
+                        result = RemoteStopChargingStationResult.InvalidSessionId(result1.SessionId);
+                        break;
+
+                    case RemoteStopResultType.Offline:
+                        result = RemoteStopChargingStationResult.Offline(result1.SessionId);
+                        break;
+
+                    case RemoteStopResultType.OutOfService:
+                        result = RemoteStopChargingStationResult.OutOfService(result1.SessionId);
+                        break;
+
+                    case RemoteStopResultType.Success:
+                        result = RemoteStopChargingStationResult.Success(result1.SessionId);
+                        break;
+
+                    case RemoteStopResultType.Timeout:
+                        result = RemoteStopChargingStationResult.Timeout(result1.SessionId);
+                        break;
+
+                    case RemoteStopResultType.UnknownOperator:
+                        result = RemoteStopChargingStationResult.UnknownOperator(result1.SessionId);
+                        break;
+
+                    case RemoteStopResultType.Unspecified:
+                        result = RemoteStopChargingStationResult.Unspecified(result1.SessionId);
+                        break;
+
+                }
 
             }
 

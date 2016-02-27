@@ -30,19 +30,20 @@ namespace org.GraphDefined.WWCP
         Unspecified         = 0,
 
         /// <summary>
+        /// Private or internal use.
+        /// </summary>
+        InternalUse         = 1,
+
+        /// <summary>
         /// The EVSE is not ready for charging because it is under maintenance.
         /// </summary>
-        OutOfService        = 1,
+        OutOfService        = 2,
 
         /// <summary>
         /// The EVSE is ready to charge.
         /// </summary>
-        Operational         = 2,
+        Operational         = 3,
 
-        /// <summary>
-        /// Private or internal use.
-        /// </summary>
-        InternalUse         = 3,
 
         /// <summary>
         /// The EVSE was not found!

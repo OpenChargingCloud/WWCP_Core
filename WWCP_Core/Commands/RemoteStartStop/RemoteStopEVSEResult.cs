@@ -117,18 +117,18 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ErrorMessage
+        #region Message
 
-        private readonly String _ErrorMessage;
+        private readonly String _Message;
 
         /// <summary>
-        /// An optional error message.
+        /// An optional (error) message.
         /// </summary>
-        public String ErrorMessage
+        public String Message
         {
             get
             {
-                return _ErrorMessage;
+                return _Message;
             }
         }
 
@@ -160,7 +160,7 @@ namespace org.GraphDefined.WWCP
 
             this._SessionId     = SessionId;
             this._Result        = Result;
-            this._ErrorMessage  = ErrorMessage;
+            this._Message  = ErrorMessage;
 
         }
 
@@ -412,7 +412,7 @@ namespace org.GraphDefined.WWCP
         /// The remote stop led to an error.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        /// <param name="Message">An optional error message.</param>
+        /// <param name="Message">An optional (error) message.</param>
         public static RemoteStopEVSEResult Error(ChargingSession_Id  SessionId,
                                                  String              Message = null)
         {

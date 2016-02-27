@@ -823,7 +823,7 @@ namespace org.GraphDefined.WWCP
                     if (_Reservation != null)
                     {
 
-                        SetStatus(EVSEStatusType.Reserved);
+                        //SetStatus(EVSEStatusType.Reserved);
 
                         var OnNewReservationLocal = OnNewReservation;
                         if (OnNewReservationLocal != null)
@@ -831,8 +831,8 @@ namespace org.GraphDefined.WWCP
 
                     }
 
-                    else
-                        SetStatus(EVSEStatusType.Available);
+                    //else
+                    //    SetStatus(EVSEStatusType.Available);
 
                 }
 
@@ -858,15 +858,6 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever a new charging reservation was created.
         /// </summary>
         public event OnNewReservationDelegate  OnNewReservation;
-
-        #endregion
-
-        #region OnReservationCancelled
-
-        /// <summary>
-        /// An event fired whenever a charging reservation was deleted.
-        /// </summary>
-        public event OnReservationCancelledInternalDelegate OnReservationCancelled;
 
         #endregion
 
@@ -1091,7 +1082,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (internal) SendOnReservationCancelled(...)
+        #region OnReservationCancelled
+
+        /// <summary>
+        /// An event fired whenever a charging reservation was deleted.
+        /// </summary>
+        public event OnReservationCancelledInternalDelegate OnReservationCancelled;
+
 
         internal void SendOnReservationCancelled(DateTime                               Timestamp,
                                                  Object                                 Sender,

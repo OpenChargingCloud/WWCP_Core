@@ -66,18 +66,18 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ErrorMessage
+        #region Message
 
-        private readonly String _ErrorMessage;
+        private readonly String _Message;
 
         /// <summary>
-        /// An optional error message.
+        /// An optional (error) message.
         /// </summary>
-        public String ErrorMessage
+        public String Message
         {
             get
             {
-                return _ErrorMessage;
+                return _Message;
             }
         }
 
@@ -87,18 +87,20 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (private) RemoteStartResult(Result)
+        #region (private) RemoteStartResult(Result, Message = null)
 
         /// <summary>
         /// Create a new remote start result.
         /// </summary>
         /// <param name="Result">The result of the remote start operation.</param>
-        private RemoteStartEVSEResult(RemoteStartEVSEResultType  Result)
+        /// <param name="Message">An optional message.</param>
+        private RemoteStartEVSEResult(RemoteStartEVSEResultType  Result,
+                                      String                     Message = null)
         {
 
-            this._Result        = Result;
-            this._Session       = null;
-            this._ErrorMessage  = null;
+            this._Result   = Result;
+            this._Session  = null;
+            this._Message  = Message;
 
         }
 
@@ -109,29 +111,36 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a new successful remote start result.
         /// </summary>
-        /// <param name="Session">The charging session (mandatory for successful session starts).</param>
-        private RemoteStartEVSEResult(ChargingSession  Session)
+        /// <param name="Session">The charging session.</param>
+        private RemoteStartEVSEResult(ChargingSession Session)
         {
 
-            this._Result        = RemoteStartEVSEResultType.Success;
-            this._Session       = Session;
-            this._ErrorMessage  = null;
+            #region Initial checks
+
+            if (Session == null)
+                throw new ArgumentNullException(nameof(Session), "The given charging session must not be null!");
+
+            #endregion
+
+            this._Result   = RemoteStartEVSEResultType.Success;
+            this._Session  = Session;
+            this._Message  = null;
 
         }
 
         #endregion
 
-        #region (private) RemoteStartResult(ErrorMessage = null)
+        #region (private) RemoteStartResult(Message)
 
         /// <summary>
         /// Create a new remote start result.
         /// </summary>
-        /// <param name="ErrorMessage">An error message.</param>
-        private RemoteStartEVSEResult(String ErrorMessage = null)
+        /// <param name="Message">An (error) message.</param>
+        private RemoteStartEVSEResult(String Message)
         {
 
-            this._Result        = RemoteStartEVSEResultType.Error;
-            this._ErrorMessage  = ErrorMessage != null ? ErrorMessage : String.Empty;
+            this._Result   = RemoteStartEVSEResultType.Error;
+            this._Message  = Message;
 
         }
 
@@ -230,17 +239,15 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Reserved
+        #region (static) Reserved(Message)
 
         /// <summary>
         /// The EVSE is reserved.
         /// </summary>
-        public static RemoteStartEVSEResult Reserved
+        /// <param name="Message">An optional message.</param>
+        public static RemoteStartEVSEResult Reserved(String Message = null)
         {
-            get
-            {
-                return new RemoteStartEVSEResult(RemoteStartEVSEResultType.Reserved);
-            }
+            return new RemoteStartEVSEResult(RemoteStartEVSEResultType.Reserved, Message);
         }
 
         #endregion
@@ -383,6 +390,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         Unspecified,
 
+
         /// <summary>
         /// The EVSE operator is unknown.
         /// </summary>
@@ -392,6 +400,7 @@ namespace org.GraphDefined.WWCP
         /// The EVSE is unknown.
         /// </summary>
         UnknownEVSE,
+
 
         /// <summary>
         /// The given charging session identification is unknown or invalid.

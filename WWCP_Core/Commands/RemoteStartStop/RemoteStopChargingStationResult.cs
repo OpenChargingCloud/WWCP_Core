@@ -299,6 +299,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) InternalUse(SessionId)
+
+        /// <summary>
+        /// The charging session is reserved for internal use.
+        /// </summary>
+        /// <param name="SessionId">The unique charging session identification.</param>
+        public static RemoteStopChargingStationResult InternalUse(ChargingSession_Id SessionId)
+        {
+
+            return new RemoteStopChargingStationResult(SessionId,
+                                                       RemoteStopChargingStationResultType.InternalUse,
+                                                       "The charging session is reserved for internal use!");
+
+        }
+
+        #endregion
+
         #region (static) OutOfService(SessionId)
 
         /// <summary>
@@ -453,6 +470,11 @@ namespace org.GraphDefined.WWCP
         /// The charging session identification is unknown or invalid.
         /// </summary>
         InvalidSessionId,
+
+        /// <summary>
+        /// The charging station is reserved for internal use.
+        /// </summary>
+        InternalUse,
 
         /// <summary>
         /// The charging station is out of service.
