@@ -96,10 +96,6 @@ namespace org.GraphDefined.WWCP
         private RemoteStartEVSEResult(RemoteStartEVSEResultType  Result)
         {
 
-            if (Result == RemoteStartEVSEResultType.Success ||
-                Result == RemoteStartEVSEResultType.Error)
-                throw new ArgumentException("Invalid parameter!");
-
             this._Result        = Result;
             this._Session       = null;
             this._ErrorMessage  = null;
@@ -249,6 +245,21 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) InternalUse
+
+        /// <summary>
+        /// The EVSE is reserved for internal use.
+        /// </summary>
+        public static RemoteStartEVSEResult InternalUse
+        {
+            get
+            {
+                return new RemoteStartEVSEResult(RemoteStartEVSEResultType.InternalUse);
+            }
+        }
+
+        #endregion
+
         #region (static) OutOfService
 
         /// <summary>
@@ -279,10 +290,26 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Success(Session)
+        #region (static) Success()
 
         /// <summary>
         /// The remote start was successful.
+        /// The charging session will be send separately.
+        /// </summary>
+        public static RemoteStartEVSEResult Success()
+        {
+
+            return new RemoteStartEVSEResult(RemoteStartEVSEResultType.Success);
+
+        }
+
+        #endregion
+
+        #region (static) Success(Session)
+
+        /// <summary>
+        /// The remote start was successful and a charging session
+        /// will be embedded within the response.
         /// </summary>
         /// <param name="Session">The charging session.</param>
         public static RemoteStartEVSEResult Success(ChargingSession Session)
@@ -291,7 +318,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (Session == null)
-                throw new ArgumentNullException("Session", "The given charging session must not be null!");
+                throw new ArgumentNullException(nameof(Session), "The given charging session must not be null!");
 
             #endregion
 
@@ -385,6 +412,11 @@ namespace org.GraphDefined.WWCP
         /// The EVSE is reserved.
         /// </summary>
         Reserved,
+
+        /// <summary>
+        /// The EVSE is reserved for internal use.
+        /// </summary>
+        InternalUse,
 
         /// <summary>
         /// The EVSE is out of service.

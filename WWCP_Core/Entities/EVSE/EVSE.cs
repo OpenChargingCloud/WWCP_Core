@@ -1050,7 +1050,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (_RemoteEVSE != null)
+            if (_RemoteEVSE != null &&
+                Reason      != ChargingReservationCancellationReason.Expired)
                 return await _RemoteEVSE.
                                    ChargingStation.
                                    CancelReservation(Timestamp,
@@ -1145,7 +1146,10 @@ namespace org.GraphDefined.WWCP
                     if (_ChargingSession != null)
                     {
 
-                        SetStatus(EVSEStatusType.Charging);
+                        if (_ChargingSession.EVSE == null)
+                            _ChargingSession.EVSE = this;
+
+                        //SetStatus(EVSEStatusType.Charging);
 
                         var OnNewChargingSessionLocal = OnNewChargingSession;
                         if (OnNewChargingSessionLocal != null)
@@ -1153,8 +1157,8 @@ namespace org.GraphDefined.WWCP
 
                     }
 
-                    else
-                        SetStatus(EVSEStatusType.Available);
+                    //else
+                    //    SetStatus(EVSEStatusType.Available);
 
                 }
 

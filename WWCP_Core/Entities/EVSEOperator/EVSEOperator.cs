@@ -3029,7 +3029,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            #region Try remote EVSE operator...
+            #region Try the remote EVSE operator...
 
             if (_RemoteEVSEOperator != null)
             {
@@ -3047,7 +3047,6 @@ namespace org.GraphDefined.WWCP
 
 
                 if (result.Result == RemoteStartEVSEResultType.Success)
-
                 {
 
                     result.Session.EVSEOperator = this;

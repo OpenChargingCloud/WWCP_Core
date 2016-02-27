@@ -4103,7 +4103,7 @@ namespace org.GraphDefined.WWCP
                                                         AuthService        = AuthenticationService,
                                                         EVSEOperatorId     = OperatorId,
                                                         EVSEId             = EVSEId,
-                                                        AuthToken          = AuthToken,
+                                                        AuthTokenStart          = AuthToken,
                                                         ChargingProductId  = ChargingProductId
                                                     });
 
@@ -4151,7 +4151,7 @@ namespace org.GraphDefined.WWCP
                                                         OperatorRoamingService  = OperatorRoamingService,
                                                         EVSEOperatorId          = OperatorId,
                                                         EVSEId                  = EVSEId,
-                                                        AuthToken               = AuthToken,
+                                                        AuthTokenStart               = AuthToken,
                                                         ChargingProductId       = ChargingProductId
                                                     });
 
@@ -5126,21 +5126,25 @@ namespace org.GraphDefined.WWCP
                 if (ChargingSession.EVSEId != null)
                 {
 
-                    EVSE _EVSE = null;
+                    var _EVSE = GetEVSEbyId(ChargingSession.EVSEId);
 
-                    if (TryGetEVSEbyId(ChargingSession.EVSEId, out _EVSE))
+                    if (_EVSE != null)
                     {
 
                         ChargingSession.EVSE = _EVSE;
 
-                        // Will also set the EVSE status
+                        // Will NOT set the EVSE status!
                         _EVSE.ChargingSession = ChargingSession;
 
                     }
 
                 }
 
-                SendNewChargingSession(Timestamp, Sender, ChargingSession);
+                // else charging station
+
+                // else charging pool
+
+                //SendNewChargingSession(Timestamp, Sender, ChargingSession);
 
             }
 

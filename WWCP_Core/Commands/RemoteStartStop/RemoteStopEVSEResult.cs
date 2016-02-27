@@ -295,6 +295,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) InternalUse(SessionId)
+
+        /// <summary>
+        /// The EVSE is reserved for internal use.
+        /// </summary>
+        /// <param name="SessionId">The unique charging session identification.</param>
+        public static RemoteStopEVSEResult InternalUse(ChargingSession_Id SessionId)
+        {
+
+            return new RemoteStopEVSEResult(SessionId,
+                                            RemoteStopEVSEResultType.InternalUse,
+                                            "The EVSE is reserved for internal use!");
+
+        }
+
+        #endregion
+
         #region (static) OutOfService(SessionId)
 
         /// <summary>
@@ -449,6 +466,11 @@ namespace org.GraphDefined.WWCP
         /// The charging session identification is unknown or invalid.
         /// </summary>
         InvalidSessionId,
+
+        /// <summary>
+        /// The EVSE is reserved for internal use.
+        /// </summary>
+        InternalUse,
 
         /// <summary>
         /// The EVSE is out of service.

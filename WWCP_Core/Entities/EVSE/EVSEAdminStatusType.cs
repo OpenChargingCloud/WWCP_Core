@@ -42,13 +42,13 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Private or internal use.
         /// </summary>
-        Other               = 3,
+        InternalUse         = 3,
 
         /// <summary>
         /// The EVSE was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownStation      = 4
+        UnknownEVSE         = 4
 
     }
 

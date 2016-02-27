@@ -18,10 +18,7 @@
 #region Usings
 
 using System;
-using System.Linq;
 using System.Collections.Generic;
-
-using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -66,22 +63,6 @@ namespace org.GraphDefined.WWCP
             get
             {
                 return _ReservationId;
-            }
-        }
-
-        #endregion
-
-        #region IsExpired
-
-        /// <summary>
-        /// returns true if the charging reservation is expired.
-        /// </summary>
-        [InternalUseOnly]
-        public Boolean IsExpired
-        {
-            get
-            {
-                return DateTime.Now > _EndTime;
             }
         }
 
@@ -409,6 +390,31 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+        #endregion
+
+
+        #region IsExpired()
+
+        /// <summary>
+        /// Returns true if the reservation is expired.
+        /// </summary>
+        public Boolean IsExpired()
+        {
+            return DateTime.Now > _EndTime;
+        }
+
+        #endregion
+
+        #region IsExpired(ReservationSelfCancelAfter)
+
+        /// <summary>
+        /// Returns true if the reservation is expired.
+        /// </summary>
+        public Boolean IsExpired(TimeSpan ReservationSelfCancelAfter)
+        {
+            return DateTime.Now > (_EndTime + ReservationSelfCancelAfter);
+        }
 
         #endregion
 

@@ -40,10 +40,15 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
+        public EventTracking_Id EventTrackingId { get; set; }
+
         #region EVSEOperator
 
         private EVSEOperator _EVSEOperator;
 
+        /// <summary>
+        /// The EVSE operator serving this session.
+        /// </summary>
         public EVSEOperator EVSEOperator
         {
 
@@ -70,6 +75,9 @@ namespace org.GraphDefined.WWCP
 
         private EVSEOperator_Id _EVSEOperatorId;
 
+        /// <summary>
+        /// The unqiue identification of the EVSE operator serving this session.
+        /// </summary>
         public EVSEOperator_Id EVSEOperatorId
         {
 
@@ -91,6 +99,9 @@ namespace org.GraphDefined.WWCP
 
         private ChargingPool _ChargingPool;
 
+        /// <summary>
+        /// The charging pool serving this session.
+        /// </summary>
         public ChargingPool ChargingPool
         {
 
@@ -121,6 +132,9 @@ namespace org.GraphDefined.WWCP
 
         private ChargingPool_Id _ChargingPoolId;
 
+        /// <summary>
+        /// The unqiue identification of the charging pool serving this session.
+        /// </summary>
         public ChargingPool_Id ChargingPoolId
         {
 
@@ -152,6 +166,9 @@ namespace org.GraphDefined.WWCP
 
         private ChargingStation _ChargingStation;
 
+        /// <summary>
+        /// The charging station serving this session.
+        /// </summary>
         public ChargingStation ChargingStation
         {
 
@@ -184,6 +201,9 @@ namespace org.GraphDefined.WWCP
 
         private ChargingStation_Id _ChargingStationId;
 
+        /// <summary>
+        /// The unqiue identification of the charging station serving this session.
+        /// </summary>
         public ChargingStation_Id ChargingStationId
         {
 
@@ -211,7 +231,7 @@ namespace org.GraphDefined.WWCP
         private EVSE _EVSE;
 
         /// <summary>
-        /// The Electric Vehicle Supply Equipments (EVSE) for this charging session.
+        /// The EVSE serving this session.
         /// </summary>
         [Optional]
         public EVSE EVSE
@@ -248,6 +268,9 @@ namespace org.GraphDefined.WWCP
 
         private EVSE_Id _EVSEId;
 
+        /// <summary>
+        /// The unqiue identification of the EVSE serving this session.
+        /// </summary>
         public EVSE_Id EVSEId
         {
 
@@ -341,19 +364,19 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthToken
+        #region AuthTokenStart
 
-        public Auth_Token AuthToken { get; set; }
+        public Auth_Token AuthTokenStart { get; set; }
 
         #endregion
 
-        #region eMAId
+        #region eMAIdStart
 
         /// <summary>
         /// The unique identification of an Electric Mobility Account (driver contract) (eMAId).
         /// </summary>
         [Optional]
-        public eMA_Id eMAId { get; set; }
+        public eMA_Id eMAIdStart { get; set; }
 
         #endregion
 

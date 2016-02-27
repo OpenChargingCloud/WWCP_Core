@@ -2535,8 +2535,8 @@ namespace org.GraphDefined.WWCP
 
 
             var _ChargingStation = _ChargingStations.SelectMany(kvp  => kvp.Value.EVSEs).
-                                                     Where  (evse => evse.Id == EVSEId).
-                                                     Select (evse => evse.ChargingStation).
+                                                     Where     (evse => evse.Id == EVSEId).
+                                                     Select    (evse => evse.ChargingStation).
                                                      FirstOrDefault();
 
             if (_ChargingStation != null)
