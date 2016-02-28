@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (EVSE == null)
-                throw new ArgumentNullException("EVSE", "The given EVSE must not be null!");
+                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
 
             #endregion
 
@@ -129,7 +129,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (Id == null)
-                throw new ArgumentNullException("Id", "The given unique identification of an EVSE must not be null!");
+                throw new ArgumentNullException(nameof(Id), "The given unique identification of an EVSE must not be null!");
 
             #endregion
 
