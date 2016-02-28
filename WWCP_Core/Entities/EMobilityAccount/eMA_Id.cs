@@ -19,6 +19,9 @@
 
 using System;
 
+using org.GraphDefined.Vanaheimr.Illias;
+using System.Text.RegularExpressions;
+
 #endregion
 
 namespace org.GraphDefined.WWCP
@@ -120,7 +123,28 @@ namespace org.GraphDefined.WWCP
         /// <param name="Text">A text representation of an Electric Mobility Account (driver contract) identification.</param>
         public static eMA_Id Parse(String Text)
         {
-            return new eMA_Id(Text);
+
+            #region Initial checks
+
+            if (Text.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Text), "The parameter must not be null or empty!");
+
+            #endregion
+
+            var _MatchCollection = Regex.Matches(Text.Trim().ToUpper(),
+                                                 eMAId_RegEx,
+                                                 RegexOptions.IgnorePatternWhitespace);
+
+            if (_MatchCollection.Count != 1)
+                throw new ArgumentException("The given string can not be parsed as eMA identification!", nameof(Text));
+
+            EVSP_Id __ProviderId = null;
+
+            if (EVSP_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __ProviderId))
+                return new eMA_Id(__ProviderId.ToString() + "*" + _MatchCollection[0].Groups[6].Value + "*" + _MatchCollection[0].Groups[8].Value);
+
+            throw new ArgumentException("The given string can not be parsed as eMA identification!", nameof(Text));
+
         }
 
         #endregion
@@ -134,16 +158,33 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMAId">The parsed Electric Mobility Account (driver contract) identification.</param>
         public static Boolean TryParse(String Text, out eMA_Id eMAId)
         {
-            try
+
+            #region Initial checks
+
+            if (Text.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Text), "The parameter must not be null or empty!");
+
+            eMAId = null;
+
+            #endregion
+
+            var _MatchCollection = Regex.Matches(Text.Trim().ToUpper(),
+                                                 eMAId_RegEx,
+                                                 RegexOptions.IgnorePatternWhitespace);
+
+            if (_MatchCollection.Count != 1)
+                return false;
+
+            EVSP_Id __ProviderId = null;
+
+            if (EVSP_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __ProviderId))
             {
-                eMAId = new eMA_Id(Text);
+                eMAId = new eMA_Id(__ProviderId.ToString() + "*" + _MatchCollection[0].Groups[6].Value + "*" + _MatchCollection[0].Groups[8].Value);
                 return true;
             }
-            catch (Exception)
-            {
-                eMAId = null;
-                return false;
-            }
+
+            return false;
+
         }
 
         #endregion

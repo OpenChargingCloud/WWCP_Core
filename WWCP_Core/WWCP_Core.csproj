@@ -70,8 +70,11 @@
     <Compile Include="CommonTypes\Attributes\Mandatory.cs" />
     <Compile Include="CommonTypes\Attributes\InternalUseOnly.cs" />
     <Compile Include="CommonTypes\Attributes\Optional.cs" />
+    <Compile Include="CommonTypes\AuthInfoStatus.cs" />
+    <Compile Include="CommonTypes\eMAIdStatus.cs" />
     <Compile Include="CommonTypes\eMAIdWithPIN.cs" />
     <Compile Include="CommonTypes\Acknowledgement.cs" />
+    <Compile Include="CommonTypes\AuthTokenStatus.cs" />
     <Compile Include="CommonTypes\ExceptionalPeriod.cs" />
     <Compile Include="CommonTypes\HourMin.cs" />
     <Compile Include="CommonTypes\RegularHours.cs" />
@@ -106,7 +109,7 @@
     <Compile Include="Entities\RoamingProvider\ARoamingProvider.cs" />
     <Compile Include="Entities\RoamingProvider\CPORoamingProvider.cs" />
     <Compile Include="Entities\StatusSchedule.cs" />
-    <Compile Include="Entities\AuthInfo.cs" />
+    <Compile Include="CommonTypes\AuthInfo.cs" />
     <Compile Include="Entities\ChargingSession\ChargeDetailRecord.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolAdminStatusReport.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPoolStatusReport.cs" />
