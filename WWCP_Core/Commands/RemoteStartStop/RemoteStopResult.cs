@@ -295,6 +295,21 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) InvalidCredentials(SessionId)
+
+        /// <summary>
+        /// Unauthorized remote stop or invalid credentials.
+        /// </summary>
+        /// <param name="SessionId">The unique charging session identification.</param>
+        public static RemoteStopResult InvalidCredentials(ChargingSession_Id SessionId)
+        {
+            return new RemoteStopResult(SessionId,
+                                        RemoteStopResultType.InvalidCredentials,
+                                        "Unauthorized remote stop or invalid credentials!");
+        }
+
+        #endregion
+
         #region (static) InternalUse(SessionId)
 
         /// <summary>
@@ -461,6 +476,11 @@ namespace org.GraphDefined.WWCP
         /// The charging session identification is unknown or invalid.
         /// </summary>
         InvalidSessionId,
+
+        /// <summary>
+        /// Unauthorized remote stop or invalid credentials.
+        /// </summary>
+        InvalidCredentials,
 
         /// <summary>
         /// Reserved for internal use.

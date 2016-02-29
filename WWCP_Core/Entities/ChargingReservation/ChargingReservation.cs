@@ -98,16 +98,53 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region TimeLeft
+
+        public TimeSpan TimeLeft
+        {
+            get
+            {
+
+                var _TimeLeft = _EndTime - DateTime.Now;// _StartTime + _Duration - DateTime.Now;
+
+                return _TimeLeft.TotalSeconds > 0 ? _TimeLeft : TimeSpan.FromSeconds(0);
+            }
+        }
+
+        #endregion
+
         #region EndTime
 
-        private readonly DateTime _EndTime;
+        private DateTime _EndTime;
 
         [Mandatory]
         public DateTime EndTime
         {
+
             get
             {
                 return _EndTime;
+            }
+
+            set
+            {
+                _EndTime = value;
+            }
+
+        }
+
+        #endregion
+
+        #region TotalReservationTime
+
+        private TimeSpan _TotalReservationTime;
+
+        [Mandatory]
+        public TimeSpan TotalReservationTime
+        {
+            get
+            {
+                return _TotalReservationTime;
             }
         }
 
@@ -236,9 +273,32 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region ChargingSession
+
+        private ChargingSession _ChargingSession;
+
+        [Mandatory]
+        public ChargingSession ChargingSession
+        {
+
+            get
+            {
+                return _ChargingSession;
+            }
+
+            set
+            {
+                _ChargingSession = value;
+            }
+
+        }
+
+        #endregion
+
+
         #region AuthTokens
 
-        private readonly IEnumerable<Auth_Token> _AuthTokens;
+        private readonly HashSet<Auth_Token> _AuthTokens;
 
         [Optional]
         public IEnumerable<Auth_Token> AuthTokens
@@ -253,7 +313,7 @@ namespace org.GraphDefined.WWCP
 
         #region eMAIds
 
-        private readonly IEnumerable<eMA_Id> _eMAIds;
+        private readonly HashSet<eMA_Id> _eMAIds;
 
         [Optional]
         public IEnumerable<eMA_Id> eMAIds
@@ -367,25 +427,26 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._ReservationId      = ReservationId;
-            this._Timestamp          = Timestamp;
-            this._StartTime          = StartTime;
-            this._Duration           = Duration;
-            this._EndTime            = StartTime + Duration;
-            this._ReservationLevel   = ReservationLevel;
+            this._ReservationId         = ReservationId;
+            this._Timestamp             = Timestamp;
+            this._StartTime             = StartTime;
+            this._Duration              = Duration;
+            this._EndTime               = StartTime + Duration;
+            this._TotalReservationTime  = TimeSpan.FromSeconds(0);
+            this._ReservationLevel      = ReservationLevel;
 
-            this._ProviderId         = ProviderId;
-            this._eMAId              = eMAId;
+            this._ProviderId            = ProviderId;
+            this._eMAId                 = eMAId;
 
-            this._RoamingNetwork     = RoamingNetwork;
-            this._ChargingPoolId     = ChargingPoolId;
-            this._ChargingStationId  = ChargingStationId;
-            this._EVSEId             = EVSEId;
-            this._ChargingProductId  = ChargingProductId;
+            this._RoamingNetwork        = RoamingNetwork;
+            this._ChargingPoolId        = ChargingPoolId;
+            this._ChargingStationId     = ChargingStationId;
+            this._EVSEId                = EVSEId;
+            this._ChargingProductId     = ChargingProductId;
 
-            this._AuthTokens         = AuthTokens != null ? AuthTokens : new Auth_Token[0];
-            this._eMAIds             = eMAIds     != null ? eMAIds     : new eMA_Id[0];
-            this._PINs               = PINs       != null ? PINs       : new UInt32[0];
+            this._AuthTokens            = AuthTokens != null ? new HashSet<Auth_Token>(AuthTokens) : new HashSet<Auth_Token>();
+            this._eMAIds                = eMAIds     != null ? new HashSet<eMA_Id>    (eMAIds)     : new HashSet<eMA_Id>();
+            this._PINs                  = PINs       != null ? new HashSet<UInt32>    (PINs)       : new HashSet<UInt32>();
 
         }
 
@@ -414,6 +475,16 @@ namespace org.GraphDefined.WWCP
         public Boolean IsExpired(TimeSpan ReservationSelfCancelAfter)
         {
             return DateTime.Now > (_EndTime + ReservationSelfCancelAfter);
+        }
+
+        #endregion
+
+
+        #region AddToTotalReservationTime(Time)
+
+        public void AddToTotalReservationTime(TimeSpan Time)
+        {
+            _TotalReservationTime.Add(Time);
         }
 
         #endregion

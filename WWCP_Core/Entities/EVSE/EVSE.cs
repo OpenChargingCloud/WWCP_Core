@@ -402,7 +402,30 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _StatusSchedule;
+
+                if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
+                    AdminStatus.Value == EVSEAdminStatusType.InternalUse)
+                {
+
+                    return _StatusSchedule;
+
+                }
+
+                else
+                {
+
+                    switch (AdminStatus.Value)
+                    {
+
+                        default:
+                            return new Timestamped<EVSEStatusType>[] {
+                                       new Timestamped<EVSEStatusType>(AdminStatus.Timestamp, EVSEStatusType.OutOfService)
+                                   };
+
+                    }
+
+                }
+
             }
         }
 
@@ -1160,6 +1183,7 @@ namespace org.GraphDefined.WWCP
                                                  ChargingReservationCancellationReason  Reason)
         {
 
+            // Yes, this is really needed!
             _Reservation = null;
 
             var OnReservationCancelledLocal = OnReservationCancelled;
@@ -1178,72 +1202,17 @@ namespace org.GraphDefined.WWCP
 
         #region RemoteStart/-Stop and Sessions
 
-        #region ChargingSession
-
-        private ChargingSession _ChargingSession;
-
-        /// <summary>
-        /// The current charging session, if available.
-        /// </summary>
-        [InternalUseOnly]
-        public ChargingSession ChargingSession
-        {
-
-            get
-            {
-                return _ChargingSession;
-            }
-
-            set
-            {
-
-                // Skip, if the charging session is already known... 
-                if (_ChargingSession != value)
-                {
-
-                    _ChargingSession = value;
-
-                    if (_ChargingSession != null)
-                    {
-
-                        if (_ChargingSession.EVSE == null)
-                            _ChargingSession.EVSE = this;
-
-                        //SetStatus(EVSEStatusType.Charging);
-
-                        var OnNewChargingSessionLocal = OnNewChargingSession;
-                        if (OnNewChargingSessionLocal != null)
-                            OnNewChargingSessionLocal(DateTime.Now, this, _ChargingSession);
-
-                    }
-
-                    //else
-                    //    SetStatus(EVSEStatusType.Available);
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
-        #region OnRemoteStart / OnRemoteStarted / OnNewChargingSession
+        #region OnRemoteStart / OnRemoteStarted
 
         /// <summary>
         /// An event fired whenever a remote start command was received.
         /// </summary>
-        public event OnRemoteEVSEStartDelegate     OnRemoteStart;
+        public event OnRemoteEVSEStartDelegate    OnRemoteStart;
 
         /// <summary>
         /// An event fired whenever a remote start command completed.
         /// </summary>
-        public event OnRemoteEVSEStartedDelegate   OnRemoteStarted;
-
-        /// <summary>
-        /// An event fired whenever a new charging session was created.
-        /// </summary>
-        public event OnNewChargingSessionDelegate  OnNewChargingSession;
+        public event OnRemoteEVSEStartedDelegate  OnRemoteStarted;
 
         #endregion
 
@@ -1394,7 +1363,63 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (internal) SendNewChargingSession(Timestamp, Sender, ChargingSession)
+        #region ChargingSession
+
+        private ChargingSession _ChargingSession;
+
+        /// <summary>
+        /// The current charging session, if available.
+        /// </summary>
+        [InternalUseOnly]
+        public ChargingSession ChargingSession
+        {
+
+            get
+            {
+                return _ChargingSession;
+            }
+
+            set
+            {
+
+                // Skip, if the charging session is already known... 
+                if (_ChargingSession != value)
+                {
+
+                    _ChargingSession = value;
+
+                    if (_ChargingSession != null)
+                    {
+
+                        if (_ChargingSession.EVSE == null)
+                            _ChargingSession.EVSE = this;
+
+                        //SetStatus(EVSEStatusType.Charging);
+
+                        var OnNewChargingSessionLocal = OnNewChargingSession;
+                        if (OnNewChargingSessionLocal != null)
+                            OnNewChargingSessionLocal(DateTime.Now, this, _ChargingSession);
+
+                    }
+
+                    //else
+                    //    SetStatus(EVSEStatusType.Available);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region OnNewChargingSession
+
+        /// <summary>
+        /// An event fired whenever a new charging session was created.
+        /// </summary>
+        public event OnNewChargingSessionDelegate OnNewChargingSession;
+
 
         internal void SendNewChargingSession(DateTime         Timestamp,
                                              Object           Sender,
@@ -1410,22 +1435,17 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region OnRemoteStop / OnRemoteStopped / OnNewChargeDetailRecord
+        #region OnRemoteStop / OnRemoteStopped / 
 
         /// <summary>
         /// An event fired whenever a remote stop command was received.
         /// </summary>
-        public event OnRemoteEVSEStopDelegate         OnRemoteStop;
+        public event OnRemoteEVSEStopDelegate     OnRemoteStop;
 
         /// <summary>
         /// An event fired whenever a remote stop command completed.
         /// </summary>
-        public event OnRemoteEVSEStoppedDelegate      OnRemoteStopped;
-
-        /// <summary>
-        /// An event fired whenever a new charge detail record was created.
-        /// </summary>
-        public event OnNewChargeDetailRecordDelegate  OnNewChargeDetailRecord;
+        public event OnRemoteEVSEStoppedDelegate  OnRemoteStopped;
 
         #endregion
 
@@ -1571,7 +1591,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (internal) SendNewChargeDetailRecord(Timestamp, Sender, ChargeDetailRecord)
+        #region OnNewChargeDetailRecord
+
+        /// <summary>
+        /// An event fired whenever a new charge detail record was created.
+        /// </summary>
+        public event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord;
+
 
         internal void SendNewChargeDetailRecord(DateTime            Timestamp,
                                                 Object              Sender,

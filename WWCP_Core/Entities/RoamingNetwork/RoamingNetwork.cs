@@ -2533,10 +2533,6 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            EVSE _EVSE = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE) && _EVSE.AdminStatus != EVSEAdminStatusType.Operational)
-                result = ReservationResult.OutOfService;
-
 
             if (TryGetEVSEOperatorbyId(EVSEId.OperatorId, out EVSEOperator))
             {

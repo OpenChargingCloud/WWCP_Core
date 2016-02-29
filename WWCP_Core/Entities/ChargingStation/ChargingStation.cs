@@ -916,7 +916,30 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _StatusSchedule;
+
+                if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
+                    AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
+                {
+
+                    return _StatusSchedule;
+
+                }
+
+                else
+                {
+
+                    switch (AdminStatus.Value)
+                    {
+
+                        default:
+                            return new Timestamped<ChargingStationStatusType>[] {
+                                       new Timestamped<ChargingStationStatusType>(AdminStatus.Timestamp, ChargingStationStatusType.OutOfService)
+                                   };
+
+                    }
+
+                }
+
             }
         }
 
@@ -1847,6 +1870,7 @@ namespace org.GraphDefined.WWCP
                                        Reserve(Timestamp,
                                                CancellationToken,
                                                EventTrackingId,
+                                               EVSEId,
                                                StartTime,
                                                Duration,
                                                ReservationId,

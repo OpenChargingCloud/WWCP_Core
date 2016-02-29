@@ -67,12 +67,12 @@ namespace org.GraphDefined.WWCP
 
         #region EndTime
 
-        private readonly DateTime? _EndTime;
+        private readonly DateTime _EndTime;
 
         /// <summary>
         /// The timestamp when the reservation will expire.
         /// </summary>
-        public DateTime? EndTime
+        public DateTime EndTime
         {
             get
             {
@@ -90,11 +90,20 @@ namespace org.GraphDefined.WWCP
         /// Create a new reservation handling.
         /// </summary>
         /// <param name="KeepAliveTime">The timespan in which the reservation can be used for additional charging sessions.</param>
-        public ReservationHandling(TimeSpan KeepAliveTime)
+        private ReservationHandling(TimeSpan KeepAliveTime)
         {
 
-            this._KeepAliveTime  = KeepAliveTime;
-            this._EndTime        = DateTime.Now + KeepAliveTime;
+            if (KeepAliveTime.TotalSeconds > 0)
+            {
+                this._KeepAliveTime  = KeepAliveTime;
+                this._EndTime        = DateTime.Now + KeepAliveTime;
+            }
+
+            else
+            {
+                this._KeepAliveTime  = null;
+                this._EndTime        = DateTime.Now;
+            }
 
         }
 
