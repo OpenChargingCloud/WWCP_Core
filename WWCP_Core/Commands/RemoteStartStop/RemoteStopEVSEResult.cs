@@ -421,6 +421,25 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) CommunicationError(SessionId, Message = "")
+
+        /// <summary>
+        /// A communication error occured.
+        /// </summary>
+        /// <param name="SessionId">The unique charging session identification.</param>
+        /// <param name="Message">An optional (error)message.</param>
+        public static RemoteStopEVSEResult CommunicationError(ChargingSession_Id  SessionId,
+                                                              String              Message = "")
+        {
+
+            return new RemoteStopEVSEResult(SessionId,
+                                            RemoteStopEVSEResultType.CommunicationError,
+                                            Message);
+
+        }
+
+        #endregion
+
         #region (static) Error(SessionId, Message = null)
 
         /// <summary>
@@ -507,10 +526,16 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         Success,
 
+
         /// <summary>
         /// The remote stop ran into a timeout.
         /// </summary>
         Timeout,
+
+        /// <summary>
+        /// A communication error occured.
+        /// </summary>
+        CommunicationError,
 
         /// <summary>
         /// The remote stop led to an error.

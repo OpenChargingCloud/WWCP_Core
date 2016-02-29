@@ -85,6 +85,68 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Constructor(s)
+
+        #region ReservationResult(Result, Message = null)
+
+        /// <summary>
+        /// Create a new reserve result.
+        /// </summary>
+        /// <param name="Result">The result of the reserve operation.</param>
+        /// <param name="Message">An optional message.</param>
+        private ReservationResult(ReservationResultType  Result,
+                                  String                 Message = null)
+        {
+
+            this._Result       = Result;
+            this._Reservation  = null;
+            this._Message      = Message;
+
+        }
+
+        #endregion
+
+        #region ReservationResult(Reservation)
+
+        /// <summary>
+        /// Create a new successful reserve result.
+        /// </summary>
+        /// <param name="Reservation">The charging reservation.</param>
+        private ReservationResult(ChargingReservation Reservation)
+        {
+
+            #region Initial checks
+
+            if (Reservation == null)
+                throw new ArgumentNullException(nameof(Reservation), "The given charging reservation must not be null!");
+
+            #endregion
+
+            this._Result       = ReservationResultType.Success;
+            this._Reservation  = Reservation;
+
+        }
+
+        #endregion
+
+        #region ReservationResult(Message)
+
+        /// <summary>
+        /// Create a new reserve result.
+        /// </summary>
+        /// <param name="Message">An (error) message.</param>
+        private ReservationResult(String Message)
+        {
+
+            this._Result   = ReservationResultType.Error;
+            this._Message  = Message;
+
+        }
+
+        #endregion
+
+        #endregion
+
 
         #region (static) UnknownEVSEOperator
 
@@ -305,6 +367,22 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) CommunicationError(Message = "")
+
+        /// <summary>
+        /// A communication error occured.
+        /// </summary>
+        /// <param name="Message">An optional (error)message.</param>
+        public static ReservationResult CommunicationError(String Message = "")
+        {
+
+            return new ReservationResult(ReservationResultType.CommunicationError,
+                                         Message);
+
+        }
+
+        #endregion
+
         #region (static) Error(Message = "")
 
         /// <summary>
@@ -314,66 +392,6 @@ namespace org.GraphDefined.WWCP
         {
             return new ReservationResult(Message);
         }
-
-        #endregion
-
-
-        #region Constructor(s)
-
-        #region ReservationResult(Result)
-
-        /// <summary>
-        /// Create a new reserve result.
-        /// </summary>
-        /// <param name="Result">The result of the reserve operation.</param>
-        private ReservationResult(ReservationResultType  Result)
-        {
-
-            this._Result       = Result;
-            this._Reservation  = null;
-
-        }
-
-        #endregion
-
-        #region ReservationResult(Reservation)
-
-        /// <summary>
-        /// Create a new successful reserve result.
-        /// </summary>
-        /// <param name="Reservation">The charging reservation.</param>
-        private ReservationResult(ChargingReservation Reservation)
-        {
-
-            #region Initial checks
-
-            if (Reservation == null)
-                throw new ArgumentNullException(nameof(Reservation), "The given charging reservation must not be null!");
-
-            #endregion
-
-            this._Result       = ReservationResultType.Success;
-            this._Reservation  = Reservation;
-
-        }
-
-        #endregion
-
-        #region ReservationResult(Message)
-
-        /// <summary>
-        /// Create a new reserve result.
-        /// </summary>
-        /// <param name="Message">An (error) message.</param>
-        private ReservationResult(String Message)
-        {
-
-            this._Result   = ReservationResultType.Error;
-            this._Message  = Message;
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -460,10 +478,16 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         Success,
 
+
         /// <summary>
         /// The reservation ran into a timeout.
         /// </summary>
         Timeout,
+
+        /// <summary>
+        /// A communication error occured.
+        /// </summary>
+        CommunicationError,
 
         /// <summary>
         /// The remote stop led to an error.

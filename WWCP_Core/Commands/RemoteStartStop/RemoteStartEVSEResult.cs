@@ -350,6 +350,22 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) CommunicationError(Message = "")
+
+        /// <summary>
+        /// A communication error occured.
+        /// </summary>
+        /// <param name="Message">An optional (error)message.</param>
+        public static RemoteStartEVSEResult CommunicationError(String  Message = "")
+        {
+
+            return new RemoteStartEVSEResult(RemoteStartEVSEResultType.CommunicationError,
+                                             Message);
+
+        }
+
+        #endregion
+
         #region (static) Error(ErrorMessage = null)
 
         /// <summary>
@@ -442,10 +458,16 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         Success,
 
+
         /// <summary>
         /// The remote stop ran into a timeout.
         /// </summary>
         Timeout,
+
+        /// <summary>
+        /// A communication error occured.
+        /// </summary>
+        CommunicationError,
 
         /// <summary>
         /// The remote stop led to an error.
