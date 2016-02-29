@@ -1604,6 +1604,14 @@ namespace org.GraphDefined.WWCP
                                                 ChargeDetailRecord  ChargeDetailRecord)
         {
 
+            if (_ChargingSession != null &&
+                _ChargingSession.Id == ChargeDetailRecord.SessionId)
+            {
+
+                _ChargingSession = null;
+
+            }
+
             var OnNewChargeDetailRecordLocal = OnNewChargeDetailRecord;
             if (OnNewChargeDetailRecordLocal != null)
                 OnNewChargeDetailRecordLocal(Timestamp, Sender, ChargeDetailRecord);

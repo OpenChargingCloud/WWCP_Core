@@ -191,6 +191,21 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) InvalidCredentials
+
+        /// <summary>
+        /// Unauthorized remote start or invalid credentials.
+        /// </summary>
+        public static ReservationResult InvalidCredentials
+        {
+            get
+            {
+                return new ReservationResult(ReservationResultType.InvalidCredentials);
+            }
+        }
+
+        #endregion
+
         #region (static) InternalUse
 
         /// <summary>
