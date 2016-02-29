@@ -538,7 +538,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (Id   == null)
-                throw new ArgumentNullException("Id",    "The given charging session identification must not be null!");
+                throw new ArgumentNullException(nameof(Id),  "The given charging session identification must not be null!");
 
             #endregion
 
