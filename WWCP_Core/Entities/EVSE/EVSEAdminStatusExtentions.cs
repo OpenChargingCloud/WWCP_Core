@@ -31,25 +31,25 @@ namespace org.GraphDefined.WWCP
     public static class EVSEAdminStatusExtentions
     {
 
-        #region Contains(this EVSEAdminStatus, Id, Status)
+        #region Contains(this AdminStatus, Id, Status)
 
         /// <summary>
         /// Check if the given enumeration of EVSEs and their current status
         /// contains the given pair of EVSE identification and status.
         /// </summary>
-        /// <param name="EVSEAdminStatus">An enumeration of EVSEs and their current status.</param>
+        /// <param name="AdminStatus">An enumeration of EVSEs and their current status.</param>
         /// <param name="Id">An EVSE identification.</param>
         /// <param name="Status">An EVSE status.</param>
-        public static Boolean Contains(this IEnumerable<EVSEAdminStatus>  EVSEAdminStatus,
+        public static Boolean Contains(this IEnumerable<EVSEAdminStatus>  AdminStatus,
                                        EVSE_Id                            Id,
                                        EVSEAdminStatusType                Status)
         {
 
-            foreach (var evseadminstatus in EVSEAdminStatus)
+            foreach (var adminstatus in AdminStatus)
             {
 
-                if (evseadminstatus.Id     == Id &&
-                    evseadminstatus.Status == Status)
+                if (adminstatus.Id     == Id &&
+                    adminstatus.Status == Status)
                     return true;
 
             }

@@ -83,6 +83,10 @@
     <Compile Include="CommonTypes\ChangeMethods.cs" />
     <Compile Include="CommonTypes\IStatus.cs" />
     <Compile Include="CommonTypes\StatusReport.cs" />
+    <Compile Include="Entities\ChargingStation\ChargingStationAdminStatus.cs" />
+    <Compile Include="Entities\ChargingStation\ChargingStationAdminStatusExtentions.cs" />
+    <Compile Include="Entities\ChargingStation\ChargingStationStatus.cs" />
+    <Compile Include="Entities\ChargingStation\ChargingStationStatusExtentions.cs" />
     <Compile Include="Entities\Delegates.cs" />
     <Compile Include="Entities\ChargingStationGroup\ChargingStationGroupAdminStatusType.cs" />
     <Compile Include="Entities\ChargingPool\INetworkChargingPool.cs" />

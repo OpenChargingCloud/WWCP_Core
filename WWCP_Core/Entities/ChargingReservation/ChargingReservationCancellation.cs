@@ -30,9 +30,9 @@ namespace org.GraphDefined.WWCP
         Expired,
 
         /// <summary>
-        /// The charging reservation was deleted from the client side.
+        /// The charging reservation was deleted from the client side/by the ev customer.
         /// </summary>
-        UserCancel,
+        Deleted,
 
         /// <summary>
         /// The charging reservation was aborted on the EVSE operator side.

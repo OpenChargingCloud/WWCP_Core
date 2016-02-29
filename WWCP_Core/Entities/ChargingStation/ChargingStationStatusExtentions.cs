@@ -26,26 +26,26 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// Extention emthods for the EVSE status.
+    /// Extention emthods for the charging station status.
     /// </summary>
-    public static class EVSEStatusExtentions
+    public static class ChargingStationStatusExtentions
     {
 
-        #region Contains(this EVSEStatus, Id, Status)
+        #region Contains(this ChargingStationStatus, Id, Status)
 
         /// <summary>
-        /// Check if the given enumeration of EVSEs and their current status
-        /// contains the given pair of EVSE identification and status.
+        /// Check if the given enumeration of charging stations and their current status
+        /// contains the given pair of charging station identification and status.
         /// </summary>
-        /// <param name="EVSEStatus">An enumeration of EVSEs and their current status.</param>
-        /// <param name="Id">An EVSE identification.</param>
-        /// <param name="Status">An EVSE status.</param>
-        public static Boolean Contains(this IEnumerable<EVSEStatus>  EVSEStatus,
-                                       EVSE_Id                       Id,
-                                       EVSEStatusType                Status)
+        /// <param name="ChargingStationStatus">An enumeration of charging stations and their current status.</param>
+        /// <param name="Id">An charging station identification.</param>
+        /// <param name="Status">An charging station status.</param>
+        public static Boolean Contains(this IEnumerable<ChargingStationStatus>  ChargingStationStatus,
+                                       ChargingStation_Id                       Id,
+                                       ChargingStationStatusType                Status)
         {
 
-            foreach (var status in EVSEStatus)
+            foreach (var status in ChargingStationStatus)
             {
 
                 if (status.Id     == Id &&

@@ -26,30 +26,30 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// Extention emthods for the EVSE status.
+    /// Extention emthods for the charging station admin status.
     /// </summary>
-    public static class EVSEStatusExtentions
+    public static class ChargingStationAdminStatusExtentions
     {
 
-        #region Contains(this EVSEStatus, Id, Status)
+        #region Contains(this AdminStatus, Id, Status)
 
         /// <summary>
-        /// Check if the given enumeration of EVSEs and their current status
-        /// contains the given pair of EVSE identification and status.
+        /// Check if the given enumeration of charging stations and their current status
+        /// contains the given pair of charging station identification and status.
         /// </summary>
-        /// <param name="EVSEStatus">An enumeration of EVSEs and their current status.</param>
-        /// <param name="Id">An EVSE identification.</param>
-        /// <param name="Status">An EVSE status.</param>
-        public static Boolean Contains(this IEnumerable<EVSEStatus>  EVSEStatus,
-                                       EVSE_Id                       Id,
-                                       EVSEStatusType                Status)
+        /// <param name="AdminStatus">An enumeration of charging stations and their current status.</param>
+        /// <param name="Id">A charging station identification.</param>
+        /// <param name="Status">A charging station status.</param>
+        public static Boolean Contains(this IEnumerable<ChargingStationAdminStatus>  AdminStatus,
+                                       ChargingStation_Id                            Id,
+                                       ChargingStationAdminStatusType                Status)
         {
 
-            foreach (var status in EVSEStatus)
+            foreach (var adminstatus in AdminStatus)
             {
 
-                if (status.Id     == Id &&
-                    status.Status == Status)
+                if (adminstatus.Id     == Id &&
+                    adminstatus.Status == Status)
                     return true;
 
             }
