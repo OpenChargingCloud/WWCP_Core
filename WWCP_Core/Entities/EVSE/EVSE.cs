@@ -1110,42 +1110,24 @@ namespace org.GraphDefined.WWCP
                 AdminStatus.Value == EVSEAdminStatusType.InternalUse)
             {
 
-                if (_RemoteEVSE != null &&
-                    Reason      != ChargingReservationCancellationReason.Expired)
-                    result = await _RemoteEVSE.
-                                       ChargingStation.
-                                       CancelReservation(Timestamp,
-                                                         CancellationToken,
-                                                         EventTrackingId,
-                                                         ReservationId,
-                                                         Reason,
-                                                         QueryTimeout);
-
-                else
-                {
-
-                    if (_Reservation == null)
-                        result = CancelReservationResult.Success(ReservationId);
-
-                    if (_Reservation.Id != ReservationId)
-                        result = CancelReservationResult.UnknownReservationId(ReservationId);
-
-
-                    var OldReservationId = _Reservation.Id;
-
-                    _Reservation = null;
-
-                    SendOnReservationCancelled(Timestamp,
-                                               this,
-                                               EventTrackingId,
-                                               OldReservationId,
-                                               Reason);
-
-                    SetStatus(EVSEStatusType.Available);
-
+                if (_Reservation == null)
                     result = CancelReservationResult.Success(ReservationId);
 
-                }
+                if (_Reservation.Id != ReservationId)
+                    result = CancelReservationResult.UnknownReservationId(ReservationId);
+
+
+                var OldReservationId = _Reservation.Id;
+
+                _Reservation = null;
+
+                SendOnReservationCancelled(Timestamp,
+                                           this,
+                                           EventTrackingId,
+                                           OldReservationId,
+                                           Reason);
+
+                result = CancelReservationResult.Success(ReservationId);
 
             }
             else

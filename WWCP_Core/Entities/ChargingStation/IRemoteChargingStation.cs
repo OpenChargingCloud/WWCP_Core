@@ -81,8 +81,9 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-
-
+        ChargingStation_Id     RemoteChargingStationId  { get; set; }
+        Func<EVSE_Id, EVSE_Id> MapIncomingEVSEIds       { get; set; }
+        Func<EVSE_Id, EVSE_Id> MapOutgoingEVSEIds       { get; set; }
 
 
         IRemoteEVSE CreateNewEVSE(EVSE_Id                           EVSEId,

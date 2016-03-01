@@ -24,6 +24,9 @@ using System;
 namespace org.GraphDefined.WWCP
 {
 
+    /// <summary>
+    /// The result of a cancel reservation operation.
+    /// </summary>
     public class CancelReservationResult
     {
 
@@ -67,6 +70,63 @@ namespace org.GraphDefined.WWCP
             {
                 return _Message;
             }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Constructor(s)
+
+        #region CancelReservationResult(Result, Message = null)
+
+        /// <summary>
+        /// Create a new cancel reservation result.
+        /// </summary>
+        /// <param name="Result">The result of the cancel reservation operation.</param>
+        /// <param name="Message">An optional message.</param>
+        private CancelReservationResult(CancelReservationResultType  Result,
+                                        String                       Message = null)
+        {
+
+            this._Result         = Result;
+            this._ReservationId  = null;
+            this._Message        = Message;
+
+        }
+
+        #endregion
+
+        #region CancelReservationResult(Result, ReservationId)
+
+        /// <summary>
+        /// Create a new cancel reservation result.
+        /// </summary>
+        /// <param name="Result">The result of a cancel reservation operation.</param>
+        /// <param name="ReservationId">The charging reservation identification.</param>
+        private CancelReservationResult(CancelReservationResultType  Result,
+                                        ChargingReservation_Id       ReservationId)
+        {
+
+            this._Result         = Result;
+            this._ReservationId  = ReservationId;
+
+        }
+
+        #endregion
+
+        #region CancelReservationResult(Message)
+
+        /// <summary>
+        /// Create a new cancel reservation result.
+        /// </summary>
+        /// <param name="Message">An (error) message.</param>
+        private CancelReservationResult(String Message)
+        {
+
+            this._Result   = CancelReservationResultType.Error;
+            this._Message  = Message;
+
         }
 
         #endregion
@@ -190,54 +250,28 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) CommunicationError(Message = "")
+
+        /// <summary>
+        /// A communication error occured.
+        /// </summary>
+        /// <param name="Message">An optional (error)message.</param>
+        public static CancelReservationResult CommunicationError(String Message = "")
+        {
+
+            return new CancelReservationResult(CancelReservationResultType.CommunicationError,
+                                               Message);
+
+        }
+
+        #endregion
+
         #region (static) Error(Message = "")
 
         public static CancelReservationResult Error(String Message = "")
         {
             return new CancelReservationResult(Message);
         }
-
-        #endregion
-
-
-        #region Constructor(s)
-
-        #region CancelReservationResult(Result)
-
-        private CancelReservationResult(CancelReservationResultType  Result)
-        {
-
-            this._Result       = Result;
-            this._ReservationId  = null;
-
-        }
-
-        #endregion
-
-        #region CancelReservationResult(Result, ReservationId)
-
-        private CancelReservationResult(CancelReservationResultType  Result,
-                                        ChargingReservation_Id       ReservationId)
-        {
-
-            this._Result         = Result;
-            this._ReservationId  = ReservationId;
-
-        }
-
-        #endregion
-
-        #region CancelReservationResult(Message = "")
-
-        private CancelReservationResult(String Message = "")
-        {
-
-            this._Result   = CancelReservationResultType.Error;
-            this._Message  = Message;
-
-        }
-
-        #endregion
 
         #endregion
 
@@ -263,6 +297,7 @@ namespace org.GraphDefined.WWCP
         Success,
 
         Timeout,
+        CommunicationError,
         Error,
 
     }

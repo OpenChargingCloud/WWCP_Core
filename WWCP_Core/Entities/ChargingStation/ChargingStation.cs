@@ -2242,35 +2242,43 @@ namespace org.GraphDefined.WWCP
                 AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
             {
 
-                result = await _EVSEs.Where   (evse => evse.Reservation    != null &&
-                                                       evse.Reservation.Id == ReservationId).
-                                      MapFirst(evse => evse.CancelReservation(Timestamp,
-                                                                              CancellationToken,
-                                                                              EventTrackingId,
-                                                                              ReservationId,
-                                                                              Reason,
-                                                                              QueryTimeout),
-                                               Task.FromResult(CancelReservationResult.Error("The charging reservation could not be cancelled!")));
+                #region Try the remote charging station...
 
-                if (result == null || result.Result == CancelReservationResultType.UnknownReservationId)
+                if (_RemoteChargingStation != null)
                 {
 
-                    foreach (var __EVSE in _EVSEs)
-                    {
-
-                        result = await __EVSE.CancelReservation(Timestamp,
-                                                                CancellationToken,
-                                                                EventTrackingId,
-                                                                ReservationId,
-                                                                Reason,
-                                                                QueryTimeout);
-
-                        if (result != null && result.Result != CancelReservationResultType.UnknownReservationId)
-                            break;
-
-                    }
+                    result = await _RemoteChargingStation.
+                                       CancelReservation(Timestamp,
+                                                         CancellationToken,
+                                                         EventTrackingId,
+                                                         ReservationId,
+                                                         Reason,
+                                                         QueryTimeout);
 
                 }
+
+                #endregion
+
+                #region Cancel locally...
+
+                var _EVSE = _EVSEs.
+                                Where (evse => evse.Reservation    != null &&
+                                               evse.Reservation.Id == ReservationId).
+                                FirstOrDefault();
+
+                if (_EVSE != null)
+                {
+
+                    await _EVSE.CancelReservation(Timestamp,
+                                                  CancellationToken,
+                                                  EventTrackingId,
+                                                  ReservationId,
+                                                  Reason,
+                                                  QueryTimeout);
+
+                }
+
+                #endregion
 
             }
             else
