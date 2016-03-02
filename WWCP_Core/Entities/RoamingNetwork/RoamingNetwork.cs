@@ -5288,10 +5288,11 @@ namespace org.GraphDefined.WWCP
 
                         //ChargeDetailRecord.EVSE = _EVSE;
 
-                        if (_EVSE.Status.Value       == EVSEStatusType.Charging &&
+                        if (//_EVSE.Status.Value       == EVSEStatusType.Charging &&
                             _EVSE.ChargingSession    != null &&
                             _EVSE.ChargingSession.Id == ChargeDetailRecord.SessionId)
-                            _EVSE.Status = EVSEStatusType.Available;
+                            //_EVSE.Status = EVSEStatusType.Available;
+                            _EVSE.ChargingSession = null;
 
                     }
 
