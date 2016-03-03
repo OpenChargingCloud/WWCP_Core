@@ -291,7 +291,7 @@ namespace org.GraphDefined.WWCP
         /// An optional enumeration of intermediate energy meter values.
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<Double>> EnergyMeterValues
+        public IEnumerable<Timestamped<Double>> EnergyMeteringValues
         {
             get
             {

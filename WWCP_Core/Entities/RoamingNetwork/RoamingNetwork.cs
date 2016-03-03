@@ -5286,13 +5286,15 @@ namespace org.GraphDefined.WWCP
                     if (TryGetEVSEbyId(ChargeDetailRecord.EVSEId, out _EVSE))
                     {
 
-                        //ChargeDetailRecord.EVSE = _EVSE;
-
-                        if (//_EVSE.Status.Value       == EVSEStatusType.Charging &&
-                            _EVSE.ChargingSession    != null &&
+                        if (_EVSE.ChargingSession    != null &&
                             _EVSE.ChargingSession.Id == ChargeDetailRecord.SessionId)
+                        {
+
                             //_EVSE.Status = EVSEStatusType.Available;
-                            _EVSE.ChargingSession = null;
+                            _EVSE.ChargingSession  = null;
+                            _EVSE.Reservation      = null;
+
+                        }
 
                     }
 

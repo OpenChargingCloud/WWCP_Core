@@ -105,7 +105,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                var _TimeLeft = _EndTime - DateTime.Now;// _StartTime + _Duration - DateTime.Now;
+                var _TimeLeft = _EndTime - DateTime.Now.ToUniversalTime();// _StartTime + _Duration - DateTime.Now;
 
                 return _ChargingSession == null
                            ? _TimeLeft.TotalSeconds > 0 ? _TimeLeft : TimeSpan.FromSeconds(0)
@@ -433,10 +433,10 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             this._ReservationId            = ReservationId;
-            this._Timestamp                = Timestamp;
-            this._StartTime                = StartTime;
+            this._Timestamp                = Timestamp.ToUniversalTime();
+            this._StartTime                = StartTime.ToUniversalTime();
             this._Duration                 = Duration;
-            this._EndTime                  = StartTime + Duration;
+            this._EndTime                  = StartTime.ToUniversalTime() + Duration;
             this._ConsumedReservationTime  = ConsumedReservationTime;
             this._ReservationLevel         = ReservationLevel;
 
@@ -469,7 +469,7 @@ namespace org.GraphDefined.WWCP
         {
 
             return _ChargingSession == null
-                       ? DateTime.Now > _EndTime
+                       ? DateTime.Now.ToUniversalTime() > _EndTime
                        : false;
 
         }
@@ -483,7 +483,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public Boolean IsExpired(TimeSpan ReservationSelfCancelAfter)
         {
-            return DateTime.Now > (_EndTime + ReservationSelfCancelAfter);
+            return DateTime.Now.ToUniversalTime() > (_EndTime + ReservationSelfCancelAfter);
         }
 
         #endregion
