@@ -81,6 +81,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        ChargingStation_Id RemoteChargingStationId { get; set; }
         String                 RemoteEVSEIdPrefix  { get; set; }
         void AddMapping(EVSE_Id LocalEVSEId, EVSE_Id RemoteEVSEId);
 
