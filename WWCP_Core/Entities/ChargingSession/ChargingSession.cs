@@ -443,7 +443,7 @@ namespace org.GraphDefined.WWCP
         /// and the last timestamp in watt-hours [Wh].
         /// </summary>
         [Optional]
-        public List<Timestamped<Double>> EnergyMeterValues
+        public List<Timestamped<Double>> EnergyMeteringValues
         {
             get
             {
@@ -464,7 +464,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return EnergyMeterValues.
+                return EnergyMeteringValues.
                            Select(metervalue => metervalue.Value).
                            Sum() / 1000;
 
