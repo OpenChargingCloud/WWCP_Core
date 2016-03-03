@@ -107,7 +107,10 @@ namespace org.GraphDefined.WWCP
 
                 var _TimeLeft = _EndTime - DateTime.Now;// _StartTime + _Duration - DateTime.Now;
 
-                return _TimeLeft.TotalSeconds > 0 ? _TimeLeft : TimeSpan.FromSeconds(0);
+                return _ChargingSession == null
+                           ? _TimeLeft.TotalSeconds > 0 ? _TimeLeft : TimeSpan.FromSeconds(0)
+                           : TimeSpan.FromSeconds(0);
+
             }
         }
 
@@ -135,16 +138,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region TotalReservationTime
+        #region ConsumedReservationTime
 
-        private TimeSpan _TotalReservationTime;
+        private TimeSpan _ConsumedReservationTime;
 
         [Mandatory]
-        public TimeSpan TotalReservationTime
+        public TimeSpan ConsumedReservationTime
         {
             get
             {
-                return _TotalReservationTime;
+                return _ConsumedReservationTime;
             }
         }
 
@@ -374,6 +377,7 @@ namespace org.GraphDefined.WWCP
                    StartTime,
                    Duration,
                    EndTime,
+                   TimeSpan.FromSeconds(0),
                    ReservationLevel,
 
                    ProviderId,
@@ -403,6 +407,7 @@ namespace org.GraphDefined.WWCP
                                    DateTime                  StartTime,
                                    TimeSpan                  Duration,
                                    DateTime                  EndTime,
+                                   TimeSpan                  ConsumedReservationTime,
                                    ChargingReservationLevel  ReservationLevel,
 
                                    EVSP_Id                   ProviderId         = null,
@@ -427,26 +432,26 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._ReservationId         = ReservationId;
-            this._Timestamp             = Timestamp;
-            this._StartTime             = StartTime;
-            this._Duration              = Duration;
-            this._EndTime               = StartTime + Duration;
-            this._TotalReservationTime  = TimeSpan.FromSeconds(0);
-            this._ReservationLevel      = ReservationLevel;
+            this._ReservationId            = ReservationId;
+            this._Timestamp                = Timestamp;
+            this._StartTime                = StartTime;
+            this._Duration                 = Duration;
+            this._EndTime                  = StartTime + Duration;
+            this._ConsumedReservationTime  = ConsumedReservationTime;
+            this._ReservationLevel         = ReservationLevel;
 
-            this._ProviderId            = ProviderId;
-            this._eMAId                 = eMAId;
+            this._ProviderId               = ProviderId;
+            this._eMAId                    = eMAId;
 
-            this._RoamingNetwork        = RoamingNetwork;
-            this._ChargingPoolId        = ChargingPoolId;
-            this._ChargingStationId     = ChargingStationId;
-            this._EVSEId                = EVSEId;
-            this._ChargingProductId     = ChargingProductId;
+            this._RoamingNetwork           = RoamingNetwork;
+            this._ChargingPoolId           = ChargingPoolId;
+            this._ChargingStationId        = ChargingStationId;
+            this._EVSEId                   = EVSEId;
+            this._ChargingProductId        = ChargingProductId;
 
-            this._AuthTokens            = AuthTokens != null ? new HashSet<Auth_Token>(AuthTokens) : new HashSet<Auth_Token>();
-            this._eMAIds                = eMAIds     != null ? new HashSet<eMA_Id>    (eMAIds)     : new HashSet<eMA_Id>();
-            this._PINs                  = PINs       != null ? new HashSet<UInt32>    (PINs)       : new HashSet<UInt32>();
+            this._AuthTokens               = AuthTokens != null ? new HashSet<Auth_Token>(AuthTokens) : new HashSet<Auth_Token>();
+            this._eMAIds                   = eMAIds     != null ? new HashSet<eMA_Id>    (eMAIds)     : new HashSet<eMA_Id>();
+            this._PINs                     = PINs       != null ? new HashSet<UInt32>    (PINs)       : new HashSet<UInt32>();
 
         }
 
@@ -462,7 +467,11 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public Boolean IsExpired()
         {
-            return DateTime.Now > _EndTime;
+
+            return _ChargingSession == null
+                       ? DateTime.Now > _EndTime
+                       : false;
+
         }
 
         #endregion
@@ -480,11 +489,11 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region AddToTotalReservationTime(Time)
+        #region AddToConsumedReservationTime(Time)
 
-        public void AddToTotalReservationTime(TimeSpan Time)
+        public void AddToConsumedReservationTime(TimeSpan Time)
         {
-            _TotalReservationTime.Add(Time);
+            _ConsumedReservationTime = _ConsumedReservationTime.Add(Time);
         }
 
         #endregion

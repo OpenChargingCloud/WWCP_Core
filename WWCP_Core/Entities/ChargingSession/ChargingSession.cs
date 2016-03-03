@@ -412,6 +412,18 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region SessionRuntime
+
+        public TimeSpan SessionRuntime
+        {
+            get
+            {
+                return DateTime.Now - SessionTime.Value.StartTime;
+            }
+        }
+
+        #endregion
+
         #region ChargingTime
 
         /// <summary>
