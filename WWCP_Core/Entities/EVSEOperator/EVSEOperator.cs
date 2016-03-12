@@ -384,36 +384,6 @@ namespace org.GraphDefined.WWCP
 
         #region Events
 
-        #region OnValidEVSEIdAdded
-
-        /// <summary>
-        /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public delegate void OnValidEVSEIdAddedDelegate(DateTime Timestamp, EVSEOperator EVSEOperator, EVSE_Id EVSEId);
-
-        /// <summary>
-        /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
-        /// </summary>
-        public event OnValidEVSEIdAddedDelegate OnValidEVSEIdAdded;
-
-        #endregion
-
-        #region OnValidEVSEIdRemoved
-
-        /// <summary>
-        /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public delegate void OnValidEVSEIdRemovedDelegate(DateTime Timestamp, EVSEOperator EVSEOperator, EVSE_Id EVSEId);
-
-        /// <summary>
-        /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
-        /// </summary>
-        public event OnValidEVSEIdRemovedDelegate OnValidEVSEIdRemoved;
-
-        #endregion
-
         #region OnInvalidEVSEIdAdded
 
         /// <summary>
@@ -480,24 +450,6 @@ namespace org.GraphDefined.WWCP
             this._Name                      = Name        != null ? Name        : new I18NString();
             this._Description               = Description != null ? Description : new I18NString();
 
-            #region ValidEVSEIds
-
-            this._ValidEVSEIds              = new ReactiveSet<EVSE_Id>();
-
-            _ValidEVSEIds.OnItemAdded += (Timestamp, Set, EVSEId) => {
-                var OnValidEVSEIdAddedLocal = OnValidEVSEIdAdded;
-                if (OnValidEVSEIdAddedLocal != null)
-                    OnValidEVSEIdAddedLocal(Timestamp, this, EVSEId);
-            };
-
-            _ValidEVSEIds.OnItemRemoved += (Timestamp, Set, EVSEId) => {
-                var OnValidEVSEIdRemovedLocal = OnValidEVSEIdRemoved;
-                if (OnValidEVSEIdRemovedLocal != null)
-                    OnValidEVSEIdRemovedLocal(Timestamp, this, EVSEId);
-            };
-
-            #endregion
-
             #region InvalidEVSEIds
 
             this._InvalidEVSEIds            = new ReactiveSet<EVSE_Id>();
@@ -517,8 +469,6 @@ namespace org.GraphDefined.WWCP
             };
 
             #endregion
-
-            this._ManualEVSEIds               = new ReactiveSet<EVSE_Id>();
 
             this._ChargingPools               = new ConcurrentDictionary<ChargingPool_Id, ChargingPool>();
             this._ChargingStationGroups       = new ConcurrentDictionary<ChargingStationGroup_Id, ChargingStationGroup>();
@@ -622,8 +572,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Set the admin status.
         /// </summary>
-        /// <param name="NewAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<EVSEOperatorAdminStatusType>  NewAdminStatus)
+        /// <param name="NewAdminStatus">A new admin status.</param>
+        public void SetAdminStatus(EVSEOperatorAdminStatusType  NewAdminStatus)
         {
 
             _AdminStatusSchedule.Insert(NewAdminStatus);
@@ -632,18 +582,33 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SetAdminStatus(Timestamp, NewAdminStatus)
+        #region SetAdminStatus(NewTimestampedAdminStatus)
 
         /// <summary>
         /// Set the admin status.
         /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="NewAdminStatus">A new admin status.</param>
-        public void SetAdminStatus(DateTime                     Timestamp,
-                                   EVSEOperatorAdminStatusType  NewAdminStatus)
+        /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
+        public void SetAdminStatus(Timestamped<EVSEOperatorAdminStatusType> NewTimestampedAdminStatus)
         {
 
-            _AdminStatusSchedule.Insert(Timestamp, NewAdminStatus);
+            _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
+
+        }
+
+        #endregion
+
+        #region SetAdminStatus(NewAdminStatus, Timestamp)
+
+        /// <summary>
+        /// Set the admin status.
+        /// </summary>
+        /// <param name="NewAdminStatus">A new admin status.</param>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        public void SetAdminStatus(EVSEOperatorAdminStatusType  NewAdminStatus,
+                                   DateTime                     Timestamp)
+        {
+
+            _AdminStatusSchedule.Insert(NewAdminStatus, Timestamp);
 
         }
 
@@ -1030,16 +995,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SetChargingPoolAdminStatus(ChargingPoolId, Timestamp, NewStatus)
+        #region SetChargingPoolAdminStatus(ChargingPoolId, NewStatus, Timestamp)
 
         public void SetChargingPoolAdminStatus(ChargingPool_Id              ChargingPoolId,
-                                               DateTime                     Timestamp,
-                                               ChargingPoolAdminStatusType  NewStatus)
+                                               ChargingPoolAdminStatusType  NewStatus,
+                                               DateTime                     Timestamp)
         {
 
             ChargingPool _ChargingPool  = null;
             if (TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
-                _ChargingPool.SetAdminStatus(Timestamp, NewStatus);
+                _ChargingPool.SetAdminStatus(NewStatus, Timestamp);
 
         }
 
@@ -1175,8 +1140,8 @@ namespace org.GraphDefined.WWCP
                 await OnChargingPoolStatusChangedLocal(Timestamp, ChargingPool, OldStatus, NewStatus);
 
             if (StatusAggregationDelegate != null)
-                _StatusSchedule.Insert(Timestamp,
-                                       StatusAggregationDelegate(new ChargingPoolStatusReport(_ChargingPools.Values)));
+                _StatusSchedule.Insert(StatusAggregationDelegate(new ChargingPoolStatusReport(_ChargingPools.Values)),
+                                       Timestamp);
 
         }
 
@@ -1330,8 +1295,8 @@ namespace org.GraphDefined.WWCP
 
         #region SetChargingStationStatus(ChargingStationId, NewStatus)
 
-        public void SetChargingStationStatus(ChargingStation_Id                      ChargingStationId,
-                                             Timestamped<ChargingStationStatusType>  NewStatus)
+        public void SetChargingStationStatus(ChargingStation_Id         ChargingStationId,
+                                             ChargingStationStatusType  NewStatus)
         {
 
             ChargingStation _ChargingStation  = null;
@@ -1342,11 +1307,25 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region SetChargingStationStatus(ChargingStationId, NewTimestampedStatus)
+
+        public void SetChargingStationStatus(ChargingStation_Id                      ChargingStationId,
+                                             Timestamped<ChargingStationStatusType>  NewTimestampedStatus)
+        {
+
+            ChargingStation _ChargingStation = null;
+            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
+                _ChargingStation.SetStatus(NewTimestampedStatus);
+
+        }
+
+        #endregion
+
 
         #region SetChargingStationAdminStatus(ChargingStationId, NewStatus)
 
-        public void SetChargingStationAdminStatus(ChargingStation_Id                           ChargingStationId,
-                                                  Timestamped<ChargingStationAdminStatusType>  NewStatus)
+        public void SetChargingStationAdminStatus(ChargingStation_Id              ChargingStationId,
+                                                  ChargingStationAdminStatusType  NewStatus)
         {
 
             ChargingStation _ChargingStation  = null;
@@ -1357,16 +1336,30 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SetChargingStationAdminStatus(ChargingStationId, Timestamp, NewStatus)
+        #region SetChargingStationAdminStatus(ChargingStationId, NewTimestampedStatus)
+
+        public void SetChargingStationAdminStatus(ChargingStation_Id                           ChargingStationId,
+                                                  Timestamped<ChargingStationAdminStatusType>  NewTimestampedStatus)
+        {
+
+            ChargingStation _ChargingStation = null;
+            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
+                _ChargingStation.SetAdminStatus(NewTimestampedStatus);
+
+        }
+
+        #endregion
+
+        #region SetChargingStationAdminStatus(ChargingStationId, NewStatus, Timestamp)
 
         public void SetChargingStationAdminStatus(ChargingStation_Id              ChargingStationId,
-                                                  DateTime                        Timestamp,
-                                                  ChargingStationAdminStatusType  NewStatus)
+                                                  ChargingStationAdminStatusType  NewStatus,
+                                                  DateTime                        Timestamp)
         {
 
             ChargingStation _ChargingStation  = null;
             if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
-                _ChargingStation.SetAdminStatus(Timestamp, NewStatus);
+                _ChargingStation.SetAdminStatus(NewStatus, Timestamp);
 
         }
 
@@ -1799,18 +1792,18 @@ namespace org.GraphDefined.WWCP
 
         #region ValidEVSEIds
 
-        private readonly ReactiveSet<EVSE_Id> _ValidEVSEIds;
+        //private readonly ReactiveSet<EVSE_Id> _ValidEVSEIds;
 
-        /// <summary>
-        /// A list of valid EVSE Ids. All others will be filtered.
-        /// </summary>
-        public ReactiveSet<EVSE_Id> ValidEVSEIds
-        {
-            get
-            {
-                return _ValidEVSEIds;
-            }
-        }
+        ///// <summary>
+        ///// A list of valid EVSE Ids. All others will be filtered.
+        ///// </summary>
+        //public ReactiveSet<EVSE_Id> ValidEVSEIds
+        //{
+        //    get
+        //    {
+        //        return _ValidEVSEIds;
+        //    }
+        //}
 
         #endregion
 
@@ -1833,26 +1826,26 @@ namespace org.GraphDefined.WWCP
 
         #region ManualEVSEIds
 
-        private readonly ReactiveSet<EVSE_Id> _ManualEVSEIds;
+        //private readonly ReactiveSet<EVSE_Id> _ManualEVSEIds;
 
-        /// <summary>
-        /// A list of manual EVSE Ids which will not be touched automagically.
-        /// </summary>
-        public ReactiveSet<EVSE_Id> ManualEVSEIds
-        {
-            get
-            {
-                return _ManualEVSEIds;
-            }
-        }
+        ///// <summary>
+        ///// A list of manual EVSE Ids which will not be touched automagically.
+        ///// </summary>
+        //public ReactiveSet<EVSE_Id> ManualEVSEIds
+        //{
+        //    get
+        //    {
+        //        return _ManualEVSEIds;
+        //    }
+        //}
 
         #endregion
 
 
         #region SetEVSEStatus(EVSEId, NewStatus)
 
-        public void SetEVSEStatus(EVSE_Id                      EVSEId,
-                                  Timestamped<EVSEStatusType>  NewStatus)
+        public void SetEVSEStatus(EVSE_Id         EVSEId,
+                                  EVSEStatusType  NewStatus)
         {
 
             EVSE _EVSE = null;
@@ -1863,16 +1856,30 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SetEVSEStatus(EVSEId, Timestamp, NewStatus)
+        #region SetEVSEStatus(EVSEId, NewTimestampedStatus)
 
-        public void SetEVSEStatus(EVSE_Id         EVSEId,
-                                  DateTime        Timestamp,
-                                  EVSEStatusType  NewStatus)
+        public void SetEVSEStatus(EVSE_Id                      EVSEId,
+                                  Timestamped<EVSEStatusType>  NewTimestampedStatus)
         {
 
             EVSE _EVSE = null;
             if (TryGetEVSEbyId(EVSEId, out _EVSE))
-                _EVSE.SetStatus(Timestamp, NewStatus);
+                _EVSE.SetStatus(NewTimestampedStatus);
+
+        }
+
+        #endregion
+
+        #region SetEVSEStatus(EVSEId, NewStatus, Timestamp)
+
+        public void SetEVSEStatus(EVSE_Id         EVSEId,
+                                  EVSEStatusType  NewStatus,
+                                  DateTime        Timestamp)
+        {
+
+            EVSE _EVSE = null;
+            if (TryGetEVSEbyId(EVSEId, out _EVSE))
+                _EVSE.SetStatus(NewStatus, Timestamp);
 
         }
 
@@ -2006,8 +2013,8 @@ namespace org.GraphDefined.WWCP
 
         #region SetEVSEAdminStatus(EVSEId, NewAdminStatus)
 
-        public void SetEVSEAdminStatus(EVSE_Id                           EVSEId,
-                                       Timestamped<EVSEAdminStatusType>  NewAdminStatus)
+        public void SetEVSEAdminStatus(EVSE_Id              EVSEId,
+                                       EVSEAdminStatusType  NewAdminStatus)
         {
 
             EVSE _EVSE = null;
@@ -2018,16 +2025,30 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SetEVSEAdminStatus(EVSEId, Timestamp, NewAdminStatus)
+        #region SetEVSEAdminStatus(EVSEId, NewTimestampedAdminStatus)
 
-        public void SetEVSEAdminStatus(EVSE_Id              EVSEId,
-                                       DateTime             Timestamp,
-                                       EVSEAdminStatusType  NewAdminStatus)
+        public void SetEVSEAdminStatus(EVSE_Id                           EVSEId,
+                                       Timestamped<EVSEAdminStatusType>  NewTimestampedAdminStatus)
         {
 
             EVSE _EVSE = null;
             if (TryGetEVSEbyId(EVSEId, out _EVSE))
-                _EVSE.SetAdminStatus(Timestamp, NewAdminStatus);
+                _EVSE.SetAdminStatus(NewTimestampedAdminStatus);
+
+        }
+
+        #endregion
+
+        #region SetEVSEAdminStatus(EVSEId, NewAdminStatus, Timestamp)
+
+        public void SetEVSEAdminStatus(EVSE_Id              EVSEId,
+                                       EVSEAdminStatusType  NewAdminStatus,
+                                       DateTime             Timestamp)
+        {
+
+            EVSE _EVSE = null;
+            if (TryGetEVSEbyId(EVSEId, out _EVSE))
+                _EVSE.SetAdminStatus(NewAdminStatus, Timestamp);
 
         }
 

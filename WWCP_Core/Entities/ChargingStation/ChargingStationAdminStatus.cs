@@ -33,23 +33,6 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region ChargingStation
-
-        private readonly ChargingStation _ChargingStation;
-
-        /// <summary>
-        /// The related the charging station.
-        /// </summary>
-        public ChargingStation ChargingStation
-        {
-            get
-            {
-                return _ChargingStation;
-            }
-        }
-
-        #endregion
-
         #region Id
 
         private readonly ChargingStation_Id _Id;
@@ -84,45 +67,36 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #endregion
+        #region Timestamp
 
-        #region Constructor(s)
-
-        #region ChargingStationAdminStatusRecord(ChargingStation)
+        private readonly DateTime _Timestamp;
 
         /// <summary>
-        /// Create a new charging station status and store
-        /// a reference to the given charging station.
+        /// The timestamp of the current status of the charging station.
         /// </summary>
-        /// <param name="ChargingStation">The current status of a charging station.</param>
-        public ChargingStationAdminStatus(ChargingStation ChargingStation)
-
+        public DateTime Timestamp
         {
-
-            #region Initial checks
-
-            if (ChargingStation == null)
-                throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
-
-            #endregion
-
-            this._ChargingStation  = ChargingStation;
-            this._Id               = ChargingStation.Id;
-            this._Status           = ChargingStation.AdminStatus.Value;
-
+            get
+            {
+                return _Timestamp;
+            }
         }
 
         #endregion
 
-        #region ChargingStationAdminStatusRecord(Id, Status)
+        #endregion
+
+        #region Constructor(s)
 
         /// <summary>
         /// Create a new charging station status.
         /// </summary>
         /// <param name="Id">The unique identification of a charging station.</param>
         /// <param name="Status">The current status of a charging station.</param>
+        /// <param name="Timestamp">The timestamp of the current status of the charging station.</param>
         public ChargingStationAdminStatus(ChargingStation_Id              Id,
-                                          ChargingStationAdminStatusType  Status)
+                                          ChargingStationAdminStatusType  Status,
+                                          DateTime                        Timestamp)
 
         {
 
@@ -133,12 +107,29 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._Id      = Id;
-            this._Status  = Status;
+            this._Id         = Id;
+            this._Status     = Status;
+            this._Timestamp  = Timestamp;
 
         }
 
         #endregion
+
+
+        #region (static) Snapshot(ChargingStation)
+
+        /// <summary>
+        /// Take a snapshot of the current charging station admin status.
+        /// </summary>
+        /// <param name="ChargingStation">An charging station.</param>
+        public static ChargingStationAdminStatus Snapshot(ChargingStation ChargingStation)
+        {
+
+            return new ChargingStationAdminStatus(ChargingStation.Id,
+                                                  ChargingStation.AdminStatus.Value,
+                                                  ChargingStation.AdminStatus.Timestamp);
+
+        }
 
         #endregion
 

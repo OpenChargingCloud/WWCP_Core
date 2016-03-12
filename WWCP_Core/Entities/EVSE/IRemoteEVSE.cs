@@ -18,9 +18,9 @@
 #region Usings
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
@@ -30,12 +30,26 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 namespace org.GraphDefined.WWCP
 {
 
+    /// <summary>
+    /// The interface of a remote EVSE.
+    /// </summary>
     public interface IRemoteEVSE
     {
 
         #region Properties
 
         EVSE_Id Id { get; }
+
+        double AverageVoltage { get; set; }
+        ReactiveSet<ChargingFacilities> ChargingFacilities { get; set; }
+        ReactiveSet<ChargingModes> ChargingModes { get; set; }
+        I18NString Description { get; set; }
+        double GuranteedMinPower { get; set; }
+        double? MaxCapacity_kWh { get; set; }
+        double MaxPower { get; set; }
+        string PointOfDelivery { get; set; }
+        double RealTimePower { get; set; }
+        ReactiveSet<SocketOutlet> SocketOutlets { get; set; }
 
         #endregion
 
@@ -62,16 +76,6 @@ namespace org.GraphDefined.WWCP
 
 
         /// <summary>
-        /// An event fired whenever a reserve command was received.
-        /// </summary>
-        //event OnReserveEVSEDelegate         OnReserve;
-
-        /// <summary>
-        /// An event fired whenever a reserve command completed.
-        /// </summary>
-        //event OnEVSEReservedDelegate        OnReserved;
-
-        /// <summary>
         /// An event fired whenever a new charging reservation was created.
         /// </summary>
         event OnNewReservationDelegate      OnNewReservation;
@@ -89,25 +93,40 @@ namespace org.GraphDefined.WWCP
         event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord;
 
         /// <summary>
-        /// An event fired whenever a remote start command was received.
-        /// </summary>
-        //event OnRemoteEVSEStartDelegate     OnRemoteStart;
-
-        /// <summary>
-        /// An event fired whenever a remote start command completed.
-        /// </summary>
-        //event OnRemoteEVSEStartedDelegate   OnRemoteStarted;
-
-        /// <summary>
         /// An event fired whenever a new charging session was created.
         /// </summary>
         event OnNewChargingSessionDelegate  OnNewChargingSession;
 
 
+
+        IVotingSender<DateTime, IRemoteEVSE, SocketOutlet, bool> OnSocketOutletAddition { get; }
+        IVotingSender<DateTime, IRemoteEVSE, SocketOutlet, bool> OnSocketOutletRemoval  { get; }
+
         #endregion
 
 
-        #region Reserve
+        #region (Admin-)Status
+
+        void SetAdminStatus(EVSEAdminStatusType NewAdminStatus);
+        void SetAdminStatus(Timestamped<EVSEAdminStatusType> NewTimestampedAdminStatus);
+        void SetAdminStatus(IEnumerable<Timestamped<EVSEAdminStatusType>> NewAdminStatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
+        void SetAdminStatus(EVSEAdminStatusType NewAdminStatus, DateTime Timestamp);
+
+        Timestamped<EVSEAdminStatusType>              AdminStatus         { get; set; }
+        IEnumerable<Timestamped<EVSEAdminStatusType>> AdminStatusSchedule { get; }
+
+
+        void SetStatus(EVSEStatusType NewStatus);
+        void SetStatus(Timestamped<EVSEStatusType> NewTimestampedStatus);
+        void SetStatus(IEnumerable<Timestamped<EVSEStatusType>> NewStatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
+        void SetStatus(EVSEStatusType NewStatus, DateTime Timestamp);
+
+        Timestamped<EVSEStatusType>              Status         { get; set; }
+        IEnumerable<Timestamped<EVSEStatusType>> StatusSchedule { get; }
+
+        #endregion
+
+        #region Reservations
 
         /// <summary>
         /// Reserve the possibility to charge.
@@ -155,6 +174,7 @@ namespace org.GraphDefined.WWCP
                                                         ChargingReservationCancellationReason  Reason,
                                                         TimeSpan?                              QueryTimeout  = null);
 
+        ChargingReservation Reservation { get; set; }
 
         #endregion
 
@@ -203,46 +223,22 @@ namespace org.GraphDefined.WWCP
                                               eMA_Id               eMAId         = null,
                                               TimeSpan?            QueryTimeout  = null);
 
+        ChargingSession ChargingSession { get; set; }
+
         #endregion
 
 
 
-
-
-        Timestamped<EVSEAdminStatusType> AdminStatus { get; set; }
-        IEnumerable<Timestamped<EVSEAdminStatusType>> AdminStatusSchedule { get; }
-        double AverageVoltage { get; set; }
-        ReactiveSet<ChargingFacilities> ChargingFacilities { get; set; }
-        ReactiveSet<ChargingModes> ChargingModes { get; set; }
         IRemoteChargingStation ChargingStation { get; }
-        ChargingSession ChargingSession { get; set; }
-        I18NString Description { get; set; }
-        double GuranteedMinPower { get; set; }
-        double? MaxCapacity_kWh { get; set; }
-        double MaxPower { get; set; }
-        IVotingSender<DateTime, IRemoteEVSE, SocketOutlet, bool> OnSocketOutletAddition { get; }
-        IVotingSender<DateTime, IRemoteEVSE, SocketOutlet, bool> OnSocketOutletRemoval { get; }
         EVSEOperator Operator { get; }
-        string PointOfDelivery { get; set; }
-        double RealTimePower { get; set; }
-        ChargingReservation Reservation { get; set; }
-        ReactiveSet<SocketOutlet> SocketOutlets { get; set; }
-        Timestamped<EVSEStatusType> Status { get; set; }
-        IEnumerable<Timestamped<EVSEStatusType>> StatusSchedule { get; }
 
-     //   int CompareTo(VirtualEVSE VirtualEVSE);
-        int CompareTo(object Object);
-    //    bool Equals(VirtualEVSE VirtualEVSE);
-        bool Equals(object Object);
         IEnumerator<SocketOutlet> GetEnumerator();
-        int GetHashCode();
-        void SetAdminStatus(Timestamped<EVSEAdminStatusType> NewAdminStatus);
-        void SetAdminStatus(IEnumerable<Timestamped<EVSEAdminStatusType>> NewAdminStatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
-        void SetAdminStatus(DateTime Timestamp, EVSEAdminStatusType NewAdminStatus);
-        void SetStatus(Timestamped<EVSEStatusType> NewStatus);
-        void SetStatus(IEnumerable<Timestamped<EVSEStatusType>> NewStatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
-        void SetStatus(DateTime Timestamp, EVSEStatusType NewStatus);
-        string ToString();
+
+        Int32   CompareTo(Object Object);
+        Boolean Equals(Object Object);
+
+        Int32   GetHashCode();
+        String  ToString();
 
     }
 

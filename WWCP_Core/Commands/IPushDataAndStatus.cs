@@ -252,33 +252,63 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Upload the EVSE status of the given lookup of EVSE status types grouped by their EVSE operator.
         /// </summary>
-        /// <param name="GroupedEVSEs">A lookup of EVSEs grouped by their EVSE operator.</param>
+        /// <param name="GroupedEVSEStatus">A lookup of EVSE status grouped by their EVSE operator.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
         /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
         /// <param name="OperatorName">The optional name of the EVSE operator.</param>
         /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
-        Task<Acknowledgement> PushEVSEStatus(ILookup<EVSEOperator, EVSE>  GroupedEVSEs,
-                                             ActionType                   ActionType    = ActionType.update,
-                                             EVSEOperator_Id              OperatorId    = null,
-                                             String                       OperatorName  = null,
-                                             TimeSpan?                    QueryTimeout  = null);
+        Task<Acknowledgement> PushEVSEStatus(ILookup<EVSEOperator_Id, EVSEStatus>  GroupedEVSEStatus,
+                                             ActionType                            ActionType    = ActionType.update,
+                                             EVSEOperator_Id                       OperatorId    = null,
+                                             String                                OperatorName  = null,
+                                             TimeSpan?                             QueryTimeout  = null);
 
         /// <summary>
-        /// Upload the given EVSE.
+        /// Upload the given EVSE status.
         /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
+        /// <param name="EVSEStatus">An EVSE status.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
         /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
         /// <param name="OperatorName">The optional name of the EVSE operator.</param>
         /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
-        Task<Acknowledgement> PushEVSEStatus(EVSE             EVSE,
+        Task<Acknowledgement> PushEVSEStatus(EVSEStatus       EVSEStatus,
                                              ActionType       ActionType    = ActionType.update,
                                              EVSEOperator_Id  OperatorId    = null,
                                              String           OperatorName  = null,
                                              TimeSpan?        QueryTimeout  = null);
 
         /// <summary>
-        /// Upload the status of the given enumeration of EVSEs.
+        /// Upload the given enumeration of EVSE status.
+        /// </summary>
+        /// <param name="EVSEStatus">An enumeration of EVSE status.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        Task<Acknowledgement> PushEVSEStatus(IEnumerable<EVSEStatus>  EVSEStatus,
+                                             ActionType               ActionType    = ActionType.update,
+                                             EVSEOperator_Id          OperatorId    = null,
+                                             String                   OperatorName  = null,
+                                             TimeSpan?                QueryTimeout  = null);
+
+        /// <summary>
+        /// Upload the EVSE status of the given EVSE.
+        /// </summary>
+        /// <param name="EVSE">An EVSE.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
+        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        /// <param name="QueryTimeout">An optional timeout of the HTTP client [default 60 sec.]</param>
+        Task<Acknowledgement> PushEVSEStatus(EVSE                 EVSE,
+                                             ActionType           ActionType    = ActionType.update,
+                                             EVSEOperator_Id      OperatorId    = null,
+                                             String               OperatorName  = null,
+                                             Func<EVSE, Boolean>  IncludeEVSEs  = null,
+                                             TimeSpan?            QueryTimeout  = null);
+
+        /// <summary>
+        /// Upload all EVSE status of the given enumeration of EVSEs.
         /// </summary>
         /// <param name="EVSEs">An enumeration of EVSEs.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
@@ -294,7 +324,7 @@ namespace org.GraphDefined.WWCP
                                              TimeSpan?            QueryTimeout  = null);
 
         /// <summary>
-        /// Upload the EVSE status of the given charging station.
+        /// Upload all EVSE status of the given charging station.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
@@ -310,7 +340,7 @@ namespace org.GraphDefined.WWCP
                                              TimeSpan?            QueryTimeout  = null);
 
         /// <summary>
-        /// Upload the EVSE status of the given charging stations.
+        /// Upload all EVSE status of the given enumeration of charging stations.
         /// </summary>
         /// <param name="ChargingStations">An enumeration of charging stations.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
@@ -326,7 +356,7 @@ namespace org.GraphDefined.WWCP
                                              TimeSpan?                     QueryTimeout  = null);
 
         /// <summary>
-        /// Upload the EVSE status of the given charging pool.
+        /// Upload all EVSE status of the given charging pool.
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
@@ -342,7 +372,7 @@ namespace org.GraphDefined.WWCP
                                              TimeSpan?            QueryTimeout  = null);
 
         /// <summary>
-        /// Upload the EVSE status of the given charging pools.
+        /// Upload all EVSE status of the given enumeration of charging pools.
         /// </summary>
         /// <param name="ChargingPools">An enumeration of charging pools.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
@@ -358,7 +388,7 @@ namespace org.GraphDefined.WWCP
                                              TimeSpan?                  QueryTimeout  = null);
 
         /// <summary>
-        /// Upload the EVSE status of the given EVSE operator.
+        /// Upload all EVSE status of the given EVSE operator.
         /// </summary>
         /// <param name="EVSEOperator">An EVSE operator.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
@@ -374,7 +404,7 @@ namespace org.GraphDefined.WWCP
                                              TimeSpan?            QueryTimeout  = null);
 
         /// <summary>
-        /// Upload the EVSE status of the given EVSE operators.
+        /// Upload all EVSE status of the given enumeration of EVSE operators.
         /// </summary>
         /// <param name="EVSEOperators">An enumeration of EVSES operators.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
@@ -390,7 +420,7 @@ namespace org.GraphDefined.WWCP
                                              TimeSpan?                  QueryTimeout  = null);
 
         /// <summary>
-        /// Upload the EVSE status of the given roaming network.
+        /// Upload all EVSE status of the given roaming network.
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
         /// <param name="ActionType">The server-side data management operation.</param>

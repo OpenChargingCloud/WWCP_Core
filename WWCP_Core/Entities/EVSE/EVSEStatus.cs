@@ -33,29 +33,12 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region EVSE
-
-        private readonly EVSE _EVSE;
-
-        /// <summary>
-        /// The related the Electric Vehicle Supply Equipment (EVSE).
-        /// </summary>
-        public EVSE EVSE
-        {
-            get
-            {
-                return _EVSE;
-            }
-        }
-
-        #endregion
-
         #region Id
 
         private readonly EVSE_Id _Id;
 
         /// <summary>
-        /// The unique identification of an EVSE.
+        /// The unique identification of the EVSE.
         /// </summary>
         public EVSE_Id Id
         {
@@ -72,7 +55,7 @@ namespace org.GraphDefined.WWCP
         private readonly EVSEStatusType _Status;
 
         /// <summary>
-        /// The current status of an EVSE.
+        /// The current status of the EVSE.
         /// </summary>
         public EVSEStatusType Status
         {
@@ -84,45 +67,36 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #endregion
+        #region Timestamp
 
-        #region Constructor(s)
-
-        #region EVSEStatusRecord(EVSE)
+        private readonly DateTime _Timestamp;
 
         /// <summary>
-        /// Create a new EVSE status and store
-        /// a reference to the given EVSE.
+        /// The timestamp of the current status of the EVSE.
         /// </summary>
-        /// <param name="EVSE">The current status of an EVSE.</param>
-        public EVSEStatus(EVSE EVSE)
-
+        public DateTime Timestamp
         {
-
-            #region Initial checks
-
-            if (EVSE == null)
-                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
-
-            #endregion
-
-            this._EVSE    = EVSE;
-            this._Id      = EVSE.Id;
-            this._Status  = EVSE.Status.Value;
-
+            get
+            {
+                return _Timestamp;
+            }
         }
 
         #endregion
 
-        #region EVSEStatusRecord(Id, Status)
+        #endregion
+
+        #region Constructor(s)
 
         /// <summary>
         /// Create a new EVSE status.
         /// </summary>
-        /// <param name="Id">The unique identification of an EVSE.</param>
-        /// <param name="Status">The current status of an EVSE.</param>
+        /// <param name="Id">The unique identification of the EVSE.</param>
+        /// <param name="Status">The current status of the EVSE.</param>
+        /// <param name="Timestamp">The timestamp of the current status of the EVSE.</param>
         public EVSEStatus(EVSE_Id         Id,
-                          EVSEStatusType  Status)
+                          EVSEStatusType  Status,
+                          DateTime        Timestamp)
 
         {
 
@@ -133,12 +107,29 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._Id      = Id;
-            this._Status  = Status;
+            this._Id         = Id;
+            this._Status     = Status;
+            this._Timestamp  = Timestamp;
 
         }
 
         #endregion
+
+
+        #region (static) Snapshot(EVSE)
+
+        /// <summary>
+        /// Take a snapshot of the current EVSE status.
+        /// </summary>
+        /// <param name="EVSE">An EVSE.</param>
+        public static EVSEStatus Snapshot(EVSE EVSE)
+        {
+
+            return new EVSEStatus(EVSE.Id,
+                                  EVSE.Status.Value,
+                                  EVSE.Status.Timestamp);
+
+        }
 
         #endregion
 

@@ -157,23 +157,36 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Insert a new status entry.
         /// </summary>
-        /// <param name="NewStatus">A new status entry.</param>
-        public void Insert(Timestamped<T> NewStatus)
+        /// <param name="NewStatus">A new status.</param>
+        public void Insert(T NewStatus)
         {
-            Insert(NewStatus.Timestamp, NewStatus.Value);
+            Insert(NewStatus, DateTime.Now);
         }
 
         #endregion
 
-        #region Insert(Timestamp, Value)
+        #region Insert(NewTimestampedStatus)
 
         /// <summary>
         /// Insert a new status entry.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of the new status entry.</param>
+        /// <param name="NewTimestampedStatus">A new timestamped status.</param>
+        public void Insert(Timestamped<T> NewTimestampedStatus)
+        {
+            Insert(NewTimestampedStatus.Value, NewTimestampedStatus.Timestamp);
+        }
+
+        #endregion
+
+        #region Insert(Value, Timestamp)
+
+        /// <summary>
+        /// Insert a new status entry.
+        /// </summary>
         /// <param name="Value">The value of the new status entry.</param>
-        public void Insert(DateTime  Timestamp,
-                           T         Value)
+        /// <param name="Timestamp">The timestamp of the new status entry.</param>
+        public void Insert(T         Value,
+                           DateTime  Timestamp)
         {
 
             lock (_StatusSchedule)
@@ -282,7 +295,7 @@ namespace org.GraphDefined.WWCP
                                        ? FutureList.Last()
                                        : new Nullable<Timestamped<T>>();
 
-                if (_CurrentStatus != _OldStatus)
+                if (!EqualityComparer<T>.Default.Equals(_CurrentStatus.Value, _OldStatus.Value))
                 {
 
                     var OnStatusChangedLocal = OnStatusChanged;

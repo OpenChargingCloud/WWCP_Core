@@ -33,23 +33,6 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region EVSE
-
-        private readonly EVSE _EVSE;
-
-        /// <summary>
-        /// The related the Electric Vehicle Supply Equipment (EVSE).
-        /// </summary>
-        public EVSE EVSE
-        {
-            get
-            {
-                return _EVSE;
-            }
-        }
-
-        #endregion
-
         #region Id
 
         private readonly EVSE_Id _Id;
@@ -84,61 +67,69 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #endregion
+        #region Timestamp
 
-        #region Constructor(s)
-
-        #region EVSEAdminStatusRecord(EVSE)
+        private readonly DateTime _Timestamp;
 
         /// <summary>
-        /// Create a new EVSE status and store
-        /// a reference to the given EVSE.
+        /// The timestamp of the current status of the EVSE.
         /// </summary>
-        /// <param name="EVSE">The current status of an EVSE.</param>
-        public EVSEAdminStatus(EVSE EVSE)
-
+        public DateTime Timestamp
         {
-
-            #region Initial checks
-
-            if (EVSE == null)
-                throw new ArgumentNullException("EVSE", "The given EVSE must not be null!");
-
-            #endregion
-
-            this._EVSE    = EVSE;
-            this._Id      = EVSE.Id;
-            this._Status  = EVSE.AdminStatus.Value;
-
+            get
+            {
+                return _Timestamp;
+            }
         }
 
         #endregion
 
-        #region EVSEAdminStatusRecord(Id, Status)
+        #endregion
+
+        #region Constructor(s)
 
         /// <summary>
         /// Create a new EVSE status.
         /// </summary>
         /// <param name="Id">The unique identification of an EVSE.</param>
         /// <param name="Status">The current status of an EVSE.</param>
-        public EVSEAdminStatus(EVSE_Id         Id,
-                          EVSEAdminStatusType  Status)
+        /// <param name="Timestamp">The timestamp of the current status of the EVSE.</param>
+        public EVSEAdminStatus(EVSE_Id              Id,
+                               EVSEAdminStatusType  Status,
+                               DateTime             Timestamp)
 
         {
 
             #region Initial checks
 
             if (Id == null)
-                throw new ArgumentNullException("Id", "The given unique identification of an EVSE must not be null!");
+                throw new ArgumentNullException(nameof(Id), "The given unique identification of an EVSE must not be null!");
 
             #endregion
 
-            this._Id      = Id;
-            this._Status  = Status;
+            this._Id         = Id;
+            this._Status     = Status;
+            this._Timestamp  = Timestamp;
 
         }
 
         #endregion
+
+
+        #region (static) Snapshot(EVSE)
+
+        /// <summary>
+        /// Take a snapshot of the current EVSE admin status.
+        /// </summary>
+        /// <param name="EVSE">An EVSE.</param>
+        public static EVSEAdminStatus Snapshot(EVSE EVSE)
+        {
+
+            return new EVSEAdminStatus(EVSE.Id,
+                                       EVSE.AdminStatus.Value,
+                                       EVSE.AdminStatus.Timestamp);
+
+        }
 
         #endregion
 
@@ -150,8 +141,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatus1">A EVSEAdminStatus.</param>
-        /// <param name="EVSEAdminStatus2">Another EVSEAdminStatus.</param>
+        /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
+        /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (EVSEAdminStatus EVSEAdminStatus1, EVSEAdminStatus EVSEAdminStatus2)
         {
@@ -175,8 +166,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatus1">A EVSEAdminStatus.</param>
-        /// <param name="EVSEAdminStatus2">Another EVSEAdminStatus.</param>
+        /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
+        /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EVSEAdminStatus EVSEAdminStatus1, EVSEAdminStatus EVSEAdminStatus2)
         {
@@ -190,8 +181,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatus1">A EVSEAdminStatus.</param>
-        /// <param name="EVSEAdminStatus2">Another EVSEAdminStatus.</param>
+        /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
+        /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (EVSEAdminStatus EVSEAdminStatus1, EVSEAdminStatus EVSEAdminStatus2)
         {
@@ -210,8 +201,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatus1">A EVSEAdminStatus.</param>
-        /// <param name="EVSEAdminStatus2">Another EVSEAdminStatus.</param>
+        /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
+        /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (EVSEAdminStatus EVSEAdminStatus1, EVSEAdminStatus EVSEAdminStatus2)
         {
@@ -225,8 +216,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatus1">A EVSEAdminStatus.</param>
-        /// <param name="EVSEAdminStatus2">Another EVSEAdminStatus.</param>
+        /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
+        /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (EVSEAdminStatus EVSEAdminStatus1, EVSEAdminStatus EVSEAdminStatus2)
         {
@@ -245,8 +236,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEAdminStatus1">A EVSEAdminStatus.</param>
-        /// <param name="EVSEAdminStatus2">Another EVSEAdminStatus.</param>
+        /// <param name="EVSEAdminStatus1">An EVSE admin status.</param>
+        /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (EVSEAdminStatus EVSEAdminStatus1, EVSEAdminStatus EVSEAdminStatus2)
         {
@@ -292,7 +283,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) EVSEAdminStatus == null)
-                throw new ArgumentNullException("The given EVSEAdminStatus must not be null!");
+                throw new ArgumentNullException(nameof(EVSEAdminStatus), "The given EVSE admin status must not be null!");
 
             // Compare EVSE Ids
             var _Result = _Id.CompareTo(EVSEAdminStatus._Id);

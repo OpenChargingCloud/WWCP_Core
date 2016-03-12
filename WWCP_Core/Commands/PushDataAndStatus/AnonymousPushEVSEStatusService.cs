@@ -50,16 +50,16 @@ namespace org.GraphDefined.WWCP
             return Task.FromResult(new Acknowledgement(true));
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(EVSE EVSE, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, TimeSpan? QueryTimeout = default(TimeSpan?))
+        public Task<Acknowledgement> PushEVSEStatus(EVSEStatus EVSEStatus, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, TimeSpan? QueryTimeout = default(TimeSpan?))
         {
 
-            this._EVSEStatusDiffDelegate(new EVSEStatusDiff(DateTime.Now, EVSE.Operator.Id, null, new KeyValuePair<EVSE_Id, EVSEStatusType>[] { new KeyValuePair<EVSE_Id, EVSEStatusType>(EVSE.Id, EVSE.Status.Value) }, null));
+            this._EVSEStatusDiffDelegate(new EVSEStatusDiff(DateTime.Now, EVSEStatus.Id.OperatorId, null, new KeyValuePair<EVSE_Id, EVSEStatusType>[] { new KeyValuePair<EVSE_Id, EVSEStatusType>(EVSEStatus.Id, EVSEStatus.Status) }, null));
 
             return Task.FromResult(new Acknowledgement(true));
 
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(ILookup<EVSEOperator, EVSE> GroupedEVSEs, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, TimeSpan? QueryTimeout = default(TimeSpan?))
+        public Task<Acknowledgement> PushEVSEStatus(ILookup<EVSEOperator_Id, EVSEStatus> GroupedEVSEs, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, TimeSpan? QueryTimeout = default(TimeSpan?))
         {
             return Task.FromResult(new Acknowledgement(true));
         }
@@ -79,6 +79,11 @@ namespace org.GraphDefined.WWCP
             return Task.FromResult(new Acknowledgement(true));
         }
 
+        public Task<Acknowledgement> PushEVSEStatus(IEnumerable<EVSE> EVSEs, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
+        {
+            return Task.FromResult(new Acknowledgement(true));
+        }
+
         public Task<Acknowledgement> PushEVSEStatus(IEnumerable<ChargingStation> ChargingStations, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
         {
             return Task.FromResult(new Acknowledgement(true));
@@ -94,12 +99,17 @@ namespace org.GraphDefined.WWCP
             return Task.FromResult(new Acknowledgement(true));
         }
 
+        public Task<Acknowledgement> PushEVSEStatus(EVSE EVSE, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
+        {
+            return Task.FromResult(new Acknowledgement(true));
+        }
+
         public Task<Acknowledgement> PushEVSEStatus(ChargingStation ChargingStation, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
         {
             return Task.FromResult(new Acknowledgement(true));
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(IEnumerable<EVSE> EVSEs, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
+        public Task<Acknowledgement> PushEVSEStatus(IEnumerable<EVSEStatus> EVSEStatus, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, TimeSpan? QueryTimeout = default(TimeSpan?))
         {
             return Task.FromResult(new Acknowledgement(true));
         }
@@ -163,6 +173,10 @@ namespace org.GraphDefined.WWCP
 
         }
 
+        public Task<Acknowledgement> EnqueueEVSEStatusUpdate(EVSEStatus EVSEStatus, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, TimeSpan? QueryTimeout = default(TimeSpan?))
+        {
+            throw new NotImplementedException();
+        }
     }
 
 

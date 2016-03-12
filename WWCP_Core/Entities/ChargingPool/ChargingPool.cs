@@ -968,28 +968,37 @@ namespace org.GraphDefined.WWCP
         /// Set the admin status.
         /// </summary>
         /// <param name="NewAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<ChargingPoolAdminStatusType>  NewAdminStatus)
+        public void SetAdminStatus(ChargingPoolAdminStatusType  NewAdminStatus)
         {
-
             _AdminStatusSchedule.Insert(NewAdminStatus);
-
         }
 
         #endregion
 
-        #region SetAdminStatus(Timestamp, NewAdminStatus)
+        #region SetAdminStatus(NewTimestampedAdminStatus)
 
         /// <summary>
         /// Set the admin status.
         /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="NewAdminStatus">A new admin status.</param>
-        public void SetAdminStatus(DateTime                     Timestamp,
-                                   ChargingPoolAdminStatusType  NewAdminStatus)
+        /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
+        public void SetAdminStatus(Timestamped<ChargingPoolAdminStatusType> NewTimestampedAdminStatus)
         {
+            _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
+        }
 
-            _AdminStatusSchedule.Insert(Timestamp, NewAdminStatus);
+        #endregion
 
+        #region SetAdminStatus(NewAdminStatus, Timestamp)
+
+        /// <summary>
+        /// Set the admin status.
+        /// </summary>
+        /// <param name="NewAdminStatus">A new admin status.</param>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        public void SetAdminStatus(ChargingPoolAdminStatusType  NewAdminStatus,
+                                   DateTime                     Timestamp)
+        {
+            _AdminStatusSchedule.Insert(NewAdminStatus, Timestamp);
         }
 
         #endregion
@@ -1474,8 +1483,8 @@ namespace org.GraphDefined.WWCP
                 await OnChargingStationStatusChangedLocal(Timestamp, ChargingStation, OldStatus, NewStatus);
 
             if (StatusAggregationDelegate != null)
-                _StatusSchedule.Insert(Timestamp,
-                                       StatusAggregationDelegate(new ChargingStationStatusReport(_ChargingStations.Values)));
+                _StatusSchedule.Insert(StatusAggregationDelegate(new ChargingStationStatusReport(_ChargingStations.Values)),
+                                       Timestamp);
 
         }
 

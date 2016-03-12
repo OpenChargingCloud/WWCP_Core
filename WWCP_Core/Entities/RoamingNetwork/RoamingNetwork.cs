@@ -48,12 +48,7 @@ namespace org.GraphDefined.WWCP
                                   IStatus<RoamingNetworkStatusType>
     {
 
-        #region Data
-
-
-        #endregion
-
-        public Boolean DisableStatusUpdates = false;
+        //public Boolean DisableStatusUpdates = false;
 
         #region Properties
 
@@ -253,12 +248,12 @@ namespace org.GraphDefined.WWCP
 
             this._EVSEOperators                            = new ConcurrentDictionary<EVSEOperator_Id, EVSEOperator>();
             this._EVServiceProviders                       = new ConcurrentDictionary<EVSP_Id, EVSP>();
-            this._CPORoamingProviders                      = new ConcurrentDictionary<RoamingProvider_Id, CPORoamingProvider>();
+            this._EVSEOperatorRoamingProviders             = new ConcurrentDictionary<RoamingProvider_Id, EVSEOperatorRoamingProvider>();
             this._EMPRoamingProviders                      = new ConcurrentDictionary<RoamingProvider_Id, EMPRoamingProvider>();
             this._SearchProviders                          = new ConcurrentDictionary<NavigationServiceProvider_Id, NavigationServiceProvider>();
             this._ChargingReservations                     = new ConcurrentDictionary<ChargingReservation_Id, EVSEOperator>();
             this._IeMobilityServiceProviders               = new ConcurrentDictionary<UInt32, IeMobilityServiceProvider>();
-            this._OperatorRoamingServices                  = new ConcurrentDictionary<UInt32, IOperatorRoamingService>();
+            this._EVSEOperatorRoamingProviderPriorities    = new ConcurrentDictionary<UInt32, EVSEOperatorRoamingProvider>();
             this._eMobilityRoamingServices                 = new ConcurrentDictionary<UInt32, IeMobilityRoamingService>();
             this._PushEVSEStatusToOperatorRoamingServices  = new ConcurrentDictionary<UInt32, IPushDataAndStatus>();
             this._ChargingSessions                         = new ConcurrentDictionary<ChargingSession_Id, EVSEOperator>();
@@ -269,36 +264,36 @@ namespace org.GraphDefined.WWCP
             #region Init events
 
             // RoamingNetwork events
-            this.EVSEOperatorAddition = new VotingNotificator<DateTime, RoamingNetwork, EVSEOperator, Boolean>(() => new VetoVote(), true);
-            this.EVSEOperatorRemoval = new VotingNotificator<DateTime, RoamingNetwork, EVSEOperator, Boolean>(() => new VetoVote(), true);
+            this.EVSEOperatorAddition        = new VotingNotificator<DateTime, RoamingNetwork, EVSEOperator, Boolean>(() => new VetoVote(), true);
+            this.EVSEOperatorRemoval         = new VotingNotificator<DateTime, RoamingNetwork, EVSEOperator, Boolean>(() => new VetoVote(), true);
 
-            this.EVServiceProviderAddition = new VotingNotificator<RoamingNetwork, EVSP, Boolean>(() => new VetoVote(), true);
-            this.EVServiceProviderRemoval = new VotingNotificator<RoamingNetwork, EVSP, Boolean>(() => new VetoVote(), true);
+            this.EVServiceProviderAddition   = new VotingNotificator<RoamingNetwork, EVSP, Boolean>(() => new VetoVote(), true);
+            this.EVServiceProviderRemoval    = new VotingNotificator<RoamingNetwork, EVSP, Boolean>(() => new VetoVote(), true);
 
-            this.CPORoamingProviderAddition = new VotingNotificator<RoamingNetwork, CPORoamingProvider, Boolean>(() => new VetoVote(), true);
-            this.CPORoamingProviderRemoval = new VotingNotificator<RoamingNetwork, CPORoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.CPORoamingProviderAddition  = new VotingNotificator<RoamingNetwork, EVSEOperatorRoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.CPORoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, EVSEOperatorRoamingProvider, Boolean>(() => new VetoVote(), true);
 
-            this.EMPRoamingProviderAddition = new VotingNotificator<RoamingNetwork, EMPRoamingProvider, Boolean>(() => new VetoVote(), true);
-            this.EMPRoamingProviderRemoval = new VotingNotificator<RoamingNetwork, EMPRoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.EMPRoamingProviderAddition  = new VotingNotificator<RoamingNetwork, EMPRoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.EMPRoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, EMPRoamingProvider, Boolean>(() => new VetoVote(), true);
 
-            this.SearchProviderAddition = new VotingNotificator<RoamingNetwork, NavigationServiceProvider, Boolean>(() => new VetoVote(), true);
-            this.SearchProviderRemoval = new VotingNotificator<RoamingNetwork, NavigationServiceProvider, Boolean>(() => new VetoVote(), true);
+            this.SearchProviderAddition      = new VotingNotificator<RoamingNetwork, NavigationServiceProvider, Boolean>(() => new VetoVote(), true);
+            this.SearchProviderRemoval       = new VotingNotificator<RoamingNetwork, NavigationServiceProvider, Boolean>(() => new VetoVote(), true);
 
             // EVSEOperator events
-            this.ChargingPoolAddition = new VotingNotificator<DateTime, EVSEOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
-            this.ChargingPoolRemoval = new VotingNotificator<DateTime, EVSEOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolAddition        = new VotingNotificator<DateTime, EVSEOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolRemoval         = new VotingNotificator<DateTime, EVSEOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
 
             // ChargingPool events
-            this.ChargingStationAddition = new VotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
-            this.ChargingStationRemoval = new AggregatedNotificator<ChargingStation>();
+            this.ChargingStationAddition     = new VotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationRemoval      = new AggregatedNotificator<ChargingStation>();
 
             // ChargingStation events
-            this.EVSEAddition = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
-            this.EVSERemoval = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSEAddition                = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval                 = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
 
             // EVSE events
-            this.SocketOutletAddition = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
-            this.SocketOutletRemoval = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            this.SocketOutletAddition        = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
+            this.SocketOutletRemoval         = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
 
             #endregion
 
@@ -636,24 +631,24 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Operator Roaming Providers...
+        #region EVSE Operator Roaming Providers...
 
-        private readonly ConcurrentDictionary<UInt32, IOperatorRoamingService>   _OperatorRoamingServices;
         private readonly ConcurrentDictionary<UInt32, IeMobilityRoamingService>  _eMobilityRoamingServices;
         private readonly ConcurrentDictionary<UInt32, IPushDataAndStatus>        _PushEVSEStatusToOperatorRoamingServices;
 
-        #region CPORoamingProviders
+        #region EVSEOperatorRoamingProviders
 
-        private readonly ConcurrentDictionary<RoamingProvider_Id, CPORoamingProvider> _CPORoamingProviders;
+        private readonly ConcurrentDictionary<UInt32,             EVSEOperatorRoamingProvider>  _EVSEOperatorRoamingProviderPriorities;
+        private readonly ConcurrentDictionary<RoamingProvider_Id, EVSEOperatorRoamingProvider>  _EVSEOperatorRoamingProviders;
 
         /// <summary>
-        /// Return all roaming providers registered within this roaming network.
+        /// Return all EVSE operator roaming providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<CPORoamingProvider> CPORoamingProviders
+        public IEnumerable<EVSEOperatorRoamingProvider> EVSEOperatorRoamingProviders
         {
             get
             {
-                return _CPORoamingProviders.Values;
+                return _EVSEOperatorRoamingProviders.Values;
             }
         }
 
@@ -667,8 +662,11 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="OperatorRoamingService">The attached E-Mobility service.</param>
         /// <param name="Configurator">An optional delegate to configure the new roaming provider after its creation.</param>
-        public CPORoamingProvider CreateNewRoamingProvider(IOperatorRoamingService     OperatorRoamingService,
-                                                           Action<CPORoamingProvider>  Configurator = null)
+        public EVSEOperatorRoamingProvider CreateNewRoamingProvider(IOperatorRoamingService              OperatorRoamingService,
+                                                                    Func<EVSE, Boolean>                  IncludeEVSEs        = null,
+                                                                    TimeSpan?                            ServiceCheckEvery   = null,
+                                                                    Boolean                              DisableAutoUploads  = false,
+                                                                    Action<EVSEOperatorRoamingProvider>  Configurator        = null)
         {
 
             #region Initial checks
@@ -679,7 +677,7 @@ namespace org.GraphDefined.WWCP
             if (OperatorRoamingService.Name.IsNullOrEmpty())
                 throw new ArgumentNullException("OperatorRoamingService.Name",  "The given roaming provider name must not be null or empty!");
 
-            if (_CPORoamingProviders.ContainsKey(OperatorRoamingService.Id))
+            if (_EVSEOperatorRoamingProviders.ContainsKey(OperatorRoamingService.Id))
                 throw new RoamingProviderAlreadyExists(OperatorRoamingService.Id, this.Id);
 
             if (OperatorRoamingService.RoamingNetworkId != this.Id)
@@ -687,16 +685,19 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            var _CPORoamingProvider = new CPORoamingProvider(OperatorRoamingService.Id,
-                                                             OperatorRoamingService.Name,
-                                                             this,
-                                                             OperatorRoamingService);
+            var _CPORoamingProvider = new EVSEOperatorRoamingProvider(OperatorRoamingService.Id,
+                                                                      OperatorRoamingService.Name,
+                                                                      this,
+                                                                      OperatorRoamingService,
+                                                                      IncludeEVSEs,
+                                                                      ServiceCheckEvery,
+                                                                      DisableAutoUploads);
 
             Configurator.FailSafeInvoke(_CPORoamingProvider);
 
             if (CPORoamingProviderAddition.SendVoting(this, _CPORoamingProvider))
             {
-                if (_CPORoamingProviders.TryAdd(OperatorRoamingService.Id, _CPORoamingProvider))
+                if (_EVSEOperatorRoamingProviders.TryAdd(OperatorRoamingService.Id, _CPORoamingProvider))
                 {
 
                     this.OnChargingStationRemoval.OnNotification += (Timestamp, ChargingStations) => {
@@ -718,12 +719,12 @@ namespace org.GraphDefined.WWCP
 
         #region CPORoamingProviderAddition
 
-        private readonly IVotingNotificator<RoamingNetwork, CPORoamingProvider, Boolean> CPORoamingProviderAddition;
+        private readonly IVotingNotificator<RoamingNetwork, EVSEOperatorRoamingProvider, Boolean> CPORoamingProviderAddition;
 
         /// <summary>
         /// Called whenever a RoamingProvider will be or was added.
         /// </summary>
-        public IVotingSender<RoamingNetwork, CPORoamingProvider, Boolean> OnCPORoamingProviderAddition
+        public IVotingSender<RoamingNetwork, EVSEOperatorRoamingProvider, Boolean> OnCPORoamingProviderAddition
         {
             get
             {
@@ -735,12 +736,12 @@ namespace org.GraphDefined.WWCP
 
         #region CPORoamingProviderRemoval
 
-        private readonly IVotingNotificator<RoamingNetwork, CPORoamingProvider, Boolean> CPORoamingProviderRemoval;
+        private readonly IVotingNotificator<RoamingNetwork, EVSEOperatorRoamingProvider, Boolean> CPORoamingProviderRemoval;
 
         /// <summary>
         /// Called whenever a RoamingProvider will be or was removed.
         /// </summary>
-        public IVotingSender<RoamingNetwork, CPORoamingProvider, Boolean> OnCPORoamingProviderRemoval
+        public IVotingSender<RoamingNetwork, EVSEOperatorRoamingProvider, Boolean> OnCPORoamingProviderRemoval
         {
             get
             {
@@ -856,32 +857,32 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region RegisterOperatorRoamingService(Priority, OperatorRoamingService)
+        #region RegisterRoamingProvider(Priority, EVSEOperatorRoamingProvider)
 
         /// <summary>
         /// Register the given EVSE operator roaming service.
         /// </summary>
         /// <param name="Priority">The priority of the service.</param>
-        /// <param name="OperatorRoamingService">The EVSE operator roaming service.</param>
-        public Boolean RegisterOperatorRoamingService(UInt32                   Priority,
-                                                      IOperatorRoamingService  OperatorRoamingService)
+        /// <param name="EVSEOperatorRoamingProvider">The EVSE operator roaming provider.</param>
+        public Boolean RegisterRoamingProvider(UInt32                       Priority,
+                                               EVSEOperatorRoamingProvider  EVSEOperatorRoamingProvider)
         {
 
-            return _OperatorRoamingServices.TryAdd(Priority, OperatorRoamingService);
+            return _EVSEOperatorRoamingProviderPriorities.TryAdd(Priority, EVSEOperatorRoamingProvider);
 
         }
 
         #endregion
 
-        #region RegistereMobilityRoamingService(Priority, eMobilityRoamingService)
+        #region RegisterRoamingProvider(Priority, eMobilityRoamingService)
 
         /// <summary>
         /// Register the given e-mobility roaming service.
         /// </summary>
         /// <param name="Priority">The priority of the service.</param>
         /// <param name="eMobilityRoamingService">The e-mobility roaming service.</param>
-        public Boolean RegistereMobilityRoamingService(UInt32                    Priority,
-                                                       IeMobilityRoamingService  eMobilityRoamingService)
+        public Boolean RegisterRoamingProvider(UInt32                    Priority,
+                                               IeMobilityRoamingService  eMobilityRoamingService)
         {
 
             return _eMobilityRoamingServices.TryAdd(Priority, eMobilityRoamingService);
@@ -1550,6 +1551,40 @@ namespace org.GraphDefined.WWCP
                                                    Object        NewValue)
         {
 
+            Acknowledgement result = null;
+
+
+            //foreach (var AuthenticationService in _IeMobilityServiceProviders.
+            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //{
+
+            //    result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+            //                                                        ActionType.update,
+            //                                                        EVSE.Operator.Id);
+
+            //}
+
+            foreach (var EVSEOperatorRoamingProvider in _EVSEOperatorRoamingProviderPriorities.
+                                                            OrderBy(RoamingProviderWithPriority => RoamingProviderWithPriority.Key).
+                                                            Select (RoamingProviderWithPriority => RoamingProviderWithPriority.Value))
+            {
+
+                result = await EVSEOperatorRoamingProvider.EnqueueChargingPoolDataUpdate(ChargingPool, PropertyName, OldValue, NewValue);
+
+            }
+
+            //foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
+            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //{
+
+            //    result = await PushEVSEStatusService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+            //                                                        ActionType.update,
+            //                                                        EVSE.Operator.Id);
+
+            //}
+
             var OnChargingPoolDataChangedLocal = OnChargingPoolDataChanged;
             if (OnChargingPoolDataChangedLocal != null)
                 await OnChargingPoolDataChangedLocal(Timestamp, ChargingPool, PropertyName, OldValue, NewValue);
@@ -1892,6 +1927,40 @@ namespace org.GraphDefined.WWCP
                                                       Object           OldValue,
                                                       Object           NewValue)
         {
+
+            Acknowledgement result = null;
+
+
+            //foreach (var AuthenticationService in _IeMobilityServiceProviders.
+            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //{
+
+            //    result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+            //                                                        ActionType.update,
+            //                                                        EVSE.Operator.Id);
+
+            //}
+
+            foreach (var EVSEOperatorRoamingProvider in _EVSEOperatorRoamingProviderPriorities.
+                                                            OrderBy(RoamingProviderWithPriority => RoamingProviderWithPriority.Key).
+                                                            Select (RoamingProviderWithPriority => RoamingProviderWithPriority.Value))
+            {
+
+                result = await EVSEOperatorRoamingProvider.EnqueueChargingStationDataUpdate(ChargingStation, PropertyName, OldValue, NewValue);
+
+            }
+
+            //foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
+            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //{
+
+            //    result = await PushEVSEStatusService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+            //                                                        ActionType.update,
+            //                                                        EVSE.Operator.Id);
+
+            //}
 
             var OnChargingStationDataChangedLocal = OnChargingStationDataChanged;
             if (OnChargingStationDataChangedLocal != null)
@@ -2289,6 +2358,41 @@ namespace org.GraphDefined.WWCP
                                            Object    NewValue)
         {
 
+            Acknowledgement result = null;
+
+
+            //foreach (var AuthenticationService in _IeMobilityServiceProviders.
+            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //{
+
+            //    result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+            //                                                        ActionType.update,
+            //                                                        EVSE.Operator.Id);
+
+            //}
+
+            foreach (var EVSEOperatorRoamingProvider in _EVSEOperatorRoamingProviderPriorities.
+                                                            OrderBy(RoamingProviderWithPriority => RoamingProviderWithPriority.Key).
+                                                            Select (RoamingProviderWithPriority => RoamingProviderWithPriority.Value))
+            {
+
+                result = await EVSEOperatorRoamingProvider.EnqueueEVSEDataUpdate(EVSE, PropertyName, OldValue, NewValue);
+
+            }
+
+            //foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
+            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //{
+
+            //    result = await PushEVSEStatusService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+            //                                                        ActionType.update,
+            //                                                        EVSE.Operator.Id);
+
+            //}
+
+
             var OnEVSEDataChangedLocal = OnEVSEDataChanged;
             if (OnEVSEDataChangedLocal != null)
                 await OnEVSEDataChangedLocal(Timestamp, EVSE, PropertyName, OldValue, NewValue);
@@ -2314,43 +2418,38 @@ namespace org.GraphDefined.WWCP
 
             Acknowledgement result = null;
 
-            if (!DisableStatusUpdates)
-            { 
 
-                foreach (var AuthenticationService in _IeMobilityServiceProviders.
-                                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-                                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-                {
+            foreach (var AuthenticationService in _IeMobilityServiceProviders.
+                                                      OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+                                                      Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            {
 
-                    result = await AuthenticationService.PushEVSEStatus(EVSE,
-                                                                        ActionType.update,
-                                                                        EVSE.Operator.Id);
-
-                }
-
-                foreach (var OperatorRoamingService in _OperatorRoamingServices.
-                                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-                                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-                {
-
-                    result = await OperatorRoamingService.PushEVSEStatus(EVSE,
-                                                                         ActionType.update,
-                                                                         EVSE.Operator.Id);
-
-                }
-
-                foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
-                                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-                                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-                {
-
-                    result = await PushEVSEStatusService.PushEVSEStatus(EVSE,
-                                                                        ActionType.update,
-                                                                        EVSE.Operator.Id);
-
-                }
+                result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+                                                                    ActionType.update,
+                                                                    EVSE.Operator.Id);
 
             }
+
+            foreach (var EVSEOperatorRoamingProvider in _EVSEOperatorRoamingProviderPriorities.
+                                                            OrderBy(RoamingProviderWithPriority => RoamingProviderWithPriority.Key).
+                                                            Select (RoamingProviderWithPriority => RoamingProviderWithPriority.Value))
+            {
+
+                result = await EVSEOperatorRoamingProvider.EnqueueEVSEStatusUpdate(EVSE, OldStatus, NewStatus);
+
+            }
+
+            foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
+                                                      OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+                                                      Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            {
+
+                result = await PushEVSEStatusService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+                                                                    ActionType.update,
+                                                                    EVSE.Operator.Id);
+
+            }
+
 
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
             if (OnEVSEStatusChangedLocal != null)
@@ -2374,6 +2473,46 @@ namespace org.GraphDefined.WWCP
                                                   Timestamped<EVSEAdminStatusType>  OldStatus,
                                                   Timestamped<EVSEAdminStatusType>  NewStatus)
         {
+
+            //Acknowledgement result = null;
+
+            //if (!DisableStatusUpdates)
+            //{
+
+            //    foreach (var AuthenticationService in _IeMobilityServiceProviders.
+            //                                              OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                              Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //    {
+
+            //        result = await AuthenticationService.PushEVSEAdminStatus(new EVSEAdminStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+            //                                                                 ActionType.update,
+            //                                                                 EVSE.Operator.Id);
+
+            //    }
+
+            //    foreach (var OperatorRoamingService in _OperatorRoamingServices.
+            //                                              OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                              Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //    {
+
+            //        result = await OperatorRoamingService.PushEVSEAdminStatus(new EVSEAdminStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+            //                                                                  ActionType.update,
+            //                                                                  EVSE.Operator.Id);
+
+            //    }
+
+            //    foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
+            //                                              OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                              Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //    {
+
+            //        result = await PushEVSEStatusService.PushEVSEAdminStatus(new EVSEAdminStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+            //                                                                 ActionType.update,
+            //                                                                 EVSE.Operator.Id);
+
+            //    }
+
+            //}
 
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
             if (OnEVSEAdminStatusChangedLocal != null)
@@ -3147,9 +3286,6 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            EVSE _EVSE = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE) && _EVSE.AdminStatus != EVSEAdminStatusType.Operational)
-                result = RemoteStartEVSEResult.OutOfService;
 
             if (TryGetEVSEOperatorbyId(EVSEId.OperatorId, out _EVSEOperator))
             {
@@ -3909,7 +4045,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            foreach (var OperatorRoamingService in _OperatorRoamingServices.
+            foreach (var OperatorRoamingService in _EVSEOperatorRoamingProviderPriorities.
                                                       OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
                                                       Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
             {
@@ -4118,7 +4254,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            foreach (var OperatorRoamingService in _OperatorRoamingServices.
+            foreach (var OperatorRoamingService in _EVSEOperatorRoamingProviderPriorities.
                                                        OrderBy(OperatorRoamingServiceWithPriority => OperatorRoamingServiceWithPriority.Key).
                                                        Select (OperatorRoamingServiceWithPriority => OperatorRoamingServiceWithPriority.Value))
             {
@@ -4330,7 +4466,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            foreach (var OperatorRoamingService in _OperatorRoamingServices.
+            foreach (var OperatorRoamingService in _EVSEOperatorRoamingProviderPriorities.
                                                       OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
                                                       Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
             {
@@ -4583,7 +4719,7 @@ namespace org.GraphDefined.WWCP
                 }
 
             if (result == null || result.AuthorizationResult != AuthStopResultType.Authorized)
-                foreach (var OtherOperatorRoamingServices in _OperatorRoamingServices.
+                foreach (var OtherOperatorRoamingServices in _EVSEOperatorRoamingProviderPriorities.
                                                                  OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
                                                                  Select (AuthServiceWithPriority => AuthServiceWithPriority.Value).
                                                                  ToArray())
@@ -4769,7 +4905,7 @@ namespace org.GraphDefined.WWCP
                 }
 
             if (result == null || result.Result != AuthStopEVSEResultType.Authorized)
-                foreach (var OtherOperatorRoamingServices in _OperatorRoamingServices.
+                foreach (var OtherOperatorRoamingServices in _EVSEOperatorRoamingProviderPriorities.
                                                                  OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
                                                                  Select(AuthServiceWithPriority => AuthServiceWithPriority.Value).
                                                                  ToArray())
@@ -4957,7 +5093,7 @@ namespace org.GraphDefined.WWCP
                 }
 
             if (result == null || result.AuthorizationResult != AuthStopChargingStationResultType.Authorized)
-                foreach (var OtherOperatorRoamingServices in _OperatorRoamingServices.
+                foreach (var OtherOperatorRoamingServices in _EVSEOperatorRoamingProviderPriorities.
                                                                  OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
                                                                  Select(AuthServiceWithPriority => AuthServiceWithPriority.Value).
                                                                  ToArray())
@@ -5354,7 +5490,7 @@ namespace org.GraphDefined.WWCP
                     result.Status == SendCDRResultType.InvalidSessionId)
                 {
 
-                    foreach (var OtherOperatorRoamingService in _OperatorRoamingServices.
+                    foreach (var OtherOperatorRoamingService in _EVSEOperatorRoamingProviderPriorities.
                                                                     OrderBy(v => v.Key).
                                                                     Select(v => v.Value).
                                                                     ToArray())

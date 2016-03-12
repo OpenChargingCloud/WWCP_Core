@@ -37,6 +37,9 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 namespace org.GraphDefined.WWCP.Importer
 {
 
+    public delegate Task<HTTPResponse<T>> DownloadData<T>(DateTime LastRunTimestamp, String LastRunId, DNSClient DNSClient);
+
+
     /// <summary>
     /// Import data into the WWCP in-memory datastructures.
     /// </summary>
@@ -50,7 +53,7 @@ namespace org.GraphDefined.WWCP.Importer
         private readonly        Object                                          UpdateEVSEDataAndStatusLock;
         private readonly        Timer                                           UpdateEVSEStatusTimer;
 
-        private readonly        Func<DNSClient, Task<HTTPResponse<T>>>          DownloadData;
+        private readonly        DownloadData<T>                                 DownloadData;
         private readonly        Action<WWCPImporter<T>, Task<HTTPResponse<T>>>  OnFirstRun;
         private readonly        Action<WWCPImporter<T>, Task<HTTPResponse<T>>>  OnEveryRun;
 
@@ -256,7 +259,7 @@ namespace org.GraphDefined.WWCP.Importer
                             DNSClient                                       DNSClient                    = null,
                             TimeSpan?                                       UpdateEvery                  = null,
 
-                            Func<DNSClient, Task<HTTPResponse<T>>>          DownloadData                 = null,
+                            DownloadData<T>                                 DownloadData                 = null,
                             Action<WWCPImporter<T>, Task<HTTPResponse<T>>>  OnFirstRun                   = null,
                             Action<WWCPImporter<T>, Task<HTTPResponse<T>>>  OnEveryRun                   = null,
 
@@ -779,7 +782,7 @@ namespace org.GraphDefined.WWCP.Importer
                     if (!Started)
                     {
 
-                        OnFirstRun(this, DownloadData(_DNSClient));
+                        OnFirstRun(this, DownloadData(DateTime.Now, "1", _DNSClient));
 
                         DebugX.Log("WWCP importer '" + Id + "' Initital import finished!");
 
@@ -868,7 +871,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                     #endregion
 
-                    DownloadData(_DNSClient).
+                    DownloadData(DateTime.Now, "1", _DNSClient).
                         ContinueWith(ImporterTask => {
 
                         // Save the imported data for later review...

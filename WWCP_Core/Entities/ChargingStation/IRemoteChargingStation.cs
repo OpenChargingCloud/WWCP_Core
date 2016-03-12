@@ -33,6 +33,9 @@ using org.GraphDefined.Vanaheimr.Styx.Arrows;
 namespace org.GraphDefined.WWCP
 {
 
+    /// <summary>
+    /// The interface of a remote charging station.
+    /// </summary>
     public interface IRemoteChargingStation
     {
 
