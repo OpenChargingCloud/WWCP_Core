@@ -1562,8 +1562,10 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            var EVSEDataQueueCopy   = new AsyncLocal<HashSet<EVSE>>();
-            var EVSEStatusQueueCopy = new AsyncLocal<List<EVSEStatusChange>>();
+            //var EVSEDataQueueCopy   = new AsyncLocal<HashSet<EVSE>>();
+            //var EVSEStatusQueueCopy = new AsyncLocal<List<EVSEStatusChange>>();
+            var EVSEDataQueueCopy   = new ThreadLocal<HashSet<EVSE>>();
+            var EVSEStatusQueueCopy = new ThreadLocal<List<EVSEStatusChange>>();
 
             if (Monitor.TryEnter(ServiceCheckLock))
             {
@@ -1612,11 +1614,15 @@ namespace org.GraphDefined.WWCP
             {
 
                 // Use the events to evaluate if something went wrong!
-                await PushEVSEData  (EVSEDataQueueCopy.Value,
-                                     _RunId == 1 ? ActionType.fullLoad : ActionType);
+                var task1 = PushEVSEData  (EVSEDataQueueCopy.Value,
+                                           _RunId == 1 ? ActionType.fullLoad : ActionType);
 
-                await PushEVSEStatus(EVSEStatusQueueCopy.Value.Select(statuschange => statuschange.CurrentStatus),
-                                     _RunId == 1 ? ActionType.fullLoad : ActionType);
+                task1.Wait();
+
+                var task2 = PushEVSEStatus(EVSEStatusQueueCopy.Value.Select(statuschange => statuschange.CurrentStatus).ToArray(),
+                                           _RunId == 1 ? ActionType.fullLoad : ActionType);
+
+                task2.Wait();
 
             }
 
