@@ -540,6 +540,8 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
+            _LocalEVSEIds = new ReactiveSet<EVSE_Id>();
+
         }
 
         #endregion
@@ -1824,20 +1826,20 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ManualEVSEIds
+        #region LocalEVSEIds
 
-        //private readonly ReactiveSet<EVSE_Id> _ManualEVSEIds;
+        private readonly ReactiveSet<EVSE_Id> _LocalEVSEIds;
 
-        ///// <summary>
-        ///// A list of manual EVSE Ids which will not be touched automagically.
-        ///// </summary>
-        //public ReactiveSet<EVSE_Id> ManualEVSEIds
-        //{
-        //    get
-        //    {
-        //        return _ManualEVSEIds;
-        //    }
-        //}
+        /// <summary>
+        /// A list of manual EVSE Ids which will not be touched automagically.
+        /// </summary>
+        public ReactiveSet<EVSE_Id> LocalEVSEIds
+        {
+            get
+            {
+                return _LocalEVSEIds;
+            }
+        }
 
         #endregion
 
@@ -3052,7 +3054,8 @@ namespace org.GraphDefined.WWCP
 
             #region Try the remote EVSE operator...
 
-            if (_RemoteEVSEOperator != null)
+            if (_RemoteEVSEOperator != null &&
+               !_LocalEVSEIds.Contains(EVSEId))
             {
 
                 result = await _RemoteEVSEOperator.RemoteStart(Timestamp,
@@ -3085,6 +3088,7 @@ namespace org.GraphDefined.WWCP
             #region ...else/or try local
 
             if (_RemoteEVSEOperator == null ||
+                 result             == null ||
                 (result             != null &&
                 (result.Result      == RemoteStartEVSEResultType.UnknownEVSE ||
                  result.Result      == RemoteStartEVSEResultType.Error)))
@@ -3643,7 +3647,8 @@ namespace org.GraphDefined.WWCP
 
             #region Try remote EVSE operator...
 
-            if (_RemoteEVSEOperator != null)
+            if (_RemoteEVSEOperator != null &&
+               !_LocalEVSEIds.Contains(EVSEId))
             {
 
                 result = await _RemoteEVSEOperator.RemoteStop(Timestamp,
@@ -3680,6 +3685,7 @@ namespace org.GraphDefined.WWCP
             #region ...else/or try local
 
             if (_RemoteEVSEOperator == null ||
+                 result             == null ||
                 (result             != null &&
                 (result.Result      == RemoteStopEVSEResultType.UnknownEVSE ||
                  result.Result      == RemoteStopEVSEResultType.InvalidSessionId ||
