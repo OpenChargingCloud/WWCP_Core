@@ -788,10 +788,10 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (eMobilityRoamingService.Id == null)
-                throw new ArgumentNullException(nameof(eMobilityRoamingService.Id),    "The given roaming provider identification must not be null!");
+                throw new ArgumentNullException("eMobilityRoamingService.Id",    "The given roaming provider identification must not be null!");
 
             if (eMobilityRoamingService.Name.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(eMobilityRoamingService.Name),  "The given roaming provider name must not be null or empty!");
+                throw new ArgumentNullException("eMobilityRoamingService.Name",  "The given roaming provider name must not be null or empty!");
 
             if (_EMPRoamingProviders.ContainsKey(eMobilityRoamingService.Id))
                 throw new RoamingProviderAlreadyExists(eMobilityRoamingService.Id, this.Id);
