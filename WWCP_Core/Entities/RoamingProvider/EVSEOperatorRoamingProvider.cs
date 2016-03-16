@@ -43,8 +43,10 @@ namespace org.GraphDefined.WWCP
         private readonly        Timer                   ServiceCheckTimer;
         public  readonly static TimeSpan                DefaultServiceCheckEvery = TimeSpan.FromSeconds(10);
 
+        private readonly        HashSet<EVSE>           EVSEsToAddQueue;
         private readonly        HashSet<EVSE>           EVSEDataUpdatesQueue;
         private readonly        List<EVSEStatusChange>  EVSEStatusChangesQueue;
+        private readonly        HashSet<EVSE>           EVSEsToRemoveQueue;
 
         #endregion
 
@@ -550,8 +552,10 @@ namespace org.GraphDefined.WWCP
 
             this._OperatorRoamingService  = OperatorRoamingService;
 
+            this.EVSEsToAddQueue          = new HashSet<EVSE>();
             this.EVSEDataUpdatesQueue     = new HashSet<EVSE>();
             this.EVSEStatusChangesQueue   = new List<EVSEStatusChange>();
+            this.EVSEsToRemoveQueue       = new HashSet<EVSE>();
 
 
             #region Link RemoteStart/-Stop to the roaming network
@@ -1466,6 +1470,84 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region EnqueueEVSEAdddition(Timestamp, ChargingStation, EVSE)
+
+        public Task EnqueueEVSEAdddition(DateTime         Timestamp,
+                                         ChargingStation  ChargingStation,
+                                         EVSE             EVSE)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStation == null)
+                throw new ArgumentNullException(nameof(ChargingStation),  "The given charging station must not be null!");
+
+            if (EVSE            == null)
+                throw new ArgumentNullException(nameof(EVSE),             "The given EVSE must not be null!");
+
+            #endregion
+
+            lock (ServiceCheckLock)
+            {
+
+                if (IncludeEVSEs == null ||
+                   (IncludeEVSEs != null && IncludeEVSEs(EVSE)))
+                {
+
+                    EVSEsToAddQueue.Add(EVSE);
+
+                    ServiceCheckTimer.Change(_ServiceCheckEvery, Timeout.Infinite);
+
+                }
+
+            }
+
+            return Task.FromResult(new Acknowledgement(true));
+
+        }
+
+        #endregion
+
+        #region EnqueueEVSERemoval(Timestamp, ChargingStation, EVSE)
+
+        public Task EnqueueEVSERemoval(DateTime         Timestamp,
+                                       ChargingStation  ChargingStation,
+                                       EVSE             EVSE)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStation == null)
+                throw new ArgumentNullException(nameof(ChargingStation),  "The given charging station must not be null!");
+
+            if (EVSE            == null)
+                throw new ArgumentNullException(nameof(EVSE),             "The given EVSE must not be null!");
+
+            #endregion
+
+            lock (ServiceCheckLock)
+            {
+
+                if (IncludeEVSEs == null ||
+                   (IncludeEVSEs != null && IncludeEVSEs(EVSE)))
+                {
+
+                    EVSEsToRemoveQueue.Add(EVSE);
+
+                    ServiceCheckTimer.Change(_ServiceCheckEvery, Timeout.Infinite);
+
+                }
+
+            }
+
+            return Task.FromResult(new Acknowledgement(true));
+
+        }
+
+        #endregion
+
         #region EnqueueEVSEDataUpdate(EVSE, PropertyName, OldValue, NewValue)
 
         /// <summary>
@@ -1562,10 +1644,14 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            //ToDo: AsyncLocal is currently not implemented in Mono!
             //var EVSEDataQueueCopy   = new AsyncLocal<HashSet<EVSE>>();
             //var EVSEStatusQueueCopy = new AsyncLocal<List<EVSEStatusChange>>();
-            var EVSEDataQueueCopy   = new ThreadLocal<HashSet<EVSE>>();
-            var EVSEStatusQueueCopy = new ThreadLocal<List<EVSEStatusChange>>();
+
+            var EVSEsToAddQueueCopy     = new ThreadLocal<HashSet<EVSE>>();
+            var EVSEDataQueueCopy       = new ThreadLocal<HashSet<EVSE>>();
+            var EVSEStatusQueueCopy     = new ThreadLocal<List<EVSEStatusChange>>();
+            var EVSEsToRemoveQueueCopy  = new ThreadLocal<HashSet<EVSE>>();
 
             if (Monitor.TryEnter(ServiceCheckLock))
             {
@@ -1573,19 +1659,30 @@ namespace org.GraphDefined.WWCP
                 try
                 {
 
-                    if (EVSEDataUpdatesQueue.  Count == 0 &&
-                        EVSEStatusChangesQueue.Count == 0)
+                    if (EVSEsToAddQueue.       Count == 0 &&
+                        EVSEDataUpdatesQueue.  Count == 0 &&
+                        EVSEStatusChangesQueue.Count == 0 &&
+                        EVSEsToRemoveQueue.    Count == 0)
                         return new Acknowledgement(true);
 
                     _RunId++;
 
+                    // Copy EVSEs to add
+                    EVSEsToAddQueueCopy.Value     = new HashSet<EVSE>(EVSEsToAddQueue);
+                    EVSEsToAddQueue.Clear();
+
                     // Copy EVSE data
-                    EVSEDataQueueCopy.Value = new HashSet<EVSE>(EVSEDataUpdatesQueue);
+                    EVSEDataQueueCopy.Value       = new HashSet<EVSE>(EVSEDataUpdatesQueue);
                     EVSEDataUpdatesQueue.Clear();
 
                     // Copy EVSE status
-                    EVSEStatusQueueCopy.Value = new List<EVSEStatusChange>(EVSEStatusChangesQueue);
+                    EVSEStatusQueueCopy.Value     = new List<EVSEStatusChange>(EVSEStatusChangesQueue);
                     EVSEStatusChangesQueue.Clear();
+
+                    // Copy EVSEs to remove
+                    EVSEsToRemoveQueueCopy.Value  = new HashSet<EVSE>(EVSEsToRemoveQueue);
+                    EVSEsToRemoveQueue.Clear();
+
 
                     // Stop the timer
                     ServiceCheckTimer.Change(Timeout.Infinite, Timeout.Infinite);
@@ -1609,20 +1706,53 @@ namespace org.GraphDefined.WWCP
             }
 
             // Upload status changes...
-            if (EVSEStatusQueueCopy.Value != null ||
-                EVSEDataQueueCopy.  Value != null)
+            if (EVSEsToAddQueueCopy.   Value != null ||
+                EVSEDataQueueCopy.     Value != null ||
+                EVSEStatusQueueCopy.   Value != null ||
+                EVSEsToRemoveQueueCopy.Value != null)
             {
 
                 // Use the events to evaluate if something went wrong!
-                var task1 = PushEVSEData  (EVSEDataQueueCopy.Value,
-                                           _RunId == 1 ? ActionType.fullLoad : ActionType);
 
-                task1.Wait();
+                if (EVSEsToAddQueueCopy.Value.Count > 0)
+                {
 
-                var task2 = PushEVSEStatus(EVSEStatusQueueCopy.Value.Select(statuschange => statuschange.CurrentStatus).ToArray(),
-                                           _RunId == 1 ? ActionType.fullLoad : ActionType);
+                    var EVSEsToAddTask = PushEVSEData(EVSEsToAddQueueCopy.Value,
+                                                      _RunId == 1 ? ActionType.fullLoad : ActionType);
 
-                task2.Wait();
+                    EVSEsToAddTask.Wait();
+
+                }
+
+                if (EVSEDataQueueCopy.Value.Count > 0)
+                {
+
+                    // Surpress EVSE data updates for all newly added EVSEs
+                    var EVSEsWithoutNewEVSEs = EVSEDataQueueCopy.Value.
+                                                   Where(evse => !EVSEsToAddQueueCopy.Value.Contains(evse)).
+                                                   ToArray();
+
+
+                    if (EVSEsWithoutNewEVSEs.Length > 0)
+                    {
+
+                        var PushEVSEDataTask = PushEVSEData(EVSEsWithoutNewEVSEs, ActionType);
+
+                        PushEVSEDataTask.Wait();
+
+                    }
+
+                }
+
+                if (EVSEStatusQueueCopy.Value.Count > 0)
+                {
+
+                    var PushEVSEStatusTask = PushEVSEStatus(EVSEStatusQueueCopy.Value.Select(statuschange => statuschange.CurrentStatus).ToArray(),
+                                                            _RunId == 1 ? ActionType.fullLoad : ActionType);
+
+                    PushEVSEStatusTask.Wait();
+
+                }
 
             }
 

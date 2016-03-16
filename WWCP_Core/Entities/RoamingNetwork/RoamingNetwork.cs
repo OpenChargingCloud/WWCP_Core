@@ -424,7 +424,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (NavigationServiceProviderId == null)
-                throw new ArgumentNullException("NavigationServiceProviderId", "The given navigation service provider identification must not be null!");
+                throw new ArgumentNullException(nameof(NavigationServiceProviderId),  "The given navigation service provider identification must not be null!");
 
             if (_SearchProviders.ContainsKey(NavigationServiceProviderId))
                 throw new SearchProviderAlreadyExists(NavigationServiceProviderId, this.Id);
@@ -523,7 +523,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (EVServiceProviderId == null)
-                throw new ArgumentNullException("EVServiceProviderId", "The given electric vehicle service provider identification must not be null!");
+                throw new ArgumentNullException(nameof(EVServiceProviderId), "The given electric vehicle service provider identification must not be null!");
 
             if (_EVServiceProviders.ContainsKey(EVServiceProviderId))
                 throw new EVServiceProviderAlreadyExists(EVServiceProviderId, this.Id);
@@ -631,6 +631,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
         #region EVSE Operator Roaming Providers...
 
         private readonly ConcurrentDictionary<UInt32, IeMobilityRoamingService>  _eMobilityRoamingServices;
@@ -672,10 +673,10 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (OperatorRoamingService.Id == null)
-                throw new ArgumentNullException("OperatorRoamingService.Id",    "The given roaming provider identification must not be null!");
+                throw new ArgumentNullException(nameof(OperatorRoamingService.Id),    "The given roaming provider identification must not be null!");
 
             if (OperatorRoamingService.Name.IsNullOrEmpty())
-                throw new ArgumentNullException("OperatorRoamingService.Name",  "The given roaming provider name must not be null or empty!");
+                throw new ArgumentNullException(nameof(OperatorRoamingService.Name),  "The given roaming provider name must not be null or empty!");
 
             if (_EVSEOperatorRoamingProviders.ContainsKey(OperatorRoamingService.Id))
                 throw new RoamingProviderAlreadyExists(OperatorRoamingService.Id, this.Id);
@@ -703,6 +704,9 @@ namespace org.GraphDefined.WWCP
                     this.OnChargingStationRemoval.OnNotification += (Timestamp, ChargingStations) => {
                         OperatorRoamingService.RemoveChargingStations(Timestamp, ChargingStations);
                     };
+
+
+
 
                     CPORoamingProviderAddition.SendNotification(this, _CPORoamingProvider);
 
@@ -784,10 +788,10 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (eMobilityRoamingService.Id == null)
-                throw new ArgumentNullException("eMobilityRoamingService.Id",    "The given roaming provider identification must not be null!");
+                throw new ArgumentNullException(nameof(eMobilityRoamingService.Id),    "The given roaming provider identification must not be null!");
 
             if (eMobilityRoamingService.Name.IsNullOrEmpty())
-                throw new ArgumentNullException("eMobilityRoamingService.Name",  "The given roaming provider name must not be null or empty!");
+                throw new ArgumentNullException(nameof(eMobilityRoamingService.Name),  "The given roaming provider name must not be null or empty!");
 
             if (_EMPRoamingProviders.ContainsKey(eMobilityRoamingService.Id))
                 throw new RoamingProviderAlreadyExists(eMobilityRoamingService.Id, this.Id);
@@ -910,7 +914,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
         #region EVSE operators...
 
         #region EVSEOperators
@@ -989,7 +992,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (EVSEOperatorId == null)
-                throw new ArgumentNullException("EVSEOperatorId", "The given EVSE operator identification must not be null!");
+                throw new ArgumentNullException(nameof(EVSEOperatorId),  "The given EVSE operator identification must not be null!");
 
             if (_EVSEOperators.ContainsKey(EVSEOperatorId))
                 throw new EVSEOperatorAlreadyExists(EVSEOperatorId, this.Id);
@@ -1006,22 +1009,26 @@ namespace org.GraphDefined.WWCP
                 if (_EVSEOperators.TryAdd(EVSEOperatorId, _EVSEOperator))
                 {
 
-                    _EVSEOperator.OnEVSEDataChanged                             += UpdateEVSEData;
-                    _EVSEOperator.OnEVSEStatusChanged                           += UpdateEVSEStatus;
-                    _EVSEOperator.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
-
-
-                    _EVSEOperator.OnChargingStationDataChanged                  += UpdateChargingStationData;
-                    _EVSEOperator.OnChargingStationStatusChanged                += UpdateChargingStationStatus;
-                    _EVSEOperator.OnChargingStationAdminStatusChanged           += UpdateChargingStationAdminStatus;
+                    _EVSEOperator.OnDataChanged                                 += UpdateEVSEOperatorData;
+                    _EVSEOperator.OnStatusChanged                               += UpdateStatus;
+                    _EVSEOperator.OnAdminStatusChanged                          += UpdateAdminStatus;
 
                     _EVSEOperator.OnChargingPoolDataChanged                     += UpdateChargingPoolData;
                     _EVSEOperator.OnChargingPoolStatusChanged                   += UpdateChargingPoolStatus;
                     _EVSEOperator.OnChargingPoolAdminStatusChanged              += UpdateChargingPoolAdminStatus;
 
-                    _EVSEOperator.OnDataChanged                                 += UpdateEVSEOperatorData;
-                    _EVSEOperator.OnStatusChanged                               += UpdateStatus;
-                    _EVSEOperator.OnAdminStatusChanged                          += UpdateAdminStatus;
+                    _EVSEOperator.OnChargingStationDataChanged                  += UpdateChargingStationData;
+                    _EVSEOperator.OnChargingStationStatusChanged                += UpdateChargingStationStatus;
+                    _EVSEOperator.OnChargingStationAdminStatusChanged           += UpdateChargingStationAdminStatus;
+
+                    //_EVSEOperator.EVSEAddition.OnVoting                         += SendEVSEAdding;
+                    _EVSEOperator.EVSEAddition.OnNotification                   += SendEVSEAdded;
+                    //_EVSEOperator.EVSERemoval.OnVoting                          += SendEVSERemoving;
+                    _EVSEOperator.EVSERemoval.OnNotification                    += SendEVSERemoved;
+                    _EVSEOperator.OnEVSEDataChanged                             += UpdateEVSEData;
+                    _EVSEOperator.OnEVSEStatusChanged                           += UpdateEVSEStatus;
+                    _EVSEOperator.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
+
 
                     _EVSEOperator.OnNewReservation                              += SendNewReservation;
                     _EVSEOperator.OnReservationCancelled                        += SendOnReservationCancelled;
@@ -1499,40 +1506,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChargingStationAddition
-
-        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
-
-        /// <summary>
-        /// Called whenever a charging station will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
-        {
-            get
-            {
-                return ChargingStationAddition;
-            }
-        }
-
-        #endregion
-
-        #region ChargingStationRemoval
-
-        internal readonly AggregatedNotificator<ChargingStation> ChargingStationRemoval;
-
-        /// <summary>
-        /// Called whenever a charging station will be or was removed.
-        /// </summary>
-        public AggregatedNotificator<ChargingStation> OnChargingStationRemoval
-        {
-            get
-            {
-                return ChargingStationRemoval;
-            }
-        }
-
-        #endregion
-
 
         #region (internal) UpdateChargingPoolData(Timestamp, ChargingPool, OldStatus, NewStatus)
 
@@ -1876,35 +1849,35 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEAddition
+        #region ChargingStationAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
+        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
 
         /// <summary>
-        /// Called whenever an EVSE will be or was added.
+        /// Called whenever a charging station will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
+        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
         {
             get
             {
-                return EVSEAddition;
+                return ChargingStationAddition;
             }
         }
 
         #endregion
 
-        #region EVSERemoval
+        #region ChargingStationRemoval
 
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
+        internal readonly AggregatedNotificator<ChargingStation> ChargingStationRemoval;
 
         /// <summary>
-        /// Called whenever an EVSE will be or was removed.
+        /// Called whenever a charging station will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
+        public AggregatedNotificator<ChargingStation> OnChargingStationRemoval
         {
             get
             {
-                return EVSERemoval;
+                return ChargingStationRemoval;
             }
         }
 
@@ -2275,6 +2248,118 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region EVSEAddition
+
+        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
+        {
+            get
+            {
+                return EVSEAddition;
+            }
+        }
+
+        private void SendEVSEAdded(DateTime Timestamp, ChargingStation ChargingStation, EVSE EVSE)
+        {
+
+            //foreach (var AuthenticationService in _IeMobilityServiceProviders.
+            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //{
+
+            //    result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+            //                                                        ActionType.update,
+            //                                                        EVSE.Operator.Id);
+
+            //}
+
+            foreach (var EVSEOperatorRoamingProvider in _EVSEOperatorRoamingProviderPriorities.
+                                                            OrderBy(RoamingProviderWithPriority => RoamingProviderWithPriority.Key).
+                                                            Select (RoamingProviderWithPriority => RoamingProviderWithPriority.Value))
+            {
+
+                EVSEOperatorRoamingProvider.EnqueueEVSEAdddition(Timestamp, ChargingStation, EVSE);
+
+            }
+
+            //foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
+            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //{
+
+            //    result = await PushEVSEStatusService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+            //                                                        ActionType.update,
+            //                                                        EVSE.Operator.Id);
+
+            //}
+
+
+            EVSEAddition.SendNotification(Timestamp, ChargingStation, EVSE);
+
+        }
+
+        #endregion
+
+        #region EVSERemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
+        {
+            get
+            {
+                return EVSERemoval;
+            }
+        }
+
+        private void SendEVSERemoved(DateTime Timestamp, ChargingStation ChargingStation, EVSE EVSE)
+        {
+
+            //foreach (var AuthenticationService in _IeMobilityServiceProviders.
+            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //{
+
+            //    result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+            //                                                        ActionType.update,
+            //                                                        EVSE.Operator.Id);
+
+            //}
+
+            foreach (var EVSEOperatorRoamingProvider in _EVSEOperatorRoamingProviderPriorities.
+                                                            OrderBy(RoamingProviderWithPriority => RoamingProviderWithPriority.Key).
+                                                            Select (RoamingProviderWithPriority => RoamingProviderWithPriority.Value))
+            {
+
+                EVSEOperatorRoamingProvider.EnqueueEVSERemoval(Timestamp, ChargingStation, EVSE);
+
+            }
+
+            //foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
+            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //{
+
+            //    result = await PushEVSEStatusService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
+            //                                                        ActionType.update,
+            //                                                        EVSE.Operator.Id);
+
+            //}
+
+
+            EVSERemoval.SendNotification(Timestamp, ChargingStation, EVSE);
+
+        }
+
+        #endregion
 
         #region OnEVSEData/(Admin)StatusChanged
 
@@ -3963,10 +4048,10 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (OperatorId == null)
-                throw new ArgumentNullException("OperatorId", "The given EVSE operator must not be null!");
+                throw new ArgumentNullException(nameof(OperatorId),  "The given EVSE operator must not be null!");
 
             if (AuthToken  == null)
-                throw new ArgumentNullException("AuthToken",  "The given authentication token must not be null!");
+                throw new ArgumentNullException(nameof(AuthToken),   "The given authentication token must not be null!");
 
             #endregion
 
@@ -4165,13 +4250,13 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (OperatorId == null)
-                throw new ArgumentNullException("OperatorId", "The given EVSE operator must not be null!");
+                throw new ArgumentNullException(nameof(OperatorId),  "The given EVSE operator must not be null!");
 
             if (AuthToken  == null)
-                throw new ArgumentNullException("AuthToken",  "The given authentication token must not be null!");
+                throw new ArgumentNullException(nameof(AuthToken),   "The given authentication token must not be null!");
 
-            if (EVSEId == null)
-                throw new ArgumentNullException(nameof(EVSEId),     "The given EVSE identification must not be null!");
+            if (EVSEId     == null)
+                throw new ArgumentNullException(nameof(EVSEId),      "The given EVSE identification must not be null!");
 
             #endregion
 
@@ -4377,11 +4462,11 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (OperatorId == null)
-                throw new ArgumentNullException("OperatorId",         "The given EVSE operator must not be null!");
+            if (OperatorId        == null)
+                throw new ArgumentNullException(nameof(OperatorId),         "The given EVSE operator must not be null!");
 
-            if (AuthToken  == null)
-                throw new ArgumentNullException("AuthToken",          "The given authentication token must not be null!");
+            if (AuthToken         == null)
+                throw new ArgumentNullException(nameof(AuthToken),          "The given authentication token must not be null!");
 
             if (ChargingStationId == null)
                 throw new ArgumentNullException(nameof(ChargingStationId),  "The given charging station identification must not be null!");
@@ -4630,13 +4715,13 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (OperatorId == null)
-                throw new ArgumentNullException("OperatorId", "The given parameter must not be null!");
+                throw new ArgumentNullException(nameof(OperatorId),  "The given parameter must not be null!");
 
             if (SessionId  == null)
-                throw new ArgumentNullException(nameof(SessionId),  "The given parameter must not be null!");
+                throw new ArgumentNullException(nameof(SessionId),   "The given parameter must not be null!");
 
             if (AuthToken  == null)
-                throw new ArgumentNullException("AuthToken",  "The given parameter must not be null!");
+                throw new ArgumentNullException(nameof(AuthToken),   "The given parameter must not be null!");
 
             #endregion
 
@@ -4809,16 +4894,16 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (OperatorId == null)
-                throw new ArgumentNullException("OperatorId", "The given parameter must not be null!");
+                throw new ArgumentNullException(nameof(OperatorId),  "The given parameter must not be null!");
 
             if (SessionId  == null)
-                throw new ArgumentNullException(nameof(SessionId),  "The given parameter must not be null!");
+                throw new ArgumentNullException(nameof(SessionId),   "The given parameter must not be null!");
 
             if (AuthToken  == null)
-                throw new ArgumentNullException("AuthToken",  "The given parameter must not be null!");
+                throw new ArgumentNullException(nameof(AuthToken),   "The given parameter must not be null!");
 
-            if (EVSEId == null)
-                throw new ArgumentNullException(nameof(EVSEId),     "The given parameter must not be null!");
+            if (EVSEId     == null)
+                throw new ArgumentNullException(nameof(EVSEId),      "The given parameter must not be null!");
 
             #endregion
 
@@ -4996,14 +5081,14 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (OperatorId == null)
-                throw new ArgumentNullException("OperatorId",         "The given parameter must not be null!");
+            if (OperatorId        == null)
+                throw new ArgumentNullException(nameof(OperatorId),         "The given parameter must not be null!");
 
-            if (SessionId  == null)
+            if (SessionId         == null)
                 throw new ArgumentNullException(nameof(SessionId),          "The given parameter must not be null!");
 
-            if (AuthToken  == null)
-                throw new ArgumentNullException("AuthToken",          "The given parameter must not be null!");
+            if (AuthToken         == null)
+                throw new ArgumentNullException(nameof(AuthToken),          "The given parameter must not be null!");
 
             if (ChargingStationId == null)
                 throw new ArgumentNullException(nameof(ChargingStationId),  "The given parameter must not be null!");
@@ -5625,7 +5710,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) RoamingNetwork == null)
-                throw new ArgumentNullException("The given RoamingNetwork must not be null!");
+                throw new ArgumentNullException(nameof(RoamingNetwork),  "The given roaming network must not be null!");
 
             return Id.CompareTo(RoamingNetwork.Id);
 
