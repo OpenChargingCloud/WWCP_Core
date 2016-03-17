@@ -625,7 +625,7 @@ namespace org.GraphDefined.WWCP
             if (!_DisableAutoUploads)
             {
 
-                var result = FlushQueues(ActionType.update).Result;
+                var result = FlushQueues().Result;
 
                 //ToDo: Handle errors!
 
@@ -1636,11 +1636,11 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region FlushQueues(ActionType = update)
+        #region FlushQueues()
 
         public async Task<Acknowledgement>
 
-            FlushQueues(ActionType       ActionType      = WWCP.ActionType.update)
+            FlushQueues()
 
         {
 
@@ -1718,7 +1718,9 @@ namespace org.GraphDefined.WWCP
                 {
 
                     var EVSEsToAddTask = PushEVSEData(EVSEsToAddQueueCopy.Value,
-                                                      _RunId == 1 ? ActionType.fullLoad : ActionType);
+                                                      _RunId == 1
+                                                          ? ActionType.fullLoad
+                                                          : ActionType.insert);
 
                     EVSEsToAddTask.Wait();
 
@@ -1736,7 +1738,7 @@ namespace org.GraphDefined.WWCP
                     if (EVSEsWithoutNewEVSEs.Length > 0)
                     {
 
-                        var PushEVSEDataTask = PushEVSEData(EVSEsWithoutNewEVSEs, ActionType);
+                        var PushEVSEDataTask = PushEVSEData(EVSEsWithoutNewEVSEs, ActionType.update);
 
                         PushEVSEDataTask.Wait();
 
@@ -1748,7 +1750,9 @@ namespace org.GraphDefined.WWCP
                 {
 
                     var PushEVSEStatusTask = PushEVSEStatus(EVSEStatusQueueCopy.Value.Select(statuschange => statuschange.CurrentStatus).ToArray(),
-                                                            _RunId == 1 ? ActionType.fullLoad : ActionType);
+                                                            _RunId == 1
+                                                                ? ActionType.fullLoad
+                                                                : ActionType.update);
 
                     PushEVSEStatusTask.Wait();
 
