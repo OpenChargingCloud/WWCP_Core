@@ -705,8 +705,8 @@ namespace org.GraphDefined.WWCP
                         OperatorRoamingService.RemoveChargingStations(Timestamp, ChargingStations);
                     };
 
-
-
+                    SetRoamingProviderPriority(_CPORoamingProvider,
+                                               _EVSEOperatorRoamingProviderPriorities.Keys.Max() + 1);
 
                     CPORoamingProviderAddition.SendNotification(this, _CPORoamingProvider);
 
@@ -716,6 +716,23 @@ namespace org.GraphDefined.WWCP
             }
 
             throw new Exception("Could not create new roaming provider '" + OperatorRoamingService.Id + "'!");
+
+        }
+
+        #endregion
+
+        #region SetRoamingProviderPriority(EVSEOperatorRoamingProvider, Priority)
+
+        /// <summary>
+        /// Change the given EVSE operator roaming service priority.
+        /// </summary>
+        /// <param name="EVSEOperatorRoamingProvider">The EVSE operator roaming provider.</param>
+        /// <param name="Priority">The priority of the service.</param>
+        public Boolean SetRoamingProviderPriority(EVSEOperatorRoamingProvider  EVSEOperatorRoamingProvider,
+                                                  UInt32                       Priority)
+        {
+
+            return _EVSEOperatorRoamingProviderPriorities.TryAdd(Priority, EVSEOperatorRoamingProvider);
 
         }
 
@@ -815,12 +832,32 @@ namespace org.GraphDefined.WWCP
 
                     EMPRoamingProviderAddition.SendNotification(this, _EMPRoamingProvider);
 
+                    SetRoamingProviderPriority(_EMPRoamingProvider,
+                                               _eMobilityRoamingServices.Keys.Max() + 1);
+
                     return _EMPRoamingProvider;
 
                 }
             }
 
             throw new Exception("Could not create new roaming provider '" + eMobilityRoamingService.Id + "'!");
+
+        }
+
+        #endregion
+
+        #region SetRoamingProviderPriority(eMobilityRoamingService, Priority)
+
+        /// <summary>
+        /// Change the prioity of the given e-mobility roaming service.
+        /// </summary>
+        /// <param name="eMobilityRoamingService">The e-mobility roaming service.</param>
+        /// <param name="Priority">The priority of the service.</param>
+        public Boolean SetRoamingProviderPriority(IeMobilityRoamingService  eMobilityRoamingService,
+                                                  UInt32                    Priority)
+        {
+
+            return _eMobilityRoamingServices.TryAdd(Priority, eMobilityRoamingService);
 
         }
 
@@ -860,40 +897,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
-        #region RegisterRoamingProvider(Priority, EVSEOperatorRoamingProvider)
-
-        /// <summary>
-        /// Register the given EVSE operator roaming service.
-        /// </summary>
-        /// <param name="Priority">The priority of the service.</param>
-        /// <param name="EVSEOperatorRoamingProvider">The EVSE operator roaming provider.</param>
-        public Boolean RegisterRoamingProvider(UInt32                       Priority,
-                                               EVSEOperatorRoamingProvider  EVSEOperatorRoamingProvider)
-        {
-
-            return _EVSEOperatorRoamingProviderPriorities.TryAdd(Priority, EVSEOperatorRoamingProvider);
-
-        }
-
-        #endregion
-
-        #region RegisterRoamingProvider(Priority, eMobilityRoamingService)
-
-        /// <summary>
-        /// Register the given e-mobility roaming service.
-        /// </summary>
-        /// <param name="Priority">The priority of the service.</param>
-        /// <param name="eMobilityRoamingService">The e-mobility roaming service.</param>
-        public Boolean RegisterRoamingProvider(UInt32                    Priority,
-                                               IeMobilityRoamingService  eMobilityRoamingService)
-        {
-
-            return _eMobilityRoamingServices.TryAdd(Priority, eMobilityRoamingService);
-
-        }
-
-        #endregion
 
         #region RegisterPushEVSEStatusService(Priority, PushEVSEStatusServices)
 
