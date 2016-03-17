@@ -1466,7 +1466,7 @@ namespace org.GraphDefined.WWCP
                     _EVSE.OnNewChargingSession    += SendNewChargingSession;
                     _EVSE.OnNewChargeDetailRecord += SendNewChargeDetailRecord;
 
-                    OnSuccess.FailSafeInvoke(_EVSE);
+                    Configurator.FailSafeInvoke(_EVSE);
                     EVSEAddition.SendNotification(Now, this, _EVSE);
                     UpdateEVSEStatus(Now, _EVSE, new Timestamped<EVSEStatusType>(Now, EVSEStatusType.Unspecified), _EVSE.Status).Wait();
 
@@ -1490,7 +1490,7 @@ namespace org.GraphDefined.WWCP
 
                     }
 
-                    Configurator.FailSafeInvoke(_EVSE);
+                    OnSuccess.FailSafeInvoke(_EVSE);
 
                     return _EVSE;
 

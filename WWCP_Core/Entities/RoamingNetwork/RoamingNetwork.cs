@@ -706,7 +706,9 @@ namespace org.GraphDefined.WWCP
                     };
 
                     SetRoamingProviderPriority(_CPORoamingProvider,
-                                               _EVSEOperatorRoamingProviderPriorities.Keys.Max() + 1);
+                                               _EVSEOperatorRoamingProviderPriorities.Count > 0
+                                                   ? _EVSEOperatorRoamingProviderPriorities.Keys.Max() + 1
+                                                   : 10);
 
                     CPORoamingProviderAddition.SendNotification(this, _CPORoamingProvider);
 
@@ -731,6 +733,14 @@ namespace org.GraphDefined.WWCP
         public Boolean SetRoamingProviderPriority(EVSEOperatorRoamingProvider  EVSEOperatorRoamingProvider,
                                                   UInt32                       Priority)
         {
+
+            var a = _EVSEOperatorRoamingProviderPriorities.Where(_ => _.Value == EVSEOperatorRoamingProvider).FirstOrDefault();
+
+            if (a.Key > 0)
+            {
+                EVSEOperatorRoamingProvider b = null;
+                _EVSEOperatorRoamingProviderPriorities.TryRemove(a.Key, out b);
+            }
 
             return _EVSEOperatorRoamingProviderPriorities.TryAdd(Priority, EVSEOperatorRoamingProvider);
 
@@ -833,7 +843,9 @@ namespace org.GraphDefined.WWCP
                     EMPRoamingProviderAddition.SendNotification(this, _EMPRoamingProvider);
 
                     SetRoamingProviderPriority(_EMPRoamingProvider,
-                                               _eMobilityRoamingServices.Keys.Max() + 1);
+                                               _eMobilityRoamingServices.Count > 0
+                                                   ? _eMobilityRoamingServices.Keys.Max() + 1
+                                                   : 10);
 
                     return _EMPRoamingProvider;
 
@@ -1149,40 +1161,6 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever the aggregated admin status of any subordinated EVSE operator changed.
         /// </summary>
         public event OnEVSEOperatorAdminStatusChangedDelegate  OnEVSEOperatorAdminStatusChanged;
-
-        #endregion
-
-        #region ChargingPoolAddition
-
-        internal readonly IVotingNotificator<DateTime, EVSEOperator, ChargingPool, Boolean> ChargingPoolAddition;
-
-        /// <summary>
-        /// Called whenever an EVS pool will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, EVSEOperator, ChargingPool, Boolean> OnChargingPoolAddition
-        {
-            get
-            {
-                return ChargingPoolAddition;
-            }
-        }
-
-        #endregion
-
-        #region ChargingPoolRemoval
-
-        internal readonly IVotingNotificator<DateTime, EVSEOperator, ChargingPool, Boolean> ChargingPoolRemoval;
-
-        /// <summary>
-        /// Called whenever an EVS pool will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, EVSEOperator, ChargingPool, Boolean> OnChargingPoolRemoval
-        {
-            get
-            {
-                return ChargingPoolRemoval;
-            }
-        }
 
         #endregion
 
@@ -1506,6 +1484,40 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever a charging station admin status diff was received.
         /// </summary>
         public event OnChargingPoolAdminDiffDelegate OnChargingPoolAdminDiff;
+
+        #endregion
+
+        #region ChargingPoolAddition
+
+        internal readonly IVotingNotificator<DateTime, EVSEOperator, ChargingPool, Boolean> ChargingPoolAddition;
+
+        /// <summary>
+        /// Called whenever an EVS pool will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, EVSEOperator, ChargingPool, Boolean> OnChargingPoolAddition
+        {
+            get
+            {
+                return ChargingPoolAddition;
+            }
+        }
+
+        #endregion
+
+        #region ChargingPoolRemoval
+
+        internal readonly IVotingNotificator<DateTime, EVSEOperator, ChargingPool, Boolean> ChargingPoolRemoval;
+
+        /// <summary>
+        /// Called whenever an EVS pool will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, EVSEOperator, ChargingPool, Boolean> OnChargingPoolRemoval
+        {
+            get
+            {
+                return ChargingPoolRemoval;
+            }
+        }
 
         #endregion
 
