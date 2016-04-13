@@ -67,9 +67,7 @@
     <Compile Include="Commands\Reserve\CancelReservationResult.cs" />
     <Compile Include="Commands\SendCDR\OnSendCDRDelegate.cs" />
     <Compile Include="CommonTypes\ActionType.cs" />
-    <Compile Include="CommonTypes\Attributes\Mandatory.cs" />
     <Compile Include="CommonTypes\Attributes\InternalUseOnly.cs" />
-    <Compile Include="CommonTypes\Attributes\Optional.cs" />
     <Compile Include="CommonTypes\AuthInfoStatus.cs" />
     <Compile Include="CommonTypes\eMAIdStatus.cs" />
     <Compile Include="CommonTypes\eMAIdWithPIN.cs" />
