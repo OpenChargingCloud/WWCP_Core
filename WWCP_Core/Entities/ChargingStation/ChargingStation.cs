@@ -1418,7 +1418,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CreateNewEVSE(EVSEId, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateNewEVSE(EVSEId, Configurator = null, RemoteConfigurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new EVSE having the given
@@ -1426,12 +1426,14 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSEId">The unique identification of the new EVSE.</param>
         /// <param name="Configurator">An optional delegate to configure the new EVSE after its creation.</param>
+        /// <param name="RemoteConfigurator">An optional delegate to configure a new remote EVSE after its creation.</param>
         /// <param name="OnSuccess">An optional delegate called after successful creation of the EVSE.</param>
         /// <param name="OnError">An optional delegate for signaling errors.</param>
         public EVSE CreateNewEVSE(EVSE_Id                           EVSEId,
-                                  Action<EVSE>                      Configurator  = null,
-                                  Action<EVSE>                      OnSuccess     = null,
-                                  Action<ChargingStation, EVSE_Id>  OnError       = null)
+                                  Action<EVSE>                      Configurator        = null,
+                                  Action<IRemoteEVSE>               RemoteConfigurator  = null,
+                                  Action<EVSE>                      OnSuccess           = null,
+                                  Action<ChargingStation, EVSE_Id>  OnError             = null)
         {
 
             #region Initial checks
@@ -1487,6 +1489,8 @@ namespace org.GraphDefined.WWCP
                         _EVSE.RemoteEVSE.OnReservationCancelled  += _EVSE.SendOnReservationCancelled;
                         _EVSE.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession)        => _EVSE.ChargingSession             = ChargingSession;
                         _EVSE.RemoteEVSE.OnNewChargeDetailRecord += (Timestamp, RemoteEVSE, ChargeDetailRecord)     => _EVSE.SendNewChargeDetailRecord(Timestamp, RemoteEVSE, ChargeDetailRecord);
+
+                        RemoteConfigurator?.Invoke(_EVSE.RemoteEVSE);
 
                     }
 

@@ -1638,11 +1638,10 @@ namespace org.GraphDefined.WWCP
 
         #region FlushQueues()
 
-        public async Task<Acknowledgement>
-
-            FlushQueues()
-
+        public async Task<Acknowledgement> FlushQueues()
         {
+
+            #region Make a thread local copy of all data
 
             //ToDo: AsyncLocal is currently not implemented in Mono!
             //var EVSEDataQueueCopy   = new AsyncLocal<HashSet<EVSE>>();
@@ -1705,6 +1704,8 @@ namespace org.GraphDefined.WWCP
 
             }
 
+            #endregion
+
             // Upload status changes...
             if (EVSEsToAddQueueCopy.   Value != null ||
                 EVSEDataQueueCopy.     Value != null ||
@@ -1713,6 +1714,8 @@ namespace org.GraphDefined.WWCP
             {
 
                 // Use the events to evaluate if something went wrong!
+
+                #region Send new EVSE data
 
                 if (EVSEsToAddQueueCopy.Value.Count > 0)
                 {
@@ -1725,6 +1728,10 @@ namespace org.GraphDefined.WWCP
                     EVSEsToAddTask.Wait();
 
                 }
+
+                #endregion
+
+                #region Send changed EVSE data
 
                 if (EVSEDataQueueCopy.Value.Count > 0)
                 {
@@ -1746,6 +1753,10 @@ namespace org.GraphDefined.WWCP
 
                 }
 
+                #endregion
+
+                #region Send changed EVSE status
+
                 if (EVSEStatusQueueCopy.Value.Count > 0)
                 {
 
@@ -1757,6 +1768,8 @@ namespace org.GraphDefined.WWCP
                     PushEVSEStatusTask.Wait();
 
                 }
+
+                #endregion
 
             }
 
