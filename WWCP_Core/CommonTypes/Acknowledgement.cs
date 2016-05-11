@@ -54,13 +54,30 @@ namespace org.GraphDefined.WWCP
         private readonly String _Description;
 
         /// <summary>
-        /// An optional description.
+        /// An optional description of the result code.
         /// </summary>
         public String Description
         {
             get
             {
                 return _Description;
+            }
+        }
+
+        #endregion
+
+        #region AdditionalInfo
+
+        private readonly String _AdditionalInfo;
+
+        /// <summary>
+        /// An optional additional information.
+        /// </summary>
+        public String AdditionalInfo
+        {
+            get
+            {
+                return _AdditionalInfo;
             }
         }
 
@@ -74,13 +91,16 @@ namespace org.GraphDefined.WWCP
         /// Create a new acknowledgement.
         /// </summary>
         /// <param name="Result">The result of the operation.</param>
-        /// <param name="Description">The description of the result code.</param>
+        /// <param name="Description">An optional description of the result code.</param>
+        /// <param name="AdditionalInfo">An optional additional information.</param>
         public Acknowledgement(Boolean  Result,
-                               String   Description  = null)
+                               String   Description     = null,
+                               String   AdditionalInfo  = null)
         {
 
-            this._Result       = Result;
-            this._Description  = Description;
+            this._Result          = Result;
+            this._Description     = Description;
+            this._AdditionalInfo  = AdditionalInfo;
 
         }
 

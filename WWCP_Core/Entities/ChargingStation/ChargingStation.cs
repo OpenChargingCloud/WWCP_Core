@@ -252,6 +252,31 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region OSM_NodeId
+
+        private String _OSM_NodeId;
+
+        /// <summary>
+        /// OSM Node Id.
+        /// </summary>
+        [Optional]
+        public String OSM_NodeId
+        {
+
+            get
+            {
+                return _OSM_NodeId;
+            }
+
+            set
+            {
+                SetProperty<String>(ref _OSM_NodeId, value);
+            }
+
+        }
+
+        #endregion
+
         #region GeoLocation
 
         internal GeoCoordinate _GeoLocation;
@@ -467,6 +492,24 @@ namespace org.GraphDefined.WWCP
 
             }
 
+        }
+
+        #endregion
+
+        #region ParkingSpots
+
+        private List<ParkingSpot> _ParkingSpots;
+
+        /// <summary>
+        /// Parking spots reachable from this charging station.
+        /// </summary>
+        [Optional]
+        public List<ParkingSpot> ParkingSpots
+        {
+            get
+            {
+                return _ParkingSpots;
+            }
         }
 
         #endregion
@@ -1122,6 +1165,8 @@ namespace org.GraphDefined.WWCP
             this._UserComment                = new I18NString();
             this._ServiceProviderComment     = new I18NString();
             //this.GeoLocation                 = new GeoCoordinate();
+
+            this._ParkingSpots               = new List<ParkingSpot>();
 
             this._PaymentOptions             = new ReactiveSet<PaymentOptions>();
 

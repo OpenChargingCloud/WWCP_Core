@@ -41,7 +41,7 @@ namespace org.GraphDefined.WWCP
 
         private readonly        Object                  ServiceCheckLock;
         private readonly        Timer                   ServiceCheckTimer;
-        public  readonly static TimeSpan                DefaultServiceCheckEvery = TimeSpan.FromSeconds(10);
+        public  readonly static TimeSpan                DefaultServiceCheckEvery = TimeSpan.FromSeconds(5);
 
         private readonly        HashSet<EVSE>           EVSEsToAddQueue;
         private readonly        HashSet<EVSE>           EVSEDataUpdatesQueue;
@@ -625,7 +625,7 @@ namespace org.GraphDefined.WWCP
             if (!_DisableAutoUploads)
             {
 
-                var result = FlushQueues().Result;
+                FlushQueues().Wait();
 
                 //ToDo: Handle errors!
 
@@ -1638,7 +1638,7 @@ namespace org.GraphDefined.WWCP
 
         #region FlushQueues()
 
-        public async Task<Acknowledgement> FlushQueues()
+        public async Task FlushQueues()
         {
 
             #region Make a thread local copy of all data
@@ -1662,28 +1662,28 @@ namespace org.GraphDefined.WWCP
                         EVSEDataUpdatesQueue.  Count == 0 &&
                         EVSEStatusChangesQueue.Count == 0 &&
                         EVSEsToRemoveQueue.    Count == 0)
-                        return new Acknowledgement(true);
+                        return;
 
                     _RunId++;
 
-                    // Copy EVSEs to add
+                    // Copy 'EVSEs to add', remove originals...
                     EVSEsToAddQueueCopy.Value     = new HashSet<EVSE>(EVSEsToAddQueue);
                     EVSEsToAddQueue.Clear();
 
-                    // Copy EVSE data
+                    // Copy 'EVSEs to update', remove originals...
                     EVSEDataQueueCopy.Value       = new HashSet<EVSE>(EVSEDataUpdatesQueue);
                     EVSEDataUpdatesQueue.Clear();
 
-                    // Copy EVSE status
+                    // Copy 'EVSE status changes', remove originals...
                     EVSEStatusQueueCopy.Value     = new List<EVSEStatusChange>(EVSEStatusChangesQueue);
                     EVSEStatusChangesQueue.Clear();
 
-                    // Copy EVSEs to remove
+                    // Copy 'EVSEs to remove', remove originals...
                     EVSEsToRemoveQueueCopy.Value  = new HashSet<EVSE>(EVSEsToRemoveQueue);
                     EVSEsToRemoveQueue.Clear();
 
 
-                    // Stop the timer
+                    // Stop the timer. Will be rescheduled by next EVSE data/status change...
                     ServiceCheckTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
                 }
@@ -1771,9 +1771,11 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
+                //ToDo: Send removed EVSE data!
+
             }
 
-            return new Acknowledgement(true);
+            return;
 
         }
 

@@ -24,6 +24,7 @@ using System.Collections.Concurrent;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
@@ -48,7 +49,7 @@ namespace org.GraphDefined.WWCP
         private I18NString _Name;
 
         /// <summary>
-        /// The offical (multi-language) name of the ChargingPool.
+        /// The offical (multi-language) name of the parking spot.
         /// </summary>
         [Mandatory]
         public I18NString Name
@@ -73,7 +74,7 @@ namespace org.GraphDefined.WWCP
         private I18NString _Description;
 
         /// <summary>
-        /// An optional additional (multi-language) description of the ChargingPool.
+        /// An optional additional (multi-language) description of the parking spot.
         /// </summary>
         [Optional]
         public I18NString Description
@@ -93,27 +94,63 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region OSM_WayId
+
+        private String _OSM_WayId;
+
+        /// <summary>
+        /// OSM Node Id.
+        /// </summary>
+        [Optional]
+        public String OSM_WayId
+        {
+
+            get
+            {
+                return _OSM_WayId;
+            }
+
+            set
+            {
+                SetProperty<String>(ref _OSM_WayId, value);
+            }
+
+        }
+
+        #endregion
+
         #region Geometry
 
-        private String _Geometry;
+        private List<GeoCoordinate> _Geometry;
 
         /// <summary>
         /// An optional polygon geometry of the parking spot.
         /// </summary>
         [Optional]
-        public String Geometry
+        public List<GeoCoordinate> Geometry
         {
-
             get
             {
                 return _Geometry;
             }
+        }
 
-            set
+        #endregion
+
+        #region ChargingStations
+
+        private List<ChargingStation> _ChargingStations;
+
+        /// <summary>
+        /// Charging stations reachable from this parking spot.
+        /// </summary>
+        [Optional]
+        public List<ChargingStation> ChargingStations
+        {
+            get
             {
-                SetProperty<String>(ref _Geometry, value);
+                return _ChargingStations;
             }
-
         }
 
         #endregion
@@ -160,14 +197,16 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (Id == null)
-                throw new ArgumentNullException("Id", "The unique identification of the service plan must not be null!");
+                throw new ArgumentNullException(nameof(Id), "The unique identification of the parking spot must not be null!");
 
             #endregion
 
             #region Init data and properties
 
-            this.Name         = new I18NString(Languages.en, Id.ToString());
-            this.Description  = new I18NString();
+            this._Name              = new I18NString(Languages.en, Id.ToString());
+            this._Description       = new I18NString();
+            this._Geometry          = new List<GeoCoordinate>();
+            this._ChargingStations  = new List<ChargingStation>();
 
             #endregion
 

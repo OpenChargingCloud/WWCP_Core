@@ -5676,6 +5676,34 @@ namespace org.GraphDefined.WWCP
 
 
 
+        #region CreateNewChargingPool(ParkingSpotId = null, Configurator = null, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create and register a new parking spot having the given
+        /// unique parking spot identification.
+        /// </summary>
+        /// <param name="ParkingSpotId">The unique identification of the new charging pool.</param>
+        /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
+        public ParkingSpot CreateNewParkingSpot(ParkingSpot_Id                          ParkingSpotId  = null,
+                                                Action<ParkingSpot>                     Configurator   = null,
+                                                Action<ParkingSpot>                     OnSuccess      = null,
+                                                Action<EVSEOperator, ParkingSpot_Id>    OnError        = null)
+        {
+
+            var _ParkingSpot = new ParkingSpot(ParkingSpotId);
+
+            Configurator?.Invoke(_ParkingSpot);
+
+            return _ParkingSpot;
+
+        }
+
+        #endregion
+
+
+
         #region IEnumerable<IEntity> Members
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
