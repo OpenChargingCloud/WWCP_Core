@@ -152,6 +152,7 @@
     <Compile Include="Commands\Reserve\ReservationHandling.cs" />
     <Compile Include="Commands\Reserve\ReservationResult.cs" />
     <Compile Include="Entities\EVSE\RedirectedEVSEs.cs" />
+    <Compile Include="Helper\ASOAPClient.cs" />
     <Compile Include="Importer\WWCPImporter.cs" />
     <Compile Include="Importer\ImporterDefaults.cs" />
     <Compile Include="Entities\EVSE\EVSEStatusReport.cs" />
