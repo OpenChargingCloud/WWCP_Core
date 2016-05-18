@@ -57,6 +57,8 @@ namespace org.GraphDefined.WWCP
 
         #region IsOpen24Hours
 
+        private readonly Boolean _IsOpen24Hours;
+
         /// <summary>
         /// 24/7 open...
         /// </summary>
@@ -64,30 +66,30 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return !RegularOpenings.Any();
+                return _IsOpen24Hours;
             }
         }
 
         #endregion
 
-        #region Text
+        #region FreeText
 
-        private String _Text;
+        private String _FreeText;
 
         /// <summary>
         /// An additoonal free text.
         /// </summary>
-        public String Text
+        public String FreeText
         {
 
             get
             {
-                return _Text;
+                return _FreeText;
             }
 
             set
             {
-                _Text = value;
+                _FreeText = value;
             }
 
         }
@@ -98,15 +100,17 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region OpeningTime(Text = "")
+        #region OpeningTime(FreeText = "", IsOpen24Hours = true)
 
-        private OpeningTimes(String Text = "")
+        private OpeningTimes(String   FreeText       = "",
+                             Boolean  IsOpen24Hours  = true)
         {
 
             this._RegularOpenings      = new RegularHours[7];
             this._ExceptionalOpenings  = new List<ExceptionalPeriod>();
             this._ExceptionalClosings  = new List<ExceptionalPeriod>();
-            this._Text                 = Text;
+            this._FreeText             = FreeText;
+            this._IsOpen24Hours        = IsOpen24Hours;
 
         }
 
@@ -118,9 +122,9 @@ namespace org.GraphDefined.WWCP
                             DayOfWeek  ToWeekday,
                             HourMin    Begin,
                             HourMin    End,
-                            String     Text = "")
+                            String     FreeText = "")
 
-            : this(Text)
+            : this(FreeText, IsOpen24Hours: false)
 
         {
 
@@ -182,10 +186,11 @@ namespace org.GraphDefined.WWCP
         }
 
 
-        public static OpeningTimes FreeText(String Text)
+        public static OpeningTimes FromFreeText(String   Text,
+                                                Boolean  IsOpen24Hours = true)
         {
 
-            return new OpeningTimes(Text);
+            return new OpeningTimes(Text, IsOpen24Hours);
 
         }
 
@@ -207,33 +212,151 @@ namespace org.GraphDefined.WWCP
 
             OpeningTimes = null;
 
-            var match = Regex.Match(Text, "([a-zA-Z]+) - ([a-zA-Z]+) ([0-9]{2}:[0-9]{2})h - ([0-9]{2}:[0-9]{2})h");
+            var match = Regex.Match(Text, "([a-zA-Z]+) - ([a-zA-Z]+) (([0-9]{2}:[0-9]{2})h - ([0-9]{2}:[0-9]{2})h|closed)");
             if (!match.Success)
                 return false;
 
+            #region Parse weekdays
+
             DayOfWeek FromWeekday;
 
-            if (!Enum.TryParse<DayOfWeek>(match.Groups[1].Value, true, out FromWeekday))
-                return false;
+            switch (match.Groups[1].Value.ToLower())
+            {
+
+                case "mo":
+                case "mon":
+                case "monday":
+                    FromWeekday = DayOfWeek.Monday;
+                    break;
+
+                case "tu":
+                case "di":
+                case "tue":
+                case "tuesday":
+                    FromWeekday = DayOfWeek.Tuesday;
+                    break;
+
+                case "we":
+                case "mi":
+                case "wed":
+                case "wednesday":
+                    FromWeekday = DayOfWeek.Wednesday;
+                    break;
+
+                case "th":
+                case "do":
+                case "thu":
+                case "thursday":
+                    FromWeekday = DayOfWeek.Thursday;
+                    break;
+
+                case "fr":
+                case "fri":
+                case "friday":
+                    FromWeekday = DayOfWeek.Friday;
+                    break;
+
+                case "sa":
+                case "sat":
+                case "saturday":
+                    FromWeekday = DayOfWeek.Saturday;
+                    break;
+
+                case "su":
+                case "so":
+                case "sun":
+                case "sunday":
+                    FromWeekday = DayOfWeek.Sunday;
+                    break;
+
+                default:
+                    return false;
+
+            }
 
             DayOfWeek ToWeekday;
 
-            if (!Enum.TryParse<DayOfWeek>(match.Groups[2].Value, true, out ToWeekday))
-                return false;
+            switch (match.Groups[2].Value.ToLower())
+            {
+
+                case "mo":
+                case "mon":
+                case "monday":
+                    ToWeekday = DayOfWeek.Monday;
+                    break;
+
+                case "tu":
+                case "di":
+                case "tue":
+                case "tuesday":
+                    ToWeekday = DayOfWeek.Tuesday;
+                    break;
+
+                case "we":
+                case "mi":
+                case "wed":
+                case "wednesday":
+                    ToWeekday = DayOfWeek.Wednesday;
+                    break;
+
+                case "th":
+                case "do":
+                case "thu":
+                case "thursday":
+                    ToWeekday = DayOfWeek.Thursday;
+                    break;
+
+                case "fr":
+                case "fri":
+                case "friday":
+                    ToWeekday = DayOfWeek.Friday;
+                    break;
+
+                case "sa":
+                case "sat":
+                case "saturday":
+                    ToWeekday = DayOfWeek.Saturday;
+                    break;
+
+                case "su":
+                case "so":
+                case "sun":
+                case "sunday":
+                    ToWeekday = DayOfWeek.Sunday;
+                    break;
+
+                default:
+                    return false;
+
+            }
+
+            #endregion
+
+            #region Parse hours...
 
             HourMin Begin;
-
-            if (!HourMin.TryParse(match.Groups[3].Value, out Begin))
-                return false;
-
             HourMin End;
 
-            if (!HourMin.TryParse(match.Groups[4].Value, out End))
-                return false;
+            if (HourMin.TryParse(match.Groups[4].Value, out Begin) &&
+                HourMin.TryParse(match.Groups[5].Value, out End))
+            {
+                OpeningTimes = new OpeningTimes(FromWeekday, ToWeekday, Begin, End);
+                return true;
+            }
 
+            #endregion
 
-            OpeningTimes = new OpeningTimes(FromWeekday, ToWeekday, Begin, End);
-            return true;
+            #region ...or parse "closed"
+
+            else if (match.Groups[3].Value == "closed")
+            {
+                OpeningTimes = OpeningTimes.FromFreeText(Text, IsOpen24Hours: false);
+                return true;
+            }
+
+            #endregion
+
+            return false;
 
         }
 
@@ -247,7 +370,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return new OpeningTimes();
+                return new OpeningTimes(IsOpen24Hours: true);
             }
         }
 
@@ -340,7 +463,7 @@ namespace org.GraphDefined.WWCP
             if (IsOpen24Hours && OpeningTimes.IsOpen24Hours)
                 return true;
 
-            return Text.Equals(OpeningTimes.Text);
+            return FreeText.Equals(OpeningTimes.FreeText);
 
         }
 
@@ -355,7 +478,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override Int32 GetHashCode()
         {
-            return Text.GetHashCode();
+            return FreeText.GetHashCode();
         }
 
         #endregion
@@ -367,7 +490,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return IsOpen24Hours ? "24 hours" : Text;
+            return IsOpen24Hours ? "24 hours" : FreeText;
         }
 
         #endregion
