@@ -144,7 +144,7 @@
     <Compile Include="Entities\HubProvider_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkAdminStatusType.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkStatusType.cs" />
-    <Compile Include="Entities\EVSE\ChargingFacilities.cs" />
+    <Compile Include="Entities\EVSE\CurrentTypes.cs" />
     <Compile Include="Entities\EVSE\ChargingModes.cs" />
     <Compile Include="Entities\HubOperator_Id.cs" />
     <Compile Include="Commands\RemoteStartStop\OnRemoteStartDelegates.cs" />

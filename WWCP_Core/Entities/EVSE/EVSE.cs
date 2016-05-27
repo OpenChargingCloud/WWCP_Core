@@ -70,6 +70,9 @@ namespace org.GraphDefined.WWCP
 
         private I18NString _Description;
 
+        /// <summary>
+        /// An description of this EVSE.
+        /// </summary>
         [Mandatory]
         public I18NString Description
         {
@@ -98,12 +101,41 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region ChargingModes
+
+        private ReactiveSet<ChargingModes> _ChargingModes;
+
+        /// <summary>
+        /// Charging modes.
+        /// </summary>
+        [Mandatory]
+        public ReactiveSet<ChargingModes> ChargingModes
+        {
+
+            get
+            {
+                return _ChargingModes;
+            }
+
+            set
+            {
+
+                if (_ChargingModes != value)
+                    SetProperty(ref _ChargingModes, value);
+
+            }
+
+        }
+
+        #endregion
+
         #region AverageVoltage
 
         private Double _AverageVoltage;
 
         /// <summary>
-        /// Average voltage at the connector [Volt].
+        /// The average voltage.
         /// </summary>
         [Mandatory]
         public Double AverageVoltage
@@ -126,15 +158,71 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region MaxPower
+        #region CurrentType
 
-        private Double _MaxPower;
+        private CurrentTypes _CurrentType;
 
         /// <summary>
-        /// Max power at connector [Watt].
+        /// The type of the current.
         /// </summary>
         [Mandatory]
-        public Double MaxPower
+        public CurrentTypes CurrentType
+        {
+
+            get
+            {
+                return _CurrentType;
+            }
+
+            set
+            {
+
+                if (_CurrentType != value)
+                    SetProperty(ref _CurrentType, value);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxCurrent
+
+        private Double _MaxCurrent;
+
+        /// <summary>
+        /// The maximum current [Ampere].
+        /// </summary>
+        [Mandatory]
+        public Double MaxCurrent
+        {
+
+            get
+            {
+                return _MaxCurrent;
+            }
+
+            set
+            {
+
+                if (_MaxCurrent != value)
+                    SetProperty(ref _MaxCurrent, value);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxPower
+
+        private Double? _MaxPower;
+
+        /// <summary>
+        /// The maximum power [kWatt].
+        /// </summary>
+        [Optional]
+        public Double? MaxPower
         {
 
             get
@@ -156,13 +244,13 @@ namespace org.GraphDefined.WWCP
 
         #region RealTimePower
 
-        private Double _RealTimePower;
+        private Double? _RealTimePower;
 
         /// <summary>
-        /// Real-time power at connector [Watt].
+        /// The current real-time power delivery [Watt].
         /// </summary>
-        [Mandatory]
-        public Double RealTimePower
+        [Optional]
+        public Double? RealTimePower
         {
 
             get
@@ -182,129 +270,27 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region GuranteedMinPower
+        #region MaxCapacity
 
-        private Double _GuranteedMinPower;
-
-        /// <summary>
-        /// Guranteed min power at connector [Watt].
-        /// </summary>
-        [Mandatory]
-        public Double GuranteedMinPower
-        {
-
-            get
-            {
-                return _GuranteedMinPower;
-            }
-
-            set
-            {
-
-                if (_MaxPower != value)
-                    SetProperty(ref _GuranteedMinPower, value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region MaxCapacity_kWh
-
-        private Double? _MaxCapacity_kWh;
+        private Double? _MaxCapacity;
 
         /// <summary>
-        /// Max power capacity at the connector [kWh].
+        /// The maximum capacity [kWh].
         /// </summary>
         [Mandatory]
-        public Double? MaxCapacity_kWh
+        public Double? MaxCapacity
         {
 
             get
             {
-                return _MaxCapacity_kWh;
+                return _MaxCapacity;
             }
 
             set
             {
 
-                if (_MaxCapacity_kWh != value)
-                    SetProperty(ref _MaxCapacity_kWh, value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region ChargingModes
-
-        private ReactiveSet<ChargingModes> _ChargingModes;
-
-        [Mandatory]
-        public ReactiveSet<ChargingModes> ChargingModes
-        {
-
-            get
-            {
-                return _ChargingModes;
-            }
-
-            set
-            {
-
-                if (_ChargingModes != value)
-                    SetProperty(ref _ChargingModes, value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region ChargingFacilities
-
-        private ReactiveSet<ChargingFacilities> _ChargingFacilities;
-
-        [Mandatory]
-        public ReactiveSet<ChargingFacilities> ChargingFacilities
-        {
-
-            get
-            {
-                return _ChargingFacilities;
-            }
-
-            set
-            {
-
-                if (_ChargingFacilities != value)
-                    SetProperty(ref _ChargingFacilities, value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region SocketOutlets
-
-        private ReactiveSet<SocketOutlet> _SocketOutlets;
-
-        public ReactiveSet<SocketOutlet> SocketOutlets
-        {
-
-            get
-            {
-                return _SocketOutlets;
-            }
-
-            set
-            {
-
-                if (_SocketOutlets != value)
-                    SetProperty(ref _SocketOutlets, value);
+                if (_MaxCapacity != value)
+                    SetProperty(ref _MaxCapacity, value);
 
             }
 
@@ -333,6 +319,31 @@ namespace org.GraphDefined.WWCP
 
                 if (_PointOfDelivery != value)
                     SetProperty<String>(ref _PointOfDelivery, value);
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region SocketOutlets
+
+        private ReactiveSet<SocketOutlet> _SocketOutlets;
+
+        public ReactiveSet<SocketOutlet> SocketOutlets
+        {
+
+            get
+            {
+                return _SocketOutlets;
+            }
+
+            set
+            {
+
+                if (_SocketOutlets != value)
+                    SetProperty(ref _SocketOutlets, value);
 
             }
 
@@ -610,7 +621,6 @@ namespace org.GraphDefined.WWCP
 
             this._Description           = new I18NString();
             this._ChargingModes         = new ReactiveSet<ChargingModes>();
-            this._ChargingFacilities    = new ReactiveSet<ChargingFacilities>();
             this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
 
             this._StatusSchedule        = new StatusSchedule<EVSEStatusType>(MaxStatusListSize);
@@ -1267,9 +1277,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var OnRemoteStartLocal = OnRemoteStart;
-                if (OnRemoteStartLocal != null)
-                    OnRemoteStartLocal(Timestamp,
+                OnRemoteStart?.Invoke(Timestamp,
                                        this,
                                        EventTrackingId,
                                        _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,

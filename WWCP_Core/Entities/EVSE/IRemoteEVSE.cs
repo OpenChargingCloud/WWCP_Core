@@ -38,17 +38,58 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        EVSE_Id Id { get; }
+        /// <summary>
+        /// The unique identification of this EVSE.
+        /// </summary>
+        EVSE_Id                     Id                      { get; }
 
-        double AverageVoltage { get; set; }
-        ReactiveSet<ChargingFacilities> ChargingFacilities { get; set; }
-        ReactiveSet<ChargingModes> ChargingModes { get; set; }
-        I18NString Description { get; set; }
-        double GuranteedMinPower { get; set; }
-        double? MaxCapacity_kWh { get; set; }
-        double MaxPower { get; set; }
-        string PointOfDelivery { get; set; }
-        double RealTimePower { get; set; }
+        /// <summary>
+        /// An description of this EVSE.
+        /// </summary>
+        I18NString                  Description             { get; set; }
+
+
+        /// <summary>
+        /// Charging modes.
+        /// </summary>
+        ReactiveSet<ChargingModes>  ChargingModes           { get; set; }
+
+        /// <summary>
+        /// The average voltage.
+        /// </summary>
+        Double                      AverageVoltage          { get; set; }
+
+        /// <summary>
+        /// The type of the current.
+        /// </summary>
+        CurrentTypes                CurrentType             { get; set; }
+
+        /// <summary>
+        /// The maximum current [Ampere].
+        /// </summary>
+        Double                      MaxCurrent              { get; set; }
+
+        /// <summary>
+        /// The maximum power [kWatt].
+        /// </summary>
+        Double                      MaxPower                { get; set; }
+
+        /// <summary>
+        /// The current real-time power delivery [Watt].
+        /// </summary>
+        Double                      RealTimePower           { get; set; }
+
+        /// <summary>
+        /// The maximum capacity [kWh].
+        /// </summary>
+        Double?                     MaxCapacity             { get; set; }
+
+        /// <summary>
+        /// Point of delivery or meter identification.
+        /// </summary>
+        String                      PointOfDelivery         { get; set; }
+
+
         ReactiveSet<SocketOutlet> SocketOutlets { get; set; }
 
         #endregion

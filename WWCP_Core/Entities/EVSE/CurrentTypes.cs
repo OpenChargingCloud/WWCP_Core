@@ -19,40 +19,30 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// Charging modes.
+    /// The type of the current at an EVSE.
     /// </summary>
-    public enum ChargingModes
+    public enum CurrentTypes
     {
 
         /// <summary>
-        /// Unknown charging mode.
+        /// Unknown current type.
         /// </summary>
-        Unspecified,
+        Undefined,
 
         /// <summary>
-        /// IEC 61851-1 Mode 1
+        /// AC with 1 phase.
         /// </summary>
-        Mode_1,
+        AC_OnePhase,
 
         /// <summary>
-        /// IEC 61851-1 Mode 2
+        /// AC with 3 phases.
         /// </summary>
-        Mode_2,
+        AC_ThreePhases,
 
         /// <summary>
-        /// IEC 61851-1 Mode 3
+        /// Direct current.
         /// </summary>
-        Mode_3,
-
-        /// <summary>
-        /// IEC 61851-1 Mode 4
-        /// </summary>
-        Mode_4,
-
-        /// <summary>
-        /// CHAdeMO
-        /// </summary>
-        CHAdeMO,
+        DC
 
     }
 
