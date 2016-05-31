@@ -56,7 +56,7 @@
     <Compile Include="Commands\IGeneralServices.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStopDelegates.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStartDelegates.cs" />
-    <Compile Include="Commands\IeMobilityRoamingService.cs" />
+    <Compile Include="Commands\IEMPRoamingService.cs" />
     <Compile Include="Commands\IOperatorRoamingService.cs" />
     <Compile Include="Commands\PushDataAndStatus\AnonymousPushEVSEStatusService.cs" />
     <Compile Include="Commands\PushDataAndStatus\PushDataAndStatusDelegates.cs" />

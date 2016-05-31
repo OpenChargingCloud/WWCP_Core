@@ -2273,7 +2273,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CancelReservation(...ReservationId, Reason, ...)
+        #region CancelReservation(...ReservationId, Reason, ProviderId = null...)
 
         /// <summary>
         /// Try to remove the given charging reservation.
@@ -2283,12 +2283,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">A reason for this cancellation.</param>
+        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public async Task<CancelReservationResult> CancelReservation(DateTime                               Timestamp,
                                                                      CancellationToken                      CancellationToken,
                                                                      EventTracking_Id                       EventTrackingId,
                                                                      ChargingReservation_Id                 ReservationId,
                                                                      ChargingReservationCancellationReason  Reason,
+                                                                     EVSP_Id                                ProviderId    = null,
                                                                      TimeSpan?                              QueryTimeout  = null)
         {
 
@@ -2317,6 +2319,7 @@ namespace org.GraphDefined.WWCP
                                                          EventTrackingId,
                                                          ReservationId,
                                                          Reason,
+                                                         ProviderId,
                                                          QueryTimeout);
 
                 }

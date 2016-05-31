@@ -193,6 +193,7 @@ namespace org.GraphDefined.WWCP
                                                         EventTracking_Id                       EventTrackingId,
                                                         ChargingReservation_Id                 ReservationId,
                                                         ChargingReservationCancellationReason  Reason,
+                                                        EVSP_Id                                ProviderId    = null,
                                                         TimeSpan?                              QueryTimeout  = null);
 
         #endregion
