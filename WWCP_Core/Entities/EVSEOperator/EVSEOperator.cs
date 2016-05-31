@@ -2372,7 +2372,10 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (_RemoteEVSEOperator != null)
+            #region Try the remote EVSE operator...
+
+            if (_RemoteEVSEOperator != null &&
+               !_LocalEVSEIds.Contains(EVSEId))
             {
 
                 result = await _RemoteEVSEOperator.Reserve(Timestamp,
@@ -2404,7 +2407,15 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            if (result == null)
+            #endregion
+
+            #region ...else/or try local
+
+            if (_RemoteEVSEOperator == null ||
+                 result             == null ||
+                (result             != null &&
+                (result.Result      == ReservationResultType.UnknownEVSE ||
+                 result.Result      == ReservationResultType.Error)))
             {
 
                 var _ChargingPool = EVSEs.Where (evse => evse.Id == EVSEId).
@@ -2439,8 +2450,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            else
-                result = ReservationResult.UnknownEVSE;
+            #endregion
 
 
             #region Send OnEVSEReserved event
