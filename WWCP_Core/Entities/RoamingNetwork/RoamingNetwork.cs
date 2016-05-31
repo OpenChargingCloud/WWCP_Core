@@ -2747,23 +2747,21 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var OnReserveEVSELocal = OnReserveEVSE;
-                if (OnReserveEVSELocal != null)
-                    OnReserveEVSELocal(this,
-                                       Timestamp,
-                                       EventTrackingId,
-                                       Id,
-                                       ReservationId,
-                                       EVSEId,
-                                       StartTime,
-                                       Duration,
-                                       ProviderId,
-                                       eMAId,
-                                       ChargingProductId,
-                                       AuthTokens,
-                                       eMAIds,
-                                       PINs,
-                                       QueryTimeout);
+                OnReserveEVSE?.Invoke(this,
+                                      Timestamp,
+                                      EventTrackingId,
+                                      Id,
+                                      ReservationId,
+                                      EVSEId,
+                                      StartTime,
+                                      Duration,
+                                      ProviderId,
+                                      eMAId,
+                                      ChargingProductId,
+                                      AuthTokens,
+                                      eMAIds,
+                                      PINs,
+                                      QueryTimeout);
 
             }
             catch (Exception e)
@@ -2839,25 +2837,23 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var OnEVSEReservedLocal = OnEVSEReserved;
-                if (OnEVSEReservedLocal != null)
-                    OnEVSEReservedLocal(this,
-                                        Timestamp,
-                                        EventTrackingId,
-                                        Id,
-                                        ReservationId,
-                                        EVSEId,
-                                        StartTime,
-                                        Duration,
-                                        ProviderId,
-                                        eMAId,
-                                        ChargingProductId,
-                                        AuthTokens,
-                                        eMAIds,
-                                        PINs,
-                                        result,
-                                        Runtime.Elapsed,
-                                        QueryTimeout);
+                OnEVSEReserved?.Invoke(this,
+                                       Timestamp,
+                                       EventTrackingId,
+                                       Id,
+                                       ReservationId,
+                                       EVSEId,
+                                       StartTime,
+                                       Duration,
+                                       ProviderId,
+                                       eMAId,
+                                       ChargingProductId,
+                                       AuthTokens,
+                                       eMAIds,
+                                       PINs,
+                                       result,
+                                       Runtime.Elapsed,
+                                       QueryTimeout);
 
             }
             catch (Exception e)
