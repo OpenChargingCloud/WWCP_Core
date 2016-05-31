@@ -2273,7 +2273,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CancelReservation(...ReservationId, Reason, ProviderId = null...)
+        #region CancelReservation(...ReservationId, Reason, ProviderId = null, EVSEId = null, ...)
 
         /// <summary>
         /// Try to remove the given charging reservation.
@@ -2284,6 +2284,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">A reason for this cancellation.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
+        /// <param name="EVSEId">An optional identification of the EVSE.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public async Task<CancelReservationResult> CancelReservation(DateTime                               Timestamp,
                                                                      CancellationToken                      CancellationToken,
@@ -2291,6 +2292,7 @@ namespace org.GraphDefined.WWCP
                                                                      ChargingReservation_Id                 ReservationId,
                                                                      ChargingReservationCancellationReason  Reason,
                                                                      EVSP_Id                                ProviderId    = null,
+                                                                     EVSE_Id                                EVSEId        = null,
                                                                      TimeSpan?                              QueryTimeout  = null)
         {
 
@@ -2320,6 +2322,7 @@ namespace org.GraphDefined.WWCP
                                                          ReservationId,
                                                          Reason,
                                                          ProviderId,
+                                                         EVSEId,
                                                          QueryTimeout);
 
                 }

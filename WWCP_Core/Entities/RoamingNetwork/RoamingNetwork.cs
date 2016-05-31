@@ -243,22 +243,23 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this._AuthorizatorId                           = (AuthorizatorId == null) ? Authorizator_Id.Parse("GraphDefined E-Mobility Gateway") : AuthorizatorId;
-            this._Description                              = new I18NString();
+            this._AuthorizatorId                              = (AuthorizatorId == null) ? Authorizator_Id.Parse("GraphDefined E-Mobility Gateway") : AuthorizatorId;
+            this._Description                                 = new I18NString();
 
-            this._EVSEOperators                            = new ConcurrentDictionary<EVSEOperator_Id, EVSEOperator>();
-            this._EVServiceProviders                       = new ConcurrentDictionary<EVSP_Id, EVSP>();
-            this._EVSEOperatorRoamingProviders             = new ConcurrentDictionary<RoamingProvider_Id, EVSEOperatorRoamingProvider>();
-            this._EMPRoamingProviders                      = new ConcurrentDictionary<RoamingProvider_Id, EMPRoamingProvider>();
-            this._SearchProviders                          = new ConcurrentDictionary<NavigationServiceProvider_Id, NavigationServiceProvider>();
-            this._ChargingReservations                     = new ConcurrentDictionary<ChargingReservation_Id, EVSEOperator>();
-            this._IeMobilityServiceProviders               = new ConcurrentDictionary<UInt32, IeMobilityServiceProvider>();
-            this._EVSEOperatorRoamingProviderPriorities    = new ConcurrentDictionary<UInt32, EVSEOperatorRoamingProvider>();
-            this._eMobilityRoamingServices                 = new ConcurrentDictionary<UInt32, IEMPRoamingService>();
-            this._PushEVSEStatusToOperatorRoamingServices  = new ConcurrentDictionary<UInt32, IPushDataAndStatus>();
-            this._ChargingSessions_AtEVSEOperators         = new ConcurrentDictionary<ChargingSession_Id, EVSEOperator>();
-            this._ChargingSessions_AtEMPRoamingProviders   = new ConcurrentDictionary<ChargingSession_Id, EMPRoamingProvider>();
-            this._ChargeDetailRecords                      = new ConcurrentDictionary<ChargingSession_Id, ChargeDetailRecord>();
+            this._EVSEOperators                               = new ConcurrentDictionary<EVSEOperator_Id, EVSEOperator>();
+            this._EVServiceProviders                          = new ConcurrentDictionary<EVSP_Id, EVSP>();
+            this._EVSEOperatorRoamingProviders                = new ConcurrentDictionary<RoamingProvider_Id, EVSEOperatorRoamingProvider>();
+            this._EMPRoamingProviders                         = new ConcurrentDictionary<RoamingProvider_Id, EMPRoamingProvider>();
+            this._SearchProviders                             = new ConcurrentDictionary<NavigationServiceProvider_Id, NavigationServiceProvider>();
+            this._ChargingReservations_AtEVSEOperators        = new ConcurrentDictionary<ChargingReservation_Id, EVSEOperator>();
+            this._ChargingReservations_AtEMPRoamingProviders  = new ConcurrentDictionary<ChargingReservation_Id, EMPRoamingProvider>();
+            this._IeMobilityServiceProviders                  = new ConcurrentDictionary<UInt32, IeMobilityServiceProvider>();
+            this._EVSEOperatorRoamingProviderPriorities       = new ConcurrentDictionary<UInt32, EVSEOperatorRoamingProvider>();
+            this._eMobilityRoamingServices                    = new ConcurrentDictionary<UInt32, IEMPRoamingService>();
+            this._PushEVSEStatusToOperatorRoamingServices     = new ConcurrentDictionary<UInt32, IPushDataAndStatus>();
+            this._ChargingSessions_AtEVSEOperators            = new ConcurrentDictionary<ChargingSession_Id, EVSEOperator>();
+            this._ChargingSessions_AtEMPRoamingProviders      = new ConcurrentDictionary<ChargingSession_Id, EMPRoamingProvider>();
+            this._ChargeDetailRecords                         = new ConcurrentDictionary<ChargingSession_Id, ChargeDetailRecord>();
 
             #endregion
 
@@ -2632,7 +2633,8 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingReservations
 
-        private readonly ConcurrentDictionary<ChargingReservation_Id, EVSEOperator> _ChargingReservations;
+        private readonly ConcurrentDictionary<ChargingReservation_Id, EVSEOperator>        _ChargingReservations_AtEVSEOperators;
+        private readonly ConcurrentDictionary<ChargingReservation_Id, EMPRoamingProvider>  _ChargingReservations_AtEMPRoamingProviders;
 
         /// <summary>
         /// Return all current charging reservations.
@@ -2791,7 +2793,7 @@ namespace org.GraphDefined.WWCP
                                                     QueryTimeout);
 
                 if (result.Result == ReservationResultType.Success)
-                    _ChargingReservations.TryAdd(result.Reservation.Id, EVSEOperator);
+                    _ChargingReservations_AtEVSEOperators.TryAdd(result.Reservation.Id, EVSEOperator);
 
             }
 
@@ -2819,8 +2821,8 @@ namespace org.GraphDefined.WWCP
                                                              QueryTimeout);
 
 
-               //     if (result.Result == ReservationResultType.Success)
-               //         _ChargingSessions.TryAdd(result.Session.Id, _EVSEOperator);
+                    if (result.Result == ReservationResultType.Success)
+                        _ChargingReservations_AtEMPRoamingProviders.TryAdd(result.Reservation.Id, EMPRoamingService);
 
                 }
 
@@ -2973,7 +2975,7 @@ namespace org.GraphDefined.WWCP
                                                     QueryTimeout);
 
                 if (result.Result == ReservationResultType.Success)
-                    _ChargingReservations.TryAdd(result.Reservation.Id, EVSEOperator);
+                    _ChargingReservations_AtEVSEOperators.TryAdd(result.Reservation.Id, EVSEOperator);
 
             }
 
@@ -3126,7 +3128,7 @@ namespace org.GraphDefined.WWCP
                                                     QueryTimeout);
 
                 if (result.Result == ReservationResultType.Success)
-                    _ChargingReservations.TryAdd(result.Reservation.Id, EVSEOperator);
+                    _ChargingReservations_AtEVSEOperators.TryAdd(result.Reservation.Id, EVSEOperator);
 
             }
 
@@ -3204,7 +3206,7 @@ namespace org.GraphDefined.WWCP
 
             EVSEOperator _EVSEOperator = null;
 
-            if (_ChargingReservations.TryGetValue(ReservationId, out _EVSEOperator))
+            if (_ChargingReservations_AtEVSEOperators.TryGetValue(ReservationId, out _EVSEOperator))
                 return _EVSEOperator.TryGetReservationById(ReservationId, out Reservation);
 
             Reservation = null;
@@ -3215,7 +3217,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CancelReservation(...ReservationId, Reason, ProviderId = null...)
+        #region CancelReservation(...ReservationId, Reason, ProviderId = null, EVSEId = null, ...)
 
         /// <summary>
         /// Try to remove the given charging reservation.
@@ -3226,6 +3228,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">A reason for this cancellation.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
+        /// <param name="EVSEId">An optional identification of the EVSE.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public async Task<CancelReservationResult> CancelReservation(DateTime                               Timestamp,
                                                                      CancellationToken                      CancellationToken,
@@ -3233,41 +3236,94 @@ namespace org.GraphDefined.WWCP
                                                                      ChargingReservation_Id                 ReservationId,
                                                                      ChargingReservationCancellationReason  Reason,
                                                                      EVSP_Id                                ProviderId    = null,
+                                                                     EVSE_Id                                EVSEId        = null,
                                                                      TimeSpan?                              QueryTimeout  = null)
         {
 
             CancelReservationResult result         = null;
             EVSEOperator            _EVSEOperator  = null;
 
-            if (_ChargingReservations.TryRemove(ReservationId, out _EVSEOperator))
+
+            #region Check EVSE operator charging reservation lookup...
+
+            if (_ChargingReservations_AtEVSEOperators.TryRemove(ReservationId, out _EVSEOperator))
+            {
+
                 result = await _EVSEOperator.CancelReservation(Timestamp,
                                                                CancellationToken,
                                                                EventTrackingId,
                                                                ReservationId,
                                                                Reason,
                                                                ProviderId,
+                                                               EVSEId,
                                                                QueryTimeout);
 
-            else
+            }
+
+            #endregion
+
+            #region ...or check EMP roaming provider charging reservation lookup...
+
+            if (result        == null                                    ||
+                result.Result == CancelReservationResultType.UnknownEVSE ||
+                result.Result == CancelReservationResultType.UnknownReservationId)
             {
 
-                foreach (var __EVSEOperator in _EVSEOperators)
+                EMPRoamingProvider _EMPRoamingProvider = null;
+
+                if (_ChargingReservations_AtEMPRoamingProviders.TryRemove(ReservationId, out _EMPRoamingProvider))
                 {
 
-                    result = await __EVSEOperator.Value.CancelReservation(Timestamp,
-                                                                          CancellationToken,
-                                                                          EventTrackingId,
-                                                                          ReservationId,
-                                                                          Reason,
-                                                                          ProviderId,
-                                                                          QueryTimeout);
-
-                    if (result != null && result.Result != CancelReservationResultType.UnknownReservationId)
-                        break;
+                    result = await _EMPRoamingProvider.
+                                       CancelReservation(Timestamp,
+                                                         CancellationToken,
+                                                         EventTrackingId,
+                                                         ReservationId,
+                                                         Reason,
+                                                         ProviderId,
+                                                         EVSEId,
+                                                         QueryTimeout);
 
                 }
 
             }
+
+            #endregion
+
+            #region ...or try to check every EMP roaming provider...
+
+            if (result == null ||
+                result.Result == CancelReservationResultType.UnknownEVSE ||
+                result.Result == CancelReservationResultType.UnknownReservationId)
+            {
+
+                foreach (var EMPRoamingService in _EMPRoamingProviders.
+                                                      OrderBy(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Key).
+                                                      Select(EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Value))
+                {
+
+                    result = await EMPRoamingService.
+                                       CancelReservation(Timestamp,
+                                                         CancellationToken,
+                                                         EventTrackingId,
+                                                         ReservationId,
+                                                         Reason,
+                                                         ProviderId,
+                                                         EVSEId,
+                                                         QueryTimeout);
+
+                }
+
+            }
+
+            #endregion
+
+            #region ...or fail!
+
+            if (result == null)
+                result = CancelReservationResult.UnknownReservationId(ReservationId);
+
+            #endregion
 
 
             //var OnReservationCancelledLocal = OnReservationCancelled;
@@ -3304,7 +3360,7 @@ namespace org.GraphDefined.WWCP
 
             EVSEOperator _EVSEOperator = null;
 
-            _ChargingReservations.TryRemove(ReservationId, out _EVSEOperator);
+            _ChargingReservations_AtEVSEOperators.TryRemove(ReservationId, out _EVSEOperator);
 
             var OnReservationCancelledLocal = OnReservationCancelled;
             if (OnReservationCancelledLocal != null)
@@ -3898,6 +3954,7 @@ namespace org.GraphDefined.WWCP
                                                   QueryTimeout);
 
                 }
+
             }
 
             #endregion
