@@ -554,7 +554,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._EnergyMeterValues  = new List<Timestamped<double>>();
+            this._EnergyMeterValues  = new List<Timestamped<Double>>();
 
             this.SessionTime         = new StartEndDateTime(DateTime.Now);
 

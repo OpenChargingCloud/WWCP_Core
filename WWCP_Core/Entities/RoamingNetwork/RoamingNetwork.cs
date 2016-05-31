@@ -256,7 +256,8 @@ namespace org.GraphDefined.WWCP
             this._EVSEOperatorRoamingProviderPriorities    = new ConcurrentDictionary<UInt32, EVSEOperatorRoamingProvider>();
             this._eMobilityRoamingServices                 = new ConcurrentDictionary<UInt32, IEMPRoamingService>();
             this._PushEVSEStatusToOperatorRoamingServices  = new ConcurrentDictionary<UInt32, IPushDataAndStatus>();
-            this._ChargingSessions                         = new ConcurrentDictionary<ChargingSession_Id, EVSEOperator>();
+            this._ChargingSessions_AtEVSEOperators         = new ConcurrentDictionary<ChargingSession_Id, EVSEOperator>();
+            this._ChargingSessions_AtEMPRoamingProviders   = new ConcurrentDictionary<ChargingSession_Id, EMPRoamingProvider>();
             this._ChargeDetailRecords                      = new ConcurrentDictionary<ChargingSession_Id, ChargeDetailRecord>();
 
             #endregion
@@ -3436,7 +3437,7 @@ namespace org.GraphDefined.WWCP
 
 
                 if (result.Result == RemoteStartEVSEResultType.Success)
-                    _ChargingSessions.TryAdd(result.Session.Id, _EVSEOperator);
+                    _ChargingSessions_AtEVSEOperators.TryAdd(result.Session.Id, _EVSEOperator);
 
             }
 
@@ -3461,7 +3462,7 @@ namespace org.GraphDefined.WWCP
 
 
                     if (result.Result == RemoteStartEVSEResultType.Success)
-                        _ChargingSessions.TryAdd(result.Session.Id, _EVSEOperator);
+                        _ChargingSessions_AtEMPRoamingProviders.TryAdd(result.Session.Id, EMPRoamingService);
 
                 }
 
@@ -3593,7 +3594,7 @@ namespace org.GraphDefined.WWCP
 
 
                 if (result.Result == RemoteStartChargingStationResultType.Success)
-                    _ChargingSessions.TryAdd(result.Session.Id, _EVSEOperator);
+                    _ChargingSessions_AtEVSEOperators.TryAdd(result.Session.Id, _EVSEOperator);
 
             }
 
@@ -3715,17 +3716,15 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var OnRemoteStopLocal = OnRemoteStop;
-                if (OnRemoteStopLocal != null)
-                    OnRemoteStopLocal(this,
-                                      Timestamp,
-                                      EventTrackingId,
-                                      Id,
-                                      SessionId,
-                                      ReservationHandling,
-                                      ProviderId,
-                                      eMAId,
-                                      QueryTimeout);
+                OnRemoteStop?.Invoke(this,
+                                     Timestamp,
+                                     EventTrackingId,
+                                     Id,
+                                     SessionId,
+                                     ReservationHandling,
+                                     ProviderId,
+                                     eMAId,
+                                     QueryTimeout);
 
             }
             catch (Exception e)
@@ -3736,7 +3735,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (_ChargingSessions.TryRemove(SessionId, out _EVSEOperator))
+            if (_ChargingSessions_AtEVSEOperators.TryRemove(SessionId, out _EVSEOperator))
             {
 
                 result = await _EVSEOperator.
@@ -3762,19 +3761,17 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var OnRemoteStoppedLocal = OnRemoteStopped;
-                if (OnRemoteStoppedLocal != null)
-                    OnRemoteStoppedLocal(this,
-                                         Timestamp,
-                                         EventTrackingId,
-                                         Id,
-                                         SessionId,
-                                         ReservationHandling,
-                                         ProviderId,
-                                         eMAId,
-                                         QueryTimeout,
-                                         result,
-                                         Runtime.Elapsed);
+                OnRemoteStopped?.Invoke(this,
+                                        Timestamp,
+                                        EventTrackingId,
+                                        Id,
+                                        SessionId,
+                                        ReservationHandling,
+                                        ProviderId,
+                                        eMAId,
+                                        QueryTimeout,
+                                        result,
+                                        Runtime.Elapsed);
 
             }
             catch (Exception e)
@@ -3841,18 +3838,16 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var OnRemoteEVSEStopLocal = OnRemoteEVSEStop;
-                if (OnRemoteEVSEStopLocal != null)
-                    OnRemoteEVSEStopLocal(this,
-                                          Timestamp,
-                                          EventTrackingId,
-                                          Id,
-                                          EVSEId,
-                                          SessionId,
-                                          ReservationHandling,
-                                          ProviderId,
-                                          eMAId,
-                                          QueryTimeout);
+                OnRemoteEVSEStop?.Invoke(this,
+                                         Timestamp,
+                                         EventTrackingId,
+                                         Id,
+                                         EVSEId,
+                                         SessionId,
+                                         ReservationHandling,
+                                         ProviderId,
+                                         eMAId,
+                                         QueryTimeout);
 
             }
             catch (Exception e)
@@ -3863,7 +3858,9 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (_ChargingSessions.TryRemove(SessionId, out _EVSEOperator))
+            #region Check EVSE operator charging session lookup...
+
+            if (_ChargingSessions_AtEVSEOperators.TryRemove(SessionId, out _EVSEOperator))
             {
 
                 result = await _EVSEOperator.
@@ -3879,7 +3876,41 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            if (result == null)
+            #endregion
+
+            #region ...or check EMP roaming provider charging session lookup...
+
+            if (result        == null                                 ||
+                result.Result == RemoteStopEVSEResultType.UnknownEVSE ||
+                result.Result == RemoteStopEVSEResultType.InvalidSessionId)
+            {
+
+                EMPRoamingProvider _EMPRoamingProvider = null;
+
+                if (_ChargingSessions_AtEMPRoamingProviders.TryRemove(SessionId, out _EMPRoamingProvider))
+                {
+
+                    result = await _EMPRoamingProvider.
+                                       RemoteStop(Timestamp,
+                                                  CancellationToken,
+                                                  EventTrackingId,
+                                                  EVSEId,
+                                                  SessionId,
+                                                  ReservationHandling,
+                                                  ProviderId,
+                                                  eMAId,
+                                                  QueryTimeout);
+
+                }
+            }
+
+            #endregion
+
+            #region ...or try to get the EVSE operator from the EVSE identification...
+
+            if (result        == null                                 ||
+                result.Result == RemoteStopEVSEResultType.UnknownEVSE ||
+                result.Result == RemoteStopEVSEResultType.InvalidSessionId)
             {
 
                 _EVSEOperator = GetEVSEOperatorbyId(EVSEId.OperatorId);
@@ -3897,7 +3928,13 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            if (result == null || result.Result == RemoteStopEVSEResultType.UnknownEVSE)
+            #endregion
+
+            #region ...or try to check every EMP roaming provider...
+
+            if (result        == null                                 ||
+                result.Result == RemoteStopEVSEResultType.UnknownEVSE ||
+                result.Result == RemoteStopEVSEResultType.InvalidSessionId)
             {
 
                 foreach (var EMPRoamingService in _EMPRoamingProviders.
@@ -3920,8 +3957,14 @@ namespace org.GraphDefined.WWCP
 
             }
 
+            #endregion
+
+            #region ...or fail!
+
             if (result == null)
                 result = RemoteStopEVSEResult.InvalidSessionId(SessionId);
+
+            #endregion
 
 
             #region Send OnRemoteEVSEStopped event
@@ -3931,20 +3974,18 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var OnRemoteEVSEStoppedLocal = OnRemoteEVSEStopped;
-                if (OnRemoteEVSEStoppedLocal != null)
-                    OnRemoteEVSEStoppedLocal(this,
-                                             Timestamp,
-                                             EventTrackingId,
-                                             Id,
-                                             EVSEId,
-                                             SessionId,
-                                             ReservationHandling,
-                                             ProviderId,
-                                             eMAId,
-                                             QueryTimeout,
-                                             result,
-                                             Runtime.Elapsed);
+                OnRemoteEVSEStopped?.Invoke(this,
+                                            Timestamp,
+                                            EventTrackingId,
+                                            Id,
+                                            EVSEId,
+                                            SessionId,
+                                            ReservationHandling,
+                                            ProviderId,
+                                            eMAId,
+                                            QueryTimeout,
+                                            result,
+                                            Runtime.Elapsed);
 
             }
             catch (Exception e)
@@ -4011,18 +4052,16 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var OnRemoteChargingStationStopLocal = OnRemoteChargingStationStop;
-                if (OnRemoteChargingStationStopLocal != null)
-                    OnRemoteChargingStationStopLocal(this,
-                                                     Timestamp,
-                                                     EventTrackingId,
-                                                     Id,
-                                                     ChargingStationId,
-                                                     SessionId,
-                                                     ReservationHandling,
-                                                     ProviderId,
-                                                     eMAId,
-                                                     QueryTimeout);
+                OnRemoteChargingStationStop?.Invoke(this,
+                                                    Timestamp,
+                                                    EventTrackingId,
+                                                    Id,
+                                                    ChargingStationId,
+                                                    SessionId,
+                                                    ReservationHandling,
+                                                    ProviderId,
+                                                    eMAId,
+                                                    QueryTimeout);
 
             }
             catch (Exception e)
@@ -4033,7 +4072,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (_ChargingSessions.TryGetValue(SessionId, out _EVSEOperator))
+            if (_ChargingSessions_AtEVSEOperators.TryGetValue(SessionId, out _EVSEOperator))
             {
 
                 result = await _EVSEOperator.
@@ -4078,20 +4117,18 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var OnRemoteChargingStationStoppedLocal = OnRemoteChargingStationStopped;
-                if (OnRemoteChargingStationStoppedLocal != null)
-                    OnRemoteChargingStationStoppedLocal(this,
-                                                        Timestamp,
-                                                        EventTrackingId,
-                                                        Id,
-                                                        ChargingStationId,
-                                                        SessionId,
-                                                        ReservationHandling,
-                                                        ProviderId,
-                                                        eMAId,
-                                                        QueryTimeout,
-                                                        result,
-                                                        Runtime.Elapsed);
+                OnRemoteChargingStationStopped?.Invoke(this,
+                                                       Timestamp,
+                                                       EventTrackingId,
+                                                       Id,
+                                                       ChargingStationId,
+                                                       SessionId,
+                                                       ReservationHandling,
+                                                       ProviderId,
+                                                       eMAId,
+                                                       QueryTimeout,
+                                                       result,
+                                                       Runtime.Elapsed);
 
             }
             catch (Exception e)
@@ -5382,7 +5419,8 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingSessions
 
-        private readonly ConcurrentDictionary<ChargingSession_Id, EVSEOperator> _ChargingSessions;
+        private readonly ConcurrentDictionary<ChargingSession_Id, EVSEOperator>        _ChargingSessions_AtEVSEOperators;
+        private readonly ConcurrentDictionary<ChargingSession_Id, EMPRoamingProvider>  _ChargingSessions_AtEMPRoamingProviders;
 
         /// <summary>
         /// Return all current charging sessions.
@@ -5425,7 +5463,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (!_ChargingSessions.ContainsKey(ChargingSession.Id))
+            if (!_ChargingSessions_AtEVSEOperators.ContainsKey(ChargingSession.Id))
             {
 
                 DebugX.LogT("Registered external charging session '" + ChargingSession.Id + "'!");
