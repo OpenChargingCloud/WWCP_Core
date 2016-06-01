@@ -185,45 +185,6 @@ namespace org.GraphDefined.WWCP
                                                    ChargeDetailRecord  ChargeDetailRecord,
                                                    TimeSpan?           QueryTimeout = null);
 
-
-        /// <summary>
-        /// Send a charge detail record.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        /// <param name="EVSEId">The EVSE identification.</param>
-        /// <param name="SessionId">The OICP session identification from the Authorize Start request.</param>
-        /// <param name="PartnerProductId">The ev charging product identification.</param>
-        /// <param name="SessionStart">The session start timestamp.</param>
-        /// <param name="SessionEnd">The session end timestamp.</param>
-        /// <param name="Identification">An identification.</param>
-        /// <param name="ChargingStart">An optional charging start timestamp.</param>
-        /// <param name="ChargingEnd">An optional charging end timestamp.</param>
-        /// <param name="MeterValueStart">An optional initial value of the energy meter.</param>
-        /// <param name="MeterValueEnd">An optional final value of the energy meter.</param>
-        /// <param name="MeterValuesInBetween">An optional enumeration of meter values during the charging session.</param>
-        /// <param name="ConsumedEnergy">The optional amount of consumed energy.</param>
-        /// <param name="MeteringSignature">An optional signature for the metering values.</param>
-        /// <param name="QueryTimeout">An optional timeout for this request.</param>
-        Task<SendCDRResult> SendChargeDetailRecord(DateTime             Timestamp,
-                                                   CancellationToken    CancellationToken,
-                                                   EventTracking_Id     EventTrackingId,
-                                                   EVSE_Id              EVSEId,
-                                                   ChargingSession_Id   SessionId,
-                                                   ChargingProduct_Id   PartnerProductId,
-                                                   DateTime             SessionStart,
-                                                   DateTime             SessionEnd,
-                                                   AuthInfo             Identification,
-                                                   DateTime?            ChargingStart         = null,
-                                                   DateTime?            ChargingEnd           = null,
-                                                   Double?              MeterValueStart       = null,
-                                                   Double?              MeterValueEnd         = null,
-                                                   IEnumerable<Double>  MeterValuesInBetween  = null,
-                                                   Double?              ConsumedEnergy        = null,
-                                                   String               MeteringSignature     = null,
-                                                   TimeSpan?            QueryTimeout          = null);
-
         #endregion
 
     }
