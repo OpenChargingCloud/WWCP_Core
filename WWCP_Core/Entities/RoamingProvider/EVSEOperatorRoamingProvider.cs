@@ -1910,6 +1910,8 @@ namespace org.GraphDefined.WWCP
         public async Task FlushServiceQueues()
         {
 
+            Console.WriteLine("ServiceCheck, as every " + _ServiceCheckEvery + "ms!");
+
             #region Make a thread local copy of all data
 
             //ToDo: AsyncLocal is currently not implemented in Mono!
@@ -1975,6 +1977,14 @@ namespace org.GraphDefined.WWCP
                 {
                     Monitor.Exit(ServiceCheckLock);
                 }
+
+            }
+
+            else
+            {
+
+                Console.WriteLine("ServiceCheckLock missed!");
+                ServiceCheckTimer.Change(_ServiceCheckEvery, Timeout.Infinite);
 
             }
 
@@ -2101,6 +2111,8 @@ namespace org.GraphDefined.WWCP
         public async Task FlushStatusQueues()
         {
 
+            Console.WriteLine("StatusCheck, as every " + _StatusCheckEvery + "ms!");
+
             #region Make a thread local copy of all data
 
             //ToDo: AsyncLocal is currently not implemented in Mono!
@@ -2129,7 +2141,7 @@ namespace org.GraphDefined.WWCP
                     EVSEStatusChangesFastQueue.Clear();
 
                     // Stop the timer. Will be rescheduled by next EVSE status change...
-                    ServiceCheckTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                    StatusCheckTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
                 }
                 catch (Exception e)
@@ -2146,6 +2158,14 @@ namespace org.GraphDefined.WWCP
                 {
                     Monitor.Exit(ServiceCheckLock);
                 }
+
+            }
+
+            else
+            {
+
+                Console.WriteLine("StatusCheckLock missed!");
+                StatusCheckTimer.Change(_StatusCheckEvery, Timeout.Infinite);
 
             }
 
