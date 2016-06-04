@@ -5561,7 +5561,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-
         #region CreateNewChargingPool(ParkingSpotId = null, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
