@@ -570,9 +570,7 @@ namespace org.GraphDefined.WWCP
             if (result)
             {
 
-                this.OnChargingStationRemoval.OnNotification += (Timestamp, ChargingStations) => {
-                    eMobilityServiceProvider.RemoveChargingStations(Timestamp, ChargingStations);
-                };
+                this.OnChargingStationRemoval.OnNotification += eMobilityServiceProvider.RemoveChargingStations;
 
             }
 
@@ -675,16 +673,16 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (OperatorRoamingService.Id == null)
-                throw new ArgumentNullException("OperatorRoamingService.Id",    "The given roaming provider identification must not be null!");
+                throw new ArgumentNullException(nameof(OperatorRoamingService.Id),    "The given roaming provider identification must not be null!");
 
             if (OperatorRoamingService.Name.IsNullOrEmpty())
-                throw new ArgumentNullException("OperatorRoamingService.Name",  "The given roaming provider name must not be null or empty!");
+                throw new ArgumentNullException(nameof(OperatorRoamingService.Name),  "The given roaming provider name must not be null or empty!");
 
             if (_EVSEOperatorRoamingProviders.ContainsKey(OperatorRoamingService.Id))
                 throw new RoamingProviderAlreadyExists(OperatorRoamingService.Id, this.Id);
 
             if (OperatorRoamingService.RoamingNetworkId != this.Id)
-                throw new ArgumentException("The given operator roaming service is not part of this roaming network!", "OperatorRoamingService");
+                throw new ArgumentException("The given operator roaming service is not part of this roaming network!", nameof(OperatorRoamingService));
 
             #endregion
 
@@ -703,9 +701,7 @@ namespace org.GraphDefined.WWCP
                 if (_EVSEOperatorRoamingProviders.TryAdd(OperatorRoamingService.Id, _CPORoamingProvider))
                 {
 
-                    this.OnChargingStationRemoval.OnNotification += (Timestamp, ChargingStations) => {
-                        OperatorRoamingService.RemoveChargingStations(Timestamp, ChargingStations);
-                    };
+                    this.OnChargingStationRemoval.OnNotification += OperatorRoamingService.RemoveChargingStations;
 
                     SetRoamingProviderPriority(_CPORoamingProvider,
                                                _EVSEOperatorRoamingProviderPriorities.Count > 0
@@ -736,7 +732,7 @@ namespace org.GraphDefined.WWCP
                                                   UInt32                       Priority)
         {
 
-            var a = _EVSEOperatorRoamingProviderPriorities.Where(_ => _.Value == EVSEOperatorRoamingProvider).FirstOrDefault();
+            var a = _EVSEOperatorRoamingProviderPriorities.FirstOrDefault(_ => _.Value == EVSEOperatorRoamingProvider);
 
             if (a.Key > 0)
             {
@@ -817,16 +813,16 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (eMobilityRoamingService.Id == null)
-                throw new ArgumentNullException("eMobilityRoamingService.Id",    "The given roaming provider identification must not be null!");
+                throw new ArgumentNullException(nameof(eMobilityRoamingService.Id),    "The given roaming provider identification must not be null!");
 
             if (eMobilityRoamingService.Name.IsNullOrEmpty())
-                throw new ArgumentNullException("eMobilityRoamingService.Name",  "The given roaming provider name must not be null or empty!");
+                throw new ArgumentNullException(nameof(eMobilityRoamingService.Name),  "The given roaming provider name must not be null or empty!");
 
             if (_EMPRoamingProviders.ContainsKey(eMobilityRoamingService.Id))
                 throw new RoamingProviderAlreadyExists(eMobilityRoamingService.Id, this.Id);
 
             if (eMobilityRoamingService.RoamingNetworkId != this.Id)
-                throw new ArgumentException("The given operator roaming service is not part of this roaming network!", "eMobilityRoamingService");
+                throw new ArgumentException("The given operator roaming service is not part of this roaming network!", nameof(eMobilityRoamingService));
 
             #endregion
 
@@ -2822,7 +2818,12 @@ namespace org.GraphDefined.WWCP
 
 
                     if (result.Result == ReservationResultType.Success)
-                        _ChargingReservations_AtEMPRoamingProviders.TryAdd(result.Reservation.Id, EMPRoamingService);
+                    {
+
+                        if (result.Reservation != null)
+                            _ChargingReservations_AtEMPRoamingProviders.TryAdd(result.Reservation.Id, EMPRoamingService);
+
+                    }
 
                 }
 
