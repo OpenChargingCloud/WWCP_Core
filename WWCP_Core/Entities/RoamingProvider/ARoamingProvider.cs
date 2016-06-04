@@ -43,13 +43,7 @@ namespace org.GraphDefined.WWCP
         /// The offical (multi-language) name of the roaming provider.
         /// </summary>
         [Mandatory]
-        public I18NString Name
-        {
-            get
-            {
-                return _Name;
-            }
-        }
+        public I18NString Name => _Name;
 
         #endregion
 
@@ -70,21 +64,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RoamingNetworkId
-
-        /// <summary>
-        /// The associated EV Roaming Network of the Electric Vehicle Supply Equipment Operator.
-        /// </summary>
-        public RoamingNetwork_Id RoamingNetworkId
-        {
-            get
-            {
-                return _RoamingNetwork.Id;
-            }
-        }
-
-        #endregion
-
         #endregion
 
         #region Constructor(s)
@@ -94,10 +73,8 @@ namespace org.GraphDefined.WWCP
         /// having the given unique roaming provider identification and name.
         /// </summary>
         /// <param name="Id">The unique identification of the roaming provider.</param>
-        /// <param name="Name">The offical (multi-language) name of the roaming provider.
+        /// <param name="Name">The offical (multi-language) name of the roaming provider.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        /// <param name="OperatorRoamingService">The attached local or remote EVSE operator roaming service.</param>
-        /// <param name="eMobilityRoamingService">The attached local or remote e-mobility roaming service.</param>
         internal ARoamingProvider(RoamingProvider_Id        Id,
                                   I18NString                Name,
                                   RoamingNetwork            RoamingNetwork)

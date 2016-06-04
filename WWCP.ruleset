@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Rules for WWCP" Description="Code analysis rules for WWCP" ToolsVersion="14.0">
+  <IncludeAll Action="Warning" />
+  <Rules AnalyzerId="Pihrtsoft.CodeAnalysis.CSharp" RuleNamespace="Pihrtsoft.CodeAnalysis.CSharp">
+    <Rule Id="RCS1029" Action="None" />
+    <Rule Id="RCS1036" Action="None" />
+    <Rule Id="RCS1046" Action="None" />
+    <Rule Id="RCS1060" Action="None" />
+  </Rules>
+</RuleSet>

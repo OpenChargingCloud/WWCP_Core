@@ -48,7 +48,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The hosting WWCP roaming network.
         /// </summary>
-        RoamingNetwork_Id  RoamingNetworkId  { get; }
+        RoamingNetwork     RoamingNetwork    { get; }
 
         #endregion
 
@@ -135,23 +135,6 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever a charge detail record had been sent.
         /// </summary>
         event OnChargeDetailRecordSentDelegate  OnChargeDetailRecordSent;
-
-        #endregion
-
-
-        // Server methods
-
-        #region OnRemoteStart/-Stop
-
-        /// <summary>
-        /// An event sent whenever a remote start command was received.
-        /// </summary>
-        event OnRemoteStartEVSEDelegate OnRemoteStart;
-
-        /// <summary>
-        /// An event sent whenever a remote stop command was received.
-        /// </summary>
-        event OnRemoteStopEVSEDelegate  OnRemoteStop;
 
         #endregion
 

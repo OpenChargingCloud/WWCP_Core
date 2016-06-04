@@ -666,6 +666,7 @@ namespace org.GraphDefined.WWCP
         public EVSEOperatorRoamingProvider CreateNewRoamingProvider(IOperatorRoamingService              OperatorRoamingService,
                                                                     Func<EVSE, Boolean>                  IncludeEVSEs        = null,
                                                                     TimeSpan?                            ServiceCheckEvery   = null,
+                                                                    TimeSpan?                            StatusCheckEvery    = null,
                                                                     Boolean                              DisableAutoUploads  = false,
                                                                     Action<EVSEOperatorRoamingProvider>  Configurator        = null)
         {
@@ -681,7 +682,7 @@ namespace org.GraphDefined.WWCP
             if (_EVSEOperatorRoamingProviders.ContainsKey(OperatorRoamingService.Id))
                 throw new RoamingProviderAlreadyExists(OperatorRoamingService.Id, this.Id);
 
-            if (OperatorRoamingService.RoamingNetworkId != this.Id)
+            if (OperatorRoamingService.RoamingNetwork.Id != this.Id)
                 throw new ArgumentException("The given operator roaming service is not part of this roaming network!", nameof(OperatorRoamingService));
 
             #endregion
@@ -692,6 +693,7 @@ namespace org.GraphDefined.WWCP
                                                                       OperatorRoamingService,
                                                                       IncludeEVSEs,
                                                                       ServiceCheckEvery,
+                                                                      StatusCheckEvery,
                                                                       DisableAutoUploads);
 
             Configurator.FailSafeInvoke(_CPORoamingProvider);
@@ -2764,7 +2766,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnReserveEVSE));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnReserveEVSE));
             }
 
             #endregion
@@ -2861,7 +2863,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnEVSEReserved));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnEVSEReserved));
             }
 
             #endregion
@@ -2951,7 +2953,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnReserveChargingStation));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnReserveChargingStation));
             }
 
             #endregion
@@ -3014,7 +3016,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnChargingStationReserved));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnChargingStationReserved));
             }
 
             #endregion
@@ -3104,7 +3106,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnReserveChargingPool));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnReserveChargingPool));
             }
 
             #endregion
@@ -3167,7 +3169,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnChargingPoolReserved));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnChargingPoolReserved));
             }
 
             #endregion
@@ -3468,7 +3470,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnRemoteEVSEStart));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteEVSEStart));
             }
 
             #endregion
@@ -3549,7 +3551,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnRemoteEVSEStarted));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteEVSEStarted));
             }
 
             #endregion
@@ -3625,7 +3627,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnRemoteChargingStationStart));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteChargingStationStart));
             }
 
             #endregion
@@ -3677,7 +3679,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnRemoteChargingStationStarted));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteChargingStationStarted));
             }
 
             #endregion
@@ -3782,7 +3784,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnRemoteStop));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteStop));
             }
 
             #endregion
@@ -3829,7 +3831,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnRemoteStopped));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteStopped));
             }
 
             #endregion
@@ -3905,7 +3907,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnRemoteEVSEStop));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteEVSEStop));
             }
 
             #endregion
@@ -4044,7 +4046,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnRemoteEVSEStopped));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteEVSEStopped));
             }
 
             #endregion
@@ -4120,7 +4122,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnRemoteChargingStationStop));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteChargingStationStop));
             }
 
             #endregion
@@ -4187,7 +4189,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnRemoteChargingStationStopped));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteChargingStationStopped));
             }
 
             #endregion
@@ -4260,7 +4262,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnAuthorizeStart));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeStart));
             }
 
             #endregion
@@ -4391,7 +4393,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnAuthorizeStarted));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeStarted));
             }
 
             #endregion
@@ -4466,7 +4468,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnAuthorizeEVSEStart));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeEVSEStart));
             }
 
             #endregion
@@ -4604,7 +4606,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnAuthorizeEVSEStarted));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeEVSEStarted));
             }
 
             #endregion
@@ -4679,7 +4681,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnAuthorizeChargingStationStart));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeChargingStationStart));
             }
 
             #endregion
@@ -4815,7 +4817,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnAuthorizeChargingStationStarted));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeChargingStationStarted));
             }
 
             #endregion
@@ -4927,7 +4929,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnAuthorizeStop));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeStop));
             }
 
             #endregion
@@ -5037,7 +5039,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnAuthorizeStopped));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeStopped));
             }
 
             #endregion
@@ -5110,7 +5112,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnAuthorizeEVSEStop));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeEVSEStop));
             }
 
             #endregion
@@ -5225,7 +5227,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnAuthorizeEVSEStopped));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeEVSEStopped));
             }
 
             #endregion
@@ -5298,7 +5300,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnAuthorizeChargingStationStop));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeChargingStationStop));
             }
 
             #endregion
@@ -5413,7 +5415,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnAuthorizeChargingStationStopped));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeChargingStationStopped));
             }
 
             #endregion
@@ -5625,7 +5627,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Timestamp">The timestamp of the request.</param>
         /// <param name="CancellationToken">A token to cancel this request.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        /// <param name="ChargeDetailRecord"></param>
+        /// <param name="ChargeDetailRecord">A charge detail record.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public async Task<SendCDRResult>
 
@@ -5652,19 +5654,17 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var OnSendCDRLocal = OnCDRSend;
-                if (OnSendCDRLocal != null)
-                    OnSendCDRLocal(DateTime.Now,
-                                   this,
-                                   EventTrackingId,
-                                   this.Id,
-                                   ChargeDetailRecord,
-                                   QueryTimeout);
+                OnCDRSend?.Invoke(DateTime.Now,
+                                  this,
+                                  EventTrackingId,
+                                  this.Id,
+                                  ChargeDetailRecord,
+                                  QueryTimeout);
 
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnCDRSend));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnCDRSend));
             }
 
             #endregion
@@ -5733,7 +5733,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                #region Try to find anyone who might kown anything about the given SessionId!
+                #region Try to find *e-Mobility Providers* who might kown anything about the given SessionId!
 
                 if (result == null ||
                     result.Status == SendCDRResultType.InvalidSessionId)
@@ -5755,6 +5755,10 @@ namespace org.GraphDefined.WWCP
 
                 }
 
+                #endregion
+
+                #region Try to find *Roaming Providers* who might kown anything about the given SessionId!
+
                 if (result == null ||
                     result.Status == SendCDRResultType.InvalidSessionId)
                 {
@@ -5765,11 +5769,13 @@ namespace org.GraphDefined.WWCP
                                                                     ToArray())
                     {
 
-                        result = await OtherOperatorRoamingService.SendChargeDetailRecord(Timestamp,
-                                                                                          CancellationToken,
-                                                                                          EventTrackingId,
-                                                                                          ChargeDetailRecord,
-                                                                                          QueryTimeout);
+                        //result = await OtherOperatorRoamingService.SendChargeDetailRecord(Timestamp,
+                        //                                                                  CancellationToken,
+                        //                                                                  EventTrackingId,
+                        //                                                                  ChargeDetailRecord,
+                        //                                                                  QueryTimeout);
+
+                        result = await OtherOperatorRoamingService.EnqueueChargeDetailRecord(ChargeDetailRecord);
 
                     }
 
@@ -5798,20 +5804,18 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var OnCDRSentLocal = OnCDRSent;
-                if (OnCDRSentLocal != null)
-                    OnCDRSentLocal(DateTime.Now,
-                                   this,
-                                   EventTrackingId,
-                                   this.Id,
-                                   ChargeDetailRecord,
-                                   QueryTimeout,
-                                   result);
+                OnCDRSent?.Invoke(DateTime.Now,
+                                  this,
+                                  EventTrackingId,
+                                  this.Id,
+                                  ChargeDetailRecord,
+                                  QueryTimeout,
+                                  result);
 
             }
             catch (Exception e)
             {
-                e.Log("RoamingNetwork." + nameof(OnCDRSent));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnCDRSent));
             }
 
             #endregion

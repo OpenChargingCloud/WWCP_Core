@@ -350,57 +350,6 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region ChargingReservation(...)
-
-        /// <summary>
-        /// Create a charging reservation.
-        /// </summary>
-        public ChargingReservation(DateTime                  Timestamp,
-                                   DateTime                  StartTime,
-                                   TimeSpan                  Duration,
-                                   DateTime                  EndTime,
-                                   ChargingReservationLevel  ReservationLevel,
-
-                                   EVSP_Id                   ProviderId         = null,
-                                   eMA_Id                    eMAId              = null,
-
-                                   RoamingNetwork            RoamingNetwork     = null,
-                                   ChargingPool_Id           ChargingPoolId     = null,
-                                   ChargingStation_Id        ChargingStationId  = null,
-                                   EVSE_Id                   EVSEId             = null,
-                                   ChargingProduct_Id        ChargingProductId  = null,
-
-                                   IEnumerable<Auth_Token>   AuthTokens         = null,
-                                   IEnumerable<eMA_Id>       eMAIds             = null,
-                                   IEnumerable<UInt32>       PINs               = null)
-
-            : this(ChargingReservation_Id.New,
-                   Timestamp,
-                   StartTime,
-                   Duration,
-                   EndTime,
-                   TimeSpan.FromSeconds(0),
-                   ReservationLevel,
-
-                   ProviderId,
-                   eMAId,
-
-                   RoamingNetwork,
-                   ChargingPoolId,
-                   ChargingStationId,
-                   EVSEId,
-                   ChargingProductId,
-
-                   AuthTokens,
-                   eMAIds,
-                   PINs)
-
-        { }
-
-        #endregion
-
-        #region ChargingReservation(ReservationId, ...)
-
         /// <summary>
         /// Create a charging reservation.
         /// </summary>
@@ -456,8 +405,6 @@ namespace org.GraphDefined.WWCP
             this._PINs                     = PINs       != null ? new HashSet<UInt32>    (PINs)       : new HashSet<UInt32>();
 
         }
-
-        #endregion
 
         #endregion
 

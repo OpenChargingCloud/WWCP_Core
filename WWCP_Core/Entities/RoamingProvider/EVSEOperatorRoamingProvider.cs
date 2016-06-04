@@ -39,14 +39,32 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private readonly        Object                  ServiceCheckLock;
-        private readonly        Timer                   ServiceCheckTimer;
-        public  readonly static TimeSpan                DefaultServiceCheckEvery = TimeSpan.FromSeconds(5);
+        /// <summary>
+        /// The default service check intervall.
+        /// </summary>
+        public  readonly static TimeSpan                  DefaultServiceCheckEvery = TimeSpan.FromSeconds(61);
 
-        private readonly        HashSet<EVSE>           EVSEsToAddQueue;
-        private readonly        HashSet<EVSE>           EVSEDataUpdatesQueue;
-        private readonly        List<EVSEStatusChange>  EVSEStatusChangesQueue;
-        private readonly        HashSet<EVSE>           EVSEsToRemoveQueue;
+        /// <summary>
+        /// The default status check intervall.
+        /// </summary>
+        public  readonly static TimeSpan                  DefaultStatusCheckEvery  = TimeSpan.FromSeconds(3);
+
+
+        private readonly        Object                    ServiceCheckLock;
+        private readonly        Timer                     ServiceCheckTimer;
+        private readonly        Object                    StatusCheckLock;
+        private readonly        Timer                     StatusCheckTimer;
+
+        private readonly        HashSet<EVSE>             EVSEsToAddQueue;
+        private readonly        HashSet<EVSE>             EVSEDataUpdatesQueue;
+        private readonly        List<EVSEStatusChange>    EVSEStatusChangesFastQueue;
+        private readonly        List<EVSEStatusChange>    EVSEStatusChangesDelayedQueue;
+        private readonly        HashSet<EVSE>             EVSEsToRemoveQueue;
+        private readonly        List<ChargeDetailRecord>  ChargeDetailRecordQueue;
+
+        private UInt64               _ServiceRunId;
+        private UInt64               _StatusRunId;
+        private Func<EVSE, Boolean>  _IncludeEVSEs;
 
         #endregion
 
@@ -56,39 +74,68 @@ namespace org.GraphDefined.WWCP
 
         private readonly IOperatorRoamingService _OperatorRoamingService;
 
-        public IOperatorRoamingService OperatorRoamingService
-        {
-            get
-            {
-                return _OperatorRoamingService;
-            }
-        }
+        /// <summary>
+        /// The internal EVSE operator roaming service.
+        /// </summary>
+        public IOperatorRoamingService OperatorRoamingService => _OperatorRoamingService;
 
         #endregion
 
 
-        #region RunId
+        #region ServiceCheckEvery
 
-        private UInt64 _RunId;
+        private UInt32 _ServiceCheckEvery;
 
-        public UInt64 RunId
-        {
+        /// <summary>
+        /// The service check intervall.
+        /// </summary>
+        public TimeSpan ServiceCheckEvery {
+
             get
             {
-                return _RunId;
+                return TimeSpan.FromSeconds(_ServiceCheckEvery);
             }
+
+            set
+            {
+                _ServiceCheckEvery = (UInt32) value.TotalSeconds;
+            }
+
         }
 
         #endregion
 
+        #region StatusCheckEvery
 
+        private UInt32 _StatusCheckEvery;
 
-        public Func<EVSE, Boolean> IncludeEVSEs;
+        /// <summary>
+        /// The status check intervall.
+        /// </summary>
+        public TimeSpan StatusCheckEvery
+        {
+
+            get
+            {
+                return TimeSpan.FromSeconds(_StatusCheckEvery);
+            }
+
+            set
+            {
+                _StatusCheckEvery = (UInt32) value.TotalSeconds;
+            }
+
+        }
+
+        #endregion
 
         #region DisableAutoUploads
 
         private volatile Boolean _DisableAutoUploads;
 
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
         public Boolean DisableAutoUploads
         {
 
@@ -100,26 +147,6 @@ namespace org.GraphDefined.WWCP
             set
             {
                 _DisableAutoUploads = value;
-            }
-
-        }
-
-        #endregion
-
-        #region ServiceCheckEvery
-
-        private UInt32 _ServiceCheckEvery;
-
-        public TimeSpan ServiceCheckEvery {
-
-            get
-            {
-                return TimeSpan.FromSeconds(_ServiceCheckEvery);
-            }
-
-            set
-            {
-                _ServiceCheckEvery = (UInt32) value.TotalSeconds;
             }
 
         }
@@ -476,49 +503,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
-        // Server methods
-
-        #region OnRemoteStart/-Stop
-
-        /// <summary>
-        /// An event sent whenever a remote start command was received.
-        /// </summary>
-        public event OnRemoteStartEVSEDelegate OnRemoteStart
-        {
-
-            add
-            {
-                _OperatorRoamingService.OnRemoteStart += value;
-            }
-
-            remove
-            {
-                _OperatorRoamingService.OnRemoteStart -= value;
-            }
-
-        }
-
-        /// <summary>
-        /// An event sent whenever a remote stop command was received.
-        /// </summary>
-        public event OnRemoteStopEVSEDelegate OnRemoteStop
-        {
-
-            add
-            {
-                _OperatorRoamingService.OnRemoteStop += value;
-            }
-
-            remove
-            {
-                _OperatorRoamingService.OnRemoteStop -= value;
-            }
-
-        }
-
-        #endregion
-
         #endregion
 
         #region Constructor(s)
@@ -530,12 +514,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="Name">The offical (multi-language) name of the roaming provider.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         /// <param name="OperatorRoamingService">The attached local or remote EVSE operator roaming service.</param>
+        /// <param name="ServiceCheckEvery">The service check intervall.</param>
+        /// <param name="StatusCheckEvery">The status check intervall.</param>
+        /// <param name="DisableAutoUploads">This service can be disabled, e.g. for debugging reasons.</param>
         public EVSEOperatorRoamingProvider(RoamingProvider_Id       Id,
                                            I18NString               Name,
                                            RoamingNetwork           RoamingNetwork,
                                            IOperatorRoamingService  OperatorRoamingService,
                                            Func<EVSE, Boolean>      IncludeEVSEs        = null,
                                            TimeSpan?                ServiceCheckEvery   = null,
+                                           TimeSpan?                StatusCheckEvery    = null,
                                            Boolean                  DisableAutoUploads  = false)
 
             : base(Id, Name, RoamingNetwork)
@@ -550,91 +538,39 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            this._OperatorRoamingService  = OperatorRoamingService;
+            this._OperatorRoamingService         = OperatorRoamingService;
 
-            this.EVSEsToAddQueue          = new HashSet<EVSE>();
-            this.EVSEDataUpdatesQueue     = new HashSet<EVSE>();
-            this.EVSEStatusChangesQueue   = new List<EVSEStatusChange>();
-            this.EVSEsToRemoveQueue       = new HashSet<EVSE>();
+            this.EVSEsToAddQueue                 = new HashSet<EVSE>();
+            this.EVSEDataUpdatesQueue            = new HashSet<EVSE>();
+            this.EVSEStatusChangesFastQueue      = new List<EVSEStatusChange>();
+            this.EVSEStatusChangesDelayedQueue  = new List<EVSEStatusChange>();
+            this.EVSEsToRemoveQueue              = new HashSet<EVSE>();
+            this.ChargeDetailRecordQueue         = new List<ChargeDetailRecord>();
 
+            this._IncludeEVSEs                   = IncludeEVSEs;
 
-            #region Link RemoteStart/-Stop to the roaming network
+            this._ServiceCheckEvery              = (UInt32) (ServiceCheckEvery.HasValue
+                                                                ? ServiceCheckEvery.Value. TotalMilliseconds
+                                                                : DefaultServiceCheckEvery.TotalMilliseconds);
 
-            this.OnRemoteStart += (Timestamp,
-                                   CancellationToken,
-                                   EventTrackingId,
-                                   EVSEId,
-                                   ChargingProductId,
-                                   ReservationId,
-                                   SessionId,
-                                   ProviderId,
-                                   eMAId,
-                                   QueryTimeout) => RoamingNetwork.RemoteStart(Timestamp,
-                                                                               CancellationToken,
-                                                                               EventTrackingId,
-                                                                               EVSEId,
-                                                                               ChargingProductId,
-                                                                               ReservationId,
-                                                                               SessionId,
-                                                                               ProviderId,
-                                                                               eMAId,
-                                                                               QueryTimeout);
+            this.ServiceCheckLock                = new Object();
+            this.ServiceCheckTimer               = new Timer(ServiceCheck, null, 0, _ServiceCheckEvery);
 
-            this.OnRemoteStop += (Timestamp,
-                                  CancellationToken,
-                                  EventTrackingId,
-                                  ReservationHandling,
-                                  SessionId,
-                                  ProviderId,
-                                  eMAId,
-                                  EVSEId,
-                                  QueryTimeout) => RoamingNetwork.RemoteStop(Timestamp,
-                                                                             CancellationToken,
-                                                                             EventTrackingId,
-                                                                             EVSEId,
-                                                                             SessionId,
-                                                                             ReservationHandling.Close,
-                                                                             ProviderId,
-                                                                             eMAId,
-                                                                             QueryTimeout);
+            this._StatusCheckEvery               = (UInt32) (StatusCheckEvery.HasValue
+                                                                ? StatusCheckEvery.Value.  TotalMilliseconds
+                                                                : DefaultStatusCheckEvery. TotalMilliseconds);
 
-            #endregion
+            this.StatusCheckLock                 = new Object();
+            this.StatusCheckTimer                = new Timer(StatusCheck, null, 0, _StatusCheckEvery);
 
-
-            this.IncludeEVSEs             = IncludeEVSEs;
-
-            this._ServiceCheckEvery       = (UInt32) (ServiceCheckEvery.HasValue
-                                                          ? ServiceCheckEvery.Value.TotalMilliseconds
-                                                          : DefaultServiceCheckEvery.TotalMilliseconds);
-
-            this.ServiceCheckLock         = new Object();
-            this.ServiceCheckTimer        = new Timer(ServiceCheck, null, 0, _ServiceCheckEvery);
-
-            this._DisableAutoUploads      = DisableAutoUploads;
+            this._DisableAutoUploads             = DisableAutoUploads;
 
         }
 
         #endregion
 
 
-        #region (timer) ServiceCheck(State)
-
-        private void ServiceCheck(Object State)
-        {
-
-            if (!_DisableAutoUploads)
-            {
-
-                FlushQueues().Wait();
-
-                //ToDo: Handle errors!
-
-            }
-
-        }
-
-        #endregion
-
+        // Direct upstream methods...
 
         #region PushEVSEData...
 
@@ -1374,414 +1310,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EnqueueChargingPoolDataUpdate(ChargingPool, PropertyName, OldValue, NewValue)
-
-        /// <summary>
-        /// Enqueue the given EVSE data for a delayed upload.
-        /// </summary>
-        /// <param name="ChargingPool">A charging station.</param>
-        public Task<Acknowledgement>
-
-            EnqueueChargingPoolDataUpdate(ChargingPool  ChargingPool,
-                                          String        PropertyName,
-                                          Object        OldValue,
-                                          Object        NewValue)
-
-        {
-
-            #region Initial checks
-
-            if (ChargingPool == null)
-                throw new ArgumentNullException(nameof(ChargingPool), "The given charging station must not be null!");
-
-            #endregion
-
-            lock (ServiceCheckLock)
-            {
-
-                foreach (var EVSE in ChargingPool.SelectMany(station => station))
-                {
-
-                    if (IncludeEVSEs == null ||
-                       (IncludeEVSEs != null && IncludeEVSEs(EVSE)))
-                    {
-
-                        EVSEDataUpdatesQueue.Add(EVSE);
-
-                        ServiceCheckTimer.Change(_ServiceCheckEvery, Timeout.Infinite);
-
-                    }
-
-                }
-
-            }
-
-            return Task.FromResult(new Acknowledgement(true));
-
-        }
-
-        #endregion
-
-        #region EnqueueChargingStationDataUpdate(ChargingStation, PropertyName, OldValue, NewValue)
-
-        /// <summary>
-        /// Enqueue the given EVSE data for a delayed upload.
-        /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
-        public Task<Acknowledgement>
-
-            EnqueueChargingStationDataUpdate(ChargingStation  ChargingStation,
-                                             String           PropertyName,
-                                             Object           OldValue,
-                                             Object           NewValue)
-
-        {
-
-            #region Initial checks
-
-            if (ChargingStation == null)
-                throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
-
-            #endregion
-
-            lock (ServiceCheckLock)
-            {
-
-                foreach (var EVSE in ChargingStation)
-                {
-
-                    if (IncludeEVSEs == null ||
-                       (IncludeEVSEs != null && IncludeEVSEs(EVSE)))
-                    {
-
-                        EVSEDataUpdatesQueue.Add(EVSE);
-
-                        ServiceCheckTimer.Change(_ServiceCheckEvery, Timeout.Infinite);
-
-                    }
-
-                }
-
-            }
-
-            return Task.FromResult(new Acknowledgement(true));
-
-        }
-
-        #endregion
-
-        #region EnqueueEVSEAdddition(Timestamp, ChargingStation, EVSE)
-
-        public Task EnqueueEVSEAdddition(DateTime         Timestamp,
-                                         ChargingStation  ChargingStation,
-                                         EVSE             EVSE)
-
-        {
-
-            #region Initial checks
-
-            if (ChargingStation == null)
-                throw new ArgumentNullException(nameof(ChargingStation),  "The given charging station must not be null!");
-
-            if (EVSE            == null)
-                throw new ArgumentNullException(nameof(EVSE),             "The given EVSE must not be null!");
-
-            #endregion
-
-            lock (ServiceCheckLock)
-            {
-
-                if (IncludeEVSEs == null ||
-                   (IncludeEVSEs != null && IncludeEVSEs(EVSE)))
-                {
-
-                    EVSEsToAddQueue.Add(EVSE);
-
-                    ServiceCheckTimer.Change(_ServiceCheckEvery, Timeout.Infinite);
-
-                }
-
-            }
-
-            return Task.FromResult(new Acknowledgement(true));
-
-        }
-
-        #endregion
-
-        #region EnqueueEVSERemoval(Timestamp, ChargingStation, EVSE)
-
-        public Task EnqueueEVSERemoval(DateTime         Timestamp,
-                                       ChargingStation  ChargingStation,
-                                       EVSE             EVSE)
-
-        {
-
-            #region Initial checks
-
-            if (ChargingStation == null)
-                throw new ArgumentNullException(nameof(ChargingStation),  "The given charging station must not be null!");
-
-            if (EVSE            == null)
-                throw new ArgumentNullException(nameof(EVSE),             "The given EVSE must not be null!");
-
-            #endregion
-
-            lock (ServiceCheckLock)
-            {
-
-                if (IncludeEVSEs == null ||
-                   (IncludeEVSEs != null && IncludeEVSEs(EVSE)))
-                {
-
-                    EVSEsToRemoveQueue.Add(EVSE);
-
-                    ServiceCheckTimer.Change(_ServiceCheckEvery, Timeout.Infinite);
-
-                }
-
-            }
-
-            return Task.FromResult(new Acknowledgement(true));
-
-        }
-
-        #endregion
-
-        #region EnqueueEVSEDataUpdate(EVSE, PropertyName, OldValue, NewValue)
-
-        /// <summary>
-        /// Enqueue the given EVSE data for a delayed upload.
-        /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
-        public Task<Acknowledgement>
-
-            EnqueueEVSEDataUpdate(EVSE    EVSE,
-                                  String  PropertyName,
-                                  Object  OldValue,
-                                  Object  NewValue)
-
-        {
-
-            #region Initial checks
-
-            if (EVSE == null)
-                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
-
-            #endregion
-
-            lock (ServiceCheckLock)
-            {
-
-                if (IncludeEVSEs == null ||
-                   (IncludeEVSEs != null && IncludeEVSEs(EVSE)))
-                {
-
-                    EVSEDataUpdatesQueue.Add(EVSE);
-
-                    ServiceCheckTimer.Change(_ServiceCheckEvery, Timeout.Infinite);
-
-                }
-
-            }
-
-            return Task.FromResult(new Acknowledgement(true));
-
-        }
-
-        #endregion
-
-        #region EnqueueEVSEStatusUpdate(EVSE, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Enqueue the given EVSE status for a delayed upload.
-        /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
-        /// <param name="OldStatus">The old status of the EVSE.</param>
-        /// <param name="NewStatus">The new status of the EVSE.</param>
-        public Task<Acknowledgement>
-
-            EnqueueEVSEStatusUpdate(EVSE                         EVSE,
-                                    Timestamped<EVSEStatusType>  OldStatus,
-                                    Timestamped<EVSEStatusType>  NewStatus)
-
-        {
-
-            #region Initial checks
-
-            if (EVSE == null)
-                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
-
-            #endregion
-
-            lock (ServiceCheckLock)
-            {
-
-                if (IncludeEVSEs == null ||
-                   (IncludeEVSEs != null && IncludeEVSEs(EVSE)))
-                {
-
-                    EVSEStatusChangesQueue.Add(new EVSEStatusChange(EVSE.Id, OldStatus, NewStatus));
-
-                    ServiceCheckTimer.Change(_ServiceCheckEvery, Timeout.Infinite);
-
-                }
-
-            }
-
-            return Task.FromResult(new Acknowledgement(true));
-
-        }
-
-        #endregion
-
-
-        #region FlushQueues()
-
-        public async Task FlushQueues()
-        {
-
-            #region Make a thread local copy of all data
-
-            //ToDo: AsyncLocal is currently not implemented in Mono!
-            //var EVSEDataQueueCopy   = new AsyncLocal<HashSet<EVSE>>();
-            //var EVSEStatusQueueCopy = new AsyncLocal<List<EVSEStatusChange>>();
-
-            var EVSEsToAddQueueCopy     = new ThreadLocal<HashSet<EVSE>>();
-            var EVSEDataQueueCopy       = new ThreadLocal<HashSet<EVSE>>();
-            var EVSEStatusQueueCopy     = new ThreadLocal<List<EVSEStatusChange>>();
-            var EVSEsToRemoveQueueCopy  = new ThreadLocal<HashSet<EVSE>>();
-
-            if (Monitor.TryEnter(ServiceCheckLock))
-            {
-
-                try
-                {
-
-                    if (EVSEsToAddQueue.       Count == 0 &&
-                        EVSEDataUpdatesQueue.  Count == 0 &&
-                        EVSEStatusChangesQueue.Count == 0 &&
-                        EVSEsToRemoveQueue.    Count == 0)
-                        return;
-
-                    _RunId++;
-
-                    // Copy 'EVSEs to add', remove originals...
-                    EVSEsToAddQueueCopy.Value     = new HashSet<EVSE>(EVSEsToAddQueue);
-                    EVSEsToAddQueue.Clear();
-
-                    // Copy 'EVSEs to update', remove originals...
-                    EVSEDataQueueCopy.Value       = new HashSet<EVSE>(EVSEDataUpdatesQueue);
-                    EVSEDataUpdatesQueue.Clear();
-
-                    // Copy 'EVSE status changes', remove originals...
-                    EVSEStatusQueueCopy.Value     = new List<EVSEStatusChange>(EVSEStatusChangesQueue);
-                    EVSEStatusChangesQueue.Clear();
-
-                    // Copy 'EVSEs to remove', remove originals...
-                    EVSEsToRemoveQueueCopy.Value  = new HashSet<EVSE>(EVSEsToRemoveQueue);
-                    EVSEsToRemoveQueue.Clear();
-
-
-                    // Stop the timer. Will be rescheduled by next EVSE data/status change...
-                    ServiceCheckTimer.Change(Timeout.Infinite, Timeout.Infinite);
-
-                }
-                catch (Exception e)
-                {
-
-                    while (e.InnerException != null)
-                        e = e.InnerException;
-
-                    DebugX.LogT("EVSEOperatorRoamingProvider '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
-
-                }
-
-                finally
-                {
-                    Monitor.Exit(ServiceCheckLock);
-                }
-
-            }
-
-            #endregion
-
-            // Upload status changes...
-            if (EVSEsToAddQueueCopy.   Value != null ||
-                EVSEDataQueueCopy.     Value != null ||
-                EVSEStatusQueueCopy.   Value != null ||
-                EVSEsToRemoveQueueCopy.Value != null)
-            {
-
-                // Use the events to evaluate if something went wrong!
-
-                #region Send new EVSE data
-
-                if (EVSEsToAddQueueCopy.Value.Count > 0)
-                {
-
-                    var EVSEsToAddTask = PushEVSEData(EVSEsToAddQueueCopy.Value,
-                                                      _RunId == 1
-                                                          ? ActionType.fullLoad
-                                                          : ActionType.insert);
-
-                    EVSEsToAddTask.Wait();
-
-                }
-
-                #endregion
-
-                #region Send changed EVSE data
-
-                if (EVSEDataQueueCopy.Value.Count > 0)
-                {
-
-                    // Surpress EVSE data updates for all newly added EVSEs
-                    var EVSEsWithoutNewEVSEs = EVSEDataQueueCopy.Value.
-                                                   Where(evse => !EVSEsToAddQueueCopy.Value.Contains(evse)).
-                                                   ToArray();
-
-
-                    if (EVSEsWithoutNewEVSEs.Length > 0)
-                    {
-
-                        var PushEVSEDataTask = PushEVSEData(EVSEsWithoutNewEVSEs, ActionType.update);
-
-                        PushEVSEDataTask.Wait();
-
-                    }
-
-                }
-
-                #endregion
-
-                #region Send changed EVSE status
-
-                if (EVSEStatusQueueCopy.Value.Count > 0)
-                {
-
-                    var PushEVSEStatusTask = PushEVSEStatus(EVSEStatusQueueCopy.Value.Select(statuschange => statuschange.CurrentStatus).ToArray(),
-                                                            _RunId == 1
-                                                                ? ActionType.fullLoad
-                                                                : ActionType.update);
-
-                    PushEVSEStatusTask.Wait();
-
-                }
-
-                #endregion
-
-                //ToDo: Send removed EVSE data!
-
-            }
-
-            return;
-
-        }
-
-        #endregion
-
-
         #region AuthorizeStart/-Stop...
 
         #region AuthorizeStart(...OperatorId, AuthToken, ChargingProductId = null, SessionId = null, ...)
@@ -2036,8 +1564,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SendChargeDetailRecord...
-
         #region SendChargeDetailRecord(...ChargeDetailRecord, ...)
 
         /// <summary>
@@ -2068,75 +1594,615 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SendChargeDetailRecord(...EVSEId, SessionId, PartnerProductId, SessionStart, SessionEnd, Identification, ...)
+
+        // Delayed upstream methods...
+
+        #region EnqueueChargingPoolDataUpdate(ChargingPool, PropertyName, OldValue, NewValue)
 
         /// <summary>
-        /// Send a charge detail record.
+        /// Enqueue the given EVSE data for a delayed upload.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-        /// <param name="EVSEId">The EVSE identification.</param>
-        /// <param name="SessionId">The OICP session identification from the Authorize Start request.</param>
-        /// <param name="PartnerProductId">The ev charging product identification.</param>
-        /// <param name="SessionStart">The session start timestamp.</param>
-        /// <param name="SessionEnd">The session end timestamp.</param>
-        /// <param name="Identification">An identification.</param>
-        /// <param name="ChargingStart">An optional charging start timestamp.</param>
-        /// <param name="ChargingEnd">An optional charging end timestamp.</param>
-        /// <param name="MeterValueStart">An optional initial value of the energy meter.</param>
-        /// <param name="MeterValueEnd">An optional final value of the energy meter.</param>
-        /// <param name="MeterValuesInBetween">An optional enumeration of meter values during the charging session.</param>
-        /// <param name="ConsumedEnergy">The optional amount of consumed energy.</param>
-        /// <param name="MeteringSignature">An optional signature for the metering values.</param>
-        /// <param name="QueryTimeout">An optional timeout for this request.</param>
-        public async Task<SendCDRResult>
+        /// <param name="ChargingPool">A charging station.</param>
+        public Task<Acknowledgement>
 
-            SendChargeDetailRecord(DateTime             Timestamp,
-                                   CancellationToken    CancellationToken,
-                                   EventTracking_Id     EventTrackingId,
-                                   EVSE_Id              EVSEId,
-                                   ChargingSession_Id   SessionId,
-                                   ChargingProduct_Id   PartnerProductId,
-                                   DateTime             SessionStart,
-                                   DateTime             SessionEnd,
-                                   AuthInfo             Identification,
-                                   DateTime?            ChargingStart         = null,
-                                   DateTime?            ChargingEnd           = null,
-                                   Double?              MeterValueStart       = null,
-                                   Double?              MeterValueEnd         = null,
-                                   IEnumerable<Double>  MeterValuesInBetween  = null,
-                                   Double?              ConsumedEnergy        = null,
-                                   String               MeteringSignature     = null,
-                                   TimeSpan?            QueryTimeout          = null)
+            EnqueueChargingPoolDataUpdate(ChargingPool  ChargingPool,
+                                          String        PropertyName,
+                                          Object        OldValue,
+                                          Object        NewValue)
 
         {
 
-            return await _OperatorRoamingService.SendChargeDetailRecord(Timestamp,
-                                                                        CancellationToken,
-                                                                        EventTrackingId,
-                                                                        EVSEId,
-                                                                        SessionId,
-                                                                        PartnerProductId,
-                                                                        SessionStart,
-                                                                        SessionEnd,
-                                                                        Identification,
-                                                                        ChargingStart,
-                                                                        ChargingEnd,
-                                                                        MeterValueStart,
-                                                                        MeterValueEnd,
-                                                                        MeterValuesInBetween,
-                                                                        ConsumedEnergy,
-                                                                        MeteringSignature,
-                                                                        QueryTimeout);
+            #region Initial checks
+
+            if (ChargingPool == null)
+                throw new ArgumentNullException(nameof(ChargingPool), "The given charging station must not be null!");
+
+            #endregion
+
+            lock (ServiceCheckLock)
+            {
+
+                foreach (var EVSE in ChargingPool.SelectMany(station => station))
+                {
+
+                    if (_IncludeEVSEs == null ||
+                       (_IncludeEVSEs != null && _IncludeEVSEs(EVSE)))
+                    {
+
+                        EVSEDataUpdatesQueue.Add(EVSE);
+
+                        ServiceCheckTimer.Change(_ServiceCheckEvery, Timeout.Infinite);
+
+                    }
+
+                }
+
+            }
+
+            return Task.FromResult(new Acknowledgement(true));
 
         }
 
         #endregion
 
+        #region EnqueueChargingStationDataUpdate(ChargingStation, PropertyName, OldValue, NewValue)
+
+        /// <summary>
+        /// Enqueue the given EVSE data for a delayed upload.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        public Task<Acknowledgement>
+
+            EnqueueChargingStationDataUpdate(ChargingStation  ChargingStation,
+                                             String           PropertyName,
+                                             Object           OldValue,
+                                             Object           NewValue)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStation == null)
+                throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
+
+            #endregion
+
+            lock (ServiceCheckLock)
+            {
+
+                foreach (var EVSE in ChargingStation)
+                {
+
+                    if (_IncludeEVSEs == null ||
+                       (_IncludeEVSEs != null && _IncludeEVSEs(EVSE)))
+                    {
+
+                        EVSEDataUpdatesQueue.Add(EVSE);
+
+                        ServiceCheckTimer.Change(_ServiceCheckEvery, Timeout.Infinite);
+
+                    }
+
+                }
+
+            }
+
+            return Task.FromResult(new Acknowledgement(true));
+
+        }
+
+        #endregion
+
+        #region EnqueueEVSEAdddition(Timestamp, ChargingStation, EVSE)
+
+        public Task EnqueueEVSEAdddition(DateTime         Timestamp,
+                                         ChargingStation  ChargingStation,
+                                         EVSE             EVSE)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStation == null)
+                throw new ArgumentNullException(nameof(ChargingStation),  "The given charging station must not be null!");
+
+            if (EVSE            == null)
+                throw new ArgumentNullException(nameof(EVSE),             "The given EVSE must not be null!");
+
+            #endregion
+
+            lock (ServiceCheckLock)
+            {
+
+                if (_IncludeEVSEs == null ||
+                   (_IncludeEVSEs != null && _IncludeEVSEs(EVSE)))
+                {
+
+                    EVSEsToAddQueue.Add(EVSE);
+
+                    ServiceCheckTimer.Change(_ServiceCheckEvery, Timeout.Infinite);
+
+                }
+
+            }
+
+            return Task.FromResult(new Acknowledgement(true));
+
+        }
+
+        #endregion
+
+        #region EnqueueEVSERemoval(Timestamp, ChargingStation, EVSE)
+
+        public Task EnqueueEVSERemoval(DateTime         Timestamp,
+                                       ChargingStation  ChargingStation,
+                                       EVSE             EVSE)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStation == null)
+                throw new ArgumentNullException(nameof(ChargingStation),  "The given charging station must not be null!");
+
+            if (EVSE            == null)
+                throw new ArgumentNullException(nameof(EVSE),             "The given EVSE must not be null!");
+
+            #endregion
+
+            lock (ServiceCheckLock)
+            {
+
+                if (_IncludeEVSEs == null ||
+                   (_IncludeEVSEs != null && _IncludeEVSEs(EVSE)))
+                {
+
+                    EVSEsToRemoveQueue.Add(EVSE);
+
+                    ServiceCheckTimer.Change(_ServiceCheckEvery, Timeout.Infinite);
+
+                }
+
+            }
+
+            return Task.FromResult(new Acknowledgement(true));
+
+        }
+
+        #endregion
+
+        #region EnqueueEVSEDataUpdate(EVSE, PropertyName, OldValue, NewValue)
+
+        /// <summary>
+        /// Enqueue the given EVSE data for a delayed upload.
+        /// </summary>
+        /// <param name="EVSE">An EVSE.</param>
+        public Task<Acknowledgement>
+
+            EnqueueEVSEDataUpdate(EVSE    EVSE,
+                                  String  PropertyName,
+                                  Object  OldValue,
+                                  Object  NewValue)
+
+        {
+
+            #region Initial checks
+
+            if (EVSE == null)
+                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
+
+            #endregion
+
+            lock (ServiceCheckLock)
+            {
+
+                if (_IncludeEVSEs == null ||
+                   (_IncludeEVSEs != null && _IncludeEVSEs(EVSE)))
+                {
+
+                    EVSEDataUpdatesQueue.Add(EVSE);
+
+                    ServiceCheckTimer.Change(_ServiceCheckEvery, Timeout.Infinite);
+
+                }
+
+            }
+
+            return Task.FromResult(new Acknowledgement(true));
+
+        }
+
+        #endregion
+
+        #region EnqueueEVSEStatusUpdate(EVSE, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Enqueue the given EVSE status for a delayed upload.
+        /// </summary>
+        /// <param name="EVSE">An EVSE.</param>
+        /// <param name="OldStatus">The old status of the EVSE.</param>
+        /// <param name="NewStatus">The new status of the EVSE.</param>
+        public Task<Acknowledgement>
+
+            EnqueueEVSEStatusUpdate(EVSE                         EVSE,
+                                    Timestamped<EVSEStatusType>  OldStatus,
+                                    Timestamped<EVSEStatusType>  NewStatus)
+
+        {
+
+            #region Initial checks
+
+            if (EVSE == null)
+                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
+
+            #endregion
+
+            lock (ServiceCheckLock)
+            {
+
+                if (_IncludeEVSEs == null ||
+                   (_IncludeEVSEs != null && _IncludeEVSEs(EVSE)))
+                {
+
+                    EVSEStatusChangesFastQueue.Add(new EVSEStatusChange(EVSE.Id, OldStatus, NewStatus));
+                    StatusCheckTimer.Change(_StatusCheckEvery, Timeout.Infinite);
+
+                }
+
+            }
+
+            return Task.FromResult(new Acknowledgement(true));
+
+        }
+
+        #endregion
+
+        #region EnqueueChargeDetailRecord(ChargeDetailRecord)
+
+        /// <summary>
+        /// Enqueue the given charge detail record for a delayed upload.
+        /// </summary>
+        public Task<SendCDRResult>
+
+            EnqueueChargeDetailRecord(ChargeDetailRecord ChargeDetailRecord)
+
+        {
+
+            #region Initial checks
+
+            if (ChargeDetailRecord == null)
+                throw new ArgumentNullException(nameof(ChargeDetailRecord), "The given charge detail record must not be null!");
+
+            #endregion
+
+            lock (ServiceCheckLock)
+            {
+
+                ChargeDetailRecordQueue.Add(ChargeDetailRecord);
+
+                ServiceCheckTimer.Change(_ServiceCheckEvery, Timeout.Infinite);
+
+            }
+
+            return Task.FromResult(SendCDRResult.NotForwared(Authorizator_Id.Parse("EVSE Operator Roaming Provider")));
+
+        }
+
         #endregion
 
 
+        #region (timer) ServiceCheck(State)
+
+        private void ServiceCheck(Object State)
+        {
+
+            if (!_DisableAutoUploads)
+            {
+
+                FlushServiceQueues().Wait();
+
+                //ToDo: Handle errors!
+
+            }
+
+        }
+
+        public async Task FlushServiceQueues()
+        {
+
+            Console.WriteLine("ServiceCheck, as every " + _ServiceCheckEvery + "ms!");
+
+            #region Make a thread local copy of all data
+
+            //ToDo: AsyncLocal is currently not implemented in Mono!
+            //var EVSEDataQueueCopy   = new AsyncLocal<HashSet<EVSE>>();
+            //var EVSEStatusQueueCopy = new AsyncLocal<List<EVSEStatusChange>>();
+
+            var EVSEsToAddQueueCopy          = new ThreadLocal<HashSet<EVSE>>();
+            var EVSEDataQueueCopy            = new ThreadLocal<HashSet<EVSE>>();
+            var EVSEStatusQueueCopy          = new ThreadLocal<List<EVSEStatusChange>>();
+            var EVSEsToRemoveQueueCopy       = new ThreadLocal<HashSet<EVSE>>();
+            var ChargeDetailRecordQueueCopy  = new ThreadLocal<List<ChargeDetailRecord>>();
+
+            if (Monitor.TryEnter(ServiceCheckLock))
+            {
+
+                try
+                {
+
+                    if (EVSEsToAddQueue.               Count == 0 &&
+                        EVSEDataUpdatesQueue.          Count == 0 &&
+                        EVSEStatusChangesDelayedQueue.Count == 0 &&
+                        EVSEsToRemoveQueue.            Count == 0 &&
+                        ChargeDetailRecordQueue.       Count == 0)
+                        return;
+
+                    _ServiceRunId++;
+
+                    // Copy 'EVSEs to add', remove originals...
+                    EVSEsToAddQueueCopy.Value          = new HashSet<EVSE>           (EVSEsToAddQueue);
+                    EVSEsToAddQueue.Clear();
+
+                    // Copy 'EVSEs to update', remove originals...
+                    EVSEDataQueueCopy.Value            = new HashSet<EVSE>           (EVSEDataUpdatesQueue);
+                    EVSEDataUpdatesQueue.Clear();
+
+                    // Copy 'EVSE status changes', remove originals...
+                    EVSEStatusQueueCopy.Value          = new List<EVSEStatusChange>  (EVSEStatusChangesDelayedQueue);
+                    EVSEStatusChangesDelayedQueue.Clear();
+
+                    // Copy 'EVSEs to remove', remove originals...
+                    EVSEsToRemoveQueueCopy.Value       = new HashSet<EVSE>           (EVSEsToRemoveQueue);
+                    EVSEsToRemoveQueue.Clear();
+
+                    // Copy 'EVSEs to remove', remove originals...
+                    ChargeDetailRecordQueueCopy.Value  = new List<ChargeDetailRecord>(ChargeDetailRecordQueue);
+                    ChargeDetailRecordQueue.Clear();
+
+                    // Stop the timer. Will be rescheduled by next EVSE data/status change...
+                    ServiceCheckTimer.Change(Timeout.Infinite, Timeout.Infinite);
+
+                }
+                catch (Exception e)
+                {
+
+                    while (e.InnerException != null)
+                        e = e.InnerException;
+
+                    DebugX.LogT(nameof(EVSEOperatorRoamingProvider) + " '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+
+                }
+
+                finally
+                {
+                    Monitor.Exit(ServiceCheckLock);
+                }
+
+            }
+
+            else
+            {
+
+                Console.WriteLine("ServiceCheckLock missed!");
+                ServiceCheckTimer.Change(_ServiceCheckEvery, Timeout.Infinite);
+
+            }
+
+            #endregion
+
+            // Upload status changes...
+            if (EVSEsToAddQueueCopy.        Value != null ||
+                EVSEDataQueueCopy.          Value != null ||
+                EVSEStatusQueueCopy.        Value != null ||
+                EVSEsToRemoveQueueCopy.     Value != null ||
+                ChargeDetailRecordQueueCopy.Value != null)
+            {
+
+                // Use the events to evaluate if something went wrong!
+
+                #region Send new EVSE data
+
+                if (EVSEsToAddQueueCopy.Value.Count > 0)
+                {
+
+                    var EVSEsToAddTask = PushEVSEData(EVSEsToAddQueueCopy.Value,
+                                                      _ServiceRunId == 1
+                                                          ? ActionType.fullLoad
+                                                          : ActionType.insert);
+
+                    EVSEsToAddTask.Wait();
+
+                }
+
+                #endregion
+
+                #region Send changed EVSE data
+
+                if (EVSEDataQueueCopy.Value.Count > 0)
+                {
+
+                    // Surpress EVSE data updates for all newly added EVSEs
+                    var EVSEsWithoutNewEVSEs = EVSEDataQueueCopy.Value.
+                                                   Where(evse => !EVSEsToAddQueueCopy.Value.Contains(evse)).
+                                                   ToArray();
+
+
+                    if (EVSEsWithoutNewEVSEs.Length > 0)
+                    {
+
+                        var PushEVSEDataTask = PushEVSEData(EVSEsWithoutNewEVSEs, ActionType.update);
+
+                        PushEVSEDataTask.Wait();
+
+                    }
+
+                }
+
+                #endregion
+
+                #region Send changed EVSE status
+
+                if (EVSEStatusQueueCopy.Value.Count > 0)
+                {
+
+                    var PushEVSEStatusTask = PushEVSEStatus(EVSEStatusQueueCopy.Value.Select(statuschange => statuschange.CurrentStatus).ToArray(),
+                                                            _ServiceRunId == 1
+                                                                ? ActionType.fullLoad
+                                                                : ActionType.update);
+
+                    PushEVSEStatusTask.Wait();
+
+                }
+
+                #endregion
+
+                #region Send charge detail records
+
+                if (ChargeDetailRecordQueueCopy.Value.Count > 0)
+                {
+
+                    var EventTrackingId  = EventTracking_Id.New;
+                    var SendCDRResults   = new Dictionary<ChargeDetailRecord, SendCDRResult>();
+
+                    foreach (var _ChargeDetailRecord in ChargeDetailRecordQueueCopy.Value)
+                    {
+
+                        SendCDRResults.Add(_ChargeDetailRecord,
+                                           await SendChargeDetailRecord(DateTime.Now,
+                                                                        new CancellationTokenSource().Token,
+                                                                        EventTrackingId,
+                                                                        _ChargeDetailRecord));
+
+                    }
+
+                    //ToDo: Send results events...
+                    //ToDo: Readd to queue if it could not be sent...
+
+                }
+
+                #endregion
+
+                //ToDo: Send removed EVSE data!
+
+            }
+
+            return;
+
+        }
+
+        #endregion
+
+        #region (timer) StatusCheck(State)
+
+        private void StatusCheck(Object State)
+        {
+
+            if (!_DisableAutoUploads)
+            {
+
+                FlushStatusQueues().Wait();
+
+                //ToDo: Handle errors!
+
+            }
+
+        }
+
+        public async Task FlushStatusQueues()
+        {
+
+            Console.WriteLine("StatusCheck, as every " + _StatusCheckEvery + "ms!");
+
+            #region Make a thread local copy of all data
+
+            //ToDo: AsyncLocal is currently not implemented in Mono!
+            //var EVSEStatusQueueCopy = new AsyncLocal<List<EVSEStatusChange>>();
+
+            var EVSEStatusFastQueueCopy = new ThreadLocal<List<EVSEStatusChange>>();
+
+            if (Monitor.TryEnter(ServiceCheckLock,
+                                 TimeSpan.FromMinutes(5)))
+            {
+
+                try
+                {
+
+                    if (EVSEStatusChangesFastQueue.Count == 0)
+                        return;
+
+                    _StatusRunId++;
+
+                    // Copy 'EVSE status changes', remove originals...
+                    EVSEStatusFastQueueCopy.Value = new List<EVSEStatusChange>(EVSEStatusChangesFastQueue.Where(evsestatuschange => !EVSEsToAddQueue.Any(evse => evse.Id == evsestatuschange.Id)));
+
+                    // Add all evse status changes of EVSE *NOT YET UPLOADED* into the delayed queue...
+                    EVSEStatusChangesDelayedQueue.AddRange(EVSEStatusChangesFastQueue.Where(evsestatuschange => EVSEsToAddQueue.Any(evse => evse.Id == evsestatuschange.Id)));
+
+                    EVSEStatusChangesFastQueue.Clear();
+
+                    // Stop the timer. Will be rescheduled by next EVSE status change...
+                    StatusCheckTimer.Change(Timeout.Infinite, Timeout.Infinite);
+
+                }
+                catch (Exception e)
+                {
+
+                    while (e.InnerException != null)
+                        e = e.InnerException;
+
+                    DebugX.LogT(nameof(EVSEOperatorRoamingProvider) + " '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+
+                }
+
+                finally
+                {
+                    Monitor.Exit(ServiceCheckLock);
+                }
+
+            }
+
+            else
+            {
+
+                Console.WriteLine("StatusCheckLock missed!");
+                StatusCheckTimer.Change(_StatusCheckEvery, Timeout.Infinite);
+
+            }
+
+            #endregion
+
+            // Upload status changes...
+            if (EVSEStatusFastQueueCopy.Value != null)
+            {
+
+                // Use the events to evaluate if something went wrong!
+
+                #region Send changed EVSE status
+
+                if (EVSEStatusFastQueueCopy.Value.Count > 0)
+                {
+
+                    var PushEVSEStatusTask = PushEVSEStatus(EVSEStatusFastQueueCopy.Value.Select(statuschange => statuschange.CurrentStatus).ToArray(),
+                                                            _StatusRunId == 1
+                                                                ? ActionType.fullLoad
+                                                                : ActionType.update);
+
+                    PushEVSEStatusTask.Wait();
+
+                }
+
+                #endregion
+
+            }
+
+            return;
+
+        }
+
+        #endregion
+
+
+        //ToDo: Fix me!
         public void RemoveChargingStations(DateTime                      Timestamp,
                                            IEnumerable<ChargingStation>  ChargingStations)
         {
@@ -2154,11 +2220,11 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Object">An object to compare with.</param>
-        public Int32 CompareTo(Object Object)
+        public new Int32 CompareTo(Object Object)
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             // Check if the given object is a roaming provider.
             var RoamingProvider = Object as EMPRoamingProvider;
@@ -2177,11 +2243,11 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="RoamingProvider">A roaming provider object to compare with.</param>
-        public Int32 CompareTo(EMPRoamingProvider RoamingProvider)
+        public new Int32 CompareTo(EMPRoamingProvider RoamingProvider)
         {
 
             if ((Object) RoamingProvider == null)
-                throw new ArgumentNullException("The given roaming provider must not be null!");
+                throw new ArgumentNullException(nameof(RoamingProvider), "The given roaming provider must not be null!");
 
             return Id.CompareTo(RoamingProvider.Id);
 
@@ -2224,7 +2290,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="RoamingProvider">A roaming provider to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EMPRoamingProvider RoamingProvider)
+        public new Boolean Equals(EMPRoamingProvider RoamingProvider)
         {
 
             if ((Object) RoamingProvider == null)
