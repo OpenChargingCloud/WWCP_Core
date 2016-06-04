@@ -578,10 +578,10 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (OperatorRoamingService.Id == null)
-                throw new ArgumentNullException(nameof(OperatorRoamingService.Id),    "The given roaming provider identification must not be null!");
+                throw new ArgumentNullException(nameof(OperatorRoamingService) + ".Id",    "The given roaming provider identification must not be null!");
 
             if (OperatorRoamingService.Name.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(OperatorRoamingService.Name),  "The given roaming provider name must not be null or empty!");
+                throw new ArgumentNullException(nameof(OperatorRoamingService) + ".Name",  "The given roaming provider name must not be null or empty!");
 
             if (_EVSEOperatorRoamingProviders.ContainsKey(OperatorRoamingService.Id))
                 throw new RoamingProviderAlreadyExists(OperatorRoamingService.Id, this.Id);
@@ -701,10 +701,10 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (eMobilityRoamingService.Id == null)
-                throw new ArgumentNullException(nameof(eMobilityRoamingService.Id),    "The given roaming provider identification must not be null!");
+                throw new ArgumentNullException(nameof(eMobilityRoamingService) + ".Id",    "The given roaming provider identification must not be null!");
 
             if (eMobilityRoamingService.Name.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(eMobilityRoamingService.Name),  "The given roaming provider name must not be null or empty!");
+                throw new ArgumentNullException(nameof(eMobilityRoamingService) + ".Name",  "The given roaming provider name must not be null or empty!");
 
             if (_EMPRoamingProviders.ContainsKey(eMobilityRoamingService.Id))
                 throw new RoamingProviderAlreadyExists(eMobilityRoamingService.Id, this.Id);
