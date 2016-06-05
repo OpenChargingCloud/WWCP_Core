@@ -22,6 +22,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using org.GraphDefined.Vanaheimr.Illias;
 using System.Collections.Generic;
+using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
@@ -29,46 +30,11 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A e-mobility roaming provider.
+    /// An abstract e-mobility roaming provider.
     /// </summary>
-    public class EMPRoamingProvider : ARoamingProvider,
-                                      IEMPRoamingService
+    public abstract class AEMPRoamingProvider : ARoamingProvider,
+                                                IEMPRoamingProvider
     {
-
-        #region Properties
-
-        #region eMobilityRoamingService
-
-        private readonly IEMPRoamingService _EMPRoamingService;
-
-        public IEMPRoamingService eMobilityRoamingService
-        {
-            get
-            {
-                return _EMPRoamingService;
-            }
-        }
-
-        #endregion
-
-
-        public Authorizator_Id AuthorizatorId
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public RoamingNetwork_Id RoamingNetworkId
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        #endregion
 
         #region Events
 
@@ -82,20 +48,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event sent whenever a authorize start command was received.
         /// </summary>
-        public event OnAuthorizeStartEVSEDelegate OnAuthorizeStartEVSE
-        {
-
-            add
-            {
-                _EMPRoamingService.OnAuthorizeStartEVSE += value;
-            }
-
-            remove
-            {
-                _EMPRoamingService.OnAuthorizeStartEVSE -= value;
-            }
-
-        }
+        public abstract event OnAuthorizeStartEVSEDelegate OnAuthorizeStartEVSE;
 
         #endregion
 
@@ -104,20 +57,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event sent whenever a authorize start command was received.
         /// </summary>
-        public event OnAuthorizeStopEVSEDelegate OnAuthorizeStopEVSE
-        {
-
-            add
-            {
-                _EMPRoamingService.OnAuthorizeStopEVSE += value;
-            }
-
-            remove
-            {
-                _EMPRoamingService.OnAuthorizeStopEVSE -= value;
-            }
-
-        }
+        public abstract event OnAuthorizeStopEVSEDelegate OnAuthorizeStopEVSE;
 
         #endregion
 
@@ -126,20 +66,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event sent whenever a charge detail record was received.
         /// </summary>
-        public event OnChargeDetailRecordDelegate OnChargeDetailRecord
-        {
-
-            add
-            {
-                _EMPRoamingService.OnChargeDetailRecord += value;
-            }
-
-            remove
-            {
-                _EMPRoamingService.OnChargeDetailRecord -= value;
-            }
-
-        }
+        public abstract event OnChargeDetailRecordDelegate OnChargeDetailRecord;
 
         #endregion
 
@@ -151,28 +78,17 @@ namespace org.GraphDefined.WWCP
         /// Create an e-mobility roaming provider.
         /// </summary>
         /// <param name="Id">The unique identification of the roaming provider.</param>
-        /// <param name="Name">The offical (multi-language) name of the roaming provider.
+        /// <param name="Name">The offical (multi-language) name of the roaming provider.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        /// <param name="EMPRoamingService">The attached local or remote e-mobility roaming service.</param>
-        internal EMPRoamingProvider(RoamingProvider_Id  Id,
-                                    I18NString          Name,
-                                    RoamingNetwork      RoamingNetwork,
-                                    IEMPRoamingService  EMPRoamingService)
+        public AEMPRoamingProvider(RoamingProvider_Id  Id,
+                                   I18NString          Name,
+                                   RoamingNetwork      RoamingNetwork)
 
-            : base(Id, Name, RoamingNetwork)
+            : base(Id,
+                   Name,
+                   RoamingNetwork)
 
         {
-
-            #region Initial Checks
-
-            if (EMPRoamingService == null)
-                throw new ArgumentNullException(nameof(EMPRoamingService),  "The given e-mobility roaming service must not be null!");
-
-            #endregion
-
-
-            this._EMPRoamingService  = EMPRoamingService;
-
 
             #region Link AuthorizeStart/-Stop and SendCDR to the roaming network
 
@@ -228,6 +144,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+
         #region Reserve(...EVSEId, StartTime, Duration, ReservationId = null, ProviderId = null, ...)
 
         /// <summary>
@@ -247,7 +164,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
-        public async Task<ReservationResult>
+        public abstract Task<ReservationResult>
 
             Reserve(DateTime                 Timestamp,
                     CancellationToken        CancellationToken,
@@ -262,26 +179,7 @@ namespace org.GraphDefined.WWCP
                     IEnumerable<Auth_Token>  AuthTokens         = null,
                     IEnumerable<eMA_Id>      eMAIds             = null,
                     IEnumerable<UInt32>      PINs               = null,
-                    TimeSpan?                QueryTimeout       = null)
-
-        {
-
-            return await this._EMPRoamingService.Reserve(Timestamp,
-                                                         CancellationToken,
-                                                         EventTrackingId,
-                                                         EVSEId,
-                                                         StartTime,
-                                                         Duration,
-                                                         ReservationId,
-                                                         ProviderId,
-                                                         eMAId,
-                                                         ChargingProductId,
-                                                         AuthTokens,
-                                                         eMAIds,
-                                                         PINs,
-                                                         QueryTimeout);
-
-        }
+                    TimeSpan?                QueryTimeout       = null);
 
         #endregion
 
@@ -298,7 +196,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// <param name="EVSEId">An optional identification of the EVSE.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
-        public async Task<CancelReservationResult>
+        public abstract Task<CancelReservationResult>
 
             CancelReservation(DateTime                               Timestamp,
                               CancellationToken                      CancellationToken,
@@ -307,20 +205,7 @@ namespace org.GraphDefined.WWCP
                               ChargingReservationCancellationReason  Reason,
                               EVSP_Id                                ProviderId    = null,
                               EVSE_Id                                EVSEId        = null,
-                              TimeSpan?                              QueryTimeout  = null)
-
-        {
-
-            return await this._EMPRoamingService.CancelReservation(Timestamp,
-                                                                   CancellationToken,
-                                                                   EventTrackingId,
-                                                                   ReservationId,
-                                                                   Reason,
-                                                                   ProviderId,
-                                                                   EVSEId,
-                                                                   QueryTimeout);
-
-        }
+                              TimeSpan?                              QueryTimeout  = null);
 
         #endregion
 
@@ -340,30 +225,18 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
         /// <param name="eMAId">The unique identification of the e-mobility account.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
-        public async Task<RemoteStartEVSEResult> RemoteStart(DateTime                Timestamp,
-                                                             CancellationToken       CancellationToken,
-                                                             EventTracking_Id        EventTrackingId,
-                                                             EVSE_Id                 EVSEId,
-                                                             ChargingProduct_Id      ChargingProductId  = null,
-                                                             ChargingReservation_Id  ReservationId      = null,
-                                                             ChargingSession_Id      SessionId          = null,
-                                                             EVSP_Id                 ProviderId         = null,
-                                                             eMA_Id                  eMAId              = null,
-                                                             TimeSpan?               QueryTimeout       = default(TimeSpan?))
-        {
+        public abstract Task<RemoteStartEVSEResult>
 
-            return await this._EMPRoamingService.RemoteStart(Timestamp,
-                                                             CancellationToken,
-                                                             EventTrackingId,
-                                                             EVSEId,
-                                                             ChargingProductId,
-                                                             ReservationId,
-                                                             SessionId,
-                                                             ProviderId,
-                                                             eMAId,
-                                                             QueryTimeout);
-
-        }
+            RemoteStart(DateTime                Timestamp,
+                        CancellationToken       CancellationToken,
+                        EventTracking_Id        EventTrackingId,
+                        EVSE_Id                 EVSEId,
+                        ChargingProduct_Id      ChargingProductId  = null,
+                        ChargingReservation_Id  ReservationId      = null,
+                        ChargingSession_Id      SessionId          = null,
+                        EVSP_Id                 ProviderId         = null,
+                        eMA_Id                  eMAId              = null,
+                        TimeSpan?               QueryTimeout       = default(TimeSpan?));
 
         #endregion
 
@@ -381,7 +254,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
         /// <param name="eMAId">The unique identification of the e-mobility account.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
-        public async Task<RemoteStopEVSEResult>
+        public abstract Task<RemoteStopEVSEResult>
 
             RemoteStop(DateTime             Timestamp,
                        CancellationToken    CancellationToken,
@@ -391,21 +264,7 @@ namespace org.GraphDefined.WWCP
                        ReservationHandling  ReservationHandling,
                        EVSP_Id              ProviderId    = null,
                        eMA_Id               eMAId         = null,
-                       TimeSpan?            QueryTimeout  = null)
-
-        {
-
-            return await this._EMPRoamingService.RemoteStop(Timestamp,
-                                                             CancellationToken,
-                                                             EventTrackingId,
-                                                             EVSEId,
-                                                             SessionId,
-                                                             ReservationHandling,
-                                                             ProviderId,
-                                                             eMAId,
-                                                             QueryTimeout);
-
-        }
+                       TimeSpan?            QueryTimeout  = null);
 
         #endregion
 
@@ -426,7 +285,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is a roaming provider.
-            var RoamingProvider = Object as EMPRoamingProvider;
+            var RoamingProvider = Object as AEMPRoamingProvider;
             if ((Object) RoamingProvider == null)
                 throw new ArgumentException("The given object is not a roaming provider!");
 
@@ -442,7 +301,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="RoamingProvider">A roaming provider object to compare with.</param>
-        public Int32 CompareTo(EMPRoamingProvider RoamingProvider)
+        public Int32 CompareTo(AEMPRoamingProvider RoamingProvider)
         {
 
             if ((Object) RoamingProvider == null)
@@ -472,7 +331,7 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is a roaming provider.
-            var RoamingProvider = Object as EMPRoamingProvider;
+            var RoamingProvider = Object as AEMPRoamingProvider;
             if ((Object) RoamingProvider == null)
                 return false;
 
@@ -489,7 +348,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="RoamingProvider">A roaming provider to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EMPRoamingProvider RoamingProvider)
+        public Boolean Equals(AEMPRoamingProvider RoamingProvider)
         {
 
             if ((Object) RoamingProvider == null)
@@ -530,4 +389,3 @@ namespace org.GraphDefined.WWCP
     }
 
 }
-

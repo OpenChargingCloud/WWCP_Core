@@ -34,10 +34,10 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The Roaming Provider provided eMobility services interface.
     /// </summary>
-    public interface IEMPRoamingService
+    public interface IEMPRoamingProvider
     {
 
-        Authorizator_Id AuthorizatorId { get; }
+       // Authorizator_Id AuthorizatorId { get; }
 
         #region Properties
 
@@ -52,9 +52,9 @@ namespace org.GraphDefined.WWCP
         I18NString         Name              { get; }
 
         /// <summary>
-        /// The hosting WWCP roaming network.
+        /// The attached roaming network.
         /// </summary>
-        RoamingNetwork_Id  RoamingNetworkId  { get; }
+        RoamingNetwork     RoamingNetwork    { get; }
 
         #endregion
 

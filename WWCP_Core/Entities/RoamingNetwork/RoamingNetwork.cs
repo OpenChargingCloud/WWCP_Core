@@ -219,16 +219,16 @@ namespace org.GraphDefined.WWCP
             this._EVSEOperators                               = new ConcurrentDictionary<EVSEOperator_Id, EVSEOperator>();
             this._EVServiceProviders                          = new ConcurrentDictionary<EVSP_Id, EVSP>();
             this._EVSEOperatorRoamingProviders                = new ConcurrentDictionary<RoamingProvider_Id, AEVSEOperatorRoamingProvider>();
-            this._EMPRoamingProviders                         = new ConcurrentDictionary<RoamingProvider_Id, EMPRoamingProvider>();
+            this._EMPRoamingProviders                         = new ConcurrentDictionary<RoamingProvider_Id, AEMPRoamingProvider>();
             this._SearchProviders                             = new ConcurrentDictionary<NavigationServiceProvider_Id, NavigationServiceProvider>();
             this._ChargingReservations_AtEVSEOperators        = new ConcurrentDictionary<ChargingReservation_Id, EVSEOperator>();
-            this._ChargingReservations_AtEMPRoamingProviders  = new ConcurrentDictionary<ChargingReservation_Id, EMPRoamingProvider>();
+            this._ChargingReservations_AtEMPRoamingProviders  = new ConcurrentDictionary<ChargingReservation_Id, AEMPRoamingProvider>();
             this._IeMobilityServiceProviders                  = new ConcurrentDictionary<UInt32, IeMobilityServiceProvider>();
             this._EVSEOperatorRoamingProviderPriorities       = new ConcurrentDictionary<UInt32, AEVSEOperatorRoamingProvider>();
-            this._eMobilityRoamingServices                    = new ConcurrentDictionary<UInt32, IEMPRoamingService>();
+            this._eMobilityRoamingServices                    = new ConcurrentDictionary<UInt32, IEMPRoamingProvider>();
             this._PushEVSEStatusToOperatorRoamingServices     = new ConcurrentDictionary<UInt32, IPushDataAndStatus>();
             this._ChargingSessions_AtEVSEOperators            = new ConcurrentDictionary<ChargingSession_Id, EVSEOperator>();
-            this._ChargingSessions_AtEMPRoamingProviders      = new ConcurrentDictionary<ChargingSession_Id, EMPRoamingProvider>();
+            this._ChargingSessions_AtEMPRoamingProviders      = new ConcurrentDictionary<ChargingSession_Id, AEMPRoamingProvider>();
             this._ChargeDetailRecords                         = new ConcurrentDictionary<ChargingSession_Id, ChargeDetailRecord>();
 
             #endregion
@@ -245,8 +245,8 @@ namespace org.GraphDefined.WWCP
             this.CPORoamingProviderAddition  = new VotingNotificator<RoamingNetwork, AEVSEOperatorRoamingProvider, Boolean>(() => new VetoVote(), true);
             this.CPORoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, AEVSEOperatorRoamingProvider, Boolean>(() => new VetoVote(), true);
 
-            this.EMPRoamingProviderAddition  = new VotingNotificator<RoamingNetwork, EMPRoamingProvider, Boolean>(() => new VetoVote(), true);
-            this.EMPRoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, EMPRoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.EMPRoamingProviderAddition  = new VotingNotificator<RoamingNetwork, AEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.EMPRoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, AEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
 
             this.SearchProviderAddition      = new VotingNotificator<RoamingNetwork, NavigationServiceProvider, Boolean>(() => new VetoVote(), true);
             this.SearchProviderRemoval       = new VotingNotificator<RoamingNetwork, NavigationServiceProvider, Boolean>(() => new VetoVote(), true);
@@ -544,8 +544,8 @@ namespace org.GraphDefined.WWCP
 
         #region EVSE Operator Roaming Providers...
 
-        private readonly ConcurrentDictionary<UInt32, IEMPRoamingService>  _eMobilityRoamingServices;
-        private readonly ConcurrentDictionary<UInt32, IPushDataAndStatus>        _PushEVSEStatusToOperatorRoamingServices;
+        private readonly ConcurrentDictionary<UInt32, IEMPRoamingProvider>  _eMobilityRoamingServices;
+        private readonly ConcurrentDictionary<UInt32, IPushDataAndStatus>   _PushEVSEStatusToOperatorRoamingServices;
 
         #region EVSEOperatorRoamingProviders
 
@@ -565,14 +565,9 @@ namespace org.GraphDefined.WWCP
         /// Create and register a new electric vehicle roaming provider having the given
         /// unique electric vehicle roaming provider identification.
         /// </summary>
-        /// <param name="OperatorRoamingService">The attached E-Mobility service.</param>
         /// <param name="Configurator">An optional delegate to configure the new roaming provider after its creation.</param>
-        public AEVSEOperatorRoamingProvider CreateNewRoamingProvider(AEVSEOperatorRoamingProvider _CPORoamingProvider,
-                                                                    //Func<EVSE, Boolean>                  IncludeEVSEs        = null,
-                                                                    //TimeSpan?                            ServiceCheckEvery   = null,
-                                                                    //TimeSpan?                            StatusCheckEvery    = null,
-                                                                    //Boolean                              DisableAutoUploads  = false,
-                                                                    Action<AEVSEOperatorRoamingProvider>  Configurator        = null)
+        public AEVSEOperatorRoamingProvider CreateNewRoamingProvider(AEVSEOperatorRoamingProvider          _CPORoamingProvider,
+                                                                     Action<AEVSEOperatorRoamingProvider>  Configurator        = null)
         {
 
             #region Initial checks
@@ -590,15 +585,6 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentException("The given operator roaming service is not part of this roaming network!", nameof(_CPORoamingProvider));
 
             #endregion
-
-        //    var _CPORoamingProvider = new EVSEOperatorRoamingProvider(OperatorRoamingService.Id,
-        //                                                              OperatorRoamingService.Name,
-        //                                                              this,
-        //                                                              OperatorRoamingService,
-        //                                                              IncludeEVSEs,
-        //                                                              ServiceCheckEvery,
-        //                                                              StatusCheckEvery,
-        //                                                              DisableAutoUploads);
 
             Configurator.FailSafeInvoke(_CPORoamingProvider);
 
@@ -677,12 +663,12 @@ namespace org.GraphDefined.WWCP
 
         #region EMPRoamingProviders
 
-        private readonly ConcurrentDictionary<RoamingProvider_Id, EMPRoamingProvider> _EMPRoamingProviders;
+        private readonly ConcurrentDictionary<RoamingProvider_Id, AEMPRoamingProvider> _EMPRoamingProviders;
 
         /// <summary>
         /// Return all roaming providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<EMPRoamingProvider> EMPRoamingProviders => _EMPRoamingProviders.Values;
+        public IEnumerable<AEMPRoamingProvider> EMPRoamingProviders => _EMPRoamingProviders.Values;
 
         #endregion
 
@@ -694,8 +680,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="eMobilityRoamingService">A e-mobility roaming service.</param>
         /// <param name="Configurator">An optional delegate to configure the new roaming provider after its creation.</param>
-        public EMPRoamingProvider CreateNewRoamingProvider(IEMPRoamingService    eMobilityRoamingService,
-                                                           Action<EMPRoamingProvider>  Configurator = null)
+        public AEMPRoamingProvider CreateNewRoamingProvider(AEMPRoamingProvider          eMobilityRoamingService,
+                                                            Action<AEMPRoamingProvider>  Configurator = null)
         {
 
             #region Initial checks
@@ -709,31 +695,26 @@ namespace org.GraphDefined.WWCP
             if (_EMPRoamingProviders.ContainsKey(eMobilityRoamingService.Id))
                 throw new RoamingProviderAlreadyExists(eMobilityRoamingService.Id, this.Id);
 
-            if (eMobilityRoamingService.RoamingNetworkId != this.Id)
+            if (eMobilityRoamingService.RoamingNetwork.Id != this.Id)
                 throw new ArgumentException("The given operator roaming service is not part of this roaming network!", nameof(eMobilityRoamingService));
 
             #endregion
 
-            var _EMPRoamingProvider = new EMPRoamingProvider(eMobilityRoamingService.Id,
-                                                             eMobilityRoamingService.Name,
-                                                             this,
-                                                             eMobilityRoamingService);
+            Configurator.FailSafeInvoke(eMobilityRoamingService);
 
-            Configurator.FailSafeInvoke(_EMPRoamingProvider);
-
-            if (EMPRoamingProviderAddition.SendVoting(this, _EMPRoamingProvider))
+            if (EMPRoamingProviderAddition.SendVoting(this, eMobilityRoamingService))
             {
-                if (_EMPRoamingProviders.TryAdd(eMobilityRoamingService.Id, _EMPRoamingProvider))
+                if (_EMPRoamingProviders.TryAdd(eMobilityRoamingService.Id, eMobilityRoamingService))
                 {
 
-                    EMPRoamingProviderAddition.SendNotification(this, _EMPRoamingProvider);
+                    EMPRoamingProviderAddition.SendNotification(this, eMobilityRoamingService);
 
-                    SetRoamingProviderPriority(_EMPRoamingProvider,
+                    SetRoamingProviderPriority(eMobilityRoamingService,
                                                _eMobilityRoamingServices.Count > 0
                                                    ? _eMobilityRoamingServices.Keys.Max() + 1
                                                    : 10);
 
-                    return _EMPRoamingProvider;
+                    return eMobilityRoamingService;
 
                 }
             }
@@ -751,7 +732,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="eMobilityRoamingService">The e-mobility roaming service.</param>
         /// <param name="Priority">The priority of the service.</param>
-        public Boolean SetRoamingProviderPriority(IEMPRoamingService  eMobilityRoamingService,
+        public Boolean SetRoamingProviderPriority(IEMPRoamingProvider  eMobilityRoamingService,
                                                   UInt32              Priority)
 
             => _eMobilityRoamingServices.TryAdd(Priority, eMobilityRoamingService);
@@ -760,23 +741,23 @@ namespace org.GraphDefined.WWCP
 
         #region EMPRoamingProviderAddition
 
-        private readonly IVotingNotificator<RoamingNetwork, EMPRoamingProvider, Boolean> EMPRoamingProviderAddition;
+        private readonly IVotingNotificator<RoamingNetwork, AEMPRoamingProvider, Boolean> EMPRoamingProviderAddition;
 
         /// <summary>
         /// Called whenever a RoamingProvider will be or was added.
         /// </summary>
-        public IVotingSender<RoamingNetwork, EMPRoamingProvider, Boolean> OnEMPRoamingProviderAddition => EMPRoamingProviderAddition;
+        public IVotingSender<RoamingNetwork, AEMPRoamingProvider, Boolean> OnEMPRoamingProviderAddition => EMPRoamingProviderAddition;
 
         #endregion
 
         #region EMPRoamingProviderRemoval
 
-        private readonly IVotingNotificator<RoamingNetwork, EMPRoamingProvider, Boolean> EMPRoamingProviderRemoval;
+        private readonly IVotingNotificator<RoamingNetwork, AEMPRoamingProvider, Boolean> EMPRoamingProviderRemoval;
 
         /// <summary>
         /// Called whenever a RoamingProvider will be or was removed.
         /// </summary>
-        public IVotingSender<RoamingNetwork, EMPRoamingProvider, Boolean> OnEMPRoamingProviderRemoval => EMPRoamingProviderRemoval;
+        public IVotingSender<RoamingNetwork, AEMPRoamingProvider, Boolean> OnEMPRoamingProviderRemoval => EMPRoamingProviderRemoval;
 
         #endregion
 
@@ -2391,7 +2372,7 @@ namespace org.GraphDefined.WWCP
         #region ChargingReservations
 
         private readonly ConcurrentDictionary<ChargingReservation_Id, EVSEOperator>        _ChargingReservations_AtEVSEOperators;
-        private readonly ConcurrentDictionary<ChargingReservation_Id, EMPRoamingProvider>  _ChargingReservations_AtEMPRoamingProviders;
+        private readonly ConcurrentDictionary<ChargingReservation_Id, AEMPRoamingProvider>  _ChargingReservations_AtEMPRoamingProviders;
 
         /// <summary>
         /// Return all current charging reservations.
@@ -3017,7 +2998,7 @@ namespace org.GraphDefined.WWCP
                 result.Result == CancelReservationResultType.UnknownReservationId)
             {
 
-                EMPRoamingProvider _EMPRoamingProvider = null;
+                AEMPRoamingProvider _EMPRoamingProvider = null;
 
                 if (_ChargingReservations_AtEMPRoamingProviders.TryRemove(ReservationId, out _EMPRoamingProvider))
                 {
@@ -3685,7 +3666,7 @@ namespace org.GraphDefined.WWCP
                 result.Result == RemoteStopEVSEResultType.InvalidSessionId)
             {
 
-                EMPRoamingProvider _EMPRoamingProvider = null;
+                AEMPRoamingProvider _EMPRoamingProvider = null;
 
                 if (_ChargingSessions_AtEMPRoamingProviders.TryRemove(SessionId, out _EMPRoamingProvider))
                 {
@@ -5197,7 +5178,7 @@ namespace org.GraphDefined.WWCP
         #region ChargingSessions
 
         private readonly ConcurrentDictionary<ChargingSession_Id, EVSEOperator>        _ChargingSessions_AtEVSEOperators;
-        private readonly ConcurrentDictionary<ChargingSession_Id, EMPRoamingProvider>  _ChargingSessions_AtEMPRoamingProviders;
+        private readonly ConcurrentDictionary<ChargingSession_Id, AEMPRoamingProvider>  _ChargingSessions_AtEMPRoamingProviders;
 
         /// <summary>
         /// Return all current charging sessions.

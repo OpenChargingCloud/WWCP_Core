@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP
     /// A e-Mobility Roaming Provider (EMRP).
     /// </summary>
     public abstract class ARoamingProvider : AEMobilityEntity<RoamingProvider_Id>,
-                                             IEquatable<EMPRoamingProvider>, IComparable<EMPRoamingProvider>, IComparable
+                                             IEquatable<AEMPRoamingProvider>, IComparable<AEMPRoamingProvider>, IComparable
     {
 
         #region Properties
@@ -43,24 +43,32 @@ namespace org.GraphDefined.WWCP
         /// The offical (multi-language) name of the roaming provider.
         /// </summary>
         [Mandatory]
-        public I18NString Name => _Name;
+        public I18NString Name
+            => _Name;
 
         #endregion
 
         #region RoamingNetwork
 
-        private readonly RoamingNetwork _RoamingNetwork;
+        protected readonly RoamingNetwork _RoamingNetwork;
 
         /// <summary>
-        /// The associated EV Roaming Network of the Electric Vehicle Supply Equipment Operator.
+        /// The attached roaming network.
         /// </summary>
         public RoamingNetwork RoamingNetwork
-        {
-            get
-            {
-                return _RoamingNetwork;
-            }
-        }
+            => _RoamingNetwork;
+
+        #endregion
+
+        #region AuthorizatorId
+
+        private readonly Authorizator_Id _AuthorizatorId;
+
+        /// <summary>
+        /// The unique identification of the authorizator of this roaming provider.
+        /// </summary>
+        public Authorizator_Id AuthorizatorId
+            => _AuthorizatorId;
 
         #endregion
 
@@ -69,15 +77,16 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new e-Mobility Roaming Provider (EMRP)
-        /// having the given unique roaming provider identification and name.
+        /// Create a new e-Mobility Roaming Provider (EMRP) having the given
+        /// unique roaming provider identification, internationalized name
+        /// and attached roaming network.
         /// </summary>
         /// <param name="Id">The unique identification of the roaming provider.</param>
         /// <param name="Name">The offical (multi-language) name of the roaming provider.</param>
-        /// <param name="RoamingNetwork">The associated roaming network.</param>
-        internal ARoamingProvider(RoamingProvider_Id        Id,
-                                  I18NString                Name,
-                                  RoamingNetwork            RoamingNetwork)
+        /// <param name="RoamingNetwork">The attached roaming network.</param>
+        internal ARoamingProvider(RoamingProvider_Id  Id,
+                                  I18NString          Name,
+                                  RoamingNetwork      RoamingNetwork)
 
             : base(Id)
 
@@ -86,7 +95,7 @@ namespace org.GraphDefined.WWCP
             #region Initial Checks
 
             if (Name.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Name),            "The given roaming network must not be null!");
+                throw new ArgumentNullException(nameof(Name),            "The given roaming provider name must not be null or empty!");
 
             if (RoamingNetwork == null)
                 throw new ArgumentNullException(nameof(RoamingNetwork),  "The given roaming network must not be null!");
@@ -95,6 +104,7 @@ namespace org.GraphDefined.WWCP
 
             this._Name            = Name;
             this._RoamingNetwork  = RoamingNetwork;
+            this._AuthorizatorId  = Authorizator_Id.Parse(Id.ToString());
 
         }
 
@@ -116,7 +126,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is a roaming provider.
-            var RoamingProvider = Object as EMPRoamingProvider;
+            var RoamingProvider = Object as AEMPRoamingProvider;
             if ((Object) RoamingProvider == null)
                 throw new ArgumentException("The given object is not a roaming provider!");
 
@@ -132,7 +142,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="RoamingProvider">A roaming provider object to compare with.</param>
-        public Int32 CompareTo(EMPRoamingProvider RoamingProvider)
+        public Int32 CompareTo(AEMPRoamingProvider RoamingProvider)
         {
 
             if ((Object) RoamingProvider == null)
@@ -162,7 +172,7 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is a roaming provider.
-            var RoamingProvider = Object as EMPRoamingProvider;
+            var RoamingProvider = Object as AEMPRoamingProvider;
             if ((Object) RoamingProvider == null)
                 return false;
 
@@ -179,7 +189,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="RoamingProvider">A roaming provider to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EMPRoamingProvider RoamingProvider)
+        public Boolean Equals(AEMPRoamingProvider RoamingProvider)
         {
 
             if ((Object) RoamingProvider == null)
@@ -199,9 +209,7 @@ namespace org.GraphDefined.WWCP
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
+            => Id.GetHashCode();
 
         #endregion
 
@@ -211,9 +219,7 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return Id.ToString();
-        }
+            => Id.ToString();
 
         #endregion
 

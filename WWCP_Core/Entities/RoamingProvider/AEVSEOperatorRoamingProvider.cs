@@ -42,29 +42,29 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The default service check intervall.
         /// </summary>
-        public  readonly static TimeSpan                  DefaultServiceCheckEvery = TimeSpan.FromSeconds(61);
+        public  readonly static TimeSpan                    DefaultServiceCheckEvery = TimeSpan.FromSeconds(61);
 
         /// <summary>
         /// The default status check intervall.
         /// </summary>
-        public  readonly static TimeSpan                  DefaultStatusCheckEvery  = TimeSpan.FromSeconds(3);
+        public  readonly static TimeSpan                    DefaultStatusCheckEvery  = TimeSpan.FromSeconds(3);
 
 
-        private readonly        Object                    ServiceCheckLock;
-        private readonly        Timer                     ServiceCheckTimer;
-        private readonly        Object                    StatusCheckLock;
-        private readonly        Timer                     StatusCheckTimer;
+        private readonly        Object                      ServiceCheckLock;
+        private readonly        Timer                       ServiceCheckTimer;
+        private readonly        Object                      StatusCheckLock;
+        private readonly        Timer                       StatusCheckTimer;
 
-        private readonly        HashSet<EVSE>             EVSEsToAddQueue;
-        private readonly        HashSet<EVSE>             EVSEDataUpdatesQueue;
-        private readonly        List<EVSEStatusChange>    EVSEStatusChangesFastQueue;
-        private readonly        List<EVSEStatusChange>    EVSEStatusChangesDelayedQueue;
-        private readonly        HashSet<EVSE>             EVSEsToRemoveQueue;
-        private readonly        List<ChargeDetailRecord>  ChargeDetailRecordQueue;
+        private readonly        HashSet<EVSE>               EVSEsToAddQueue;
+        private readonly        HashSet<EVSE>               EVSEDataUpdatesQueue;
+        private readonly        List<EVSEStatusChange>      EVSEStatusChangesFastQueue;
+        private readonly        List<EVSEStatusChange>      EVSEStatusChangesDelayedQueue;
+        private readonly        HashSet<EVSE>               EVSEsToRemoveQueue;
+        private readonly        List<ChargeDetailRecord>    ChargeDetailRecordQueue;
 
-        private UInt64               _ServiceRunId;
-        private UInt64               _StatusRunId;
-        private Func<EVSE, Boolean>  _IncludeEVSEs;
+        private                 UInt64                      _ServiceRunId;
+        private                 UInt64                      _StatusRunId;
+        private                 Func<EVSE, Boolean>         _IncludeEVSEs;
 
         #endregion
 
@@ -280,14 +280,11 @@ namespace org.GraphDefined.WWCP
                                             TimeSpan?                StatusCheckEvery    = null,
                                             Boolean                  DisableAutoUploads  = false)
 
-            : base(Id, Name, RoamingNetwork)
+            : base(Id,
+                   Name,
+                   RoamingNetwork)
 
         {
-
-            #region Initial Checks
-
-
-            #endregion
 
             this.EVSEsToAddQueue                 = new HashSet<EVSE>();
             this.EVSEDataUpdatesQueue            = new HashSet<EVSE>();
@@ -1644,7 +1641,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             // Check if the given object is a roaming provider.
-            var RoamingProvider = Object as EMPRoamingProvider;
+            var RoamingProvider = Object as AEMPRoamingProvider;
             if ((Object) RoamingProvider == null)
                 throw new ArgumentException("The given object is not a roaming provider!");
 
@@ -1660,7 +1657,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="RoamingProvider">A roaming provider object to compare with.</param>
-        public new Int32 CompareTo(EMPRoamingProvider RoamingProvider)
+        public new Int32 CompareTo(AEMPRoamingProvider RoamingProvider)
         {
 
             if ((Object) RoamingProvider == null)
@@ -1690,7 +1687,7 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is a roaming provider.
-            var RoamingProvider = Object as EMPRoamingProvider;
+            var RoamingProvider = Object as AEMPRoamingProvider;
             if ((Object) RoamingProvider == null)
                 return false;
 
@@ -1707,7 +1704,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="RoamingProvider">A roaming provider to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public new Boolean Equals(EMPRoamingProvider RoamingProvider)
+        public new Boolean Equals(AEMPRoamingProvider RoamingProvider)
         {
 
             if ((Object) RoamingProvider == null)

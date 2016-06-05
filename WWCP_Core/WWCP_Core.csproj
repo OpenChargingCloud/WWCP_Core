@@ -57,8 +57,8 @@
     <Compile Include="Commands\IGeneralServices.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStopDelegates.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStartDelegates.cs" />
-    <Compile Include="Commands\IEMPRoamingService.cs" />
-    <Compile Include="Commands\IEVSEOperatorRoamingProvider.cs" />
+    <Compile Include="Entities\RoamingProvider\IEMPRoamingProvider.cs" />
+    <Compile Include="Entities\RoamingProvider\IEVSEOperatorRoamingProvider.cs" />
     <Compile Include="Commands\PushDataAndStatus\AnonymousPushEVSEStatusService.cs" />
     <Compile Include="Commands\PushDataAndStatus\PushDataAndStatusDelegates.cs" />
     <Compile Include="Commands\RemoteStartStop\OnRemoteStopDelegates.cs" />
@@ -210,7 +210,7 @@
     <Compile Include="Commands\RemoteStartStop\RemoteStopEVSEResult.cs" />
     <Compile Include="CommonTypes\SessionInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Entities\RoamingProvider\EMPRoamingProvider.cs" />
+    <Compile Include="Entities\RoamingProvider\AEMPRoamingProvider.cs" />
     <Compile Include="Entities\RoamingProvider\RoamingProvider_Id.cs" />
     <Compile Include="Entities\NavigationServiceProvider\NavigationServiceProvider.cs" />
     <Compile Include="Entities\NavigationServiceProvider\NavigationServiceProvider_Id.cs" />
