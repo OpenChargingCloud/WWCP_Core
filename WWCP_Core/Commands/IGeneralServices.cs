@@ -29,7 +29,7 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The EV Roaming Provider provided EVSE Operator services interface.
+    /// The general services interface.
     /// </summary>
     public interface IGeneralServices : IPushDataAndStatus
     {

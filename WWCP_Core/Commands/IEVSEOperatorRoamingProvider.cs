@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The EV Roaming Provider provided EVSE Operator services interface.
     /// </summary>
-    public interface IOperatorRoamingService : IGeneralServices
+    public interface IEVSEOperatorRoamingProvider : IGeneralServices
     {
 
         #region Properties

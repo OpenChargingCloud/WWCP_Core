@@ -494,7 +494,7 @@ namespace org.GraphDefined.WWCP
 
         #region OperatorRoamingService
 
-        public IOperatorRoamingService OperatorRoamingService { get; set; }
+        public IEVSEOperatorRoamingProvider OperatorRoamingService { get; set; }
 
         #endregion
 
