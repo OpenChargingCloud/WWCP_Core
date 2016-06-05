@@ -56,7 +56,8 @@ namespace org.GraphDefined.WWCP
 
         private readonly Authorizator_Id _AuthorizatorId;
 
-        public Authorizator_Id AuthorizatorId => _AuthorizatorId;
+        public Authorizator_Id AuthorizatorId
+            => _AuthorizatorId;
 
         #endregion
 
@@ -93,7 +94,8 @@ namespace org.GraphDefined.WWCP
         /// The current roaming network status.
         /// </summary>
         [Optional]
-        public Timestamped<RoamingNetworkStatusType> Status => _StatusHistory.Peek();
+        public Timestamped<RoamingNetworkStatusType> Status
+            => _StatusHistory.Peek();
 
         #endregion
 
@@ -105,7 +107,8 @@ namespace org.GraphDefined.WWCP
         /// The roaming network status history.
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<RoamingNetworkStatusType>> StatusHistory => _StatusHistory.OrderByDescending(v => v.Timestamp);
+        public IEnumerable<Timestamped<RoamingNetworkStatusType>> StatusHistory
+            => _StatusHistory.OrderByDescending(v => v.Timestamp);
 
         #endregion
 
@@ -140,7 +143,8 @@ namespace org.GraphDefined.WWCP
         /// The current roaming network admin status.
         /// </summary>
         [Optional]
-        public Timestamped<RoamingNetworkAdminStatusType> AdminStatus => _AdminStatusHistory.Peek();
+        public Timestamped<RoamingNetworkAdminStatusType> AdminStatus
+            => _AdminStatusHistory.Peek();
 
         #endregion
 
@@ -152,7 +156,8 @@ namespace org.GraphDefined.WWCP
         /// The roaming network admin status history.
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<RoamingNetworkAdminStatusType>> AdminStatusHistory => _AdminStatusHistory.OrderByDescending(v => v.Timestamp);
+        public IEnumerable<Timestamped<RoamingNetworkAdminStatusType>> AdminStatusHistory
+            => _AdminStatusHistory.OrderByDescending(v => v.Timestamp);
 
         #endregion
 
