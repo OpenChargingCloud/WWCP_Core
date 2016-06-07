@@ -137,15 +137,15 @@ namespace org.GraphDefined.WWCP
         /// based on the given string.
         /// </summary>
         /// <param name="CountryCode">The Alpha-2-CountryCode.</param>
-        /// <param name="Separator">The separator '-' (ISO) or '*|-' DIN to use.</param>
+        /// <param name="IdFormat">The id format '-' (ISO) or '*|-' DIN to use.</param>
         /// <param name="ProviderId">The EV Service Provider identification.</param>
         private EVSP_Id(Country            CountryCode,
-                        ProviderIdFormats  Separator,
+                        ProviderIdFormats  IdFormat,
                         String             ProviderId)
         {
 
             this._CountryCode  = CountryCode;
-            this._IdFormat    = Separator;
+            this._IdFormat     = IdFormat;
             this._ProviderId   = ProviderId;
 
         }
@@ -205,24 +205,26 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Parse(CountryCode, ProviderId)
+        #region Parse(CountryCode, ProviderId, ProviderIdFormat = ProviderIdFormats.ISO_HYPHEN)
 
         /// <summary>
         /// Parse the given string as an EV Service Provider identification.
         /// </summary>
         /// <param name="CountryCode">A country code.</param>
         /// <param name="ProviderId">An EV Service Provider identification as a string.</param>
-        public static EVSP_Id Parse(Country  CountryCode,
-                                    String   ProviderId)
+        /// <param name="ProviderIdFormat">The optional format of the provider identification.</param>
+        public static EVSP_Id Parse(Country            CountryCode,
+                                    String             ProviderId,
+                                    ProviderIdFormats  ProviderIdFormat = ProviderIdFormats.ISO_HYPHEN)
         {
 
             #region Initial checks
 
             if (CountryCode == null)
-                throw new ArgumentException("The parameter must not be null or empty!", "CountryCode");
+                throw new ArgumentNullException(nameof(CountryCode),  "The country code must not be null!");
 
             if (ProviderId.IsNullOrEmpty())
-                throw new ArgumentException("The parameter must not be null or empty!", "ProviderId");
+                throw new ArgumentNullException(nameof(ProviderId),   "The provider identification must not be null or empty!");
 
             #endregion
 
@@ -231,10 +233,10 @@ namespace org.GraphDefined.WWCP
                                                  RegexOptions.IgnorePatternWhitespace);
 
             if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal EV Service Provider identification '" + CountryCode + " / " + ProviderId + "'!", "ProviderId");
+                throw new ArgumentException("Illegal EV Service Provider identification '" + CountryCode + " / " + ProviderId + "'!", nameof(ProviderId));
 
             return new EVSP_Id(CountryCode,
-                               ProviderIdFormats.DIN|ProviderIdFormats.ISO,
+                               ProviderIdFormat,
                                _MatchCollection[0].Value);
 
         }
@@ -639,7 +641,8 @@ namespace org.GraphDefined.WWCP
             switch (IdFormat)
             {
 
-                case ProviderIdFormats.DIN_HYPHEN | ProviderIdFormats.ISO_HYPHEN:
+                case ProviderIdFormats.DIN_HYPHEN:
+                case ProviderIdFormats.ISO_HYPHEN:
                     return String.Concat(CountryCode.Alpha2Code.ToUpper(), "-", _ProviderId.ToString());
 
                 case ProviderIdFormats.DIN_STAR:

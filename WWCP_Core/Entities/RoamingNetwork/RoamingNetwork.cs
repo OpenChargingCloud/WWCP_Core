@@ -218,7 +218,7 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this._AuthorizatorId                              = (AuthorizatorId == null) ? Authorizator_Id.Parse("GraphDefined E-Mobility Gateway") : AuthorizatorId;
+            this._AuthorizatorId                              = AuthorizatorId ?? Authorizator_Id.Parse("GraphDefined E-Mobility Gateway");
             this._Description                                 = new I18NString();
 
             this._EVSEOperators                               = new ConcurrentDictionary<EVSEOperator_Id, EVSEOperator>();
@@ -228,10 +228,12 @@ namespace org.GraphDefined.WWCP
             this._SearchProviders                             = new ConcurrentDictionary<NavigationServiceProvider_Id, NavigationServiceProvider>();
             this._ChargingReservations_AtEVSEOperators        = new ConcurrentDictionary<ChargingReservation_Id, EVSEOperator>();
             this._ChargingReservations_AtEMPRoamingProviders  = new ConcurrentDictionary<ChargingReservation_Id, AEMPRoamingProvider>();
+
             this._IeMobilityServiceProviders                  = new ConcurrentDictionary<UInt32, IeMobilityServiceProvider>();
             this._EVSEOperatorRoamingProviderPriorities       = new ConcurrentDictionary<UInt32, AEVSEOperatorRoamingProvider>();
             this._eMobilityRoamingServices                    = new ConcurrentDictionary<UInt32, IEMPRoamingProvider>();
             this._PushEVSEStatusToOperatorRoamingServices     = new ConcurrentDictionary<UInt32, IPushDataAndStatus>();
+
             this._ChargingSessions_AtEVSEOperators            = new ConcurrentDictionary<ChargingSession_Id, EVSEOperator>();
             this._ChargingSessions_AtEMPRoamingProviders      = new ConcurrentDictionary<ChargingSession_Id, AEMPRoamingProvider>();
             this._ChargeDetailRecords                         = new ConcurrentDictionary<ChargingSession_Id, ChargeDetailRecord>();
@@ -852,8 +854,7 @@ namespace org.GraphDefined.WWCP
 
             var _EVSEOperator = new EVSEOperator(EVSEOperatorId, Name, Description, this);
 
-            if (Configurator != null)
-                Configurator(_EVSEOperator);
+            Configurator?.Invoke(_EVSEOperator);
 
             if (EVSEOperatorAddition.SendVoting(DateTime.Now, this, _EVSEOperator))
             {
@@ -1048,9 +1049,10 @@ namespace org.GraphDefined.WWCP
 
                     _StatusHistory.Push(NewAggregatedStatus);
 
-                    var OnAggregatedStatusChangedLocal = OnStatusChanged;
-                    if (OnAggregatedStatusChangedLocal != null)
-                        OnAggregatedStatusChangedLocal(Timestamp, this, OldAggregatedStatus, NewAggregatedStatus);
+                    OnStatusChanged?.Invoke(Timestamp,
+                                            this,
+                                            OldAggregatedStatus,
+                                            NewAggregatedStatus);
 
                 }
 
