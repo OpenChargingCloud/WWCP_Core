@@ -31,7 +31,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The general services interface.
     /// </summary>
-    public interface IGeneralServices : IPushDataAndStatus
+    public interface IGeneralServices : IPushData, IPushStatus
     {
 
         #region Events
@@ -186,6 +186,11 @@ namespace org.GraphDefined.WWCP
                                                    TimeSpan?           QueryTimeout = null);
 
         #endregion
+
+
+
+
+
 
     }
 

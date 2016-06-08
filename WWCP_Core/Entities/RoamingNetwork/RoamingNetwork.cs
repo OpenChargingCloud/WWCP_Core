@@ -228,7 +228,8 @@ namespace org.GraphDefined.WWCP
             this._IeMobilityServiceProviders                  = new ConcurrentDictionary<UInt32, IeMobilityServiceProvider>();
             this._EVSEOperatorRoamingProviderPriorities       = new ConcurrentDictionary<UInt32, AEVSEOperatorRoamingProvider>();
             this._eMobilityRoamingServices                    = new ConcurrentDictionary<UInt32, IEMPRoamingProvider>();
-            this._PushEVSEStatusToOperatorRoamingServices     = new ConcurrentDictionary<UInt32, IPushDataAndStatus>();
+            this._PushEVSEDataToOperatorRoamingServices       = new ConcurrentDictionary<UInt32, IPushData>();
+            this._PushEVSEStatusToOperatorRoamingServices     = new ConcurrentDictionary<UInt32, IPushStatus>();
 
             this._ChargingSessions_AtEVSEOperators            = new ConcurrentDictionary<ChargingSession_Id, EVSEOperator>();
             this._ChargingSessions_AtEMPRoamingProviders      = new ConcurrentDictionary<ChargingSession_Id, AEMPRoamingProvider>();
@@ -548,7 +549,8 @@ namespace org.GraphDefined.WWCP
         #region EVSE Operator Roaming Providers...
 
         private readonly ConcurrentDictionary<UInt32, IEMPRoamingProvider>  _eMobilityRoamingServices;
-        private readonly ConcurrentDictionary<UInt32, IPushDataAndStatus>   _PushEVSEStatusToOperatorRoamingServices;
+        private readonly ConcurrentDictionary<UInt32, IPushData>            _PushEVSEDataToOperatorRoamingServices;
+        private readonly ConcurrentDictionary<UInt32, IPushStatus>          _PushEVSEStatusToOperatorRoamingServices;
 
         #region EVSEOperatorRoamingProviders
 
@@ -765,6 +767,20 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region RegisterPushEVSEDataService(Priority, PushEVSEDataServices)
+
+        /// <summary>
+        /// Register the given push-data service.
+        /// </summary>
+        /// <param name="Priority">The priority of the service.</param>
+        /// <param name="PushEVSEDataServices">The push-data service.</param>
+        public Boolean RegisterPushEVSEStatusService(UInt32              Priority,
+                                                     IPushData           PushEVSEDataServices)
+
+            => _PushEVSEDataToOperatorRoamingServices.TryAdd(Priority, PushEVSEDataServices);
+
+        #endregion
+
         #region RegisterPushEVSEStatusService(Priority, PushEVSEStatusServices)
 
         /// <summary>
@@ -772,8 +788,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Priority">The priority of the service.</param>
         /// <param name="PushEVSEStatusServices">The push-status service.</param>
-        public Boolean RegisterPushEVSEStatusService(UInt32              Priority,
-                                                     IPushDataAndStatus  PushEVSEStatusServices)
+        public Boolean RegisterPushEVSEStatusService(UInt32       Priority,
+                                                     IPushStatus  PushEVSEStatusServices)
 
             => _PushEVSEStatusToOperatorRoamingServices.TryAdd(Priority, PushEVSEStatusServices);
 

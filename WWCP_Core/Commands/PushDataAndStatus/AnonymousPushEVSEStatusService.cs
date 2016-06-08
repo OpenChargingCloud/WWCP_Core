@@ -27,11 +27,9 @@ using System.Collections.Generic;
 namespace org.GraphDefined.WWCP
 {
 
-    public class AnonymousPushEVSEStatusService : IPushDataAndStatus
+    public class AnonymousPushEVSEStatusService : IPushStatus
     {
 
-        public event OnEVSEDataPushDelegate     OnEVSEDataPush;
-        public event OnEVSEDataPushedDelegate   OnEVSEDataPushed;
         public event OnEVSEStatusPushDelegate   OnEVSEStatusPush;
         public event OnEVSEStatusPushedDelegate OnEVSEStatusPushed;
 
@@ -114,70 +112,12 @@ namespace org.GraphDefined.WWCP
             return Task.FromResult(new Acknowledgement(true));
         }
 
-        public Task<Acknowledgement> PushEVSEData(ILookup<EVSEOperator, EVSE> GroupedEVSEs, ActionType ActionType = ActionType.fullLoad, EVSEOperator_Id OperatorId = null, string OperatorName = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Acknowledgement> PushEVSEData(EVSE EVSE, ActionType ActionType = ActionType.insert, EVSEOperator_Id OperatorId = null, string OperatorName = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Acknowledgement> PushEVSEData(IEnumerable<EVSE> EVSEs, ActionType ActionType = ActionType.fullLoad, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Acknowledgement> PushEVSEData(ChargingStation ChargingStation, ActionType ActionType = ActionType.fullLoad, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Acknowledgement> PushEVSEData(IEnumerable<ChargingStation> ChargingStations, ActionType ActionType = ActionType.fullLoad, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Acknowledgement> PushEVSEData(ChargingPool ChargingPool, ActionType ActionType = ActionType.fullLoad, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Acknowledgement> PushEVSEData(IEnumerable<ChargingPool> ChargingPools, ActionType ActionType = ActionType.fullLoad, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Acknowledgement> PushEVSEData(EVSEOperator EVSEOperator, ActionType ActionType = ActionType.fullLoad, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Acknowledgement> PushEVSEData(IEnumerable<EVSEOperator> EVSEOperators, ActionType ActionType = ActionType.fullLoad, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Acknowledgement> PushEVSEData(RoamingNetwork RoamingNetwork, ActionType ActionType = ActionType.fullLoad, EVSEOperator_Id OperatorId = null, string OperatorName = null, Func<EVSE, bool> IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveChargingStations(DateTime                      Timestamp,
-                                           IEnumerable<ChargingStation>  ChargingStations)
-        {
-
-            foreach (var ChargingStation in ChargingStations)
-                Console.WriteLine("AnonymousPushEVSEStatusService says: " + ChargingStation.Id + " was removed!");
-
-        }
 
         public Task<Acknowledgement> EnqueueEVSEStatusUpdate(EVSEStatus EVSEStatus, ActionType ActionType = ActionType.update, EVSEOperator_Id OperatorId = null, string OperatorName = null, TimeSpan? QueryTimeout = default(TimeSpan?))
         {
             throw new NotImplementedException();
         }
-    }
 
+    }
 
 }

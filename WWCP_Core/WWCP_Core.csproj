@@ -53,7 +53,8 @@
     <Compile Include="Commands\AuthorizeStartStop\AuthStartResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStopChargingStationResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStopResult.cs" />
-    <Compile Include="Commands\IPushDataAndStatus.cs" />
+    <Compile Include="Commands\IPushData.cs" />
+    <Compile Include="Commands\IPushStatus.cs" />
     <Compile Include="Commands\IGeneralServices.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStopDelegates.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStartDelegates.cs" />
