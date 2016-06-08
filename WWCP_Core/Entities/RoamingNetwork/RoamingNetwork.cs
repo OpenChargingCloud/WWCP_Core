@@ -2956,7 +2956,7 @@ namespace org.GraphDefined.WWCP
         #region CancelReservation(...ReservationId, Reason, ProviderId = null, EVSEId = null, ...)
 
         /// <summary>
-        /// Try to remove the given charging reservation.
+        /// Cancel the given charging reservation.
         /// </summary>
         /// <param name="Timestamp">The timestamp of this request.</param>
         /// <param name="CancellationToken">A token to cancel this request.</param>
