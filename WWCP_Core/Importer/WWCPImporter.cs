@@ -773,6 +773,8 @@ namespace org.GraphDefined.WWCP.Importer
         public WWCPImporter<T> Start()
         {
 
+            DebugX.Log("Starting WWCP importer '" + Id + "'!");
+
             if (Monitor.TryEnter(UpdateEVSEDataAndStatusLock))
             {
 
@@ -887,9 +889,7 @@ namespace org.GraphDefined.WWCP.Importer
                         }
 
                         // Update ForwardingInfos
-                        var OnEveryRunLocal = OnEveryRun;
-                        if (OnEveryRunLocal != null)
-                            OnEveryRunLocal(this, ImporterTask);
+                        OnEveryRun?.Invoke(this, ImporterTask);
 
                     }).
                     Wait();
