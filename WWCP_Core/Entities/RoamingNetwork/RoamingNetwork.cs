@@ -37,10 +37,8 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A Electric Vehicle Roaming Network is a service abstraction to allow multiple
     /// independent roaming services to be delivered over the same infrastructure.
-    /// This can e.g. be a differentation of service levels (Premiun, Normal,
-    /// Discount) or allow a simplified testing (Production, QA, Testing, ...)
-    /// The RoamingNetwork class also provides access to all registered electric
-    /// vehicle charging entities within an EV Roaming Network.
+    /// This can e.g. be a differentation of service levels (premiun, basic,
+    /// discount) or allow a simplified testing (production, qa, featureX, ...)
     /// </summary>
     public class RoamingNetwork : AEMobilityEntity<RoamingNetwork_Id>,
                                   IEquatable<RoamingNetwork>, IComparable<RoamingNetwork>, IComparable,
