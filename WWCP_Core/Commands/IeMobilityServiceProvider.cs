@@ -35,6 +35,11 @@ namespace org.GraphDefined.WWCP
     public interface IeMobilityServiceProvider : IGeneralServices
     {
 
+        /// <summary>
+        /// The unique identification of the e-mobility service provider.
+        /// </summary>
+        EVSP_Id Id { get; }
+
         Authorizator_Id AuthorizatorId { get; }
 
         IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens            { get; }
@@ -61,7 +66,7 @@ namespace org.GraphDefined.WWCP
 
         // Outgoing to the roaming network
 
-        #region Reserve(...EVSEId, StartTime, Duration, ReservationId = null, ProviderId = null, ...)
+        #region Reserve(...EVSEId, StartTime, Duration, ReservationId = null, ...)
 
         /// <summary>
         /// Reserve the possibility to charge at the given EVSE.
@@ -73,7 +78,6 @@ namespace org.GraphDefined.WWCP
         /// <param name="StartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
-        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
@@ -89,7 +93,6 @@ namespace org.GraphDefined.WWCP
                     DateTime?                StartTime          = null,
                     TimeSpan?                Duration           = null,
                     ChargingReservation_Id   ReservationId      = null,
-                    EVSP_Id                  ProviderId         = null,
                     eMA_Id                   eMAId              = null,
                     ChargingProduct_Id       ChargingProductId  = null,
                     IEnumerable<Auth_Token>  AuthTokens         = null,
@@ -99,7 +102,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CancelReservation(...ReservationId, Reason, ProviderId = null, EVSEId = null, ...)
+        #region CancelReservation(...ReservationId, Reason, EVSEId = null, ...)
 
         /// <summary>
         /// Cancel the given charging reservation.
@@ -109,7 +112,6 @@ namespace org.GraphDefined.WWCP
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">A reason for this cancellation.</param>
-        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// <param name="EVSEId">An optional identification of the EVSE.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         Task<CancelReservationResult>
@@ -119,14 +121,13 @@ namespace org.GraphDefined.WWCP
                               EventTracking_Id                       EventTrackingId,
                               ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
-                              EVSP_Id                                ProviderId    = null,
                               EVSE_Id                                EVSEId        = null,
                               TimeSpan?                              QueryTimeout  = null);
 
         #endregion
 
 
-        #region RemoteStart(...EVSEId, ChargingProductId = null, ReservationId = null, SessionId = null, ProviderId = null, eMAId = null, ...)
+        #region RemoteStart(...EVSEId, ChargingProductId = null, ReservationId = null, SessionId = null, eMAId = null, ...)
 
         /// <summary>
         /// Start a charging session at the given EVSE.
@@ -138,7 +139,6 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
         /// <param name="ReservationId">The unique identification for a charging reservation.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
         /// <param name="eMAId">The unique identification of the e-mobility account.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         Task<RemoteStartEVSEResult>
@@ -150,13 +150,12 @@ namespace org.GraphDefined.WWCP
                         ChargingProduct_Id      ChargingProductId  = null,
                         ChargingReservation_Id  ReservationId      = null,
                         ChargingSession_Id      SessionId          = null,
-                        EVSP_Id                 ProviderId         = null,
                         eMA_Id                  eMAId              = null,
                         TimeSpan?               QueryTimeout       = null);
 
         #endregion
 
-        #region RemoteStop(...EVSEId, SessionId, ReservationHandling, ProviderId = null, eMAId = null, ...)
+        #region RemoteStop(...EVSEId, SessionId, ReservationHandling, eMAId = null, ...)
 
         /// <summary>
         /// Stop the given charging session at the given EVSE.
@@ -167,7 +166,6 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId">The unique identification of the EVSE to be stopped.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
-        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
         /// <param name="eMAId">The unique identification of the e-mobility account.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         Task<RemoteStopEVSEResult>
@@ -178,7 +176,6 @@ namespace org.GraphDefined.WWCP
                        EVSE_Id              EVSEId,
                        ChargingSession_Id   SessionId,
                        ReservationHandling  ReservationHandling,
-                       EVSP_Id              ProviderId    = null,
                        eMA_Id               eMAId         = null,
                        TimeSpan?            QueryTimeout  = null);
 
