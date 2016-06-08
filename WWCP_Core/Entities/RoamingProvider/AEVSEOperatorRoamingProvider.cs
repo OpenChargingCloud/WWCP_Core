@@ -1334,7 +1334,7 @@ namespace org.GraphDefined.WWCP
         public async Task FlushServiceQueues()
         {
 
-            Console.WriteLine("ServiceCheck, as every " + _ServiceCheckEvery + "ms!");
+            DebugX.Log("ServiceCheck, as every " + _ServiceCheckEvery + "ms!");
 
             #region Make a thread local copy of all data
 
@@ -1535,7 +1535,7 @@ namespace org.GraphDefined.WWCP
         public async Task FlushStatusQueues()
         {
 
-            Console.WriteLine("StatusCheck, as every " + _StatusCheckEvery + "ms!");
+            DebugX.Log("StatusCheck, as every " + _StatusCheckEvery + "ms!");
 
             #region Make a thread local copy of all data
 
