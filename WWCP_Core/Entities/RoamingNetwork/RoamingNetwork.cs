@@ -48,8 +48,6 @@ namespace org.GraphDefined.WWCP
                                   IStatus<RoamingNetworkStatusType>
     {
 
-        //public Boolean DisableStatusUpdates = false;
-
         #region Properties
 
         #region AuthorizatorId
