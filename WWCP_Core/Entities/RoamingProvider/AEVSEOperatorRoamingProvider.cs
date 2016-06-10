@@ -42,7 +42,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The default service check intervall.
         /// </summary>
-        public  readonly static TimeSpan                    DefaultServiceCheckEvery = TimeSpan.FromSeconds(13);
+        public  readonly static TimeSpan                    DefaultServiceCheckEvery = TimeSpan.FromSeconds(31);
 
         /// <summary>
         /// The default status check intervall.
