@@ -33,56 +33,20 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Id
-
-        private readonly EVSE_Id _Id;
-
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id Id
-        {
-            get
-            {
-                return _Id;
-            }
-        }
-
-        #endregion
-
-        #region Status
-
-        private readonly EVSEStatusType _Status;
+        public EVSE_Id         Id          { get; }
 
         /// <summary>
         /// The current status of the EVSE.
         /// </summary>
-        public EVSEStatusType Status
-        {
-            get
-            {
-                return _Status;
-            }
-        }
-
-        #endregion
-
-        #region Timestamp
-
-        private readonly DateTime _Timestamp;
+        public EVSEStatusType  Status      { get; }
 
         /// <summary>
         /// The timestamp of the current status of the EVSE.
         /// </summary>
-        public DateTime Timestamp
-        {
-            get
-            {
-                return _Timestamp;
-            }
-        }
-
-        #endregion
+        public DateTime        Timestamp   { get; }
 
         #endregion
 
@@ -107,9 +71,9 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._Id         = Id;
-            this._Status     = Status;
-            this._Timestamp  = Timestamp;
+            this.Id         = Id;
+            this.Status     = Status;
+            this.Timestamp  = Timestamp;
 
         }
 
@@ -286,11 +250,11 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given EVSEStatus must not be null!");
 
             // Compare EVSE Ids
-            var _Result = _Id.CompareTo(EVSEStatus._Id);
+            var _Result = Id.CompareTo(EVSEStatus.Id);
 
             // If equal: Compare EVSE status
             if (_Result == 0)
-                _Result = _Status.CompareTo(EVSEStatus._Status);
+                _Result = Status.CompareTo(EVSEStatus.Status);
 
             return _Result;
 
@@ -339,8 +303,8 @@ namespace org.GraphDefined.WWCP
             if ((Object) EVSEStatus == null)
                 return false;
 
-            return _Id.    Equals(EVSEStatus._Id) &&
-                   _Status.Equals(EVSEStatus._Status);
+            return Id.    Equals(EVSEStatus.Id) &&
+                   Status.Equals(EVSEStatus.Status);
 
         }
 
@@ -358,7 +322,7 @@ namespace org.GraphDefined.WWCP
         {
             unchecked
             {
-                return _Id.GetHashCode() * 17 ^ _Status.GetHashCode();
+                return Id.GetHashCode() * 17 ^ Status.GetHashCode();
             }
         }
 
@@ -373,7 +337,7 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
         {
 
-            return String.Concat(_Id, " -> ", _Status.ToString());
+            return String.Concat(Id, " -> ", Status.ToString());
 
         }
 

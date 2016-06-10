@@ -25,86 +25,37 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The result of a reserve operation.
+    /// The result of a reservation operation.
     /// </summary>
     public class ReservationResult
     {
 
         #region Properties
 
-        #region Result
-
-        private readonly ReservationResultType _Result;
-
         /// <summary>
         /// The result of a reserve operation.
         /// </summary>
-        public ReservationResultType Result
-        {
-            get
-            {
-                return _Result;
-            }
-        }
-
-        #endregion
-
-        #region Reservation
-
-        private readonly ChargingReservation _Reservation;
+        public ReservationResultType  Result            { get; }
 
         /// <summary>
         /// The reservation for the reserve operation.
         /// </summary>
-        public ChargingReservation Reservation
-        {
-            get
-            {
-                return _Reservation;
-            }
-        }
-
-        #endregion
-
-        #region Message
-
-        private readonly String _Message;
+        public ChargingReservation    Reservation       { get; }
 
         /// <summary>
         /// An optional (error) message.
         /// </summary>
-        public String Message
-        {
-            get
-            {
-                return _Message;
-            }
-        }
+        public String                 Message           { get; }
 
-        #endregion
+        /// <summary>
+        /// An optional additional information on this error,
+        /// e.g. the HTTP error response.
+        /// </summary>
+        public Object                 AdditionalInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
-
-        #region ReservationResult(Result, Message = null)
-
-        /// <summary>
-        /// Create a new reserve result.
-        /// </summary>
-        /// <param name="Result">The result of the reserve operation.</param>
-        /// <param name="Message">An optional message.</param>
-        private ReservationResult(ReservationResultType  Result,
-                                  String                 Message = null)
-        {
-
-            this._Result       = Result;
-            this._Reservation  = null;
-            this._Message      = Message;
-
-        }
-
-        #endregion
 
         #region ReservationResult(Reservation)
 
@@ -122,24 +73,30 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._Result       = ReservationResultType.Success;
-            this._Reservation  = Reservation;
+            this.Result       = ReservationResultType.Success;
+            this.Reservation  = Reservation;
 
         }
 
         #endregion
 
-        #region ReservationResult(Message)
+        #region ReservationResult(Result, Message = null, AdditionalInfo = null)
 
         /// <summary>
         /// Create a new reserve result.
         /// </summary>
-        /// <param name="Message">An (error) message.</param>
-        private ReservationResult(String Message)
+        /// <param name="Result">The result of the reserve operation.</param>
+        /// <param name="Message">An optional message.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        private ReservationResult(ReservationResultType  Result,
+                                  String                 Message         = null,
+                                  Object                 AdditionalInfo  = null)
         {
 
-            this._Result   = ReservationResultType.Error;
-            this._Message  = Message;
+            this.Result          = Result;
+            this.Reservation     = null;
+            this.Message         = Message;
+            this.AdditionalInfo  = AdditionalInfo;
 
         }
 
@@ -154,12 +111,8 @@ namespace org.GraphDefined.WWCP
         /// The EVSE operator is unknown.
         /// </summary>
         public static ReservationResult UnknownEVSEOperator
-        {
-            get
-            {
-                return new ReservationResult(ReservationResultType.UnknownEVSE);
-            }
-        }
+
+            => new ReservationResult(ReservationResultType.UnknownEVSE);
 
         #endregion
 
@@ -169,12 +122,8 @@ namespace org.GraphDefined.WWCP
         /// The given charging reservation identification is unknown or invalid.
         /// </summary>
         public static ReservationResult UnknownChargingReservationId
-        {
-            get
-            {
-                return new ReservationResult(ReservationResultType.UnknownChargingReservationId);
-            }
-        }
+
+            => new ReservationResult(ReservationResultType.UnknownChargingReservationId);
 
         #endregion
 
@@ -184,12 +133,8 @@ namespace org.GraphDefined.WWCP
         /// The charging pool is unknown.
         /// </summary>
         public static ReservationResult UnknownChargingPool
-        {
-            get
-            {
-                return new ReservationResult(ReservationResultType.UnknownChargingPool);
-            }
-        }
+
+            => new ReservationResult(ReservationResultType.UnknownChargingPool);
 
         #endregion
 
@@ -199,12 +144,8 @@ namespace org.GraphDefined.WWCP
         /// The charging station is unknown.
         /// </summary>
         public static ReservationResult UnknownChargingStation
-        {
-            get
-            {
-                return new ReservationResult(ReservationResultType.UnknownChargingStation);
-            }
-        }
+
+            => new ReservationResult(ReservationResultType.UnknownChargingStation);
 
         #endregion
 
@@ -214,12 +155,8 @@ namespace org.GraphDefined.WWCP
         /// The EVSE is unknown.
         /// </summary>
         public static ReservationResult UnknownEVSE
-        {
-            get
-            {
-                return new ReservationResult(ReservationResultType.UnknownEVSE);
-            }
-        }
+
+            => new ReservationResult(ReservationResultType.UnknownEVSE);
 
         #endregion
 
@@ -229,12 +166,8 @@ namespace org.GraphDefined.WWCP
         /// The EVSE is already in use.
         /// </summary>
         public static ReservationResult AlreadyInUse
-        {
-            get
-            {
-                return new ReservationResult(ReservationResultType.AlreadyInUse);
-            }
-        }
+
+            => new ReservationResult(ReservationResultType.AlreadyInUse);
 
         #endregion
 
@@ -244,12 +177,8 @@ namespace org.GraphDefined.WWCP
         /// The EVSE is already reserved.
         /// </summary>
         public static ReservationResult AlreadyReserved
-        {
-            get
-            {
-                return new ReservationResult(ReservationResultType.AlreadyReserved);
-            }
-        }
+
+            => new ReservationResult(ReservationResultType.AlreadyReserved);
 
         #endregion
 
@@ -259,57 +188,41 @@ namespace org.GraphDefined.WWCP
         /// Unauthorized remote start or invalid credentials.
         /// </summary>
         public static ReservationResult InvalidCredentials
-        {
-            get
-            {
-                return new ReservationResult(ReservationResultType.InvalidCredentials);
-            }
-        }
+
+            => new ReservationResult(ReservationResultType.InvalidCredentials);
 
         #endregion
 
         #region (static) InternalUse
 
         /// <summary>
-        /// The EVSE is reserved for internal use.
+        /// The EVSE, charging station or charging pool is reserved for internal use.
         /// </summary>
         public static ReservationResult InternalUse
-        {
-            get
-            {
-                return new ReservationResult(ReservationResultType.InternalUse);
-            }
-        }
+
+            => new ReservationResult(ReservationResultType.InternalUse);
 
         #endregion
 
         #region (static) OutOfService
 
         /// <summary>
-        /// The EVSE is Out-of-Service.
+        /// The EVSE, charging station, charging pool or EVSE operator is out-of-service.
         /// </summary>
         public static ReservationResult OutOfService
-        {
-            get
-            {
-                return new ReservationResult(ReservationResultType.OutOfService);
-            }
-        }
+
+            => new ReservationResult(ReservationResultType.OutOfService);
 
         #endregion
 
         #region (static) Offline
 
         /// <summary>
-        /// The EVSE is offline.
+        /// The EVSE, charging station, charging pool or EVSE operator is offline.
         /// </summary>
         public static ReservationResult Offline
-        {
-            get
-            {
-                return new ReservationResult(ReservationResultType.Offline);
-            }
-        }
+
+            => new ReservationResult(ReservationResultType.Offline);
 
         #endregion
 
@@ -319,12 +232,8 @@ namespace org.GraphDefined.WWCP
         /// No EVSEs are available for reservation.
         /// </summary>
         public static ReservationResult NoEVSEsAvailable
-        {
-            get
-            {
-                return new ReservationResult(ReservationResultType.NoEVSEsAvailable);
-            }
-        }
+
+            => new ReservationResult(ReservationResultType.NoEVSEsAvailable);
 
         #endregion
 
@@ -334,9 +243,8 @@ namespace org.GraphDefined.WWCP
         /// The reservation was successful.
         /// </summary>
         public static ReservationResult Success()
-        {
-            return new ReservationResult(ReservationResultType.Success);
-        }
+
+            => new ReservationResult(ReservationResultType.Success);
 
         #endregion
 
@@ -346,52 +254,51 @@ namespace org.GraphDefined.WWCP
         /// The reservation was successful.
         /// </summary>
         public static ReservationResult Success(ChargingReservation Reservation)
-        {
-            return new ReservationResult(Reservation);
-        }
+
+            => new ReservationResult(Reservation);
 
         #endregion
 
         #region (static) Timeout
 
         /// <summary>
-        /// The reservation ran into a timeout.
+        /// The reservation request ran into a timeout.
         /// </summary>
         public static ReservationResult Timeout
-        {
-            get
-            {
-                return new ReservationResult(ReservationResultType.Timeout);
-            }
-        }
+
+            => new ReservationResult(ReservationResultType.Timeout);
 
         #endregion
 
-        #region (static) CommunicationError(Message = "")
+        #region (static) CommunicationError(Message = "", AdditionalInfo = null)
 
         /// <summary>
         /// A communication error occured.
         /// </summary>
-        /// <param name="Message">An optional (error)message.</param>
-        public static ReservationResult CommunicationError(String Message = "")
-        {
+        /// <param name="Message">An optional (error-)message.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        public static ReservationResult CommunicationError(String Message         = null,
+                                                           Object AdditionalInfo  = null)
 
-            return new ReservationResult(ReservationResultType.CommunicationError,
-                                         Message);
-
-        }
+            => new ReservationResult(ReservationResultType.CommunicationError,
+                                     Message,
+                                     AdditionalInfo);
 
         #endregion
 
-        #region (static) Error(Message = "")
+        #region (static) Error(Message = null, AdditionalInfo = null)
 
         /// <summary>
-        /// The remote stop led to an error.
+        /// The reservation request led to an error.
         /// </summary>
-        public static ReservationResult Error(String Message = "")
-        {
-            return new ReservationResult(Message);
-        }
+        /// <param name="Message">An optional (error-)message.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        public static ReservationResult Error(String Message         = null,
+                                              Object AdditionalInfo  = null)
+
+            => new ReservationResult(ReservationResultType.Error,
+                                     Message,
+                                     AdditionalInfo);
 
         #endregion
 
@@ -453,17 +360,17 @@ namespace org.GraphDefined.WWCP
 
 
         /// <summary>
-        /// The EVSE is reserved for internal use.
+        /// The EVSE, charging station or charging pool is reserved for internal use.
         /// </summary>
         InternalUse,
 
         /// <summary>
-        /// The EVSE is Out-of-Service.
+        /// The EVSE, charging station, charging pool or EVSE operator is out-of-service.
         /// </summary>
         OutOfService,
 
         /// <summary>
-        /// The EVSE is offline.
+        /// The EVSE, charging station, charging pool or EVSE operator is offline.
         /// </summary>
         Offline,
 
@@ -480,7 +387,7 @@ namespace org.GraphDefined.WWCP
 
 
         /// <summary>
-        /// The reservation ran into a timeout.
+        /// The reservation request ran into a timeout.
         /// </summary>
         Timeout,
 
@@ -490,7 +397,7 @@ namespace org.GraphDefined.WWCP
         CommunicationError,
 
         /// <summary>
-        /// The remote stop led to an error.
+        /// The reservation request led to an error.
         /// </summary>
         Error
 

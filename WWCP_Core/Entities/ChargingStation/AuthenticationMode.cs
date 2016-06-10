@@ -39,9 +39,9 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public class AuthenticationMode : IEquatable<AuthenticationMode>,
-                                      IComparable<AuthenticationMode>,
-                                      IComparable
+    public class AuthenticationModes : IEquatable<AuthenticationModes>,
+                                       IComparable<AuthenticationModes>,
+                                       IComparable
     {
 
         #region Properties
@@ -64,7 +64,7 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        public AuthenticationMode(String Type)
+        public AuthenticationModes(String Type)
         {
 
             this._Type = Type;
@@ -75,7 +75,7 @@ namespace org.GraphDefined.WWCP
 
 
 
-        public static AuthenticationMode Unkown
+        public static AuthenticationModes Unkown
         {
             get
             {
@@ -83,7 +83,7 @@ namespace org.GraphDefined.WWCP
             }
         }
 
-        public static AuthenticationMode FreeCharging
+        public static AuthenticationModes FreeCharging
         {
             get
             {
@@ -91,18 +91,18 @@ namespace org.GraphDefined.WWCP
             }
         }
 
-        public static AuthenticationMode RFID(RFIDAuthenticationModes  RFIDAuthModes)
+        public static AuthenticationModes RFID(RFIDAuthenticationModes  RFIDAuthModes)
         {
             return new RFID(new RFIDAuthenticationModes[] { RFIDAuthModes }, new String[0]);
         }
 
-        public static AuthenticationMode RFID(IEnumerable<RFIDAuthenticationModes>  RFIDAuthModes,
+        public static AuthenticationModes RFID(IEnumerable<RFIDAuthenticationModes>  RFIDAuthModes,
                                               IEnumerable<String>                   Brands)
         {
             return new RFID(RFIDAuthModes, Brands);
         }
 
-        public static AuthenticationMode NFC
+        public static AuthenticationModes NFC
         {
             get
             {
@@ -110,7 +110,7 @@ namespace org.GraphDefined.WWCP
             }
         }
 
-        public static AuthenticationMode ISO15118_PLC
+        public static AuthenticationModes ISO15118_PLC
         {
             get
             {
@@ -118,7 +118,7 @@ namespace org.GraphDefined.WWCP
             }
         }
 
-        public static AuthenticationMode REMOTE
+        public static AuthenticationModes REMOTE
         {
             get
             {
@@ -126,7 +126,7 @@ namespace org.GraphDefined.WWCP
             }
         }
 
-        public static AuthenticationMode DirectPayment
+        public static AuthenticationModes DirectPayment
         {
             get
             {
@@ -134,13 +134,13 @@ namespace org.GraphDefined.WWCP
             }
         }
 
-        public static AuthenticationMode SMS(String  Number,
+        public static AuthenticationModes SMS(String  Number,
                                              String  StationCode = null)
         {
             return new SMS(Number, StationCode);
         }
 
-        public static AuthenticationMode PhoneCall(String Number)
+        public static AuthenticationModes PhoneCall(String Number)
         {
             return new PhoneCall(Number);
         }
@@ -164,7 +164,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an authentication mode.
-            var AuthenticationMode = Object as AuthenticationMode;
+            var AuthenticationMode = Object as AuthenticationModes;
             if ((Object) AuthenticationMode == null)
                 throw new ArgumentException("The given object is not an authentication mode!");
 
@@ -180,7 +180,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="AuthenticationMode">An authentication mode to compare with.</param>
-        public Int32 CompareTo(AuthenticationMode AuthenticationMode)
+        public Int32 CompareTo(AuthenticationModes AuthenticationMode)
         {
 
             if ((Object) AuthenticationMode == null)
@@ -210,7 +210,7 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is an authentication mode.
-            var AuthenticationMode = Object as AuthenticationMode;
+            var AuthenticationMode = Object as AuthenticationModes;
             if ((Object) AuthenticationMode == null)
                 return false;
 
@@ -227,7 +227,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthenticationMode">An authentication mode to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(AuthenticationMode AuthenticationMode)
+        public Boolean Equals(AuthenticationModes AuthenticationMode)
         {
 
             if ((Object) AuthenticationMode == null)
@@ -267,7 +267,7 @@ namespace org.GraphDefined.WWCP
     }
 
 
-    public class Unkown : AuthenticationMode
+    public class Unkown : AuthenticationModes
     {
 
         public Unkown()
@@ -278,7 +278,7 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public class FreeCharging : AuthenticationMode
+    public class FreeCharging : AuthenticationModes
     {
 
         public FreeCharging()
@@ -289,7 +289,7 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public class RFID : AuthenticationMode
+    public class RFID : AuthenticationModes
     {
 
         #region Properties
@@ -354,7 +354,7 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public class NFC : AuthenticationMode
+    public class NFC : AuthenticationModes
     {
 
         public NFC()
@@ -365,7 +365,7 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public class PINPAD : AuthenticationMode
+    public class PINPAD : AuthenticationModes
     {
 
         public PINPAD()
@@ -376,7 +376,7 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public class ISO15118_PLC : AuthenticationMode
+    public class ISO15118_PLC : AuthenticationModes
     {
 
         public ISO15118_PLC()    // ISO/IEC 15118 PLC
@@ -387,7 +387,7 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public class ISO15118_Air : AuthenticationMode
+    public class ISO15118_Air : AuthenticationModes
     {
 
         public ISO15118_Air()    // ISO/IEC 15118 Over-the-Air
@@ -398,7 +398,7 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public class REMOTE : AuthenticationMode
+    public class REMOTE : AuthenticationModes
     {
 
         public REMOTE()
@@ -409,7 +409,7 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public class CreditCard : AuthenticationMode
+    public class CreditCard : AuthenticationModes
     {
 
         public CreditCard()
@@ -420,7 +420,7 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public class PrepaidCard : AuthenticationMode
+    public class PrepaidCard : AuthenticationModes
     {
 
         public PrepaidCard()
@@ -431,7 +431,7 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public class LocalCurrency : AuthenticationMode
+    public class LocalCurrency : AuthenticationModes
     {
 
         public LocalCurrency()
@@ -442,7 +442,7 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public class DirectPayment : AuthenticationMode
+    public class DirectPayment : AuthenticationModes
     {
 
         public DirectPayment()
@@ -453,7 +453,7 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public class SMS : AuthenticationMode
+    public class SMS : AuthenticationModes
     {
 
         #region Properties
@@ -526,7 +526,7 @@ namespace org.GraphDefined.WWCP
 
     }
 
-    public class PhoneCall : AuthenticationMode
+    public class PhoneCall : AuthenticationModes
     {
 
         #region Properties

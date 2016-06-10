@@ -592,6 +592,8 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
+        #region (internal) EVSE(Id, ChargingStation, ...)
+
         /// <summary>
         /// Create a new Electric Vehicle Supply Equipment (EVSE) having the given EVSE identification.
         /// </summary>
@@ -604,16 +606,36 @@ namespace org.GraphDefined.WWCP
                       UInt16           MaxStatusListSize       = DefaultMaxEVSEStatusListSize,
                       UInt16           MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize)
 
-            : base(Id)
+            : this(Id,
+                   MaxStatusListSize,
+                   MaxAdminStatusListSize)
 
         {
 
             #region Initial checks
 
             if (ChargingStation == null)
-                throw new ArgumentNullException("ChargingStation", "The charging station must not be null!");
+                throw new ArgumentNullException(nameof(ChargingStation),  "The charging station must not be null!");
 
             #endregion
+
+        }
+
+        #endregion
+
+        #region (internal) EVSE(Id, ...)
+
+        /// <summary>
+        /// Create a new Electric Vehicle Supply Equipment (EVSE) having the given EVSE identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of this EVSE.</param>
+        internal EVSE(EVSE_Id  Id,
+                      UInt16   MaxStatusListSize       = DefaultMaxEVSEStatusListSize,
+                      UInt16   MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize)
+
+            : base(Id)
+
+        {
 
             #region Init data and properties
 
@@ -664,6 +686,21 @@ namespace org.GraphDefined.WWCP
             this.OnPropertyChanged += UpdateData;
 
         }
+
+        #endregion
+
+        #endregion
+
+
+        #region New(EVSEId)
+
+        /// <summary>
+        /// Create a new EVSE having the given EVSE identification.
+        /// </summary>
+        /// <param name="EVSEId"></param>
+        public static EVSE New(EVSE_Id EVSEId)
+
+            => new EVSE(EVSEId);
 
         #endregion
 

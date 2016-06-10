@@ -558,9 +558,9 @@ namespace org.GraphDefined.WWCP
 
         #region AuthenticationModes
 
-        internal ReactiveSet<AuthenticationMode> _AuthenticationModes;
+        internal ReactiveSet<AuthenticationModes> _AuthenticationModes;
 
-        public ReactiveSet<AuthenticationMode> AuthenticationModes
+        public ReactiveSet<AuthenticationModes> AuthenticationModes
         {
 
             get
@@ -582,7 +582,7 @@ namespace org.GraphDefined.WWCP
                 {
 
                     if (_AuthenticationModes == null)
-                        _AuthenticationModes = new ReactiveSet<AuthenticationMode>();
+                        _AuthenticationModes = new ReactiveSet<AuthenticationModes>();
 
                     if (value == null)
                         DeleteProperty(ref _AuthenticationModes);
@@ -2362,7 +2362,7 @@ namespace org.GraphDefined.WWCP
                         break;
 
                     default:
-                        result = CancelReservationResult.NoEVSEsAvailable;
+                        result = CancelReservationResult.Error();
                         break;
 
                 }

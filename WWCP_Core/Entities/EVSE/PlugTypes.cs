@@ -27,6 +27,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The type of plugs.
     /// </summary>
+    [Flags]
     public enum PlugTypes
     {
 

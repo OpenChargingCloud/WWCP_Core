@@ -20,9 +20,9 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using org.GraphDefined.Vanaheimr.Illias;
 using System.Collections.Generic;
-using org.GraphDefined.Vanaheimr.Aegir;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -80,9 +80,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique identification of the roaming provider.</param>
         /// <param name="Name">The offical (multi-language) name of the roaming provider.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        public AEMPRoamingProvider(RoamingProvider_Id  Id,
-                                   I18NString          Name,
-                                   RoamingNetwork      RoamingNetwork)
+        protected AEMPRoamingProvider(RoamingProvider_Id  Id,
+                                      I18NString          Name,
+                                      RoamingNetwork      RoamingNetwork)
 
             : base(Id,
                    Name,
@@ -143,6 +143,24 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region GetChargeDetailRecords(From, To, ProviderId = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Download all charge detail records from the OICP server.
+        /// </summary>
+        /// <param name="From">The starting time.</param>
+        /// <param name="To">The end time.</param>
+        /// <param name="ProviderId">An optional unique identification of e-mobility service provider.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        public abstract Task<IEnumerable<ChargeDetailRecord>>
+
+            GetChargeDetailRecords(DateTime   From,
+                                   DateTime   To,
+                                   EVSP_Id    ProviderId    = null,
+                                   TimeSpan?  QueryTimeout  = null);
+
+        #endregion
 
 
         #region Reserve(...EVSEId, StartTime, Duration, ReservationId = null, ProviderId = null, ...)
@@ -368,9 +386,7 @@ namespace org.GraphDefined.WWCP
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
+            => Id.GetHashCode();
 
         #endregion
 
@@ -380,9 +396,7 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return Id.ToString();
-        }
+            => Id.ToString();
 
         #endregion
 

@@ -32,70 +32,30 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Result
+        /// <summary>
+        /// The result of a cancel reservation operation.
+        /// </summary>
+        public CancelReservationResultType  Result            { get; }
 
-        private readonly CancelReservationResultType _Result;
+        /// <summary>
+        /// The reservation identification.
+        /// </summary>
+        public ChargingReservation_Id       ReservationId     { get; }
 
-        public CancelReservationResultType Result
-        {
-            get
-            {
-                return _Result;
-            }
-        }
+        /// <summary>
+        /// An optional (error) message.
+        /// </summary>
+        public String                       Message           { get; }
 
-        #endregion
-
-        #region ReservationId
-
-        private readonly ChargingReservation_Id _ReservationId;
-
-        public ChargingReservation_Id ReservationId
-        {
-            get
-            {
-                return _ReservationId;
-            }
-        }
-
-        #endregion
-
-        #region Message
-
-        private readonly String _Message;
-
-        public String Message
-        {
-            get
-            {
-                return _Message;
-            }
-        }
-
-        #endregion
+        /// <summary>
+        /// An optional additional information on this error,
+        /// e.g. the HTTP error response.
+        /// </summary>
+        public Object                       AdditionalInfo    { get; }
 
         #endregion
 
         #region Constructor(s)
-
-        #region CancelReservationResult(Result, Message = null)
-
-        /// <summary>
-        /// Create a new cancel reservation result.
-        /// </summary>
-        /// <param name="Result">The result of the cancel reservation operation.</param>
-        /// <param name="Message">An optional message.</param>
-        private CancelReservationResult(CancelReservationResultType  Result,
-                                        String                       Message = null)
-        {
-
-            this._Result         = Result;
-            this._ReservationId  = null;
-            this._Message        = Message;
-
-        }
-
-        #endregion
 
         #region CancelReservationResult(Result, ReservationId)
 
@@ -108,24 +68,30 @@ namespace org.GraphDefined.WWCP
                                         ChargingReservation_Id       ReservationId)
         {
 
-            this._Result         = Result;
-            this._ReservationId  = ReservationId;
+            this.Result         = Result;
+            this.ReservationId  = ReservationId;
 
         }
 
         #endregion
 
-        #region CancelReservationResult(Message)
+        #region CancelReservationResult(Result, Message = null, AdditionalInfo = null)
 
         /// <summary>
         /// Create a new cancel reservation result.
         /// </summary>
-        /// <param name="Message">An (error) message.</param>
-        private CancelReservationResult(String Message)
+        /// <param name="Result">The result of the cancel reservation operation.</param>
+        /// <param name="Message">An optional message.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        private CancelReservationResult(CancelReservationResultType  Result,
+                                        String                       Message         = null,
+                                        Object                       AdditionalInfo  = null)
         {
 
-            this._Result   = CancelReservationResultType.Error;
-            this._Message  = Message;
+            this.Result          = Result;
+            this.ReservationId   = null;
+            this.Message         = Message;
+            this.AdditionalInfo  = AdditionalInfo;
 
         }
 
@@ -136,117 +102,104 @@ namespace org.GraphDefined.WWCP
 
         #region (static) UnknownEVSEOperator
 
+        /// <summary>
+        /// The EVSE operator is unknown.
+        /// </summary>
         public static CancelReservationResult UnknownEVSEOperator
-        {
-            get
-            {
-                return new CancelReservationResult(CancelReservationResultType.UnknownEVSE);
-            }
-        }
+
+            => new CancelReservationResult(CancelReservationResultType.UnknownEVSE);
 
         #endregion
 
         #region (static) UnknownReservationId
 
+        /// <summary>
+        /// The given reservation identification is unknown or invalid.
+        /// </summary>
+        /// <param name="ReservationId">A reservation identification.</param>
         public static CancelReservationResult UnknownReservationId(ChargingReservation_Id ReservationId)
-        {
-            return new CancelReservationResult(CancelReservationResultType.UnknownReservationId,
-                                               ReservationId);
-        }
+
+            => new CancelReservationResult(CancelReservationResultType.UnknownReservationId,
+                                           ReservationId);
 
         #endregion
 
         #region (static) UnknownChargingPool
 
+        /// <summary>
+        /// The charging pool is unknown.
+        /// </summary>
         public static CancelReservationResult UnknownChargingPool
-        {
-            get
-            {
-                return new CancelReservationResult(CancelReservationResultType.UnknownChargingPool);
-            }
-        }
+
+            => new CancelReservationResult(CancelReservationResultType.UnknownChargingPool);
 
         #endregion
 
         #region (static) UnknownChargingStation
 
+        /// <summary>
+        /// The charging station is unknown.
+        /// </summary>
         public static CancelReservationResult UnknownChargingStation
-        {
-            get
-            {
-                return new CancelReservationResult(CancelReservationResultType.UnknownChargingStation);
-            }
-        }
+
+            => new CancelReservationResult(CancelReservationResultType.UnknownChargingStation);
 
         #endregion
 
         #region (static) UnknownEVSE
 
+        /// <summary>
+        /// The EVSE is unknown.
+        /// </summary>
         public static CancelReservationResult UnknownEVSE
-        {
-            get
-            {
-                return new CancelReservationResult(CancelReservationResultType.UnknownEVSE);
-            }
-        }
+
+            => new CancelReservationResult(CancelReservationResultType.UnknownEVSE);
 
         #endregion
 
         #region (static) OutOfService
 
+        /// <summary>
+        /// The EVSE, charging station, charging pool or EVSE operator is out-of-service.
+        /// </summary>
         public static CancelReservationResult OutOfService
-        {
-            get
-            {
-                return new CancelReservationResult(CancelReservationResultType.OutOfService);
-            }
-        }
+
+            => new CancelReservationResult(CancelReservationResultType.OutOfService);
 
         #endregion
 
         #region (static) Offline
 
+        /// <summary>
+        /// The EVSE, charging station, charging pool or EVSE operator is offline.
+        /// </summary>
         public static CancelReservationResult Offline
-        {
-            get
-            {
-                return new CancelReservationResult(CancelReservationResultType.Offline);
-            }
-        }
 
-        #endregion
-
-        #region (static) NoEVSEsAvailable
-
-        public static CancelReservationResult NoEVSEsAvailable
-        {
-            get
-            {
-                return new CancelReservationResult(CancelReservationResultType.NoEVSEsAvailable);
-            }
-        }
+            => new CancelReservationResult(CancelReservationResultType.Offline);
 
         #endregion
 
         #region (static) Success(ReservationId)
 
+        /// <summary>
+        /// The cancel reservation request was successful.
+        /// </summary>
+        /// <param name="ReservationId">The reservation identification.</param>
         public static CancelReservationResult Success(ChargingReservation_Id ReservationId)
-        {
-            return new CancelReservationResult(CancelReservationResultType.Success,
-                                               ReservationId);
-        }
+
+            => new CancelReservationResult(CancelReservationResultType.Success,
+                                           ReservationId);
 
         #endregion
 
         #region (static) Timeout
 
+        /// <summary>
+        /// The cancel reservation request ran into a timeout.
+        /// </summary>
         public static CancelReservationResult Timeout
-        {
-            get
-            {
-                return new CancelReservationResult(CancelReservationResultType.Timeout);
-            }
-        }
+
+            => new CancelReservationResult(CancelReservationResultType.Timeout);
 
         #endregion
 
@@ -255,49 +208,103 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// A communication error occured.
         /// </summary>
-        /// <param name="Message">An optional (error)message.</param>
-        public static CancelReservationResult CommunicationError(String Message = "")
-        {
+        /// <param name="Message">An optional (error-)message.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        public static CancelReservationResult CommunicationError(String Message         = null,
+                                                                 Object AdditionalInfo  = null)
 
-            return new CancelReservationResult(CancelReservationResultType.CommunicationError,
-                                               Message);
-
-        }
+            => new CancelReservationResult(CancelReservationResultType.CommunicationError,
+                                           Message,
+                                           AdditionalInfo);
 
         #endregion
 
-        #region (static) Error(Message = "")
+        #region (static) Error(Message = null, AdditionalInfo = null)
 
-        public static CancelReservationResult Error(String Message = "")
-        {
-            return new CancelReservationResult(Message);
-        }
+        /// <summary>
+        /// The remote stop request led to an error.
+        /// </summary>
+        /// <param name="Message">An optional (error-)message.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        public static CancelReservationResult Error(String Message         = null,
+                                                    Object AdditionalInfo  = null)
+
+            => new CancelReservationResult(CancelReservationResultType.Error,
+                                           Message,
+                                           AdditionalInfo);
 
         #endregion
 
     }
 
 
+    /// <summary>
+    /// The result types of a cancel reservation operation.
+    /// </summary>
     public enum CancelReservationResultType
     {
 
+        /// <summary>
+        /// The result is unknown and/or should be ignored.
+        /// </summary>
         Unspecified,
 
+
+        /// <summary>
+        /// The EVSE operator is unknown.
+        /// </summary>
         UnknownEVSEOperator,
+
+        /// <summary>
+        /// The given reservation identification is unknown or invalid.
+        /// </summary>
         UnknownReservationId,
+
+        /// <summary>
+        /// The charging pool is unknown.
+        /// </summary>
         UnknownChargingPool,
+
+        /// <summary>
+        /// The charging station is unknown.
+        /// </summary>
         UnknownChargingStation,
+
+        /// <summary>
+        /// The EVSE is unknown.
+        /// </summary>
         UnknownEVSE,
 
+
+        /// <summary>
+        /// The EVSE, charging station, charging pool or EVSE operator is out-of-service.
+        /// </summary>
         OutOfService,
+
+        /// <summary>
+        /// The EVSE, charging station, charging pool or EVSE operator is offline.
+        /// </summary>
         Offline,
 
-        NoEVSEsAvailable,
 
+        /// <summary>
+        /// The cancel reservation request was successful.
+        /// </summary>
         Success,
 
+        /// <summary>
+        /// The cancel reservation request ran into a timeout.
+        /// </summary>
         Timeout,
+
+        /// <summary>
+        /// A communication error occured.
+        /// </summary>
         CommunicationError,
+
+        /// <summary>
+        /// The remote stop request led to an error.
+        /// </summary>
         Error,
 
     }

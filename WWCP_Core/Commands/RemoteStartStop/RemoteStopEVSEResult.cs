@@ -32,141 +32,47 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Result
-
-        private readonly RemoteStopEVSEResultType _Result;
-
         /// <summary>
         /// The result of a remote stop operation.
         /// </summary>
-        public RemoteStopEVSEResultType Result
-        {
-            get
-            {
-                return _Result;
-            }
-        }
-
-        #endregion
-
-        #region SessionId
-
-        private readonly ChargingSession_Id _SessionId;
+        public RemoteStopEVSEResultType  Result                 { get; }
 
         /// <summary>
         /// The charging session identification for an invalid remote stop operation.
         /// </summary>
-        public ChargingSession_Id SessionId
-        {
-            get
-            {
-                return _SessionId;
-            }
-        }
-
-        #endregion
-
-        #region ChargeDetailRecord
-
-        private readonly ChargeDetailRecord _ChargeDetailRecord;
+        public ChargingSession_Id        SessionId              { get; }
 
         /// <summary>
         /// The charge detail record for a successfully stopped charging process.
         /// </summary>
-        public ChargeDetailRecord ChargeDetailRecord
-        {
-            get
-            {
-                return _ChargeDetailRecord;
-            }
-        }
-
-        #endregion
-
-        #region ReservationId
-
-        private readonly ChargingReservation_Id _ReservationId;
+        public ChargeDetailRecord        ChargeDetailRecord     { get; }
 
         /// <summary>
         /// The charging reservation identification.
         /// </summary>
-        public ChargingReservation_Id ReservationId
-        {
-            get
-            {
-                return _ReservationId;
-            }
-        }
-
-        #endregion
-
-        #region ReservationHandling
-
-        private readonly ReservationHandling _ReservationHandling;
+        public ChargingReservation_Id    ReservationId          { get; }
 
         /// <summary>
         /// The handling of the charging reservation after the charging session stopped.
         /// </summary>
-        public ReservationHandling ReservationHandling
-        {
-            get
-            {
-                return _ReservationHandling;
-            }
-        }
-
-        #endregion
-
-        #region Message
-
-        private readonly String _Message;
+        public ReservationHandling       ReservationHandling    { get; }
 
         /// <summary>
         /// An optional (error) message.
         /// </summary>
-        public String Message
-        {
-            get
-            {
-                return _Message;
-            }
-        }
+        public String                    Message                { get; }
 
-        #endregion
+        /// <summary>
+        /// An optional additional information on this error,
+        /// e.g. the HTTP error response.
+        /// </summary>
+        public Object                    AdditionalInfo         { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region RemoteStopEVSEResult(SessionId, Result, ErrorMessage = null)
-
-        /// <summary>
-        /// Create a new remote stop result.
-        /// </summary>
-        /// <param name="SessionId">The unique charging session identification.</param>
-        /// <param name="Result">The result of the remote stop request.</param>
-        /// <param name="ErrorMessage">A optional error message.</param>
-        private RemoteStopEVSEResult(ChargingSession_Id        SessionId,
-                                     RemoteStopEVSEResultType  Result,
-                                     String                    ErrorMessage  = null)
-        {
-
-            #region Initial checks
-
-            if (SessionId == null)
-                throw new ArgumentNullException(nameof(SessionId), "The given charging session identification must not be null!");
-
-            #endregion
-
-            this._SessionId     = SessionId;
-            this._Result        = Result;
-            this._Message  = ErrorMessage;
-
-        }
-
-        #endregion
-
-        #region RemoteStopEVSEResult(SessionId, Result, ReservationId, ReservationHandling)
+        #region RemoteStopEVSEResult(SessionId, Result, ReservationId, ReservationHandling = null)
 
         /// <summary>
         /// Create a new remote stop result.
@@ -178,7 +84,7 @@ namespace org.GraphDefined.WWCP
         private RemoteStopEVSEResult(ChargingSession_Id        SessionId,
                                      RemoteStopEVSEResultType  Result,
                                      ChargingReservation_Id    ReservationId,
-                                     ReservationHandling       ReservationHandling)
+                                     ReservationHandling       ReservationHandling = null)
         {
 
             #region Initial checks
@@ -188,16 +94,16 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._SessionId            = SessionId;
-            this._Result               = Result;
-            this._ReservationId        = ReservationId;
-            this._ReservationHandling  = ReservationHandling != null ? ReservationHandling : ReservationHandling.Close;
+            this.SessionId            = SessionId;
+            this.Result               = Result;
+            this.ReservationId        = ReservationId;
+            this.ReservationHandling  = ReservationHandling ?? ReservationHandling.Close;
 
         }
 
         #endregion
 
-        #region RemoteStopEVSEResult(ChargeDetailRecord, Result, ReservationId, ReservationHandling)
+        #region RemoteStopEVSEResult(ChargeDetailRecord, Result, ReservationId, ReservationHandling = null)
 
         /// <summary>
         /// Create a new remote stop result.
@@ -209,7 +115,7 @@ namespace org.GraphDefined.WWCP
         private RemoteStopEVSEResult(ChargeDetailRecord        ChargeDetailRecord,
                                      RemoteStopEVSEResultType  Result,
                                      ChargingReservation_Id    ReservationId,
-                                     ReservationHandling       ReservationHandling)
+                                     ReservationHandling       ReservationHandling = null)
         {
 
             #region Initial checks
@@ -219,11 +125,42 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._ChargeDetailRecord   = ChargeDetailRecord;
-            this._SessionId            = ChargeDetailRecord.SessionId;
-            this._Result               = Result;
-            this._ReservationId        = ReservationId;
-            this._ReservationHandling  = ReservationHandling != null ? ReservationHandling : ReservationHandling.Close;
+            this.ChargeDetailRecord   = ChargeDetailRecord;
+            this.SessionId            = ChargeDetailRecord.SessionId;
+            this.Result               = Result;
+            this.ReservationId        = ReservationId;
+            this.ReservationHandling  = ReservationHandling ?? ReservationHandling.Close;
+
+        }
+
+        #endregion
+
+        #region RemoteStopEVSEResult(SessionId, Result, Message = null, AdditionalInfo = null)
+
+        /// <summary>
+        /// Create a new remote stop result.
+        /// </summary>
+        /// <param name="SessionId">The unique charging session identification.</param>
+        /// <param name="Result">The result of the remote stop request.</param>
+        /// <param name="Message">A optional error message.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        private RemoteStopEVSEResult(ChargingSession_Id        SessionId,
+                                     RemoteStopEVSEResultType  Result,
+                                     String                    Message         = null,
+                                     Object                    AdditionalInfo  = null)
+        {
+
+            #region Initial checks
+
+            if (SessionId == null)
+                throw new ArgumentNullException(nameof(SessionId), "The given charging session identification must not be null!");
+
+            #endregion
+
+            this.SessionId       = SessionId;
+            this.Result          = Result;
+            this.Message         = Message;
+            this.AdditionalInfo  = AdditionalInfo;
 
         }
 
@@ -239,12 +176,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         public static RemoteStopEVSEResult Unspecified(ChargingSession_Id SessionId)
-        {
 
-            return new RemoteStopEVSEResult(SessionId,
-                                            RemoteStopEVSEResultType.Unspecified);
-
-        }
+            => new RemoteStopEVSEResult(SessionId,
+                                        RemoteStopEVSEResultType.Unspecified);
 
         #endregion
 
@@ -255,11 +189,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         public static RemoteStopEVSEResult UnknownOperator(ChargingSession_Id SessionId)
-        {
-            return new RemoteStopEVSEResult(SessionId,
-                                            RemoteStopEVSEResultType.UnknownOperator,
-                                            "The EVSE operator is unknown!");
-        }
+
+            => new RemoteStopEVSEResult(SessionId,
+                                        RemoteStopEVSEResultType.UnknownOperator);
 
         #endregion
 
@@ -270,11 +202,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         public static RemoteStopEVSEResult UnknownEVSE(ChargingSession_Id SessionId)
-        {
-            return new RemoteStopEVSEResult(SessionId,
-                                            RemoteStopEVSEResultType.UnknownEVSE,
-                                            "The EVSE is unknown!");
-        }
+
+            => new RemoteStopEVSEResult(SessionId,
+                                        RemoteStopEVSEResultType.UnknownEVSE);
 
         #endregion
 
@@ -285,13 +215,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         public static RemoteStopEVSEResult InvalidSessionId(ChargingSession_Id SessionId)
-        {
 
-            return new RemoteStopEVSEResult(SessionId,
-                                            RemoteStopEVSEResultType.InvalidSessionId,
-                                            "The session identification is invalid!");
-
-        }
+            => new RemoteStopEVSEResult(SessionId,
+                                        RemoteStopEVSEResultType.InvalidSessionId);
 
         #endregion
 
@@ -302,11 +228,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         public static RemoteStopEVSEResult InvalidCredentials(ChargingSession_Id SessionId)
-        {
-            return new RemoteStopEVSEResult(SessionId, 
-                                            RemoteStopEVSEResultType.InvalidCredentials,
-                                            "Unauthorized remote stop or invalid credentials!");
-        }
+
+            => new RemoteStopEVSEResult(SessionId,
+                                        RemoteStopEVSEResultType.InvalidCredentials);
 
         #endregion
 
@@ -317,13 +241,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         public static RemoteStopEVSEResult InternalUse(ChargingSession_Id SessionId)
-        {
 
-            return new RemoteStopEVSEResult(SessionId,
-                                            RemoteStopEVSEResultType.InternalUse,
-                                            "The EVSE is reserved for internal use!");
-
-        }
+            => new RemoteStopEVSEResult(SessionId,
+                                        RemoteStopEVSEResultType.InternalUse);
 
         #endregion
 
@@ -334,13 +254,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         public static RemoteStopEVSEResult OutOfService(ChargingSession_Id SessionId)
-        {
 
-            return new RemoteStopEVSEResult(SessionId,
-                                            RemoteStopEVSEResultType.OutOfService,
-                                            "The EVSE is out of service!");
-
-        }
+            => new RemoteStopEVSEResult(SessionId,
+                                        RemoteStopEVSEResultType.OutOfService);
 
         #endregion
 
@@ -351,13 +267,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         public static RemoteStopEVSEResult Offline(ChargingSession_Id SessionId)
-        {
 
-            return new RemoteStopEVSEResult(SessionId,
-                                            RemoteStopEVSEResultType.Offline,
-                                            "The EVSE is offline!");
-
-        }
+            => new RemoteStopEVSEResult(SessionId,
+                                        RemoteStopEVSEResultType.Offline);
 
         #endregion
 
@@ -372,14 +284,11 @@ namespace org.GraphDefined.WWCP
         public static RemoteStopEVSEResult Success(ChargingSession_Id      SessionId,
                                                    ChargingReservation_Id  ReservationId        = null,
                                                    ReservationHandling     ReservationHandling  = null)
-        {
 
-            return new RemoteStopEVSEResult(SessionId,
-                                            RemoteStopEVSEResultType.Success,
-                                            ReservationId,
-                                            ReservationHandling);
-
-        }
+            => new RemoteStopEVSEResult(SessionId,
+                                        RemoteStopEVSEResultType.Success,
+                                        ReservationId,
+                                        ReservationHandling);
 
         #endregion
 
@@ -394,68 +303,62 @@ namespace org.GraphDefined.WWCP
         public static RemoteStopEVSEResult Success(ChargeDetailRecord      ChargeDetailRecord,
                                                    ChargingReservation_Id  ReservationId        = null,
                                                    ReservationHandling     ReservationHandling  = null)
-        {
 
-            return new RemoteStopEVSEResult(ChargeDetailRecord,
-                                            RemoteStopEVSEResultType.Success,
-                                            ReservationId,
-                                            ReservationHandling);
-
-        }
+            => new RemoteStopEVSEResult(ChargeDetailRecord,
+                                        RemoteStopEVSEResultType.Success,
+                                        ReservationId,
+                                        ReservationHandling);
 
         #endregion
 
         #region (static) Timeout(SessionId)
 
         /// <summary>
-        /// The remote stop ran into a timeout.
+        /// The remote stop request ran into a timeout.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         public static RemoteStopEVSEResult Timeout(ChargingSession_Id SessionId)
-        {
 
-            return new RemoteStopEVSEResult(SessionId,
-                                            RemoteStopEVSEResultType.Timeout);
-
-        }
+            => new RemoteStopEVSEResult(SessionId,
+                                        RemoteStopEVSEResultType.Timeout);
 
         #endregion
 
-        #region (static) CommunicationError(SessionId, Message = "")
+        #region (static) CommunicationError(SessionId, Message = "", AdditionalInfo = null)
 
         /// <summary>
         /// A communication error occured.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        /// <param name="Message">An optional (error)message.</param>
+        /// <param name="Message">An optional (error-)message.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         public static RemoteStopEVSEResult CommunicationError(ChargingSession_Id  SessionId,
-                                                              String              Message = "")
-        {
+                                                              String              Message         = null,
+                                                              Object              AdditionalInfo  = null)
 
-            return new RemoteStopEVSEResult(SessionId,
-                                            RemoteStopEVSEResultType.CommunicationError,
-                                            Message);
-
-        }
+            => new RemoteStopEVSEResult(SessionId,
+                                        RemoteStopEVSEResultType.CommunicationError,
+                                        Message,
+                                        AdditionalInfo);
 
         #endregion
 
-        #region (static) Error(SessionId, Message = null)
+        #region (static) Error(SessionId, Message = null, AdditionalInfo = null)
 
         /// <summary>
-        /// The remote stop led to an error.
+        /// The remote stop request led to an error.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
-        /// <param name="Message">An optional (error) message.</param>
+        /// <param name="Message">An optional (error-)message.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
         public static RemoteStopEVSEResult Error(ChargingSession_Id  SessionId,
-                                                 String              Message = null)
-        {
+                                                 String              Message         = null,
+                                                 Object              AdditionalInfo  = null)
 
-            return new RemoteStopEVSEResult(SessionId,
-                                            RemoteStopEVSEResultType.Error,
-                                            Message);
-
-        }
+            => new RemoteStopEVSEResult(SessionId,
+                                        RemoteStopEVSEResultType.Error,
+                                        Message,
+                                        AdditionalInfo);
 
         #endregion
 
@@ -466,9 +369,7 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return _Result.ToString();
-        }
+            => Result.ToString();
 
         #endregion
 
@@ -528,7 +429,7 @@ namespace org.GraphDefined.WWCP
 
 
         /// <summary>
-        /// The remote stop ran into a timeout.
+        /// The remote stop request ran into a timeout.
         /// </summary>
         Timeout,
 
@@ -538,7 +439,7 @@ namespace org.GraphDefined.WWCP
         CommunicationError,
 
         /// <summary>
-        /// The remote stop led to an error.
+        /// The remote stop request led to an error.
         /// </summary>
         Error
 
