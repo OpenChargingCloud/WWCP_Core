@@ -169,27 +169,27 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SendChargeDetailRecord
+        #region SendChargeDetailRecord(...ChargeDetailRecord, ...)
 
         /// <summary>
-        /// Send a charge detail record.
+        /// Send a charge detail record to an OICP server.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="QueryTimeout">An optional timeout for this request.</param>
-        Task<SendCDRResult> SendChargeDetailRecord(DateTime            Timestamp,
-                                                   CancellationToken   CancellationToken,
-                                                   EventTracking_Id    EventTrackingId,
-                                                   ChargeDetailRecord  ChargeDetailRecord,
-                                                   TimeSpan?           QueryTimeout = null);
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<SendCDRResult>
+
+            SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
+
+                                   DateTime?           Timestamp          = null,
+                                   CancellationToken?  CancellationToken  = null,
+                                   EventTracking_Id    EventTrackingId    = null,
+                                   TimeSpan?           RequestTimeout     = null);
 
         #endregion
-
-
-
-
 
 
     }

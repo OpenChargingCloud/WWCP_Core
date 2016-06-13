@@ -66,6 +66,8 @@ namespace org.GraphDefined.WWCP
         private                 UInt64                      _StatusRunId;
         private                 Func<EVSE, Boolean>         _IncludeEVSEs;
 
+        public readonly static TimeSpan DefaultRequestTimeout = TimeSpan.FromSeconds(30);
+
         #endregion
 
         #region Properties
@@ -240,20 +242,6 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever an authentication token had been verified to stop a charging process at the given charging station.
         /// </summary>
         public abstract event OnAuthorizeChargingStationStoppedDelegate OnAuthorizeChargingStationStopped;
-
-        #endregion
-
-        #region OnChargeDetailRecordSend/-Sent
-
-        /// <summary>
-        /// An event fired whenever a charge detail record will be send.
-        /// </summary>
-        public abstract event OnChargeDetailRecordSendDelegate OnChargeDetailRecordSend;
-
-        /// <summary>
-        /// An event fired whenever a charge detail record had been sent.
-        /// </summary>
-        public abstract event OnChargeDetailRecordSentDelegate OnChargeDetailRecordSent;
 
         #endregion
 
@@ -992,23 +980,25 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SendChargeDetailRecord(...ChargeDetailRecord, ...)
+        #region SendChargeDetailRecord(ChargeDetailRecord, ...)
 
         /// <summary>
-        /// Send a charge detail record.
+        /// Send a charge detail record to an OICP server.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public abstract Task<SendCDRResult>
 
-            SendChargeDetailRecord(DateTime            Timestamp,
-                                   CancellationToken   CancellationToken,
-                                   EventTracking_Id    EventTrackingId,
-                                   ChargeDetailRecord  ChargeDetailRecord,
-                                   TimeSpan?           QueryTimeout = null);
+            SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
+
+                                   DateTime?           Timestamp          = null,
+                                   CancellationToken?  CancellationToken  = null,
+                                   EventTracking_Id    EventTrackingId    = null,
+                                   TimeSpan?           RequestTimeout     = null);
 
         #endregion
 
@@ -1424,6 +1414,8 @@ namespace org.GraphDefined.WWCP
 
                 // Use the events to evaluate if something went wrong!
 
+                var EventTrackingId = EventTracking_Id.New;
+
                 #region Send new EVSE data
 
                 if (EVSEsToAddQueueCopy.Value.Count > 0)
@@ -1485,17 +1477,17 @@ namespace org.GraphDefined.WWCP
                 if (ChargeDetailRecordQueueCopy.Value.Count > 0)
                 {
 
-                    var EventTrackingId  = EventTracking_Id.New;
                     var SendCDRResults   = new Dictionary<ChargeDetailRecord, SendCDRResult>();
 
                     foreach (var _ChargeDetailRecord in ChargeDetailRecordQueueCopy.Value)
                     {
 
                         SendCDRResults.Add(_ChargeDetailRecord,
-                                           await SendChargeDetailRecord(DateTime.Now,
+                                           await SendChargeDetailRecord(_ChargeDetailRecord,
+                                                                        DateTime.Now,
                                                                         new CancellationTokenSource().Token,
                                                                         EventTrackingId,
-                                                                        _ChargeDetailRecord));
+                                                                        DefaultRequestTimeout));
 
                     }
 

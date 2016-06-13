@@ -110,49 +110,25 @@ namespace org.GraphDefined.WWCP
 
         #region UserAgent
 
-        protected readonly String _UserAgent;
-
-        public String UserAgent
-        {
-            get
-            {
-                return _UserAgent;
-            }
-        }
+        public String UserAgent { get; }
 
         #endregion
 
-        #region QueryTimeout
-
-        protected readonly TimeSpan _QueryTimeout;
+        #region RequestTimeout
 
         /// <summary>
-        /// The timeout for upstream queries.
+        /// The timeout for upstream requests.
         /// </summary>
-        public TimeSpan QueryTimeout
-        {
-            get
-            {
-                return _QueryTimeout;
-            }
-        }
+        public TimeSpan RequestTimeout { get; }
 
         #endregion
 
         #region DNSClient
 
-        protected readonly DNSClient _DNSClient;
-
         /// <summary>
         /// The DNS client defines which DNS servers to use.
         /// </summary>
-        public DNSClient DNSClient
-        {
-            get
-            {
-                return _DNSClient;
-            }
-        }
+        public DNSClient DNSClient { get; }
 
         #endregion
 
@@ -263,13 +239,13 @@ namespace org.GraphDefined.WWCP
 
             this._RemoteCertificateValidator = RemoteCertificateValidator;
 
-            this._UserAgent        = UserAgent;
+            this.UserAgent        = UserAgent;
 
-            this._QueryTimeout     = QueryTimeout != null
+            this.RequestTimeout     = QueryTimeout != null
                                          ? QueryTimeout.Value
                                          : DefaultQueryTimeout;
 
-            this._DNSClient        = (DNSClient == null)
+            this.DNSClient          = (DNSClient == null)
                                          ? new DNSClient()
                                          : DNSClient;
 

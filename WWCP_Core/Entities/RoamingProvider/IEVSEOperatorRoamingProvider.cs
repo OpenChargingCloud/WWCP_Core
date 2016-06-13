@@ -124,20 +124,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region OnChargeDetailRecordSend/-Sent
-
-        /// <summary>
-        /// An event fired whenever a charge detail record will be send.
-        /// </summary>
-        event OnChargeDetailRecordSendDelegate  OnChargeDetailRecordSend;
-
-        /// <summary>
-        /// An event fired whenever a charge detail record had been sent.
-        /// </summary>
-        event OnChargeDetailRecordSentDelegate  OnChargeDetailRecordSent;
-
-        #endregion
-
         #endregion
 
     }
