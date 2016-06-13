@@ -91,25 +91,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-
-
-        #region GetChargeDetailRecords(From, To, ProviderId = null, QueryTimeout = null)
-
-        /// <summary>
-        /// Download all charge detail records from the OICP server.
-        /// </summary>
-        /// <param name="From">The starting time.</param>
-        /// <param name="To">The end time.</param>
-        /// <param name="ProviderId">An optional unique identification of e-mobility service provider.</param>
-        /// <param name="QueryTimeout">An optional timeout for this query.</param>
-        Task<IEnumerable<ChargeDetailRecord>> GetChargeDetailRecords(DateTime   From,
-                                                                     DateTime   To,
-                                                                     EVSP_Id    ProviderId    = null,
-                                                                     TimeSpan?  QueryTimeout  = null);
-
-        #endregion
-
-
         #region Reservations
 
         /// <summary>
@@ -215,6 +196,25 @@ namespace org.GraphDefined.WWCP
                                               EVSP_Id              ProviderId    = null,
                                               eMA_Id               eMAId         = null,
                                               TimeSpan?            QueryTimeout  = null);
+
+        #endregion
+
+        #region GetChargeDetailRecords(From, To, ProviderId = null, QueryTimeout = null)
+
+        /// <summary>
+        /// Download all charge detail records from the OICP server.
+        /// </summary>
+        /// <param name="From">The starting time.</param>
+        /// <param name="To">The end time.</param>
+        /// <param name="ProviderId">An optional unique identification of e-mobility service provider.</param>
+        /// <param name="QueryTimeout">An optional timeout for this query.</param>
+        Task<IEnumerable<ChargeDetailRecord>> GetChargeDetailRecords(DateTime           Timestamp,
+                                                                     CancellationToken  CancellationToken,
+                                                                     EventTracking_Id   EventTrackingId,
+                                                                     DateTime           From,
+                                                                     DateTime           To,
+                                                                     EVSP_Id            ProviderId    = null,
+                                                                     TimeSpan?          QueryTimeout  = null);
 
         #endregion
 
