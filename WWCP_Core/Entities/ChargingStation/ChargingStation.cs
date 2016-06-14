@@ -158,11 +158,7 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-
-                return _Description != null
-                    ? _Description
-                    : ChargingPool.Description;
-
+                return _Description ?? ChargingPool.Description;
             }
 
             set
@@ -222,11 +218,7 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-
-                return _Address != null
-                    ? _Address
-                    : ChargingPool.Address;
-
+                return _Address ?? ChargingPool.Address;
             }
 
             set
@@ -334,11 +326,7 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-
-                return _EntranceAddress != null
-                    ? _EntranceAddress
-                    : ChargingPool.EntranceAddress;
-
+                return _EntranceAddress ?? ChargingPool.EntranceAddress;
             }
 
             set
@@ -422,11 +410,7 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-
-                return _ExitAddress != null
-                    ? _ExitAddress
-                    : ChargingPool.ExitAddress;
-
+                return _ExitAddress ?? ChargingPool.ExitAddress;
             }
 
             set
@@ -526,11 +510,7 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-
-                return _OpeningTimes != null
-                    ? _OpeningTimes
-                    : ChargingPool.OpeningTimes;
-
+                return _OpeningTimes ?? ChargingPool.OpeningTimes;
             }
 
             set
@@ -565,11 +545,7 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-
-                return _AuthenticationModes != null
-                    ? _AuthenticationModes
-                    : ChargingPool.AuthenticationModes;
-
+                return _AuthenticationModes ?? ChargingPool.AuthenticationModes;
             }
 
             set
@@ -608,11 +584,7 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-
-                return _PaymentOptions != null
-                    ? _PaymentOptions
-                    : ChargingPool.PaymentOptions;
-
+                return _PaymentOptions ?? ChargingPool.PaymentOptions;
             }
 
             set
@@ -690,11 +662,7 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-
-                return _HotlinePhoneNumber != null
-                    ? _HotlinePhoneNumber
-                    : ChargingPool.HotlinePhoneNumber;
-
+                return _HotlinePhoneNumber ?? ChargingPool.HotlinePhoneNumber;
             }
 
             set
@@ -1584,7 +1552,7 @@ namespace org.GraphDefined.WWCP
 
         public EVSE GetEVSEbyId(EVSE_Id EVSEId)
         {
-            return _EVSEs.Where(evse => evse.Id == EVSEId).FirstOrDefault();
+            return _EVSEs.FirstOrDefault(evse => evse.Id == EVSEId);
         }
 
         #endregion
@@ -2331,10 +2299,8 @@ namespace org.GraphDefined.WWCP
 
                 #region Cancel locally...
 
-                var _EVSE = _EVSEs.
-                                Where (evse => evse.Reservation    != null &&
-                                               evse.Reservation.Id == ReservationId).
-                                FirstOrDefault();
+                var _EVSE = _EVSEs.FirstOrDefault(evse => evse.Reservation    != null &&
+                                                  evse.Reservation.Id == ReservationId);
 
                 if (_EVSE != null)
                 {
@@ -3010,8 +2976,7 @@ namespace org.GraphDefined.WWCP
                 {
 
                     var ChargingSession = ChargingSessions.
-                                          Where(session => session.Id == SessionId).
-                                          FirstOrDefault();
+                                          FirstOrDefault(session => session.Id == SessionId);
 
                     if (ChargingSession == null)
                         result = RemoteStopResult.InvalidSessionId(SessionId);
