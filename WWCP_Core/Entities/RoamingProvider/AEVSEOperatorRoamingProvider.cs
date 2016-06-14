@@ -822,14 +822,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public abstract Task<AuthStartResult>
 
-            AuthorizeStart(DateTime             Timestamp,
-                           CancellationToken    CancellationToken,
-                           EventTracking_Id     EventTrackingId,
-                           EVSEOperator_Id      OperatorId,
-                           Auth_Token           AuthToken,
-                           ChargingProduct_Id   ChargingProductId  = null,
-                           ChargingSession_Id   SessionId          = null,
-                           TimeSpan?            QueryTimeout       = null);
+            AuthorizeStart(EVSEOperator_Id     OperatorId,
+                           Auth_Token          AuthToken,
+                           ChargingProduct_Id  ChargingProductId  = null,
+                           ChargingSession_Id  SessionId          = null,
+
+                           DateTime?           Timestamp          = null,
+                           CancellationToken?  CancellationToken  = null,
+                           EventTracking_Id    EventTrackingId    = null,
+                           TimeSpan?           RequestTimeout     = null);
 
         #endregion
 
@@ -849,15 +850,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public abstract Task<AuthStartEVSEResult>
 
-            AuthorizeStart(DateTime             Timestamp,
-                           CancellationToken    CancellationToken,
-                           EventTracking_Id     EventTrackingId,
-                           EVSEOperator_Id      OperatorId,
-                           Auth_Token           AuthToken,
-                           EVSE_Id              EVSEId,
-                           ChargingProduct_Id   ChargingProductId  = null,
-                           ChargingSession_Id   SessionId          = null,
-                           TimeSpan?            QueryTimeout       = null);
+            AuthorizeStart(EVSEOperator_Id     OperatorId,
+                           Auth_Token          AuthToken,
+                           EVSE_Id             EVSEId,
+                           ChargingProduct_Id  ChargingProductId  = null,
+                           ChargingSession_Id  SessionId          = null,
+
+                           DateTime?           Timestamp          = null,
+                           CancellationToken?  CancellationToken  = null,
+                           EventTracking_Id    EventTrackingId    = null,
+                           TimeSpan?           RequestTimeout     = null);
 
         #endregion
 
@@ -877,15 +879,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public abstract Task<AuthStartChargingStationResult>
 
-            AuthorizeStart(DateTime             Timestamp,
-                           CancellationToken    CancellationToken,
-                           EventTracking_Id     EventTrackingId,
-                           EVSEOperator_Id      OperatorId,
-                           Auth_Token           AuthToken,
-                           ChargingStation_Id   ChargingStationId,
-                           ChargingProduct_Id   ChargingProductId  = null,
-                           ChargingSession_Id   SessionId          = null,
-                           TimeSpan?            QueryTimeout       = null);
+            AuthorizeStart(EVSEOperator_Id     OperatorId,
+                           Auth_Token          AuthToken,
+                           ChargingStation_Id  ChargingStationId,
+                           ChargingProduct_Id  ChargingProductId  = null,
+                           ChargingSession_Id  SessionId          = null,
+
+                           DateTime?           Timestamp          = null,
+                           CancellationToken?  CancellationToken  = null,
+                           EventTracking_Id    EventTrackingId    = null,
+                           TimeSpan?           RequestTimeout     = null);
 
         #endregion
 
@@ -908,13 +911,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public abstract Task<AuthStopResult>
 
-            AuthorizeStop(DateTime            Timestamp,
-                          CancellationToken   CancellationToken,
-                          EventTracking_Id    EventTrackingId,
-                          EVSEOperator_Id     OperatorId,
+            AuthorizeStop(EVSEOperator_Id     OperatorId,
                           ChargingSession_Id  SessionId,
                           Auth_Token          AuthToken,
-                          TimeSpan?           QueryTimeout  = null);
+
+                          DateTime?           Timestamp          = null,
+                          CancellationToken?  CancellationToken  = null,
+                          EventTracking_Id    EventTrackingId    = null,
+                          TimeSpan?           RequestTimeout     = null);
 
         #endregion
 
@@ -937,14 +941,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public abstract Task<AuthStopEVSEResult>
 
-            AuthorizeStop(DateTime            Timestamp,
-                          CancellationToken   CancellationToken,
-                          EventTracking_Id    EventTrackingId,
-                          EVSEOperator_Id     OperatorId,
+            AuthorizeStop(EVSEOperator_Id     OperatorId,
                           EVSE_Id             EVSEId,
                           ChargingSession_Id  SessionId,
                           Auth_Token          AuthToken,
-                          TimeSpan?           QueryTimeout  = null);
+
+                          DateTime?           Timestamp          = null,
+                          CancellationToken?  CancellationToken  = null,
+                          EventTracking_Id    EventTrackingId    = null,
+                          TimeSpan?           RequestTimeout     = null);
 
         #endregion
 
@@ -967,14 +972,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
         public abstract Task<AuthStopChargingStationResult>
 
-            AuthorizeStop(DateTime            Timestamp,
-                          CancellationToken   CancellationToken,
-                          EventTracking_Id    EventTrackingId,
-                          EVSEOperator_Id     OperatorId,
+            AuthorizeStop(EVSEOperator_Id     OperatorId,
                           ChargingStation_Id  ChargingStationId,
                           ChargingSession_Id  SessionId,
                           Auth_Token          AuthToken,
-                          TimeSpan?           QueryTimeout  = null);
+
+                          DateTime?           Timestamp          = null,
+                          CancellationToken?  CancellationToken  = null,
+                          EventTracking_Id    EventTrackingId    = null,
+                          TimeSpan?           RequestTimeout     = null);
 
         #endregion
 
