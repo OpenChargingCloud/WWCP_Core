@@ -288,10 +288,10 @@ namespace org.GraphDefined.WWCP
                     {
 
                         case ""  : Separator = ProviderIdFormats.DIN|ProviderIdFormats.ISO; break;
-                        case "-" : Separator = ProviderIdFormats.DIN_HYPHEN|ProviderIdFormats.ISO_HYPHEN; break;
-                        case "*" : Separator = ProviderIdFormats.DIN_STAR; break;
+                        case "-" : Separator = ProviderIdFormats.ISO_HYPHEN;                break;
+                        case "*" : Separator = ProviderIdFormats.DIN_STAR;                  break;
 
-                        default: throw new ArgumentException("Illegal EV Service Provider identification!", "CountryAndProviderId");
+                        default: throw new ArgumentException("Illegal EV Service Provider identification!", nameof(CountryAndProviderId));
 
                     }
 
