@@ -601,25 +601,25 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStation">The parent charging station.</param>
         /// <param name="MaxStatusListSize">The maximum size of the EVSE status list.</param>
         /// <param name="MaxAdminStatusListSize">The maximum size of the EVSE admin status list.</param>
-        internal EVSE(EVSE_Id          Id,
-                      ChargingStation  ChargingStation,
-                      UInt16           MaxStatusListSize       = DefaultMaxEVSEStatusListSize,
-                      UInt16           MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize)
+        //internal EVSE(EVSE_Id          Id,
+        //              ChargingStation  ChargingStation,
+        //              UInt16           MaxStatusListSize       = DefaultMaxEVSEStatusListSize,
+        //              UInt16           MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize)
 
-            : this(Id,
-                   MaxStatusListSize,
-                   MaxAdminStatusListSize)
+        //    : this(Id,
+        //           MaxStatusListSize,
+        //           MaxAdminStatusListSize)
 
-        {
+        //{
 
-            #region Initial checks
+        //    #region Initial checks
 
-            if (ChargingStation == null)
-                throw new ArgumentNullException(nameof(ChargingStation),  "The charging station must not be null!");
+        //    if (ChargingStation == null)
+        //        throw new ArgumentNullException(nameof(ChargingStation),  "The charging station must not be null!");
 
-            #endregion
+        //    #endregion
 
-        }
+        //}
 
         #endregion
 
@@ -629,9 +629,10 @@ namespace org.GraphDefined.WWCP
         /// Create a new Electric Vehicle Supply Equipment (EVSE) having the given EVSE identification.
         /// </summary>
         /// <param name="Id">The unique identification of this EVSE.</param>
-        internal EVSE(EVSE_Id  Id,
-                      UInt16   MaxStatusListSize       = DefaultMaxEVSEStatusListSize,
-                      UInt16   MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize)
+        internal EVSE(EVSE_Id          Id,
+                      ChargingStation  ChargingStation,
+                      UInt16           MaxStatusListSize       = DefaultMaxEVSEStatusListSize,
+                      UInt16           MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize)
 
             : base(Id)
 
@@ -698,9 +699,9 @@ namespace org.GraphDefined.WWCP
         /// Create a new EVSE having the given EVSE identification.
         /// </summary>
         /// <param name="EVSEId"></param>
-        public static EVSE New(EVSE_Id EVSEId)
+        //public static EVSE New(EVSE_Id EVSEId)
 
-            => new EVSE(EVSEId);
+        //    => new EVSE(EVSEId);
 
         #endregion
 
