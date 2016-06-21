@@ -3272,7 +3272,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            if (result == null || result.Result == RemoteStartEVSEResultType.UnknownEVSE)
+            if (result == null)
                 result = RemoteStartEVSEResult.UnknownEVSEOperator;
 
 
