@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2014-2016 GraphDefined GmbH <achim.friedland@graphdefined.com>
- * This file is part of WWCP Core <https://github.com/GraphDefined/WWCP_Core>
+ * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,59 +35,23 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Plug
-
-        private readonly PlugTypes _Plug;
-
         /// <summary>
         /// The type of the charging plug.
         /// </summary>
         [Mandatory]
-        public PlugTypes Plug
-        {
-            get
-            {
-                return _Plug;
-            }
-        }
-
-        #endregion
-
-        #region Cable
-
-        private readonly CableType _Cable;
+        public PlugTypes  Plug          { get; }
 
         /// <summary>
         /// The type of the charging cable.
         /// </summary>
         [Mandatory]
-        public CableType Cable
-        {
-            get
-            {
-                return _Cable;
-            }
-        }
-
-        #endregion
-
-        #region CableLength
-
-        private readonly Double _CableLength;
+        public CableType  Cable         { get; }
 
         /// <summary>
         /// The length of the charging cable [mm].
         /// </summary>
         [Mandatory]
-        public Double CableLength
-        {
-            get
-            {
-                return _CableLength;
-            }
-        }
-
-        #endregion
+        public Double     CableLength   { get; }
 
         #endregion
 
@@ -104,9 +68,9 @@ namespace org.GraphDefined.WWCP
                             Double     CableLength  = 0)
         {
 
-            this._Plug         = Plug;
-            this._Cable        = Cable;
-            this._CableLength  = CableLength;
+            this.Plug         = Plug;
+            this.Cable        = Cable;
+            this.CableLength  = CableLength;
 
         }
 
