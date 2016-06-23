@@ -5290,6 +5290,56 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region RemoveExternalChargingSession(Timestamp, Sender, ChargingSession)
+
+        /// <summary>
+        /// Register an external charging session which was not registered
+        /// via the RemoteStart or AuthStart mechanisms.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="Sender">The sender of the charging session.</param>
+        /// <param name="ChargingSession">The charging session.</param>
+        public void RemoveExternalChargingSession(DateTime         Timestamp,
+                                                  Object           Sender,
+                                                  ChargingSession  ChargingSession)
+        {
+
+            #region Initial checks
+
+            if (ChargingSession == null)
+                throw new ArgumentNullException(nameof(ChargingSession), "The given charging session must not be null!");
+
+            #endregion
+
+            EVSEOperator _EVSEOperator = null;
+
+            if (_ChargingSessions_AtEVSEOperators.TryRemove(ChargingSession.Id, out _EVSEOperator))
+            {
+
+                DebugX.LogT("Removing external charging session '" + ChargingSession.Id + "'!");
+
+            }
+
+            if (ChargingSession.EVSEId != null)
+            {
+
+                var _EVSE = GetEVSEbyId(ChargingSession.EVSEId);
+
+                if (_EVSE                 != null &&
+                    _EVSE.ChargingSession != null &&
+                    _EVSE.ChargingSession == ChargingSession)
+                {
+
+                    _EVSE.ChargingSession = null;
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
         #region (internal) SendNewChargingSession(Timestamp, Sender, ChargingSession)
 
         internal void SendNewChargingSession(DateTime         Timestamp,
