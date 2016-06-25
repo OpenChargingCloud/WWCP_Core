@@ -154,12 +154,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever new EVSE data will be send upstream.
         /// </summary>
-        public abstract event OnEVSEDataPushDelegate OnEVSEDataPush;
+        public abstract event OnEVSEDataPushDelegate    OnEVSEDataPush;
 
         /// <summary>
         /// An event fired whenever new EVSE data had been sent upstream.
         /// </summary>
-        public abstract event OnEVSEDataPushedDelegate OnEVSEDataPushed;
+        public abstract event OnEVSEDataPushedDelegate  OnEVSEDataPushed;
 
         #endregion
 
@@ -168,12 +168,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever new EVSE status will be send upstream.
         /// </summary>
-        public abstract event OnEVSEStatusPushDelegate OnEVSEStatusPush;
+        public abstract event OnEVSEStatusPushDelegate    OnEVSEStatusPush;
 
         /// <summary>
         /// An event fired whenever new EVSE status had been sent upstream.
         /// </summary>
-        public abstract event OnEVSEStatusPushedDelegate OnEVSEStatusPushed;
+        public abstract event OnEVSEStatusPushedDelegate  OnEVSEStatusPushed;
 
         #endregion
 
@@ -182,32 +182,32 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever an authentication token will be verified for charging.
         /// </summary>
-        public abstract event OnAuthorizeStartDelegate OnAuthorizeStart;
+        public abstract event OnAuthorizeStartDelegate                   OnAuthorizeStart;
 
         /// <summary>
         /// An event fired whenever an authentication token had been verified for charging.
         /// </summary>
-        public abstract event OnAuthorizeStartedDelegate OnAuthorizeStarted;
+        public abstract event OnAuthorizeStartedDelegate                 OnAuthorizeStarted;
 
         /// <summary>
         /// An event fired whenever an authentication token will be verified for charging at the given EVSE.
         /// </summary>
-        public abstract event OnAuthorizeEVSEStartDelegate OnAuthorizeEVSEStart;
+        public abstract event OnAuthorizeEVSEStartDelegate               OnAuthorizeEVSEStart;
 
         /// <summary>
         /// An event fired whenever an authentication token had been verified for charging at the given EVSE.
         /// </summary>
-        public abstract event OnAuthorizeEVSEStartedDelegate OnAuthorizeEVSEStarted;
+        public abstract event OnAuthorizeEVSEStartedDelegate             OnAuthorizeEVSEStarted;
 
         /// <summary>
         /// An event fired whenever an authentication token will be verified for charging at the given charging station.
         /// </summary>
-        public abstract event OnAuthorizeChargingStationStartDelegate OnAuthorizeChargingStationStart;
+        public abstract event OnAuthorizeChargingStationStartDelegate    OnAuthorizeChargingStationStart;
 
         /// <summary>
         /// An event fired whenever an authentication token had been verified for charging at the given charging station.
         /// </summary>
-        public abstract event OnAuthorizeChargingStationStartedDelegate OnAuthorizeChargingStationStarted;
+        public abstract event OnAuthorizeChargingStationStartedDelegate  OnAuthorizeChargingStationStarted;
 
         #endregion
 
@@ -216,32 +216,43 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever an authentication token will be verified to stop a charging process.
         /// </summary>
-        public abstract event OnAuthorizeStopDelegate OnAuthorizeStop;
+        public abstract event OnAuthorizeStopDelegate                    OnAuthorizeStop;
 
         /// <summary>
         /// An event fired whenever an authentication token had been verified to stop a charging process.
         /// </summary>
-        public abstract event OnAuthorizeStoppedDelegate OnAuthorizeStopped;
+        public abstract event OnAuthorizeStoppedDelegate                 OnAuthorizeStopped;
 
         /// <summary>
         /// An event fired whenever an authentication token will be verified to stop a charging process at the given EVSE.
         /// </summary>
-        public abstract event OnAuthorizeEVSEStopDelegate OnAuthorizeEVSEStop;
+        public abstract event OnAuthorizeEVSEStopDelegate                OnAuthorizeEVSEStop;
 
         /// <summary>
         /// An event fired whenever an authentication token had been verified to stop a charging process at the given EVSE.
         /// </summary>
-        public abstract event OnAuthorizeEVSEStoppedDelegate OnAuthorizeEVSEStopped;
+        public abstract event OnAuthorizeEVSEStoppedDelegate             OnAuthorizeEVSEStopped;
 
         /// <summary>
         /// An event fired whenever an authentication token will be verified to stop a charging process at the given charging station.
         /// </summary>
-        public abstract event OnAuthorizeChargingStationStopDelegate OnAuthorizeChargingStationStop;
+        public abstract event OnAuthorizeChargingStationStopDelegate     OnAuthorizeChargingStationStop;
 
         /// <summary>
         /// An event fired whenever an authentication token had been verified to stop a charging process at the given charging station.
         /// </summary>
-        public abstract event OnAuthorizeChargingStationStoppedDelegate OnAuthorizeChargingStationStopped;
+        public abstract event OnAuthorizeChargingStationStoppedDelegate  OnAuthorizeChargingStationStopped;
+
+        #endregion
+
+
+        #region OnEVSEOperatorRoamingProviderException
+
+        public delegate Task OnEVSEOperatorRoamingProviderExceptionDelegate(DateTime                      Timestamp,
+                                                                            AEVSEOperatorRoamingProvider  Sender,
+                                                                            Exception                     Exception);
+
+        public event OnEVSEOperatorRoamingProviderExceptionDelegate OnEVSEOperatorRoamingProviderException;
 
         #endregion
 
@@ -1319,9 +1330,23 @@ namespace org.GraphDefined.WWCP
             if (!_DisableAutoUploads)
             {
 
-                FlushServiceQueues().Wait();
+                try
+                {
 
-                //ToDo: Handle errors!
+                    FlushServiceQueues().Wait();
+
+                }
+                catch (Exception e)
+                {
+
+                    while (e.InnerException != null)
+                        e = e.InnerException;
+
+                    OnEVSEOperatorRoamingProviderException?.Invoke(DateTime.Now,
+                                                                   this,
+                                                                   e);
+
+                }
 
             }
 
