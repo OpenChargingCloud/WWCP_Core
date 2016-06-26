@@ -45,114 +45,47 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static readonly TimeSpan DefaultQueryTimeout  = TimeSpan.FromSeconds(180);
 
+        /// <summary>
+        /// The default HTTP user agent.
+        /// </summary>
+        public const String DefaultHTTPUserAgent = "GraphDefined SOAP Client";
+
         #endregion
 
         #region Properties
 
-        #region ClientId
-
-        protected readonly String _ClientId;
-
         /// <summary>
         /// A unqiue identification of this client.
         /// </summary>
-        public String ClientId
-        {
-            get
-            {
-                return _ClientId;
-            }
-        }
+        public String            ClientId                { get; }
 
-        #endregion
+        public String            Hostname                { get; }
 
-        #region Hostname
+        public IPPort            TCPPort                 { get; }
 
-        protected readonly String _Hostname;
+        public String            HTTPVirtualHost         { get; }
 
-        public String Hostname
-        {
-            get
-            {
-                return _Hostname;
-            }
-        }
-
-        #endregion
-
-        #region TCPPort
-
-        protected readonly IPPort _TCPPort;
-
-        public IPPort TCPPort
-        {
-            get
-            {
-                return _TCPPort;
-            }
-        }
-
-        #endregion
-
-        #region HTTPVirtualHost
-
-        protected readonly String _HTTPVirtualHost;
-
-        public String HTTPVirtualHost
-        {
-            get
-            {
-                return _HTTPVirtualHost;
-            }
-        }
-
-        #endregion
-
-        #region UserAgent
-
-        public String UserAgent { get; }
-
-        #endregion
-
-        #region RequestTimeout
+        public String            UserAgent               { get; }
 
         /// <summary>
         /// The timeout for upstream requests.
         /// </summary>
-        public TimeSpan RequestTimeout { get; }
-
-        #endregion
-
-        #region DNSClient
+        public TimeSpan          RequestTimeout          { get; }
 
         /// <summary>
         /// The DNS client defines which DNS servers to use.
         /// </summary>
-        public DNSClient DNSClient { get; }
+        public DNSClient         DNSClient               { get; }
 
-        #endregion
+        //   public X509Certificate2  ServerCert              { get; }
 
-        public X509Certificate ClientCert { get; set; }
+        public RemoteCertificateValidationCallback RemoteCertificateValidator { get; }
 
-        public X509Certificate2 ServerCert { get; set; }
+        public X509Certificate ClientCert { get; }
 
-        #region RemoteCertificateValidator
+        //        public LocalCertificateSelectionCallback ClientCertificateSelector { get; set; }
 
-        protected readonly RemoteCertificateValidationCallback _RemoteCertificateValidator;
-
-        public RemoteCertificateValidationCallback RemoteCertificateValidator
-        {
-            get
-            {
-                return _RemoteCertificateValidator;
-            }
-        }
-
-        #endregion
-
-        public LocalCertificateSelectionCallback ClientCertificateSelector { get; set; }
-
-        public Boolean UseTLS { get; set; }
+        public Boolean          UseTLS                  { get; set; }
 
         #endregion
 
@@ -200,22 +133,24 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Create an abstract OICP v2.0 client.
+        /// Create an abstract SOAP client.
         /// </summary>
         /// <param name="ClientId">A unqiue identification of this client.</param>
-        /// <param name="Hostname">The OICP hostname to connect to.</param>
-        /// <param name="TCPPort">The OICP TCP port to connect to.</param>
-        /// <param name="HTTPVirtualHost">An optional HTTP virtual host name to use.</param>
+        /// <param name="Hostname">The hostname to connect to.</param>
+        /// <param name="TCPPort">The TCP port to connect to.</param>
         /// <param name="RemoteCertificateValidator">A delegate to verify the remote TLS certificate.</param>
+        /// <param name="ClientCert">The TLS client certificate to use.</param>
+        /// <param name="HTTPVirtualHost">An optional HTTP virtual host name to use.</param>
         /// <param name="UserAgent">An optional HTTP user agent to use.</param>
         /// <param name="QueryTimeout">An optional timeout for upstream queries.</param>
         /// <param name="DNSClient">An optional DNS client.</param>
         public ASOAPClient(String                               ClientId,
                            String                               Hostname,
                            IPPort                               TCPPort,
-                           String                               HTTPVirtualHost             = null,
                            RemoteCertificateValidationCallback  RemoteCertificateValidator  = null,
-                           String                               UserAgent                   = "GraphDefined eMobility",
+                           X509Certificate                      ClientCert                  = null,
+                           String                               HTTPVirtualHost             = null,
+                           String                               UserAgent                   = DefaultHTTPUserAgent,
                            TimeSpan?                            QueryTimeout                = null,
                            DNSClient                            DNSClient                   = null)
         {
@@ -230,24 +165,26 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._Hostname         = Hostname;
-            this._TCPPort          = TCPPort;
+            this.ClientId                    = ClientId;
+            this.Hostname                    = Hostname;
+            this.TCPPort                     = TCPPort;
 
-            this._HTTPVirtualHost  = (HTTPVirtualHost != null)
-                                         ? HTTPVirtualHost
-                                         : Hostname;
+            this.RemoteCertificateValidator  = RemoteCertificateValidator;
+            this.ClientCert                  = ClientCert;
 
-            this._RemoteCertificateValidator = RemoteCertificateValidator;
+            this.HTTPVirtualHost             = (HTTPVirtualHost != null)
+                                                    ? HTTPVirtualHost
+                                                    : Hostname;
 
-            this.UserAgent        = UserAgent;
+            this.UserAgent                   = UserAgent;
 
-            this.RequestTimeout     = QueryTimeout != null
-                                         ? QueryTimeout.Value
-                                         : DefaultQueryTimeout;
+            this.RequestTimeout              = QueryTimeout != null
+                                                  ? QueryTimeout.Value
+                                                  : DefaultQueryTimeout;
 
-            this.DNSClient          = (DNSClient == null)
-                                         ? new DNSClient()
-                                         : DNSClient;
+            this.DNSClient                   = (DNSClient == null)
+                                                  ? new DNSClient()
+                                                  : DNSClient;
 
         }
 
