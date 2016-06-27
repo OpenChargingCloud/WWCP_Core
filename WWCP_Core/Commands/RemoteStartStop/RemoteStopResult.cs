@@ -32,107 +32,35 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Result
-
-        private readonly RemoteStopResultType _Result;
-
         /// <summary>
         /// The result of a remote stop operation.
         /// </summary>
-        public RemoteStopResultType Result
-        {
-            get
-            {
-                return _Result;
-            }
-        }
-
-        #endregion
-
-        #region SessionId
-
-        private readonly ChargingSession_Id _SessionId;
+        public RemoteStopResultType    Result                   { get; }
 
         /// <summary>
         /// The charging session identification for an invalid remote stop operation.
         /// </summary>
-        public ChargingSession_Id SessionId
-        {
-            get
-            {
-                return _SessionId;
-            }
-        }
-
-        #endregion
-
-        #region ChargeDetailRecord
-
-        private readonly ChargeDetailRecord _ChargeDetailRecord;
+        public ChargingSession_Id      SessionId                { get; }
 
         /// <summary>
         /// The charge detail record for a successfully stopped charging process.
         /// </summary>
-        public ChargeDetailRecord ChargeDetailRecord
-        {
-            get
-            {
-                return _ChargeDetailRecord;
-            }
-        }
-
-        #endregion
-
-        #region ReservationId
-
-        private readonly ChargingReservation_Id _ReservationId;
+        public ChargeDetailRecord      ChargeDetailRecord       { get; }
 
         /// <summary>
         /// The charging reservation identification.
         /// </summary>
-        public ChargingReservation_Id ReservationId
-        {
-            get
-            {
-                return _ReservationId;
-            }
-        }
-
-        #endregion
-
-        #region ReservationHandling
-
-        private readonly ReservationHandling _ReservationHandling;
+        public ChargingReservation_Id  ReservationId            { get; }
 
         /// <summary>
         /// The handling of the charging reservation after the charging session stopped.
         /// </summary>
-        public ReservationHandling ReservationHandling
-        {
-            get
-            {
-                return _ReservationHandling;
-            }
-        }
-
-        #endregion
-
-        #region ErrorMessage
-
-        private readonly String _ErrorMessage;
+        public ReservationHandling     ReservationHandling      { get; }
 
         /// <summary>
-        /// An optional error message.
+        /// An optional (error) message.
         /// </summary>
-        public String ErrorMessage
-        {
-            get
-            {
-                return _ErrorMessage;
-            }
-        }
-
-        #endregion
+        public String                  Message                  { get; }
 
         #endregion
 
@@ -158,9 +86,9 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._SessionId     = SessionId;
-            this._Result        = Result;
-            this._ErrorMessage  = ErrorMessage;
+            this.SessionId     = SessionId;
+            this.Result        = Result;
+            this.Message  = ErrorMessage;
 
         }
 
@@ -188,10 +116,10 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._SessionId            = SessionId;
-            this._Result               = Result;
-            this._ReservationId        = ReservationId;
-            this._ReservationHandling  = ReservationHandling != null ? ReservationHandling : ReservationHandling.Close;
+            this.SessionId            = SessionId;
+            this.Result               = Result;
+            this.ReservationId        = ReservationId;
+            this.ReservationHandling  = ReservationHandling != null ? ReservationHandling : ReservationHandling.Close;
 
         }
 
@@ -219,11 +147,11 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._ChargeDetailRecord   = ChargeDetailRecord;
-            this._SessionId            = ChargeDetailRecord.SessionId;
-            this._Result               = Result;
-            this._ReservationId        = ReservationId;
-            this._ReservationHandling  = ReservationHandling != null ? ReservationHandling : ReservationHandling.Close;
+            this.ChargeDetailRecord   = ChargeDetailRecord;
+            this.SessionId            = ChargeDetailRecord.SessionId;
+            this.Result               = Result;
+            this.ReservationId        = ReservationId;
+            this.ReservationHandling  = ReservationHandling != null ? ReservationHandling : ReservationHandling.Close;
 
         }
 
@@ -448,7 +376,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return _Result.ToString();
+            return Result.ToString();
         }
 
         #endregion

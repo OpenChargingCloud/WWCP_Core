@@ -3165,7 +3165,7 @@ namespace org.GraphDefined.WWCP
                 {
 
                     case RemoteStopResultType.Error:
-                        result = RemoteStopChargingStationResult.Error(result1.SessionId, result1.ErrorMessage);
+                        result = RemoteStopChargingStationResult.Error(result1.SessionId, result1.Message);
                         break;
 
                     case RemoteStopResultType.InvalidSessionId:
