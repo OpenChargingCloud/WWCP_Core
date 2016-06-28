@@ -1191,14 +1191,15 @@ namespace org.GraphDefined.WWCP
                     result = CancelReservationResult.UnknownReservationId(ReservationId);
 
 
-                var OldReservationId = _Reservation.Id;
+                var SavedReservation = _Reservation;
 
                 _Reservation = null;
 
                 SendOnReservationCancelled(Timestamp,
                                            this,
                                            EventTrackingId,
-                                           OldReservationId,
+                                           SavedReservation?.Id,
+                                           SavedReservation,
                                            Reason);
 
                 result = CancelReservationResult.Success(ReservationId);
@@ -1236,19 +1237,19 @@ namespace org.GraphDefined.WWCP
                                                  Object                                 Sender,
                                                  EventTracking_Id                       EventTrackingId,
                                                  ChargingReservation_Id                 ReservationId,
+                                                 ChargingReservation                    Reservation,
                                                  ChargingReservationCancellationReason  Reason)
         {
 
             // Yes, this is really needed!
             _Reservation = null;
 
-            var OnReservationCancelledLocal = OnReservationCancelled;
-            if (OnReservationCancelledLocal != null)
-                OnReservationCancelledLocal(Timestamp,
-                                            Sender,
-                                            EventTrackingId,
-                                            ReservationId,
-                                            Reason);
+            OnReservationCancelled?.Invoke(Timestamp,
+                                           Sender,
+                                           EventTrackingId,
+                                           ReservationId,
+                                           Reservation,
+                                           Reason);
 
         }
 

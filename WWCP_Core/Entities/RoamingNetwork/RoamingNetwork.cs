@@ -2979,19 +2979,21 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// <param name="EVSEId">An optional identification of the EVSE.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
-        public async Task<CancelReservationResult> CancelReservation(DateTime                               Timestamp,
-                                                                     CancellationToken                      CancellationToken,
-                                                                     EventTracking_Id                       EventTrackingId,
-                                                                     ChargingReservation_Id                 ReservationId,
-                                                                     ChargingReservationCancellationReason  Reason,
-                                                                     EVSP_Id                                ProviderId    = null,
-                                                                     EVSE_Id                                EVSEId        = null,
-                                                                     TimeSpan?                              QueryTimeout  = null)
+        public async Task<CancelReservationResult>
+
+            CancelReservation(DateTime                               Timestamp,
+                              CancellationToken                      CancellationToken,
+                              EventTracking_Id                       EventTrackingId,
+                              ChargingReservation_Id                 ReservationId,
+                              ChargingReservationCancellationReason  Reason,
+                              EVSP_Id                                ProviderId    = null,
+                              EVSE_Id                                EVSEId        = null,
+                              TimeSpan?                              QueryTimeout  = null)
+
         {
 
             CancelReservationResult result         = null;
             EVSEOperator            _EVSEOperator  = null;
-
 
             #region Check EVSE operator charging reservation lookup...
 
@@ -3077,14 +3079,6 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            //var OnReservationCancelledLocal = OnReservationCancelled;
-            //if (OnReservationCancelledLocal != null)
-            //    OnReservationCancelledLocal(DateTime.Now,
-            //                                this,
-            //                                EventTracking_Id.New,
-            //                                ReservationId,
-            //                                Reason);
-
             return result;
 
         }
@@ -3106,6 +3100,7 @@ namespace org.GraphDefined.WWCP
                                                  Object                                 Sender,
                                                  EventTracking_Id                       EventTrackingId,
                                                  ChargingReservation_Id                 ReservationId,
+                                                 ChargingReservation                    Reservation,
                                                  ChargingReservationCancellationReason  Reason)
         {
 
@@ -3113,13 +3108,12 @@ namespace org.GraphDefined.WWCP
 
             _ChargingReservations_AtEVSEOperators.TryRemove(ReservationId, out _EVSEOperator);
 
-            var OnReservationCancelledLocal = OnReservationCancelled;
-            if (OnReservationCancelledLocal != null)
-                OnReservationCancelledLocal(Timestamp,
-                                            Sender,
-                                            EventTrackingId,
-                                            ReservationId,
-                                            Reason);
+            OnReservationCancelled?.Invoke(Timestamp,
+                                           Sender,
+                                           EventTrackingId,
+                                           ReservationId,
+                                           Reservation,
+                                           Reason);
 
         }
 

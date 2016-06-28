@@ -375,8 +375,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this event with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
-    /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-    /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
+    /// <param name="Reason">The reason for the cancellation.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate void OnReservationCancelDelegate(DateTime                               Timestamp,
                                                      Object                                 Sender,
@@ -394,8 +393,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this event with other events.</param>
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
-    /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-    /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting the deletion.</param>
+    /// <param name="Reason">The reason for the cancellation.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<Boolean> OnCancelReservationDelegate(DateTime                               Timestamp,
                                                               CancellationToken                      CancellationToken,
@@ -411,17 +409,14 @@ namespace org.GraphDefined.WWCP
     /// <param name="Sender">The sender of this event.</param>
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this event with other events.</param>
-    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
-    /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-    /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-    /// <param name="Result">The result of the reservation.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
+    /// <param name="Reservation">The charging reservation (if known).</param>
+    /// <param name="Reason">The reason for the cancellation.</param>
     public delegate void OnReservationCancelledInternalDelegate(DateTime                               Timestamp,
                                                                 Object                                 Sender,
                                                                 EventTracking_Id                       EventTrackingId,
                                                                 ChargingReservation_Id                 ReservationId,
+                                                                ChargingReservation                    Reservation,
                                                                 ChargingReservationCancellationReason  Reason);
 
 
@@ -433,13 +428,12 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this event with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
-    /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-    /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
+    /// <param name="Reason">The reason for the cancellation.</param>
     /// <param name="Result">The result of the reservation.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnReservationCancelledDelegate(DateTime                               Timestamp,
-                                                        Object                                 Sender,
+    public delegate void OnReservationCancelledDelegate(Object                                 Sender,
+                                                        DateTime                               Timestamp,
                                                         EventTracking_Id                       EventTrackingId,
                                                         RoamingNetwork_Id                      RoamingNetworkId,
                                                         ChargingReservation_Id                 ReservationId,
