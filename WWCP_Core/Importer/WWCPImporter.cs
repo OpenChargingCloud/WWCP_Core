@@ -37,7 +37,7 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 namespace org.GraphDefined.WWCP.Importer
 {
 
-    public delegate Task<HTTPResponse<T>> DownloadData<T>(DateTime LastRunTimestamp, String LastRunId, DNSClient DNSClient);
+    public delegate Task<HTTPResponse<T>> DownloadData<T>(DateTime LastRuntimestamp, String LastRunId, DNSClient DNSClient);
 
 
     /// <summary>

@@ -33,147 +33,56 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region AuthorizatorId
-
-        private readonly Authorizator_Id _AuthorizatorId;
-
         /// <summary>
         /// The identification of the authorizing entity.
         /// </summary>
-        public Authorizator_Id AuthorizatorId
-        {
-            get
-            {
-                return _AuthorizatorId;
-            }
-        }
-
-        #endregion
-
-        #region Result
-
-        private readonly AuthStartEVSEResultType _Result;
+        public Authorizator_Id          AuthorizatorId          { get; }
 
         /// <summary>
         /// The result of the authorize start operation.
         /// </summary>
-        public AuthStartEVSEResultType  Result
-        {
-            get
-            {
-                return _Result;
-            }
-        }
-
-        #endregion
-
-        #region SessionId
-
-        private readonly ChargingSession_Id _SessionId;
+        public AuthStartEVSEResultType  Result                  { get; }
 
         /// <summary>
         /// The charging session identification for a successful authorize start operation.
         /// </summary>
-        public ChargingSession_Id SessionId
-        {
-            get
-            {
-                return _SessionId;
-            }
-        }
-
-        #endregion
-
-        #region ProviderId
-
-        private readonly EVSP_Id _ProviderId;
+        public ChargingSession_Id       SessionId               { get; }
 
         /// <summary>
         /// The unique identification of the ev service provider.
         /// </summary>
-        public EVSP_Id ProviderId
-        {
-            get
-            {
-                return _ProviderId;
-            }
-        }
-
-        #endregion
-
-        #region Description
-
-        private readonly String _Description;
+        public EVSP_Id                  ProviderId              { get; }
 
         /// <summary>
         /// A optional description of the authorize start result.
         /// </summary>
-        public String Description
-        {
-            get
-            {
-                return _Description;
-            }
-        }
-
-        #endregion
-
-        #region AdditionalInfo
-
-        private readonly String _AdditionalInfo;
+        public String                   Description             { get; }
 
         /// <summary>
         /// An optional additional message.
         /// </summary>
-        public String AdditionalInfo
-        {
-            get
-            {
-                return _AdditionalInfo;
-            }
-        }
-
-        #endregion
-
-        #region ListOfAuthStopTokens
-
-        private readonly IEnumerable<Auth_Token> _ListOfAuthStopTokens;
+        public String                   AdditionalInfo          { get; }
 
         /// <summary>
         /// An optional list of authorize stop tokens.
         /// </summary>
-        public IEnumerable<Auth_Token> ListOfAuthStopTokens
-        {
-            get
-            {
-                return _ListOfAuthStopTokens;
-            }
-        }
-
-        #endregion
-
-        #region ListOfAuthStopPINs
-
-        private readonly IEnumerable<UInt32> _ListOfAuthStopPINs;
+        public IEnumerable<Auth_Token>  ListOfAuthStopTokens    { get; }
 
         /// <summary>
         /// An optional list of authorize stop PINs.
         /// </summary>
-        public IEnumerable<UInt32> ListOfAuthStopPINs
-        {
-            get
-            {
-                return _ListOfAuthStopPINs;
-            }
-        }
+        public IEnumerable<UInt32>      ListOfAuthStopPINs      { get; }
 
-        #endregion
+        /// <summary>
+        /// The run time of the request.
+        /// </summary>
+        public TimeSpan?                Runtime                 { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region (private) AuthStartEVSEResult(AuthorizatorId, Result, ProviderId = null, Description = null, AdditionalInfo = null)
+        #region (private) AuthStartEVSEResult(AuthorizatorId, Result, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// Create a new authorize start result.
@@ -183,33 +92,37 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">An optional identification of the ev service provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="Runtime">The run time of the request.</param>
         private AuthStartEVSEResult(Authorizator_Id          AuthorizatorId,
                                     AuthStartEVSEResultType  Result,
                                     EVSP_Id                  ProviderId      = null,
                                     String                   Description     = null,
-                                    String                   AdditionalInfo  = null)
+                                    String                   AdditionalInfo  = null,
+                                    TimeSpan?                Runtime         = null)
+
         {
 
             #region Initial checks
 
             if (AuthorizatorId == null)
-                throw new ArgumentNullException("AuthorizatorId", "The given parameter must not be null!");
+                throw new ArgumentNullException(nameof(AuthorizatorId),  "The given identification of the authorizator must not be null!");
 
             #endregion
 
-            this._AuthorizatorId        = AuthorizatorId;
-            this._Result                = Result;
-            this._ProviderId            = ProviderId;
-            this._Description           = Description    != null ? Description    : String.Empty;
-            this._AdditionalInfo        = AdditionalInfo != null ? AdditionalInfo : String.Empty;
-            this._ListOfAuthStopTokens  = new Auth_Token[0];
-            this._ListOfAuthStopPINs    = new UInt32[0];
+            this.AuthorizatorId        = AuthorizatorId;
+            this.Result                = Result;
+            this.ProviderId            = ProviderId;
+            this.Description           = Description    ?? String.Empty;
+            this.AdditionalInfo        = AdditionalInfo ?? String.Empty;
+            this.Runtime               = Runtime        ?? TimeSpan.FromSeconds(0);
+            this.ListOfAuthStopTokens  = new Auth_Token[0];
+            this.ListOfAuthStopPINs    = new UInt32[0];
 
         }
 
         #endregion
 
-        #region (private) AuthStartEVSEResult(AuthorizatorId, SessionId, ProviderId, Description = null, AdditionalInfo = null, ListOfAuthStopTokens = null, ListOfAuthStopPINs = null)
+        #region (private) AuthStartEVSEResult(AuthorizatorId, SessionId, ProviderId, Description = null, AdditionalInfo = null, Runtime = null, ListOfAuthStopTokens = null, ListOfAuthStopPINs = null)
 
         /// <summary>
         /// Create a new successful authorize start result.
@@ -219,6 +132,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">The unique identification of the ev service provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="Runtime">The run time of the request.</param>
         /// <param name="ListOfAuthStopTokens">An optional enumeration of authorize stop tokens.</param>
         /// <param name="ListOfAuthStopPINs">An optional enumeration of authorize stop PINs.</param>
         private AuthStartEVSEResult(Authorizator_Id          AuthorizatorId,
@@ -226,6 +140,7 @@ namespace org.GraphDefined.WWCP
                                     EVSP_Id                  ProviderId,
                                     String                   Description           = null,
                                     String                   AdditionalInfo        = null,
+                                    TimeSpan?                Runtime               = null,
                                     IEnumerable<Auth_Token>  ListOfAuthStopTokens  = null,
                                     IEnumerable<UInt32>      ListOfAuthStopPINs    = null)
         {
@@ -233,52 +148,56 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (AuthorizatorId == null)
-                throw new ArgumentNullException("AuthorizatorId",  "The given parameter must not be null!");
+                throw new ArgumentNullException(nameof(AuthorizatorId),  "The given identification of the authorizator must not be null!");
 
             if (SessionId == null)
-                throw new ArgumentNullException(nameof(SessionId),       "The given parameter must not be null!");
+                throw new ArgumentNullException(nameof(SessionId),       "The given charging session identification must not be null!");
 
             if (ProviderId == null)
-                throw new ArgumentNullException("ProviderId",      "The given parameter must not be null!");
+                throw new ArgumentNullException(nameof(ProviderId),      "The given e-mobility provider identification must not be null!");
 
             #endregion
 
-            this._Result                = AuthStartEVSEResultType.Authorized;
-            this._AuthorizatorId        = AuthorizatorId;
-            this._SessionId             = SessionId;
-            this._ProviderId            = ProviderId;
-            this._Description           = Description          != null ? Description          : String.Empty;
-            this._AdditionalInfo        = AdditionalInfo       != null ? AdditionalInfo       : String.Empty;
-            this._ListOfAuthStopTokens  = ListOfAuthStopTokens != null ? ListOfAuthStopTokens : new Auth_Token[0];
-            this._ListOfAuthStopPINs    = ListOfAuthStopPINs   != null ? ListOfAuthStopPINs   : new UInt32[0];
+            this.Result                = AuthStartEVSEResultType.Authorized;
+            this.AuthorizatorId        = AuthorizatorId;
+            this.SessionId             = SessionId;
+            this.ProviderId            = ProviderId;
+            this.Description           = Description          != null ? Description          : String.Empty;
+            this.AdditionalInfo        = AdditionalInfo       != null ? AdditionalInfo       : String.Empty;
+            this.Runtime               = Runtime ?? TimeSpan.FromSeconds(0);
+            this.ListOfAuthStopTokens  = ListOfAuthStopTokens != null ? ListOfAuthStopTokens : new Auth_Token[0];
+            this.ListOfAuthStopPINs    = ListOfAuthStopPINs   != null ? ListOfAuthStopPINs   : new UInt32[0];
 
         }
 
         #endregion
 
-        #region (private) AuthStartEVSEResult(AuthorizatorId, ErrorMessage = null)
+        #region (private) AuthStartEVSEResult(AuthorizatorId, ErrorMessage = null, Runtime = null)
 
         /// <summary>
         /// Create a new remote start result.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ErrorMessage">An error message.</param>
+        /// <param name="Runtime">The run time of the request.</param>
         private AuthStartEVSEResult(Authorizator_Id  AuthorizatorId,
-                                    String           ErrorMessage  = null)
+                                    String           ErrorMessage  = null,
+                                    TimeSpan?        Runtime       = null)
         {
 
             #region Initial checks
 
             if (AuthorizatorId == null)
-                throw new ArgumentNullException("AuthorizatorId", "The given parameter must not be null!");
+                throw new ArgumentNullException(nameof(AuthorizatorId),  "The given identification of the authorizator must not be null!");
 
             #endregion
 
-            this._Result                = AuthStartEVSEResultType.Error;
-            this._AuthorizatorId        = AuthorizatorId;
-            this._Description           = ErrorMessage         != null ? ErrorMessage         : String.Empty;
-            this._ListOfAuthStopTokens  = ListOfAuthStopTokens != null ? ListOfAuthStopTokens : new Auth_Token[0];
-            this._ListOfAuthStopPINs    = ListOfAuthStopPINs   != null ? ListOfAuthStopPINs   : new UInt32[0];
+            this.Result                = AuthStartEVSEResultType.Error;
+            this.AuthorizatorId        = AuthorizatorId;
+            this.Runtime               = Runtime;
+            this.Description           = ErrorMessage ?? String.Empty;
+            this.ListOfAuthStopTokens  = new Auth_Token[0];
+            this.ListOfAuthStopPINs    = new UInt32[0];
 
         }
 
@@ -292,28 +211,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The result is unknown and/or should be ignored.
         /// </summary>
+
         public static AuthStartEVSEResult Unspecified(Authorizator_Id AuthorizatorId)
-        {
 
-            return new AuthStartEVSEResult(AuthorizatorId,
-                                           AuthStartEVSEResultType.Unspecified);
-
-        }
-
-        #endregion
-
-        #region (static) UnknownEVSE(AuthorizatorId)
-
-        /// <summary>
-        /// The EVSE is unknown.
-        /// </summary>
-        public static AuthStartEVSEResult UnknownEVSE(Authorizator_Id AuthorizatorId)
-        {
-
-            return new AuthStartEVSEResult(AuthorizatorId,
-                                           AuthStartEVSEResultType.UnknownEVSE);
-
-        }
+            => new AuthStartEVSEResult(AuthorizatorId,
+                                       AuthStartEVSEResultType.Unspecified);
 
         #endregion
 
@@ -322,13 +224,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The given charging session identification is unknown or invalid.
         /// </summary>
+
         public static AuthStartEVSEResult InvalidSessionId(Authorizator_Id AuthorizatorId)
-        {
 
-            return new AuthStartEVSEResult(AuthorizatorId,
-                                           AuthStartEVSEResultType.InvalidSessionId);
-
-        }
+            => new AuthStartEVSEResult(AuthorizatorId,
+                                       AuthStartEVSEResultType.InvalidSessionId);
 
         #endregion
 
@@ -337,32 +237,28 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The EVSE is reserved.
         /// </summary>
+
         public static AuthStartEVSEResult Reserved(Authorizator_Id AuthorizatorId)
-        {
 
-            return new AuthStartEVSEResult(AuthorizatorId,
-                                           AuthStartEVSEResultType.Reserved);
-
-        }
+            => new AuthStartEVSEResult(AuthorizatorId,
+                                       AuthStartEVSEResultType.Reserved);
 
         #endregion
 
         #region (static) OutOfService(AuthorizatorId)
 
         /// <summary>
-        /// The EVSE is out of service.
+        /// The EVSE or charging station is out of service.
         /// </summary>
+
         public static AuthStartEVSEResult OutOfService(Authorizator_Id AuthorizatorId)
-        {
 
-            return new AuthStartEVSEResult(AuthorizatorId,
-                                           AuthStartEVSEResultType.OutOfService);
-
-        }
+            => new AuthStartEVSEResult(AuthorizatorId,
+                                       AuthStartEVSEResultType.OutOfService);
 
         #endregion
 
-        #region (static) Authorized(AuthorizatorId, SessionId, ProviderId, Description = null, AdditionalInfo = null, ListOfAuthStopTokens = null, ListOfAuthStopPINs = null)
+        #region (static) Authorized(AuthorizatorId, SessionId, ProviderId, Description = null, AdditionalInfo = null, Runtime = null, ListOfAuthStopTokens = null, ListOfAuthStopPINs = null)
 
         /// <summary>
         /// The authorize start was successful.
@@ -372,30 +268,33 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">The unique identification of the ev service provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="Runtime">The run time of the request.</param>
         /// <param name="ListOfAuthStopTokens">An optional enumeration of authorize stop tokens.</param>
         /// <param name="ListOfAuthStopPINs">An optional enumeration of authorize stop PINs.</param>
-        public static AuthStartEVSEResult Authorized(Authorizator_Id          AuthorizatorId,
-                                                     ChargingSession_Id       SessionId,
-                                                     EVSP_Id                  ProviderId,
-                                                     String                   Description           = null,
-                                                     String                   AdditionalInfo        = null,
-                                                     IEnumerable<Auth_Token>  ListOfAuthStopTokens  = null,
-                                                     IEnumerable<UInt32>      ListOfAuthStopPINs    = null)
-        {
+        public static AuthStartEVSEResult
 
-            return new AuthStartEVSEResult(AuthorizatorId,
-                                           SessionId,
-                                           ProviderId,
-                                           Description,
-                                           AdditionalInfo,
-                                           ListOfAuthStopTokens,
-                                           ListOfAuthStopPINs);
+            Authorized(Authorizator_Id          AuthorizatorId,
+                       ChargingSession_Id       SessionId,
+                       EVSP_Id                  ProviderId,
+                       String                   Description           = null,
+                       String                   AdditionalInfo        = null,
+                       TimeSpan?                Runtime               = null,
+                       IEnumerable<Auth_Token>  ListOfAuthStopTokens  = null,
+                       IEnumerable<UInt32>      ListOfAuthStopPINs    = null)
 
-        }
+
+            => new AuthStartEVSEResult(AuthorizatorId,
+                                       SessionId,
+                                       ProviderId,
+                                       Description,
+                                       AdditionalInfo,
+                                       Runtime,
+                                       ListOfAuthStopTokens,
+                                       ListOfAuthStopPINs);
 
         #endregion
 
-        #region (static) NotAuthorized(AuthorizatorId, SessionId)
+        #region (static) NotAuthorized(AuthorizatorId, ProviderId, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The authorize start was not successful (e.g. ev customer is unkown).
@@ -404,23 +303,26 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">The unique identification of the ev service provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
-        public static AuthStartEVSEResult NotAuthorized(Authorizator_Id  AuthorizatorId,
-                                                        EVSP_Id          ProviderId,
-                                                        String           Description    = null,
-                                                        String           AdditionalInfo = null)
-        {
+        /// <param name="Runtime">The run time of the request.</param>
+        public static AuthStartEVSEResult
 
-            return new AuthStartEVSEResult(AuthorizatorId,
-                                           AuthStartEVSEResultType.NotAuthorized,
-                                           ProviderId,
-                                           Description,
-                                           AdditionalInfo);
+            NotAuthorized(Authorizator_Id  AuthorizatorId,
+                          EVSP_Id          ProviderId,
+                          String           Description     = null,
+                          String           AdditionalInfo  = null,
+                          TimeSpan?        Runtime         = null)
 
-        }
+
+            => new AuthStartEVSEResult(AuthorizatorId,
+                                       AuthStartEVSEResultType.NotAuthorized,
+                                       ProviderId,
+                                       Description,
+                                       AdditionalInfo,
+                                       Runtime);
 
         #endregion
 
-        #region (static) Blocked(AuthorizatorId, SessionId)
+        #region (static) Blocked(AuthorizatorId, ProviderId, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The authorize start operation is not allowed (ev customer is blocked).
@@ -429,67 +331,72 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">The unique identification of the ev service provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
-        public static AuthStartEVSEResult Blocked(Authorizator_Id  AuthorizatorId,
-                                                  EVSP_Id          ProviderId,
-                                                  String           Description     = null,
-                                                  String           AdditionalInfo  = null)
-        {
+        /// <param name="Runtime">The run time of the request.</param>
+        public static AuthStartEVSEResult
 
-            return new AuthStartEVSEResult(AuthorizatorId,
-                                           AuthStartEVSEResultType.Blocked,
-                                           ProviderId,
-                                           Description,
-                                           AdditionalInfo);
+            Blocked(Authorizator_Id  AuthorizatorId,
+                    EVSP_Id          ProviderId,
+                    String           Description     = null,
+                    String           AdditionalInfo  = null,
+                    TimeSpan?        Runtime         = null)
 
-        }
+
+            => new AuthStartEVSEResult(AuthorizatorId,
+                                       AuthStartEVSEResultType.Blocked,
+                                       ProviderId,
+                                       Description,
+                                       AdditionalInfo,
+                                       Runtime);
 
         #endregion
 
-        #region (static) EVSECommunicationTimeout(AuthorizatorId)
+        #region (static) CommunicationTimeout(AuthorizatorId, Runtime)
 
         /// <summary>
-        /// The authorize stop ran into a timeout between evse operator backend and evse.
+        /// The authorize stop ran into a timeout between evse operator backend and charging station.
         /// </summary>
-        public static AuthStartEVSEResult EVSECommunicationTimeout(Authorizator_Id AuthorizatorId)
-        {
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="Runtime">The run time of the request.</param>
+        public static AuthStartEVSEResult CommunicationTimeout(Authorizator_Id  AuthorizatorId,
+                                                               TimeSpan         Runtime)
 
-            return new AuthStartEVSEResult(AuthorizatorId,
-                                           AuthStartEVSEResultType.EVSECommunicationTimeout);
-
-        }
+            => new AuthStartEVSEResult(AuthorizatorId,
+                                       AuthStartEVSEResultType.CommunicationTimeout,
+                                       Runtime: Runtime);
 
         #endregion
 
-        #region (static) StartChargingTimeout(AuthorizatorId)
+        #region (static) StartChargingTimeout(AuthorizatorId, Runtime)
 
         /// <summary>
-        /// The authorize stop ran into a timeout between evse and ev.
+        /// The authorize stop ran into a timeout between charging station and ev.
         /// </summary>
-        public static AuthStartEVSEResult StartChargingTimeout(Authorizator_Id AuthorizatorId)
-        {
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="Runtime">The run time of the request.</param>
+        public static AuthStartEVSEResult StartChargingTimeout(Authorizator_Id  AuthorizatorId,
+                                                               TimeSpan         Runtime)
 
-            return new AuthStartEVSEResult(AuthorizatorId,
-                                           AuthStartEVSEResultType.StartChargingTimeout);
-
-        }
+            => new AuthStartEVSEResult(AuthorizatorId,
+                                       AuthStartEVSEResultType.StartChargingTimeout,
+                                       Runtime: Runtime);
 
         #endregion
 
-        #region (static) Error(AuthorizatorId, ErrorMessage = null)
+        #region (static) Error(AuthorizatorId, ErrorMessage = null, Runtime = null)
 
         /// <summary>
         /// The authorize start operation led to an error.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ErrorMessage">An error message.</param>
+        /// <param name="Runtime">The run time of the request.</param>
         public static AuthStartEVSEResult Error(Authorizator_Id  AuthorizatorId,
-                                                String           ErrorMessage = null)
-        {
+                                                String           ErrorMessage  = null,
+                                                TimeSpan?        Runtime       = null)
 
-            return new AuthStartEVSEResult(AuthorizatorId,
-                                           ErrorMessage);
-
-        }
+            => new AuthStartEVSEResult(AuthorizatorId,
+                                       ErrorMessage,
+                                       Runtime);
 
         #endregion
 
@@ -561,12 +468,12 @@ namespace org.GraphDefined.WWCP
         Blocked,
 
         /// <summary>
-        /// The authorize start ran into a timeout between evse operator backend and evse.
+        /// The authorize start ran into a timeout between evse operator backend and the EVSE.
         /// </summary>
-        EVSECommunicationTimeout,
+        CommunicationTimeout,
 
         /// <summary>
-        /// The authorize start ran into a timeout between evse and ev.
+        /// The authorize start ran into a timeout between the EVSE and the EV.
         /// </summary>
         StartChargingTimeout,
 

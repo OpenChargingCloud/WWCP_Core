@@ -4031,7 +4031,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Authorized
 
-                if (result.AuthorizationResult == AuthStartResultType.Authorized)
+                if (result.Result == AuthStartResultType.Authorized)
                 {
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
@@ -4052,7 +4052,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Blocked
 
-                else if (result.AuthorizationResult == AuthStartResultType.Blocked)
+                else if (result.Result == AuthStartResultType.Blocked)
                     break;
 
                 #endregion
@@ -4077,7 +4077,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Authorized
 
-                if (result.AuthorizationResult == AuthStartResultType.Authorized)
+                if (result.Result == AuthStartResultType.Authorized)
                 {
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
@@ -4098,7 +4098,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Blocked
 
-                else if (result.AuthorizationResult == AuthStartResultType.Blocked)
+                else if (result.Result == AuthStartResultType.Blocked)
                     break;
 
                 #endregion
@@ -4447,7 +4447,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Authorized
 
-                if (result.AuthorizationResult == AuthStartChargingStationResultType.Authorized)
+                if (result.Result == AuthStartChargingStationResultType.Authorized)
                 {
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
@@ -4469,7 +4469,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Blocked
 
-                else if (result.AuthorizationResult == AuthStartChargingStationResultType.Blocked)
+                else if (result.Result == AuthStartChargingStationResultType.Blocked)
                     break;
 
                 #endregion
@@ -4495,7 +4495,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Authorized
 
-                if (result.AuthorizationResult == AuthStartChargingStationResultType.Authorized)
+                if (result.Result == AuthStartChargingStationResultType.Authorized)
                 {
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
@@ -4517,7 +4517,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Blocked
 
-                else if (result.AuthorizationResult == AuthStartChargingStationResultType.Blocked)
+                else if (result.Result == AuthStartChargingStationResultType.Blocked)
                     break;
 
                 #endregion

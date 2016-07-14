@@ -620,7 +620,7 @@ namespace org.GraphDefined.WWCP
 
         #region PushEVSEStatus...
 
-        #region PushEVSEStatus(GroupedEVSEStatus, ActionType = update, OperatorId = null, OperatorName = null,                      QueryTimeout = null)
+        #region PushEVSEStatus(GroupedEVSEStatus, ActionType = update, OperatorId = null, OperatorName = null,                      RequestTimeout = null)
 
         /// <summary>
         /// Upload the given lookup of EVSE status grouped by their EVSE operator.
@@ -649,7 +649,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region PushEVSEStatus(EVSEStatus,        ActionType = update, OperatorId = null, OperatorName = null,                      QueryTimeout = null)
+        #region PushEVSEStatus(EVSEStatus,        ActionType = update, OperatorId = null, OperatorName = null,                      RequestTimeout = null)
 
         /// <summary>
         /// Upload the given EVSE status.
@@ -677,7 +677,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region PushEVSEStatus(EVSEStatus,        ActionType = update, OperatorId = null, OperatorName = null,                      QueryTimeout = null)
+        #region PushEVSEStatus(EVSEStatus,        ActionType = update, OperatorId = null, OperatorName = null,                      RequestTimeout = null)
 
         /// <summary>
         /// Upload the given enumeration of EVSE status.
@@ -1014,7 +1014,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
-        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public abstract Task<AuthStartResult>
 
             AuthorizeStart(EVSEOperator_Id     OperatorId,
@@ -1042,7 +1042,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
-        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public abstract Task<AuthStartEVSEResult>
 
             AuthorizeStart(EVSEOperator_Id     OperatorId,
@@ -1071,7 +1071,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationId">The unique identification of a charging station.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
-        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public abstract Task<AuthStartChargingStationResult>
 
             AuthorizeStart(EVSEOperator_Id     OperatorId,
@@ -1103,7 +1103,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="OperatorId">An EVSE Operator identification.</param>
         /// <param name="SessionId">The OICP session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public abstract Task<AuthStopResult>
 
             AuthorizeStop(EVSEOperator_Id     OperatorId,
@@ -1133,7 +1133,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="SessionId">The OICP session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public abstract Task<AuthStopEVSEResult>
 
             AuthorizeStop(EVSEOperator_Id     OperatorId,
@@ -1164,7 +1164,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationId">The unique identification of a charging station.</param>
         /// <param name="SessionId">The OICP session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public abstract Task<AuthStopChargingStationResult>
 
             AuthorizeStop(EVSEOperator_Id     OperatorId,
