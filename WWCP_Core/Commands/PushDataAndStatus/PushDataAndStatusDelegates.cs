@@ -61,32 +61,34 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A delegate called whenever new EVSE status will be send upstream.
     /// </summary>
-    public delegate void OnPushEVSEStatusRequestDelegate (DateTime                               LogTimestamp,
-                                                          DateTime                               RequestTimestamp,
-                                                          Object                                 Sender,
-                                                          String                                 SenderId,
-                                                          EventTracking_Id                       EventTrackingId,
-                                                          RoamingNetwork_Id                      RoamingNetworkId,
-                                                          ActionType                             ActionType,
-                                                          ILookup<EVSEOperator_Id, EVSEStatus>   EVSEStatus,
-                                                          UInt32                                 NumberOfEVSEs,
-                                                          TimeSpan?                              RequestTimeout);
+    public delegate void OnPushEVSEStatusRequestDelegate (DateTime                            LogTimestamp,
+                                                          DateTime                            RequestTimestamp,
+                                                          Object                              Sender,
+                                                          String                              SenderId,
+                                                          EventTracking_Id                    EventTrackingId,
+                                                          RoamingNetwork_Id                   RoamingNetworkId,
+                                                          ActionType                          ActionType,
+                                                          ILookup<EVSEOperator, EVSEStatus>   EVSEStatus,
+                                                          UInt32                              NumberOfEVSEs,
+                                                          TimeSpan?                           RequestTimeout);
 
 
     /// <summary>
     /// A delegate called whenever new EVSE status had been send upstream.
     /// </summary>
-    public delegate void OnPushEVSEStatusResponseDelegate(DateTime                               LogTimestamp,
-                                                          DateTime                               RequestTimestamp,
-                                                          Object                                 Sender,
-                                                          String                                 SenderId,
-                                                          EventTracking_Id                       EventTrackingId,
-                                                          RoamingNetwork_Id                      RoamingNetworkId,
-                                                          ActionType                             ActionType,
-                                                          ILookup<EVSEOperator_Id, EVSEStatus>   EVSEStatus,
-                                                          UInt32                                 NumberOfEVSEs,
-                                                          TimeSpan?                              RequestTimeout,
-                                                          Acknowledgement                        Result,
-                                                          TimeSpan                               Runtime);
+    public delegate void OnPushEVSEStatusResponseDelegate(DateTime                            LogTimestamp,
+                                                          DateTime                            RequestTimestamp,
+                                                          Object                              Sender,
+                                                          String                              SenderId,
+                                                          EventTracking_Id                    EventTrackingId,
+                                                          RoamingNetwork_Id                   RoamingNetworkId,
+                                                          ActionType                          ActionType,
+                                                          ILookup<EVSEOperator, EVSEStatus>   EVSEStatus,
+                                                          UInt32                              NumberOfEVSEs,
+                                                          TimeSpan?                           RequestTimeout,
+                                                          Acknowledgement                     Result,
+                                                          TimeSpan                            Runtime);
+
+    public delegate Boolean IncludeEVSEDelegate(EVSE EVSE);
 
 }

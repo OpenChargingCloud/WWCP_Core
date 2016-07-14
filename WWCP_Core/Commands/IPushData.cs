@@ -43,7 +43,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever new EVSE data will be send upstream.
         /// </summary>
-        event OnPushEVSEDataRequestDelegate    OnPushEVSEDataRequest;
+        event OnPushEVSEDataRequestDelegate   OnPushEVSEDataRequest;
 
         /// <summary>
         /// An event fired whenever new EVSE data had been sent upstream.
@@ -60,8 +60,6 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="GroupedEVSEs">A lookup of EVSEs grouped by their EVSE operator.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
-        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
-        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -71,8 +69,6 @@ namespace org.GraphDefined.WWCP
 
             PushEVSEData(ILookup<EVSEOperator, EVSE>  GroupedEVSEs,
                          ActionType                   ActionType         = WWCP.ActionType.fullLoad,
-                         EVSEOperator_Id              OperatorId         = null,
-                         String                       OperatorName       = null,
 
                          DateTime?                    Timestamp          = null,
                          CancellationToken?           CancellationToken  = null,
@@ -84,8 +80,6 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSE">An EVSE.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
-        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
-        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -95,8 +89,6 @@ namespace org.GraphDefined.WWCP
 
             PushEVSEData(EVSE                 EVSE,
                          ActionType           ActionType         = WWCP.ActionType.insert,
-                         EVSEOperator_Id      OperatorId         = null,
-                         String               OperatorName       = null,
 
                          DateTime?            Timestamp          = null,
                          CancellationToken?   CancellationToken  = null,
@@ -108,8 +100,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSEs">An enumeration of EVSEs.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
-        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
-        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -119,9 +110,7 @@ namespace org.GraphDefined.WWCP
 
             PushEVSEData(IEnumerable<EVSE>    EVSEs,
                          ActionType           ActionType         = WWCP.ActionType.fullLoad,
-                         EVSEOperator_Id      OperatorId         = null,
-                         String               OperatorName       = null,
-                         Func<EVSE, Boolean>  IncludeEVSEs       = null,
+                         IncludeEVSEDelegate  IncludeEVSEs       = null,
 
                          DateTime?            Timestamp          = null,
                          CancellationToken?   CancellationToken  = null,
@@ -133,8 +122,6 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
-        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
-        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
         /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -145,9 +132,7 @@ namespace org.GraphDefined.WWCP
 
             PushEVSEData(ChargingStation      ChargingStation,
                          ActionType           ActionType         = WWCP.ActionType.fullLoad,
-                         EVSEOperator_Id      OperatorId         = null,
-                         String               OperatorName       = null,
-                         Func<EVSE, Boolean>  IncludeEVSEs       = null,
+                         IncludeEVSEDelegate  IncludeEVSEs       = null,
 
                          DateTime?            Timestamp          = null,
                          CancellationToken?   CancellationToken  = null,
@@ -159,8 +144,6 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ChargingStations">An enumeration of charging stations.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
-        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
-        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
         /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -171,9 +154,7 @@ namespace org.GraphDefined.WWCP
 
             PushEVSEData(IEnumerable<ChargingStation>  ChargingStations,
                          ActionType                    ActionType         = WWCP.ActionType.fullLoad,
-                         EVSEOperator_Id               OperatorId         = null,
-                         String                        OperatorName       = null,
-                         Func<EVSE, Boolean>           IncludeEVSEs       = null,
+                         IncludeEVSEDelegate           IncludeEVSEs       = null,
 
                          DateTime?                     Timestamp          = null,
                          CancellationToken?            CancellationToken  = null,
@@ -185,8 +166,6 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
-        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
-        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
         /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -197,9 +176,7 @@ namespace org.GraphDefined.WWCP
 
             PushEVSEData(ChargingPool         ChargingPool,
                          ActionType           ActionType         = WWCP.ActionType.fullLoad,
-                         EVSEOperator_Id      OperatorId         = null,
-                         String               OperatorName       = null,
-                         Func<EVSE, Boolean>  IncludeEVSEs       = null,
+                         IncludeEVSEDelegate  IncludeEVSEs       = null,
 
                          DateTime?            Timestamp          = null,
                          CancellationToken?   CancellationToken  = null,
@@ -211,8 +188,6 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ChargingPools">An enumeration of charging pools.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
-        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
-        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
         /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -223,9 +198,7 @@ namespace org.GraphDefined.WWCP
 
             PushEVSEData(IEnumerable<ChargingPool>  ChargingPools,
                          ActionType                 ActionType         = WWCP.ActionType.fullLoad,
-                         EVSEOperator_Id            OperatorId         = null,
-                         String                     OperatorName       = null,
-                         Func<EVSE, Boolean>        IncludeEVSEs       = null,
+                         IncludeEVSEDelegate        IncludeEVSEs       = null,
 
                          DateTime?                  Timestamp          = null,
                          CancellationToken?         CancellationToken  = null,
@@ -237,8 +210,6 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSEOperator">An EVSE operator.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
-        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
-        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
         /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -249,9 +220,7 @@ namespace org.GraphDefined.WWCP
 
             PushEVSEData(EVSEOperator         EVSEOperator,
                          ActionType           ActionType         = WWCP.ActionType.fullLoad,
-                         EVSEOperator_Id      OperatorId         = null,
-                         String               OperatorName       = null,
-                         Func<EVSE, Boolean>  IncludeEVSEs       = null,
+                         IncludeEVSEDelegate  IncludeEVSEs       = null,
 
                          DateTime?            Timestamp          = null,
                          CancellationToken?   CancellationToken  = null,
@@ -264,8 +233,6 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSEOperators">An enumeration of EVSE operators.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
-        /// <param name="OperatorId"></param>
-        /// <param name="OperatorName">An optional alternative EVSE operator name used for uploading all EVSEs.</param>
         /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -276,9 +243,7 @@ namespace org.GraphDefined.WWCP
 
             PushEVSEData(IEnumerable<EVSEOperator>  EVSEOperators,
                          ActionType                 ActionType         = WWCP.ActionType.fullLoad,
-                         EVSEOperator_Id            OperatorId         = null,
-                         String                     OperatorName       = null,
-                         Func<EVSE, Boolean>        IncludeEVSEs       = null,
+                         IncludeEVSEDelegate        IncludeEVSEs       = null,
 
                          DateTime?                  Timestamp          = null,
                          CancellationToken?         CancellationToken  = null,
@@ -290,8 +255,6 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
-        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
-        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
         /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -302,9 +265,7 @@ namespace org.GraphDefined.WWCP
 
             PushEVSEData(RoamingNetwork       RoamingNetwork,
                          ActionType           ActionType         = WWCP.ActionType.fullLoad,
-                         EVSEOperator_Id      OperatorId         = null,
-                         String               OperatorName       = null,
-                         Func<EVSE, Boolean>  IncludeEVSEs       = null,
+                         IncludeEVSEDelegate  IncludeEVSEs       = null,
 
                          DateTime?            Timestamp          = null,
                          CancellationToken?   CancellationToken  = null,

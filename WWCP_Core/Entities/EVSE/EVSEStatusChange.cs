@@ -35,76 +35,30 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Id
-
-        private readonly EVSE_Id _Id;
-
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id Id
-        {
-            get
-            {
-                return _Id;
-            }
-        }
-
-        #endregion
-
-        #region OldStatus
-
-        private readonly Timestamped<EVSEStatusType> _OldStatus;
+        public EVSE_Id                      Id          { get; }
 
         /// <summary>
         /// The old status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEStatusType> OldStatus
-        {
-            get
-            {
-                return _OldStatus;
-            }
-        }
-
-        #endregion
-
-        #region NewStatus
-
-        private readonly Timestamped<EVSEStatusType> _NewStatus;
+        public Timestamped<EVSEStatusType>  OldStatus   { get; }
 
         /// <summary>
         /// The new status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEStatusType> NewStatus
-        {
-            get
-            {
-                return _NewStatus;
-            }
-        }
+        public Timestamped<EVSEStatusType>  NewStatus   { get; }
 
-        #endregion
-
-
-        #region CurrentStatus
 
         /// <summary>
         /// The current status of the EVSE.
         /// </summary>
         public EVSEStatus CurrentStatus
-        {
-            get
-            {
 
-                return new EVSEStatus(_Id,
-                                      _NewStatus.Value,
-                                      _NewStatus.Timestamp);
-
-            }
-        }
-
-        #endregion
+            => new EVSEStatus(Id,
+                              NewStatus.Value,
+                              NewStatus.Timestamp);
 
         #endregion
 
@@ -129,9 +83,9 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._Id         = Id;
-            this._OldStatus  = OldStatus;
-            this._NewStatus  = NewStatus;
+            this.Id         = Id;
+            this.OldStatus  = OldStatus;
+            this.NewStatus  = NewStatus;
 
         }
 
@@ -290,14 +244,14 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given EVSEStatusChange must not be null!");
 
             // Compare EVSE Ids
-            var _Result = _Id.CompareTo(EVSEStatusChange._Id);
+            var _Result = Id.CompareTo(EVSEStatusChange.Id);
 
             // If equal: Compare EVSE status
             if (_Result == 0)
-                _Result = _OldStatus.CompareTo(EVSEStatusChange._OldStatus);
+                _Result = OldStatus.CompareTo(EVSEStatusChange.OldStatus);
 
             if (_Result == 0)
-                _Result = _NewStatus.CompareTo(EVSEStatusChange._NewStatus);
+                _Result = NewStatus.CompareTo(EVSEStatusChange.NewStatus);
 
             return _Result;
 
@@ -346,9 +300,9 @@ namespace org.GraphDefined.WWCP
             if ((Object) EVSEStatusChange == null)
                 return false;
 
-            return _Id.       Equals(EVSEStatusChange._Id)        &&
-                   _OldStatus.Equals(EVSEStatusChange._OldStatus) &&
-                   _NewStatus.Equals(EVSEStatusChange._NewStatus);
+            return Id.       Equals(EVSEStatusChange.Id)        &&
+                   OldStatus.Equals(EVSEStatusChange.OldStatus) &&
+                   NewStatus.Equals(EVSEStatusChange.NewStatus);
 
         }
 
@@ -366,7 +320,7 @@ namespace org.GraphDefined.WWCP
         {
             unchecked
             {
-                return _Id.GetHashCode() * 17 ^ _OldStatus.GetHashCode() * 23 ^ _NewStatus.GetHashCode();
+                return Id.GetHashCode() * 17 ^ OldStatus.GetHashCode() * 23 ^ NewStatus.GetHashCode();
             }
         }
 
@@ -381,7 +335,7 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
         {
 
-            return String.Concat(_Id, ": ", _OldStatus.ToString(), " -> ", _NewStatus.ToString());
+            return String.Concat(Id, ": ", OldStatus.ToString(), " -> ", NewStatus.ToString());
 
         }
 

@@ -2283,9 +2283,7 @@ namespace org.GraphDefined.WWCP
                                                       Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
             {
 
-                result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-                                                                    ActionType.update,
-                                                                    EVSE.Operator.Id);
+                result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp));
 
             }
 
@@ -2303,9 +2301,7 @@ namespace org.GraphDefined.WWCP
                                                       Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
             {
 
-                result = await PushEVSEStatusService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-                                                                    ActionType.update,
-                                                                    EVSE.Operator.Id);
+                result = await PushEVSEStatusService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp));
 
             }
 
