@@ -1166,7 +1166,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            return Task.FromResult(new Acknowledgement(true));
+            return Task.FromResult(new Acknowledgement(ResultType.True));
 
         }
 
@@ -1214,7 +1214,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            return Task.FromResult(new Acknowledgement(true));
+            return Task.FromResult(new Acknowledgement(ResultType.True));
 
         }
 
@@ -1253,7 +1253,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            return Task.FromResult(new Acknowledgement(true));
+            return Task.FromResult(new Acknowledgement(ResultType.True));
 
         }
 
@@ -1292,7 +1292,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            return Task.FromResult(new Acknowledgement(true));
+            return Task.FromResult(new Acknowledgement(ResultType.True));
 
         }
 
@@ -1335,7 +1335,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            return Task.FromResult(new Acknowledgement(true));
+            return Task.FromResult(new Acknowledgement(ResultType.True));
 
         }
 
@@ -1378,7 +1378,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            return Task.FromResult(new Acknowledgement(true));
+            return Task.FromResult(new Acknowledgement(ResultType.True));
 
         }
 

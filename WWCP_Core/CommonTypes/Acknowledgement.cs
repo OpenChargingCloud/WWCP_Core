@@ -24,6 +24,14 @@ using System;
 namespace org.GraphDefined.WWCP
 {
 
+    public enum ResultType
+    {
+        True,
+        NoOperation,
+        False
+    }
+
+
     /// <summary>
     /// An acknowledgement.
     /// </summary>
@@ -32,56 +40,20 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Result
-
-        private readonly Boolean _Result;
-
         /// <summary>
         /// The result of the operation.
         /// </summary>
-        public Boolean Result
-        {
-            get
-            {
-                return _Result;
-            }
-        }
-
-        #endregion
-
-        #region StatusCode
-
-        private readonly String _Description;
+        public ResultType  Result          { get; }
 
         /// <summary>
         /// An optional description of the result code.
         /// </summary>
-        public String Description
-        {
-            get
-            {
-                return _Description;
-            }
-        }
-
-        #endregion
-
-        #region AdditionalInfo
-
-        private readonly String _AdditionalInfo;
+        public String      Description     { get; }
 
         /// <summary>
         /// An optional additional information.
         /// </summary>
-        public String AdditionalInfo
-        {
-            get
-            {
-                return _AdditionalInfo;
-            }
-        }
-
-        #endregion
+        public String      AdditionalInfo  { get; }
 
         #endregion
 
@@ -93,14 +65,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="AdditionalInfo">An optional additional information.</param>
-        public Acknowledgement(Boolean  Result,
-                               String   Description     = null,
-                               String   AdditionalInfo  = null)
+        public Acknowledgement(ResultType Result,
+                               String     Description     = null,
+                               String     AdditionalInfo  = null)
         {
 
-            this._Result          = Result;
-            this._Description     = Description;
-            this._AdditionalInfo  = AdditionalInfo;
+            this.Result          = Result;
+            this.Description     = Description;
+            this.AdditionalInfo  = AdditionalInfo;
 
         }
 
@@ -114,7 +86,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
         {
-            return String.Concat("Result: " + _Result + "; " + _Description);
+            return String.Concat("Result: " + Result + "; " + Description);
         }
 
         #endregion
