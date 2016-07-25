@@ -43,12 +43,17 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The default timeout for upstream queries.
         /// </summary>
-        public static readonly TimeSpan DefaultQueryTimeout  = TimeSpan.FromSeconds(180);
+        public static readonly TimeSpan  DefaultQueryTimeout   = TimeSpan.FromSeconds(180);
 
         /// <summary>
         /// The default HTTP user agent.
         /// </summary>
-        public const String DefaultHTTPUserAgent = "GraphDefined SOAP Client";
+        public const           String    DefaultHTTPUserAgent  = "GraphDefined SOAP Client";
+
+        /// <summary>
+        /// The default remote TCP port to connect to.
+        /// </summary>
+        public static readonly IPPort    DefaultRemotePort     = IPPort.Parse(443);
 
         #endregion
 
@@ -61,7 +66,10 @@ namespace org.GraphDefined.WWCP
 
         public String            Hostname                { get; }
 
-        public IPPort            TCPPort                 { get; }
+        /// <summary>
+        /// The remote TCP port to connect to.
+        /// </summary>
+        public IPPort            RemotePort              { get; }
 
         public String            HTTPVirtualHost         { get; }
 
@@ -137,7 +145,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ClientId">A unqiue identification of this client.</param>
         /// <param name="Hostname">The hostname to connect to.</param>
-        /// <param name="TCPPort">The TCP port to connect to.</param>
+        /// <param name="RemotePort">The remote TCP port to connect to.</param>
         /// <param name="RemoteCertificateValidator">A delegate to verify the remote TLS certificate.</param>
         /// <param name="ClientCert">The TLS client certificate to use.</param>
         /// <param name="HTTPVirtualHost">An optional HTTP virtual host name to use.</param>
@@ -146,7 +154,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="DNSClient">An optional DNS client.</param>
         public ASOAPClient(String                               ClientId,
                            String                               Hostname,
-                           IPPort                               TCPPort,
+                           IPPort                               RemotePort,
                            RemoteCertificateValidationCallback  RemoteCertificateValidator  = null,
                            X509Certificate                      ClientCert                  = null,
                            String                               HTTPVirtualHost             = null,
@@ -160,23 +168,20 @@ namespace org.GraphDefined.WWCP
             if (Hostname.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Hostname), "The given parameter must not be null or empty!");
 
-            if (TCPPort == null)
-                throw new ArgumentNullException(nameof(TCPPort),  "The given parameter must not be null!");
-
             #endregion
 
             this.ClientId                    = ClientId;
             this.Hostname                    = Hostname;
-            this.TCPPort                     = TCPPort;
+            this.RemotePort                  = RemotePort ?? DefaultRemotePort;
 
             this.RemoteCertificateValidator  = RemoteCertificateValidator;
             this.ClientCert                  = ClientCert;
 
-            this.HTTPVirtualHost             = (HTTPVirtualHost != null)
+            this.HTTPVirtualHost             = HTTPVirtualHost.IsNotNullOrEmpty()
                                                     ? HTTPVirtualHost
                                                     : Hostname;
 
-            this.UserAgent                   = UserAgent;
+            this.UserAgent                   = UserAgent ?? DefaultHTTPUserAgent;
 
             this.RequestTimeout              = QueryTimeout != null
                                                   ? QueryTimeout.Value
