@@ -59,6 +59,7 @@
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStopDelegates.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStartDelegates.cs" />
     <Compile Include="Entities\Beacon\Beacon.cs" />
+    <Compile Include="Entities\EVSEOperator\EVSEOperatorDelegates.cs" />
     <Compile Include="Entities\RoamingProvider\IEMPRoamingProvider.cs" />
     <Compile Include="Entities\RoamingProvider\IEVSEOperatorRoamingProvider.cs" />
     <Compile Include="Commands\PushDataAndStatus\AnonymousPushEVSEStatusService.cs" />
