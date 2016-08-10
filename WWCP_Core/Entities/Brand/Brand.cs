@@ -194,9 +194,9 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) Brand == null)
-                throw new ArgumentNullException("The given brand must not be null!");
+                throw new ArgumentNullException(nameof(Brand),  "The given brand must not be null!");
 
-            return _Id.CompareTo(Brand._Id);
+            return Id.CompareTo(Brand.Id);
 
         }
 
@@ -243,7 +243,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) Brand == null)
                 return false;
 
-            return _Id.Equals(Brand._Id);
+            return Id.Equals(Brand.Id);
 
         }
 
@@ -257,9 +257,8 @@ namespace org.GraphDefined.WWCP
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            return _Id.GetHashCode();
-        }
+
+            => Id.GetHashCode();
 
         #endregion
 
@@ -269,9 +268,8 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return _Id.ToString();
-        }
+
+            => Id.ToString();
 
         #endregion
 

@@ -38,67 +38,31 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Id
-
-        protected readonly TId _Id;
-
         /// <summary>
         /// The global unique identification of this entity.
         /// </summary>
         [Mandatory]
-        public TId Id
-        {
-            get
-            {
-                return _Id;
-            }
-        }
+        public TId       Id             { get; }
 
-        #endregion
-
-        #region DataSource
-
-        private String _DataSource;
+        /// <summary>
+        /// A unique status identification of this entity.
+        /// </summary>
+        [Mandatory]
+        public String    ETag           { get; }
 
         /// <summary>
         /// The source of this information, e.g. the WWCP importer used.
         /// </summary>
         [Optional]
-        public String DataSource
-        {
-
-            get
-            {
-                return _DataSource;
-            }
-
-            set
-            {
-                _DataSource = value;
-            }
-
-        }
-
-        #endregion
-
-        #region LastChange
-
-        private DateTime _LastChange;
+        public String    DataSource     { get; set; }
 
         /// <summary>
         /// The timestamp of the last changes within this ChargingPool.
         /// Can be used as a HTTP ETag.
         /// </summary>
         [Mandatory]
-        public DateTime LastChange
-        {
-            get
-            {
-                return _LastChange;
-            }
-        }
+        public DateTime  LastChange     { get; set; }
 
-        #endregion
 
         #region Unstructured
 
@@ -144,9 +108,9 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._Id           = Id;
-            this._DataSource   = String.Empty;
-            this._LastChange   = DateTime.Now;
+            this.Id            = Id;
+            this.DataSource    = String.Empty;
+            this.LastChange    = DateTime.Now;
             this._UserDefined  = new ConcurrentDictionary<String, Object>();
 
         }
@@ -225,15 +189,17 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (PropertyName == null)
-                throw new ArgumentNullException("PropertyName", "The given parameter must not be null!");
+                throw new ArgumentNullException(nameof(PropertyName),  "The given parameter must not be null!");
 
             #endregion
 
-            this._LastChange = DateTime.Now;
+            this.LastChange = DateTime.Now;
 
-            var OnPropertyChangedLocal = OnPropertyChanged;
-            if (OnPropertyChangedLocal != null)
-                OnPropertyChangedLocal(_LastChange, this, PropertyName, OldValue, NewValue);
+            OnPropertyChanged?.Invoke(LastChange,
+                                      this,
+                                      PropertyName,
+                                      OldValue,
+                                      NewValue);
 
         }
 
