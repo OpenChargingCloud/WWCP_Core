@@ -89,7 +89,7 @@ namespace org.GraphDefined.WWCP
         public RoamingNetworks()
         {
 
-            this._RoamingNetworks = new ConcurrentDictionary<RoamingNetwork_Id, RoamingNetwork>();
+            _RoamingNetworks  = new ConcurrentDictionary<RoamingNetwork_Id, RoamingNetwork>();
 
             #region Init events
 
@@ -179,9 +179,44 @@ namespace org.GraphDefined.WWCP
         /// <param name="RoamingNetwork">The roaming network.</param>
         /// <returns>True, when the roaming network was found; false else.</returns>
         public Boolean TryGetRoamingNetwork(RoamingNetwork_Id RoamingNetworkId, out RoamingNetwork RoamingNetwork)
+
+            => _RoamingNetworks.TryGetValue(RoamingNetworkId, out RoamingNetwork);
+
+        #endregion
+
+        #region RemoveRoamingNetwork(RoamingNetworkId)
+
+        /// <summary>
+        /// Try to return the roaming network identified by the given unique roaming network identification.
+        /// </summary>
+        /// <param name="RoamingNetworkId">The unique identification of a roaming network.</param>
+        /// <returns>True, when the roaming network was found; false else.</returns>
+        public RoamingNetwork RemoveRoamingNetwork(RoamingNetwork_Id RoamingNetworkId)
         {
-            return _RoamingNetworks.TryGetValue(RoamingNetworkId, out RoamingNetwork);
+
+            RoamingNetwork _RoamingNetwork;
+
+            if (_RoamingNetworks.TryRemove(RoamingNetworkId, out _RoamingNetwork))
+                return _RoamingNetwork;
+
+            return null;
+
         }
+
+        #endregion
+
+        #region RemoveRoamingNetwork(RoamingNetworkId, out RoamingNetwork)
+
+        /// <summary>
+        /// Try to return the roaming network identified by the given unique roaming network identification.
+        /// </summary>
+        /// <param name="RoamingNetworkId">The unique identification of a roaming network.</param>
+        /// <param name="RoamingNetwork">The roaming network.</param>
+        /// <returns>True, when the roaming network was found; false else.</returns>
+        public Boolean RemoveRoamingNetwork(RoamingNetwork_Id   RoamingNetworkId,
+                                            out RoamingNetwork  RoamingNetwork)
+
+            => _RoamingNetworks.TryRemove(RoamingNetworkId, out RoamingNetwork);
 
         #endregion
 
