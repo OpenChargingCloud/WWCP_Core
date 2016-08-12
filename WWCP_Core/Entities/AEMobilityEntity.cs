@@ -23,6 +23,7 @@ using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Collections;
 
 #endregion
 
@@ -36,50 +37,41 @@ namespace org.GraphDefined.WWCP
         where TId : IId
     {
 
+        #region Data
+
+        /// <summary>
+        /// A lookup for user-defined properties.
+        /// </summary>
+        private UserDefinedDictionary _UserDefined;
+
+        #endregion
+
         #region Properties
 
         /// <summary>
         /// The global unique identification of this entity.
         /// </summary>
         [Mandatory]
-        public TId       Id             { get; }
+        public TId       Id           { get; }
 
         /// <summary>
         /// A unique status identification of this entity.
         /// </summary>
         [Mandatory]
-        public String    ETag           { get; }
+        public String    ETag         { get; }
 
         /// <summary>
         /// The source of this information, e.g. the WWCP importer used.
         /// </summary>
         [Optional]
-        public String    DataSource     { get; set; }
+        public String    DataSource   { get; set; }
 
         /// <summary>
         /// The timestamp of the last changes within this ChargingPool.
         /// Can be used as a HTTP ETag.
         /// </summary>
         [Mandatory]
-        public DateTime  LastChange     { get; set; }
-
-
-        #region Unstructured
-
-        private ConcurrentDictionary<String, Object> _UserDefined;
-
-        /// <summary>
-        /// A lookup for user-defined properties.
-        /// </summary>
-        public ConcurrentDictionary<String, Object> UserDefined
-        {
-            get
-            {
-                return _UserDefined;
-            }
-        }
-
-        #endregion
+        public DateTime  LastChange   { get; set; }
 
         #endregion
 
@@ -104,14 +96,17 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (Id == null)
-                throw new ArgumentNullException("Id", "The given Id must not be null!");
+                throw new ArgumentNullException(nameof(Id),  "The given Id must not be null!");
 
             #endregion
 
-            this.Id            = Id;
-            this.DataSource    = String.Empty;
-            this.LastChange    = DateTime.Now;
-            this._UserDefined  = new ConcurrentDictionary<String, Object>();
+            this.Id           = Id;
+            this.DataSource   = String.Empty;
+            this.LastChange   = DateTime.Now;
+            this._UserDefined  = new UserDefinedDictionary();
+
+            this._UserDefined.OnPropertyChanged += (timestamp, sender, key, oldValue, newValue)
+                => OnPropertyChanged?.Invoke(timestamp, sender, key, oldValue, newValue);
 
         }
 
@@ -206,46 +201,59 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region this[PropertyName]
+        // User defined properties
 
-        /// <summary>
-        /// Return the user-defined property for the given property name.
-        /// </summary>
-        /// <param name="PropertyName">The name of the user-defined property.</param>
-        public Object this[String PropertyName]
-        {
+        #region Set(Key, NewValue, OldValue = null)
 
-            get
-            {
-                return _UserDefined[PropertyName];
-            }
+        public SetPropertyResult Set(String  Key,
+                                     Object  NewValue,
+                                     Object  OldValue = null)
 
-            set
-            {
-                _UserDefined[PropertyName] = value;
-            }
-
-        }
+            => _UserDefined.Set(Key, NewValue, OldValue);
 
         #endregion
 
-        #region RemoveUserDefinedProperty()
+        #region ContainsKey(Key)
 
-        /// <summary>
-        /// Try to remove a user-defined property.
-        /// </summary>
-        /// <param name="PropertyName"></param>
-        public void RemoveUserDefinedProperty(String PropertyName)
-        {
+        public Boolean ContainsKey(String  Key)
 
-            Object Value;
-
-            _UserDefined.TryRemove(PropertyName, out Value);
-
-        }
+            => _UserDefined.ContainsKey(Key);
 
         #endregion
 
+        #region Contains(Key, Value)
+
+        public Boolean Contains(String  Key,
+                                Object  Value)
+
+            => _UserDefined.Contains(Key, Value);
+
+        #endregion
+
+        #region Contains(KeyValuePair)
+
+        public Boolean Contains(KeyValuePair<String, Object> KeyValuePair)
+
+            => _UserDefined.Contains(KeyValuePair);
+
+        #endregion
+
+        #region Get(Key)
+
+        public Object Get(String  Key)
+
+            => _UserDefined.Get(Key);
+
+        #endregion
+
+        #region TryGet(Key, out Value)
+
+        public Boolean TryGet(String      Key,
+                              out Object  Value)
+
+            => _UserDefined.TryGet(Key, out Value);
+
+        #endregion
 
     }
 
