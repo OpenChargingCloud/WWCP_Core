@@ -326,26 +326,14 @@ namespace org.GraphDefined.WWCP
 
         #region DataLicense
 
-        private DataLicenses _DataLicense;
+        private List<DataLicense> _DataLicenses;
 
         /// <summary>
-        /// The license of the EVSE Operator data.
+        /// The license of the charging station operator data.
         /// </summary>
         [Mandatory]
-        public DataLicenses DataLicense
-        {
-
-            get
-            {
-                return _DataLicense;
-            }
-
-            set
-            {
-                SetProperty(ref _DataLicense, value);
-            }
-
-        }
+        public IEnumerable<DataLicense> DataLicenses
+            => _DataLicenses;
 
         #endregion
 
@@ -517,10 +505,11 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this._RoamingNetwork            = RoamingNetwork;
+            this._RoamingNetwork              = RoamingNetwork;
 
-            this._Name                      = Name        != null ? Name        : new I18NString();
-            this._Description               = Description != null ? Description : new I18NString();
+            this._Name                        = Name        != null ? Name        : new I18NString();
+            this._Description                 = Description != null ? Description : new I18NString();
+            this._DataLicenses                = new List<DataLicense>();
 
             #region InvalidEVSEIds
 
@@ -772,6 +761,21 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+        #endregion
+
+        #region AddDataLicense(params DataLicense)
+
+        public ChargingStationOperator AddDataLicense(params DataLicense[] DataLicenses)
+        {
+
+            if (DataLicenses.Any())
+                foreach (var license in DataLicenses.Where(license => license != null))
+                    _DataLicenses.Add(license);
+
+            return this;
+
+        }
 
         #endregion
 

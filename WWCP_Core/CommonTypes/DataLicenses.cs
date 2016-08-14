@@ -18,76 +18,78 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
-    public static class Mappy
-    {
-
-        public static String AsShort(this DataLicenses DataLicense)
-        {
-
-            switch (DataLicense)
-            {
-
-                case DataLicenses.CreativeCommons_BY_SA_4:
-                    return "CC BY-SA 4.0";
-
-                default:
-                    return "";
-
-            }
-
-        }
-
-        public static String AsText(this DataLicenses DataLicense)
-        {
-
-            switch (DataLicense)
-            {
-
-                case DataLicenses.CreativeCommons_BY_SA_4:
-                    return "Creative Commons Attribution-ShareAlike 4.0 International";
-
-                default:
-                    return "";
-
-            }
-
-        }
-
-        public static String AsLink(this DataLicenses DataLicense)
-        {
-
-            switch (DataLicense)
-            {
-
-                case DataLicenses.CreativeCommons_BY_SA_4:
-                    return "http://creativecommons.org/licenses/by-sa/4.0/";
-
-                default:
-                    return "";
-
-            }
-
-        }
-
-    }
-
-
     /// <summary>
     /// The data licenses within the electric vehicle domain.
     /// </summary>
-    public enum DataLicenses
+    public class DataLicense
     {
+
+        #region Properties
+
+        /// <summary>
+        /// The unique identification of the data license.
+        /// </summary>
+        public String               Id            { get; }
+
+        /// <summary>
+        /// The description of the data license.
+        /// </summary>
+        public String               Description   { get; }
+
+        /// <summary>
+        /// Optional URIs for more information.
+        /// </summary>
+        public IEnumerable<String>  URIs          { get; }
+
+        #endregion
+
+        #region Constructor(s)
+
+        /// <summary>
+        /// Create a new data license.
+        /// </summary>
+        /// <param name="Id">The unique identification of the data license.</param>
+        /// <param name="Description">The description of the data license.</param>
+        /// <param name="URI">Optional URIs for more information.</param>
+        public DataLicense(String           Id,
+                           String           Description,
+                           params String[]  URIs)
+        {
+
+            #region Initial checks
+
+            if (Id.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Id),           "The unique identification of the data license must not be null or empty!");
+
+            if (Description.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Description),  "The description of the data license must not be null or empty!");
+
+            #endregion
+
+            this.Id           = Id;
+            this.Description  = Description;
+            this.URIs         = URIs ?? new String[0];
+
+        }
+
+        #endregion
+
+
+        #region (static) Definitions
 
         /// <summary>
         /// No license, ask the data source for more details.
         /// </summary>
-        None                                =  0,
+        public static readonly DataLicense None                              = new DataLicense("None", "None", "");
 
 
 
@@ -96,23 +98,26 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Open Data Commons: Public Domain Dedication and License (PDDL)
         /// </summary>
-        /// <seealso cref="http://opendatacommons.org/licenses/pddl/"/>
-        PublicDomainDedicationAndLicense    =  1,
+        public static readonly DataLicense PublicDomainDedicationAndLicense  = new DataLicense("PDDL",
+                                                                                               "Open Data Commons: Public Domain Dedication and License",
+                                                                                               "http://opendatacommons.org/licenses/pddl/");
 
         /// <summary>
         /// Open Data Commons: Attribution License (ODC-By)
         /// </summary>
-        /// <seealso cref="http://opendatacommons.org/licenses/by/"/>
-        AttributionLicense                  =  2,
+        public static readonly DataLicense AttributionLicense                = new DataLicense("ODC-By",
+                                                                                               "Open Data Commons: Attribution License",
+                                                                                               "http://opendatacommons.org/licenses/by/");
 
         /// <summary>
         /// Open Data Commons: Open Data Commons Open Database License (ODbL)
         /// Attribution and Share-Alike for Data/Databases
         /// </summary>
-        /// <seealso cref="http://opendatacommons.org/licenses/odbl/"/>
-        /// <seealso cref="http://opendatacommons.org/licenses/odbl/summary/"/>
-        /// <seealso cref="http://opendatacommons.org/licenses/odbl/1.0/"/>
-        OpenDatabaseLicense                 =  3,
+        public static readonly DataLicense OpenDatabaseLicense               = new DataLicense("ODbL",
+                                                                                               "Open Data Commons: Open Data Commons Open Database License",
+                                                                                               "http://opendatacommons.org/licenses/odbl/",
+                                                                                               "http://opendatacommons.org/licenses/odbl/summary/",
+                                                                                               "http://opendatacommons.org/licenses/odbl/1.0/");
 
 
 
@@ -122,22 +127,25 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Datenlizenz Deutschland – Namensnennung – Version 2.0
         /// </summary>
-        /// <seealso cref="https://www.govdata.de/dl-de/by-2-0"/>
-        DatenlizenzDeutschland_BY_2         = 10,
+        public static readonly DataLicense DatenlizenzDeutschland_BY_2       = new DataLicense("dl-de/by-2-0",
+                                                                                               "Datenlizenz Deutschland – Namensnennung – Version 2.0",
+                                                                                               "https://www.govdata.de/dl-de/by-2-0");
 
         /// <summary>
         /// Datenlizenz Deutschland – Namensnennung – Version 2.0
         /// </summary>
-        /// <seealso cref="https://www.govdata.de/dl-de/zero-2-0"/>
-        DatenlizenzDeutschland_Zero_2       = 11,
+        public static readonly DataLicense DatenlizenzDeutschland_Zero_2     = new DataLicense("dl-de/zero-2-0",
+                                                                                               "Datenlizenz Deutschland – Namensnennung – Version 2.0",
+                                                                                               "https://www.govdata.de/dl-de/zero-2-0");
 
         /// <summary>
         /// GeoLizenz V1.3 – Open
         /// </summary>
-        /// <seealso cref="https://www.geolizenz.org/index/page.php?p=GL/opendata"/>
-        /// <seealso cref="https://www.geolizenz.org/modules/geolizenz/docs/1.3.1/GeoLizenz_V1.3_Open_050615_V1.pdf"/>
-        /// <seealso cref="https://www.geolizenz.org/modules/geolizenz/docs/1.3.1/Erl%C3%A4uterungen_GeoLizenzV1.3_Open_06.06.2015_V1.pdf"/>
-        GeoLizenz_OpenData_1_3_1            = 12,
+        public static readonly DataLicense GeoLizenz_OpenData_1_3_1          = new DataLicense("GeoLizenz_V1.3",
+                                                                                               "GeoLizenz V1.3 – Open",
+                                                                                               "https://www.geolizenz.org/index/page.php?p=GL/opendata",
+                                                                                               "https://www.geolizenz.org/modules/geolizenz/docs/1.3.1/GeoLizenz_V1.3_Open_050615_V1.pdf",
+                                                                                               "https://www.geolizenz.org/modules/geolizenz/docs/1.3.1/Erl%C3%A4uterungen_GeoLizenzV1.3_Open_06.06.2015_V1.pdf");
 
 
 
@@ -147,45 +155,63 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Creative Commons Attribution 4.0 International (CC BY 4.0)
         /// </summary>
-        /// <seealso cref="http://creativecommons.org/licenses/by/4.0/"/>
-        /// <seealso cref="http://creativecommons.org/licenses/by/4.0/legalcode"/>
-        CreativeCommons_BY_4                = 20,
+        public static readonly DataLicense CreativeCommons_BY_4              = new DataLicense("CC BY 4.0",
+                                                                                               "Creative Commons Attribution 4.0 International",
+                                                                                               "http://creativecommons.org/licenses/by/4.0/",
+                                                                                               "http://creativecommons.org/licenses/by/4.0/legalcode");
 
         /// <summary>
         /// Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
         /// </summary>
-        /// <seealso cref="http://creativecommons.org/licenses/by-sa/4.0/"/>
-        /// <seealso cref="http://creativecommons.org/licenses/by-sa/4.0/legalcode"/>
-        CreativeCommons_BY_SA_4             = 21,
+        public static readonly DataLicense CreativeCommons_BY_SA_4           = new DataLicense("CC BY-SA 4.0",
+                                                                                               "Creative Commons Attribution-ShareAlike 4.0 International",
+                                                                                               "http://creativecommons.org/licenses/by-sa/4.0/",
+                                                                                               "http://creativecommons.org/licenses/by-sa/4.0/legalcode");
 
         /// <summary>
         /// Creative Commons Attribution-NoDerivs 4.0 International (CC BY-ND 4.0)
         /// </summary>
-        /// <seealso cref="http://creativecommons.org/licenses/by-nd/4.0/"/>
-        /// <seealso cref="http://creativecommons.org/licenses/by-nd/4.0/legalcode"/>
-        CreativeCommons_BY_ND_4             = 22,
+        public static readonly DataLicense CreativeCommons_BY_ND_4           = new DataLicense("CC BY-ND 4.0",
+                                                                                               "Creative Commons Attribution-NoDerivs 4.0 International",
+                                                                                               "http://creativecommons.org/licenses/by-nd/4.0/",
+                                                                                               "http://creativecommons.org/licenses/by-nd/4.0/legalcode");
 
         /// <summary>
         /// Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
         /// </summary>
-        /// <seealso cref="http://creativecommons.org/licenses/by-nc/4.0/"/>
-        /// <seealso cref="http://creativecommons.org/licenses/by-nc/4.0/legalcode"/>
-        CreativeCommons_BY_NC_4             = 23,
+        public static readonly DataLicense CreativeCommons_BY_NC_4           = new DataLicense("CC BY-NC 4.0",
+                                                                                               "Creative Commons Attribution-NonCommercial 4.0 International",
+                                                                                               "http://creativecommons.org/licenses/by-nc/4.0/",
+                                                                                               "http://creativecommons.org/licenses/by-nc/4.0/legalcode");
 
         /// <summary>
         /// Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
         /// </summary>
-        /// <seealso cref="http://creativecommons.org/licenses/by-nc-sa/4.0/"/>
-        /// <seealso cref="http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode"/>
-        CreativeCommons_BY_NC_SA_4          = 24,
+        public static readonly DataLicense CreativeCommons_BY_NC_SA_4        = new DataLicense("CC BY-NC-SA 4.0",
+                                                                                               "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International",
+                                                                                               "http://creativecommons.org/licenses/by-nc-sa/4.0/",
+                                                                                               "http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode");
 
         /// <summary>
         /// Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International (CC BY-NC-ND 4.0)
         /// </summary>
-        /// <seealso cref="http://creativecommons.org/licenses/by-nc-nd/4.0/"/>
-        /// <seealso cref="http://creativecommons.org/licenses/by-nc-nd/4.0/legalcode"/>
-        CreativeCommons_BY_NC_ND_4          = 25,
+        public static readonly DataLicense CreativeCommons_BY_NC_ND_4        = new DataLicense("CC BY-NC-ND 4.0",
+                                                                                               "Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International",
+                                                                                               "http://creativecommons.org/licenses/by-nc-nd/4.0/",
+                                                                                               "http://creativecommons.org/licenses/by-nc-nd/4.0/legalcode");
 
+        #endregion
+
+
+        #region (override) ToString()
+
+        /// <summary>
+        /// Return a string representation of this object.
+        /// </summary>
+        public override String ToString()
+            => Description;
+
+        #endregion
 
     }
 
