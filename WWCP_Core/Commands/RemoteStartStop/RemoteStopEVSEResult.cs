@@ -185,7 +185,7 @@ namespace org.GraphDefined.WWCP
         #region (static) UnknownOperator(SessionId)
 
         /// <summary>
-        /// The EVSE operator is unknown.
+        /// The Charging Station Operator is unknown.
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         public static RemoteStopEVSEResult UnknownOperator(ChargingSession_Id SessionId)
@@ -388,7 +388,7 @@ namespace org.GraphDefined.WWCP
         Unspecified,
 
         /// <summary>
-        /// The EVSE operator is unknown.
+        /// The Charging Station Operator is unknown.
         /// </summary>
         UnknownOperator,
 

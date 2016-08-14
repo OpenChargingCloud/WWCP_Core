@@ -86,7 +86,7 @@ namespace org.GraphDefined.WWCP
                     value = new I18NString();
 
                 if (_Name != value)
-                    SetProperty<I18NString>(ref _Name, value);
+                    SetProperty(ref _Name, value);
 
             }
 
@@ -117,7 +117,7 @@ namespace org.GraphDefined.WWCP
                     value = new I18NString();
 
                 if (_Description != value)
-                    SetProperty<I18NString>(ref _Description, value);
+                    SetProperty(ref _Description, value);
 
             }
 
@@ -131,7 +131,7 @@ namespace org.GraphDefined.WWCP
 
         /// <summary>
         /// A (multi-language) brand name for this charging pool
-        /// is this is different from the EVSE operator.
+        /// is this is different from the Charging Station Operator.
         /// </summary>
         [Mandatory]
         public I18NString BrandName
@@ -558,7 +558,7 @@ namespace org.GraphDefined.WWCP
         private String _HotlinePhoneNumber;
 
         /// <summary>
-        /// The telephone number of the EVSE operator hotline.
+        /// The telephone number of the Charging Station Operator hotline.
         /// </summary>
         [Optional]
         public String HotlinePhoneNumber
@@ -693,78 +693,15 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Status
-
-        /// <summary>
-        /// The current charging pool status.
-        /// </summary>
-        [Optional]
-        public Timestamped<ChargingPoolStatusType> Status
-        {
-            get
-            {
-                return _StatusSchedule.CurrentStatus;
-            }
-        }
-
-        #endregion
-
-        #region StatusSchedule
-
-        private StatusSchedule<ChargingPoolStatusType> _StatusSchedule;
-
-        /// <summary>
-        /// The charging pool status schedule.
-        /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<ChargingPoolStatusType>> StatusSchedule
-        {
-            get
-            {
-                return _StatusSchedule;
-            }
-        }
-
-        #endregion
-
-        #region StatusAggregationDelegate
-
-        private Func<ChargingStationStatusReport, ChargingPoolStatusType> _StatusAggregationDelegate;
-
-        /// <summary>
-        /// A delegate called to aggregate the dynamic status of all subordinated charging stations.
-        /// </summary>
-        public Func<ChargingStationStatusReport, ChargingPoolStatusType> StatusAggregationDelegate
-        {
-
-            get
-            {
-                return _StatusAggregationDelegate;
-            }
-
-            set
-            {
-                _StatusAggregationDelegate = value;
-            }
-
-        }
-
-        #endregion
-
-
         #region AdminStatus
 
         /// <summary>
-        /// The current charging pool admin status.
+        /// The current admin status.
         /// </summary>
         [Optional]
         public Timestamped<ChargingPoolAdminStatusType> AdminStatus
-        {
-            get
-            {
-                return _AdminStatusSchedule.CurrentStatus;
-            }
-        }
+
+            => _AdminStatusSchedule.CurrentStatus;
 
         #endregion
 
@@ -773,16 +710,48 @@ namespace org.GraphDefined.WWCP
         private StatusSchedule<ChargingPoolAdminStatusType> _AdminStatusSchedule;
 
         /// <summary>
-        /// The charging pool admin status schedule.
+        /// The admin status schedule.
         /// </summary>
         [Optional]
         public IEnumerable<Timestamped<ChargingPoolAdminStatusType>> AdminStatusSchedule
-        {
-            get
-            {
-                return _AdminStatusSchedule;
-            }
-        }
+
+            => _AdminStatusSchedule;
+
+        #endregion
+
+
+        #region Status
+
+        /// <summary>
+        /// The current status.
+        /// </summary>
+        [Optional]
+        public Timestamped<ChargingPoolStatusType> Status
+
+            => _StatusSchedule.CurrentStatus;
+
+        #endregion
+
+        #region StatusSchedule
+
+        private StatusSchedule<ChargingPoolStatusType> _StatusSchedule;
+
+        /// <summary>
+        /// The status schedule.
+        /// </summary>
+        [Optional]
+        public IEnumerable<Timestamped<ChargingPoolStatusType>> StatusSchedule
+
+            => _StatusSchedule;
+
+        #endregion
+
+        #region StatusAggregationDelegate
+
+        /// <summary>
+        /// A delegate called to aggregate the dynamic status of all subordinated charging stations.
+        /// </summary>
+        public Func<ChargingStationStatusReport, ChargingPoolStatusType> StatusAggregationDelegate { get; set; }
 
         #endregion
 
@@ -817,13 +786,13 @@ namespace org.GraphDefined.WWCP
 
         #region Operator
 
-        private EVSEOperator _Operator;
+        private ChargingStationOperator _Operator;
 
         /// <summary>
-        /// The EVSE operator of this charging pool.
+        /// The Charging Station Operator of this charging pool.
         /// </summary>
         [Optional]
-        public EVSEOperator Operator
+        public ChargingStationOperator Operator
         {
             get
             {
@@ -841,13 +810,13 @@ namespace org.GraphDefined.WWCP
         /// Create a new group/pool of charging stations having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charing pool.</param>
-        /// <param name="EVSEOperator">The parent EVSE operator.</param>
+        /// <param name="EVSEOperator">The parent Charging Station Operator.</param>
         /// <param name="MaxPoolStatusListSize">The default size of the charging pool (aggregated charging station) status list.</param>
         /// <param name="MaxPoolAdminStatusListSize">The default size of the charging pool admin status list.</param>
-        internal ChargingPool(ChargingPool_Id  Id,
-                              EVSEOperator     EVSEOperator,
-                              UInt16           MaxPoolStatusListSize       = DefaultMaxPoolStatusListSize,
-                              UInt16           MaxPoolAdminStatusListSize  = DefaultMaxPoolAdminStatusListSize)
+        internal ChargingPool(ChargingPool_Id          Id,
+                              ChargingStationOperator  EVSEOperator,
+                              UInt16                   MaxPoolStatusListSize       = DefaultMaxPoolStatusListSize,
+                              UInt16                   MaxPoolAdminStatusListSize  = DefaultMaxPoolAdminStatusListSize)
 
             : base(Id)
 
@@ -856,7 +825,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (EVSEOperator == null)
-                throw new ArgumentNullException("EVSEOperator", "The EVSE operator must not be null!");
+                throw new ArgumentNullException("EVSEOperator", "The Charging Station Operator must not be null!");
 
             #endregion
 
@@ -875,11 +844,11 @@ namespace org.GraphDefined.WWCP
 
             this._AuthenticationModes        = new ReactiveSet<AuthenticationModes>();
 
-            this._StatusSchedule             = new StatusSchedule<ChargingPoolStatusType>(MaxPoolStatusListSize);
-            this._StatusSchedule.Insert(ChargingPoolStatusType.Unspecified);
-
             this._AdminStatusSchedule        = new StatusSchedule<ChargingPoolAdminStatusType>(MaxPoolAdminStatusListSize);
             this._AdminStatusSchedule.Insert(ChargingPoolAdminStatusType.Unspecified);
+
+            this._StatusSchedule             = new StatusSchedule<ChargingPoolStatusType>(MaxPoolStatusListSize);
+            this._StatusSchedule.Insert(ChargingPoolStatusType.Unspecified);
 
             this._ChargingReservations       = new ConcurrentDictionary<ChargingReservation_Id, ChargingStation>();
             this._ChargingSessions           = new ConcurrentDictionary<ChargingSession_Id,     ChargingStation>();
@@ -1581,7 +1550,7 @@ namespace org.GraphDefined.WWCP
         #region ContainsEVSE(EVSE)
 
         /// <summary>
-        /// Check if the given EVSE is already present within the EVSE operator.
+        /// Check if the given EVSE is already present within the Charging Station Operator.
         /// </summary>
         /// <param name="EVSE">An EVSE.</param>
         public Boolean ContainsEVSE(EVSE EVSE)
@@ -1594,7 +1563,7 @@ namespace org.GraphDefined.WWCP
         #region ContainsEVSE(EVSEId)
 
         /// <summary>
-        /// Check if the given EVSE identification is already present within the EVSE operator.
+        /// Check if the given EVSE identification is already present within the Charging Station Operator.
         /// </summary>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         public Boolean ContainsEVSE(EVSE_Id EVSEId)

@@ -120,10 +120,10 @@ namespace org.GraphDefined.WWCP
 
         #region EVSEOperator
 
-        private readonly EVSEOperator _EVSEOperator;
+        private readonly ChargingStationOperator _EVSEOperator;
 
         [Optional]
-        public EVSEOperator EVSEOperator
+        public ChargingStationOperator EVSEOperator
         {
             get
             {
@@ -390,7 +390,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">The EVSE of the EVSE used for charging.</param>
         /// <param name="ChargingStation">The charging station of the charging station used for charging.</param>
         /// <param name="ChargingPool">The charging pool of the charging pool used for charging.</param>
-        /// <param name="EVSEOperator">The EVSE operator used for charging.</param>
+        /// <param name="EVSEOperator">The Charging Station Operator used for charging.</param>
         /// <param name="ChargingProductId">An unqiue identification for the consumed charging product.</param>
         /// 
         /// <param name="ReservationTime">Optional timestamps when the reservation started and ended.</param>
@@ -407,7 +407,7 @@ namespace org.GraphDefined.WWCP
                                   ChargingReservation               Reservation            = null,
                                   ChargingReservation_Id            ReservationId          = null,
 
-                                  EVSEOperator                      EVSEOperator           = null,
+                                  ChargingStationOperator                      EVSEOperator           = null,
                                   ChargingPool                      ChargingPool           = null,
                                   ChargingStation                   ChargingStation        = null,
                                   EVSE                              EVSE                   = null,

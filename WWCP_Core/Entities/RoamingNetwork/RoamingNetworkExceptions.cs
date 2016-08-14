@@ -62,14 +62,14 @@ namespace org.GraphDefined.WWCP
     #region EVSEOperatorAlreadyExists
 
     /// <summary>
-    /// An exception thrown whenever an EVSE operator already exists within the given roaming network.
+    /// An exception thrown whenever an Charging Station Operator already exists within the given roaming network.
     /// </summary>
     public class EVSEOperatorAlreadyExists : RoamingNetworkException
     {
 
-        public EVSEOperatorAlreadyExists(EVSEOperator_Id    EVSEOperator_Id,
+        public EVSEOperatorAlreadyExists(ChargingStationOperator_Id    EVSEOperator_Id,
                                          RoamingNetwork_Id  RoamingNetwork_Id)
-            : base("The given EVSE operator identification '" + EVSEOperator_Id + "' already exists within the given '" + RoamingNetwork_Id + "' roaming network!")
+            : base("The given Charging Station Operator identification '" + EVSEOperator_Id + "' already exists within the given '" + RoamingNetwork_Id + "' roaming network!")
         { }
 
     }

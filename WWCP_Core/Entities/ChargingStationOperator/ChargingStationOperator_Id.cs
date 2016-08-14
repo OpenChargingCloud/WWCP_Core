@@ -28,11 +28,11 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The unique identification of an Electric Vehicle Supply Equipment Operator (EVSE Op).
+    /// The unique identification of an Charging Station Operator (CSO).
     /// </summary>
-    public class EVSEOperator_Id : IId,
-                                   IEquatable<EVSEOperator_Id>,
-                                   IComparable<EVSEOperator_Id>
+    public class ChargingStationOperator_Id : IId,
+                                              IEquatable<ChargingStationOperator_Id>,
+                                              IComparable<ChargingStationOperator_Id>
 
     {
 
@@ -52,99 +52,47 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Length
+        /// <summary>
+        /// The internal Alpha-2-CountryCode.
+        /// </summary>
+        public Country       CountryCode  { get; }
+
+        /// <summary>
+        /// The internal EVSE Operator identification.
+        /// </summary>
+        public String        OperatorId   { get; }
+
+
+        public IdFormatType  Format       { get; }
+
+
+        public String OriginId
+            => ToFormat(Format);
 
         /// <summary>
         /// Returns the length of the identificator.
         /// </summary>
         public UInt64 Length
-        {
-            get
-            {
-                return (UInt64) (_CountryCode.Alpha2Code.Length + _OperatorId.Length);
-            }
-        }
-
-        #endregion
-
-        #region CountryCode
-
-        private readonly Country _CountryCode;
-
-        /// <summary>
-        /// The internal Alpha-2-CountryCode.
-        /// </summary>
-        public Country CountryCode
-        {
-            get
-            {
-                return _CountryCode;
-            }
-        }
-
-        #endregion
-
-        #region OperatorId
-
-        private readonly String _OperatorId;
-
-        /// <summary>
-        /// The internal EVSE Operator identification.
-        /// </summary>
-        public String OperatorId
-        {
-            get
-            {
-                return _OperatorId;
-            }
-        }
-
-        #endregion
-
-        #region Format
-
-        private readonly IdFormatType _Format;
-
-        public IdFormatType Format
-        {
-            get
-            {
-                return _Format;
-            }
-        }
-
-        #endregion
-
-        #region OriginId
-
-        public String OriginId
-        {
-            get
-            {
-                return ToFormat(_Format);
-            }
-        }
-
-        #endregion
+            => (UInt64) (CountryCode.Alpha2Code.Length + OperatorId.Length);
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new Electric Vehicle Supply Equipment Operator identification.
+        /// Create a new Charging Station Operator identification.
         /// </summary>
         /// <param name="CountryCode">The Alpha-2-CountryCode.</param>
         /// <param name="OperatorId">The EVSE Operator identification.</param>
-        /// <param name="IdFormat">The format of the EVSE operator identification [old|new].</param>
-        private EVSEOperator_Id(Country       CountryCode,
-                                String        OperatorId,
-                                IdFormatType  IdFormat = IdFormatType.NEW)
+        /// <param name="IdFormat">The format of the Charging Station Operator identification [old|new].</param>
+        private ChargingStationOperator_Id(Country       CountryCode,
+                                           String        OperatorId,
+                                           IdFormatType  IdFormat = IdFormatType.NEW)
         {
 
-            this._CountryCode  = CountryCode;
-            this._OperatorId   = OperatorId;
-            this._Format       = IdFormat;
+            this.CountryCode  = CountryCode;
+            this.OperatorId   = OperatorId;
+            this.Format       = IdFormat;
 
         }
 
@@ -156,8 +104,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Parse the given string as an EVSE Operator identification.
         /// </summary>
-        /// <param name="CountryAndOperatorId">The country code and EVSE operator identification as a string.</param>
-        public static EVSEOperator_Id Parse(String CountryAndOperatorId)
+        /// <param name="CountryAndOperatorId">The country code and Charging Station Operator identification as a string.</param>
+        public static ChargingStationOperator_Id Parse(String CountryAndOperatorId)
         {
 
             #region Initial checks
@@ -177,16 +125,16 @@ namespace org.GraphDefined.WWCP
             Country __CountryCode;
 
             if (Country.TryParseAlpha2Code(_MatchCollection[0].Groups[1].Value, out __CountryCode))
-                return new EVSEOperator_Id(__CountryCode,
+                return new ChargingStationOperator_Id(__CountryCode,
                                            _MatchCollection[0].Groups[2].Value,
                                            IdFormatType.NEW);
 
             if (Country.TryParseTelefonCode(_MatchCollection[0].Groups[3].Value, out __CountryCode))
-                return new EVSEOperator_Id(__CountryCode,
+                return new ChargingStationOperator_Id(__CountryCode,
                                            _MatchCollection[0].Groups[4].Value,
                                            IdFormatType.OLD);
 
-            throw new ArgumentException("Illegal EVSE operator identification!", "EVSEId");
+            throw new ArgumentException("Illegal Charging Station Operator identification!", "EVSEId");
 
         }
 
@@ -198,9 +146,9 @@ namespace org.GraphDefined.WWCP
         /// Parse the given string as an EVSE Operator identification.
         /// </summary>
         /// <param name="CountryCode">A country code.</param>
-        /// <param name="OperatorId">An EVSE operator identification as a string.</param>
-        /// <param name="IdFormat">The format of the EVSE operator identification [old|new].</param>
-        public static EVSEOperator_Id Parse(Country       CountryCode,
+        /// <param name="OperatorId">An Charging Station Operator identification as a string.</param>
+        /// <param name="IdFormat">The format of the Charging Station Operator identification [old|new].</param>
+        public static ChargingStationOperator_Id Parse(Country       CountryCode,
                                             String        OperatorId,
                                             IdFormatType  IdFormat = IdFormatType.NEW)
         {
@@ -222,7 +170,7 @@ namespace org.GraphDefined.WWCP
             if (_MatchCollection.Count != 1)
                 throw new ArgumentException("Illegal EVSE Operator identification '" + CountryCode + " / " + OperatorId + "'!", "OperatorId");
 
-            return new EVSEOperator_Id(CountryCode, _MatchCollection[0].Value, IdFormat);
+            return new ChargingStationOperator_Id(CountryCode, _MatchCollection[0].Value, IdFormat);
 
         }
 
@@ -233,10 +181,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Parse the given string as an EVSE Operator identification.
         /// </summary>
-        /// <param name="CountryAndOperatorId">The country code and EVSE operator identification as a string.</param>
+        /// <param name="CountryAndOperatorId">The country code and Charging Station Operator identification as a string.</param>
         /// <param name="EVSEOperatorId">The parsed EVSE Operator identification.</param>
         public static Boolean TryParse(String               CountryAndOperatorId,
-                                       out EVSEOperator_Id  EVSEOperatorId)
+                                       out ChargingStationOperator_Id  EVSEOperatorId)
         {
 
             #region Initial checks
@@ -266,7 +214,7 @@ namespace org.GraphDefined.WWCP
 
                 if (Country.TryParseAlpha2Code(_MatchCollection[0].Groups[1].Value, out __CountryCode))
                 {
-                    EVSEOperatorId = new EVSEOperator_Id(__CountryCode,
+                    EVSEOperatorId = new ChargingStationOperator_Id(__CountryCode,
                                                          _MatchCollection[0].Groups[2].Value,
                                                          IdFormatType.NEW);
                     return true;
@@ -274,7 +222,7 @@ namespace org.GraphDefined.WWCP
 
                 if (Country.TryParseTelefonCode(_MatchCollection[0].Groups[3].Value, out __CountryCode))
                 {
-                    EVSEOperatorId = new EVSEOperator_Id(__CountryCode,
+                    EVSEOperatorId = new ChargingStationOperator_Id(__CountryCode,
                                                          _MatchCollection[0].Groups[4].Value,
                                                          IdFormatType.OLD);
                     return true;
@@ -282,7 +230,7 @@ namespace org.GraphDefined.WWCP
 
 
                 // Just e.g. "822"...
-                EVSEOperatorId = EVSEOperator_Id.Parse(Country.Germany,
+                EVSEOperatorId = ChargingStationOperator_Id.Parse(Country.Germany,
                                                        _MatchCollection[0].Groups[5].Value).
                                                  ChangeFormat(IdFormatType.OLD);
 
@@ -306,12 +254,12 @@ namespace org.GraphDefined.WWCP
         /// Parse the given string as an EVSE Operator identification.
         /// </summary>
         /// <param name="CountryCode">A country code.</param>
-        /// <param name="OperatorId">An EVSE operator identification as a string.</param>
+        /// <param name="OperatorId">An Charging Station Operator identification as a string.</param>
         /// <param name="EVSEOperatorId">The parsed EVSE Operator identification.</param>
-        /// <param name="IdFormat">The format of the EVSE operator identification [old|new].</param>
+        /// <param name="IdFormat">The format of the Charging Station Operator identification [old|new].</param>
         public static Boolean TryParse(Country              CountryCode,
                                        String               OperatorId,
-                                       out EVSEOperator_Id  EVSEOperatorId,
+                                       out ChargingStationOperator_Id  EVSEOperatorId,
                                        IdFormatType         IdFormat = IdFormatType.NEW)
         {
 
@@ -338,7 +286,7 @@ namespace org.GraphDefined.WWCP
                     return false;
                 }
 
-                EVSEOperatorId = new EVSEOperator_Id(CountryCode, _MatchCollection[0].Value, IdFormat);
+                EVSEOperatorId = new ChargingStationOperator_Id(CountryCode, _MatchCollection[0].Value, IdFormat);
                 return true;
 
             }
@@ -356,12 +304,12 @@ namespace org.GraphDefined.WWCP
         #region ChangeFormat
 
         /// <summary>
-        /// Return a new EVSE operator identification in the given format.
+        /// Return a new Charging Station Operator identification in the given format.
         /// </summary>
-        /// <param name="Format">An EVSE operator identification format.</param>
-        public EVSEOperator_Id ChangeFormat(IdFormatType Format)
+        /// <param name="Format">An Charging Station Operator identification format.</param>
+        public ChargingStationOperator_Id ChangeFormat(IdFormatType Format)
         {
-            return new EVSEOperator_Id(this._CountryCode, this._OperatorId, Format);
+            return new ChargingStationOperator_Id(this.CountryCode, this.OperatorId, Format);
         }
 
         #endregion
@@ -371,14 +319,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Clone an EVSEOperator_Id.
         /// </summary>
-        public EVSEOperator_Id Clone
+        public ChargingStationOperator_Id Clone
         {
             get
             {
 
-                return new EVSEOperator_Id(_CountryCode,
-                                           new String(_OperatorId.ToCharArray()),
-                                           _Format);
+                return new ChargingStationOperator_Id(CountryCode,
+                                           new String(OperatorId.ToCharArray()),
+                                           Format);
 
             }
         }
@@ -396,8 +344,8 @@ namespace org.GraphDefined.WWCP
         {
 
             return (IdFormat == IdFormatType.NEW)
-                       ? String.Concat(     _CountryCode.Alpha2Code,  "*", _OperatorId)
-                       : String.Concat("+", _CountryCode.TelefonCode, "*", _OperatorId);
+                       ? String.Concat(     CountryCode.Alpha2Code,  "*", OperatorId)
+                       : String.Concat("+", CountryCode.TelefonCode, "*", OperatorId);
 
         }
 
@@ -428,7 +376,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEOperator_Id1">A EVSEOperator_Id.</param>
         /// <param name="EVSEOperator_Id2">Another EVSEOperator_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (EVSEOperator_Id EVSEOperator_Id1, EVSEOperator_Id EVSEOperator_Id2)
+        public static Boolean operator == (ChargingStationOperator_Id EVSEOperator_Id1, ChargingStationOperator_Id EVSEOperator_Id2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -453,7 +401,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEOperator_Id1">A EVSEOperator_Id.</param>
         /// <param name="EVSEOperator_Id2">Another EVSEOperator_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (EVSEOperator_Id EVSEOperator_Id1, EVSEOperator_Id EVSEOperator_Id2)
+        public static Boolean operator != (ChargingStationOperator_Id EVSEOperator_Id1, ChargingStationOperator_Id EVSEOperator_Id2)
         {
             return !(EVSEOperator_Id1 == EVSEOperator_Id2);
         }
@@ -468,7 +416,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEOperator_Id1">A EVSEOperator_Id.</param>
         /// <param name="EVSEOperator_Id2">Another EVSEOperator_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (EVSEOperator_Id EVSEOperator_Id1, EVSEOperator_Id EVSEOperator_Id2)
+        public static Boolean operator < (ChargingStationOperator_Id EVSEOperator_Id1, ChargingStationOperator_Id EVSEOperator_Id2)
         {
 
             if ((Object) EVSEOperator_Id1 == null)
@@ -488,7 +436,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEOperator_Id1">A EVSEOperator_Id.</param>
         /// <param name="EVSEOperator_Id2">Another EVSEOperator_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (EVSEOperator_Id EVSEOperator_Id1, EVSEOperator_Id EVSEOperator_Id2)
+        public static Boolean operator <= (ChargingStationOperator_Id EVSEOperator_Id1, ChargingStationOperator_Id EVSEOperator_Id2)
         {
             return !(EVSEOperator_Id1 > EVSEOperator_Id2);
         }
@@ -503,7 +451,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEOperator_Id1">A EVSEOperator_Id.</param>
         /// <param name="EVSEOperator_Id2">Another EVSEOperator_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (EVSEOperator_Id EVSEOperator_Id1, EVSEOperator_Id EVSEOperator_Id2)
+        public static Boolean operator > (ChargingStationOperator_Id EVSEOperator_Id1, ChargingStationOperator_Id EVSEOperator_Id2)
         {
 
             if ((Object) EVSEOperator_Id1 == null)
@@ -523,7 +471,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEOperator_Id1">A EVSEOperator_Id.</param>
         /// <param name="EVSEOperator_Id2">Another EVSEOperator_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (EVSEOperator_Id EVSEOperator_Id1, EVSEOperator_Id EVSEOperator_Id2)
+        public static Boolean operator >= (ChargingStationOperator_Id EVSEOperator_Id1, ChargingStationOperator_Id EVSEOperator_Id2)
         {
             return !(EVSEOperator_Id1 < EVSEOperator_Id2);
         }
@@ -547,7 +495,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an EVSEOperator_Id.
-            var EVSEOperator_Id = Object as EVSEOperator_Id;
+            var EVSEOperator_Id = Object as ChargingStationOperator_Id;
             if ((Object) EVSEOperator_Id == null)
                 throw new ArgumentException("The given object is not a EVSEOperator_Id!");
 
@@ -563,7 +511,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="EVSEOperator_Id">An object to compare with.</param>
-        public Int32 CompareTo(EVSEOperator_Id EVSEOperator_Id)
+        public Int32 CompareTo(ChargingStationOperator_Id EVSEOperator_Id)
         {
 
             if ((Object) EVSEOperator_Id == null)
@@ -574,11 +522,11 @@ namespace org.GraphDefined.WWCP
 
             // If equal: Compare CountryIds
             if (_Result == 0)
-                _Result = _CountryCode.CompareTo(EVSEOperator_Id._CountryCode);
+                _Result = CountryCode.CompareTo(EVSEOperator_Id.CountryCode);
 
             // If equal: Compare OperatorIds
             if (_Result == 0)
-                _Result = _OperatorId.CompareTo(EVSEOperator_Id._OperatorId);
+                _Result = OperatorId.CompareTo(EVSEOperator_Id.OperatorId);
 
             return _Result;
 
@@ -604,7 +552,7 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is an EVSEOperator_Id.
-            var EVSEOperator_Id = Object as EVSEOperator_Id;
+            var EVSEOperator_Id = Object as ChargingStationOperator_Id;
             if ((Object) EVSEOperator_Id == null)
                 return false;
 
@@ -621,14 +569,14 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSEOperatorId">A EVSEOperator_Id to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EVSEOperator_Id EVSEOperatorId)
+        public Boolean Equals(ChargingStationOperator_Id EVSEOperatorId)
         {
 
             if ((Object) EVSEOperatorId == null)
                 return false;
 
-            return _CountryCode.Equals(EVSEOperatorId._CountryCode) &&
-                   _OperatorId. Equals(EVSEOperatorId._OperatorId);
+            return CountryCode.Equals(EVSEOperatorId.CountryCode) &&
+                   OperatorId. Equals(EVSEOperatorId.OperatorId);
 
         }
 
@@ -643,9 +591,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            return _CountryCode.Alpha2Code.GetHashCode() ^ _OperatorId.GetHashCode();
-        }
+            => CountryCode.Alpha2Code.GetHashCode() ^ OperatorId.GetHashCode();
 
         #endregion
 
@@ -655,9 +601,7 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return OriginId;
-        }
+            => OriginId;
 
         #endregion
 

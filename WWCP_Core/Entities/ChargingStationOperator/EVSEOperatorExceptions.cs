@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A EVSE operator exception.
+    /// A Charging Station Operator exception.
     /// </summary>
     public class EVSEOperatorException : WWCPException
     {
@@ -46,14 +46,14 @@ namespace org.GraphDefined.WWCP
     #region ChargingPoolAlreadyExists
 
     /// <summary>
-    /// An exception thrown whenever a charging pool already exists within the given EVSE operator.
+    /// An exception thrown whenever a charging pool already exists within the given Charging Station Operator.
     /// </summary>
     public class ChargingPoolAlreadyExists : EVSEOperatorException
     {
 
         public ChargingPoolAlreadyExists(ChargingPool_Id       ChargingPool_Id,
-                                    EVSEOperator_Id  EVSEOperator_Id)
-            : base("The given charging pool identification '" + ChargingPool_Id + "' already exists within the given '" + EVSEOperator_Id + "' EVSE operator!")
+                                    ChargingStationOperator_Id  EVSEOperator_Id)
+            : base("The given charging pool identification '" + ChargingPool_Id + "' already exists within the given '" + EVSEOperator_Id + "' Charging Station Operator!")
         { }
 
     }
@@ -64,14 +64,14 @@ namespace org.GraphDefined.WWCP
     #region ChargingStationGroupAlreadyExists
 
     /// <summary>
-    /// An exception thrown whenever a charging station group already exists within the given EVSE operator.
+    /// An exception thrown whenever a charging station group already exists within the given Charging Station Operator.
     /// </summary>
     public class ChargingStationGroupAlreadyExists : EVSEOperatorException
     {
 
         public ChargingStationGroupAlreadyExists(ChargingStationGroup_Id  ChargingStationGroupId,
-                                                 EVSEOperator_Id          EVSEOperator_Id)
-            : base("The given charging station group identification '" + ChargingStationGroupId + "' already exists within the given '" + EVSEOperator_Id + "' EVSE operator!")
+                                                 ChargingStationOperator_Id          EVSEOperator_Id)
+            : base("The given charging station group identification '" + ChargingStationGroupId + "' already exists within the given '" + EVSEOperator_Id + "' Charging Station Operator!")
         { }
 
     }

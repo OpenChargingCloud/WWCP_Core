@@ -43,7 +43,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         {
 
             var _rn  = new RoamingNetwork(RoamingNetwork_Id.New);
-            var _op  = _rn.CreateNewEVSEOperator(EVSEOperator_Id.Parse("DE*822"));
+            var _op  = _rn.CreateNewChargingStationOperator(ChargingStationOperator_Id.Parse("DE*822"));
             var _cp  = _op.CreateNewChargingPool();
             _cp.StatusAggregationDelegate = report => {
                                                           var max   = report.Max  (v => v.Value);
@@ -95,7 +95,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         public void Test1()
         {
 
-            //#region Create a new roaming network and an EVSE operator
+            //#region Create a new roaming network and an Charging Station Operator
 
             //var RoamingNetwork = new RoamingNetwork(RoamingNetwork_Id.Parse("eMI3"));
 
@@ -103,7 +103,7 @@ namespace org.GraphDefined.WWCP.UnitTests
             //Assert.AreEqual(RoamingNetwork_Id.Parse("eMI3"), RoamingNetwork.Id);
             //Assert.AreEqual("eMI3",                          RoamingNetwork.Id.ToString());
             //Assert.AreEqual(0,                               RoamingNetwork.Count(),               "The number of entities within the roaming network must be 0!");
-            //Assert.AreEqual(0,                               RoamingNetwork.EVSEOperators.Count(), "The number of EVSE operators within the roaming network must be 0!");
+            //Assert.AreEqual(0,                               RoamingNetwork.EVSEOperators.Count(), "The number of Charging Station Operators within the roaming network must be 0!");
 
             //var BelectricDriveOperator = RoamingNetwork.CreateNewEVSEOperator(
             //                                                EVSEOperator_Id.Parse(Country.Germany, "822"),
@@ -115,10 +115,10 @@ namespace org.GraphDefined.WWCP.UnitTests
             //Assert.IsNotNull(BelectricDriveOperator);
             //Assert.AreEqual(EVSEOperator_Id.Parse(Country.Germany, "822"), BelectricDriveOperator.Id);
             //Assert.AreEqual("822",                                         BelectricDriveOperator.Id.ToString());
-            //Assert.AreEqual(0,                                             BelectricDriveOperator.Count(),       "The number of ChargingPools registered with the EVSE operator must be 0!");
+            //Assert.AreEqual(0,                                             BelectricDriveOperator.Count(),       "The number of ChargingPools registered with the Charging Station Operator must be 0!");
 
             //Assert.AreEqual(1,                                             RoamingNetwork.Count(),               "The number of entities within the roaming network must be 1 now!");
-            //Assert.AreEqual(1,                                             RoamingNetwork.EVSEOperators.Count(), "The number of EVSE operators within the roaming network must be 1 now!");
+            //Assert.AreEqual(1,                                             RoamingNetwork.EVSEOperators.Count(), "The number of Charging Station Operators within the roaming network must be 1 now!");
 
             //#endregion
 

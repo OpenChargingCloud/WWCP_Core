@@ -212,13 +212,13 @@ namespace org.GraphDefined.WWCP
 
         #region EVSEOperator
 
-        private EVSEOperator _EVSEOperator;
+        private ChargingStationOperator _EVSEOperator;
 
         /// <summary>
-        /// The EVSE operator of this charging pool.
+        /// The Charging Station Operator of this charging pool.
         /// </summary>
         [Optional]
-        public EVSEOperator EVSEOperator
+        public ChargingStationOperator EVSEOperator
         {
             get
             {
@@ -479,11 +479,11 @@ namespace org.GraphDefined.WWCP
         /// Create a new group/pool of charging stations having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charing pool.</param>
-        /// <param name="EVSEOperator">The parent EVSE operator.</param>
+        /// <param name="EVSEOperator">The parent Charging Station Operator.</param>
         /// <param name="MaxPoolStatusListSize">The default size of the charging pool (aggregated charging station) status list.</param>
         /// <param name="MaxPoolAdminStatusListSize">The default size of the charging pool admin status list.</param>
         internal ChargingStationGroup(ChargingStationGroup_Id  Id,
-                                      EVSEOperator             EVSEOperator,
+                                      ChargingStationOperator             EVSEOperator,
                                       UInt16                   MaxPoolStatusListSize       = DefaultMaxPoolStatusListSize,
                                       UInt16                   MaxPoolAdminStatusListSize  = DefaultMaxPoolAdminStatusListSize)
 
@@ -494,7 +494,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (EVSEOperator == null)
-                throw new ArgumentNullException("EVSEOperator", "The EVSE operator must not be null!");
+                throw new ArgumentNullException("EVSEOperator", "The Charging Station Operator must not be null!");
 
             #endregion
 
@@ -696,7 +696,7 @@ namespace org.GraphDefined.WWCP
         #region ContainsEVSE(EVSE)
 
         /// <summary>
-        /// Check if the given EVSE is already present within the EVSE operator.
+        /// Check if the given EVSE is already present within the Charging Station Operator.
         /// </summary>
         /// <param name="EVSE">An EVSE.</param>
         public Boolean ContainsEVSE(EVSE EVSE)
@@ -709,7 +709,7 @@ namespace org.GraphDefined.WWCP
         #region ContainsEVSE(EVSEId)
 
         /// <summary>
-        /// Check if the given EVSE identification is already present within the EVSE operator.
+        /// Check if the given EVSE identification is already present within the Charging Station Operator.
         /// </summary>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         public Boolean ContainsEVSE(EVSE_Id EVSEId)

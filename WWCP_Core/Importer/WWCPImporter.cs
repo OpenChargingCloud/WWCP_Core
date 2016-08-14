@@ -109,9 +109,9 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region EVSEOperators
 
-        private readonly List<EVSEOperator> _EVSEOperators;
+        private readonly List<ChargingStationOperator> _EVSEOperators;
 
-        public IEnumerable<EVSEOperator> EVSEOperators
+        public IEnumerable<ChargingStationOperator> EVSEOperators
         {
             get
             {
@@ -297,7 +297,7 @@ namespace org.GraphDefined.WWCP.Importer
 
             this._MaxNumberOfCachedDataImports  = MaxNumberOfCachedXMLExports;
 
-            this._EVSEOperators                 = new List<EVSEOperator>();
+            this._EVSEOperators                 = new List<ChargingStationOperator>();
             this._AllForwardingInfos            = new Dictionary<ChargingStation_Id, ImporterForwardingInfo>();
             this._ImportedData                  = new List<Timestamped<T>>();
 
@@ -315,7 +315,7 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region RegisterEVSEOperator(EVSEOperator)
 
-        public WWCPImporter<T> RegisterEVSEOperator(EVSEOperator EVSEOperator)
+        public WWCPImporter<T> RegisterEVSEOperator(ChargingStationOperator EVSEOperator)
         {
 
             _EVSEOperators.Add(EVSEOperator);
@@ -388,7 +388,7 @@ namespace org.GraphDefined.WWCP.Importer
                                                                FirstOrDefault();
 
                             if (CurrenteVSEOperator == null)
-                                throw new ApplicationException("Could not find any EVSE operator for roaming network '" + CurrentRoamingNetworkId + "'!");
+                                throw new ApplicationException("Could not find any Charging Station Operator for roaming network '" + CurrentRoamingNetworkId + "'!");
 
                             var CurrentRoamingNetworkJObject = CurrentRoamingNetwork.Value as JObject;
 

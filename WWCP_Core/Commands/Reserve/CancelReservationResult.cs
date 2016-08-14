@@ -103,7 +103,7 @@ namespace org.GraphDefined.WWCP
         #region (static) UnknownEVSEOperator
 
         /// <summary>
-        /// The EVSE operator is unknown.
+        /// The Charging Station Operator is unknown.
         /// </summary>
         public static CancelReservationResult UnknownEVSEOperator
 
@@ -160,7 +160,7 @@ namespace org.GraphDefined.WWCP
         #region (static) OutOfService
 
         /// <summary>
-        /// The EVSE, charging station, charging pool or EVSE operator is out-of-service.
+        /// The EVSE, charging station, charging pool or Charging Station Operator is out-of-service.
         /// </summary>
         public static CancelReservationResult OutOfService
 
@@ -171,7 +171,7 @@ namespace org.GraphDefined.WWCP
         #region (static) Offline
 
         /// <summary>
-        /// The EVSE, charging station, charging pool or EVSE operator is offline.
+        /// The EVSE, charging station, charging pool or Charging Station Operator is offline.
         /// </summary>
         public static CancelReservationResult Offline
 
@@ -251,7 +251,7 @@ namespace org.GraphDefined.WWCP
 
 
         /// <summary>
-        /// The EVSE operator is unknown.
+        /// The Charging Station Operator is unknown.
         /// </summary>
         UnknownEVSEOperator,
 
@@ -277,12 +277,12 @@ namespace org.GraphDefined.WWCP
 
 
         /// <summary>
-        /// The EVSE, charging station, charging pool or EVSE operator is out-of-service.
+        /// The EVSE, charging station, charging pool or Charging Station Operator is out-of-service.
         /// </summary>
         OutOfService,
 
         /// <summary>
-        /// The EVSE, charging station, charging pool or EVSE operator is offline.
+        /// The EVSE, charging station, charging pool or Charging Station Operator is offline.
         /// </summary>
         Offline,
 

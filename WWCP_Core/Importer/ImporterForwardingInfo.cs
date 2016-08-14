@@ -75,9 +75,9 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region EVSEOperators
 
-        private readonly IEnumerable<EVSEOperator>  _EVSEOperators;
+        private readonly IEnumerable<ChargingStationOperator>  _EVSEOperators;
 
-        public IEnumerable<EVSEOperator> EVSEOperators
+        public IEnumerable<ChargingStationOperator> EVSEOperators
         {
             get
             {
@@ -103,9 +103,9 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region ForwardedToEVSEOperator
 
-        private EVSEOperator _ForwardedToEVSEOperator;
+        private ChargingStationOperator _ForwardedToEVSEOperator;
 
-        public EVSEOperator ForwardedToEVSEOperator
+        public ChargingStationOperator ForwardedToEVSEOperator
         {
 
             get
@@ -134,7 +134,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                     }
 
-                    // Add to new EVSE operator/charging pool will be done during the next import cycle!
+                    // Add to new Charging Station Operator/charging pool will be done during the next import cycle!
 
                 }
 
@@ -155,7 +155,7 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region ForwardedToEVSEOperatorId
 
-        public EVSEOperator_Id ForwardedToEVSEOperatorId
+        public ChargingStationOperator_Id ForwardedToEVSEOperatorId
         {
             get
             {
@@ -265,7 +265,7 @@ namespace org.GraphDefined.WWCP.Importer
         #region Constructor(s)
 
         public ImporterForwardingInfo(Action<DateTime, ImporterForwardingInfo, RoamingNetwork_Id, RoamingNetwork_Id> OnChangedCallback,
-                                      IEnumerable<EVSEOperator>                     EVSEOperators,
+                                      IEnumerable<ChargingStationOperator>                     EVSEOperators,
                                       ChargingStation_Id                            StationId                 = null,
                                       String                                        StationName               = "",
                                       String                                        StationServiceTag         = "",
@@ -276,7 +276,7 @@ namespace org.GraphDefined.WWCP.Importer
                                       Timestamped<ChargingStationAdminStatusType>?  AdminStatus               = null,
                                       DateTime?                                     Created                   = null,
                                       Boolean                                       OutOfService              = false,
-                                      EVSEOperator                                  ForwardedToEVSEOperator   = null)
+                                      ChargingStationOperator                                  ForwardedToEVSEOperator   = null)
         {
 
             this._OnForwardingChanged         = OnChangedCallback;

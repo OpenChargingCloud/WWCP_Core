@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// This class references business details of EVSE operators.
+    /// This class references business details of Charging Station Operators.
     /// </summary>
     public struct HourMin : IEquatable<HourMin>, IComparable<HourMin>, IComparable
     {

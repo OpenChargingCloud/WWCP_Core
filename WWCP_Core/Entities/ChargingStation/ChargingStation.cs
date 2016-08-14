@@ -64,7 +64,7 @@ namespace org.GraphDefined.WWCP
         private String _ServiceIdentification;
 
         /// <summary>
-        /// The internal service identification of the charging station maintained by the EVSE operator.
+        /// The internal service identification of the charging station maintained by the Charging Station Operator.
         /// </summary>
         [Optional]
         public String ServiceIdentification
@@ -182,7 +182,7 @@ namespace org.GraphDefined.WWCP
 
         /// <summary>
         /// A brand for this charging station
-        /// is this is different from the EVSE operator.
+        /// is this is different from the Charging Station Operator.
         /// </summary>
         [Optional]
         public Brand Brand
@@ -654,7 +654,7 @@ namespace org.GraphDefined.WWCP
         internal String _HotlinePhoneNumber;
 
         /// <summary>
-        /// The telephone number of the EVSE operator hotline.
+        /// The telephone number of the Charging Station Operator hotline.
         /// </summary>
         [Optional]
         public String HotlinePhoneNumber
@@ -1081,10 +1081,10 @@ namespace org.GraphDefined.WWCP
         #region Operator
 
         /// <summary>
-        /// The EVSE operator of this EVSE.
+        /// The Charging Station Operator of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public EVSEOperator Operator
+        public ChargingStationOperator Operator
         {
             get
             {

@@ -60,12 +60,12 @@ namespace org.GraphDefined.WWCP
 
         #region OperatorId
 
-        private readonly EVSEOperator_Id _OperatorId;
+        private readonly ChargingStationOperator_Id _OperatorId;
 
         /// <summary>
         /// The internal identification.
         /// </summary>
-        public EVSEOperator_Id OperatorId
+        public ChargingStationOperator_Id OperatorId
         {
             get
             {
@@ -141,7 +141,7 @@ namespace org.GraphDefined.WWCP
         /// Generate a new Electric Vehicle charging station identification (EVCS Id)
         /// based on the given string.
         /// </summary>
-        private ChargingStation_Id(EVSEOperator_Id   OperatorId,
+        private ChargingStation_Id(ChargingStationOperator_Id   OperatorId,
                                    String            Suffix,
                                    IdFormatType      Format = IdFormatType.NEW)
         {
@@ -352,10 +352,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Generate a new unique identification of an Electric Vehicle Charging Station (EVCS Id).
         /// </summary>
-        /// <param name="OperatorId">The unique identification of an EVSE operator.</param>
+        /// <param name="OperatorId">The unique identification of an Charging Station Operator.</param>
         /// <param name="Mapper">A delegate to modify the newly generated charging station identification.</param>
         /// <param name="IdFormat">The (EVSE-)format of the charging station identification [old|new].</param>
-        public static ChargingStation_Id Random(EVSEOperator_Id       OperatorId,
+        public static ChargingStation_Id Random(ChargingStationOperator_Id       OperatorId,
                                                 Func<String, String>  Mapper    = null,
                                                 IdFormatType          IdFormat  = IdFormatType.NEW)
         {
@@ -398,24 +398,24 @@ namespace org.GraphDefined.WWCP
             if (_MatchCollection.Count != 1)
                 throw new ArgumentException("Illegal charging station identification '" + Text + "'!", "Text");
 
-            EVSEOperator_Id __EVSEOperatorId = null;
+            ChargingStationOperator_Id __EVSEOperatorId = null;
 
-            if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
+            if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
                 return new ChargingStation_Id(__EVSEOperatorId,
                                               _MatchCollection[0].Groups[2].Value,
                                               IdFormatType.NEW);
 
-            if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
+            if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
                 return new ChargingStation_Id(__EVSEOperatorId,
                                               _MatchCollection[0].Groups[4].Value,
                                               IdFormatType.OLD);
 
-            if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[5].Value, out __EVSEOperatorId))
+            if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[5].Value, out __EVSEOperatorId))
                 return new ChargingStation_Id(__EVSEOperatorId,
                                               _MatchCollection[0].Groups[6].Value,
                                               IdFormatType.OLD);
 
-            if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[7].Value, out __EVSEOperatorId))
+            if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[7].Value, out __EVSEOperatorId))
                 return new ChargingStation_Id(__EVSEOperatorId,
                                               _MatchCollection[0].Groups[8].Value,
                                               IdFormatType.OLD);
@@ -431,9 +431,9 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Parse the given string as a charging station identification.
         /// </summary>
-        /// <param name="OperatorId">The unique identification of an EVSE operator.</param>
+        /// <param name="OperatorId">The unique identification of an Charging Station Operator.</param>
         /// <param name="Suffix">A text representation of a charging station identification.</param>
-        public static ChargingStation_Id Parse(EVSEOperator_Id OperatorId, String Suffix)
+        public static ChargingStation_Id Parse(ChargingStationOperator_Id OperatorId, String Suffix)
         {
 
             #region Initial checks
@@ -489,10 +489,10 @@ namespace org.GraphDefined.WWCP
                 if (_MatchCollection.Count != 1)
                     return false;
 
-                EVSEOperator_Id __EVSEOperatorId = null;
+                ChargingStationOperator_Id __EVSEOperatorId = null;
 
                 // New format...
-                if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
+                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
                 {
 
                     ChargingStationId = new ChargingStation_Id(__EVSEOperatorId,
@@ -504,7 +504,7 @@ namespace org.GraphDefined.WWCP
                 }
 
                 // Old format...
-                else if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
+                else if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
                 {
 
                     ChargingStationId = new ChargingStation_Id(__EVSEOperatorId,
@@ -516,7 +516,7 @@ namespace org.GraphDefined.WWCP
                 }
 
                 // New format without the 'S'...
-                else if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[5].Value, out __EVSEOperatorId))
+                else if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[5].Value, out __EVSEOperatorId))
                 {
 
                     ChargingStationId = new ChargingStation_Id(__EVSEOperatorId,
@@ -528,7 +528,7 @@ namespace org.GraphDefined.WWCP
                 }
 
                 // Old format without the 'S'...
-                else if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[7].Value, out __EVSEOperatorId))
+                else if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[7].Value, out __EVSEOperatorId))
                 {
 
                     ChargingStationId = new ChargingStation_Id(__EVSEOperatorId,
@@ -555,10 +555,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Parse the given string as a charging station identification (EVCS Id).
         /// </summary>
-        /// <param name="OperatorId">The unique identification of an EVSE operator.</param>
+        /// <param name="OperatorId">The unique identification of an Charging Station Operator.</param>
         /// <param name="Suffix">A text representation of a charging station identification.</param>
         /// <param name="ChargingStationId">The parsed charging station identification.</param>
-        public static Boolean TryParse(EVSEOperator_Id         OperatorId,
+        public static Boolean TryParse(ChargingStationOperator_Id         OperatorId,
                                        String                  Suffix,
                                        out ChargingStation_Id  ChargingStationId)
         {

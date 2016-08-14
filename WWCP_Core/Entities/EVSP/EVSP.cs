@@ -54,7 +54,7 @@ namespace org.GraphDefined.WWCP
         private readonly RoamingNetwork _RoamingNetwork;
 
         /// <summary>
-        /// The associated EV Roaming Network of the Electric Vehicle Supply Equipment Operator.
+        /// The associated EV Roaming Network of the Charging Station Operator.
         /// </summary>
         public RoamingNetwork RoamingNetwork
         {

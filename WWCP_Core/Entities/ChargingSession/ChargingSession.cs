@@ -44,12 +44,12 @@ namespace org.GraphDefined.WWCP
 
         #region EVSEOperator
 
-        private EVSEOperator _EVSEOperator;
+        private ChargingStationOperator _EVSEOperator;
 
         /// <summary>
-        /// The EVSE operator serving this session.
+        /// The Charging Station Operator serving this session.
         /// </summary>
-        public EVSEOperator EVSEOperator
+        public ChargingStationOperator EVSEOperator
         {
 
             get
@@ -73,12 +73,12 @@ namespace org.GraphDefined.WWCP
 
         #region EVSEOperatorId
 
-        private EVSEOperator_Id _EVSEOperatorId;
+        private ChargingStationOperator_Id _EVSEOperatorId;
 
         /// <summary>
-        /// The unqiue identification of the EVSE operator serving this session.
+        /// The unqiue identification of the Charging Station Operator serving this session.
         /// </summary>
-        public EVSEOperator_Id EVSEOperatorId
+        public ChargingStationOperator_Id EVSEOperatorId
         {
 
             get

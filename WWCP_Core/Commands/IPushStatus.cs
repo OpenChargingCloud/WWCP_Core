@@ -56,9 +56,9 @@ namespace org.GraphDefined.WWCP
         #region PushEVSEStatus
 
         /// <summary>
-        /// Upload the EVSE status of the given lookup of EVSE status types grouped by their EVSE operator.
+        /// Upload the EVSE status of the given lookup of EVSE status types grouped by their Charging Station Operator.
         /// </summary>
-        /// <param name="GroupedEVSEStatus">A lookup of EVSE status grouped by their EVSE operator.</param>
+        /// <param name="GroupedEVSEStatus">A lookup of EVSE status grouped by their Charging Station Operator.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -67,7 +67,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            PushEVSEStatus(ILookup<EVSEOperator, EVSEStatus>  GroupedEVSEStatus,
+            PushEVSEStatus(ILookup<ChargingStationOperator, EVSEStatus>  GroupedEVSEStatus,
                            ActionType                         ActionType         = ActionType.update,
 
                            DateTime?                          Timestamp          = null,
@@ -100,8 +100,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSEStatus">An enumeration of EVSE status.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
-        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
-        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="OperatorId">An optional unique identification of the Charging Station Operator.</param>
+        /// <param name="OperatorName">The optional name of the Charging Station Operator.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -232,8 +232,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="ChargingPools">An enumeration of charging pools.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
-        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
-        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="OperatorId">An optional unique identification of the Charging Station Operator.</param>
+        /// <param name="OperatorName">The optional name of the Charging Station Operator.</param>
         /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -252,9 +252,9 @@ namespace org.GraphDefined.WWCP
                            TimeSpan?                  RequestTimeout     = null);
 
         /// <summary>
-        /// Upload all EVSE status of the given EVSE operator.
+        /// Upload all EVSE status of the given Charging Station Operator.
         /// </summary>
-        /// <param name="EVSEOperator">An EVSE operator.</param>
+        /// <param name="EVSEOperator">An Charging Station Operator.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
         /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
         /// 
@@ -264,7 +264,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            PushEVSEStatus(EVSEOperator         EVSEOperator,
+            PushEVSEStatus(ChargingStationOperator         EVSEOperator,
                            ActionType           ActionType         = ActionType.update,
                            IncludeEVSEDelegate  IncludeEVSEs       = null,
 
@@ -274,12 +274,12 @@ namespace org.GraphDefined.WWCP
                            TimeSpan?            RequestTimeout     = null);
 
         /// <summary>
-        /// Upload all EVSE status of the given enumeration of EVSE operators.
+        /// Upload all EVSE status of the given enumeration of Charging Station Operators.
         /// </summary>
         /// <param name="EVSEOperators">An enumeration of EVSES operators.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
-        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
-        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="OperatorId">An optional unique identification of the Charging Station Operator.</param>
+        /// <param name="OperatorName">The optional name of the Charging Station Operator.</param>
         /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -288,7 +288,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            PushEVSEStatus(IEnumerable<EVSEOperator>  EVSEOperators,
+            PushEVSEStatus(IEnumerable<ChargingStationOperator>  EVSEOperators,
                            ActionType                 ActionType         = ActionType.update,
                            IncludeEVSEDelegate        IncludeEVSEs       = null,
 
@@ -302,8 +302,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
-        /// <param name="OperatorId">An optional unique identification of the EVSE operator.</param>
-        /// <param name="OperatorName">The optional name of the EVSE operator.</param>
+        /// <param name="OperatorId">An optional unique identification of the Charging Station Operator.</param>
+        /// <param name="OperatorName">The optional name of the Charging Station Operator.</param>
         /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>

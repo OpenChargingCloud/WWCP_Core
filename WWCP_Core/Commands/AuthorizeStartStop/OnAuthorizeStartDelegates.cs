@@ -35,7 +35,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="OperatorId">An EVSE operator identification.</param>
+    /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
@@ -44,7 +44,7 @@ namespace org.GraphDefined.WWCP
                                                   Object              Sender,
                                                   EventTracking_Id    EventTrackingId,
                                                   RoamingNetwork_Id   RoamingNetworkId,
-                                                  EVSEOperator_Id     OperatorId,
+                                                  ChargingStationOperator_Id     OperatorId,
                                                   Auth_Token          AuthToken,
                                                   ChargingProduct_Id  ChargingProductId,
                                                   ChargingSession_Id  SessionId,
@@ -58,7 +58,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="OperatorId">An EVSE operator identification.</param>
+    /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
@@ -69,7 +69,7 @@ namespace org.GraphDefined.WWCP
                                                     Object              Sender,
                                                     EventTracking_Id    EventTrackingId,
                                                     RoamingNetwork_Id   RoamingNetworkId,
-                                                    EVSEOperator_Id     OperatorId,
+                                                    ChargingStationOperator_Id     OperatorId,
                                                     Auth_Token          AuthToken,
                                                     ChargingProduct_Id  ChargingProductId,
                                                     ChargingSession_Id  SessionId,
@@ -88,7 +88,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="OperatorId">An EVSE operator identification.</param>
+    /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
@@ -98,7 +98,7 @@ namespace org.GraphDefined.WWCP
                                                       Object              Sender,
                                                       EventTracking_Id    EventTrackingId,
                                                       RoamingNetwork_Id   RoamingNetworkId,
-                                                      EVSEOperator_Id     OperatorId,
+                                                      ChargingStationOperator_Id     OperatorId,
                                                       Auth_Token          AuthToken,
                                                       EVSE_Id             EVSEId,
                                                       ChargingProduct_Id  ChargingProductId,
@@ -113,7 +113,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="OperatorId">An EVSE operator identification.</param>
+    /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
@@ -125,7 +125,7 @@ namespace org.GraphDefined.WWCP
                                                         Object               Sender,
                                                         EventTracking_Id     EventTrackingId,
                                                         RoamingNetwork_Id    RoamingNetworkId,
-                                                        EVSEOperator_Id      OperatorId,
+                                                        ChargingStationOperator_Id      OperatorId,
                                                         Auth_Token           AuthToken,
                                                         EVSE_Id              EVSEId,
                                                         ChargingProduct_Id   ChargingProductId,
@@ -141,7 +141,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="OperatorId">An EVSE operator identification.</param>
+    /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
@@ -150,7 +150,7 @@ namespace org.GraphDefined.WWCP
     public delegate Task<AuthStartEVSEResult> OnAuthorizeStartEVSEDelegate(DateTime            Timestamp,
                                                                            CancellationToken   CancellationToken,
                                                                            EventTracking_Id    EventTrackingId,
-                                                                           EVSEOperator_Id     OperatorId,
+                                                                           ChargingStationOperator_Id     OperatorId,
                                                                            Auth_Token          AuthToken,
                                                                            EVSE_Id             EVSEId,
                                                                            ChargingProduct_Id  ChargingProductId,
@@ -169,7 +169,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="OperatorId">An EVSE operator identification.</param>
+    /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="ChargingStationId">The unique identification of a charging station.</param>
     /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
@@ -179,7 +179,7 @@ namespace org.GraphDefined.WWCP
                                                                  Object              Sender,
                                                                  EventTracking_Id    EventTrackingId,
                                                                  RoamingNetwork_Id   RoamingNetworkId,
-                                                                 EVSEOperator_Id     OperatorId,
+                                                                 ChargingStationOperator_Id     OperatorId,
                                                                  Auth_Token          AuthToken,
                                                                  ChargingStation_Id  ChargingStationId,
                                                                  ChargingProduct_Id  ChargingProductId,
@@ -194,7 +194,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="OperatorId">An EVSE operator identification.</param>
+    /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="ChargingStationId">The unique identification of a charging station.</param>
     /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
@@ -206,7 +206,7 @@ namespace org.GraphDefined.WWCP
                                                                    Object                          Sender,
                                                                    EventTracking_Id                EventTrackingId,
                                                                    RoamingNetwork_Id               RoamingNetworkId,
-                                                                   EVSEOperator_Id                 OperatorId,
+                                                                   ChargingStationOperator_Id                 OperatorId,
                                                                    Auth_Token                      AuthToken,
                                                                    ChargingStation_Id              ChargingStationId,
                                                                    ChargingProduct_Id              ChargingProductId,

@@ -30,12 +30,12 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A remote EVSE operator.
+    /// A remote Charging Station Operator.
     /// </summary>
     public interface IRemoteEVSEOperator
     {
 
-        #region Events towards the remote EVSE operator
+        #region Events towards the remote Charging Station Operator
 
         /// <summary>
         /// An event fired whenever an EVSE is being reserved.

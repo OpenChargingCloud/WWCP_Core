@@ -271,7 +271,7 @@ namespace org.GraphDefined.WWCP
 
 
         IRemoteChargingStation ChargingStation { get; }
-        EVSEOperator Operator { get; }
+        ChargingStationOperator Operator { get; }
 
         IEnumerator<SocketOutlet> GetEnumerator();
 

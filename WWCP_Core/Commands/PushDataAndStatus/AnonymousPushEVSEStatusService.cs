@@ -44,7 +44,7 @@ namespace org.GraphDefined.WWCP
 
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(ILookup<EVSEOperator, EVSEStatus> GroupedEVSEStatus, ActionType ActionType = ActionType.update, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public Task<Acknowledgement> PushEVSEStatus(ILookup<ChargingStationOperator, EVSEStatus> GroupedEVSEStatus, ActionType ActionType = ActionType.update, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
             throw new NotImplementedException();
         }
@@ -89,12 +89,12 @@ namespace org.GraphDefined.WWCP
             throw new NotImplementedException();
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(EVSEOperator EVSEOperator, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public Task<Acknowledgement> PushEVSEStatus(ChargingStationOperator EVSEOperator, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
             throw new NotImplementedException();
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(IEnumerable<EVSEOperator> EVSEOperators, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public Task<Acknowledgement> PushEVSEStatus(IEnumerable<ChargingStationOperator> EVSEOperators, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
             throw new NotImplementedException();
         }

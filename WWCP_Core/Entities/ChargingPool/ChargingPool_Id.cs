@@ -60,12 +60,12 @@ namespace org.GraphDefined.WWCP
 
         #region OperatorId
 
-        private readonly EVSEOperator_Id _OperatorId;
+        private readonly ChargingStationOperator_Id _OperatorId;
 
         /// <summary>
         /// The internal identification.
         /// </summary>
-        public EVSEOperator_Id OperatorId
+        public ChargingStationOperator_Id OperatorId
         {
             get
             {
@@ -141,7 +141,7 @@ namespace org.GraphDefined.WWCP
         /// Generate a new Electric Vehicle Charging Pool identification (EVCP Id)
         /// based on the given string.
         /// </summary>
-        private ChargingPool_Id(EVSEOperator_Id   OperatorId,
+        private ChargingPool_Id(ChargingStationOperator_Id   OperatorId,
                                 String            Suffix,
                                 IdFormatType      Format = IdFormatType.NEW)
         {
@@ -177,10 +177,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Generate a new unique identification of an Electric Vehicle Charging Station (EVCS Id).
         /// </summary>
-        /// <param name="OperatorId">The unique identification of an EVSE operator.</param>
+        /// <param name="OperatorId">The unique identification of an Charging Station Operator.</param>
         /// <param name="Mapper">A delegate to modify the newly generated charging station identification.</param>
         /// <param name="IdFormat">The (EVSE-)format of the charging station identification [old|new].</param>
-        public static ChargingPool_Id Random(EVSEOperator_Id       OperatorId,
+        public static ChargingPool_Id Random(ChargingStationOperator_Id       OperatorId,
                                              Func<String, String>  Mapper    = null,
                                              IdFormatType          IdFormat  = IdFormatType.NEW)
         {
@@ -205,12 +205,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a valid charging pool identification based on the given parameters.
         /// </summary>
-        /// <param name="EVSEOperatorId">The identification of an EVSE operator.</param>
+        /// <param name="EVSEOperatorId">The identification of an Charging Station Operator.</param>
         /// <param name="Address">The address of the charging pool.</param>
         /// <param name="GeoLocation">The geo location of the charging pool.</param>
         /// <param name="Length">The maximum size of the generated charging pool identification suffix.</param>
         /// <param name="Mapper">A delegate to modify a generated charging pool identification suffix.</param>
-        public static ChargingPool_Id Generate(EVSEOperator_Id       EVSEOperatorId,
+        public static ChargingPool_Id Generate(ChargingStationOperator_Id       EVSEOperatorId,
                                                Address               Address,
                                                GeoCoordinate         GeoLocation,
                                                Byte                  Length = 12,
@@ -253,14 +253,14 @@ namespace org.GraphDefined.WWCP
             if (_MatchCollection.Count != 1)
                 throw new ArgumentException("Illegal charging pool identification '" + Text + "'!", "Text");
 
-            EVSEOperator_Id __EVSEOperatorId = null;
+            ChargingStationOperator_Id __EVSEOperatorId = null;
 
-            if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
+            if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
                 return new ChargingPool_Id(__EVSEOperatorId,
                                            _MatchCollection[0].Groups[2].Value,
                                            IdFormatType.NEW);
 
-            if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
+            if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
                 return new ChargingPool_Id(__EVSEOperatorId,
                                            _MatchCollection[0].Groups[4].Value,
                                            IdFormatType.OLD);
@@ -277,9 +277,9 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Parse the given string as a charging pool identification.
         /// </summary>
-        /// <param name="OperatorId">The unique identification of an EVSE operator.</param>
+        /// <param name="OperatorId">The unique identification of an Charging Station Operator.</param>
         /// <param name="IdSuffix">A text representation of a charging pool identification.</param>
-        public static ChargingPool_Id Parse(EVSEOperator_Id OperatorId, String IdSuffix)
+        public static ChargingPool_Id Parse(ChargingStationOperator_Id OperatorId, String IdSuffix)
         {
 
             ChargingPool_Id _ChargingPoolId = null;
@@ -325,10 +325,10 @@ namespace org.GraphDefined.WWCP
                 if (_MatchCollection.Count != 1)
                     return false;
 
-                EVSEOperator_Id __EVSEOperatorId = null;
+                ChargingStationOperator_Id __EVSEOperatorId = null;
 
                 // New format...
-                if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
+                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
                 {
 
                     ChargingPoolId = new ChargingPool_Id(__EVSEOperatorId,
@@ -340,7 +340,7 @@ namespace org.GraphDefined.WWCP
                 }
 
                 // Old format...
-                else if (EVSEOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
+                else if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
                 {
 
                     ChargingPoolId = new ChargingPool_Id(__EVSEOperatorId,
@@ -367,10 +367,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Parse the given string as a charging pool identification (EVCS Id).
         /// </summary>
-        /// <param name="OperatorId">The unique identification of an EVSE operator.</param>
+        /// <param name="OperatorId">The unique identification of an Charging Station Operator.</param>
         /// <param name="IdSuffix">A text representation of a charging pool identification.</param>
         /// <param name="ChargingPoolId">The parsed charging pool identification.</param>
-        public static Boolean TryParse(EVSEOperator_Id      OperatorId,
+        public static Boolean TryParse(ChargingStationOperator_Id      OperatorId,
                                        String               IdSuffix,
                                        out ChargingPool_Id  ChargingPoolId)
         {

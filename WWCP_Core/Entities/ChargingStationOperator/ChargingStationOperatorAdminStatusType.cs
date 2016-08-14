@@ -19,9 +19,9 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The status of an EVSE operator.
+    /// The admin status of an Charging Station Operator.
     /// </summary>
-    public enum EVSEOperatorStatusType
+    public enum ChargingStationOperatorAdminStatusType
     {
 
         /// <summary>

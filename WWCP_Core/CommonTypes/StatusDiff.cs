@@ -56,12 +56,12 @@ namespace org.GraphDefined.WWCP
 
         #region EVSEOperatorId
 
-        private readonly EVSEOperator_Id _EVSEOperatorId;
+        private readonly ChargingStationOperator_Id _EVSEOperatorId;
 
         /// <summary>
-        /// The unique identification of the EVSE operator.
+        /// The unique identification of the Charging Station Operator.
         /// </summary>
-        public EVSEOperator_Id EVSEOperatorId
+        public ChargingStationOperator_Id EVSEOperatorId
         {
             get
             {
@@ -76,7 +76,7 @@ namespace org.GraphDefined.WWCP
         private readonly I18NString _EVSEOperatorName;
 
         /// <summary>
-        /// The optional internationalized name of the EVSE operator.
+        /// The optional internationalized name of the Charging Station Operator.
         /// </summary>
         public I18NString EVSEOperatorName
         {
@@ -183,10 +183,10 @@ namespace org.GraphDefined.WWCP
         /// Create a new status diff.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the status diff.</param>
-        /// <param name="EVSEOperatorId">The unique identification of the EVSE operator.</param>
-        /// <param name="EVSEOperatorName">The optional internationalized name of the EVSE operator.</param>
+        /// <param name="EVSEOperatorId">The unique identification of the Charging Station Operator.</param>
+        /// <param name="EVSEOperatorName">The optional internationalized name of the Charging Station Operator.</param>
         public StatusDiff(DateTime         Timestamp,
-                          EVSEOperator_Id  EVSEOperatorId,
+                          ChargingStationOperator_Id  EVSEOperatorId,
                           I18NString       EVSEOperatorName = null)
         {
 
@@ -209,13 +209,13 @@ namespace org.GraphDefined.WWCP
         /// Create a new status diff.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the status diff.</param>
-        /// <param name="EVSEOperatorId">The unique identification of the EVSE operator.</param>
+        /// <param name="EVSEOperatorId">The unique identification of the Charging Station Operator.</param>
         /// <param name="NewStatus">All new status.</param>
         /// <param name="ChangedStatus">All changed status.</param>
         /// <param name="RemovedIds">All removed status.</param>
-        /// <param name="EVSEOperatorName">The optional internationalized name of the EVSE operator.</param>
+        /// <param name="EVSEOperatorName">The optional internationalized name of the Charging Station Operator.</param>
         public StatusDiff(DateTime                                     Timestamp,
-                          EVSEOperator_Id                              EVSEOperatorId,
+                          ChargingStationOperator_Id                              EVSEOperatorId,
                           IEnumerable<KeyValuePair<TId, TStatusType>>  NewStatus,
                           IEnumerable<KeyValuePair<TId, TStatusType>>  ChangedStatus,
                           IEnumerable<TId>                             RemovedIds,

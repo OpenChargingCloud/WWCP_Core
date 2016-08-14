@@ -35,7 +35,7 @@ namespace org.GraphDefined.WWCP
         Deleted,
 
         /// <summary>
-        /// The charging reservation was aborted on the EVSE operator side.
+        /// The charging reservation was aborted on the Charging Station Operator side.
         /// </summary>
         Aborted,
 

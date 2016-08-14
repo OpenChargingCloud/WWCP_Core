@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP
     /// routing and navigation to ev drivers. In order to provide these
     /// services the NSP receives the locations, characteristics and
     /// real-time status information of the EVSEs from multiple contracted
-    /// EVSE operators. By this NSPs are a natural aggregator of ev related
+    /// Charging Station Operators. By this NSPs are a natural aggregator of ev related
     /// data.
     /// For basic service delivery no contract between the NSP and ev driver
     /// is required. Additional services can be provided if the NSP can access

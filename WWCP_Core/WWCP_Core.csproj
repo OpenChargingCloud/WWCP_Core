@@ -60,7 +60,7 @@
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStartDelegates.cs" />
     <Compile Include="Entities\UserDefinedDictionary.cs" />
     <Compile Include="Entities\Beacon\Beacon.cs" />
-    <Compile Include="Entities\EVSEOperator\EVSEOperatorDelegates.cs" />
+    <Compile Include="Entities\ChargingStationOperator\EVSEOperatorDelegates.cs" />
     <Compile Include="Entities\RoamingProvider\IEMPRoamingProvider.cs" />
     <Compile Include="Entities\RoamingProvider\IEVSEOperatorRoamingProvider.cs" />
     <Compile Include="Commands\PushDataAndStatus\AnonymousPushEVSEStatusService.cs" />
@@ -102,8 +102,8 @@
     <Compile Include="Entities\Brand\Brand.cs" />
     <Compile Include="Entities\Brand\Brand_Id.cs" />
     <Compile Include="Entities\ChargingStation\RemoteDelegates.cs" />
-    <Compile Include="Entities\EVSEOperator\INetworkEVSEOperator.cs" />
-    <Compile Include="Entities\EVSEOperator\IRemoteEVSEOperator.cs" />
+    <Compile Include="Entities\ChargingStationOperator\INetworkEVSEOperator.cs" />
+    <Compile Include="Entities\ChargingStationOperator\IRemoteEVSEOperator.cs" />
     <Compile Include="Entities\EVSE\EVSEAdminStatusDiff.cs" />
     <Compile Include="Entities\EVSE\EVSEAdminStatus.cs" />
     <Compile Include="Entities\EVSE\EVSEAdminStatusExtentions.cs" />
@@ -138,10 +138,10 @@
     <Compile Include="Entities\ChargingStation\AuthenticationMode.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStationStatusReport.cs" />
     <Compile Include="Entities\ChargingStation\RedirectedChargingStations.cs" />
-    <Compile Include="Entities\EVSEOperator\EVSEOperatorAdminStatusReport.cs" />
-    <Compile Include="Entities\EVSEOperator\EVSEOperatorStatusReport.cs" />
-    <Compile Include="Entities\EVSEOperator\EVSEOperatorAdminStatusType.cs" />
-    <Compile Include="Entities\EVSEOperator\EVSEOperatorStatusType.cs" />
+    <Compile Include="Entities\ChargingStationOperator\EVSEOperatorAdminStatusReport.cs" />
+    <Compile Include="Entities\ChargingStationOperator\EVSEOperatorStatusReport.cs" />
+    <Compile Include="Entities\ChargingStationOperator\ChargingStationOperatorAdminStatusType.cs" />
+    <Compile Include="Entities\ChargingStationOperator\ChargingStationOperatorStatusType.cs" />
     <Compile Include="CommonTypes\OriginFormatType.cs" />
     <Compile Include="Entities\EVSE\EVSEAdminStatusType.cs" />
     <Compile Include="Entities\EVSE\EVSEAdminStatusReport.cs" />
@@ -194,14 +194,14 @@
     <Compile Include="Entities\ChargingStation\RegisterEVSEResult.cs" />
     <Compile Include="CommonTypes\Auth_Token.cs" />
     <Compile Include="Entities\ChargingSession\ChargingSession_Id.cs" />
-    <Compile Include="Entities\EVSEOperator\EVSEOperatorExceptions.cs" />
+    <Compile Include="Entities\ChargingStationOperator\EVSEOperatorExceptions.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkExceptions.cs" />
-    <Compile Include="Entities\EVSEOperator\EVSEOperator.cs" />
+    <Compile Include="Entities\ChargingStationOperator\ChargingStationOperator.cs" />
     <Compile Include="Entities\ChargingStation\ChargingStation_Id.cs" />
     <Compile Include="Entities\ChargingPool\ChargingPool_Id.cs" />
     <Compile Include="Entities\EVSP\EVSP.cs" />
     <Compile Include="Entities\EVSP\EVSP_Id.cs" />
-    <Compile Include="Entities\EVSEOperator\EVSEOperator_Id.cs" />
+    <Compile Include="Entities\ChargingStationOperator\ChargingStationOperator_Id.cs" />
     <Compile Include="Entities\EMobilityAccount\eMA_Id.cs" />
     <Compile Include="Entities\EVSE\EVSE_Id.cs" />
     <Compile Include="Entities\EVSE\EVSE.cs" />
@@ -246,7 +246,9 @@
       <Name>Styx</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Entities\ChargingPoolGroup\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -112,7 +112,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RoamingNetworkId">The unique identification of the new roaming network.</param>
         /// <param name="AuthorizatorId">The unique identification for the Auth service.</param>
         /// <param name="Description">A multilanguage description of the roaming network.</param>
-        /// <param name="Action">An optional delegate to configure the new EVSE operator after its creation.</param>
+        /// <param name="Action">An optional delegate to configure the new Charging Station Operator after its creation.</param>
         public RoamingNetwork CreateNewRoamingNetwork(RoamingNetwork_Id       RoamingNetworkId,
                                                       Authorizator_Id         AuthorizatorId  = null,
                                                       I18NString              Description     = null,

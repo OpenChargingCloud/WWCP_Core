@@ -36,7 +36,7 @@ namespace org.GraphDefined.WWCP
                                                         EventTracking_Id              EventTrackingId,
                                                         RoamingNetwork_Id             RoamingNetworkId,
                                                         ActionType                    ActionType,
-                                                        ILookup<EVSEOperator, EVSE>   EVSEData,
+                                                        ILookup<ChargingStationOperator, EVSE>   EVSEData,
                                                         UInt32                        NumberOfEVSEs,
                                                         TimeSpan?                     RequestTimeout);
 
@@ -51,7 +51,7 @@ namespace org.GraphDefined.WWCP
                                                         EventTracking_Id              EventTrackingId,
                                                         RoamingNetwork_Id             RoamingNetworkId,
                                                         ActionType                    ActionType,
-                                                        ILookup<EVSEOperator, EVSE>   EVSEData,
+                                                        ILookup<ChargingStationOperator, EVSE>   EVSEData,
                                                         UInt32                        NumberOfEVSEs,
                                                         TimeSpan?                     RequestTimeout,
                                                         Acknowledgement               Result,
@@ -68,7 +68,7 @@ namespace org.GraphDefined.WWCP
                                                           EventTracking_Id                    EventTrackingId,
                                                           RoamingNetwork_Id                   RoamingNetworkId,
                                                           ActionType                          ActionType,
-                                                          ILookup<EVSEOperator, EVSEStatus>   EVSEStatus,
+                                                          ILookup<ChargingStationOperator, EVSEStatus>   EVSEStatus,
                                                           UInt32                              NumberOfEVSEs,
                                                           TimeSpan?                           RequestTimeout);
 
@@ -83,7 +83,7 @@ namespace org.GraphDefined.WWCP
                                                           EventTracking_Id                    EventTrackingId,
                                                           RoamingNetwork_Id                   RoamingNetworkId,
                                                           ActionType                          ActionType,
-                                                          ILookup<EVSEOperator, EVSEStatus>   EVSEStatus,
+                                                          ILookup<ChargingStationOperator, EVSEStatus>   EVSEStatus,
                                                           UInt32                              NumberOfEVSEs,
                                                           TimeSpan?                           RequestTimeout,
                                                           Acknowledgement                     Result,

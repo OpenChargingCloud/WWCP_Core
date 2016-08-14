@@ -321,7 +321,7 @@ namespace org.GraphDefined.WWCP
         /// Parse the given string as an EVSE Operator identification.
         /// </summary>
         /// <param name="CountryCode">A country code.</param>
-        /// <param name="ProviderId">An EVSE operator identification as a string.</param>
+        /// <param name="ProviderId">An Charging Station Operator identification as a string.</param>
         /// <param name="EVSEProviderId">The parsed EVSE Operator identification.</param>
         public static Boolean TryParse(Country      CountryCode,
                                        String       ProviderId,

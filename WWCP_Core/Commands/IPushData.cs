@@ -56,9 +56,9 @@ namespace org.GraphDefined.WWCP
         #region PushEVSEData
 
         /// <summary>
-        /// Upload the EVSE data of the given lookup of EVSEs grouped by their EVSE operator.
+        /// Upload the EVSE data of the given lookup of EVSEs grouped by their Charging Station Operator.
         /// </summary>
-        /// <param name="GroupedEVSEs">A lookup of EVSEs grouped by their EVSE operator.</param>
+        /// <param name="GroupedEVSEs">A lookup of EVSEs grouped by their Charging Station Operator.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -67,7 +67,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            PushEVSEData(ILookup<EVSEOperator, EVSE>  GroupedEVSEs,
+            PushEVSEData(ILookup<ChargingStationOperator, EVSE>  GroupedEVSEs,
                          ActionType                   ActionType         = WWCP.ActionType.fullLoad,
 
                          DateTime?                    Timestamp          = null,
@@ -206,9 +206,9 @@ namespace org.GraphDefined.WWCP
                          TimeSpan?                  RequestTimeout     = null);
 
         /// <summary>
-        /// Upload the EVSE data of the given EVSE operator.
+        /// Upload the EVSE data of the given Charging Station Operator.
         /// </summary>
-        /// <param name="EVSEOperator">An EVSE operator.</param>
+        /// <param name="EVSEOperator">An Charging Station Operator.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
         /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
         /// 
@@ -218,7 +218,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            PushEVSEData(EVSEOperator         EVSEOperator,
+            PushEVSEData(ChargingStationOperator         EVSEOperator,
                          ActionType           ActionType         = WWCP.ActionType.fullLoad,
                          IncludeEVSEDelegate  IncludeEVSEs       = null,
 
@@ -229,9 +229,9 @@ namespace org.GraphDefined.WWCP
 
 
         /// <summary>
-        /// Upload the EVSE data of the given EVSE operators.
+        /// Upload the EVSE data of the given Charging Station Operators.
         /// </summary>
-        /// <param name="EVSEOperators">An enumeration of EVSE operators.</param>
+        /// <param name="EVSEOperators">An enumeration of Charging Station Operators.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
         /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
         /// 
@@ -241,7 +241,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            PushEVSEData(IEnumerable<EVSEOperator>  EVSEOperators,
+            PushEVSEData(IEnumerable<ChargingStationOperator>  EVSEOperators,
                          ActionType                 ActionType         = WWCP.ActionType.fullLoad,
                          IncludeEVSEDelegate        IncludeEVSEs       = null,
 
