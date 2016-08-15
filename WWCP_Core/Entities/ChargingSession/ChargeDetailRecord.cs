@@ -154,10 +154,10 @@ namespace org.GraphDefined.WWCP
 
         #region ProviderId
 
-        private readonly EVSP_Id _ProviderId;
+        private readonly EMobilityProvider_Id _ProviderId;
 
         [Optional]
-        public EVSP_Id ProviderId
+        public EMobilityProvider_Id ProviderId
         {
             get
             {
@@ -414,7 +414,7 @@ namespace org.GraphDefined.WWCP
                                   EVSE_Id                           EVSEId                 = null,
                                   ChargingProduct_Id                ChargingProductId      = null,
 
-                                  EVSP_Id                           ProviderId             = null,
+                                  EMobilityProvider_Id                           ProviderId             = null,
 
                                   StartEndDateTime?                 ReservationTime        = null,
                                   StartEndDateTime?                 ParkingTime            = null,

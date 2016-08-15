@@ -17,26 +17,15 @@
 
 #region Usings
 
-using System.Collections.Generic;
+using System;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
-    /// <summary>
-    /// An EVSE admin status report.
-    /// </summary>
-    public class EVSEOperatorAdminStatusReport : StatusReport<ChargingStationOperator, ChargingStationOperatorAdminStatusType>
-    {
-
-        public EVSEOperatorAdminStatusReport(IEnumerable<ChargingStationOperator> EVSEOperators)
-
-            : base(EVSEOperators,
-                   evseoperator => evseoperator.AdminStatus.Value)
-
-        { }
-
-    }
+    public delegate String EMobilityProviderNameSelectorDelegate(I18NString I18NText);
 
 }

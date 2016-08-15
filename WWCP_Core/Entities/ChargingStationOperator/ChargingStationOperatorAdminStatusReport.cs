@@ -17,16 +17,26 @@
 
 #region Usings
 
-using System;
-using System.Text.RegularExpressions;
-
-using org.GraphDefined.Vanaheimr.Illias;
+using System.Collections.Generic;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
-    public delegate String EVSEOperatorNameSelectorDelegate(I18NString I18NText);
+    /// <summary>
+    /// A charging station operator admin status report.
+    /// </summary>
+    public class ChargingStationOperatorAdminStatusReport : StatusReport<ChargingStationOperator, ChargingStationOperatorAdminStatusType>
+    {
+
+        public ChargingStationOperatorAdminStatusReport(IEnumerable<ChargingStationOperator> ChargingStationOperators)
+
+            : base(ChargingStationOperators,
+                   csoperator => csoperator.AdminStatus.Value)
+
+        { }
+
+    }
 
 }

@@ -47,8 +47,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EVSP_IdEmptyConstructorTest()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("");
-            var _EVSP_Id2 = EVSP_Id.Parse("");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("");
             Assert.IsTrue(_EVSP_Id1.Length > 0);
             Assert.IsTrue(_EVSP_Id2.Length > 0);
             Assert.AreNotEqual(_EVSP_Id1, _EVSP_Id2);
@@ -64,7 +64,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EVSP_IdStringConstructorTest()
         {
-            var _EVSP_Id = EVSP_Id.Parse("123");
+            var _EVSP_Id = EMobilityProvider_Id.Parse("123");
             Assert.AreEqual("123", _EVSP_Id.ToString());
             Assert.AreEqual(3,     _EVSP_Id.Length);
         }
@@ -79,7 +79,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EVSP_IdEVSP_IdConstructorTest()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse(Country.Germany, _Random.GetString(3));
             var _EVSP_Id2 = _EVSP_Id1.Clone;
             Assert.AreEqual(_EVSP_Id1.ToString(), _EVSP_Id2.ToString());
             Assert.AreEqual(_EVSP_Id1.Length,     _EVSP_Id2.Length);
@@ -97,8 +97,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void NewEVSP_IdMethodTest()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
-            var _EVSP_Id2 = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse(Country.Germany, _Random.GetString(3));
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse(Country.Germany, _Random.GetString(3));
             Assert.AreNotEqual(_EVSP_Id1, _EVSP_Id2);
         }
 
@@ -113,8 +113,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Equality_Null_Test1()
         {
-            var      _EVSP_Id1 = EVSP_Id.Parse("");
-            EVSP_Id _EVSP_Id2 = null;
+            var      _EVSP_Id1 = EMobilityProvider_Id.Parse("");
+            EMobilityProvider_Id _EVSP_Id2 = null;
             Assert.IsFalse(_EVSP_Id1 == _EVSP_Id2);
         }
 
@@ -128,8 +128,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Equality_Null_Test2()
         {
-            EVSP_Id _EVSP_Id1 = null;
-            var      _EVSP_Id2 = EVSP_Id.Parse("");
+            EMobilityProvider_Id _EVSP_Id1 = null;
+            var      _EVSP_Id2 = EMobilityProvider_Id.Parse("");
             Assert.IsFalse(_EVSP_Id1 == _EVSP_Id2);
         }
 
@@ -143,8 +143,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Equality_BothNull_Test()
         {
-            EVSP_Id _EVSP_Id1 = null;
-            EVSP_Id _EVSP_Id2 = null;
+            EMobilityProvider_Id _EVSP_Id1 = null;
+            EMobilityProvider_Id _EVSP_Id2 = null;
             Assert.IsTrue(_EVSP_Id1 == _EVSP_Id2);
         }
 
@@ -159,7 +159,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         
         public void op_Equality_SameReference_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("");
             #pragma warning disable
             Assert.IsTrue(_EVSP_Id1 == _EVSP_Id1);
             #pragma warning restore
@@ -175,8 +175,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Equality_Equals_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("1");
-            var _EVSP_Id2 = EVSP_Id.Parse("1");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("1");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("1");
             Assert.IsTrue(_EVSP_Id1 == _EVSP_Id2);
         }
 
@@ -190,8 +190,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Equality_NotEquals_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("1");
-            var _EVSP_Id2 = EVSP_Id.Parse("2");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("1");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("2");
             Assert.IsFalse(_EVSP_Id1 == _EVSP_Id2);
         }
 
@@ -206,8 +206,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_Null_Test1()
         {
-            var      _EVSP_Id1 = EVSP_Id.Parse("");
-            EVSP_Id _EVSP_Id2 = null;
+            var      _EVSP_Id1 = EMobilityProvider_Id.Parse("");
+            EMobilityProvider_Id _EVSP_Id2 = null;
             Assert.IsTrue(_EVSP_Id1 != _EVSP_Id2);
         }
 
@@ -221,8 +221,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_Null_Test2()
         {
-            EVSP_Id _EVSP_Id1 = null;
-            var      _EVSP_Id2 = EVSP_Id.Parse("");
+            EMobilityProvider_Id _EVSP_Id1 = null;
+            var      _EVSP_Id2 = EMobilityProvider_Id.Parse("");
             Assert.IsTrue(_EVSP_Id1 != _EVSP_Id2);
         }
 
@@ -236,8 +236,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_BothNull_Test()
         {
-            EVSP_Id _EVSP_Id1 = null;
-            EVSP_Id _EVSP_Id2 = null;
+            EMobilityProvider_Id _EVSP_Id1 = null;
+            EMobilityProvider_Id _EVSP_Id2 = null;
             Assert.IsFalse(_EVSP_Id1 != _EVSP_Id2);
         }
 
@@ -251,7 +251,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_SameReference_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("");
             #pragma warning disable
             Assert.IsFalse(_EVSP_Id1 != _EVSP_Id1);
             #pragma warning restore
@@ -267,8 +267,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_Equals_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("1");
-            var _EVSP_Id2 = EVSP_Id.Parse("1");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("1");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("1");
             Assert.IsFalse(_EVSP_Id1 != _EVSP_Id2);
         }
 
@@ -282,8 +282,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_NotEquals1_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("1");
-            var _EVSP_Id2 = EVSP_Id.Parse("2");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("1");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("2");
             Assert.IsTrue(_EVSP_Id1 != _EVSP_Id2);
         }
 
@@ -297,8 +297,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_NotEquals2_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("5");
-            var _EVSP_Id2 = EVSP_Id.Parse("23");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("5");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("23");
             Assert.IsTrue(_EVSP_Id1 != _EVSP_Id2);
         }
 
@@ -313,8 +313,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Null_Test1()
         {
-            var      _EVSP_Id1 = EVSP_Id.Parse("");
-            EVSP_Id _EVSP_Id2 = null;
+            var      _EVSP_Id1 = EMobilityProvider_Id.Parse("");
+            EMobilityProvider_Id _EVSP_Id2 = null;
             Assert.Throws<ArgumentNullException>(() => { var x = _EVSP_Id1 < _EVSP_Id2; });
         }
 
@@ -328,8 +328,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Null_Test2()
         {
-            EVSP_Id _EVSP_Id1 = null;
-            var      _EVSP_Id2 = EVSP_Id.Parse("");
+            EMobilityProvider_Id _EVSP_Id1 = null;
+            var      _EVSP_Id2 = EMobilityProvider_Id.Parse("");
             Assert.Throws<ArgumentNullException>(() => { var x = _EVSP_Id1 < _EVSP_Id2; });
         }
 
@@ -343,8 +343,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_BothNull_Test()
         {
-            EVSP_Id _EVSP_Id1 = null;
-            EVSP_Id _EVSP_Id2 = null;
+            EMobilityProvider_Id _EVSP_Id1 = null;
+            EMobilityProvider_Id _EVSP_Id2 = null;
             Assert.Throws<ArgumentNullException>(() => { var x = _EVSP_Id1 < _EVSP_Id2; });
         }
 
@@ -358,7 +358,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_SameReference_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("");
             #pragma warning disable
             Assert.IsFalse(_EVSP_Id1 < _EVSP_Id1);
             #pragma warning restore
@@ -374,8 +374,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Equals_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("1");
-            var _EVSP_Id2 = EVSP_Id.Parse("1");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("1");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("1");
             Assert.IsFalse(_EVSP_Id1 < _EVSP_Id2);
         }
 
@@ -389,8 +389,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Smaller1_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("1");
-            var _EVSP_Id2 = EVSP_Id.Parse("2");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("1");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("2");
             Assert.IsTrue(_EVSP_Id1 < _EVSP_Id2);
         }
 
@@ -404,8 +404,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Smaller2_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("5");
-            var _EVSP_Id2 = EVSP_Id.Parse("23");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("5");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("23");
             Assert.IsTrue(_EVSP_Id1 < _EVSP_Id2);
         }
 
@@ -419,8 +419,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Bigger1_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("2");
-            var _EVSP_Id2 = EVSP_Id.Parse("1");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("2");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("1");
             Assert.IsFalse(_EVSP_Id1 < _EVSP_Id2);
         }
 
@@ -434,8 +434,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Bigger2_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("23");
-            var _EVSP_Id2 = EVSP_Id.Parse("5");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("23");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("5");
             Assert.IsFalse(_EVSP_Id1 < _EVSP_Id2);
         }
 
@@ -450,8 +450,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Null_Test1()
         {
-            var      _EVSP_Id1 = EVSP_Id.Parse("");
-            EVSP_Id _EVSP_Id2 = null;
+            var      _EVSP_Id1 = EMobilityProvider_Id.Parse("");
+            EMobilityProvider_Id _EVSP_Id2 = null;
             Assert.Throws<ArgumentNullException>(() => { var x = _EVSP_Id1 <= _EVSP_Id2; });
         }
 
@@ -465,8 +465,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Null_Test2()
         {
-            EVSP_Id _EVSP_Id1 = null;
-            var      _EVSP_Id2 = EVSP_Id.Parse("");
+            EMobilityProvider_Id _EVSP_Id1 = null;
+            var      _EVSP_Id2 = EMobilityProvider_Id.Parse("");
             Assert.Throws<ArgumentNullException>(() => { var x = _EVSP_Id1 <= _EVSP_Id2; });
         }
 
@@ -480,8 +480,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_BothNull_Test()
         {
-            EVSP_Id _EVSP_Id1 = null;
-            EVSP_Id _EVSP_Id2 = null;
+            EMobilityProvider_Id _EVSP_Id1 = null;
+            EMobilityProvider_Id _EVSP_Id2 = null;
             Assert.Throws<ArgumentNullException>(() => { var x = _EVSP_Id1 <= _EVSP_Id2; });
         }
 
@@ -495,7 +495,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_SameReference_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("");
             #pragma warning disable
             Assert.IsTrue(_EVSP_Id1 <= _EVSP_Id1);
             #pragma warning restore
@@ -511,8 +511,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Equals_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("1");
-            var _EVSP_Id2 = EVSP_Id.Parse("1");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("1");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("1");
             Assert.IsTrue(_EVSP_Id1 <= _EVSP_Id2);
         }
 
@@ -526,8 +526,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_SmallerThan1_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("1");
-            var _EVSP_Id2 = EVSP_Id.Parse("2");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("1");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("2");
             Assert.IsTrue(_EVSP_Id1 <= _EVSP_Id2);
         }
 
@@ -541,8 +541,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_SmallerThan2_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("5");
-            var _EVSP_Id2 = EVSP_Id.Parse("23");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("5");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("23");
             Assert.IsTrue(_EVSP_Id1 <= _EVSP_Id2);
         }
 
@@ -556,8 +556,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Bigger1_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("2");
-            var _EVSP_Id2 = EVSP_Id.Parse("1");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("2");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("1");
             Assert.IsFalse(_EVSP_Id1 <= _EVSP_Id2);
         }
 
@@ -571,8 +571,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Bigger2_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("23");
-            var _EVSP_Id2 = EVSP_Id.Parse("5");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("23");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("5");
             Assert.IsFalse(_EVSP_Id1 <= _EVSP_Id2);
         }
 
@@ -587,8 +587,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Null_Test1()
         {
-            var      _EVSP_Id1 = EVSP_Id.Parse("");
-            EVSP_Id _EVSP_Id2 = null;
+            var      _EVSP_Id1 = EMobilityProvider_Id.Parse("");
+            EMobilityProvider_Id _EVSP_Id2 = null;
             Assert.Throws<ArgumentNullException>(() => { var x = _EVSP_Id1 > _EVSP_Id2; });
         }
 
@@ -602,8 +602,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Null_Test2()
         {
-            EVSP_Id _EVSP_Id1 = null;
-            var      _EVSP_Id2 = EVSP_Id.Parse("");
+            EMobilityProvider_Id _EVSP_Id1 = null;
+            var      _EVSP_Id2 = EMobilityProvider_Id.Parse("");
             Assert.Throws<ArgumentNullException>(() => { var x = _EVSP_Id1 > _EVSP_Id2; });
         }
 
@@ -617,8 +617,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_BothNull_Test()
         {
-            EVSP_Id _EVSP_Id1 = null;
-            EVSP_Id _EVSP_Id2 = null;
+            EMobilityProvider_Id _EVSP_Id1 = null;
+            EMobilityProvider_Id _EVSP_Id2 = null;
             Assert.Throws<ArgumentNullException>(() => { var x = _EVSP_Id1 > _EVSP_Id2; });
         }
 
@@ -632,7 +632,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_SameReference_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("");
             #pragma warning disable
             Assert.IsFalse(_EVSP_Id1 > _EVSP_Id1);
             #pragma warning restore
@@ -648,8 +648,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Equals_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("1");
-            var _EVSP_Id2 = EVSP_Id.Parse("1");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("1");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("1");
             Assert.IsFalse(_EVSP_Id1 > _EVSP_Id2);
         }
 
@@ -663,8 +663,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Smaller1_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("1");
-            var _EVSP_Id2 = EVSP_Id.Parse("2");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("1");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("2");
             Assert.IsFalse(_EVSP_Id1 > _EVSP_Id2);
         }
 
@@ -678,8 +678,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Smaller2_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("5");
-            var _EVSP_Id2 = EVSP_Id.Parse("23");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("5");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("23");
             Assert.IsFalse(_EVSP_Id1 > _EVSP_Id2);
         }
 
@@ -693,8 +693,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Bigger1_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("2");
-            var _EVSP_Id2 = EVSP_Id.Parse("1");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("2");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("1");
             Assert.IsTrue(_EVSP_Id1 > _EVSP_Id2);
         }
 
@@ -708,8 +708,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Bigger2_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("23");
-            var _EVSP_Id2 = EVSP_Id.Parse("5");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("23");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("5");
             Assert.IsTrue(_EVSP_Id1 > _EVSP_Id2);
         }
 
@@ -724,8 +724,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Null_Test1()
         {
-            var      _EVSP_Id1 = EVSP_Id.Parse("");
-            EVSP_Id _EVSP_Id2 = null;
+            var      _EVSP_Id1 = EMobilityProvider_Id.Parse("");
+            EMobilityProvider_Id _EVSP_Id2 = null;
             Assert.Throws<ArgumentNullException>(() => { var x = _EVSP_Id1 >= _EVSP_Id2; });
         }
 
@@ -739,8 +739,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Null_Test2()
         {
-            EVSP_Id _EVSP_Id1 = null;
-            var      _EVSP_Id2 = EVSP_Id.Parse("");
+            EMobilityProvider_Id _EVSP_Id1 = null;
+            var      _EVSP_Id2 = EMobilityProvider_Id.Parse("");
             Assert.Throws<ArgumentNullException>(() => { var x = _EVSP_Id1 >= _EVSP_Id2; });
         }
 
@@ -754,8 +754,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_BothNull_Test()
         {
-            EVSP_Id _EVSP_Id1 = null;
-            EVSP_Id _EVSP_Id2 = null;
+            EMobilityProvider_Id _EVSP_Id1 = null;
+            EMobilityProvider_Id _EVSP_Id2 = null;
             Assert.Throws<ArgumentNullException>(() => { var x = _EVSP_Id1 >= _EVSP_Id2; });
         }
 
@@ -769,7 +769,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_SameReference_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("");
             #pragma warning disable
             Assert.IsTrue(_EVSP_Id1 >= _EVSP_Id1);
             #pragma warning restore
@@ -785,8 +785,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Equals_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("1");
-            var _EVSP_Id2 = EVSP_Id.Parse("1");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("1");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("1");
             Assert.IsTrue(_EVSP_Id1 >= _EVSP_Id2);
         }
 
@@ -800,8 +800,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_SmallerThan1_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("1");
-            var _EVSP_Id2 = EVSP_Id.Parse("2");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("1");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("2");
             Assert.IsFalse(_EVSP_Id1 >= _EVSP_Id2);
         }
 
@@ -815,8 +815,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_SmallerThan2_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("5");
-            var _EVSP_Id2 = EVSP_Id.Parse("23");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("5");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("23");
             Assert.IsFalse(_EVSP_Id1 >= _EVSP_Id2);
         }
 
@@ -830,8 +830,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Bigger1_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("2");
-            var _EVSP_Id2 = EVSP_Id.Parse("1");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("2");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("1");
             Assert.IsTrue(_EVSP_Id1 >= _EVSP_Id2);
         }
 
@@ -845,8 +845,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Bigger2_Test()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("23");
-            var _EVSP_Id2 = EVSP_Id.Parse("5");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("23");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("5");
             Assert.IsTrue(_EVSP_Id1 >= _EVSP_Id2);
         }
 
@@ -861,7 +861,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToNullTest1()
         {
-            var    _EVSP_Id  = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
+            var    _EVSP_Id  = EMobilityProvider_Id.Parse(Country.Germany, _Random.GetString(3));
             Object _Object   = null;
             Assert.Throws<ArgumentNullException>(() => { var x = _EVSP_Id.CompareTo(_Object); });
         }
@@ -876,8 +876,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToNullTest2()
         {
-            var      _EVSP_Id  = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
-            EVSP_Id _Object    = null;
+            var      _EVSP_Id  = EMobilityProvider_Id.Parse(Country.Germany, _Random.GetString(3));
+            EMobilityProvider_Id _Object    = null;
             Assert.Throws<ArgumentNullException>(() => { var x = _EVSP_Id.CompareTo(_Object); });
         }
 
@@ -892,7 +892,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         public void CompareToNonEVSP_IdTest()
         {
 
-            var _EVSP_Id  = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
+            var _EVSP_Id  = EMobilityProvider_Id.Parse(Country.Germany, _Random.GetString(3));
             var _Object   = "123";
 
             Assert.Throws<ArgumentException>(() => _EVSP_Id.CompareTo(_Object));
@@ -909,8 +909,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToSmallerTest1()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("1");
-            var _EVSP_Id2 = EVSP_Id.Parse("2");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("1");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("2");
             Assert.IsTrue(_EVSP_Id1.CompareTo(_EVSP_Id2) < 0);
         }
 
@@ -924,8 +924,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToSmallerTest2()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("5");
-            var _EVSP_Id2 = EVSP_Id.Parse("23");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("5");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("23");
             Assert.IsTrue(_EVSP_Id1.CompareTo(_EVSP_Id2) < 0);
         }
 
@@ -939,8 +939,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToEqualsTest()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("1");
-            var _EVSP_Id2 = EVSP_Id.Parse("1");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("1");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("1");
             Assert.IsTrue(_EVSP_Id1.CompareTo(_EVSP_Id2) == 0);
         }
 
@@ -954,8 +954,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToBiggerTest()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("2");
-            var _EVSP_Id2 = EVSP_Id.Parse("1");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("2");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("1");
             Assert.IsTrue(_EVSP_Id1.CompareTo(_EVSP_Id2) > 0);
         }
 
@@ -970,7 +970,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsNullTest1()
         {
-            var    _EVSP_Id  = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
+            var    _EVSP_Id  = EMobilityProvider_Id.Parse(Country.Germany, _Random.GetString(3));
             Object _Object   = null;
             Assert.IsFalse(_EVSP_Id.Equals(_Object));
         }
@@ -985,8 +985,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsNullTest2()
         {
-            var      _EVSP_Id  = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
-            EVSP_Id _Object    = null;
+            var      _EVSP_Id  = EMobilityProvider_Id.Parse(Country.Germany, _Random.GetString(3));
+            EMobilityProvider_Id _Object    = null;
             Assert.IsFalse(_EVSP_Id.Equals(_Object));
         }
 
@@ -1000,7 +1000,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsNonEVSP_IdTest()
         {
-            var _EVSP_Id  = EVSP_Id.Parse(Country.Germany, _Random.GetString(3));
+            var _EVSP_Id  = EMobilityProvider_Id.Parse(Country.Germany, _Random.GetString(3));
             var _Object   = "123";
             Assert.IsFalse(_EVSP_Id.Equals(_Object));
         }
@@ -1015,8 +1015,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsEqualsTest()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("1");
-            var _EVSP_Id2 = EVSP_Id.Parse("1");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("1");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("1");
             Assert.IsTrue(_EVSP_Id1.Equals(_EVSP_Id2));
         }
 
@@ -1030,8 +1030,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsNotEqualsTest()
         {
-            var _EVSP_Id1 = EVSP_Id.Parse("1");
-            var _EVSP_Id2 = EVSP_Id.Parse("2");
+            var _EVSP_Id1 = EMobilityProvider_Id.Parse("1");
+            var _EVSP_Id2 = EMobilityProvider_Id.Parse("2");
             Assert.IsFalse(_EVSP_Id1.Equals(_EVSP_Id2));
         }
 
@@ -1046,8 +1046,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void GetHashCodeEqualTest()
         {
-            var _SensorHashCode1 = EVSP_Id.Parse("5").GetHashCode();
-            var _SensorHashCode2 = EVSP_Id.Parse("5").GetHashCode();
+            var _SensorHashCode1 = EMobilityProvider_Id.Parse("5").GetHashCode();
+            var _SensorHashCode2 = EMobilityProvider_Id.Parse("5").GetHashCode();
             Assert.AreEqual(_SensorHashCode1, _SensorHashCode2);
         }
 
@@ -1061,8 +1061,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void GetHashCodeNotEqualTest()
         {
-            var _SensorHashCode1 = EVSP_Id.Parse("1").GetHashCode();
-            var _SensorHashCode2 = EVSP_Id.Parse("2").GetHashCode();
+            var _SensorHashCode1 = EMobilityProvider_Id.Parse("1").GetHashCode();
+            var _SensorHashCode2 = EMobilityProvider_Id.Parse("2").GetHashCode();
             Assert.AreNotEqual(_SensorHashCode1, _SensorHashCode2);
         }
 
@@ -1078,9 +1078,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         public void EVSP_IdsAndNUnitTest()
         {
 
-            var a = EVSP_Id.Parse("1");
-            var b = EVSP_Id.Parse("2");
-            var c = EVSP_Id.Parse("1");
+            var a = EMobilityProvider_Id.Parse("1");
+            var b = EMobilityProvider_Id.Parse("2");
+            var c = EMobilityProvider_Id.Parse("1");
 
             Assert.AreEqual(a, a);
             Assert.AreEqual(b, b);
@@ -1103,11 +1103,11 @@ namespace org.GraphDefined.WWCP.UnitTests
         public void EVSP_IdsInHashSetTest()
         {
 
-            var a = EVSP_Id.Parse("1");
-            var b = EVSP_Id.Parse("2");
-            var c = EVSP_Id.Parse("1");
+            var a = EMobilityProvider_Id.Parse("1");
+            var b = EMobilityProvider_Id.Parse("2");
+            var c = EMobilityProvider_Id.Parse("1");
 
-            var _HashSet = new HashSet<EVSP_Id>();
+            var _HashSet = new HashSet<EMobilityProvider_Id>();
             Assert.AreEqual(0, _HashSet.Count);
 
             _HashSet.Add(a);

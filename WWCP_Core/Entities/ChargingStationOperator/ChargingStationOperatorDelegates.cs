@@ -15,16 +15,17 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+using org.GraphDefined.Vanaheimr.Illias;
+
+#endregion
+
 namespace org.GraphDefined.WWCP
 {
 
-    /// <summary>
-    /// The general services interface.
-    /// </summary>
-    public interface IGeneralServices : IPushData, IPushStatus, IAuthorizeStartStop, ISendChargeDetailRecord
-    {
-
-
-    }
+    public delegate String ChargingStationOperatorNameSelectorDelegate(I18NString I18NText);
 
 }

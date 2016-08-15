@@ -29,16 +29,13 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-    /// <summary>
-    /// The EV Roaming Provider provided EVSE Operator services interface.
-    /// </summary>
-    public interface IeMobilityServiceProvider : IGeneralServices
+    public interface IRemoteEMobilityProvider : IPushData, IPushStatus, IAuthorizeStartStop, ISendChargeDetailRecord
     {
 
         /// <summary>
         /// The unique identification of the e-mobility service provider.
         /// </summary>
-        EVSP_Id Id { get; }
+        EMobilityProvider_Id Id { get; }
 
         Authorizator_Id AuthorizatorId { get; }
 
@@ -47,6 +44,16 @@ namespace org.GraphDefined.WWCP
         IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens  { get; }
         IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens        { get; }
 
+
+
+    }
+
+
+    /// <summary>
+    /// The EV Roaming Provider provided EVSE Operator services interface.
+    /// </summary>
+    public interface IEMobilityProvider : IRemoteEMobilityProvider
+    {
 
         // User and credential management
 
@@ -132,26 +139,28 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Start a charging session at the given EVSE.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="EVSEId">The unique identification of the EVSE to be started.</param>
         /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
         /// <param name="ReservationId">The unique identification for a charging reservation.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<RemoteStartEVSEResult>
 
-            RemoteStart(DateTime                Timestamp,
-                        CancellationToken       CancellationToken,
-                        EventTracking_Id        EventTrackingId,
-                        EVSE_Id                 EVSEId,
+            RemoteStart(EVSE_Id                 EVSEId,
                         ChargingProduct_Id      ChargingProductId  = null,
                         ChargingReservation_Id  ReservationId      = null,
                         ChargingSession_Id      SessionId          = null,
                         eMA_Id                  eMAId              = null,
-                        TimeSpan?               QueryTimeout       = null);
+
+                        DateTime?               Timestamp          = null,
+                        CancellationToken?      CancellationToken  = null,
+                        EventTracking_Id        EventTrackingId    = null,
+                        TimeSpan?               RequestTimeout     = null);
 
         #endregion
 
@@ -160,24 +169,26 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Stop the given charging session at the given EVSE.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="EVSEId">The unique identification of the EVSE to be stopped.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
         /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-        /// <param name="QueryTimeout">An optional timeout for this request.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<RemoteStopEVSEResult>
 
-            RemoteStop(DateTime             Timestamp,
-                       CancellationToken    CancellationToken,
-                       EventTracking_Id     EventTrackingId,
-                       EVSE_Id              EVSEId,
+            RemoteStop(EVSE_Id              EVSEId,
                        ChargingSession_Id   SessionId,
                        ReservationHandling  ReservationHandling,
-                       eMA_Id               eMAId         = null,
-                       TimeSpan?            QueryTimeout  = null);
+                       eMA_Id               eMAId              = null,
+
+                       DateTime?            Timestamp          = null,
+                       CancellationToken?   CancellationToken  = null,
+                       EventTracking_Id     EventTrackingId    = null,
+                       TimeSpan?            RequestTimeout     = null);
 
         #endregion
 

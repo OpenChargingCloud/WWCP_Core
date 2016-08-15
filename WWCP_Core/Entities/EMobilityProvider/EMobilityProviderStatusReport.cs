@@ -15,15 +15,27 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System.Collections.Generic;
+
+#endregion
+
 namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The general services interface.
+    /// An e-mobility provider status report.
     /// </summary>
-    public interface IGeneralServices : IPushData, IPushStatus, IAuthorizeStartStop, ISendChargeDetailRecord
+    public class EMobilityProviderStatusReport : StatusReport<EMobilityProvider, EMobilityProviderStatusType>
     {
 
+        public EMobilityProviderStatusReport(IEnumerable<EMobilityProvider> EMobilityProviders)
+
+            : base(EMobilityProviders,
+                   provider => provider.Status.Value)
+
+        { }
 
     }
 

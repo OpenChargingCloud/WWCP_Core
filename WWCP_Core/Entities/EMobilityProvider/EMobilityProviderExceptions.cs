@@ -15,14 +15,31 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+using System.Collections.Generic;
+using System.Collections.Concurrent;
+
+#endregion
+
 namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A remote Charging Station Operator attached via a computer network (TCP/IP).
+    /// A e-mobility provider exception.
     /// </summary>
-    public interface INetworkEVSEOperator : IRemoteEVSEOperator,
-                                            INetworkAttached
-    { }
+    public class EMobilityProviderException : WWCPException
+    {
+
+        public EMobilityProviderException(String Message)
+            : base(Message)
+        { }
+
+        public EMobilityProviderException(String Message, Exception InnerException)
+            : base(Message, InnerException)
+        { }
+
+    }
 
 }

@@ -43,7 +43,8 @@ namespace org.GraphDefined.WWCP
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
-    public delegate void OnRemoteEVSEStartDelegate(DateTime                Timestamp,
+    public delegate void OnRemoteEVSEStartDelegate(DateTime                LogTimestamp,
+                                                   DateTime                RequestTimestamp,
                                                    Object                  Sender,
                                                    EventTracking_Id        EventTrackingId,
                                                    RoamingNetwork_Id       RoamingNetworkId,
@@ -51,7 +52,7 @@ namespace org.GraphDefined.WWCP
                                                    ChargingProduct_Id      ChargingProductId,
                                                    ChargingReservation_Id  ReservationId,
                                                    ChargingSession_Id      SessionId,
-                                                   EVSP_Id                 ProviderId,
+                                                   EMobilityProvider_Id    ProviderId,
                                                    eMA_Id                  eMAId,
                                                    TimeSpan?               QueryTimeout);
 
@@ -72,7 +73,8 @@ namespace org.GraphDefined.WWCP
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote start result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate void OnRemoteEVSEStartedDelegate(DateTime                Timestamp,
+    public delegate void OnRemoteEVSEStartedDelegate(DateTime                LogTimestamp,
+                                                     DateTime                RequestTimestamp,
                                                      Object                  Sender,
                                                      EventTracking_Id        EventTrackingId,
                                                      RoamingNetwork_Id       RoamingNetworkId,
@@ -80,7 +82,7 @@ namespace org.GraphDefined.WWCP
                                                      ChargingProduct_Id      ChargingProductId,
                                                      ChargingReservation_Id  ReservationId,
                                                      ChargingSession_Id      SessionId,
-                                                     EVSP_Id                 ProviderId,
+                                                     EMobilityProvider_Id    ProviderId,
                                                      eMA_Id                  eMAId,
                                                      TimeSpan?               QueryTimeout,
                                                      RemoteStartEVSEResult   Result,
@@ -109,7 +111,7 @@ namespace org.GraphDefined.WWCP
                                                                           ChargingProduct_Id      ChargingProductId,
                                                                           ChargingReservation_Id  ReservationId,
                                                                           ChargingSession_Id      SessionId,
-                                                                          EVSP_Id                 ProviderId,
+                                                                          EMobilityProvider_Id    ProviderId,
                                                                           eMA_Id                  eMAId,
                                                                           TimeSpan?               QueryTimeout  = null);
 
@@ -132,7 +134,8 @@ namespace org.GraphDefined.WWCP
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
-    public delegate void OnRemoteChargingStationStartDelegate(DateTime                Timestamp,
+    public delegate void OnRemoteChargingStationStartDelegate(DateTime                LogTimestamp,
+                                                              DateTime                RequestTimestamp,
                                                               Object                  Sender,
                                                               EventTracking_Id        EventTrackingId,
                                                               RoamingNetwork_Id       RoamingNetworkId,
@@ -140,7 +143,7 @@ namespace org.GraphDefined.WWCP
                                                               ChargingProduct_Id      ChargingProductId,
                                                               ChargingReservation_Id  ReservationId,
                                                               ChargingSession_Id      SessionId,
-                                                              EVSP_Id                 ProviderId,
+                                                              EMobilityProvider_Id    ProviderId,
                                                               eMA_Id                  eMAId,
                                                               TimeSpan?               QueryTimeout);
 
@@ -161,7 +164,8 @@ namespace org.GraphDefined.WWCP
     /// <param name="QueryTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote start result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate void OnRemoteChargingStationStartedDelegate(DateTime                          Timestamp,
+    public delegate void OnRemoteChargingStationStartedDelegate(DateTime                          LogTimestamp,
+                                                                DateTime                          RequestTimestamp,
                                                                 Object                            Sender,
                                                                 EventTracking_Id                  EventTrackingId,
                                                                 RoamingNetwork_Id                 RoamingNetworkId,
@@ -169,7 +173,7 @@ namespace org.GraphDefined.WWCP
                                                                 ChargingProduct_Id                ChargingProductId,
                                                                 ChargingReservation_Id            ReservationId,
                                                                 ChargingSession_Id                SessionId,
-                                                                EVSP_Id                           ProviderId,
+                                                                EMobilityProvider_Id              ProviderId,
                                                                 eMA_Id                            eMAId,
                                                                 TimeSpan?                         QueryTimeout,
                                                                 RemoteStartChargingStationResult  Result,
@@ -197,7 +201,7 @@ namespace org.GraphDefined.WWCP
                                                                                                 ChargingProduct_Id      ChargingProductId,
                                                                                                 ChargingReservation_Id  ReservationId,
                                                                                                 ChargingSession_Id      SessionId,
-                                                                                                EVSP_Id                 ProviderId,
+                                                                                                EMobilityProvider_Id                 ProviderId,
                                                                                                 eMA_Id                  eMAId,
                                                                                                 TimeSpan?               QueryTimeout  = null);
 

@@ -69,12 +69,12 @@ namespace org.GraphDefined.WWCP
 
         #region ProviderId
 
-        private readonly EVSP_Id _ProviderId;
+        private readonly EMobilityProvider_Id _ProviderId;
 
         /// <summary>
         /// The EVSP Id format.
         /// </summary>
-        public EVSP_Id ProviderId
+        public EMobilityProvider_Id ProviderId
         {
             get
             {
@@ -138,9 +138,9 @@ namespace org.GraphDefined.WWCP
             if (_MatchCollection.Count != 1)
                 throw new ArgumentException("The given string can not be parsed as eMA identification!", nameof(Text));
 
-            EVSP_Id __ProviderId = null;
+            EMobilityProvider_Id __ProviderId = null;
 
-            if (EVSP_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __ProviderId))
+            if (EMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __ProviderId))
                 return new eMA_Id(__ProviderId.ToString() +
                                   _MatchCollection[0].Groups[5].Value +
                                   _MatchCollection[0].Groups[6].Value +
@@ -179,9 +179,9 @@ namespace org.GraphDefined.WWCP
             if (_MatchCollection.Count != 1)
                 return false;
 
-            EVSP_Id __ProviderId = null;
+            EMobilityProvider_Id __ProviderId = null;
 
-            if (EVSP_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __ProviderId))
+            if (EMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __ProviderId))
             {
                 eMAId = new eMA_Id(__ProviderId.ToString() + "*" + _MatchCollection[0].Groups[6].Value + "*" + _MatchCollection[0].Groups[8].Value);
                 return true;

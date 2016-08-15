@@ -85,12 +85,12 @@ namespace org.GraphDefined.WWCP
 
         #region ProviderId
 
-        private readonly EVSP_Id _ProviderId;
+        private readonly EMobilityProvider_Id _ProviderId;
 
         /// <summary>
         /// The unique identification of the ev service provider.
         /// </summary>
-        public EVSP_Id ProviderId
+        public EMobilityProvider_Id ProviderId
         {
             get
             {
@@ -150,7 +150,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="AdditionalInfo">An optional additional message.</param>
         private AuthStopEVSEResult(Authorizator_Id         AuthorizatorId,
                                    AuthStopEVSEResultType  Result,
-                                   EVSP_Id                 ProviderId      = null,
+                                   EMobilityProvider_Id                 ProviderId      = null,
                                    String                  Description     = null,
                                    String                  AdditionalInfo  = null)
         {
@@ -271,7 +271,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         public static AuthStopEVSEResult Authorized(Authorizator_Id  AuthorizatorId,
-                                                    EVSP_Id          ProviderId,
+                                                    EMobilityProvider_Id          ProviderId,
                                                     String           Description     = null,
                                                     String           AdditionalInfo  = null)
         {
@@ -296,7 +296,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         public static AuthStopEVSEResult NotAuthorized(Authorizator_Id  AuthorizatorId,
-                                                       EVSP_Id          ProviderId,
+                                                       EMobilityProvider_Id          ProviderId,
                                                        String           Description    = null,
                                                        String           AdditionalInfo = null)
         {
@@ -321,7 +321,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         public static AuthStopEVSEResult Blocked(Authorizator_Id  AuthorizatorId,
-                                                 EVSP_Id          ProviderId,
+                                                 EMobilityProvider_Id          ProviderId,
                                                  String           Description     = null,
                                                  String           AdditionalInfo  = null)
         {

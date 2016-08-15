@@ -19,12 +19,10 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The general services interface.
+    /// A remote charging station operator attached via a computer network (e.g. TCP/IP).
     /// </summary>
-    public interface IGeneralServices : IPushData, IPushStatus, IAuthorizeStartStop, ISendChargeDetailRecord
-    {
-
-
-    }
+    public interface INetworkChargingStationOperator : IRemoteChargingStationOperator,
+                                                       INetworkAttached
+    { }
 
 }

@@ -84,7 +84,7 @@ namespace org.GraphDefined.WWCP
     public class EVServiceProviderAlreadyExists : RoamingNetworkException
     {
 
-        public EVServiceProviderAlreadyExists(EVSP_Id  EVServiceProvider_Id,
+        public EVServiceProviderAlreadyExists(EMobilityProvider_Id  EVServiceProvider_Id,
                                               RoamingNetwork_Id     RoamingNetwork_Id)
             : base("The given EV service provider identification '" + EVServiceProvider_Id + "' already exists within the given '" + RoamingNetwork_Id + "' roaming network!")
         { }

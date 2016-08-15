@@ -360,7 +360,7 @@ namespace org.GraphDefined.WWCP
         /// The e-Mobility service provider identification for this charging session.
         /// </summary>
         [Optional]
-        public EVSP_Id ProviderId { get; set; }
+        public EMobilityProvider_Id ProviderId { get; set; }
 
         #endregion
 
@@ -488,7 +488,7 @@ namespace org.GraphDefined.WWCP
 
         #region AuthService
 
-        public IeMobilityServiceProvider AuthService { get; set; }
+        public IAuthorizeStartStop AuthService { get; set; }
 
         #endregion
 
