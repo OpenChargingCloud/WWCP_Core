@@ -249,16 +249,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ParkingSpotId
+        #region ParkingSpaceId
 
-        private readonly ParkingSpot_Id _ParkingSpotId;
+        private readonly ParkingSpace_Id _ParkingSpaceId;
 
         [Optional]
-        public ParkingSpot_Id ParkingSpotId
+        public ParkingSpace_Id ParkingSpaceId
         {
             get
             {
-                return _ParkingSpotId;
+                return _ParkingSpaceId;
             }
         }
 

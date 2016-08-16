@@ -105,14 +105,14 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (static) UnknownEVSEOperator
+        #region (static) UnknownChargingStationOperator
 
         /// <summary>
-        /// The Charging Station Operator is unknown.
+        /// The charging station operator is unknown.
         /// </summary>
-        public static ReservationResult UnknownEVSEOperator
+        public static ReservationResult UnknownChargingStationOperator
 
-            => new ReservationResult(ReservationResultType.UnknownEVSE);
+            => new ReservationResult(ReservationResultType.UnknownChargingStationOperator);
 
         #endregion
 
@@ -318,9 +318,9 @@ namespace org.GraphDefined.WWCP
 
 
         /// <summary>
-        /// The Charging Station Operator is unknown.
+        /// The charging station operator is unknown.
         /// </summary>
-        UnknownEVSEOperator,
+        UnknownChargingStationOperator,
 
         /// <summary>
         /// The charging pool is unknown.

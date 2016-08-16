@@ -15,36 +15,27 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The admin status of an Charging Station Operator.
+    /// The priority of an e-mobility provider.
     /// </summary>
-    public enum ChargingStationOperatorAdminStatusType
+    public class EMobilityProviderPriority
     {
 
-        /// <summary>
-        /// Unclear or unknown admin status of the charging station operator.
-        /// </summary>
-        Unspecified                     = 0,
+        public Int32 Value { get; }
 
-        /// <summary>
-        /// The charging station operator is under maintenance.
-        /// </summary>
-        OutOfService                    = 1,
-
-        /// <summary>
-        /// The charging station operator is operational.
-        /// </summary>
-        Operational                     = 2,
-
-
-        /// <summary>
-        /// The charging station operator was not found!
-        /// (Only valid within batch-processing)
-        /// </summary>
-        UnknownChargingStationOperator  = 3
+        public EMobilityProviderPriority(Int32 Priority)
+        {
+            Value = Priority;
+        }
 
     }
 

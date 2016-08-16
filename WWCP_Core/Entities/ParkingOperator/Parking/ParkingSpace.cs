@@ -32,10 +32,10 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A electric vehicle parking spot (EVPS).
+    /// A parking space.
     /// </summary>
-    public class ParkingSpot : AEMobilityEntity<ParkingSpot_Id>,
-                               IEquatable<ParkingSpot>, IComparable<ParkingSpot>, IComparable
+    public class ParkingSpace : AEMobilityEntity<ParkingSpace_Id>,
+                                IEquatable<ParkingSpace>, IComparable<ParkingSpace>, IComparable
     {
 
         #region Data
@@ -49,7 +49,7 @@ namespace org.GraphDefined.WWCP
         private I18NString _Name;
 
         /// <summary>
-        /// The offical (multi-language) name of the parking spot.
+        /// The offical (multi-language) name of the parking space.
         /// </summary>
         [Mandatory]
         public I18NString Name
@@ -74,7 +74,7 @@ namespace org.GraphDefined.WWCP
         private I18NString _Description;
 
         /// <summary>
-        /// An optional additional (multi-language) description of the parking spot.
+        /// An optional additional (multi-language) description of the parking space.
         /// </summary>
         [Optional]
         public I18NString Description
@@ -124,7 +124,7 @@ namespace org.GraphDefined.WWCP
         private List<GeoCoordinate> _Geometry;
 
         /// <summary>
-        /// An optional polygon geometry of the parking spot.
+        /// An optional polygon geometry of the parking space.
         /// </summary>
         [Optional]
         public List<GeoCoordinate> Geometry
@@ -142,7 +142,7 @@ namespace org.GraphDefined.WWCP
         private List<ChargingStation> _ChargingStations;
 
         /// <summary>
-        /// Charging stations reachable from this parking spot.
+        /// Charging stations reachable from this parking space.
         /// </summary>
         [Optional]
         public List<ChargingStation> ChargingStations
@@ -173,31 +173,31 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (internal) ParkingSpot()
+        #region (internal) ParkingSpace()
 
         /// <summary>
-        /// Create a new electric vehicle parking spot having a random identification.
+        /// Create a new parking space having a random identification.
         /// </summary>
-        internal ParkingSpot()
-            : this(ParkingSpot_Id.New)
+        internal ParkingSpace()
+            : this(ParkingSpace_Id.New)
         { }
 
         #endregion
 
-        #region (internal) ParkingSpot(Id)
+        #region (internal) ParkingSpace(Id)
 
         /// <summary>
-        /// Create a new electric vehicle parking spot having the given identification.
+        /// Create a new parking space having the given identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the parking spot.</param>
-        internal ParkingSpot(ParkingSpot_Id  Id)
+        /// <param name="Id">The unique identification of the parking space.</param>
+        internal ParkingSpace(ParkingSpace_Id  Id)
             : base(Id)
         {
 
             #region Initial checks
 
             if (Id == null)
-                throw new ArgumentNullException(nameof(Id), "The unique identification of the parking spot must not be null!");
+                throw new ArgumentNullException(nameof(Id), "The unique identification of the parking space must not be null!");
 
             #endregion
 
@@ -217,7 +217,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region IComparable<ParkingSpot> Members
+        #region IComparable<ParkingSpace> Members
 
         #region CompareTo(Object)
 
@@ -232,7 +232,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is a service plan.
-            var ServicePlan = Object as ParkingSpot;
+            var ServicePlan = Object as ParkingSpace;
             if ((Object) ServicePlan == null)
                 throw new ArgumentException("The given object is not a service plan!");
 
@@ -242,19 +242,19 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CompareTo(ParkingSpot)
+        #region CompareTo(ParkingSpace)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ParkingSpot">A service plan object to compare with.</param>
-        public Int32 CompareTo(ParkingSpot ParkingSpot)
+        /// <param name="ParkingSpace">A service plan object to compare with.</param>
+        public Int32 CompareTo(ParkingSpace ParkingSpace)
         {
 
-            if ((Object) ParkingSpot == null)
+            if ((Object) ParkingSpace == null)
                 throw new ArgumentNullException("The given service plan must not be null!");
 
-            return Id.CompareTo(ParkingSpot.Id);
+            return Id.CompareTo(ParkingSpace.Id);
 
         }
 
@@ -262,7 +262,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<ParkingSpot> Members
+        #region IEquatable<ParkingSpace> Members
 
         #region Equals(Object)
 
@@ -278,30 +278,30 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is a service plan.
-            var ParkingSpot = Object as ParkingSpot;
-            if ((Object) ParkingSpot == null)
+            var ParkingSpace = Object as ParkingSpace;
+            if ((Object) ParkingSpace == null)
                 return false;
 
-            return this.Equals(ParkingSpot);
+            return this.Equals(ParkingSpace);
 
         }
 
         #endregion
 
-        #region Equals(ParkingSpot)
+        #region Equals(ParkingSpace)
 
         /// <summary>
         /// Compares two service plans for equality.
         /// </summary>
-        /// <param name="ParkingSpot">A service plan to compare with.</param>
+        /// <param name="ParkingSpace">A service plan to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ParkingSpot ParkingSpot)
+        public Boolean Equals(ParkingSpace ParkingSpace)
         {
 
-            if ((Object) ParkingSpot == null)
+            if ((Object) ParkingSpace == null)
                 return false;
 
-            return Id.Equals(ParkingSpot.Id);
+            return Id.Equals(ParkingSpace.Id);
 
         }
 

@@ -27,17 +27,20 @@ namespace org.GraphDefined.WWCP
     public interface IEntity
     {
 
-        DateTime                                    LastChange { get; }
+        DateTime                                 LastChange { get; }
 
         event OnPropertyChangedDelegate          OnPropertyChanged;
 
     }
 
-    public interface IEntity<TId> : IEntity
+    public interface IEntity<TId> : IEntity, IEntityId
+
         where TId : IId
 
     {
+
         TId Id { get; }
+
     }
 
 }

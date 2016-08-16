@@ -34,7 +34,9 @@ namespace org.GraphDefined.WWCP
     /// An abstract e-mobility entity.
     /// </summary>
     public abstract class AEMobilityEntity<TId> : IEntity<TId>
+
         where TId : IId
+
     {
 
         #region Data
@@ -254,6 +256,12 @@ namespace org.GraphDefined.WWCP
             => _UserDefined.TryGet(Key, out Value);
 
         #endregion
+
+
+        public int CompareTo(object obj)
+        {
+            return 0;// Id.CompareTo(obj.Id);
+        }
 
     }
 

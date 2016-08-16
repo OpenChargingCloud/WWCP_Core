@@ -133,7 +133,7 @@ namespace org.GraphDefined.WWCP
                                       Description = Description
                                   };
 
-            Action.FailSafeInvoke(_RoamingNetwork);
+            Action?.Invoke(_RoamingNetwork);
 
             if (RoamingNetworkAddition.SendVoting(this, _RoamingNetwork))
             {

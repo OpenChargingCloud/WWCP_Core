@@ -19,32 +19,42 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The admin status of an Charging Station Operator.
+    /// The current status of a parking building.
     /// </summary>
-    public enum ChargingStationOperatorAdminStatusType
+    public enum ParkingBuildingStatusType
     {
 
         /// <summary>
-        /// Unclear or unknown admin status of the charging station operator.
+        /// Unclear or unknown status of the parking sensor.
         /// </summary>
-        Unspecified                     = 0,
+        Unspecified         = 0,
 
         /// <summary>
-        /// The charging station operator is under maintenance.
+        /// The parking sensor is planned for the future.
         /// </summary>
-        OutOfService                    = 1,
+        Planned             = 1,
 
         /// <summary>
-        /// The charging station operator is operational.
+        /// The parking sensor is currently in deployment.
         /// </summary>
-        Operational                     = 2,
+        InDeployment        = 2,
+
+        /// <summary>
+        /// The parking sensor is currently blocked.
+        /// </summary>
+        Blocked             = 3,
+
+        /// <summary>
+        /// The parking sensor is available.
+        /// </summary>
+        Available           = 4,
 
 
         /// <summary>
-        /// The charging station operator was not found!
+        /// The parking sensor was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownChargingStationOperator  = 3
+        UnknownParkingSensor  = 8
 
     }
 

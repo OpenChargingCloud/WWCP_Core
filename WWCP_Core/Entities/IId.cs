@@ -36,4 +36,9 @@ namespace org.GraphDefined.WWCP
 
     }
 
+    public interface IEntityId : IComparable
+    {
+
+    }
+
 }

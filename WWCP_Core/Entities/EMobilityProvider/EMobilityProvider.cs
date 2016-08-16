@@ -33,15 +33,15 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The Electric Vehicle Service Provider is not only the main contract party
-    /// of the EV driver, the EVSP also takes care of the EV driver master data,
+    /// The e-mobility provider is not only the main contract party of the EV driver,
+    /// the e-mobility provider also takes care of the EV driver master data,
     /// the authentication and autorisation process before charging and for the
     /// billing process after charging.
-    /// The EVSP provides the EV drivere one or multiple methods for authentication
-    /// (e.g. based on RFID cards, login/passwords, client certificates). The EVSP
-    /// takes care that none of the provided authentication methods can be misused
-    /// by any entity in the ev charging process to track the ev driver or its
-    /// behaviour.
+    /// The e-mobility provider provides the EV drivere one or multiple methods for
+    /// authentication (e.g. based on RFID cards, login/passwords, client certificates).
+    /// The e-mobility provider takes care that none of the provided authentication
+    /// methods can be misused by any entity in the ev charging process to track the
+    /// ev driver or its behaviour.
     /// </summary>
     public class EMobilityProvider : AEMobilityEntity<EMobilityProvider_Id>,
                                      IRemoteEMobilityProvider,
@@ -55,12 +55,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The default max size of the admin status list.
         /// </summary>
-        public const UInt16 DefaultMaxPoolAdminStatusListSize   = 15;
+        public const UInt16 DefaultMaxAdminStatusListSize   = 15;
 
         /// <summary>
         /// The default max size of the status list.
         /// </summary>
-        public const UInt16 DefaultMaxPoolStatusListSize        = 15;
+        public const UInt16 DefaultMaxStatusListSize        = 15;
 
         #endregion
 
@@ -391,12 +391,15 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        public EMobilityProviderPriority Priority { get; set; }
+
 
         #region AllTokens
 
         public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens
-            => _RemoteEMobilityProvider != null
-                   ? _RemoteEMobilityProvider.AllTokens
+
+            => RemoteEMobilityProvider != null
+                   ? RemoteEMobilityProvider.AllTokens
                    : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
 
         #endregion
@@ -404,8 +407,9 @@ namespace org.GraphDefined.WWCP
         #region AuthorizedTokens
 
         public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens
-            => _RemoteEMobilityProvider != null
-                   ? _RemoteEMobilityProvider.AuthorizedTokens
+
+            => RemoteEMobilityProvider != null
+                   ? RemoteEMobilityProvider.AuthorizedTokens
                    : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
 
         #endregion
@@ -413,8 +417,9 @@ namespace org.GraphDefined.WWCP
         #region NotAuthorizedTokens
 
         public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens
-            => _RemoteEMobilityProvider != null
-                   ? _RemoteEMobilityProvider.NotAuthorizedTokens
+
+            => RemoteEMobilityProvider != null
+                   ? RemoteEMobilityProvider.NotAuthorizedTokens
                    : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
 
         #endregion
@@ -422,8 +427,9 @@ namespace org.GraphDefined.WWCP
         #region BlockedTokens
 
         public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens
-            => _RemoteEMobilityProvider != null
-                   ? _RemoteEMobilityProvider.BlockedTokens
+
+            => RemoteEMobilityProvider != null
+                   ? RemoteEMobilityProvider.BlockedTokens
                    : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
 
         #endregion
@@ -432,56 +438,16 @@ namespace org.GraphDefined.WWCP
 
         #region Links
 
-        #region RemoteEMobilityProvider
+        /// <summary>
+        /// The remote e-mobility provider.
+        /// </summary>
+        public IRemoteEMobilityProvider  RemoteEMobilityProvider    { get; }
 
-        private IRemoteEMobilityProvider _RemoteEMobilityProvider;
-
-        public IRemoteEMobilityProvider RemoteEMobilityProvider
-        {
-
-            get
-            {
-                return _RemoteEMobilityProvider;
-            }
-
-            internal set
-            {
-
-                if (_RemoteEMobilityProvider == null)
-                {
-
-                    if (value == null)
-                        throw new ArgumentNullException(nameof(RemoteEMobilityProvider), "The given e-mobility service must not be null!");
-
-                    _RemoteEMobilityProvider = value;
-
-                }
-
-                else
-                    throw new ArgumentException("Setting property 'EMobilityService' twice is not allowed!");
-
-            }
-
-        }
-
-        #endregion
-
-        #region RoamingNetwork
-
-        private readonly RoamingNetwork _RoamingNetwork;
 
         /// <summary>
-        /// The associated EV Roaming Network of the Charging Station Operator.
+        /// The parent roaming network.
         /// </summary>
-        public RoamingNetwork RoamingNetwork
-        {
-            get
-            {
-                return _RoamingNetwork;
-            }
-        }
-
-        #endregion
+        public RoamingNetwork            RoamingNetwork             { get; }
 
         #endregion
 
@@ -570,14 +536,17 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique e-mobility provider identification.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        internal EMobilityProvider(EMobilityProvider_Id              Id,
-                                   RoamingNetwork                    RoamingNetwork,
-                                   I18NString                        Name                        = null,
-                                   I18NString                        Description                 = null,
-                                   EMobilityProviderAdminStatusType  AdminStatus                 = EMobilityProviderAdminStatusType.Available,
-                                   EMobilityProviderStatusType       Status                      = EMobilityProviderStatusType.Available,
-                                   UInt16                            MaxPoolAdminStatusListSize  = DefaultMaxPoolAdminStatusListSize,
-                                   UInt16                            MaxPoolStatusListSize       = DefaultMaxPoolStatusListSize)
+        internal EMobilityProvider(EMobilityProvider_Id                    Id,
+                                   RoamingNetwork                          RoamingNetwork,
+                                   Action<EMobilityProvider>               Configurator                    = null,
+                                   RemoteEMobilityProviderCreatorDelegate  RemoteEMobilityProviderCreator  = null,
+                                   I18NString                              Name                            = null,
+                                   I18NString                              Description                     = null,
+                                   EMobilityProviderPriority               Priority                        = null,
+                                   EMobilityProviderAdminStatusType        AdminStatus                     = EMobilityProviderAdminStatusType.Available,
+                                   EMobilityProviderStatusType             Status                          = EMobilityProviderStatusType.Available,
+                                   UInt16                                  MaxAdminStatusListSize          = DefaultMaxAdminStatusListSize,
+                                   UInt16                                  MaxStatusListSize               = DefaultMaxStatusListSize)
 
             : base(Id)
 
@@ -586,17 +555,19 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(RoamingNetwork),  "The roaming network must not be null!");
+                throw new ArgumentNullException(nameof(EMobilityProvider),  "The roaming network must not be null!");
 
             #endregion
 
             #region Init data and properties
 
-            this._RoamingNetwork              = RoamingNetwork;
+            this.RoamingNetwork              = RoamingNetwork;
 
             this._Name                        = Name        ?? new I18NString();
             this._Description                 = Description ?? new I18NString();
             this._DataLicenses                = new List<DataLicense>();
+
+            this.Priority                     = Priority    ?? new EMobilityProviderPriority(0);
 
             this._AdminStatusSchedule         = new StatusSchedule<EMobilityProviderAdminStatusType>();
             this._AdminStatusSchedule.Insert(AdminStatus);
@@ -605,6 +576,10 @@ namespace org.GraphDefined.WWCP
             this._StatusSchedule.Insert(Status);
 
             #endregion
+
+            Configurator?.Invoke(this);
+
+            this.RemoteEMobilityProvider = RemoteEMobilityProviderCreator?.Invoke(this);
 
         }
 
@@ -677,8 +652,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (_RemoteEMobilityProvider != null)
-                result = await _RemoteEMobilityProvider.PushEVSEData(GroupedEVSEs,
+            if (RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.PushEVSEData(GroupedEVSEs,
                                                                      ActionType,
 
                                                                      Timestamp,
@@ -1115,7 +1090,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
+                throw new ArgumentNullException(nameof(EMobilityProvider), "The given roaming network must not be null!");
 
             #endregion
 
@@ -1206,8 +1181,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (_RemoteEMobilityProvider != null)
-                result = await _RemoteEMobilityProvider.PushEVSEStatus(GroupedEVSEStatus,
+            if (RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.PushEVSEStatus(GroupedEVSEStatus,
                                                                        ActionType,
 
                                                                        Timestamp,
@@ -1748,7 +1723,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
+                throw new ArgumentNullException(nameof(EMobilityProvider), "The given roaming network must not be null!");
 
             #endregion
 
@@ -1798,8 +1773,8 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            if (_RemoteEMobilityProvider != null)
-                return await _RemoteEMobilityProvider.AuthorizeStart(ChargingStationOperatorId,
+            if (RemoteEMobilityProvider != null)
+                return await RemoteEMobilityProvider.AuthorizeStart(ChargingStationOperatorId,
                                                                      AuthToken,
                                                                      ChargingProductId,
                                                                      SessionId,
@@ -1847,8 +1822,8 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            if (_RemoteEMobilityProvider != null)
-                return await _RemoteEMobilityProvider.AuthorizeStart(ChargingStationOperatorId,
+            if (RemoteEMobilityProvider != null)
+                return await RemoteEMobilityProvider.AuthorizeStart(ChargingStationOperatorId,
                                                                      AuthToken,
                                                                      EVSEId,
                                                                      ChargingProductId,
@@ -1897,8 +1872,8 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            if (_RemoteEMobilityProvider != null)
-                return await _RemoteEMobilityProvider.AuthorizeStart(ChargingStationOperatorId,
+            if (RemoteEMobilityProvider != null)
+                return await RemoteEMobilityProvider.AuthorizeStart(ChargingStationOperatorId,
                                                                      AuthToken,
                                                                      ChargingStationId,
                                                                      ChargingProductId,
@@ -1944,8 +1919,8 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            if (_RemoteEMobilityProvider != null)
-                return await _RemoteEMobilityProvider.AuthorizeStop(ChargingStationOperatorId,
+            if (RemoteEMobilityProvider != null)
+                return await RemoteEMobilityProvider.AuthorizeStop(ChargingStationOperatorId,
                                                                     SessionId,
                                                                     AuthToken,
 
@@ -1990,8 +1965,8 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            if (_RemoteEMobilityProvider != null)
-                return await _RemoteEMobilityProvider.AuthorizeStop(ChargingStationOperatorId,
+            if (RemoteEMobilityProvider != null)
+                return await RemoteEMobilityProvider.AuthorizeStop(ChargingStationOperatorId,
                                                                     EVSEId,
                                                                     SessionId,
                                                                     AuthToken,
@@ -2037,8 +2012,8 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            if (_RemoteEMobilityProvider != null)
-                return await _RemoteEMobilityProvider.AuthorizeStop(ChargingStationOperatorId,
+            if (RemoteEMobilityProvider != null)
+                return await RemoteEMobilityProvider.AuthorizeStop(ChargingStationOperatorId,
                                                                     ChargingStationId,
                                                                     SessionId,
                                                                     AuthToken,
@@ -2081,15 +2056,13 @@ namespace org.GraphDefined.WWCP
                                    TimeSpan?           RequestTimeout)
         {
 
-            if (_RemoteEMobilityProvider != null)
-                return await _RemoteEMobilityProvider.SendChargeDetailRecord(ChargeDetailRecord,
+            if (RemoteEMobilityProvider != null)
+                return await RemoteEMobilityProvider.SendChargeDetailRecord(ChargeDetailRecord,
 
-                                                                             Timestamp,
-                                                                             CancellationToken,
-                                                                             EventTrackingId,
-                                                                             RequestTimeout);
-
-
+                                                                            Timestamp,
+                                                                            CancellationToken,
+                                                                            EventTrackingId,
+                                                                            RequestTimeout);
 
             return SendCDRResult.OutOfService(AuthorizatorId);
 
@@ -2112,9 +2085,6 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Reserve the possibility to charge at the given EVSE.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of this request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="EVSEId">The unique identification of the EVSE to be reserved.</param>
         /// <param name="StartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
@@ -2124,13 +2094,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<ReservationResult>
 
-            Reserve(DateTime                 Timestamp,
-                    CancellationToken        CancellationToken,
-                    EventTracking_Id         EventTrackingId,
-                    EVSE_Id                  EVSEId,
+            Reserve(EVSE_Id                  EVSEId,
                     DateTime?                StartTime          = null,
                     TimeSpan?                Duration           = null,
                     ChargingReservation_Id   ReservationId      = null,
@@ -2139,7 +2110,11 @@ namespace org.GraphDefined.WWCP
                     IEnumerable<Auth_Token>  AuthTokens         = null,
                     IEnumerable<eMA_Id>      eMAIds             = null,
                     IEnumerable<UInt32>      PINs               = null,
-                    TimeSpan?                RequestTimeout       = null)
+
+                    DateTime?                Timestamp          = null,
+                    CancellationToken?       CancellationToken  = null,
+                    EventTracking_Id         EventTrackingId    = null,
+                    TimeSpan?                RequestTimeout     = null)
 
         {
 
@@ -2147,6 +2122,9 @@ namespace org.GraphDefined.WWCP
 
             if (EVSEId == null)
                 throw new ArgumentNullException(nameof(EVSEId),  "The given EVSE identification must not be null!");
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -2160,8 +2138,9 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnReserveEVSE?.Invoke(this,
-                                      Timestamp,
+                OnReserveEVSE?.Invoke(DateTime.Now,
+                                      Timestamp.Value,
+                                      this,
                                       EventTrackingId,
                                       RoamingNetwork.Id,
                                       ReservationId,
@@ -2179,16 +2158,13 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnReserveEVSE));
+                e.Log(nameof(EMobilityProvider) + "." + nameof(OnReserveEVSE));
             }
 
             #endregion
 
 
-            var response = await RoamingNetwork.Reserve(Timestamp,
-                                                        CancellationToken,
-                                                        EventTrackingId,
-                                                        EVSEId,
+            var response = await RoamingNetwork.Reserve(EVSEId,
                                                         StartTime,
                                                         Duration,
                                                         ReservationId,
@@ -2198,6 +2174,10 @@ namespace org.GraphDefined.WWCP
                                                         AuthTokens,
                                                         eMAIds,
                                                         PINs,
+
+                                                        Timestamp,
+                                                        CancellationToken,
+                                                        EventTrackingId,
                                                         RequestTimeout);
 
 
@@ -2208,8 +2188,9 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnEVSEReserved?.Invoke(this,
-                                       Timestamp,
+                OnEVSEReserved?.Invoke(DateTime.Now,
+                                       Timestamp.Value,
+                                       this,
                                        EventTrackingId,
                                        RoamingNetwork.Id,
                                        ReservationId,
@@ -2229,7 +2210,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnEVSEReserved));
+                e.Log(nameof(EMobilityProvider) + "." + nameof(OnEVSEReserved));
             }
 
             #endregion
@@ -2245,29 +2226,41 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Cancel the given charging reservation.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of this request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="ReservationId">The unique charging reservation identification.</param>
         /// <param name="Reason">A reason for this cancellation.</param>
         /// <param name="EVSEId">An optional identification of the EVSE.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<CancelReservationResult> CancelReservation(DateTime                               Timestamp,
-                                                                     CancellationToken                      CancellationToken,
-                                                                     EventTracking_Id                       EventTrackingId,
-                                                                     ChargingReservation_Id                 ReservationId,
-                                                                     ChargingReservationCancellationReason  Reason,
-                                                                     EVSE_Id                                EVSEId        = null,
-                                                                     TimeSpan?                              RequestTimeout  = null)
+        public async Task<CancelReservationResult>
+
+            CancelReservation(ChargingReservation_Id                 ReservationId,
+                              ChargingReservationCancellationReason  Reason,
+                              EVSE_Id                                EVSEId             = null,
+
+                              DateTime?                              Timestamp          = null,
+                              CancellationToken?                     CancellationToken  = null,
+                              EventTracking_Id                       EventTrackingId    = null,
+                              TimeSpan?                              RequestTimeout     = null)
+
         {
 
-            var response = await RoamingNetwork.CancelReservation(Timestamp,
-                                                                  CancellationToken,
-                                                                  EventTrackingId,
-                                                                  ReservationId,
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            var response = await RoamingNetwork.CancelReservation(ReservationId,
                                                                   Reason,
                                                                   Id,
                                                                   EVSEId,
+
+                                                                  Timestamp,
+                                                                  CancellationToken,
+                                                                  EventTrackingId,
                                                                   RequestTimeout);
 
 
@@ -2352,7 +2345,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteEVSEStart));
+                e.Log(nameof(EMobilityProvider) + "." + nameof(OnRemoteEVSEStart));
             }
 
             #endregion
@@ -2396,7 +2389,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteEVSEStarted));
+                e.Log(nameof(EMobilityProvider) + "." + nameof(OnRemoteEVSEStarted));
             }
 
             #endregion
@@ -2473,7 +2466,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteEVSEStop));
+                e.Log(nameof(EMobilityProvider) + "." + nameof(OnRemoteEVSEStop));
             }
 
             #endregion
@@ -2515,7 +2508,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnRemoteEVSEStopped));
+                e.Log(nameof(EMobilityProvider) + "." + nameof(OnRemoteEVSEStopped));
             }
 
             #endregion

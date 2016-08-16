@@ -65,33 +65,6 @@ namespace org.GraphDefined.WWCP
 
 
 
-    /// <summary>
-    /// A delegate called whenever the static data of the Charging Station Operator changed.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp when this change was detected.</param>
-    /// <param name="EVSEOperator">The updated evse operator.</param>
-    /// <param name="PropertyName">The name of the changed property.</param>
-    /// <param name="OldValue">The old value of the changed property.</param>
-    /// <param name="NewValue">The new value of the changed property.</param>
-    public delegate Task OnEVSEOperatorDataChangedDelegate(DateTime Timestamp, ChargingStationOperator EVSEOperator, String PropertyName, Object OldValue, Object NewValue);
-
-    /// <summary>
-    /// A delegate called whenever the dynamic status of the Charging Station Operator changed.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp when this change was detected.</param>
-    /// <param name="EVSEOperator">The updated Charging Station Operator.</param>
-    /// <param name="OldStatus">The old timestamped status of the Charging Station Operator.</param>
-    /// <param name="NewStatus">The new timestamped status of the Charging Station Operator.</param>
-    public delegate Task OnEVSEOperatorStatusChangedDelegate(DateTime Timestamp, ChargingStationOperator EVSEOperator, Timestamped<ChargingStationOperatorStatusType> OldStatus, Timestamped<ChargingStationOperatorStatusType> NewStatus);
-
-    /// <summary>
-    /// A delegate called whenever the admin status of the Charging Station Operator changed.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp when this change was detected.</param>
-    /// <param name="EVSEOperator">The updated Charging Station Operator.</param>
-    /// <param name="OldStatus">The old timestamped status of the Charging Station Operator.</param>
-    /// <param name="NewStatus">The new timestamped status of the Charging Station Operator.</param>
-    public delegate Task OnEVSEOperatorAdminStatusChangedDelegate(DateTime Timestamp, ChargingStationOperator EVSEOperator, Timestamped<ChargingStationOperatorAdminStatusType> OldStatus, Timestamped<ChargingStationOperatorAdminStatusType> NewStatus);
 
 
 

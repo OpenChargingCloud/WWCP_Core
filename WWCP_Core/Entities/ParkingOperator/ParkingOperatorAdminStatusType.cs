@@ -21,7 +21,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The admin status of an Charging Station Operator.
     /// </summary>
-    public enum ChargingStationOperatorAdminStatusType
+    public enum ParkingOperatorAdminStatusType
     {
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace org.GraphDefined.WWCP
         /// The charging station operator was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownChargingStationOperator  = 3
+        UnknownParkingOperator  = 3
 
     }
 

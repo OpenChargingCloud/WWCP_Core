@@ -26,8 +26,8 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-    public delegate IRemoteEMobilityProvider RemoteEMobilityProviderCreatorDelegate(EMobilityProvider EMobilityProvider);
+    public delegate IRemoteChargingPool RemoteChargingPoolCreatorDelegate(ChargingPool ChargingPool);
 
-    public delegate String EMobilityProviderNameSelectorDelegate(I18NString I18NText);
+    public delegate String ChargingPoolNameSelectorDelegate(I18NString I18NText);
 
 }

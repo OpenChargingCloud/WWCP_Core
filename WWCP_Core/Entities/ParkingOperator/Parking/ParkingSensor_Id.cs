@@ -25,11 +25,11 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The unique identification of an Electric Vehicle Parking Spot (EVPS Id).
+    /// The unique identification of a parking sensor.
     /// </summary>
-    public class ParkingSpot_Id : IId,
-                                  IEquatable<ParkingSpot_Id>,
-                                  IComparable<ParkingSpot_Id>
+    public class ParkingSensor_Id : IId,
+                                    IEquatable<ParkingSensor_Id>,
+                                    IComparable<ParkingSensor_Id>
 
     {
 
@@ -47,13 +47,13 @@ namespace org.GraphDefined.WWCP
         #region New
 
         /// <summary>
-        /// Generate a new unique identification of an Electric Vehicle Parking Spot (EVPS Id).
+        /// Generate a new unique identification of an Electric Vehicle parking space (EVPS Id).
         /// </summary>
-        public static ParkingSpot_Id New
+        public static ParkingSensor_Id New
         {
             get
             {
-                return new ParkingSpot_Id(Guid.NewGuid().ToString());
+                return new ParkingSensor_Id(Guid.NewGuid().ToString());
             }
         }
 
@@ -79,10 +79,9 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new Electric Vehicle Parking Spot (EVPS Id)
-        /// based on the given string.
+        /// Generate a new parking sensor based on the given string.
         /// </summary>
-        private ParkingSpot_Id(String String)
+        private ParkingSensor_Id(String String)
         {
             _Id = String.Trim();
         }
@@ -93,12 +92,12 @@ namespace org.GraphDefined.WWCP
         #region Parse(Text)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle Parking Spot identification (EVPS Id).
+        /// Parse the given string as a parking sensor identification.
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Vehicle Parking Spot identification.</param>
-        public static ParkingSpot_Id Parse(String Text)
+        /// <param name="Text">A text representation of a parking sensor identification.</param>
+        public static ParkingSensor_Id Parse(String Text)
         {
-            return new ParkingSpot_Id(Text);
+            return new ParkingSensor_Id(Text);
         }
 
         #endregion
@@ -106,20 +105,20 @@ namespace org.GraphDefined.WWCP
         #region TryParse(Text, out ChargingPoolId)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle Parking Spot identification (EVPS Id).
+        /// Parse the given string as a parking sensor identification.
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Vehicle Parking Spot identification.</param>
-        /// <param name="ParkingSpotId">The parsed Electric Vehicle Parking Spot identification.</param>
-        public static Boolean TryParse(String Text, out ParkingSpot_Id ParkingSpotId)
+        /// <param name="Text">A text representation of a parking sensor identification.</param>
+        /// <param name="ParkingSpaceId">The parsed parking sensor identification.</param>
+        public static Boolean TryParse(String Text, out ParkingSensor_Id ParkingSpaceId)
         {
             try
             {
-                ParkingSpotId = new ParkingSpot_Id(Text);
+                ParkingSpaceId = new ParkingSensor_Id(Text);
                 return true;
             }
             catch (Exception)
             {
-                ParkingSpotId = null;
+                ParkingSpaceId = null;
                 return false;
             }
         }
@@ -129,13 +128,13 @@ namespace org.GraphDefined.WWCP
         #region Clone
 
         /// <summary>
-        /// Clone this Electric Vehicle Parking Spot identification.
+        /// Clone this parking sensor identification.
         /// </summary>
-        public ParkingSpot_Id Clone
+        public ParkingSensor_Id Clone
         {
             get
             {
-                return new ParkingSpot_Id(_Id);
+                return new ParkingSensor_Id(_Id);
             }
         }
 
@@ -152,7 +151,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVPS_Id1">A EVPS_Id.</param>
         /// <param name="EVPS_Id2">Another EVPS_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ParkingSpot_Id EVPS_Id1, ParkingSpot_Id EVPS_Id2)
+        public static Boolean operator == (ParkingSensor_Id EVPS_Id1, ParkingSensor_Id EVPS_Id2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -177,7 +176,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVPS_Id1">A EVPS_Id.</param>
         /// <param name="EVPS_Id2">Another EVPS_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ParkingSpot_Id EVPS_Id1, ParkingSpot_Id EVPS_Id2)
+        public static Boolean operator != (ParkingSensor_Id EVPS_Id1, ParkingSensor_Id EVPS_Id2)
         {
             return !(EVPS_Id1 == EVPS_Id2);
         }
@@ -192,7 +191,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVPS_Id1">A EVPS_Id.</param>
         /// <param name="EVPS_Id2">Another EVPS_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ParkingSpot_Id EVPS_Id1, ParkingSpot_Id EVPS_Id2)
+        public static Boolean operator < (ParkingSensor_Id EVPS_Id1, ParkingSensor_Id EVPS_Id2)
         {
 
             if ((Object) EVPS_Id1 == null)
@@ -212,7 +211,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVPS_Id1">A EVPS_Id.</param>
         /// <param name="EVPS_Id2">Another EVPS_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ParkingSpot_Id EVPS_Id1, ParkingSpot_Id EVPS_Id2)
+        public static Boolean operator <= (ParkingSensor_Id EVPS_Id1, ParkingSensor_Id EVPS_Id2)
         {
             return !(EVPS_Id1 > EVPS_Id2);
         }
@@ -227,7 +226,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVPS_Id1">A EVPS_Id.</param>
         /// <param name="EVPS_Id2">Another EVPS_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ParkingSpot_Id EVPS_Id1, ParkingSpot_Id EVPS_Id2)
+        public static Boolean operator > (ParkingSensor_Id EVPS_Id1, ParkingSensor_Id EVPS_Id2)
         {
 
             if ((Object) EVPS_Id1 == null)
@@ -247,7 +246,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVPS_Id1">A EVPS_Id.</param>
         /// <param name="EVPS_Id2">Another EVPS_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ParkingSpot_Id EVPS_Id1, ParkingSpot_Id EVPS_Id2)
+        public static Boolean operator >= (ParkingSensor_Id EVPS_Id1, ParkingSensor_Id EVPS_Id2)
         {
             return !(EVPS_Id1 < EVPS_Id2);
         }
@@ -271,7 +270,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an EVPS_Id.
-            var EVPS_Id = Object as ParkingSpot_Id;
+            var EVPS_Id = Object as ParkingSensor_Id;
             if ((Object) EVPS_Id == null)
                 throw new ArgumentException("The given object is not a EVPS_Id!");
 
@@ -287,7 +286,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="EVPS_Id">An object to compare with.</param>
-        public Int32 CompareTo(ParkingSpot_Id EVPS_Id)
+        public Int32 CompareTo(ParkingSensor_Id EVPS_Id)
         {
 
             if ((Object) EVPS_Id == null)
@@ -324,7 +323,7 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is an EVPS_Id.
-            var EVPS_Id = Object as ParkingSpot_Id;
+            var EVPS_Id = Object as ParkingSensor_Id;
             if ((Object) EVPS_Id == null)
                 return false;
 
@@ -341,7 +340,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVPS_Id">An electric vehicle charging service plan identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ParkingSpot_Id EVPS_Id)
+        public Boolean Equals(ParkingSensor_Id EVPS_Id)
         {
 
             if ((Object) EVPS_Id == null)

@@ -15,36 +15,28 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The admin status of an Charging Station Operator.
+    /// A charging station operator exception.
     /// </summary>
-    public enum ChargingStationOperatorAdminStatusType
+    public class ParkingOperatorException : WWCPException
     {
 
-        /// <summary>
-        /// Unclear or unknown admin status of the charging station operator.
-        /// </summary>
-        Unspecified                     = 0,
+        public ParkingOperatorException(String Message)
+            : base(Message)
+        { }
 
-        /// <summary>
-        /// The charging station operator is under maintenance.
-        /// </summary>
-        OutOfService                    = 1,
-
-        /// <summary>
-        /// The charging station operator is operational.
-        /// </summary>
-        Operational                     = 2,
-
-
-        /// <summary>
-        /// The charging station operator was not found!
-        /// (Only valid within batch-processing)
-        /// </summary>
-        UnknownChargingStationOperator  = 3
+        public ParkingOperatorException(String Message, Exception InnerException)
+            : base(Message, InnerException)
+        { }
 
     }
 

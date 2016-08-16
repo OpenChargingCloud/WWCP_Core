@@ -41,7 +41,7 @@ namespace org.GraphDefined.WWCP
         RemoteCertificateValidationCallback  RemoteCertificateValidator { get; }
         String                               VirtualHost                { get; }
         String                               URIPrefix                  { get; }
-        TimeSpan                             QueryTimeout               { get; }
+        TimeSpan                             RequestTimeout             { get; }
 
     }
 

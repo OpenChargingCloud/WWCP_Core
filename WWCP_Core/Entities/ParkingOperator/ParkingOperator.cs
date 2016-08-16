@@ -37,21 +37,12 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The Charging Station Operator (CSO), also known as Charge Point Operator (CPO),
-    /// is responsible for operating charging pools, charging stations and EVSEs.
-    /// The Charging Station Operator is not neccessarily also the owner of all devices.
-    /// For the delivered service (energy, parking, etc.) the Charging Station Operator
-    /// will either be payed directly by the ev driver or by a contracted e-mobility service provider.
-    /// The Charging Station Operator delivers the locations, characteristics and real-time
-    /// status information of its charging pools/-stations and EVSEs as Linked
-    /// Open Data (LOD) to e-mobility service providers, navigation service
-    /// providers and the public. Pricing information can either be public
-    /// information or part of business-to-business contracts.
+    /// The parking operator is responsible for operating parking spaces.
     /// </summary>
-    public class ChargingStationOperator : AEMobilityEntity<ChargingStationOperator_Id>,
-                                           IEquatable<ChargingStationOperator>, IComparable<ChargingStationOperator>, IComparable,
-                                           IEnumerable<ChargingPool>,
-                                           IStatus<ChargingStationOperatorStatusType>
+    public class ParkingOperator : AEMobilityEntity<ParkingOperator_Id>,
+                                   IEquatable<ParkingOperator>, IComparable<ParkingOperator>, IComparable,
+                                   IEnumerable<ChargingPool>,
+                                   IStatus<ParkingOperatorStatusType>
     {
 
         #region Data
@@ -345,7 +336,7 @@ namespace org.GraphDefined.WWCP
         /// The current admin status.
         /// </summary>
         [Optional]
-        public Timestamped<ChargingStationOperatorAdminStatusType> AdminStatus
+        public Timestamped<ParkingOperatorAdminStatusType> AdminStatus
 
             => _AdminStatusSchedule.CurrentStatus;
 
@@ -353,13 +344,13 @@ namespace org.GraphDefined.WWCP
 
         #region AdminStatusSchedule
 
-        private StatusSchedule<ChargingStationOperatorAdminStatusType> _AdminStatusSchedule;
+        private StatusSchedule<ParkingOperatorAdminStatusType> _AdminStatusSchedule;
 
         /// <summary>
         /// The admin status schedule.
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<ChargingStationOperatorAdminStatusType>> AdminStatusSchedule
+        public IEnumerable<Timestamped<ParkingOperatorAdminStatusType>> AdminStatusSchedule
 
             => _AdminStatusSchedule;
 
@@ -372,7 +363,7 @@ namespace org.GraphDefined.WWCP
         /// The current status.
         /// </summary>
         [Optional]
-        public Timestamped<ChargingStationOperatorStatusType> Status
+        public Timestamped<ParkingOperatorStatusType> Status
 
             => _StatusSchedule.CurrentStatus;
 
@@ -380,13 +371,13 @@ namespace org.GraphDefined.WWCP
 
         #region StatusSchedule
 
-        private StatusSchedule<ChargingStationOperatorStatusType> _StatusSchedule;
+        private StatusSchedule<ParkingOperatorStatusType> _StatusSchedule;
 
         /// <summary>
         /// The status schedule.
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<ChargingStationOperatorStatusType>> StatusSchedule
+        public IEnumerable<Timestamped<ParkingOperatorStatusType>> StatusSchedule
 
             => _StatusSchedule;
 
@@ -400,7 +391,7 @@ namespace org.GraphDefined.WWCP
         /// The remote charging station operator.
         /// </summary>
         [Optional]
-        public IRemoteChargingStationOperator  RemoteChargingStationOperator    { get; }
+        public IRemoteParkingOperator  RemoteParkingOperator    { get; }
 
 
         /// <summary>
@@ -418,7 +409,7 @@ namespace org.GraphDefined.WWCP
         /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public delegate void OnInvalidEVSEIdAddedDelegate(DateTime Timestamp, ChargingStationOperator ChargingStationOperator, EVSE_Id EVSEId);
+        public delegate void OnInvalidEVSEIdAddedDelegate(DateTime Timestamp, ParkingOperator ParkingOperator, EVSE_Id EVSEId);
 
         /// <summary>
         /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
@@ -433,7 +424,7 @@ namespace org.GraphDefined.WWCP
         /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public delegate void OnInvalidEVSEIdRemovedDelegate(DateTime Timestamp, ChargingStationOperator ChargingStationOperator, EVSE_Id EVSEId);
+        public delegate void OnInvalidEVSEIdRemovedDelegate(DateTime Timestamp, ParkingOperator ParkingOperator, EVSE_Id EVSEId);
 
         /// <summary>
         /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
@@ -454,14 +445,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="Name">The offical (multi-language) name of the EVSE Operator.</param>
         /// <param name="Description">An optional (multi-language) description of the EVSE Operator.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        internal ChargingStationOperator(ChargingStationOperator_Id                     Id,
+        internal ParkingOperator(ParkingOperator_Id                     Id,
                                          RoamingNetwork                                 RoamingNetwork,
-                                         Action<ChargingStationOperator>                Configurator                          = null,
-                                         RemoteChargingStationOperatorCreatorDelegate   RemoteChargingStationOperatorCreator  = null,
+                                         Action<ParkingOperator>                Configurator                          = null,
+                                         RemoteParkingOperatorCreatorDelegate   RemoteParkingOperatorCreator  = null,
                                          I18NString                                     Name                                  = null,
                                          I18NString                                     Description                           = null,
-                                         ChargingStationOperatorAdminStatusType         AdminStatus                           = ChargingStationOperatorAdminStatusType.Operational,
-                                         ChargingStationOperatorStatusType              Status                                = ChargingStationOperatorStatusType.Available,
+                                         ParkingOperatorAdminStatusType         AdminStatus                           = ParkingOperatorAdminStatusType.Operational,
+                                         ParkingOperatorStatusType              Status                                = ParkingOperatorStatusType.Available,
                                          UInt16                                         MaxAdminStatusListSize                = DefaultMaxAdminStatusListSize,
                                          UInt16                                         MaxStatusListSize                     = DefaultMaxStatusListSize)
 
@@ -504,13 +495,13 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._ChargingPools               = new EntityHashSet<ChargingStationOperator, ChargingPool_Id,         ChargingPool>(this);
-            this._ChargingStationGroups       = new EntityHashSet<ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
+            this._ChargingPools               = new EntityHashSet<ParkingOperator, ChargingPool_Id,         ChargingPool>(this);
+            this._ChargingStationGroups       = new EntityHashSet<ParkingOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
 
-            this._AdminStatusSchedule         = new StatusSchedule<ChargingStationOperatorAdminStatusType>();
+            this._AdminStatusSchedule         = new StatusSchedule<ParkingOperatorAdminStatusType>();
             this._AdminStatusSchedule.Insert(AdminStatus);
 
-            this._StatusSchedule              = new StatusSchedule<ChargingStationOperatorStatusType>();
+            this._StatusSchedule              = new StatusSchedule<ParkingOperatorStatusType>();
             this._StatusSchedule.Insert(Status);
 
             this._ChargingReservations        = new ConcurrentDictionary<ChargingReservation_Id, ChargingPool>();
@@ -521,12 +512,12 @@ namespace org.GraphDefined.WWCP
             #region Init events
 
             // Charging Station Operator events
-            this.ChargingPoolAddition          = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
-            this.ChargingPoolRemoval           = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolAddition          = new VotingNotificator<DateTime, ParkingOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolRemoval           = new VotingNotificator<DateTime, ParkingOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
 
             // Charging station group events
-            this.ChargingStationGroupAddition  = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
-            this.ChargingStationGroupRemoval   = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationGroupAddition  = new VotingNotificator<DateTime, ParkingOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationGroupRemoval   = new VotingNotificator<DateTime, ParkingOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
 
             // Charging pool events
             this.ChargingStationAddition       = new VotingNotificator<DateTime, ChargingPool,    ChargingStation,      Boolean>(() => new VetoVote(), true);
@@ -544,12 +535,12 @@ namespace org.GraphDefined.WWCP
 
             #region Link events
 
-            // ChargingStationOperator events
-            this.OnChargingPoolAddition.   OnVoting       += (timestamp, ChargingStationOperator, pool, vote) => RoamingNetwork.ChargingPoolAddition.   SendVoting      (timestamp, ChargingStationOperator, pool, vote);
-            this.OnChargingPoolAddition.   OnNotification += (timestamp, ChargingStationOperator, pool)       => RoamingNetwork.ChargingPoolAddition.   SendNotification(timestamp, ChargingStationOperator, pool);
+            // ParkingOperator events
+            //this.OnChargingPoolAddition.   OnVoting       += (timestamp, ParkingOperator, pool, vote) => RoamingNetwork.ChargingPoolAddition.   SendVoting      (timestamp, ParkingOperator, pool, vote);
+            //this.OnChargingPoolAddition.   OnNotification += (timestamp, ParkingOperator, pool)       => RoamingNetwork.ChargingPoolAddition.   SendNotification(timestamp, ParkingOperator, pool);
 
-            this.OnChargingPoolRemoval.    OnVoting       += (timestamp, ChargingStationOperator, pool, vote) => RoamingNetwork.ChargingPoolRemoval.    SendVoting      (timestamp, ChargingStationOperator, pool, vote);
-            this.OnChargingPoolRemoval.    OnNotification += (timestamp, ChargingStationOperator, pool)       => RoamingNetwork.ChargingPoolRemoval.    SendNotification(timestamp, ChargingStationOperator, pool);
+            //this.OnChargingPoolRemoval.    OnVoting       += (timestamp, ParkingOperator, pool, vote) => RoamingNetwork.ChargingPoolRemoval.    SendVoting      (timestamp, ParkingOperator, pool, vote);
+            //this.OnChargingPoolRemoval.    OnNotification += (timestamp, ParkingOperator, pool)       => RoamingNetwork.ChargingPoolRemoval.    SendNotification(timestamp, ParkingOperator, pool);
 
             // ChargingPool events
             this.OnChargingStationAddition.OnVoting       += (timestamp, pool, station, vote)      => RoamingNetwork.ChargingStationAddition.SendVoting      (timestamp, pool, station, vote);
@@ -578,7 +569,7 @@ namespace org.GraphDefined.WWCP
 
             Configurator?.Invoke(this);
 
-            this.RemoteChargingStationOperator = RemoteChargingStationOperatorCreator?.Invoke(this);
+            this.RemoteParkingOperator = RemoteParkingOperatorCreator?.Invoke(this);
 
         }
 
@@ -592,17 +583,17 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever the static data changed.
         /// </summary>
-        public event OnChargingStationOperatorDataChangedDelegate         OnDataChanged;
+        public event OnParkingOperatorDataChangedDelegate         OnDataChanged;
 
         /// <summary>
         /// An event fired whenever the admin status changed.
         /// </summary>
-        public event OnChargingStationOperatorAdminStatusChangedDelegate  OnAdminStatusChanged;
+        public event OnParkingOperatorAdminStatusChangedDelegate  OnAdminStatusChanged;
 
         /// <summary>
         /// An event fired whenever the dynamic status changed.
         /// </summary>
-        public event OnChargingStationOperatorStatusChangedDelegate       OnStatusChanged;
+        public event OnParkingOperatorStatusChangedDelegate       OnStatusChanged;
 
         #endregion
 
@@ -613,7 +604,7 @@ namespace org.GraphDefined.WWCP
         /// Set the admin status.
         /// </summary>
         /// <param name="NewAdminStatus">A new admin status.</param>
-        public void SetAdminStatus(ChargingStationOperatorAdminStatusType  NewAdminStatus)
+        public void SetAdminStatus(ParkingOperatorAdminStatusType  NewAdminStatus)
         {
 
             _AdminStatusSchedule.Insert(NewAdminStatus);
@@ -628,7 +619,7 @@ namespace org.GraphDefined.WWCP
         /// Set the admin status.
         /// </summary>
         /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<ChargingStationOperatorAdminStatusType> NewTimestampedAdminStatus)
+        public void SetAdminStatus(Timestamped<ParkingOperatorAdminStatusType> NewTimestampedAdminStatus)
         {
 
             _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
@@ -644,7 +635,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="NewAdminStatus">A new admin status.</param>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetAdminStatus(ChargingStationOperatorAdminStatusType  NewAdminStatus,
+        public void SetAdminStatus(ParkingOperatorAdminStatusType  NewAdminStatus,
                                    DateTime                     Timestamp)
         {
 
@@ -661,7 +652,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
         /// <param name="ChangeMethod">The change mode.</param>
-        public void SetAdminStatus(IEnumerable<Timestamped<ChargingStationOperatorAdminStatusType>>  NewAdminStatusList,
+        public void SetAdminStatus(IEnumerable<Timestamped<ParkingOperatorAdminStatusType>>  NewAdminStatusList,
                                    ChangeMethods                                          ChangeMethod = ChangeMethods.Replace)
         {
 
@@ -691,7 +682,7 @@ namespace org.GraphDefined.WWCP
 
             var OnDataChangedLocal = OnDataChanged;
             if (OnDataChangedLocal != null)
-                await OnDataChangedLocal(Timestamp, Sender as ChargingStationOperator, PropertyName, OldValue, NewValue);
+                await OnDataChangedLocal(Timestamp, Sender as ParkingOperator, PropertyName, OldValue, NewValue);
 
         }
 
@@ -706,8 +697,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
         internal async Task UpdateStatus(DateTime                             Timestamp,
-                                         Timestamped<ChargingStationOperatorStatusType>  OldStatus,
-                                         Timestamped<ChargingStationOperatorStatusType>  NewStatus)
+                                         Timestamped<ParkingOperatorStatusType>  OldStatus,
+                                         Timestamped<ParkingOperatorStatusType>  NewStatus)
         {
 
             var OnStatusChangedLocal = OnStatusChanged;
@@ -727,8 +718,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
         internal async Task UpdateAdminStatus(DateTime                                  Timestamp,
-                                              Timestamped<ChargingStationOperatorAdminStatusType>  OldStatus,
-                                              Timestamped<ChargingStationOperatorAdminStatusType>  NewStatus)
+                                              Timestamped<ParkingOperatorAdminStatusType>  OldStatus,
+                                              Timestamped<ParkingOperatorAdminStatusType>  NewStatus)
         {
 
             var OnAdminStatusChangedLocal = OnAdminStatusChanged;
@@ -743,7 +734,7 @@ namespace org.GraphDefined.WWCP
 
         #region AddDataLicense(params DataLicense)
 
-        public ChargingStationOperator AddDataLicense(params DataLicense[] DataLicenses)
+        public ParkingOperator AddDataLicense(params DataLicense[] DataLicenses)
         {
 
             if (DataLicenses.Length > 0)
@@ -762,12 +753,12 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingPoolAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean> ChargingPoolAddition;
+        internal readonly IVotingNotificator<DateTime, ParkingOperator, ChargingPool, Boolean> ChargingPoolAddition;
 
         /// <summary>
         /// Called whenever an charging pool will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, ChargingPool, Boolean> OnChargingPoolAddition
+        public IVotingSender<DateTime, ParkingOperator, ChargingPool, Boolean> OnChargingPoolAddition
 
             => ChargingPoolAddition;
 
@@ -775,12 +766,12 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingPoolRemoval
 
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean> ChargingPoolRemoval;
+        internal readonly IVotingNotificator<DateTime, ParkingOperator, ChargingPool, Boolean> ChargingPoolRemoval;
 
         /// <summary>
         /// Called whenever an charging pool will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, ChargingPool, Boolean> OnChargingPoolRemoval
+        public IVotingSender<DateTime, ParkingOperator, ChargingPool, Boolean> OnChargingPoolRemoval
 
             => ChargingPoolRemoval;
 
@@ -789,7 +780,7 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingPools
 
-        private EntityHashSet<ChargingStationOperator, ChargingPool_Id, ChargingPool> _ChargingPools;
+        private EntityHashSet<ParkingOperator, ChargingPool_Id, ChargingPool> _ChargingPools;
 
         public IEnumerable<ChargingPool> ChargingPools
 
@@ -819,82 +810,82 @@ namespace org.GraphDefined.WWCP
 
         #region CreateNewChargingPool(ChargingPoolId = null, Configurator = null, OnSuccess = null, OnError = null)
 
-        /// <summary>
-        /// Create and register a new charging pool having the given
-        /// unique charging pool identification.
-        /// </summary>
-        /// <param name="ChargingPoolId">The unique identification of the new charging pool.</param>
-        /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public ChargingPool CreateNewChargingPool(ChargingPool_Id                                   ChargingPoolId             = null,
-                                                  Action<ChargingPool>                              Configurator               = null,
-                                                  RemoteChargingPoolCreatorDelegate                 RemoteChargingPoolCreator  = null,
-                                                  ChargingPoolAdminStatusType                       AdminStatus                = ChargingPoolAdminStatusType.Operational,
-                                                  ChargingPoolStatusType                            Status                     = ChargingPoolStatusType.Available,
-                                                  Action<ChargingPool>                              OnSuccess                  = null,
-                                                  Action<ChargingStationOperator, ChargingPool_Id>  OnError                    = null)
+        ///// <summary>
+        ///// Create and register a new charging pool having the given
+        ///// unique charging pool identification.
+        ///// </summary>
+        ///// <param name="ChargingPoolId">The unique identification of the new charging pool.</param>
+        ///// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
+        ///// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
+        ///// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
+        //public ChargingPool CreateNewChargingPool(ChargingPool_Id                                   ChargingPoolId             = null,
+        //                                          Action<ChargingPool>                              Configurator               = null,
+        //                                          RemoteChargingPoolCreatorDelegate                 RemoteChargingPoolCreator  = null,
+        //                                          ChargingPoolAdminStatusType                       AdminStatus                = ChargingPoolAdminStatusType.Operational,
+        //                                          ChargingPoolStatusType                            Status                     = ChargingPoolStatusType.Available,
+        //                                          Action<ChargingPool>                              OnSuccess                  = null,
+        //                                          Action<ParkingOperator, ChargingPool_Id>  OnError                    = null)
 
-        {
+        //{
 
-            #region Initial checks
+        //    #region Initial checks
 
-            if (ChargingPoolId == null)
-                ChargingPoolId = ChargingPool_Id.Random(this.Id);
+        //    if (ChargingPoolId == null)
+        //        ChargingPoolId = ChargingPool_Id.Random(this.Id);
 
-            // Do not throw an exception when an OnError delegate was given!
-            if (_ChargingPools.Any(pool => pool.Id == ChargingPoolId))
-            {
-                if (OnError == null)
-                    throw new ChargingPoolAlreadyExists(ChargingPoolId, this.Id);
-                else
-                    OnError?.Invoke(this, ChargingPoolId);
-            }
+        //    // Do not throw an exception when an OnError delegate was given!
+        //    if (_ChargingPools.Any(pool => pool.Id == ChargingPoolId))
+        //    {
+        //        if (OnError == null)
+        //            throw new ChargingPoolAlreadyExists(ChargingPoolId, this.Id);
+        //        else
+        //            OnError?.Invoke(this, ChargingPoolId);
+        //    }
 
-            #endregion
+        //    #endregion
 
-            var _ChargingPool = new ChargingPool(ChargingPoolId,
-                                                 this,
-                                                 Configurator,
-                                                 RemoteChargingPoolCreator,
-                                                 AdminStatus,
-                                                 Status);
-
-
-            if (ChargingPoolAddition.SendVoting(DateTime.Now, this, _ChargingPool))
-            {
-                if (_ChargingPools.TryAdd(_ChargingPool))
-                {
-
-                    _ChargingPool.OnEVSEDataChanged                    += UpdateEVSEData;
-                    _ChargingPool.OnEVSEStatusChanged                  += UpdateEVSEStatus;
-                    _ChargingPool.OnEVSEAdminStatusChanged             += UpdateEVSEAdminStatus;
-
-                    _ChargingPool.OnChargingStationDataChanged         += UpdateChargingStationData;
-                    _ChargingPool.OnChargingStationStatusChanged       += UpdateChargingStationStatus;
-                    _ChargingPool.OnChargingStationAdminStatusChanged  += UpdateChargingStationAdminStatus;
-
-                    _ChargingPool.OnDataChanged                        += UpdateChargingPoolData;
-                    _ChargingPool.OnStatusChanged                      += UpdateChargingPoolStatus;
-                    _ChargingPool.OnAdminStatusChanged                 += UpdateChargingPoolAdminStatus;
-
-                    _ChargingPool.OnNewReservation                     += SendNewReservation;
-                    _ChargingPool.OnReservationCancelled               += SendOnReservationCancelled;
-                    _ChargingPool.OnNewChargingSession                 += SendNewChargingSession;
-                    _ChargingPool.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
+        //    var _ChargingPool = new ChargingPool(ChargingPoolId,
+        //                                         this,
+        //                                         Configurator,
+        //                                         RemoteChargingPoolCreator,
+        //                                         AdminStatus,
+        //                                         Status);
 
 
-                    OnSuccess?.Invoke(_ChargingPool);
-                    ChargingPoolAddition.SendNotification(DateTime.Now, this, _ChargingPool);
+        //    if (ChargingPoolAddition.SendVoting(DateTime.Now, this, _ChargingPool))
+        //    {
+        //        if (_ChargingPools.TryAdd(_ChargingPool))
+        //        {
 
-                    return _ChargingPool;
+        //            _ChargingPool.OnEVSEDataChanged                    += UpdateEVSEData;
+        //            _ChargingPool.OnEVSEStatusChanged                  += UpdateEVSEStatus;
+        //            _ChargingPool.OnEVSEAdminStatusChanged             += UpdateEVSEAdminStatus;
 
-                }
-            }
+        //            _ChargingPool.OnChargingStationDataChanged         += UpdateChargingStationData;
+        //            _ChargingPool.OnChargingStationStatusChanged       += UpdateChargingStationStatus;
+        //            _ChargingPool.OnChargingStationAdminStatusChanged  += UpdateChargingStationAdminStatus;
 
-            return null;
+        //            _ChargingPool.OnDataChanged                        += UpdateChargingPoolData;
+        //            _ChargingPool.OnStatusChanged                      += UpdateChargingPoolStatus;
+        //            _ChargingPool.OnAdminStatusChanged                 += UpdateChargingPoolAdminStatus;
 
-        }
+        //            _ChargingPool.OnNewReservation                     += SendNewReservation;
+        //            _ChargingPool.OnReservationCancelled               += SendOnReservationCancelled;
+        //            _ChargingPool.OnNewChargingSession                 += SendNewChargingSession;
+        //            _ChargingPool.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
+
+
+        //            OnSuccess?.Invoke(_ChargingPool);
+        //            ChargingPoolAddition.SendNotification(DateTime.Now, this, _ChargingPool);
+
+        //            return _ChargingPool;
+
+        //        }
+        //    }
+
+        //    return null;
+
+        //}
 
         #endregion
 
@@ -1049,8 +1040,8 @@ namespace org.GraphDefined.WWCP
             //
             //    RoamingNetwork.
             //        SendChargingPoolAdminStatusDiff(new ChargingPoolAdminStatusDiff(DateTime.Now,
-            //                                               ChargingStationOperatorId:    Id,
-            //                                               ChargingStationOperatorName:  Name,
+            //                                               ParkingOperatorId:    Id,
+            //                                               ParkingOperatorName:  Name,
             //                                               NewStatus:         new List<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>(),
             //                                               ChangedStatus:     new List<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>() {
             //                                                                          new KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>(ChargingPoolId, NewStatus.Value)
@@ -1372,8 +1363,8 @@ namespace org.GraphDefined.WWCP
             //
             //    RoamingNetwork.
             //        SendChargingStationAdminStatusDiff(new ChargingStationAdminStatusDiff(DateTime.Now,
-            //                                               ChargingStationOperatorId:    Id,
-            //                                               ChargingStationOperatorName:  Name,
+            //                                               ParkingOperatorId:    Id,
+            //                                               ParkingOperatorName:  Name,
             //                                               NewStatus:         new List<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>(),
             //                                               ChangedStatus:     new List<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>() {
             //                                                                          new KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>(ChargingStationId, NewStatus.Value)
@@ -1510,12 +1501,12 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingStationGroupAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingStationGroup, Boolean> ChargingStationGroupAddition;
+        internal readonly IVotingNotificator<DateTime, ParkingOperator, ChargingStationGroup, Boolean> ChargingStationGroupAddition;
 
         /// <summary>
         /// Called whenever a charging station group will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, ChargingStationGroup, Boolean> OnChargingStationGroupAddition
+        public IVotingSender<DateTime, ParkingOperator, ChargingStationGroup, Boolean> OnChargingStationGroupAddition
 
             => ChargingStationGroupAddition;
 
@@ -1523,12 +1514,12 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingStationGroupRemoval
 
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingStationGroup, Boolean> ChargingStationGroupRemoval;
+        internal readonly IVotingNotificator<DateTime, ParkingOperator, ChargingStationGroup, Boolean> ChargingStationGroupRemoval;
 
         /// <summary>
         /// Called whenever an charging station group will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, ChargingStationGroup, Boolean> OnChargingStationGroupRemoval
+        public IVotingSender<DateTime, ParkingOperator, ChargingStationGroup, Boolean> OnChargingStationGroupRemoval
 
             => ChargingStationGroupRemoval;
 
@@ -1537,7 +1528,7 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingStationGroups
 
-        private readonly EntityHashSet<ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup> _ChargingStationGroups;
+        private readonly EntityHashSet<ParkingOperator, ChargingStationGroup_Id, ChargingStationGroup> _ChargingStationGroups;
 
         /// <summary>
         /// All charging station groups registered within this Charging Station Operator.
@@ -1551,88 +1542,88 @@ namespace org.GraphDefined.WWCP
         #region CreateNewChargingStationGroup(ChargingStationGroupId = null, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
-        /// Create and register a new charging group having the given
-        /// unique charging group identification.
-        /// </summary>
-        /// <param name="ChargingStationGroupId">The unique identification of the new charging group.</param>
-        /// <param name="Configurator">An optional delegate to configure the new charging group before its successful creation.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging group after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging group failed.</param>
-        public ChargingStationGroup CreateNewChargingStationGroup(ChargingStationGroup_Id                                   ChargingStationGroupId  = null,
-                                                                  Action<ChargingStationGroup>                              Configurator            = null,
-                                                                  Action<ChargingStationGroup>                              OnSuccess               = null,
-                                                                  Action<ChargingStationOperator, ChargingStationGroup_Id>  OnError                 = null)
-        {
+        ///// Create and register a new charging group having the given
+        ///// unique charging group identification.
+        ///// </summary>
+        ///// <param name="ChargingStationGroupId">The unique identification of the new charging group.</param>
+        ///// <param name="Configurator">An optional delegate to configure the new charging group before its successful creation.</param>
+        ///// <param name="OnSuccess">An optional delegate to configure the new charging group after its successful creation.</param>
+        ///// <param name="OnError">An optional delegate to be called whenever the creation of the charging group failed.</param>
+        //public ChargingStationGroup CreateNewChargingStationGroup(ChargingStationGroup_Id                                   ChargingStationGroupId  = null,
+        //                                                          Action<ChargingStationGroup>                              Configurator            = null,
+        //                                                          Action<ChargingStationGroup>                              OnSuccess               = null,
+        //                                                          Action<ParkingOperator, ChargingStationGroup_Id>  OnError                 = null)
+        //{
 
-            #region Initial checks
+        //    #region Initial checks
 
-            if (ChargingStationGroupId == null)
-                ChargingStationGroupId = ChargingStationGroup_Id.Random(this.Id);
+        //    if (ChargingStationGroupId == null)
+        //        ChargingStationGroupId = ChargingStationGroup_Id.Random(this.Id);
 
-            // Do not throw an exception when an OnError delegate was given!
-            if (_ChargingStationGroups.Contains(ChargingStationGroupId))
-            {
-                if (OnError == null)
-                    throw new ChargingStationGroupAlreadyExists(ChargingStationGroupId, this.Id);
-                else
-                    OnError?.Invoke(this, ChargingStationGroupId);
-            }
+        //    // Do not throw an exception when an OnError delegate was given!
+        //    if (_ChargingStationGroups.Contains(ChargingStationGroupId))
+        //    {
+        //        if (OnError == null)
+        //            throw new ChargingStationGroupAlreadyExists(ChargingStationGroupId, this.Id);
+        //        else
+        //            OnError?.Invoke(this, ChargingStationGroupId);
+        //    }
 
-            #endregion
+        //    #endregion
 
-            var _ChargingStationGroup = new ChargingStationGroup(ChargingStationGroupId, this);
+        //    var _ChargingStationGroup = new ChargingStationGroup(ChargingStationGroupId, this);
 
-            if (Configurator != null)
-                Configurator(_ChargingStationGroup);
+        //    if (Configurator != null)
+        //        Configurator(_ChargingStationGroup);
 
-            if (ChargingStationGroupAddition.SendVoting(DateTime.Now, this, _ChargingStationGroup))
-            {
-                if (_ChargingStationGroups.TryAdd(_ChargingStationGroup))
-                {
+        //    if (ChargingStationGroupAddition.SendVoting(DateTime.Now, this, _ChargingStationGroup))
+        //    {
+        //        if (_ChargingStationGroups.TryAdd(_ChargingStationGroup))
+        //        {
 
-                    _ChargingStationGroup.OnEVSEDataChanged                             += UpdateEVSEData;
-                    _ChargingStationGroup.OnEVSEStatusChanged                           += UpdateEVSEStatus;
-                    _ChargingStationGroup.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
+        //            _ChargingStationGroup.OnEVSEDataChanged                             += UpdateEVSEData;
+        //            _ChargingStationGroup.OnEVSEStatusChanged                           += UpdateEVSEStatus;
+        //            _ChargingStationGroup.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
 
-                    _ChargingStationGroup.OnChargingStationDataChanged                  += UpdateChargingStationData;
-                    _ChargingStationGroup.OnChargingStationStatusChanged                += UpdateChargingStationStatus;
-                    _ChargingStationGroup.OnChargingStationAdminStatusChanged           += UpdateChargingStationAdminStatus;
+        //            _ChargingStationGroup.OnChargingStationDataChanged                  += UpdateChargingStationData;
+        //            _ChargingStationGroup.OnChargingStationStatusChanged                += UpdateChargingStationStatus;
+        //            _ChargingStationGroup.OnChargingStationAdminStatusChanged           += UpdateChargingStationAdminStatus;
 
-                    //_ChargingStationGroup.OnDataChanged                                 += UpdateChargingStationGroupData;
-                    //_ChargingStationGroup.OnAdminStatusChanged                          += UpdateChargingStationGroupAdminStatus;
+        //            //_ChargingStationGroup.OnDataChanged                                 += UpdateChargingStationGroupData;
+        //            //_ChargingStationGroup.OnAdminStatusChanged                          += UpdateChargingStationGroupAdminStatus;
 
-                    OnSuccess?.Invoke(_ChargingStationGroup);
-                    ChargingStationGroupAddition.SendNotification(DateTime.Now, this, _ChargingStationGroup);
-                    return _ChargingStationGroup;
+        //            OnSuccess?.Invoke(_ChargingStationGroup);
+        //            ChargingStationGroupAddition.SendNotification(DateTime.Now, this, _ChargingStationGroup);
+        //            return _ChargingStationGroup;
 
-                }
-            }
+        //        }
+        //    }
 
-            return null;
+        //    return null;
 
-        }
+        //}
 
         #endregion
 
         #region GetOrCreateChargingStationGroup(...)
 
-        public ChargingStationGroup GetOrCreateChargingStationGroup(ChargingStationGroup_Id                        ChargingStationGroupId,
-                                                                    Action<ChargingStationGroup>                   Configurator            = null,
-                                                                    Action<ChargingStationGroup>                   OnSuccess               = null,
-                                                                    Action<ChargingStationOperator, ChargingStationGroup_Id>  OnError                 = null)
-        {
+        //public ChargingStationGroup GetOrCreateChargingStationGroup(ChargingStationGroup_Id                        ChargingStationGroupId,
+        //                                                            Action<ChargingStationGroup>                   Configurator            = null,
+        //                                                            Action<ChargingStationGroup>                   OnSuccess               = null,
+        //                                                            Action<ParkingOperator, ChargingStationGroup_Id>  OnError                 = null)
+        //{
 
-            ChargingStationGroup _ChargingStationGroup = null;
+        //    ChargingStationGroup _ChargingStationGroup = null;
 
-            if (_ChargingStationGroups.TryGet(ChargingStationGroupId, out _ChargingStationGroup))
-                return _ChargingStationGroup;
+        //    if (_ChargingStationGroups.TryGet(ChargingStationGroupId, out _ChargingStationGroup))
+        //        return _ChargingStationGroup;
 
-            return CreateNewChargingStationGroup(ChargingStationGroupId,
-                                                 Configurator,
-                                                 OnSuccess,
-                                                 OnError);
+        //    return CreateNewChargingStationGroup(ChargingStationGroupId,
+        //                                         Configurator,
+        //                                         OnSuccess,
+        //                                         OnError);
 
-        }
+        //}
 
         #endregion
 
@@ -1835,84 +1826,84 @@ namespace org.GraphDefined.WWCP
 
         #region CalcEVSEStatusDiff(EVSEStatus, IncludeEVSE = null)
 
-        public EVSEStatusDiff CalcEVSEStatusDiff(Dictionary<EVSE_Id, EVSEStatusType>  EVSEStatus,
-                                                 Func<EVSE, Boolean>                  IncludeEVSE  = null)
-        {
+        //public EVSEStatusDiff CalcEVSEStatusDiff(Dictionary<EVSE_Id, EVSEStatusType>  EVSEStatus,
+        //                                         Func<EVSE, Boolean>                  IncludeEVSE  = null)
+        //{
 
-            if (EVSEStatus == null || EVSEStatus.Count == 0)
-                return new EVSEStatusDiff(DateTime.Now, Id, Name);
+        //    if (EVSEStatus == null || EVSEStatus.Count == 0)
+        //        return new EVSEStatusDiff(DateTime.Now, Id, Name);
 
-            #region Get data...
+        //    #region Get data...
 
-            var EVSEStatusDiff     = new EVSEStatusDiff(DateTime.Now, Id, Name);
+        //    var EVSEStatusDiff     = new EVSEStatusDiff(DateTime.Now, Id, Name);
 
-            // Only ValidEVSEIds!
-            // Do nothing with manual EVSE Ids!
-            var CurrentEVSEStates  = AllEVSEStatus(IncludeEVSE).
-                                         //Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
-                                         //            !ManualEVSEIds.Contains(KVP.Key)).
-                                         ToDictionary(v => v.Key, v => v.Value);
+        //    // Only ValidEVSEIds!
+        //    // Do nothing with manual EVSE Ids!
+        //    var CurrentEVSEStates  = AllEVSEStatus(IncludeEVSE).
+        //                                 //Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
+        //                                 //            !ManualEVSEIds.Contains(KVP.Key)).
+        //                                 ToDictionary(v => v.Key, v => v.Value);
 
-            var OldEVSEIds         = new List<EVSE_Id>(CurrentEVSEStates.Keys);
+        //    var OldEVSEIds         = new List<EVSE_Id>(CurrentEVSEStates.Keys);
 
-            #endregion
+        //    #endregion
 
-            try
-            {
+        //    try
+        //    {
 
-                #region Find new and changed EVSE states
+        //        #region Find new and changed EVSE states
 
-                // Only for ValidEVSEIds!
-                // Do nothing with manual EVSE Ids!
-                foreach (var NewEVSEStatus in EVSEStatus)
-                                                  //Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
-                                                  //            !ManualEVSEIds.Contains(KVP.Key)))
-                {
+        //        // Only for ValidEVSEIds!
+        //        // Do nothing with manual EVSE Ids!
+        //        foreach (var NewEVSEStatus in EVSEStatus)
+        //                                          //Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
+        //                                          //            !ManualEVSEIds.Contains(KVP.Key)))
+        //        {
 
-                    // Add to NewEVSEStates, if new EVSE was found!
-                    if (!CurrentEVSEStates.ContainsKey(NewEVSEStatus.Key))
-                        EVSEStatusDiff.AddNewStatus(NewEVSEStatus);
+        //            // Add to NewEVSEStates, if new EVSE was found!
+        //            if (!CurrentEVSEStates.ContainsKey(NewEVSEStatus.Key))
+        //                EVSEStatusDiff.AddNewStatus(NewEVSEStatus);
 
-                    else
-                    {
+        //            else
+        //            {
 
-                        // Add to CHANGED, if state of known EVSE changed!
-                        if (CurrentEVSEStates[NewEVSEStatus.Key] != NewEVSEStatus.Value)
-                            EVSEStatusDiff.AddChangedStatus(NewEVSEStatus);
+        //                // Add to CHANGED, if state of known EVSE changed!
+        //                if (CurrentEVSEStates[NewEVSEStatus.Key] != NewEVSEStatus.Value)
+        //                    EVSEStatusDiff.AddChangedStatus(NewEVSEStatus);
 
-                        // Remove EVSEId, as it was processed...
-                        OldEVSEIds.Remove(NewEVSEStatus.Key);
+        //                // Remove EVSEId, as it was processed...
+        //                OldEVSEIds.Remove(NewEVSEStatus.Key);
 
-                    }
+        //            }
 
-                }
+        //        }
 
-                #endregion
+        //        #endregion
 
-                #region Delete what is left in OldEVSEIds!
+        //        #region Delete what is left in OldEVSEIds!
 
-                EVSEStatusDiff.AddRemovedId(OldEVSEIds);
+        //        EVSEStatusDiff.AddRemovedId(OldEVSEIds);
 
-                #endregion
+        //        #endregion
 
-                return EVSEStatusDiff;
+        //        return EVSEStatusDiff;
 
-            }
+        //    }
 
-            catch (Exception e)
-            {
+        //    catch (Exception e)
+        //    {
 
-                while (e.InnerException != null)
-                    e = e.InnerException;
+        //        while (e.InnerException != null)
+        //            e = e.InnerException;
 
-                DebugX.Log("GetEVSEStatusDiff led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+        //        DebugX.Log("GetEVSEStatusDiff led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
 
-            }
+        //    }
 
-            // empty!
-            return new EVSEStatusDiff(DateTime.Now, Id, Name);
+        //    // empty!
+        //    return new EVSEStatusDiff(DateTime.Now, Id, Name);
 
-        }
+        //}
 
         #endregion
 
@@ -2288,7 +2279,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnReserveEVSE));
+                e.Log(nameof(ParkingOperator) + "." + nameof(OnReserveEVSE));
             }
 
             #endregion
@@ -2296,11 +2287,11 @@ namespace org.GraphDefined.WWCP
 
             #region Try the remote Charging Station Operator...
 
-            if (RemoteChargingStationOperator != null &&
+            if (RemoteParkingOperator != null &&
                !LocalEVSEIds.Contains(EVSEId))
             {
 
-                result = await RemoteChargingStationOperator.Reserve(EVSEId,
+                result = await RemoteParkingOperator.Reserve(EVSEId,
                                                                       StartTime,
                                                                       Duration,
                                                                       ReservationId,
@@ -2320,7 +2311,7 @@ namespace org.GraphDefined.WWCP
                 if (result.Result == ReservationResultType.Success)
                 {
 
-                    //result.Reservation.ChargingStationOperator = this;
+                    //result.Reservation.ParkingOperator = this;
 
                     var OnNewReservationLocal = OnNewReservation;
                     if (OnNewReservationLocal != null)
@@ -2334,7 +2325,7 @@ namespace org.GraphDefined.WWCP
 
             #region ...else/or try local
 
-            if (RemoteChargingStationOperator == null ||
+            if (RemoteParkingOperator == null ||
                  result             == null ||
                 (result             != null &&
                 (result.Result      == ReservationResultType.UnknownEVSE ||
@@ -2406,7 +2397,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnEVSEReserved));
+                e.Log(nameof(ParkingOperator) + "." + nameof(OnEVSEReserved));
             }
 
             #endregion
@@ -2499,7 +2490,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnReserveChargingStation));
+                e.Log(nameof(ParkingOperator) + "." + nameof(OnReserveChargingStation));
             }
 
             #endregion
@@ -2567,7 +2558,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnChargingStationReserved));
+                e.Log(nameof(ParkingOperator) + "." + nameof(OnChargingStationReserved));
             }
 
             #endregion
@@ -2660,7 +2651,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnReserveChargingPool));
+                e.Log(nameof(ParkingOperator) + "." + nameof(OnReserveChargingPool));
             }
 
             #endregion
@@ -2726,7 +2717,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnChargingPoolReserved));
+                e.Log(nameof(ParkingOperator) + "." + nameof(OnChargingPoolReserved));
             }
 
             #endregion
@@ -3008,7 +2999,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnRemoteEVSEStart));
+                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteEVSEStart));
             }
 
             #endregion
@@ -3016,11 +3007,11 @@ namespace org.GraphDefined.WWCP
 
             #region Try the remote Charging Station Operator...
 
-            if (RemoteChargingStationOperator != null &&
+            if (RemoteParkingOperator != null &&
                !LocalEVSEIds.Contains(EVSEId))
             {
 
-                result = await RemoteChargingStationOperator.RemoteStart(EVSEId,
+                result = await RemoteParkingOperator.RemoteStart(EVSEId,
                                                                           ChargingProductId,
                                                                           ReservationId,
                                                                           SessionId,
@@ -3036,7 +3027,7 @@ namespace org.GraphDefined.WWCP
                 if (result.Result == RemoteStartEVSEResultType.Success)
                 {
 
-                    result.Session.ChargingStationOperator = this;
+             //       result.Session.ParkingOperator = this;
 
                     OnNewChargingSession?.Invoke(DateTime.Now, this, result.Session);
 
@@ -3048,7 +3039,7 @@ namespace org.GraphDefined.WWCP
 
             #region ...else/or try local
 
-            if (RemoteChargingStationOperator == null ||
+            if (RemoteParkingOperator == null ||
                  result             == null ||
                 (result             != null &&
                 (result.Result      == RemoteStartEVSEResultType.UnknownEVSE ||
@@ -3078,7 +3069,7 @@ namespace org.GraphDefined.WWCP
 
                     if (result.Result == RemoteStartEVSEResultType.Success)
                     {
-                        result.Session.ChargingStationOperator = this;
+                        //result.Session.ParkingOperator = this;
                         _ChargingSessions.TryAdd(result.Session.Id, _ChargingPool);
                     }
 
@@ -3117,7 +3108,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnRemoteEVSEStarted));
+                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteEVSEStarted));
             }
 
             #endregion
@@ -3198,7 +3189,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnRemoteChargingStationStart));
+                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteChargingStationStart));
             }
 
             #endregion
@@ -3206,10 +3197,10 @@ namespace org.GraphDefined.WWCP
 
             #region Try remote Charging Station Operator...
 
-            if (RemoteChargingStationOperator != null)
+            if (RemoteParkingOperator != null)
             {
 
-                result = await RemoteChargingStationOperator.RemoteStart(ChargingStationId,
+                result = await RemoteParkingOperator.RemoteStart(ChargingStationId,
                                                                           ChargingProductId,
                                                                           ReservationId,
                                                                           SessionId,
@@ -3226,7 +3217,7 @@ namespace org.GraphDefined.WWCP
 
                 {
 
-                    result.Session.ChargingStationOperator = this;
+                    //result.Session.ParkingOperator = this;
 
                     OnNewChargingSession?.Invoke(DateTime.Now, this, result.Session);
 
@@ -3238,7 +3229,7 @@ namespace org.GraphDefined.WWCP
 
             #region ...else/or try local
 
-            if (RemoteChargingStationOperator == null ||
+            if (RemoteParkingOperator == null ||
                 (result             != null &&
                 (result.Result      == RemoteStartChargingStationResultType.UnknownChargingStation ||
                  result.Result      == RemoteStartChargingStationResultType.Error)))
@@ -3302,7 +3293,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnRemoteChargingStationStarted));
+                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteChargingStationStarted));
             }
 
             #endregion
@@ -3431,7 +3422,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnRemoteStop));
+                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteStop));
             }
 
             #endregion
@@ -3439,10 +3430,10 @@ namespace org.GraphDefined.WWCP
 
             #region Try remote Charging Station Operator...
 
-            if (RemoteChargingStationOperator != null)
+            if (RemoteParkingOperator != null)
             {
 
-                result = await RemoteChargingStationOperator.
+                result = await RemoteParkingOperator.
                                    RemoteStop(SessionId,
                                               ReservationHandling,
                                               ProviderId,
@@ -3474,7 +3465,7 @@ namespace org.GraphDefined.WWCP
 
             #region ...else/or try local
 
-            if (RemoteChargingStationOperator == null ||
+            if (RemoteParkingOperator == null ||
                 (result             != null &&
                 (result.Result      == RemoteStopResultType.InvalidSessionId ||
                  result.Result      == RemoteStopResultType.Error)))
@@ -3527,7 +3518,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnRemoteStopped));
+                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteStopped));
             }
 
             #endregion
@@ -3609,7 +3600,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnRemoteEVSEStop));
+                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteEVSEStop));
             }
 
             #endregion
@@ -3617,11 +3608,11 @@ namespace org.GraphDefined.WWCP
 
             #region Try remote Charging Station Operator...
 
-            if (RemoteChargingStationOperator != null &&
+            if (RemoteParkingOperator != null &&
                !LocalEVSEIds.Contains(EVSEId))
             {
 
-                result = await RemoteChargingStationOperator.
+                result = await RemoteParkingOperator.
                                    RemoteStop(EVSEId,
                                               SessionId,
                                               ReservationHandling,
@@ -3656,7 +3647,7 @@ namespace org.GraphDefined.WWCP
 
             #region ...else/or try local
 
-            if (RemoteChargingStationOperator == null ||
+            if (RemoteParkingOperator == null ||
                  result             == null ||
                 (result             != null &&
                 (result.Result      == RemoteStopEVSEResultType.UnknownEVSE ||
@@ -3734,7 +3725,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnRemoteEVSEStopped));
+                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteEVSEStopped));
             }
 
             #endregion
@@ -3816,7 +3807,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnRemoteChargingStationStop));
+                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteChargingStationStop));
             }
 
             #endregion
@@ -3824,10 +3815,10 @@ namespace org.GraphDefined.WWCP
 
             #region Try remote Charging Station Operator...
 
-            if (RemoteChargingStationOperator != null)
+            if (RemoteParkingOperator != null)
             {
 
-                result = await RemoteChargingStationOperator.
+                result = await RemoteParkingOperator.
                                    RemoteStop(ChargingStationId,
                                               SessionId,
                                               ReservationHandling,
@@ -3862,7 +3853,7 @@ namespace org.GraphDefined.WWCP
 
             #region ...else/or try local
 
-            if (RemoteChargingStationOperator == null ||
+            if (RemoteParkingOperator == null ||
                 (result             != null &&
                 (result.Result      == RemoteStopChargingStationResultType.UnknownChargingStation ||
                  result.Result      == RemoteStopChargingStationResultType.InvalidSessionId ||
@@ -3918,7 +3909,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStationOperator) + "." + nameof(OnRemoteChargingStationStopped));
+                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteChargingStationStopped));
             }
 
             #endregion
@@ -3945,7 +3936,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region IComparable<ChargingStationOperator> Members
+        #region IComparable<ParkingOperator> Members
 
         #region CompareTo(Object)
 
@@ -3960,7 +3951,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an EVSE_Operator.
-            var EVSE_Operator = Object as ChargingStationOperator;
+            var EVSE_Operator = Object as ParkingOperator;
             if ((Object) EVSE_Operator == null)
                 throw new ArgumentException("The given object is not an EVSE_Operator!");
 
@@ -3976,7 +3967,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="Operator">An Charging Station Operator object to compare with.</param>
-        public Int32 CompareTo(ChargingStationOperator Operator)
+        public Int32 CompareTo(ParkingOperator Operator)
         {
 
             if ((Object) Operator == null)
@@ -3990,7 +3981,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<ChargingStationOperator> Members
+        #region IEquatable<ParkingOperator> Members
 
         #region Equals(Object)
 
@@ -4005,8 +3996,8 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an ChargingStationOperator.
-            var EVSE_Operator = Object as ChargingStationOperator;
+            // Check if the given object is an ParkingOperator.
+            var EVSE_Operator = Object as ParkingOperator;
             if ((Object) EVSE_Operator == null)
                 return false;
 
@@ -4023,7 +4014,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Operator">An Charging Station Operator to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingStationOperator Operator)
+        public Boolean Equals(ParkingOperator Operator)
         {
 
             if ((Object) Operator == null)

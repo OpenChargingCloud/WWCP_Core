@@ -19,56 +19,42 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The current status of a parking spot.
+    /// The current status of a parking sensor.
     /// </summary>
-    public enum ParkingSpotStatusType
+    public enum ParkingSensorStatusType
     {
 
         /// <summary>
-        /// Unclear or unknown status of the parking spot.
+        /// Unclear or unknown status of the parking sensor.
         /// </summary>
         Unspecified         = 0,
 
         /// <summary>
-        /// The parking spot is planned for the future.
+        /// The parking sensor is planned for the future.
         /// </summary>
         Planned             = 1,
 
         /// <summary>
-        /// The parking spot is currently in deployment.
+        /// The parking sensor is currently in deployment.
         /// </summary>
         InDeployment        = 2,
 
         /// <summary>
-        /// The parking spot is currently blocked.
+        /// The parking sensor is currently blocked.
         /// </summary>
         Blocked             = 3,
 
         /// <summary>
-        /// The parking spot is available.
+        /// The parking sensor is available.
         /// </summary>
         Available           = 4,
 
-        /// <summary>
-        /// The parking spot was reserved.
-        /// </summary>
-        Reserved            = 5,
 
         /// <summary>
-        /// The parking spot is currently in use.
-        /// </summary>
-        InUse               = 6,
-
-        /// <summary>
-        /// Private or internal use.
-        /// </summary>
-        Other               = 7,
-
-        /// <summary>
-        /// The parking spot was not found!
+        /// The parking sensor was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownParkingSpot  = 8
+        UnknownParkingSensor  = 8
 
     }
 

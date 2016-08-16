@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A remote Charging Station Operator.
     /// </summary>
-    public interface IRemoteChargingStationOperator
+    public interface IRemoteParkingOperator
     {
 
         #region Events towards the remote charging station operator

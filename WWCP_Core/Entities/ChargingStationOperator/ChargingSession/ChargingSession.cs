@@ -49,7 +49,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The Charging Station Operator serving this session.
         /// </summary>
-        public ChargingStationOperator EVSEOperator
+        public ChargingStationOperator ChargingStationOperator
         {
 
             get
@@ -78,7 +78,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unqiue identification of the Charging Station Operator serving this session.
         /// </summary>
-        public ChargingStationOperator_Id EVSEOperatorId
+        public ChargingStationOperator_Id ChargingStationOperatorId
         {
 
             get
