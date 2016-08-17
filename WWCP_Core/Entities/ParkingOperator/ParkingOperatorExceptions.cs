@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #region Usings
 
 using System;
@@ -24,20 +24,72 @@ using System;
 namespace org.GraphDefined.WWCP
 {
 
+    #region ParkingOperatorAlreadyExists
+
     /// <summary>
-    /// A charging station operator exception.
+    /// An exception thrown whenever a parking operator already exists within the given roaming network.
     /// </summary>
-    public class ParkingOperatorException : WWCPException
+    public class ParkingOperatorAlreadyExists : RoamingNetworkException
     {
 
-        public ParkingOperatorException(String Message)
-            : base(Message)
-        { }
+        /// <summary>
+        /// An exception thrown whenever a parking operator already exists within the given roaming network.
+        /// </summary>
+        /// <param name="RoamingNetwork">The roaming network.</param>
+        /// <param name="ParkingOperatorId">The parking operator identification.</param>
+        public ParkingOperatorAlreadyExists(RoamingNetwork      RoamingNetwork,
+                                            ParkingOperator_Id  ParkingOperatorId)
 
-        public ParkingOperatorException(String Message, Exception InnerException)
-            : base(Message, InnerException)
+            : base(RoamingNetwork,
+                   "The given parking operator identification '" + ParkingOperatorId + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")
+
         { }
 
     }
+
+    #endregion
+
+
+    #region ParkingOperatorException
+
+    /// <summary>
+    /// An parking operator exception.
+    /// </summary>
+    public class ParkingOperatorException : RoamingNetworkException
+    {
+
+        /// <summary>
+        /// An parking operator exception within the given roaming network.
+        /// </summary>
+        /// <param name="RoamingNetwork">The roaming network.</param>
+        /// <param name="Message">An exception message.</param>
+        public ParkingOperatorException(RoamingNetwork  RoamingNetwork,
+                                        String          Message)
+
+            : base(RoamingNetwork,
+                   Message)
+
+        { }
+
+        /// <summary>
+        /// An parking operator exception within the given roaming network.
+        /// </summary>
+        /// <param name="RoamingNetwork">The roaming network.</param>
+        /// <param name="Message">An exception message.</param>
+        /// <param name="InnerException">An inner exception.</param>
+        public ParkingOperatorException(RoamingNetwork  RoamingNetwork,
+                                        String          Message,
+                                        Exception       InnerException)
+
+            : base(RoamingNetwork,
+                   Message,
+                   InnerException)
+
+        { }
+
+    }
+
+    #endregion
+
 
 }

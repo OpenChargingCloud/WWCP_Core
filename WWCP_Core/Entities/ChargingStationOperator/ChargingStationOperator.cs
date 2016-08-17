@@ -846,7 +846,7 @@ namespace org.GraphDefined.WWCP
             if (_ChargingPools.Any(pool => pool.Id == ChargingPoolId))
             {
                 if (OnError == null)
-                    throw new ChargingPoolAlreadyExists(ChargingPoolId, this.Id);
+                    throw new ChargingPoolAlreadyExists(this, ChargingPoolId);
                 else
                     OnError?.Invoke(this, ChargingPoolId);
             }
@@ -1573,7 +1573,7 @@ namespace org.GraphDefined.WWCP
             if (_ChargingStationGroups.Contains(ChargingStationGroupId))
             {
                 if (OnError == null)
-                    throw new ChargingStationGroupAlreadyExists(ChargingStationGroupId, this.Id);
+                    throw new ChargingStationGroupAlreadyExists(this, ChargingStationGroupId);
                 else
                     OnError?.Invoke(this, ChargingStationGroupId);
             }

@@ -1110,7 +1110,7 @@ namespace org.GraphDefined.WWCP
             if (_ChargingStations.Contains(ChargingStationId))
             {
                 if (OnError == null)
-                    throw new ChargingStationAlreadyExistsInPool(ChargingStationId, this.Id);
+                    throw new ChargingStationAlreadyExistsInPool(this, ChargingStationId);
                 else
                     OnError?.Invoke(this, ChargingStationId);
             }
@@ -1190,7 +1190,7 @@ namespace org.GraphDefined.WWCP
             Debug.WriteLine("ChargingStation '" + ChargingStationId + "' could not be created!");
 
             if (OnError == null)
-                throw new ChargingStationCouldNotBeCreated(ChargingStationId, this.Id);
+                throw new ChargingStationCouldNotBeCreated(this, ChargingStationId);
 
             OnError?.Invoke(this, ChargingStationId);
             return null;

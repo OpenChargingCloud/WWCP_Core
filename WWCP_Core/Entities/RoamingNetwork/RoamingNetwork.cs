@@ -194,13 +194,15 @@ namespace org.GraphDefined.WWCP
             this._ChargingStationOperators                          = new EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator>(this);
             this._ParkingOperators                                  = new EntityHashSet<RoamingNetwork, ParkingOperator_Id,         ParkingOperator>        (this);
             this._EMobilityProviders                                = new EntityHashSet<RoamingNetwork, EMobilityProvider_Id,       EMobilityProvider>      (this);
+            this._SmartCities                                       = new EntityHashSet<RoamingNetwork, SmartCity_Id,               SmartCity>              (this);
+            this._NavigationProviders                               = new EntityHashSet<RoamingNetwork, NavigationProvider_Id,      NavigationProvider>     (this);
+            this._GridOperators                                     = new EntityHashSet<RoamingNetwork, GridOperator_Id,            GridOperator>           (this);
+
             this._ChargingStationOperatorRoamingProviders           = new ConcurrentDictionary<RoamingProvider_Id, AEVSEOperatorRoamingProvider>();
             this._EMPRoamingProviders                               = new ConcurrentDictionary<RoamingProvider_Id, AEMPRoamingProvider>();
-            this._SearchProviders                                   = new ConcurrentDictionary<NavigationServiceProvider_Id, NavigationServiceProvider>();
             this._ChargingReservations_AtChargingStationOperators   = new ConcurrentDictionary<ChargingReservation_Id, ChargingStationOperator>();
             this._ChargingReservations_AtEMPRoamingProviders        = new ConcurrentDictionary<ChargingReservation_Id, AEMPRoamingProvider>();
 
-            //this._IeMobilityServiceProviders                        = new ConcurrentDictionary<UInt32, IeMobilityServiceProvider>();
             this._ChargingStationOperatorRoamingProviderPriorities  = new ConcurrentDictionary<UInt32, AEVSEOperatorRoamingProvider>();
             this._eMobilityRoamingServices                          = new ConcurrentDictionary<UInt32, IEMPRoamingProvider>();
             this._PushEVSEDataToOperatorRoamingServices             = new ConcurrentDictionary<UInt32, IPushData>();
@@ -227,9 +229,6 @@ namespace org.GraphDefined.WWCP
 
             this.EMPRoamingProviderAddition  = new VotingNotificator<RoamingNetwork, AEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
             this.EMPRoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, AEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
-
-            this.SearchProviderAddition      = new VotingNotificator<RoamingNetwork, NavigationServiceProvider, Boolean>(() => new VetoVote(), true);
-            this.SearchProviderRemoval       = new VotingNotificator<RoamingNetwork, NavigationServiceProvider, Boolean>(() => new VetoVote(), true);
 
             // cso events
             this.ChargingPoolAddition        = new VotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
@@ -446,7 +445,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            throw new ChargingStationOperatorAlreadyExists(ChargingStationOperatorId, this.Id);
+            throw new ChargingStationOperatorAlreadyExists(this, ChargingStationOperatorId);
 
         }
 
@@ -796,7 +795,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            throw new ParkingOperatorAlreadyExists(ParkingOperatorId, this.Id);
+            throw new ParkingOperatorAlreadyExists(this, ParkingOperatorId);
 
         }
 
@@ -1007,7 +1006,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region E-Mobility (Service) Providers...
+        #region E-Mobility Providers...
 
         #region EMobilityProviders
 
@@ -1047,22 +1046,22 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region EVServiceProviderAddition
+        #region OnEMobilityProviderAddition
 
         /// <summary>
-        /// Called whenever an EVServiceProvider will be or was added.
+        /// Called whenever an e-mobility provider will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, EMobilityProvider, Boolean> OnEVServiceProviderAddition
+        public IVotingSender<DateTime, RoamingNetwork, EMobilityProvider, Boolean> OnEMobilityProviderAddition
             => _EMobilityProviders.OnAddition;
 
         #endregion
 
-        #region EVServiceProviderRemoval
+        #region OnEMobilityProviderRemoval
 
         /// <summary>
-        /// Called whenever an EVServiceProvider will be or was removed.
+        /// Called whenever an e-mobility provider will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, EMobilityProvider, Boolean> OnEVServiceProviderRemoval
+        public IVotingSender<DateTime, RoamingNetwork, EMobilityProvider, Boolean> OnEMobilityProviderRemoval
             => _EMobilityProviders.OnRemoval;
 
         #endregion
@@ -1119,7 +1118,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            throw new EMobilityProviderAlreadyExists(EMobilityProviderId, this.Id);
+            throw new EMobilityProviderAlreadyExists(this, EMobilityProviderId);
 
         }
 
@@ -1250,6 +1249,591 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Smart Cities...
+
+        #region SmartCities
+
+        private readonly EntityHashSet<RoamingNetwork, SmartCity_Id, SmartCity> _SmartCities;
+
+        /// <summary>
+        /// Return all smart cities registered within this roaming network.
+        /// </summary>
+        public IEnumerable<SmartCity> SmartCities
+
+            => _SmartCities;
+
+        #endregion
+
+        #region SmartCitiesAdminStatus
+
+        /// <summary>
+        /// Return the admin status of all smart cities registered within this roaming network.
+        /// </summary>
+        public IEnumerable<KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityAdminStatusType>>>> SmartCitiesAdminStatus
+
+            => _SmartCities.
+                   Select(emp => new KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityAdminStatusType>>>(emp.Id, emp.AdminStatusSchedule));
+
+        #endregion
+
+        #region SmartCitiesStatus
+
+        /// <summary>
+        /// Return the status of all smart cities registered within this roaming network.
+        /// </summary>
+        public IEnumerable<KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityStatusType>>>> SmartCitiesStatus
+
+            => _SmartCities.
+                   Select(emp => new KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityStatusType>>>(emp.Id, emp.StatusSchedule));
+
+        #endregion
+
+
+        #region OnSmartCityAddition
+
+        /// <summary>
+        /// Called whenever an EVServiceProvider will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, RoamingNetwork, SmartCity, Boolean> OnSmartCityAddition
+            => _SmartCities.OnAddition;
+
+        #endregion
+
+        #region OnSmartCityRemoval
+
+        /// <summary>
+        /// Called whenever an EVServiceProvider will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, RoamingNetwork, SmartCity, Boolean> OnSmartCityRemoval
+            => _SmartCities.OnRemoval;
+
+        #endregion
+
+
+        #region CreateNewSmartCity(SmartCityId, Configurator = null)
+
+        /// <summary>
+        /// Create and register a new e-mobility (service) provider having the given
+        /// unique smart city identification.
+        /// </summary>
+        /// <param name="SmartCityId">The unique identification of the new smart city.</param>
+        /// <param name="Name">The offical (multi-language) name of the smart city.</param>
+        /// <param name="Description">An optional (multi-language) description of the smart city.</param>
+        /// <param name="Configurator">An optional delegate to configure the new smart city before its successful creation.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new smart city after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the smart city failed.</param>
+        public SmartCity CreateNewSmartCity(SmartCity_Id                          SmartCityId,
+                                            I18NString                            Name                    = null,
+                                            I18NString                            Description             = null,
+                                            SmartCityPriority                     Priority                = null,
+                                            SmartCityAdminStatusType              AdminStatus             = SmartCityAdminStatusType.Available,
+                                            SmartCityStatusType                   Status                  = SmartCityStatusType.Available,
+                                            Action<SmartCity>                     Configurator            = null,
+                                            Action<SmartCity>                     OnSuccess               = null,
+                                            Action<RoamingNetwork, SmartCity_Id>  OnError                 = null,
+                                            RemoteSmartCityCreatorDelegate        RemoteSmartCityCreator  = null)
+        {
+
+            #region Initial checks
+
+            if (SmartCityId == null)
+                throw new ArgumentNullException(nameof(SmartCityId),  "The given smart city identification must not be null!");
+
+            #endregion
+
+            var _SmartCity = new SmartCity(SmartCityId,
+                                           this,
+                                           Configurator,
+                                           RemoteSmartCityCreator,
+                                           Name,
+                                           Description,
+                                           Priority,
+                                           AdminStatus,
+                                           Status);
+
+
+            if (_SmartCities.TryAdd(_SmartCity, OnSuccess))
+            {
+
+                // Link events!
+
+                return _SmartCity;
+
+            }
+
+            throw new SmartCityAlreadyExists(this, SmartCityId);
+
+        }
+
+        #endregion
+
+        #region ContainsSmartCity(SmartCity)
+
+        /// <summary>
+        /// Check if the given SmartCity is already present within the roaming network.
+        /// </summary>
+        /// <param name="SmartCity">An Charging Station Operator.</param>
+        public Boolean ContainsSmartCity(SmartCity SmartCity)
+
+            => _SmartCities.Contains(SmartCity.Id);
+
+        #endregion
+
+        #region ContainsSmartCity(SmartCityId)
+
+        /// <summary>
+        /// Check if the given SmartCity identification is already present within the roaming network.
+        /// </summary>
+        /// <param name="SmartCityId">The unique identification of the Charging Station Operator.</param>
+        public Boolean ContainsSmartCity(SmartCity_Id SmartCityId)
+
+            => _SmartCities.Contains(SmartCityId);
+
+        #endregion
+
+        #region GetSmartCityById(SmartCityId)
+
+        public SmartCity GetSmartCityById(SmartCity_Id SmartCityId)
+
+            => _SmartCities.Get(SmartCityId);
+
+        #endregion
+
+        #region TryGetSmartCityById(SmartCityId, out SmartCity)
+
+        public Boolean TryGetSmartCityById(SmartCity_Id SmartCityId, out SmartCity SmartCity)
+
+            => _SmartCities.TryGet(SmartCityId, out SmartCity);
+
+        #endregion
+
+        #region RemoveSmartCity(SmartCityId)
+
+        public SmartCity RemoveSmartCity(SmartCity_Id SmartCityId)
+        {
+
+            SmartCity _SmartCity = null;
+
+            if (_SmartCities.TryRemove(SmartCityId, out _SmartCity))
+                return _SmartCity;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryRemoveSmartCity(RemoveSmartCityId, out RemoveSmartCity)
+
+        public Boolean TryRemoveSmartCity(SmartCity_Id SmartCityId, out SmartCity SmartCity)
+
+            => _SmartCities.TryRemove(SmartCityId, out SmartCity);
+
+        #endregion
+
+
+        //#region AllTokens
+
+        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens
+
+        //    => _SmartCities.SelectMany(provider => provider.AllTokens);
+
+        //#endregion
+
+        //#region AuthorizedTokens
+
+        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens
+
+        //    => _SmartCities.SelectMany(provider => provider.AuthorizedTokens);
+
+        //#endregion
+
+        //#region NotAuthorizedTokens
+
+        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens
+
+        //    => _SmartCities.SelectMany(provider => provider.NotAuthorizedTokens);
+
+        //#endregion
+
+        //#region BlockedTokens
+
+        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens
+
+        //    => _SmartCities.SelectMany(provider => provider.BlockedTokens);
+
+        //#endregion
+
+        #endregion
+
+        #region Navigation Providers...
+
+        #region NavigationProviders
+
+        private readonly EntityHashSet<RoamingNetwork, NavigationProvider_Id, NavigationProvider> _NavigationProviders;
+
+        /// <summary>
+        /// Return all navigation providers registered within this roaming network.
+        /// </summary>
+        public IEnumerable<NavigationProvider> NavigationProviders
+
+            => _NavigationProviders;
+
+        #endregion
+
+        #region NavigationProviderAdminStatus
+
+        /// <summary>
+        /// Return the admin status of all navigation providers registered within this roaming network.
+        /// </summary>
+        public IEnumerable<KeyValuePair<NavigationProvider_Id, IEnumerable<Timestamped<NavigationProviderAdminStatusType>>>> NavigationProviderAdminStatus
+
+            => _NavigationProviders.
+                   Select(emp => new KeyValuePair<NavigationProvider_Id, IEnumerable<Timestamped<NavigationProviderAdminStatusType>>>(emp.Id, emp.AdminStatusSchedule));
+
+        #endregion
+
+        #region NavigationProviderStatus
+
+        /// <summary>
+        /// Return the status of all navigation providers registered within this roaming network.
+        /// </summary>
+        public IEnumerable<KeyValuePair<NavigationProvider_Id, IEnumerable<Timestamped<NavigationProviderStatusType>>>> NavigationProviderStatus
+
+            => _NavigationProviders.
+                   Select(emp => new KeyValuePair<NavigationProvider_Id, IEnumerable<Timestamped<NavigationProviderStatusType>>>(emp.Id, emp.StatusSchedule));
+
+        #endregion
+
+
+        #region OnNavigationProviderAddition
+
+        /// <summary>
+        /// Called whenever an navigation provider will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, RoamingNetwork, NavigationProvider, Boolean> OnNavigationProviderAddition
+            => _NavigationProviders.OnAddition;
+
+        #endregion
+
+        #region OnNavigationProviderRemoval
+
+        /// <summary>
+        /// Called whenever an navigation provider will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, RoamingNetwork, NavigationProvider, Boolean> OnNavigationProviderRemoval
+            => _NavigationProviders.OnRemoval;
+
+        #endregion
+
+
+        #region CreateNewNavigationProvider(NavigationProviderId, Configurator = null)
+
+        /// <summary>
+        /// Create and register a new navigation provider having the given
+        /// unique navigation provider identification.
+        /// </summary>
+        /// <param name="NavigationProviderId">The unique identification of the new navigation provider.</param>
+        /// <param name="Name">The offical (multi-language) name of the navigation provider.</param>
+        /// <param name="Description">An optional (multi-language) description of the navigation provider.</param>
+        /// <param name="Configurator">An optional delegate to configure the new navigation provider before its successful creation.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new navigation provider after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the navigation provider failed.</param>
+        public NavigationProvider CreateNewNavigationProvider(NavigationProvider_Id                          NavigationProviderId,
+                                                            I18NString                                    Name                            = null,
+                                                            I18NString                                    Description                     = null,
+                                                            NavigationProviderPriority                     Priority                        = null,
+                                                            NavigationProviderAdminStatusType              AdminStatus                     = NavigationProviderAdminStatusType.Available,
+                                                            NavigationProviderStatusType                   Status                          = NavigationProviderStatusType.Available,
+                                                            Action<NavigationProvider>                     Configurator                    = null,
+                                                            Action<NavigationProvider>                     OnSuccess                       = null,
+                                                            Action<RoamingNetwork, NavigationProvider_Id>  OnError                         = null,
+                                                            RemoteNavigationProviderCreatorDelegate        RemoteNavigationProviderCreator  = null)
+        {
+
+            #region Initial checks
+
+            if (NavigationProviderId == null)
+                throw new ArgumentNullException(nameof(NavigationProviderId),  "The given navigation provider identification must not be null!");
+
+            #endregion
+
+            var _NavigationProvider = new NavigationProvider(NavigationProviderId,
+                                                           this,
+                                                           Configurator,
+                                                           RemoteNavigationProviderCreator,
+                                                           Name,
+                                                           Description,
+                                                           Priority,
+                                                           AdminStatus,
+                                                           Status);
+
+
+            if (_NavigationProviders.TryAdd(_NavigationProvider, OnSuccess))
+            {
+
+                // Link events!
+
+                return _NavigationProvider;
+
+            }
+
+            throw new NavigationProviderAlreadyExists(this, NavigationProviderId);
+
+        }
+
+        #endregion
+
+        #region ContainsNavigationProvider(NavigationProvider)
+
+        /// <summary>
+        /// Check if the given NavigationProvider is already present within the roaming network.
+        /// </summary>
+        /// <param name="NavigationProvider">An Charging Station Operator.</param>
+        public Boolean ContainsNavigationProvider(NavigationProvider NavigationProvider)
+
+            => _NavigationProviders.Contains(NavigationProvider.Id);
+
+        #endregion
+
+        #region ContainsNavigationProvider(NavigationProviderId)
+
+        /// <summary>
+        /// Check if the given NavigationProvider identification is already present within the roaming network.
+        /// </summary>
+        /// <param name="NavigationProviderId">The unique identification of the Charging Station Operator.</param>
+        public Boolean ContainsNavigationProvider(NavigationProvider_Id NavigationProviderId)
+
+            => _NavigationProviders.Contains(NavigationProviderId);
+
+        #endregion
+
+        #region GetNavigationProviderById(NavigationProviderId)
+
+        public NavigationProvider GetNavigationProviderById(NavigationProvider_Id NavigationProviderId)
+
+            => _NavigationProviders.Get(NavigationProviderId);
+
+        #endregion
+
+        #region TryGetNavigationProviderById(NavigationProviderId, out NavigationProvider)
+
+        public Boolean TryGetNavigationProviderById(NavigationProvider_Id NavigationProviderId, out NavigationProvider NavigationProvider)
+
+            => _NavigationProviders.TryGet(NavigationProviderId, out NavigationProvider);
+
+        #endregion
+
+        #region RemoveNavigationProvider(NavigationProviderId)
+
+        public NavigationProvider RemoveNavigationProvider(NavigationProvider_Id NavigationProviderId)
+        {
+
+            NavigationProvider _NavigationProvider = null;
+
+            if (_NavigationProviders.TryRemove(NavigationProviderId, out _NavigationProvider))
+                return _NavigationProvider;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryRemoveNavigationProvider(RemoveNavigationProviderId, out RemoveNavigationProvider)
+
+        public Boolean TryRemoveNavigationProvider(NavigationProvider_Id NavigationProviderId, out NavigationProvider NavigationProvider)
+
+            => _NavigationProviders.TryRemove(NavigationProviderId, out NavigationProvider);
+
+        #endregion
+
+        #endregion
+
+        #region Grid Operators...
+
+        #region GridOperators
+
+        private readonly EntityHashSet<RoamingNetwork, GridOperator_Id, GridOperator> _GridOperators;
+
+        /// <summary>
+        /// Return all smart cities registered within this roaming network.
+        /// </summary>
+        public IEnumerable<GridOperator> GridOperators
+
+            => _GridOperators;
+
+        #endregion
+
+        #region GridOperatorsAdminStatus
+
+        /// <summary>
+        /// Return the admin status of all smart cities registered within this roaming network.
+        /// </summary>
+        public IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusType>>>> GridOperatorsAdminStatus
+
+            => _GridOperators.
+                   Select(emp => new KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorAdminStatusType>>>(emp.Id, emp.AdminStatusSchedule));
+
+        #endregion
+
+        #region GridOperatorsStatus
+
+        /// <summary>
+        /// Return the status of all smart cities registered within this roaming network.
+        /// </summary>
+        public IEnumerable<KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusType>>>> GridOperatorsStatus
+
+            => _GridOperators.
+                   Select(emp => new KeyValuePair<GridOperator_Id, IEnumerable<Timestamped<GridOperatorStatusType>>>(emp.Id, emp.StatusSchedule));
+
+        #endregion
+
+
+        #region OnGridOperatorAddition
+
+        /// <summary>
+        /// Called whenever an EVServiceProvider will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, RoamingNetwork, GridOperator, Boolean> OnGridOperatorAddition
+            => _GridOperators.OnAddition;
+
+        #endregion
+
+        #region OnGridOperatorRemoval
+
+        /// <summary>
+        /// Called whenever an EVServiceProvider will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, RoamingNetwork, GridOperator, Boolean> OnGridOperatorRemoval
+            => _GridOperators.OnRemoval;
+
+        #endregion
+
+
+        #region CreateNewGridOperator(GridOperatorId, Configurator = null)
+
+        /// <summary>
+        /// Create and register a new e-mobility (service) provider having the given
+        /// unique smart city identification.
+        /// </summary>
+        /// <param name="GridOperatorId">The unique identification of the new smart city.</param>
+        /// <param name="Name">The offical (multi-language) name of the smart city.</param>
+        /// <param name="Description">An optional (multi-language) description of the smart city.</param>
+        /// <param name="Configurator">An optional delegate to configure the new smart city before its successful creation.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new smart city after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the smart city failed.</param>
+        public GridOperator CreateNewGridOperator(GridOperator_Id                          GridOperatorId,
+                                            I18NString                            Name                    = null,
+                                            I18NString                            Description             = null,
+                                            GridOperatorPriority                     Priority                = null,
+                                            GridOperatorAdminStatusType              AdminStatus             = GridOperatorAdminStatusType.Available,
+                                            GridOperatorStatusType                   Status                  = GridOperatorStatusType.Available,
+                                            Action<GridOperator>                     Configurator            = null,
+                                            Action<GridOperator>                     OnSuccess               = null,
+                                            Action<RoamingNetwork, GridOperator_Id>  OnError                 = null,
+                                            RemoteGridOperatorCreatorDelegate        RemoteGridOperatorCreator  = null)
+        {
+
+            #region Initial checks
+
+            if (GridOperatorId == null)
+                throw new ArgumentNullException(nameof(GridOperatorId),  "The given smart city identification must not be null!");
+
+            #endregion
+
+            var _GridOperator = new GridOperator(GridOperatorId,
+                                           this,
+                                           Configurator,
+                                           RemoteGridOperatorCreator,
+                                           Name,
+                                           Description,
+                                           Priority,
+                                           AdminStatus,
+                                           Status);
+
+
+            if (_GridOperators.TryAdd(_GridOperator, OnSuccess))
+            {
+
+                // Link events!
+
+                return _GridOperator;
+
+            }
+
+            throw new GridOperatorAlreadyExists(this, GridOperatorId);
+
+        }
+
+        #endregion
+
+        #region ContainsGridOperator(GridOperator)
+
+        /// <summary>
+        /// Check if the given GridOperator is already present within the roaming network.
+        /// </summary>
+        /// <param name="GridOperator">An Charging Station Operator.</param>
+        public Boolean ContainsGridOperator(GridOperator GridOperator)
+
+            => _GridOperators.Contains(GridOperator.Id);
+
+        #endregion
+
+        #region ContainsGridOperator(GridOperatorId)
+
+        /// <summary>
+        /// Check if the given GridOperator identification is already present within the roaming network.
+        /// </summary>
+        /// <param name="GridOperatorId">The unique identification of the Charging Station Operator.</param>
+        public Boolean ContainsGridOperator(GridOperator_Id GridOperatorId)
+
+            => _GridOperators.Contains(GridOperatorId);
+
+        #endregion
+
+        #region GetGridOperatorById(GridOperatorId)
+
+        public GridOperator GetGridOperatorById(GridOperator_Id GridOperatorId)
+
+            => _GridOperators.Get(GridOperatorId);
+
+        #endregion
+
+        #region TryGetGridOperatorById(GridOperatorId, out GridOperator)
+
+        public Boolean TryGetGridOperatorById(GridOperator_Id GridOperatorId, out GridOperator GridOperator)
+
+            => _GridOperators.TryGet(GridOperatorId, out GridOperator);
+
+        #endregion
+
+        #region RemoveGridOperator(GridOperatorId)
+
+        public GridOperator RemoveGridOperator(GridOperator_Id GridOperatorId)
+        {
+
+            GridOperator _GridOperator = null;
+
+            if (_GridOperators.TryRemove(GridOperatorId, out _GridOperator))
+                return _GridOperator;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryRemoveGridOperator(RemoveGridOperatorId, out RemoveGridOperator)
+
+        public Boolean TryRemoveGridOperator(GridOperator_Id GridOperatorId, out GridOperator GridOperator)
+
+            => _GridOperators.TryRemove(GridOperatorId, out GridOperator);
+
+        #endregion
+
+        #endregion
+
 
         #region Charging Station Operator Roaming Providers...
 
@@ -1289,7 +1873,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException(nameof(_CPORoamingProvider) + ".Name",  "The given roaming provider name must not be null or empty!");
 
             if (_ChargingStationOperatorRoamingProviders.ContainsKey(_CPORoamingProvider.Id))
-                throw new RoamingProviderAlreadyExists(_CPORoamingProvider.Id, this.Id);
+                throw new RoamingProviderAlreadyExists(this, _CPORoamingProvider.Id);
 
             if (_CPORoamingProvider.RoamingNetwork.Id != this.Id)
                 throw new ArgumentException("The given operator roaming service is not part of this roaming network!", nameof(_CPORoamingProvider));
@@ -1406,7 +1990,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException(nameof(eMobilityRoamingService) + ".Name",  "The given roaming provider name must not be null or empty!");
 
             if (_EMPRoamingProviders.ContainsKey(eMobilityRoamingService.Id))
-                throw new RoamingProviderAlreadyExists(eMobilityRoamingService.Id, this.Id);
+                throw new RoamingProviderAlreadyExists(this, eMobilityRoamingService.Id);
 
             if (eMobilityRoamingService.RoamingNetwork.Id != this.Id)
                 throw new ArgumentException("The given operator roaming service is not part of this roaming network!", nameof(eMobilityRoamingService));
@@ -1505,83 +2089,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Search providers...
-
-        #region SearchProviders
-
-        private readonly ConcurrentDictionary<NavigationServiceProvider_Id, NavigationServiceProvider> _SearchProviders;
-
-        /// <summary>
-        /// Return all search providers registered within this roaming network.
-        /// </summary>
-        public IEnumerable<NavigationServiceProvider> SearchProviders => _SearchProviders.Select(KVP => KVP.Value);
-
-        #endregion
-
-        #region SearchProviderAddition
-
-        private readonly IVotingNotificator<RoamingNetwork, NavigationServiceProvider, Boolean> SearchProviderAddition;
-
-        /// <summary>
-        /// Called whenever an SearchProvider will be or was added.
-        /// </summary>
-        public IVotingSender<RoamingNetwork, NavigationServiceProvider, Boolean> OnSearchProviderAddition => SearchProviderAddition;
-
-        #endregion
-
-        #region SearchProviderRemoval
-
-        private readonly IVotingNotificator<RoamingNetwork, NavigationServiceProvider, Boolean> SearchProviderRemoval;
-
-        /// <summary>
-        /// Called whenever an SearchProvider will be or was removed.
-        /// </summary>
-        public IVotingSender<RoamingNetwork, NavigationServiceProvider, Boolean> OnSearchProviderRemoval => SearchProviderRemoval;
-
-        #endregion
-
-        #region CreateNewSearchProvider(NavigationServiceProviderId, Configurator = null)
-
-        /// <summary>
-        /// Create and register a new navigation service provider having the given
-        /// unique identification.
-        /// </summary>
-        /// <param name="NavigationServiceProviderId">The unique identification of the new search provider.</param>
-        /// <param name="Configurator">An optional delegate to configure the new search provider after its creation.</param>
-        public NavigationServiceProvider CreateNewSearchProvider(NavigationServiceProvider_Id       NavigationServiceProviderId,
-                                                                 Action<NavigationServiceProvider>  Configurator = null)
-        {
-
-            #region Initial checks
-
-            if (NavigationServiceProviderId == null)
-                throw new ArgumentNullException(nameof(NavigationServiceProviderId),  "The given navigation service provider identification must not be null!");
-
-            if (_SearchProviders.ContainsKey(NavigationServiceProviderId))
-                throw new SearchProviderAlreadyExists(NavigationServiceProviderId, this.Id);
-
-            #endregion
-
-            var _SearchProvider = new NavigationServiceProvider(NavigationServiceProviderId, this);
-
-            Configurator?.Invoke(_SearchProvider);
-
-            if (SearchProviderAddition.SendVoting(this, _SearchProvider))
-            {
-                if (_SearchProviders.TryAdd(NavigationServiceProviderId, _SearchProvider))
-                {
-                    SearchProviderAddition.SendNotification(this, _SearchProvider);
-                    return _SearchProvider;
-                }
-            }
-
-            throw new Exception("Could not create new search provider '" + NavigationServiceProviderId + "'!");
-
-        }
-
-        #endregion
-
-        #endregion
 
 
         #region ChargingPools...

@@ -24,34 +24,25 @@ using System;
 namespace org.GraphDefined.WWCP
 {
 
-    /// <summary>
-    /// A charging station operator exception.
-    /// </summary>
-    public class ChargingStationOperatorException : WWCPException
-    {
-
-        public ChargingStationOperatorException(String Message)
-            : base(Message)
-        { }
-
-        public ChargingStationOperatorException(String Message, Exception InnerException)
-            : base(Message, InnerException)
-        { }
-
-    }
-
-
-    #region ChargingPoolAlreadyExists
+    #region ChargingStationOperatorAlreadyExists
 
     /// <summary>
-    /// An exception thrown whenever a charging pool already exists within the given charging station operator.
+    /// An exception thrown whenever a charging station operator already exists within the given roaming network.
     /// </summary>
-    public class ChargingPoolAlreadyExists : ChargingStationOperatorException
+    public class ChargingStationOperatorAlreadyExists : RoamingNetworkException
     {
 
-        public ChargingPoolAlreadyExists(ChargingPool_Id             ChargingPoolId,
-                                         ChargingStationOperator_Id  ChargingStationOperatorId)
-            : base("The given charging pool identification '" + ChargingPoolId + "' already exists within the given '" + ChargingStationOperatorId + "' charging station operator!")
+        /// <summary>
+        /// An exception thrown whenever a charging station operator already exists within the given roaming network.
+        /// </summary>
+        /// <param name="RoamingNetwork">The roaming network.</param>
+        /// <param name="ChargingStationOperatorId">The charging station operator identification.</param>
+        public ChargingStationOperatorAlreadyExists(RoamingNetwork              RoamingNetwork,
+                                                    ChargingStationOperator_Id  ChargingStationOperatorId)
+
+            : base(RoamingNetwork,
+                   "The given charging station operator identification '" + ChargingStationOperatorId + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")
+
         { }
 
     }
@@ -59,21 +50,46 @@ namespace org.GraphDefined.WWCP
     #endregion
 
 
-    #region ChargingStationGroupAlreadyExists
+    #region ChargingStationOperatorException
 
     /// <summary>
-    /// An exception thrown whenever a charging station group already exists within the given charging station operator.
+    /// An charging station operator exception.
     /// </summary>
-    public class ChargingStationGroupAlreadyExists : ChargingStationOperatorException
+    public class ChargingStationOperatorException : RoamingNetworkException
     {
 
-        public ChargingStationGroupAlreadyExists(ChargingStationGroup_Id     ChargingStationGroupId,
-                                                 ChargingStationOperator_Id  ChargingStationOperatorId)
-            : base("The given charging station group identification '" + ChargingStationGroupId + "' already exists within the given '" + ChargingStationOperatorId + "' charging station operator!")
+        /// <summary>
+        /// An charging station operator exception within the given roaming network.
+        /// </summary>
+        /// <param name="RoamingNetwork">The roaming network.</param>
+        /// <param name="Message">An exception message.</param>
+        public ChargingStationOperatorException(RoamingNetwork  RoamingNetwork,
+                                                String          Message)
+
+            : base(RoamingNetwork,
+                   Message)
+
+        { }
+
+        /// <summary>
+        /// An charging station operator exception within the given roaming network.
+        /// </summary>
+        /// <param name="RoamingNetwork">The roaming network.</param>
+        /// <param name="Message">An exception message.</param>
+        /// <param name="InnerException">An inner exception.</param>
+        public ChargingStationOperatorException(RoamingNetwork  RoamingNetwork,
+                                                String          Message,
+                                                Exception       InnerException)
+
+            : base(RoamingNetwork,
+                   Message,
+                   InnerException)
+
         { }
 
     }
 
     #endregion
+
 
 }

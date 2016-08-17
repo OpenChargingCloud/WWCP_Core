@@ -26,18 +26,39 @@ using System.Collections.Concurrent;
 namespace org.GraphDefined.WWCP
 {
 
+    #region EVSEAlreadyExistsInStation
+
+    /// <summary>
+    /// An exception thrown whenever an EVSE already exists within the given charging station.
+    /// </summary>
+    public class EVSEAlreadyExistsInStation : ChargingStationException
+    {
+
+        public EVSEAlreadyExistsInStation(ChargingStation ChargingStation, EVSE_Id EVSE_Id)
+
+            : base(ChargingStation.ChargingPool,
+                  "The given EVSE identification '" + EVSE_Id + "' already exists within the given '" + ChargingStation.Id + "' charging station!")
+
+        { }
+
+    }
+
+    #endregion
+
+
+
     /// <summary>
     /// An EVSE exception.
     /// </summary>
-    public class EVSEException : WWCPException
+    public class EVSEException : ChargingStationException
     {
 
-        public EVSEException(String Message)
-            : base(Message)
+        public EVSEException(ChargingStation ChargingStation, String Message)
+            : base(ChargingStation.ChargingPool, Message)
         { }
 
-        public EVSEException(String Message, Exception InnerException)
-            : base(Message, InnerException)
+        public EVSEException(ChargingStation ChargingStation, String Message, Exception InnerException)
+            : base(ChargingStation.ChargingPool, Message, InnerException)
         { }
 
     }

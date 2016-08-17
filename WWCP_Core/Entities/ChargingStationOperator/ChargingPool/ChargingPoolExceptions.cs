@@ -26,55 +26,54 @@ using System.Collections.Concurrent;
 namespace org.GraphDefined.WWCP
 {
 
-    /// <summary>
-    /// A EV Charging Pool exception.
-    /// </summary>
-    public class ChargingPoolPoolException : WWCPException
-    {
-
-        public ChargingPoolPoolException(String Message)
-            : base(Message)
-        { }
-
-        public ChargingPoolPoolException(String Message, Exception InnerException)
-            : base(Message, InnerException)
-        { }
-
-    }
-
-
-    #region ChargingStationAlreadyExistsInPool
+    
+    #region ChargingPoolAlreadyExists
 
     /// <summary>
-    /// An exception thrown whenever a charging station already exists within the given charging pool.
+    /// An exception thrown whenever a charging pool already exists within the given charging station operator.
     /// </summary>
-    public class ChargingStationAlreadyExistsInPool : ChargingPoolPoolException
+    public class ChargingPoolAlreadyExists : ChargingStationOperatorException
     {
 
-        public ChargingStationAlreadyExistsInPool(ChargingStation_Id  ChargingStationId,
-                                                  ChargingPool_Id     ChargingPoolId)
-            : base("The given charging station identification '" + ChargingStationId + "' already exists within the given '" + ChargingPoolId + "' charging pool!")
+        public ChargingPoolAlreadyExists(ChargingStationOperator  ChargingStationOperator,
+                                         ChargingPool_Id          ChargingPoolId)
+
+            : base(ChargingStationOperator.RoamingNetwork,
+                   "The given charging pool identification '" + ChargingPoolId + "' already exists within the given '" + ChargingStationOperator.Id + "' charging station operator!")
+
         { }
 
     }
 
     #endregion
 
-    #region ChargingStationCouldNotBeCreated
+
 
     /// <summary>
-    /// An exception thrown whenever a charging station could not be created within the given charging pool.
+    /// A charging pool exception.
     /// </summary>
-    public class ChargingStationCouldNotBeCreated : ChargingPoolPoolException
+    public class ChargingPoolException : ChargingStationOperatorException
     {
 
-        public ChargingStationCouldNotBeCreated(ChargingStation_Id  ChargingStation_Id,
-                                                ChargingPool_Id     ChargingPool_Id)
-            : base("The given charging station identification '" + ChargingStation_Id + "' already exists within the given '" + ChargingPool_Id + "' EVS pool!")
+        public ChargingPoolException(ChargingStationOperator  ChargingStationOperator,
+                                         String                   Message)
+
+            : base(ChargingStationOperator.RoamingNetwork,
+                   Message)
+
+        { }
+
+        public ChargingPoolException(ChargingStationOperator ChargingStationOperator, String Message, Exception InnerException)
+
+            : base(ChargingStationOperator.RoamingNetwork,
+                   Message, InnerException)
+
         { }
 
     }
 
-    #endregion
+
+
+
 
 }

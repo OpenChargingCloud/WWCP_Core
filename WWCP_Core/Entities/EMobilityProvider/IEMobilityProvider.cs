@@ -29,26 +29,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-    public interface IRemoteEMobilityProvider : IPushData, IPushStatus, IAuthorizeStartStop, ISendChargeDetailRecord
-    {
-
-        /// <summary>
-        /// The unique identification of the e-mobility service provider.
-        /// </summary>
-        EMobilityProvider_Id Id { get; }
-
-        Authorizator_Id AuthorizatorId { get; }
-
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens            { get; }
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens     { get; }
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens  { get; }
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens        { get; }
-
-
-
-    }
-
-
     /// <summary>
     /// The EV Roaming Provider provided EVSE Operator services interface.
     /// </summary>

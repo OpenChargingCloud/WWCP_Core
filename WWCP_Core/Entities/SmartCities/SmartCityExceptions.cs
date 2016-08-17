@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #region Usings
 
 using System;
@@ -24,24 +24,24 @@ using System;
 namespace org.GraphDefined.WWCP
 {
 
-    #region EMobilityProviderAlreadyExists
+    #region SmartCityAlreadyExists
 
     /// <summary>
-    /// An exception thrown whenever a e-mobility provider already exists within the given roaming network.
+    /// An exception thrown whenever a smart city already exists within the given roaming network.
     /// </summary>
-    public class EMobilityProviderAlreadyExists : RoamingNetworkException
+    public class SmartCityAlreadyExists : RoamingNetworkException
     {
 
         /// <summary>
-        /// An exception thrown whenever a e-mobility provider already exists within the given roaming network.
+        /// An exception thrown whenever a smart city already exists within the given roaming network.
         /// </summary>
         /// <param name="RoamingNetwork">The roaming network.</param>
-        /// <param name="EMobilityProviderId">The e-mobility provider identification.</param>
-        public EMobilityProviderAlreadyExists(RoamingNetwork        RoamingNetwork,
-                                              EMobilityProvider_Id  EMobilityProviderId)
+        /// <param name="SmartCityId">The smart city identification.</param>
+        public SmartCityAlreadyExists(RoamingNetwork  RoamingNetwork,
+                                      SmartCity_Id    SmartCityId)
 
             : base(RoamingNetwork,
-                   "The given e-mobility provider identification '" + EMobilityProviderId + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")
+                   "The given smart city identification '" + SmartCityId + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")
 
         { }
 
@@ -50,21 +50,21 @@ namespace org.GraphDefined.WWCP
     #endregion
 
 
-    #region EMobilityProviderException
+    #region SmartCityException
 
     /// <summary>
-    /// An e-mobility provider exception.
+    /// An smart city exception.
     /// </summary>
-    public class EMobilityProviderException : RoamingNetworkException
+    public class SmartCityException : RoamingNetworkException
     {
 
         /// <summary>
-        /// An e-mobility provider exception within the given roaming network.
+        /// An smart city exception within the given roaming network.
         /// </summary>
         /// <param name="RoamingNetwork">The roaming network.</param>
         /// <param name="Message">An exception message.</param>
-        public EMobilityProviderException(RoamingNetwork  RoamingNetwork,
-                                          String          Message)
+        public SmartCityException(RoamingNetwork  RoamingNetwork,
+                                  String          Message)
 
             : base(RoamingNetwork,
                    Message)
@@ -72,14 +72,14 @@ namespace org.GraphDefined.WWCP
         { }
 
         /// <summary>
-        /// An e-mobility provider exception within the given roaming network.
+        /// An smart city exception within the given roaming network.
         /// </summary>
         /// <param name="RoamingNetwork">The roaming network.</param>
         /// <param name="Message">An exception message.</param>
         /// <param name="InnerException">An inner exception.</param>
-        public EMobilityProviderException(RoamingNetwork  RoamingNetwork,
-                                          String          Message,
-                                          Exception       InnerException)
+        public SmartCityException(RoamingNetwork  RoamingNetwork,
+                                  String          Message,
+                                  Exception       InnerException)
 
             : base(RoamingNetwork,
                    Message,

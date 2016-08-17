@@ -26,21 +26,60 @@ using System.Collections.Concurrent;
 namespace org.GraphDefined.WWCP
 {
 
+    #region ChargingStationGroupAlreadyExists
+
     /// <summary>
-    /// A EV Charging Group exception.
+    /// An exception thrown whenever a charging station group already exists within the given charging station operator.
     /// </summary>
-    public class ChargingGroupException : WWCPException
+    public class ChargingStationGroupAlreadyExists : ChargingStationOperatorException
     {
 
-        public ChargingGroupException(String Message)
-            : base(Message)
-        { }
+        public ChargingStationGroupAlreadyExists(ChargingStationOperator     ChargingStationOperator,
+                                                 ChargingStationGroup_Id     ChargingStationGroupId)
 
-        public ChargingGroupException(String Message, Exception InnerException)
-            : base(Message, InnerException)
+            : base(ChargingStationOperator.RoamingNetwork,
+                   "The given charging station group identification '" + ChargingStationGroupId + "' already exists within the given '" + ChargingStationOperator.Id + "' charging station operator!")
+
         { }
 
     }
+
+    #endregion
+
+
+    /// <summary>
+    /// A charging station group exception.
+    /// </summary>
+    public class ChargingStationGroupException : ChargingStationOperatorException
+    {
+
+        public ChargingStationGroupException(ChargingStationOperator  ChargingStationOperator,
+                                             String                   Message)
+
+            : base(ChargingStationOperator.RoamingNetwork,
+                   Message)
+
+        { }
+
+        public ChargingStationGroupException(ChargingStationOperator  ChargingStationOperator,
+                                             String                   Message,
+                                             Exception                InnerException)
+
+            : base(ChargingStationOperator.RoamingNetwork,
+                   Message,
+                   InnerException)
+
+        { }
+
+    }
+
+
+
+
+
+
+
+
 
 
     #region ChargingStationAlreadyExistsInGroup
@@ -48,16 +87,28 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// An exception thrown whenever a charging station already exists within the given EV charging group.
     /// </summary>
-    public class ChargingStationAlreadyExistsInGroup : ChargingGroupException
+    public class ChargingStationAlreadyExistsInGroup : ChargingStationGroupException
     {
 
-        public ChargingStationAlreadyExistsInGroup(ChargingStation_Id  ChargingStation_Id,
-                                                   ChargingStationGroup_Id    ChargingGroup_Id)
-            : base("The given charging station identification '" + ChargingStation_Id + "' already exists within the given '" + ChargingGroup_Id + "' charging group!")
+        public ChargingStationAlreadyExistsInGroup(ChargingStationGroup  ChargingStationGroup,
+                                                   ChargingStation_Id    ChargingStationId)
+
+            : base(ChargingStationGroup.Operator,
+                  "The given charging station identification '" + ChargingStationId + "' already exists within the given '" + ChargingStationGroup.Id + "' charging group!")
+
         { }
 
     }
 
     #endregion
+
+
+
+
+
+
+
+
+
 
 }

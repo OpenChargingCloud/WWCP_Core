@@ -218,7 +218,7 @@ namespace org.GraphDefined.WWCP
         /// The Charging Station Operator of this charging pool.
         /// </summary>
         [Optional]
-        public ChargingStationOperator EVSEOperator
+        public ChargingStationOperator Operator
         {
             get
             {

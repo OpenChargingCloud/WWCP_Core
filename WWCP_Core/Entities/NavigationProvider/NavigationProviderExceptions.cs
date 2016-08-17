@@ -24,24 +24,24 @@ using System;
 namespace org.GraphDefined.WWCP
 {
 
-    #region EMobilityProviderAlreadyExists
+    #region NavigationProviderAlreadyExists
 
     /// <summary>
     /// An exception thrown whenever a e-mobility provider already exists within the given roaming network.
     /// </summary>
-    public class EMobilityProviderAlreadyExists : RoamingNetworkException
+    public class NavigationProviderAlreadyExists : RoamingNetworkException
     {
 
         /// <summary>
         /// An exception thrown whenever a e-mobility provider already exists within the given roaming network.
         /// </summary>
         /// <param name="RoamingNetwork">The roaming network.</param>
-        /// <param name="EMobilityProviderId">The e-mobility provider identification.</param>
-        public EMobilityProviderAlreadyExists(RoamingNetwork        RoamingNetwork,
-                                              EMobilityProvider_Id  EMobilityProviderId)
+        /// <param name="NavigationProviderId">The e-mobility provider identification.</param>
+        public NavigationProviderAlreadyExists(RoamingNetwork         RoamingNetwork,
+                                               NavigationProvider_Id  NavigationProviderId)
 
             : base(RoamingNetwork,
-                   "The given e-mobility provider identification '" + EMobilityProviderId + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")
+                   "The given e-mobility provider identification '" + NavigationProviderId + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")
 
         { }
 
@@ -50,12 +50,12 @@ namespace org.GraphDefined.WWCP
     #endregion
 
 
-    #region EMobilityProviderException
+    #region NavigationProviderException
 
     /// <summary>
     /// An e-mobility provider exception.
     /// </summary>
-    public class EMobilityProviderException : RoamingNetworkException
+    public class NavigationProviderException : RoamingNetworkException
     {
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="RoamingNetwork">The roaming network.</param>
         /// <param name="Message">An exception message.</param>
-        public EMobilityProviderException(RoamingNetwork  RoamingNetwork,
+        public NavigationProviderException(RoamingNetwork  RoamingNetwork,
                                           String          Message)
 
             : base(RoamingNetwork,
@@ -77,7 +77,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RoamingNetwork">The roaming network.</param>
         /// <param name="Message">An exception message.</param>
         /// <param name="InnerException">An inner exception.</param>
-        public EMobilityProviderException(RoamingNetwork  RoamingNetwork,
+        public NavigationProviderException(RoamingNetwork  RoamingNetwork,
                                           String          Message,
                                           Exception       InnerException)
 
