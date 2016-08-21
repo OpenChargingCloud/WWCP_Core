@@ -38,7 +38,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RoamingNetwork">The roaming network.</param>
         /// <param name="EMobilityProviderId">The e-mobility provider identification.</param>
         public EMobilityProviderAlreadyExists(RoamingNetwork        RoamingNetwork,
-                                              EMobilityProvider_Id  EMobilityProviderId)
+                                              eMobilityProvider_Id  EMobilityProviderId)
 
             : base(RoamingNetwork,
                    "The given e-mobility provider identification '" + EMobilityProviderId + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")

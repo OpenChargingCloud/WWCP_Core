@@ -193,7 +193,7 @@ namespace org.GraphDefined.WWCP
 
             this._ChargingStationOperators                          = new EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator>(this);
             this._ParkingOperators                                  = new EntityHashSet<RoamingNetwork, ParkingOperator_Id,         ParkingOperator>        (this);
-            this._EMobilityProviders                                = new EntityHashSet<RoamingNetwork, EMobilityProvider_Id,       EMobilityProvider>      (this);
+            this._EMobilityProviders                                = new EntityHashSet<RoamingNetwork, eMobilityProvider_Id,       eMobilityProvider>      (this);
             this._SmartCities                                       = new EntityHashSet<RoamingNetwork, SmartCity_Id,               SmartCity>              (this);
             this._NavigationProviders                               = new EntityHashSet<RoamingNetwork, NavigationProvider_Id,      NavigationProvider>     (this);
             this._GridOperators                                     = new EntityHashSet<RoamingNetwork, GridOperator_Id,            GridOperator>           (this);
@@ -1010,12 +1010,12 @@ namespace org.GraphDefined.WWCP
 
         #region EMobilityProviders
 
-        private readonly EntityHashSet<RoamingNetwork, EMobilityProvider_Id, EMobilityProvider> _EMobilityProviders;
+        private readonly EntityHashSet<RoamingNetwork, eMobilityProvider_Id, eMobilityProvider> _EMobilityProviders;
 
         /// <summary>
         /// Return all e-mobility providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<EMobilityProvider> EMobilityProviders
+        public IEnumerable<eMobilityProvider> EMobilityProviders
 
             => _EMobilityProviders;
 
@@ -1026,10 +1026,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the admin status of all e-mobility providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderAdminStatusType>>>> EMobilityProviderAdminStatus
+        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderAdminStatusType>>>> EMobilityProviderAdminStatus
 
             => _EMobilityProviders.
-                   Select(emp => new KeyValuePair<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderAdminStatusType>>>(emp.Id, emp.AdminStatusSchedule));
+                   Select(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderAdminStatusType>>>(emp.Id, emp.AdminStatusSchedule));
 
         #endregion
 
@@ -1038,10 +1038,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the status of all e-mobility providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderStatusType>>>> EMobilityProviderStatus
+        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderStatusType>>>> EMobilityProviderStatus
 
             => _EMobilityProviders.
-                   Select(emp => new KeyValuePair<EMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderStatusType>>>(emp.Id, emp.StatusSchedule));
+                   Select(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderStatusType>>>(emp.Id, emp.StatusSchedule));
 
         #endregion
 
@@ -1051,7 +1051,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Called whenever an e-mobility provider will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, EMobilityProvider, Boolean> OnEMobilityProviderAddition
+        public IVotingSender<DateTime, RoamingNetwork, eMobilityProvider, Boolean> OnEMobilityProviderAddition
             => _EMobilityProviders.OnAddition;
 
         #endregion
@@ -1061,7 +1061,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Called whenever an e-mobility provider will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, EMobilityProvider, Boolean> OnEMobilityProviderRemoval
+        public IVotingSender<DateTime, RoamingNetwork, eMobilityProvider, Boolean> OnEMobilityProviderRemoval
             => _EMobilityProviders.OnRemoval;
 
         #endregion
@@ -1079,15 +1079,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="Configurator">An optional delegate to configure the new e-mobility provider before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new e-mobility provider after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the e-mobility provider failed.</param>
-        public EMobilityProvider CreateNewEMobilityProvider(EMobilityProvider_Id                          EMobilityProviderId,
+        public eMobilityProvider CreateNewEMobilityProvider(eMobilityProvider_Id                          EMobilityProviderId,
                                                             I18NString                                    Name                            = null,
                                                             I18NString                                    Description                     = null,
                                                             EMobilityProviderPriority                     Priority                        = null,
                                                             EMobilityProviderAdminStatusType              AdminStatus                     = EMobilityProviderAdminStatusType.Available,
                                                             EMobilityProviderStatusType                   Status                          = EMobilityProviderStatusType.Available,
-                                                            Action<EMobilityProvider>                     Configurator                    = null,
-                                                            Action<EMobilityProvider>                     OnSuccess                       = null,
-                                                            Action<RoamingNetwork, EMobilityProvider_Id>  OnError                         = null,
+                                                            Action<eMobilityProvider>                     Configurator                    = null,
+                                                            Action<eMobilityProvider>                     OnSuccess                       = null,
+                                                            Action<RoamingNetwork, eMobilityProvider_Id>  OnError                         = null,
                                                             RemoteEMobilityProviderCreatorDelegate        RemoteEMobilityProviderCreator  = null)
         {
 
@@ -1098,7 +1098,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            var _EMobilityProvider = new EMobilityProvider(EMobilityProviderId,
+            var _EMobilityProvider = new eMobilityProvider(EMobilityProviderId,
                                                            this,
                                                            Configurator,
                                                            RemoteEMobilityProviderCreator,
@@ -1156,7 +1156,7 @@ namespace org.GraphDefined.WWCP
         /// Check if the given EMobilityProvider is already present within the roaming network.
         /// </summary>
         /// <param name="EMobilityProvider">An Charging Station Operator.</param>
-        public Boolean ContainsEMobilityProvider(EMobilityProvider EMobilityProvider)
+        public Boolean ContainsEMobilityProvider(eMobilityProvider EMobilityProvider)
 
             => _EMobilityProviders.Contains(EMobilityProvider.Id);
 
@@ -1168,7 +1168,7 @@ namespace org.GraphDefined.WWCP
         /// Check if the given EMobilityProvider identification is already present within the roaming network.
         /// </summary>
         /// <param name="EMobilityProviderId">The unique identification of the Charging Station Operator.</param>
-        public Boolean ContainsEMobilityProvider(EMobilityProvider_Id EMobilityProviderId)
+        public Boolean ContainsEMobilityProvider(eMobilityProvider_Id EMobilityProviderId)
 
             => _EMobilityProviders.Contains(EMobilityProviderId);
 
@@ -1176,7 +1176,7 @@ namespace org.GraphDefined.WWCP
 
         #region GetEMobilityProviderById(EMobilityProviderId)
 
-        public EMobilityProvider GetEMobilityProviderById(EMobilityProvider_Id EMobilityProviderId)
+        public eMobilityProvider GetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId)
 
             => _EMobilityProviders.Get(EMobilityProviderId);
 
@@ -1184,7 +1184,7 @@ namespace org.GraphDefined.WWCP
 
         #region TryGetEMobilityProviderById(EMobilityProviderId, out EMobilityProvider)
 
-        public Boolean TryGetEMobilityProviderById(EMobilityProvider_Id EMobilityProviderId, out EMobilityProvider EMobilityProvider)
+        public Boolean TryGetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId, out eMobilityProvider EMobilityProvider)
 
             => _EMobilityProviders.TryGet(EMobilityProviderId, out EMobilityProvider);
 
@@ -1192,10 +1192,10 @@ namespace org.GraphDefined.WWCP
 
         #region RemoveEMobilityProvider(EMobilityProviderId)
 
-        public EMobilityProvider RemoveEMobilityProvider(EMobilityProvider_Id EMobilityProviderId)
+        public eMobilityProvider RemoveEMobilityProvider(eMobilityProvider_Id EMobilityProviderId)
         {
 
-            EMobilityProvider _EMobilityProvider = null;
+            eMobilityProvider _EMobilityProvider = null;
 
             if (_EMobilityProviders.TryRemove(EMobilityProviderId, out _EMobilityProvider))
                 return _EMobilityProvider;
@@ -1208,7 +1208,7 @@ namespace org.GraphDefined.WWCP
 
         #region TryRemoveEMobilityProvider(RemoveEMobilityProviderId, out RemoveEMobilityProvider)
 
-        public Boolean TryRemoveEMobilityProvider(EMobilityProvider_Id EMobilityProviderId, out EMobilityProvider EMobilityProvider)
+        public Boolean TryRemoveEMobilityProvider(eMobilityProvider_Id EMobilityProviderId, out eMobilityProvider EMobilityProvider)
 
             => _EMobilityProviders.TryRemove(EMobilityProviderId, out EMobilityProvider);
 
@@ -3420,7 +3420,7 @@ namespace org.GraphDefined.WWCP
                     DateTime?                StartTime          = null,
                     TimeSpan?                Duration           = null,
                     ChargingReservation_Id   ReservationId      = null,
-                    EMobilityProvider_Id     ProviderId         = null,
+                    eMobilityProvider_Id     ProviderId         = null,
                     eMobilityAccount_Id                   eMAId              = null,
                     ChargingProduct_Id       ChargingProductId  = null,
                     IEnumerable<Auth_Token>  AuthTokens         = null,
@@ -3614,7 +3614,7 @@ namespace org.GraphDefined.WWCP
                     DateTime?                StartTime          = null,
                     TimeSpan?                Duration           = null,
                     ChargingReservation_Id   ReservationId      = null,
-                    EMobilityProvider_Id     ProviderId         = null,
+                    eMobilityProvider_Id     ProviderId         = null,
                     eMobilityAccount_Id                   eMAId              = null,
                     ChargingProduct_Id       ChargingProductId  = null,
                     IEnumerable<Auth_Token>  AuthTokens         = null,
@@ -3771,7 +3771,7 @@ namespace org.GraphDefined.WWCP
                     DateTime?                StartTime          = null,
                     TimeSpan?                Duration           = null,
                     ChargingReservation_Id   ReservationId      = null,
-                    EMobilityProvider_Id     ProviderId         = null,
+                    eMobilityProvider_Id     ProviderId         = null,
                     eMobilityAccount_Id                   eMAId              = null,
                     ChargingProduct_Id       ChargingProductId  = null,
                     IEnumerable<Auth_Token>  AuthTokens         = null,
@@ -3960,7 +3960,7 @@ namespace org.GraphDefined.WWCP
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
-                              EMobilityProvider_Id                   ProviderId         = null,
+                              eMobilityProvider_Id                   ProviderId         = null,
                               EVSE_Id                                EVSEId             = null,
 
                               DateTime?                              Timestamp          = null,
@@ -4156,7 +4156,7 @@ namespace org.GraphDefined.WWCP
                         ChargingProduct_Id      ChargingProductId  = null,
                         ChargingReservation_Id  ReservationId      = null,
                         ChargingSession_Id      SessionId          = null,
-                        EMobilityProvider_Id    ProviderId         = null,
+                        eMobilityProvider_Id    ProviderId         = null,
                         eMobilityAccount_Id                  eMAId              = null,
 
                         DateTime?               Timestamp          = null,
@@ -4323,7 +4323,7 @@ namespace org.GraphDefined.WWCP
                         ChargingProduct_Id      ChargingProductId  = null,
                         ChargingReservation_Id  ReservationId      = null,
                         ChargingSession_Id      SessionId          = null,
-                        EMobilityProvider_Id    ProviderId         = null,
+                        eMobilityProvider_Id    ProviderId         = null,
                         eMobilityAccount_Id                  eMAId              = null,
 
                         DateTime?               Timestamp          = null,
@@ -4490,7 +4490,7 @@ namespace org.GraphDefined.WWCP
 
             RemoteStop(ChargingSession_Id    SessionId,
                        ReservationHandling   ReservationHandling,
-                       EMobilityProvider_Id  ProviderId         = null,
+                       eMobilityProvider_Id  ProviderId         = null,
                        eMobilityAccount_Id                eMAId              = null,
 
                        DateTime?             Timestamp          = null,
@@ -4617,7 +4617,7 @@ namespace org.GraphDefined.WWCP
             RemoteStop(EVSE_Id               EVSEId,
                        ChargingSession_Id    SessionId,
                        ReservationHandling   ReservationHandling,
-                       EMobilityProvider_Id  ProviderId         = null,
+                       eMobilityProvider_Id  ProviderId         = null,
                        eMobilityAccount_Id                eMAId              = null,
 
                        DateTime?             Timestamp          = null,
@@ -4843,7 +4843,7 @@ namespace org.GraphDefined.WWCP
             RemoteStop(ChargingStation_Id    ChargingStationId,
                        ChargingSession_Id    SessionId,
                        ReservationHandling   ReservationHandling,
-                       EMobilityProvider_Id  ProviderId         = null,
+                       eMobilityProvider_Id  ProviderId         = null,
                        eMobilityAccount_Id                eMAId              = null,
 
                        DateTime?             Timestamp          = null,
@@ -6427,7 +6427,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<SendCDRResult>
 
-            SendChargeDetailRecord(DateTime            Timestamp,
+            SendChargeDetailRecord(DateTime            LogTimestamp,
+                                   DateTime            RequestTimestamp,
                                    CancellationToken   CancellationToken,
                                    EventTracking_Id    EventTrackingId,
                                    ChargeDetailRecord  ChargeDetailRecord,
@@ -6450,7 +6451,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnCDRSend?.Invoke(DateTime.Now,
+                OnCDRSend?.Invoke(LogTimestamp,
+                                  RequestTimestamp,
                                   this,
                                   EventTrackingId,
                                   this.Id,
@@ -6540,7 +6542,7 @@ namespace org.GraphDefined.WWCP
                     {
 
                         result = await OtherAuthenticationService.SendChargeDetailRecord(ChargeDetailRecord,
-                                                                                         Timestamp,
+                                                                                         RequestTimestamp,
                                                                                          CancellationToken,
                                                                                          EventTrackingId,
                                                                                          RequestTimeout);
@@ -6599,6 +6601,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 OnCDRSent?.Invoke(DateTime.Now,
+                                  DateTime.Now,
                                   this,
                                   EventTrackingId,
                                   this.Id,
@@ -6627,7 +6630,8 @@ namespace org.GraphDefined.WWCP
                                               ChargeDetailRecord  ChargeDetailRecord)
         {
 
-            SendChargeDetailRecord(Timestamp,
+            SendChargeDetailRecord(DateTime.Now,
+                                   Timestamp,
                                    new CancellationTokenSource().Token,
                                    EventTracking_Id.New,
                                    ChargeDetailRecord,

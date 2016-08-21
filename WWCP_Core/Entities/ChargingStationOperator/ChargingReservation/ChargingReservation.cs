@@ -173,10 +173,10 @@ namespace org.GraphDefined.WWCP
 
         #region ProviderId
 
-        private readonly EMobilityProvider_Id _ProviderId;
+        private readonly eMobilityProvider_Id _ProviderId;
 
         [Optional]
-        public EMobilityProvider_Id ProviderId
+        public eMobilityProvider_Id ProviderId
         {
             get
             {
@@ -361,7 +361,7 @@ namespace org.GraphDefined.WWCP
                                    TimeSpan                  ConsumedReservationTime,
                                    ChargingReservationLevel  ReservationLevel,
 
-                                   EMobilityProvider_Id                   ProviderId         = null,
+                                   eMobilityProvider_Id                   ProviderId         = null,
                                    eMobilityAccount_Id                    eMAId              = null,
 
                                    RoamingNetwork            RoamingNetwork     = null,

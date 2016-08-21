@@ -30,73 +30,73 @@ namespace org.GraphDefined.WWCP.UnitTests
 {
 
     /// <summary>
-    /// Unit tests for the eMA_Id class.
+    /// Unit tests for the eMobilityAccount_Id class.
     /// </summary>
     [TestFixture]
-    public class eMA_IdTests
+    public class eMobilityAccount_IdTests
     {
 
-        #region eMA_IdEmptyConstructorTest()
+        #region eMobilityAccount_IdEmptyConstructorTest()
 
         /// <summary>
-        /// A test for an empty eMA_Id constructor.
+        /// A test for an empty eMobilityAccount_Id constructor.
         /// </summary>
         [Test]
-        public void eMA_IdEmptyConstructorTest()
+        public void eMobilityAccount_IdEmptyConstructorTest()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("");
-            Assert.IsTrue(_eMA_Id1.Length > 0);
-            Assert.IsTrue(_eMA_Id2.Length > 0);
-            Assert.AreNotEqual(_eMA_Id1, _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("");
+            Assert.IsTrue(_eMobilityAccount_Id1.Length > 0);
+            Assert.IsTrue(_eMobilityAccount_Id2.Length > 0);
+            Assert.AreNotEqual(_eMobilityAccount_Id1, _eMobilityAccount_Id2);
         }
 
         #endregion
 
-        #region eMA_IdStringConstructorTest()
+        #region eMobilityAccount_IdStringConstructorTest()
 
         /// <summary>
-        /// A test for the eMA_Id string constructor.
+        /// A test for the eMobilityAccount_Id string constructor.
         /// </summary>
         [Test]
-        public void eMA_IdStringConstructorTest()
+        public void eMobilityAccount_IdStringConstructorTest()
         {
-            var _eMA_Id = eMobilityAccount_Id.Parse("123");
-            Assert.AreEqual("123", _eMA_Id.ToString());
-            Assert.AreEqual(3,     _eMA_Id.Length);
+            var _eMobilityAccount_Id = eMobilityAccount_Id.Parse("123");
+            Assert.AreEqual("123", _eMobilityAccount_Id.ToString());
+            Assert.AreEqual(3,     _eMobilityAccount_Id.Length);
         }
 
         #endregion
 
-        #region eMA_IdeMA_IdConstructorTest()
+        #region eMobilityAccount_IdeMobilityAccount_IdConstructorTest()
 
         /// <summary>
-        /// A test for the eMA_Id eMA_Id constructor.
+        /// A test for the eMobilityAccount_Id eMobilityAccount_Id constructor.
         /// </summary>
         [Test]
-        public void eMA_IdeMA_IdConstructorTest()
+        public void eMobilityAccount_IdeMobilityAccount_IdConstructorTest()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("");
-            var _eMA_Id2 = _eMA_Id1.Clone;
-            Assert.AreEqual(_eMA_Id1.ToString(), _eMA_Id2.ToString());
-            Assert.AreEqual(_eMA_Id1.Length,     _eMA_Id2.Length);
-            Assert.AreEqual(_eMA_Id1,            _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("");
+            var _eMobilityAccount_Id2 = _eMobilityAccount_Id1.Clone;
+            Assert.AreEqual(_eMobilityAccount_Id1.ToString(), _eMobilityAccount_Id2.ToString());
+            Assert.AreEqual(_eMobilityAccount_Id1.Length,     _eMobilityAccount_Id2.Length);
+            Assert.AreEqual(_eMobilityAccount_Id1,            _eMobilityAccount_Id2);
         }
 
         #endregion
 
 
-        #region NeweMA_IdMethodTest()
+        #region NeweMobilityAccount_IdMethodTest()
 
         /// <summary>
-        /// A test for the static neweMA_Id method.
+        /// A test for the static neweMobilityAccount_Id method.
         /// </summary>
         [Test]
-        public void NeweMA_IdMethodTest()
+        public void NeweMobilityAccount_IdMethodTest()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("");
-            Assert.AreNotEqual(_eMA_Id1, _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("");
+            Assert.AreNotEqual(_eMobilityAccount_Id1, _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -110,9 +110,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Equality_Null_Test1()
         {
-            var      _eMA_Id1 = eMobilityAccount_Id.Parse("");
-            eMobilityAccount_Id _eMA_Id2 = null;
-            Assert.IsFalse(_eMA_Id1 == _eMA_Id2);
+            var      _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("");
+            eMobilityAccount_Id _eMobilityAccount_Id2 = null;
+            Assert.IsFalse(_eMobilityAccount_Id1 == _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -125,9 +125,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Equality_Null_Test2()
         {
-            eMobilityAccount_Id _eMA_Id1 = null;
-            var      _eMA_Id2 = eMobilityAccount_Id.Parse("");
-            Assert.IsFalse(_eMA_Id1 == _eMA_Id2);
+            eMobilityAccount_Id _eMobilityAccount_Id1 = null;
+            var      _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("");
+            Assert.IsFalse(_eMobilityAccount_Id1 == _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -140,9 +140,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Equality_BothNull_Test()
         {
-            eMobilityAccount_Id _eMA_Id1 = null;
-            eMobilityAccount_Id _eMA_Id2 = null;
-            Assert.IsTrue(_eMA_Id1 == _eMA_Id2);
+            eMobilityAccount_Id _eMobilityAccount_Id1 = null;
+            eMobilityAccount_Id _eMobilityAccount_Id2 = null;
+            Assert.IsTrue(_eMobilityAccount_Id1 == _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -156,9 +156,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         
         public void op_Equality_SameReference_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("");
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("");
             #pragma warning disable
-            Assert.IsTrue(_eMA_Id1 == _eMA_Id1);
+            Assert.IsTrue(_eMobilityAccount_Id1 == _eMobilityAccount_Id1);
             #pragma warning restore
         }
 
@@ -172,9 +172,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Equality_Equals_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("1");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("1");
-            Assert.IsTrue(_eMA_Id1 == _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("1");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("1");
+            Assert.IsTrue(_eMobilityAccount_Id1 == _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -187,9 +187,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Equality_NotEquals_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("1");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("2");
-            Assert.IsFalse(_eMA_Id1 == _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("1");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("2");
+            Assert.IsFalse(_eMobilityAccount_Id1 == _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -203,9 +203,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_Null_Test1()
         {
-            var      _eMA_Id1 = eMobilityAccount_Id.Parse("");
-            eMobilityAccount_Id _eMA_Id2 = null;
-            Assert.IsTrue(_eMA_Id1 != _eMA_Id2);
+            var      _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("");
+            eMobilityAccount_Id _eMobilityAccount_Id2 = null;
+            Assert.IsTrue(_eMobilityAccount_Id1 != _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -218,9 +218,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_Null_Test2()
         {
-            eMobilityAccount_Id _eMA_Id1 = null;
-            var      _eMA_Id2 = eMobilityAccount_Id.Parse("");
-            Assert.IsTrue(_eMA_Id1 != _eMA_Id2);
+            eMobilityAccount_Id _eMobilityAccount_Id1 = null;
+            var      _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("");
+            Assert.IsTrue(_eMobilityAccount_Id1 != _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -233,9 +233,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_BothNull_Test()
         {
-            eMobilityAccount_Id _eMA_Id1 = null;
-            eMobilityAccount_Id _eMA_Id2 = null;
-            Assert.IsFalse(_eMA_Id1 != _eMA_Id2);
+            eMobilityAccount_Id _eMobilityAccount_Id1 = null;
+            eMobilityAccount_Id _eMobilityAccount_Id2 = null;
+            Assert.IsFalse(_eMobilityAccount_Id1 != _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -248,9 +248,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_SameReference_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("");
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("");
             #pragma warning disable
-            Assert.IsFalse(_eMA_Id1 != _eMA_Id1);
+            Assert.IsFalse(_eMobilityAccount_Id1 != _eMobilityAccount_Id1);
             #pragma warning restore
         }
 
@@ -264,9 +264,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_Equals_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("1");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("1");
-            Assert.IsFalse(_eMA_Id1 != _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("1");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("1");
+            Assert.IsFalse(_eMobilityAccount_Id1 != _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -279,9 +279,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_NotEquals1_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("1");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("2");
-            Assert.IsTrue(_eMA_Id1 != _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("1");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("2");
+            Assert.IsTrue(_eMobilityAccount_Id1 != _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -294,9 +294,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Inequality_NotEquals2_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("5");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("23");
-            Assert.IsTrue(_eMA_Id1 != _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("5");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("23");
+            Assert.IsTrue(_eMobilityAccount_Id1 != _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -310,9 +310,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Null_Test1()
         {
-            var      _eMA_Id1 = eMobilityAccount_Id.Parse("");
-            eMobilityAccount_Id _eMA_Id2 = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _eMA_Id1 < _eMA_Id2; });
+            var      _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("");
+            eMobilityAccount_Id _eMobilityAccount_Id2 = null;
+            Assert.Throws<ArgumentNullException>(() => { var x = _eMobilityAccount_Id1 < _eMobilityAccount_Id2; });
         }
 
         #endregion
@@ -325,9 +325,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Null_Test2()
         {
-            eMobilityAccount_Id _eMA_Id1 = null;
-            var      _eMA_Id2 = eMobilityAccount_Id.Parse("");
-            Assert.Throws<ArgumentNullException>(() => { var x = _eMA_Id1 < _eMA_Id2; });
+            eMobilityAccount_Id _eMobilityAccount_Id1 = null;
+            var      _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("");
+            Assert.Throws<ArgumentNullException>(() => { var x = _eMobilityAccount_Id1 < _eMobilityAccount_Id2; });
         }
 
         #endregion
@@ -340,9 +340,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_BothNull_Test()
         {
-            eMobilityAccount_Id _eMA_Id1 = null;
-            eMobilityAccount_Id _eMA_Id2 = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _eMA_Id1 < _eMA_Id2; });
+            eMobilityAccount_Id _eMobilityAccount_Id1 = null;
+            eMobilityAccount_Id _eMobilityAccount_Id2 = null;
+            Assert.Throws<ArgumentNullException>(() => { var x = _eMobilityAccount_Id1 < _eMobilityAccount_Id2; });
         }
 
         #endregion
@@ -355,9 +355,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_SameReference_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("");
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("");
             #pragma warning disable
-            Assert.IsFalse(_eMA_Id1 < _eMA_Id1);
+            Assert.IsFalse(_eMobilityAccount_Id1 < _eMobilityAccount_Id1);
             #pragma warning restore
         }
 
@@ -371,9 +371,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Equals_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("1");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("1");
-            Assert.IsFalse(_eMA_Id1 < _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("1");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("1");
+            Assert.IsFalse(_eMobilityAccount_Id1 < _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -386,9 +386,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Smaller1_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("1");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("2");
-            Assert.IsTrue(_eMA_Id1 < _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("1");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("2");
+            Assert.IsTrue(_eMobilityAccount_Id1 < _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -401,9 +401,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Smaller2_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("5");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("23");
-            Assert.IsTrue(_eMA_Id1 < _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("5");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("23");
+            Assert.IsTrue(_eMobilityAccount_Id1 < _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -416,9 +416,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Bigger1_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("2");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("1");
-            Assert.IsFalse(_eMA_Id1 < _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("2");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("1");
+            Assert.IsFalse(_eMobilityAccount_Id1 < _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -431,9 +431,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Smaller_Bigger2_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("23");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("5");
-            Assert.IsFalse(_eMA_Id1 < _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("23");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("5");
+            Assert.IsFalse(_eMobilityAccount_Id1 < _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -447,10 +447,10 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Null_Test1()
         {
-            var      _eMA_Id1 = eMobilityAccount_Id.Parse("");
-            eMobilityAccount_Id _eMA_Id2 = null;
-            Assert.IsTrue(_eMA_Id1 <= _eMA_Id2);
-            Assert.Throws<ArgumentNullException>(() => { var x = _eMA_Id1 <= _eMA_Id2; });
+            var      _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("");
+            eMobilityAccount_Id _eMobilityAccount_Id2 = null;
+            Assert.IsTrue(_eMobilityAccount_Id1 <= _eMobilityAccount_Id2);
+            Assert.Throws<ArgumentNullException>(() => { var x = _eMobilityAccount_Id1 <= _eMobilityAccount_Id2; });
         }
 
         #endregion
@@ -463,9 +463,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Null_Test2()
         {
-            eMobilityAccount_Id _eMA_Id1 = null;
-            var      _eMA_Id2 = eMobilityAccount_Id.Parse("");
-            Assert.Throws<ArgumentNullException>(() => { var x = _eMA_Id1 <= _eMA_Id2; });
+            eMobilityAccount_Id _eMobilityAccount_Id1 = null;
+            var      _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("");
+            Assert.Throws<ArgumentNullException>(() => { var x = _eMobilityAccount_Id1 <= _eMobilityAccount_Id2; });
         }
 
         #endregion
@@ -478,9 +478,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_BothNull_Test()
         {
-            eMobilityAccount_Id _eMA_Id1 = null;
-            eMobilityAccount_Id _eMA_Id2 = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _eMA_Id1 <= _eMA_Id2; });
+            eMobilityAccount_Id _eMobilityAccount_Id1 = null;
+            eMobilityAccount_Id _eMobilityAccount_Id2 = null;
+            Assert.Throws<ArgumentNullException>(() => { var x = _eMobilityAccount_Id1 <= _eMobilityAccount_Id2; });
         }
 
         #endregion
@@ -493,9 +493,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_SameReference_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("");
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("");
             #pragma warning disable
-            Assert.IsTrue(_eMA_Id1 <= _eMA_Id1);
+            Assert.IsTrue(_eMobilityAccount_Id1 <= _eMobilityAccount_Id1);
             #pragma warning restore
         }
 
@@ -509,9 +509,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Equals_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("1");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("1");
-            Assert.IsTrue(_eMA_Id1 <= _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("1");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("1");
+            Assert.IsTrue(_eMobilityAccount_Id1 <= _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -524,9 +524,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_SmallerThan1_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("1");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("2");
-            Assert.IsTrue(_eMA_Id1 <= _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("1");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("2");
+            Assert.IsTrue(_eMobilityAccount_Id1 <= _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -539,9 +539,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_SmallerThan2_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("5");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("23");
-            Assert.IsTrue(_eMA_Id1 <= _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("5");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("23");
+            Assert.IsTrue(_eMobilityAccount_Id1 <= _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -554,9 +554,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Bigger1_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("2");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("1");
-            Assert.IsFalse(_eMA_Id1 <= _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("2");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("1");
+            Assert.IsFalse(_eMobilityAccount_Id1 <= _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -569,9 +569,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_SmallerOrEqual_Bigger2_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("23");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("5");
-            Assert.IsFalse(_eMA_Id1 <= _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("23");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("5");
+            Assert.IsFalse(_eMobilityAccount_Id1 <= _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -585,9 +585,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Null_Test1()
         {
-            var      _eMA_Id1 = eMobilityAccount_Id.Parse("");
-            eMobilityAccount_Id _eMA_Id2 = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _eMA_Id1 > _eMA_Id2; });
+            var      _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("");
+            eMobilityAccount_Id _eMobilityAccount_Id2 = null;
+            Assert.Throws<ArgumentNullException>(() => { var x = _eMobilityAccount_Id1 > _eMobilityAccount_Id2; });
         }
 
         #endregion
@@ -600,9 +600,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Null_Test2()
         {
-            eMobilityAccount_Id _eMA_Id1 = null;
-            var      _eMA_Id2 = eMobilityAccount_Id.Parse("");
-            Assert.Throws<ArgumentNullException>(() => { var x = _eMA_Id1 > _eMA_Id2; });
+            eMobilityAccount_Id _eMobilityAccount_Id1 = null;
+            var      _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("");
+            Assert.Throws<ArgumentNullException>(() => { var x = _eMobilityAccount_Id1 > _eMobilityAccount_Id2; });
         }
 
         #endregion
@@ -615,9 +615,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_BothNull_Test()
         {
-            eMobilityAccount_Id _eMA_Id1 = null;
-            eMobilityAccount_Id _eMA_Id2 = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _eMA_Id1 > _eMA_Id2; });
+            eMobilityAccount_Id _eMobilityAccount_Id1 = null;
+            eMobilityAccount_Id _eMobilityAccount_Id2 = null;
+            Assert.Throws<ArgumentNullException>(() => { var x = _eMobilityAccount_Id1 > _eMobilityAccount_Id2; });
         }
 
         #endregion
@@ -630,9 +630,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_SameReference_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("");
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("");
             #pragma warning disable
-            Assert.IsFalse(_eMA_Id1 > _eMA_Id1);
+            Assert.IsFalse(_eMobilityAccount_Id1 > _eMobilityAccount_Id1);
             #pragma warning restore
         }
 
@@ -646,9 +646,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Equals_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("1");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("1");
-            Assert.IsFalse(_eMA_Id1 > _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("1");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("1");
+            Assert.IsFalse(_eMobilityAccount_Id1 > _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -661,9 +661,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Smaller1_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("1");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("2");
-            Assert.IsFalse(_eMA_Id1 > _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("1");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("2");
+            Assert.IsFalse(_eMobilityAccount_Id1 > _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -676,9 +676,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Smaller2_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("5");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("23");
-            Assert.IsFalse(_eMA_Id1 > _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("5");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("23");
+            Assert.IsFalse(_eMobilityAccount_Id1 > _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -691,9 +691,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Bigger1_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("2");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("1");
-            Assert.IsTrue(_eMA_Id1 > _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("2");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("1");
+            Assert.IsTrue(_eMobilityAccount_Id1 > _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -706,9 +706,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_Bigger_Bigger2_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("23");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("5");
-            Assert.IsTrue(_eMA_Id1 > _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("23");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("5");
+            Assert.IsTrue(_eMobilityAccount_Id1 > _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -722,9 +722,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Null_Test1()
         {
-            var      _eMA_Id1 = eMobilityAccount_Id.Parse("");
-            eMobilityAccount_Id _eMA_Id2 = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _eMA_Id1 >= _eMA_Id2; });
+            var      _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("");
+            eMobilityAccount_Id _eMobilityAccount_Id2 = null;
+            Assert.Throws<ArgumentNullException>(() => { var x = _eMobilityAccount_Id1 >= _eMobilityAccount_Id2; });
         }
 
         #endregion
@@ -737,9 +737,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Null_Test2()
         {
-            eMobilityAccount_Id _eMA_Id1 = null;
-            var      _eMA_Id2 = eMobilityAccount_Id.Parse("");
-            Assert.Throws<ArgumentNullException>(() => { var x = _eMA_Id1 >= _eMA_Id2; });
+            eMobilityAccount_Id _eMobilityAccount_Id1 = null;
+            var      _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("");
+            Assert.Throws<ArgumentNullException>(() => { var x = _eMobilityAccount_Id1 >= _eMobilityAccount_Id2; });
         }
 
         #endregion
@@ -752,9 +752,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_BothNull_Test()
         {
-            eMobilityAccount_Id _eMA_Id1 = null;
-            eMobilityAccount_Id _eMA_Id2 = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _eMA_Id1 >= _eMA_Id2; });
+            eMobilityAccount_Id _eMobilityAccount_Id1 = null;
+            eMobilityAccount_Id _eMobilityAccount_Id2 = null;
+            Assert.Throws<ArgumentNullException>(() => { var x = _eMobilityAccount_Id1 >= _eMobilityAccount_Id2; });
         }
 
         #endregion
@@ -767,9 +767,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_SameReference_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("");
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("");
             #pragma warning disable
-            Assert.IsTrue(_eMA_Id1 >= _eMA_Id1);
+            Assert.IsTrue(_eMobilityAccount_Id1 >= _eMobilityAccount_Id1);
             #pragma warning restore
         }
 
@@ -783,9 +783,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Equals_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("1");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("1");
-            Assert.IsTrue(_eMA_Id1 >= _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("1");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("1");
+            Assert.IsTrue(_eMobilityAccount_Id1 >= _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -798,9 +798,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_SmallerThan1_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("1");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("2");
-            Assert.IsFalse(_eMA_Id1 >= _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("1");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("2");
+            Assert.IsFalse(_eMobilityAccount_Id1 >= _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -813,9 +813,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_SmallerThan2_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("5");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("23");
-            Assert.IsFalse(_eMA_Id1 >= _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("5");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("23");
+            Assert.IsFalse(_eMobilityAccount_Id1 >= _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -828,9 +828,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Bigger1_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("2");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("1");
-            Assert.IsTrue(_eMA_Id1 >= _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("2");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("1");
+            Assert.IsTrue(_eMobilityAccount_Id1 >= _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -843,9 +843,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void op_BiggerOrEqual_Bigger2_Test()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("23");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("5");
-            Assert.IsTrue(_eMA_Id1 >= _eMA_Id2);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("23");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("5");
+            Assert.IsTrue(_eMobilityAccount_Id1 >= _eMobilityAccount_Id2);
         }
 
         #endregion
@@ -859,9 +859,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToNullTest1()
         {
-            var    _eMA_Id = eMobilityAccount_Id.Parse("");
+            var    _eMobilityAccount_Id = eMobilityAccount_Id.Parse("");
             Object _Object   = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _eMA_Id.CompareTo(_Object); });
+            Assert.Throws<ArgumentNullException>(() => { var x = _eMobilityAccount_Id.CompareTo(_Object); });
         }
 
         #endregion
@@ -874,24 +874,24 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToNullTest2()
         {
-            var      _eMA_Id = eMobilityAccount_Id.Parse("");
+            var      _eMobilityAccount_Id = eMobilityAccount_Id.Parse("");
             eMobilityAccount_Id _Object   = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _eMA_Id.CompareTo(_Object); });
+            Assert.Throws<ArgumentNullException>(() => { var x = _eMobilityAccount_Id.CompareTo(_Object); });
         }
 
         #endregion
 
-        #region CompareToNoneMA_IdTest()
+        #region CompareToNoneMobilityAccount_IdTest()
 
         /// <summary>
-        /// A test for CompareTo a non-eMA_Id.
+        /// A test for CompareTo a non-eMobilityAccount_Id.
         /// </summary>
         [Test]
-        public void CompareToNoneMA_IdTest()
+        public void CompareToNoneMobilityAccount_IdTest()
         {
-            var _eMA_Id = eMobilityAccount_Id.Parse("");
+            var _eMobilityAccount_Id = eMobilityAccount_Id.Parse("");
             var _Object   = "123";
-            Assert.Throws<ArgumentNullException>(() => { var x = _eMA_Id.CompareTo(_Object); });
+            Assert.Throws<ArgumentNullException>(() => { var x = _eMobilityAccount_Id.CompareTo(_Object); });
         }
 
         #endregion
@@ -904,9 +904,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToSmallerTest1()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("1");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("2");
-            Assert.IsTrue(_eMA_Id1.CompareTo(_eMA_Id2) < 0);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("1");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("2");
+            Assert.IsTrue(_eMobilityAccount_Id1.CompareTo(_eMobilityAccount_Id2) < 0);
         }
 
         #endregion
@@ -919,9 +919,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToSmallerTest2()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("5");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("23");
-            Assert.IsTrue(_eMA_Id1.CompareTo(_eMA_Id2) < 0);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("5");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("23");
+            Assert.IsTrue(_eMobilityAccount_Id1.CompareTo(_eMobilityAccount_Id2) < 0);
         }
 
         #endregion
@@ -934,9 +934,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToEqualsTest()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("1");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("1");
-            Assert.IsTrue(_eMA_Id1.CompareTo(_eMA_Id2) == 0);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("1");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("1");
+            Assert.IsTrue(_eMobilityAccount_Id1.CompareTo(_eMobilityAccount_Id2) == 0);
         }
 
         #endregion
@@ -949,9 +949,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void CompareToBiggerTest()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("2");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("1");
-            Assert.IsTrue(_eMA_Id1.CompareTo(_eMA_Id2) > 0);
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("2");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("1");
+            Assert.IsTrue(_eMobilityAccount_Id1.CompareTo(_eMobilityAccount_Id2) > 0);
         }
 
         #endregion
@@ -965,9 +965,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsNullTest1()
         {
-            var    _eMA_Id = eMobilityAccount_Id.Parse("");
+            var    _eMobilityAccount_Id = eMobilityAccount_Id.Parse("");
             Object _Object   = null;
-            Assert.IsFalse(_eMA_Id.Equals(_Object));
+            Assert.IsFalse(_eMobilityAccount_Id.Equals(_Object));
         }
 
         #endregion
@@ -980,24 +980,24 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsNullTest2()
         {
-            var      _eMA_Id = eMobilityAccount_Id.Parse("");
+            var      _eMobilityAccount_Id = eMobilityAccount_Id.Parse("");
             eMobilityAccount_Id _Object   = null;
-            Assert.IsFalse(_eMA_Id.Equals(_Object));
+            Assert.IsFalse(_eMobilityAccount_Id.Equals(_Object));
         }
 
         #endregion
 
-        #region EqualsNoneMA_IdTest()
+        #region EqualsNoneMobilityAccount_IdTest()
 
         /// <summary>
-        /// A test for equals a non-eMA_Id.
+        /// A test for equals a non-eMobilityAccount_Id.
         /// </summary>
         [Test]
-        public void EqualsNoneMA_IdTest()
+        public void EqualsNoneMobilityAccount_IdTest()
         {
-            var _eMA_Id = eMobilityAccount_Id.Parse("");
+            var _eMobilityAccount_Id = eMobilityAccount_Id.Parse("");
             var _Object   = "123";
-            Assert.IsFalse(_eMA_Id.Equals(_Object));
+            Assert.IsFalse(_eMobilityAccount_Id.Equals(_Object));
         }
 
         #endregion
@@ -1010,9 +1010,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsEqualsTest()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("1");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("1");
-            Assert.IsTrue(_eMA_Id1.Equals(_eMA_Id2));
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("1");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("1");
+            Assert.IsTrue(_eMobilityAccount_Id1.Equals(_eMobilityAccount_Id2));
         }
 
         #endregion
@@ -1025,9 +1025,9 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsNotEqualsTest()
         {
-            var _eMA_Id1 = eMobilityAccount_Id.Parse("1");
-            var _eMA_Id2 = eMobilityAccount_Id.Parse("2");
-            Assert.IsFalse(_eMA_Id1.Equals(_eMA_Id2));
+            var _eMobilityAccount_Id1 = eMobilityAccount_Id.Parse("1");
+            var _eMobilityAccount_Id2 = eMobilityAccount_Id.Parse("2");
+            Assert.IsFalse(_eMobilityAccount_Id1.Equals(_eMobilityAccount_Id2));
         }
 
         #endregion
@@ -1064,13 +1064,13 @@ namespace org.GraphDefined.WWCP.UnitTests
         #endregion
 
 
-        #region eMA_IdsAndNUnitTest()
+        #region eMobilityAccount_IdsAndNUnitTest()
 
         /// <summary>
-        /// Tests eMA_Ids in combination with NUnit.
+        /// Tests eMobilityAccount_Ids in combination with NUnit.
         /// </summary>
         [Test]
-        public void eMA_IdsAndNUnitTest()
+        public void eMobilityAccount_IdsAndNUnitTest()
         {
 
             var a = eMobilityAccount_Id.Parse("1");
@@ -1089,13 +1089,13 @@ namespace org.GraphDefined.WWCP.UnitTests
 
         #endregion
 
-        #region eMA_IdsInHashSetTest()
+        #region eMobilityAccount_IdsInHashSetTest()
 
         /// <summary>
-        /// Test eMA_Ids within a HashSet.
+        /// Test eMobilityAccount_Ids within a HashSet.
         /// </summary>
         [Test]
-        public void eMA_IdsInHashSetTest()
+        public void eMobilityAccount_IdsInHashSetTest()
         {
 
             var a = eMobilityAccount_Id.Parse("1");

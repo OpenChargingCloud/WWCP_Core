@@ -51,7 +51,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the ev service provider.
         /// </summary>
-        public EMobilityProvider_Id                  ProviderId              { get; }
+        public eMobilityProvider_Id                  ProviderId              { get; }
 
         /// <summary>
         /// A optional description of the authorize start result.
@@ -95,7 +95,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Runtime">The run time of the request.</param>
         private AuthStartResult(Authorizator_Id      AuthorizatorId,
                                 AuthStartResultType  Result,
-                                EMobilityProvider_Id              ProviderId      = null,
+                                eMobilityProvider_Id              ProviderId      = null,
                                 String               Description     = null,
                                 String               AdditionalInfo  = null,
                                 TimeSpan?            Runtime         = null)
@@ -136,7 +136,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ListOfAuthStopPINs">An optional enumeration of authorize stop PINs.</param>
         private AuthStartResult(Authorizator_Id          AuthorizatorId,
                                 ChargingSession_Id       SessionId,
-                                EMobilityProvider_Id                  ProviderId,
+                                eMobilityProvider_Id                  ProviderId,
                                 String                   Description           = null,
                                 String                   AdditionalInfo        = null,
                                 TimeSpan?                Runtime               = null,
@@ -274,7 +274,7 @@ namespace org.GraphDefined.WWCP
 
             Authorized(Authorizator_Id          AuthorizatorId,
                        ChargingSession_Id       SessionId,
-                       EMobilityProvider_Id                  ProviderId,
+                       eMobilityProvider_Id                  ProviderId,
                        String                   Description           = null,
                        String                   AdditionalInfo        = null,
                        TimeSpan?                Runtime               = null,
@@ -306,7 +306,7 @@ namespace org.GraphDefined.WWCP
         public static AuthStartResult
 
             NotAuthorized(Authorizator_Id  AuthorizatorId,
-                          EMobilityProvider_Id          ProviderId,
+                          eMobilityProvider_Id          ProviderId,
                           String           Description     = null,
                           String           AdditionalInfo  = null,
                           TimeSpan?        Runtime         = null)
@@ -334,7 +334,7 @@ namespace org.GraphDefined.WWCP
         public static AuthStartResult
 
             Blocked(Authorizator_Id  AuthorizatorId,
-                    EMobilityProvider_Id          ProviderId,
+                    eMobilityProvider_Id          ProviderId,
                     String           Description     = null,
                     String           AdditionalInfo  = null,
                     TimeSpan?        Runtime         = null)

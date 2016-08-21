@@ -262,8 +262,8 @@
     <Compile Include="Entities\ChargingStationOperator\ChargingStationOperator.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargingStation\ChargingStation_Id.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargingPool\ChargingPool_Id.cs" />
-    <Compile Include="Entities\eMobilityProvider\EMobilityProvider.cs" />
-    <Compile Include="Entities\eMobilityProvider\EMobilityProvider_Id.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityProvider.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityProvider_Id.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargingStationOperator_Id.cs" />
     <Compile Include="Entities\eMobilityProvider\eMobilityAccount\eMobilityAccount_Id.cs" />
     <Compile Include="Entities\ChargingStationOperator\EVSE\EVSE_Id.cs" />

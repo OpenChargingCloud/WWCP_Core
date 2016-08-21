@@ -71,12 +71,12 @@ namespace org.GraphDefined.WWCP
 
         #region ProviderId
 
-        private readonly EMobilityProvider_Id _ProviderId;
+        private readonly eMobilityProvider_Id _ProviderId;
 
         /// <summary>
         /// The EVSP Id format.
         /// </summary>
-        public EMobilityProvider_Id ProviderId
+        public eMobilityProvider_Id ProviderId
         {
             get
             {
@@ -106,7 +106,7 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new Electric Vehicle Mobility Account (driver contract) identification (eMA_Id)
+        /// Generate a new Electric Vehicle Mobility Account (driver contract) identification (eMobilityAccount_Id)
         /// based on the given string.
         /// </summary>
         private eMobilityAccount_Id(String String)
@@ -120,7 +120,7 @@ namespace org.GraphDefined.WWCP
         #region Parse(Text)
 
         /// <summary>
-        /// Parse the given string as an Electric Mobility Account (driver contract) (eMA_Id).
+        /// Parse the given string as an Electric Mobility Account (driver contract) (eMobilityAccount_Id).
         /// </summary>
         /// <param name="Text">A text representation of an Electric Mobility Account (driver contract) identification.</param>
         public static eMobilityAccount_Id Parse(String Text)
@@ -140,9 +140,9 @@ namespace org.GraphDefined.WWCP
             if (_MatchCollection.Count != 1)
                 throw new ArgumentException("The given string can not be parsed as eMA identification!", nameof(Text));
 
-            EMobilityProvider_Id __ProviderId = null;
+            eMobilityProvider_Id __ProviderId = null;
 
-            if (EMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __ProviderId))
+            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __ProviderId))
                 return new eMobilityAccount_Id(__ProviderId.ToString() +
                                   _MatchCollection[0].Groups[5].Value +
                                   _MatchCollection[0].Groups[6].Value +
@@ -158,7 +158,7 @@ namespace org.GraphDefined.WWCP
         #region TryParse(Text, out eMAId)
 
         /// <summary>
-        /// Parse the given string as an Electric Mobility Account (driver contract) (eMA_Id).
+        /// Parse the given string as an Electric Mobility Account (driver contract) (eMobilityAccount_Id).
         /// </summary>
         /// <param name="Text">A text representation of an Electric Mobility Account (driver contract) identification.</param>
         /// <param name="eMAId">The parsed Electric Mobility Account (driver contract) identification.</param>
@@ -181,9 +181,9 @@ namespace org.GraphDefined.WWCP
             if (_MatchCollection.Count != 1)
                 return false;
 
-            EMobilityProvider_Id __ProviderId = null;
+            eMobilityProvider_Id __ProviderId = null;
 
-            if (EMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __ProviderId))
+            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __ProviderId))
             {
                 eMAId = new eMobilityAccount_Id(__ProviderId.ToString() + "*" + _MatchCollection[0].Groups[6].Value + "*" + _MatchCollection[0].Groups[8].Value);
                 return true;
@@ -213,119 +213,119 @@ namespace org.GraphDefined.WWCP
 
         #region Operator overloading
 
-        #region Operator == (eMA_Id1, eMA_Id2)
+        #region Operator == (eMobilityAccount_Id1, eMobilityAccount_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="eMobilityAccount_Id1">A eMobilityAccount_Id.</param>
+        /// <param name="eMobilityAccount_Id2">Another eMobilityAccount_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (eMobilityAccount_Id eMA_Id1, eMobilityAccount_Id eMA_Id2)
+        public static Boolean operator == (eMobilityAccount_Id eMobilityAccount_Id1, eMobilityAccount_Id eMobilityAccount_Id2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(eMA_Id1, eMA_Id2))
+            if (Object.ReferenceEquals(eMobilityAccount_Id1, eMobilityAccount_Id2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) eMA_Id1 == null) || ((Object) eMA_Id2 == null))
+            if (((Object) eMobilityAccount_Id1 == null) || ((Object) eMobilityAccount_Id2 == null))
                 return false;
 
-            return eMA_Id1.Equals(eMA_Id2);
+            return eMobilityAccount_Id1.Equals(eMobilityAccount_Id2);
 
         }
 
         #endregion
 
-        #region Operator != (eMA_Id1, eMA_Id2)
+        #region Operator != (eMobilityAccount_Id1, eMobilityAccount_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="eMobilityAccount_Id1">A eMobilityAccount_Id.</param>
+        /// <param name="eMobilityAccount_Id2">Another eMobilityAccount_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (eMobilityAccount_Id eMA_Id1, eMobilityAccount_Id eMA_Id2)
+        public static Boolean operator != (eMobilityAccount_Id eMobilityAccount_Id1, eMobilityAccount_Id eMobilityAccount_Id2)
         {
-            return !(eMA_Id1 == eMA_Id2);
+            return !(eMobilityAccount_Id1 == eMobilityAccount_Id2);
         }
 
         #endregion
 
-        #region Operator <  (eMA_Id1, eMA_Id2)
+        #region Operator <  (eMobilityAccount_Id1, eMobilityAccount_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="eMobilityAccount_Id1">A eMobilityAccount_Id.</param>
+        /// <param name="eMobilityAccount_Id2">Another eMobilityAccount_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (eMobilityAccount_Id eMA_Id1, eMobilityAccount_Id eMA_Id2)
+        public static Boolean operator < (eMobilityAccount_Id eMobilityAccount_Id1, eMobilityAccount_Id eMobilityAccount_Id2)
         {
 
-            if ((Object) eMA_Id1 == null)
-                throw new ArgumentNullException("The given eMA_Id1 must not be null!");
+            if ((Object) eMobilityAccount_Id1 == null)
+                throw new ArgumentNullException("The given eMobilityAccount_Id1 must not be null!");
 
-            return eMA_Id1.CompareTo(eMA_Id2) < 0;
+            return eMobilityAccount_Id1.CompareTo(eMobilityAccount_Id2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (eMA_Id1, eMA_Id2)
+        #region Operator <= (eMobilityAccount_Id1, eMobilityAccount_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="eMobilityAccount_Id1">A eMobilityAccount_Id.</param>
+        /// <param name="eMobilityAccount_Id2">Another eMobilityAccount_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (eMobilityAccount_Id eMA_Id1, eMobilityAccount_Id eMA_Id2)
+        public static Boolean operator <= (eMobilityAccount_Id eMobilityAccount_Id1, eMobilityAccount_Id eMobilityAccount_Id2)
         {
-            return !(eMA_Id1 > eMA_Id2);
+            return !(eMobilityAccount_Id1 > eMobilityAccount_Id2);
         }
 
         #endregion
 
-        #region Operator >  (eMA_Id1, eMA_Id2)
+        #region Operator >  (eMobilityAccount_Id1, eMobilityAccount_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="eMobilityAccount_Id1">A eMobilityAccount_Id.</param>
+        /// <param name="eMobilityAccount_Id2">Another eMobilityAccount_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (eMobilityAccount_Id eMA_Id1, eMobilityAccount_Id eMA_Id2)
+        public static Boolean operator > (eMobilityAccount_Id eMobilityAccount_Id1, eMobilityAccount_Id eMobilityAccount_Id2)
         {
 
-            if ((Object) eMA_Id1 == null)
-                throw new ArgumentNullException("The given eMA_Id1 must not be null!");
+            if ((Object) eMobilityAccount_Id1 == null)
+                throw new ArgumentNullException("The given eMobilityAccount_Id1 must not be null!");
 
-            return eMA_Id1.CompareTo(eMA_Id2) > 0;
+            return eMobilityAccount_Id1.CompareTo(eMobilityAccount_Id2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (eMA_Id1, eMA_Id2)
+        #region Operator >= (eMobilityAccount_Id1, eMobilityAccount_Id2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMA_Id1">A eMA_Id.</param>
-        /// <param name="eMA_Id2">Another eMA_Id.</param>
+        /// <param name="eMobilityAccount_Id1">A eMobilityAccount_Id.</param>
+        /// <param name="eMobilityAccount_Id2">Another eMobilityAccount_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (eMobilityAccount_Id eMA_Id1, eMobilityAccount_Id eMA_Id2)
+        public static Boolean operator >= (eMobilityAccount_Id eMobilityAccount_Id1, eMobilityAccount_Id eMobilityAccount_Id2)
         {
-            return !(eMA_Id1 < eMA_Id2);
+            return !(eMobilityAccount_Id1 < eMobilityAccount_Id2);
         }
 
         #endregion
 
         #endregion
 
-        #region IComparable<eMA_Id> Members
+        #region IComparable<eMobilityAccount_Id> Members
 
         #region CompareTo(Object)
 
@@ -377,7 +377,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<eMA_Id> Members
+        #region IEquatable<eMobilityAccount_Id> Members
 
         #region Equals(Object)
 

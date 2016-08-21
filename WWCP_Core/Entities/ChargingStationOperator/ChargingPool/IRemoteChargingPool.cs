@@ -66,7 +66,7 @@ namespace org.GraphDefined.WWCP
                                         DateTime?                StartTime,
                                         TimeSpan?                Duration,
                                         ChargingReservation_Id   ReservationId      = null,
-                                        EMobilityProvider_Id                  ProviderId         = null,
+                                        eMobilityProvider_Id                  ProviderId         = null,
                                         ChargingProduct_Id       ChargingProductId  = null,
                                         IEnumerable<Auth_Token>  AuthTokens         = null,
                                         IEnumerable<eMobilityAccount_Id>      eMAIds             = null,
@@ -94,7 +94,7 @@ namespace org.GraphDefined.WWCP
                                         DateTime?                StartTime,
                                         TimeSpan?                Duration,
                                         ChargingReservation_Id   ReservationId      = null,
-                                        EMobilityProvider_Id                  ProviderId         = null,
+                                        eMobilityProvider_Id                  ProviderId         = null,
                                         ChargingProduct_Id       ChargingProductId  = null,
                                         IEnumerable<Auth_Token>  AuthTokens         = null,
                                         IEnumerable<eMobilityAccount_Id>      eMAIds             = null,
@@ -137,7 +137,7 @@ namespace org.GraphDefined.WWCP
                                                            ChargingProduct_Id      ChargingProductId,
                                                            ChargingReservation_Id  ReservationId,
                                                            ChargingSession_Id      SessionId,
-                                                           EMobilityProvider_Id                 ProviderId,
+                                                           eMobilityProvider_Id                 ProviderId,
                                                            eMobilityAccount_Id                  eMAId,
                                                            TimeSpan?               QueryTimeout  = null);
 
@@ -158,7 +158,7 @@ namespace org.GraphDefined.WWCP
                                                 ChargingProduct_Id      ChargingProductId,
                                                 ChargingReservation_Id  ReservationId,
                                                 ChargingSession_Id      SessionId,
-                                                EMobilityProvider_Id                 ProviderId,
+                                                eMobilityProvider_Id                 ProviderId,
                                                 eMobilityAccount_Id                  eMAId,
                                                 TimeSpan?               QueryTimeout  = null);
 
@@ -176,7 +176,7 @@ namespace org.GraphDefined.WWCP
                                           EventTracking_Id     EventTrackingId,
                                           ChargingSession_Id   SessionId,
                                           ReservationHandling  ReservationHandling,
-                                          EMobilityProvider_Id              ProviderId,
+                                          eMobilityProvider_Id              ProviderId,
                                           TimeSpan?            QueryTimeout  = null);
 
 
@@ -193,7 +193,7 @@ namespace org.GraphDefined.WWCP
                                               EVSE_Id              EVSEId,
                                               ChargingSession_Id   SessionId,
                                               ReservationHandling  ReservationHandling,
-                                              EMobilityProvider_Id              ProviderId,
+                                              eMobilityProvider_Id              ProviderId,
                                               TimeSpan?            QueryTimeout  = null);
 
 
@@ -210,7 +210,7 @@ namespace org.GraphDefined.WWCP
                                                          ChargingStation_Id   ChargingStationId,
                                                          ChargingSession_Id   SessionId,
                                                          ReservationHandling  ReservationHandling,
-                                                         EMobilityProvider_Id              ProviderId,
+                                                         eMobilityProvider_Id              ProviderId,
                                                          TimeSpan?            QueryTimeout  = null);
 
 

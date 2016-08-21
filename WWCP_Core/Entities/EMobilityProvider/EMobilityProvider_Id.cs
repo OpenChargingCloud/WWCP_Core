@@ -40,9 +40,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The unique identification of an Electric Vehicle Service Provider (EVSP Id).
     /// </summary>
-    public class EMobilityProvider_Id : IId,
-                                        IEquatable <EMobilityProvider_Id>,
-                                        IComparable<EMobilityProvider_Id>
+    public class eMobilityProvider_Id : IId,
+                                        IEquatable <eMobilityProvider_Id>,
+                                        IComparable<eMobilityProvider_Id>
 
     {
 
@@ -140,7 +140,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CountryCode">The Alpha-2-CountryCode.</param>
         /// <param name="IdFormat">The id format '-' (ISO) or '*|-' DIN to use.</param>
         /// <param name="ProviderId">The EV Service Provider identification.</param>
-        private EMobilityProvider_Id(Country            CountryCode,
+        private eMobilityProvider_Id(Country            CountryCode,
                                      ProviderIdFormats  IdFormat,
                                      String             ProviderId)
         {
@@ -160,7 +160,7 @@ namespace org.GraphDefined.WWCP
         /// Parse the given string as an EV Service Provider identification.
         /// </summary>
         /// <param name="CountryAndProviderId">The country code and EV Service Provider identification as a string.</param>
-        public static EMobilityProvider_Id Parse(String CountryAndProviderId)
+        public static eMobilityProvider_Id Parse(String CountryAndProviderId)
         {
 
             #region Initial checks
@@ -195,7 +195,7 @@ namespace org.GraphDefined.WWCP
 
                 }
 
-                return new EMobilityProvider_Id(__CountryCode,
+                return new eMobilityProvider_Id(__CountryCode,
                                    Separator,
                                    _MatchCollection[0].Groups[3].Value);
             }
@@ -214,7 +214,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CountryCode">A country code.</param>
         /// <param name="ProviderId">An EV Service Provider identification as a string.</param>
         /// <param name="ProviderIdFormat">The optional format of the provider identification.</param>
-        public static EMobilityProvider_Id Parse(Country            CountryCode,
+        public static eMobilityProvider_Id Parse(Country            CountryCode,
                                     String             ProviderId,
                                     ProviderIdFormats  ProviderIdFormat = ProviderIdFormats.ISO_HYPHEN)
         {
@@ -236,7 +236,7 @@ namespace org.GraphDefined.WWCP
             if (_MatchCollection.Count != 1)
                 throw new ArgumentException("Illegal EV Service Provider identification '" + CountryCode + " / " + ProviderId + "'!", nameof(ProviderId));
 
-            return new EMobilityProvider_Id(CountryCode,
+            return new eMobilityProvider_Id(CountryCode,
                                ProviderIdFormat,
                                _MatchCollection[0].Value);
 
@@ -252,7 +252,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CountryAndProviderId">The country code and EV Service Provider identification as a string.</param>
         /// <param name="EVSEProviderId">The parsed EV Service Provider identification.</param>
         public static Boolean TryParse(String       CountryAndProviderId,
-                                       out EMobilityProvider_Id  EVSEProviderId)
+                                       out eMobilityProvider_Id  EVSEProviderId)
         {
 
             #region Initial checks
@@ -296,7 +296,7 @@ namespace org.GraphDefined.WWCP
 
                     }
 
-                    EVSEProviderId = new EMobilityProvider_Id(__CountryCode,
+                    EVSEProviderId = new eMobilityProvider_Id(__CountryCode,
                                                  Separator,
                                                  _MatchCollection[0].Groups[3].Value);
 
@@ -326,7 +326,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEProviderId">The parsed EVSE Operator identification.</param>
         public static Boolean TryParse(Country      CountryCode,
                                        String       ProviderId,
-                                       out EMobilityProvider_Id  EVSEProviderId)
+                                       out eMobilityProvider_Id  EVSEProviderId)
         {
 
             #region Initial checks
@@ -352,7 +352,7 @@ namespace org.GraphDefined.WWCP
                     return false;
                 }
 
-                EVSEProviderId = new EMobilityProvider_Id(CountryCode,
+                EVSEProviderId = new eMobilityProvider_Id(CountryCode,
                                              ProviderIdFormats.DIN | ProviderIdFormats.ISO,
                                              _MatchCollection[0].Value);
 
@@ -377,9 +377,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="NewIdFormat">The new EVSP Id format.</param>
         /// <returns>A new EVSPId object.</returns>
-        public EMobilityProvider_Id ChangeIdFormat(ProviderIdFormats NewIdFormat)
+        public eMobilityProvider_Id ChangeIdFormat(ProviderIdFormats NewIdFormat)
         {
-            return new EMobilityProvider_Id(this._CountryCode, NewIdFormat, this.ProviderId);
+            return new eMobilityProvider_Id(this._CountryCode, NewIdFormat, this.ProviderId);
         }
 
         #endregion
@@ -389,12 +389,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Clone this Electric Vehicle Service Provider identification.
         /// </summary>
-        public EMobilityProvider_Id Clone
+        public eMobilityProvider_Id Clone
         {
             get
             {
 
-                return new EMobilityProvider_Id(_CountryCode,
+                return new eMobilityProvider_Id(_CountryCode,
                                    _IdFormat,
                                    new String(_ProviderId.ToCharArray()));
 
@@ -414,7 +414,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSPId1">A EVSPId.</param>
         /// <param name="EVSPId2">Another EVSPId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (EMobilityProvider_Id EVSPId1, EMobilityProvider_Id EVSPId2)
+        public static Boolean operator == (eMobilityProvider_Id EVSPId1, eMobilityProvider_Id EVSPId2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -439,7 +439,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSPId1">A EVSPId.</param>
         /// <param name="EVSPId2">Another EVSPId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (EMobilityProvider_Id EVSPId1, EMobilityProvider_Id EVSPId2)
+        public static Boolean operator != (eMobilityProvider_Id EVSPId1, eMobilityProvider_Id EVSPId2)
         {
             return !(EVSPId1 == EVSPId2);
         }
@@ -454,7 +454,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSPId1">A EVSPId.</param>
         /// <param name="EVSPId2">Another EVSPId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (EMobilityProvider_Id EVSPId1, EMobilityProvider_Id EVSPId2)
+        public static Boolean operator < (eMobilityProvider_Id EVSPId1, eMobilityProvider_Id EVSPId2)
         {
 
             if ((Object) EVSPId1 == null)
@@ -474,7 +474,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSPId1">A EVSPId.</param>
         /// <param name="EVSPId2">Another EVSPId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (EMobilityProvider_Id EVSPId1, EMobilityProvider_Id EVSPId2)
+        public static Boolean operator <= (eMobilityProvider_Id EVSPId1, eMobilityProvider_Id EVSPId2)
         {
             return !(EVSPId1 > EVSPId2);
         }
@@ -489,7 +489,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSPId1">A EVSPId.</param>
         /// <param name="EVSPId2">Another EVSPId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (EMobilityProvider_Id EVSPId1, EMobilityProvider_Id EVSPId2)
+        public static Boolean operator > (eMobilityProvider_Id EVSPId1, eMobilityProvider_Id EVSPId2)
         {
 
             if ((Object) EVSPId1 == null)
@@ -509,7 +509,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSPId1">A EVSPId.</param>
         /// <param name="EVSPId2">Another EVSPId.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (EMobilityProvider_Id EVSPId1, EMobilityProvider_Id EVSPId2)
+        public static Boolean operator >= (eMobilityProvider_Id EVSPId1, eMobilityProvider_Id EVSPId2)
         {
             return !(EVSPId1 < EVSPId2);
         }
@@ -533,7 +533,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an EVSPId.
-            var EVSPId = Object as EMobilityProvider_Id;
+            var EVSPId = Object as eMobilityProvider_Id;
             if ((Object) EVSPId == null)
                 throw new ArgumentException("The given object is not a EVSPId!");
 
@@ -549,7 +549,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="EVSPId">An object to compare with.</param>
-        public Int32 CompareTo(EMobilityProvider_Id EVSPId)
+        public Int32 CompareTo(eMobilityProvider_Id EVSPId)
         {
 
             if ((Object) EVSPId == null)
@@ -586,7 +586,7 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is an EVSPId.
-            var EVSPId = Object as EMobilityProvider_Id;
+            var EVSPId = Object as eMobilityProvider_Id;
             if ((Object) EVSPId == null)
                 return false;
 
@@ -603,7 +603,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSPId">A EVSPId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EMobilityProvider_Id EVSPId)
+        public Boolean Equals(eMobilityProvider_Id EVSPId)
         {
 
             if ((Object) EVSPId == null)

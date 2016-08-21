@@ -43,10 +43,10 @@ namespace org.GraphDefined.WWCP
     /// methods can be misused by any entity in the ev charging process to track the
     /// ev driver or its behaviour.
     /// </summary>
-    public class EMobilityProvider : AEMobilityEntity<EMobilityProvider_Id>,
+    public class eMobilityProvider : AEMobilityEntity<eMobilityProvider_Id>,
                                      IRemoteEMobilityProvider,
-                                     IEquatable <EMobilityProvider>,
-                                     IComparable<EMobilityProvider>,
+                                     IEquatable <eMobilityProvider>,
+                                     IComparable<eMobilityProvider>,
                                      IComparable
     {
 
@@ -536,9 +536,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique e-mobility provider identification.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        internal EMobilityProvider(EMobilityProvider_Id                    Id,
+        internal eMobilityProvider(eMobilityProvider_Id                    Id,
                                    RoamingNetwork                          RoamingNetwork,
-                                   Action<EMobilityProvider>               Configurator                    = null,
+                                   Action<eMobilityProvider>               Configurator                    = null,
                                    RemoteEMobilityProviderCreatorDelegate  RemoteEMobilityProviderCreator  = null,
                                    I18NString                              Name                            = null,
                                    I18NString                              Description                     = null,
@@ -555,7 +555,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(EMobilityProvider),  "The roaming network must not be null!");
+                throw new ArgumentNullException(nameof(eMobilityProvider),  "The roaming network must not be null!");
 
             #endregion
 
@@ -1090,7 +1090,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(EMobilityProvider), "The given roaming network must not be null!");
+                throw new ArgumentNullException(nameof(eMobilityProvider), "The given roaming network must not be null!");
 
             #endregion
 
@@ -1723,7 +1723,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(EMobilityProvider), "The given roaming network must not be null!");
+                throw new ArgumentNullException(nameof(eMobilityProvider), "The given roaming network must not be null!");
 
             #endregion
 
@@ -2158,7 +2158,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(EMobilityProvider) + "." + nameof(OnReserveEVSE));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnReserveEVSE));
             }
 
             #endregion
@@ -2210,7 +2210,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(EMobilityProvider) + "." + nameof(OnEVSEReserved));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnEVSEReserved));
             }
 
             #endregion
@@ -2345,7 +2345,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(EMobilityProvider) + "." + nameof(OnRemoteEVSEStart));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteEVSEStart));
             }
 
             #endregion
@@ -2389,7 +2389,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(EMobilityProvider) + "." + nameof(OnRemoteEVSEStarted));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteEVSEStarted));
             }
 
             #endregion
@@ -2466,7 +2466,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(EMobilityProvider) + "." + nameof(OnRemoteEVSEStop));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteEVSEStop));
             }
 
             #endregion
@@ -2508,7 +2508,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(EMobilityProvider) + "." + nameof(OnRemoteEVSEStopped));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteEVSEStopped));
             }
 
             #endregion
@@ -2538,7 +2538,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an EVSE_Operator.
-            var EVSE_Operator = Object as EMobilityProvider;
+            var EVSE_Operator = Object as eMobilityProvider;
             if ((Object) EVSE_Operator == null)
                 throw new ArgumentException("The given object is not an EVSE_Operator!");
 
@@ -2554,7 +2554,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="EVSE_Operator">An EVSE_Operator object to compare with.</param>
-        public Int32 CompareTo(EMobilityProvider EVSE_Operator)
+        public Int32 CompareTo(eMobilityProvider EVSE_Operator)
         {
 
             if ((Object) EVSE_Operator == null)
@@ -2584,7 +2584,7 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is an EVSE_Operator.
-            var EVSE_Operator = Object as EMobilityProvider;
+            var EVSE_Operator = Object as eMobilityProvider;
             if ((Object) EVSE_Operator == null)
                 return false;
 
@@ -2601,7 +2601,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSE_Operator">An EVSE_Operator to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(EMobilityProvider EVSE_Operator)
+        public Boolean Equals(eMobilityProvider EVSE_Operator)
         {
 
             if ((Object) EVSE_Operator == null)
