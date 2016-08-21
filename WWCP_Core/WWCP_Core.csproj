@@ -62,7 +62,8 @@
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStartDelegates.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargingPool\ChargingPoolDelegates.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargingStation\ChargingStationDelegates.cs" />
-    <Compile Include="Entities\EMobilityProvider\IRemoteEMobilityProvider.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityAccount\eMobilityAccount.cs" />
+    <Compile Include="Entities\eMobilityProvider\IRemoteEMobilityProvider.cs" />
     <Compile Include="Entities\GridOperator\GridOperatorPriority.cs" />
     <Compile Include="Entities\GridOperator\IGridOperator.cs" />
     <Compile Include="Entities\GridOperator\IRemoteGridOperator.cs" />
@@ -97,7 +98,7 @@
     <Compile Include="Entities\SmartCities\SmartCityStatusReport.cs" />
     <Compile Include="Entities\SmartCities\SmartCityStatusType.cs" />
     <Compile Include="Entities\SmartCities\SmartCity_Id.cs" />
-    <Compile Include="Entities\EMobilityProvider\EMobilityProviderPriority.cs" />
+    <Compile Include="Entities\eMobilityProvider\EMobilityProviderPriority.cs" />
     <Compile Include="Entities\ParkingOperator\ParkingOperatorExceptions.cs" />
     <Compile Include="Entities\ParkingOperator\ParkingOperatorAdminStatusType.cs" />
     <Compile Include="Entities\ParkingOperator\ParkingOperatorDelegates.cs" />
@@ -105,21 +106,21 @@
     <Compile Include="Entities\ParkingOperator\IRemoteParkingOperator.cs" />
     <Compile Include="Entities\ParkingOperator\ParkingOperator.cs" />
     <Compile Include="Entities\ParkingOperator\ParkingOperator_Id.cs" />
-    <Compile Include="Entities\ParkingOperator\Parking\ParkingBuilding.cs" />
-    <Compile Include="Entities\ParkingOperator\Parking\ParkingSensor.cs" />
-    <Compile Include="Entities\ParkingOperator\Parking\ParkingBuilding_Id.cs" />
-    <Compile Include="Entities\ParkingOperator\Parking\ParkingBuildingStatusType.cs" />
-    <Compile Include="Entities\ParkingOperator\Parking\ParkingSensor_Id.cs" />
-    <Compile Include="Entities\ParkingOperator\Parking\ParkingSensorStatusType.cs" />
+    <Compile Include="Entities\ParkingOperator\ParkingGarage\ParkingGarage.cs" />
+    <Compile Include="Entities\ParkingOperator\ParkingSensor\ParkingSensor.cs" />
+    <Compile Include="Entities\ParkingOperator\ParkingGarage\ParkingGarage_Id.cs" />
+    <Compile Include="Entities\ParkingOperator\ParkingGarage\ParkingGarageAdminStatusType.cs" />
+    <Compile Include="Entities\ParkingOperator\ParkingSensor\ParkingSensor_Id.cs" />
+    <Compile Include="Entities\ParkingOperator\ParkingSensor\ParkingSensorStatusType.cs" />
     <Compile Include="Entities\EntityHashSet.cs" />
-    <Compile Include="Entities\EMobilityProvider\EMobilityProviderAdminStatusType.cs" />
-    <Compile Include="Entities\EMobilityProvider\EMobilityProviderStatusType.cs" />
-    <Compile Include="Entities\EMobilityProvider\EMobilityProviderAdminStatusReport.cs" />
-    <Compile Include="Entities\EMobilityProvider\EMobilityProviderDelegates.cs" />
-    <Compile Include="Entities\EMobilityProvider\EMobilityProviderExceptions.cs" />
-    <Compile Include="Entities\EMobilityProvider\EMobilityProviderStatusReport.cs" />
-    <Compile Include="Entities\ParkingOperator\Parking\ParkingSpaceGroup.cs" />
-    <Compile Include="Entities\ParkingOperator\Parking\ParkingSpaceGroup_Id.cs" />
+    <Compile Include="Entities\eMobilityProvider\EMobilityProviderAdminStatusType.cs" />
+    <Compile Include="Entities\eMobilityProvider\EMobilityProviderStatusType.cs" />
+    <Compile Include="Entities\eMobilityProvider\EMobilityProviderAdminStatusReport.cs" />
+    <Compile Include="Entities\eMobilityProvider\EMobilityProviderDelegates.cs" />
+    <Compile Include="Entities\eMobilityProvider\EMobilityProviderExceptions.cs" />
+    <Compile Include="Entities\eMobilityProvider\EMobilityProviderStatusReport.cs" />
+    <Compile Include="Entities\ParkingOperator\ParkingSpace\ParkingSpaceGroup.cs" />
+    <Compile Include="Entities\ParkingOperator\ParkingSpace\ParkingSpaceGroup_Id.cs" />
     <Compile Include="Entities\UserDefinedDictionary.cs" />
     <Compile Include="Entities\NavigationProvider\Beacon\Beacon.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargingStationOperatorDelegates.cs" />
@@ -175,7 +176,7 @@
     <Compile Include="Entities\ChargingStationOperator\EVSE\IRemoteEVSE.cs" />
     <Compile Include="Entities\ChargingStationOperator\EVSE\RemoteDelegates.cs" />
     <Compile Include="Entities\INetworkAttached.cs" />
-    <Compile Include="Entities\ParkingOperator\Parking\ParkingSpaceStatusType.cs" />
+    <Compile Include="Entities\ParkingOperator\ParkingSpace\ParkingSpaceStatusType.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkDelegates.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="Entities\RoamingProvider\ARoamingProvider.cs" />
@@ -234,8 +235,8 @@
     <Compile Include="Entities\GridOperator\ChargingServicePlan\ChargingServicePlan_Id.cs" />
     <Compile Include="Entities\ChargingStationOperator\EVSE\EVSEStatusDiff.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargingStation\ChargingStationStatusType.cs" />
-    <Compile Include="Entities\ParkingOperator\Parking\ParkingSpace.cs" />
-    <Compile Include="Entities\ParkingOperator\Parking\ParkingSpace_Id.cs" />
+    <Compile Include="Entities\ParkingOperator\ParkingSpace\ParkingSpace.cs" />
+    <Compile Include="Entities\ParkingOperator\ParkingSpace\ParkingSpace_Id.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargingStationGroup\ChargingGroupExceptions.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargingStation\ChargingStationExceptions.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargingStationGroup\ChargingStationGroup.cs" />
@@ -261,16 +262,16 @@
     <Compile Include="Entities\ChargingStationOperator\ChargingStationOperator.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargingStation\ChargingStation_Id.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargingPool\ChargingPool_Id.cs" />
-    <Compile Include="Entities\EMobilityProvider\EMobilityProvider.cs" />
-    <Compile Include="Entities\EMobilityProvider\EMobilityProvider_Id.cs" />
+    <Compile Include="Entities\eMobilityProvider\EMobilityProvider.cs" />
+    <Compile Include="Entities\eMobilityProvider\EMobilityProvider_Id.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargingStationOperator_Id.cs" />
-    <Compile Include="Entities\EMobilityProvider\EMobilityAccount\eMA_Id.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityAccount\eMobilityAccount_Id.cs" />
     <Compile Include="Entities\ChargingStationOperator\EVSE\EVSE_Id.cs" />
     <Compile Include="Entities\ChargingStationOperator\EVSE\EVSE.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork.cs" />
     <Compile Include="Importer\ImporterForwardingInfo.cs" />
-    <Compile Include="Entities\EMobilityProvider\IEMobilityProvider.cs" />
+    <Compile Include="Entities\eMobilityProvider\IEMobilityProvider.cs" />
     <Compile Include="CommonTypes\AuthorizatorId.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStartEVSEResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopEVSEResult.cs" />
@@ -308,8 +309,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Entities\ChargingStationOperator\ChargingPoolGroup\" />
-    <Folder Include="Entities\EMobilityProvider\MobilityStation\" />
-    <Folder Include="Entities\EMobilityProvider\Vehicle\" />
+    <Folder Include="Entities\eMobilityProvider\eMobilityStation\" />
+    <Folder Include="Entities\eMobilityProvider\eVehicle\" />
+    <Folder Include="Entities\SmartCities\ConstructionSite\" />
+    <Folder Include="Entities\SmartCities\Street\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

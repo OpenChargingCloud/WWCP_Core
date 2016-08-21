@@ -74,12 +74,12 @@ namespace org.GraphDefined.WWCP
 
         #region PlugAndChargeIdentification
 
-        private readonly eMA_Id _PlugAndChargeIdentification;
+        private readonly eMobilityAccount_Id _PlugAndChargeIdentification;
 
         /// <summary>
         /// A e-mobility account identification transmitted via PnC.
         /// </summary>
-        public eMA_Id PlugAndChargeIdentification
+        public eMobilityAccount_Id PlugAndChargeIdentification
         {
             get
             {
@@ -91,12 +91,12 @@ namespace org.GraphDefined.WWCP
 
         #region RemoteIdentification
 
-        private readonly eMA_Id _RemoteIdentification;
+        private readonly eMobilityAccount_Id _RemoteIdentification;
 
         /// <summary>
         /// A e-mobility account identification.
         /// </summary>
-        public eMA_Id RemoteIdentification
+        public eMobilityAccount_Id RemoteIdentification
         {
             get
             {
@@ -130,7 +130,7 @@ namespace org.GraphDefined.WWCP
 
         #region (private) AuthInfo(PlugAndChargeIdentification, IsPnC)
 
-        private AuthInfo(eMA_Id PlugAndChargeIdentification,
+        private AuthInfo(eMobilityAccount_Id PlugAndChargeIdentification,
                                            Boolean IsPnC)
         {
             this._PlugAndChargeIdentification   = PlugAndChargeIdentification;
@@ -140,7 +140,7 @@ namespace org.GraphDefined.WWCP
 
         #region (private) AuthInfo(RemoteIdentification)
 
-        private AuthInfo(eMA_Id RemoteIdentification)
+        private AuthInfo(eMobilityAccount_Id RemoteIdentification)
         {
             this._RemoteIdentification = RemoteIdentification;
         }
@@ -171,7 +171,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="eMAId">An e-mobility account identification.</param>
         /// <param name="PIN">A password/PIN.</param>
-        public static AuthInfo FromQRCodeIdentification(eMA_Id  eMAId,
+        public static AuthInfo FromQRCodeIdentification(eMobilityAccount_Id  eMAId,
                                                         String  PIN)
         {
             return new AuthInfo(new eMAIdWithPIN2(eMAId, PIN));
@@ -200,7 +200,7 @@ namespace org.GraphDefined.WWCP
         /// e-mobility account identification transmitted via PnC.
         /// </summary>
         /// <param name="PlugAndChargeIdentification">A PnC e-mobility account identification.</param>
-        public static AuthInfo FromPlugAndChargeIdentification(eMA_Id PlugAndChargeIdentification)
+        public static AuthInfo FromPlugAndChargeIdentification(eMobilityAccount_Id PlugAndChargeIdentification)
         {
             return new AuthInfo(PlugAndChargeIdentification);
         }
@@ -214,7 +214,7 @@ namespace org.GraphDefined.WWCP
         /// e-mobility account identification.
         /// </summary>
         /// <param name="RemoteIdentification">An e-mobility account identification.</param>
-        public static AuthInfo FromRemoteIdentification(eMA_Id RemoteIdentification)
+        public static AuthInfo FromRemoteIdentification(eMobilityAccount_Id RemoteIdentification)
         {
             return new AuthInfo(RemoteIdentification);
         }

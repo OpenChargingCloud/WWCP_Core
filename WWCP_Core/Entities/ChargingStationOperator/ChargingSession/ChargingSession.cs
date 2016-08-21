@@ -376,7 +376,7 @@ namespace org.GraphDefined.WWCP
         /// The unique identification of an Electric Mobility Account (driver contract) (eMAId).
         /// </summary>
         [Optional]
-        public eMA_Id eMAIdStart { get; set; }
+        public eMobilityAccount_Id eMAIdStart { get; set; }
 
         #endregion
 

@@ -32,11 +32,10 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A car park beside a street, a tall building or
-    /// an underground garage providing parking spaces.
+    /// A electric mobility account.
     /// </summary>
-    public class ParkingBuilding : AEMobilityEntity<ParkingBuilding_Id>,
-                                   IEquatable<ParkingBuilding>, IComparable<ParkingBuilding>, IComparable
+    public class eMobilityAccount : AEMobilityEntity<eMobilityAccount_Id>,
+                                    IEquatable<eMobilityAccount>, IComparable<eMobilityAccount>, IComparable
     {
 
         #region Data
@@ -50,7 +49,7 @@ namespace org.GraphDefined.WWCP
         private I18NString _Name;
 
         /// <summary>
-        /// The offical (multi-language) name of the parking space.
+        /// The offical (multi-language) name of the e-mobility account.
         /// </summary>
         [Mandatory]
         public I18NString Name
@@ -70,101 +69,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Description
-
-        private I18NString _Description;
-
-        /// <summary>
-        /// An optional additional (multi-language) description of the parking space.
-        /// </summary>
-        [Optional]
-        public I18NString Description
-        {
-
-            get
-            {
-                return _Description;
-            }
-
-            set
-            {
-                SetProperty<I18NString>(ref _Description, value);
-            }
-
-        }
-
-        #endregion
-
-        #region OSM_WayId
-
-        private String _OSM_WayId;
-
-        /// <summary>
-        /// OSM Node Id.
-        /// </summary>
-        [Optional]
-        public String OSM_WayId
-        {
-
-            get
-            {
-                return _OSM_WayId;
-            }
-
-            set
-            {
-                SetProperty<String>(ref _OSM_WayId, value);
-            }
-
-        }
-
-        #endregion
-
-        #region Geometry
-
-        private List<GeoCoordinate> _Geometry;
-
-        /// <summary>
-        /// An optional polygon geometry of the parking space.
-        /// </summary>
-        [Optional]
-        public List<GeoCoordinate> Geometry
-        {
-            get
-            {
-                return _Geometry;
-            }
-        }
-
-        #endregion
-
-        #region ChargingStations
-
-        private List<ChargingStation> _ChargingStations;
-
-        /// <summary>
-        /// Charging stations reachable from this parking space.
-        /// </summary>
-        [Optional]
-        public List<ChargingStation> ChargingStations
-        {
-            get
-            {
-                return _ChargingStations;
-            }
-        }
-
-        #endregion
-
-        // status := free, ocupied, reserved, not accessible
-
-        // fee := double
-
-        // fee unit := "€/h"
-
-        // Opening hours
-
-        // restrictions := EV only, must be plugged in, disabled persons only
 
         #endregion
 
@@ -174,40 +78,26 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (internal) ParkingBuilding()
-
-        /// <summary>
-        /// Create a new parking sensor having a random identification.
-        /// </summary>
-        internal ParkingBuilding()
-            : this(ParkingBuilding_Id.New)
-        { }
-
-        #endregion
-
-        #region (internal) ParkingBuilding(Id)
+        #region (internal) eMobilityAccount(Id)
 
         /// <summary>
         /// Create a new parking sensor having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the parking sensor.</param>
-        internal ParkingBuilding(ParkingBuilding_Id  Id)
+        internal eMobilityAccount(eMobilityAccount_Id  Id)
             : base(Id)
         {
 
             #region Initial checks
 
             if (Id == null)
-                throw new ArgumentNullException(nameof(Id), "The unique identification of the parking space must not be null!");
+                throw new ArgumentNullException(nameof(Id), "The unique identification of the e-mobility account must not be null!");
 
             #endregion
 
             #region Init data and properties
 
             this._Name              = new I18NString(Languages.en, Id.ToString());
-            this._Description       = new I18NString();
-            this._Geometry          = new List<GeoCoordinate>();
-            this._ChargingStations  = new List<ChargingStation>();
 
             #endregion
 
@@ -218,7 +108,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region IComparable<ParkingBuilding> Members
+        #region IComparable<eMobilityAccount> Members
 
         #region CompareTo(Object)
 
@@ -233,7 +123,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is a service plan.
-            var ServicePlan = Object as ParkingBuilding;
+            var ServicePlan = Object as eMobilityAccount;
             if ((Object) ServicePlan == null)
                 throw new ArgumentException("The given object is not a service plan!");
 
@@ -243,19 +133,19 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CompareTo(ParkingBuilding)
+        #region CompareTo(eMobilityAccount)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ParkingBuilding">A service plan object to compare with.</param>
-        public Int32 CompareTo(ParkingBuilding ParkingBuilding)
+        /// <param name="eMobilityAccount">A service plan object to compare with.</param>
+        public Int32 CompareTo(eMobilityAccount eMobilityAccount)
         {
 
-            if ((Object) ParkingBuilding == null)
+            if ((Object) eMobilityAccount == null)
                 throw new ArgumentNullException("The given service plan must not be null!");
 
-            return Id.CompareTo(ParkingBuilding.Id);
+            return Id.CompareTo(eMobilityAccount.Id);
 
         }
 
@@ -263,7 +153,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<ParkingBuilding> Members
+        #region IEquatable<eMobilityAccount> Members
 
         #region Equals(Object)
 
@@ -279,30 +169,30 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is a service plan.
-            var ParkingBuilding = Object as ParkingBuilding;
-            if ((Object) ParkingBuilding == null)
+            var eMobilityAccount = Object as eMobilityAccount;
+            if ((Object) eMobilityAccount == null)
                 return false;
 
-            return this.Equals(ParkingBuilding);
+            return this.Equals(eMobilityAccount);
 
         }
 
         #endregion
 
-        #region Equals(ParkingBuilding)
+        #region Equals(eMobilityAccount)
 
         /// <summary>
         /// Compares two service plans for equality.
         /// </summary>
-        /// <param name="ParkingBuilding">A service plan to compare with.</param>
+        /// <param name="eMobilityAccount">A service plan to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ParkingBuilding ParkingBuilding)
+        public Boolean Equals(eMobilityAccount eMobilityAccount)
         {
 
-            if ((Object) ParkingBuilding == null)
+            if ((Object) eMobilityAccount == null)
                 return false;
 
-            return Id.Equals(ParkingBuilding.Id);
+            return Id.Equals(eMobilityAccount.Id);
 
         }
 

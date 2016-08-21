@@ -30,7 +30,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The unique identification of an Electric Mobility Account (driver contract) (eMAId).
     /// </summary>
-    public class eMA_Id : IEquatable<eMA_Id>, IComparable<eMA_Id>, IComparable
+    public class eMobilityAccount_Id : IId,
+                                       IEquatable<eMobilityAccount_Id>,
+                                       IComparable<eMobilityAccount_Id>
     {
 
         #region Data
@@ -107,7 +109,7 @@ namespace org.GraphDefined.WWCP
         /// Generate a new Electric Vehicle Mobility Account (driver contract) identification (eMA_Id)
         /// based on the given string.
         /// </summary>
-        private eMA_Id(String String)
+        private eMobilityAccount_Id(String String)
         {
             _Id = String.Trim();
         }
@@ -121,7 +123,7 @@ namespace org.GraphDefined.WWCP
         /// Parse the given string as an Electric Mobility Account (driver contract) (eMA_Id).
         /// </summary>
         /// <param name="Text">A text representation of an Electric Mobility Account (driver contract) identification.</param>
-        public static eMA_Id Parse(String Text)
+        public static eMobilityAccount_Id Parse(String Text)
         {
 
             #region Initial checks
@@ -141,7 +143,7 @@ namespace org.GraphDefined.WWCP
             EMobilityProvider_Id __ProviderId = null;
 
             if (EMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __ProviderId))
-                return new eMA_Id(__ProviderId.ToString() +
+                return new eMobilityAccount_Id(__ProviderId.ToString() +
                                   _MatchCollection[0].Groups[5].Value +
                                   _MatchCollection[0].Groups[6].Value +
                                   _MatchCollection[0].Groups[7].Value +
@@ -160,7 +162,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Text">A text representation of an Electric Mobility Account (driver contract) identification.</param>
         /// <param name="eMAId">The parsed Electric Mobility Account (driver contract) identification.</param>
-        public static Boolean TryParse(String Text, out eMA_Id eMAId)
+        public static Boolean TryParse(String Text, out eMobilityAccount_Id eMAId)
         {
 
             #region Initial checks
@@ -183,7 +185,7 @@ namespace org.GraphDefined.WWCP
 
             if (EMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __ProviderId))
             {
-                eMAId = new eMA_Id(__ProviderId.ToString() + "*" + _MatchCollection[0].Groups[6].Value + "*" + _MatchCollection[0].Groups[8].Value);
+                eMAId = new eMobilityAccount_Id(__ProviderId.ToString() + "*" + _MatchCollection[0].Groups[6].Value + "*" + _MatchCollection[0].Groups[8].Value);
                 return true;
             }
 
@@ -198,11 +200,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Clone this Electric Mobility Account (driver contract) identification.
         /// </summary>
-        public eMA_Id Clone
+        public eMobilityAccount_Id Clone
         {
             get
             {
-                return new eMA_Id(_Id);
+                return new eMobilityAccount_Id(_Id);
             }
         }
 
@@ -219,7 +221,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMA_Id1">A eMA_Id.</param>
         /// <param name="eMA_Id2">Another eMA_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator == (eMobilityAccount_Id eMA_Id1, eMobilityAccount_Id eMA_Id2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -244,7 +246,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMA_Id1">A eMA_Id.</param>
         /// <param name="eMA_Id2">Another eMA_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator != (eMobilityAccount_Id eMA_Id1, eMobilityAccount_Id eMA_Id2)
         {
             return !(eMA_Id1 == eMA_Id2);
         }
@@ -259,7 +261,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMA_Id1">A eMA_Id.</param>
         /// <param name="eMA_Id2">Another eMA_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator < (eMobilityAccount_Id eMA_Id1, eMobilityAccount_Id eMA_Id2)
         {
 
             if ((Object) eMA_Id1 == null)
@@ -279,7 +281,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMA_Id1">A eMA_Id.</param>
         /// <param name="eMA_Id2">Another eMA_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator <= (eMobilityAccount_Id eMA_Id1, eMobilityAccount_Id eMA_Id2)
         {
             return !(eMA_Id1 > eMA_Id2);
         }
@@ -294,7 +296,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMA_Id1">A eMA_Id.</param>
         /// <param name="eMA_Id2">Another eMA_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator > (eMobilityAccount_Id eMA_Id1, eMobilityAccount_Id eMA_Id2)
         {
 
             if ((Object) eMA_Id1 == null)
@@ -314,7 +316,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMA_Id1">A eMA_Id.</param>
         /// <param name="eMA_Id2">Another eMA_Id.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (eMA_Id eMA_Id1, eMA_Id eMA_Id2)
+        public static Boolean operator >= (eMobilityAccount_Id eMA_Id1, eMobilityAccount_Id eMA_Id2)
         {
             return !(eMA_Id1 < eMA_Id2);
         }
@@ -338,7 +340,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an eMAId.
-            var eMAId = Object as eMA_Id;
+            var eMAId = Object as eMobilityAccount_Id;
             if ((Object) eMAId == null)
                 throw new ArgumentException("The given object is not a eMAId!");
 
@@ -354,7 +356,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="eMAId">An object to compare with.</param>
-        public Int32 CompareTo(eMA_Id eMAId)
+        public Int32 CompareTo(eMobilityAccount_Id eMAId)
         {
 
             if ((Object) eMAId == null)
@@ -391,7 +393,7 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is an eMAId.
-            var eMAId = Object as eMA_Id;
+            var eMAId = Object as eMobilityAccount_Id;
             if ((Object) eMAId == null)
                 return false;
 
@@ -408,7 +410,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="eMAId">A eMAId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(eMA_Id eMAId)
+        public Boolean Equals(eMobilityAccount_Id eMAId)
         {
 
             if ((Object) eMAId == null)

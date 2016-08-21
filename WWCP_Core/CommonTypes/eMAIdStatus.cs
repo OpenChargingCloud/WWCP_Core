@@ -35,12 +35,12 @@ namespace org.GraphDefined.WWCP
 
         #region Id
 
-        private readonly eMA_Id _Id;
+        private readonly eMobilityAccount_Id _Id;
 
         /// <summary>
         /// The unique identification of an eMAId.
         /// </summary>
-        public eMA_Id Id
+        public eMobilityAccount_Id Id
         {
             get
             {
@@ -76,7 +76,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="eMAId">The unique identification of an eMAId.</param>
         /// <param name="Status">The current status of an eMAId.</param>
-        public eMAIdStatus(eMA_Id           eMAId,
+        public eMAIdStatus(eMobilityAccount_Id           eMAId,
                            eMAIdStatusType  Status)
 
         {

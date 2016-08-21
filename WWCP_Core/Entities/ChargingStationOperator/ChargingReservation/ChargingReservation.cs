@@ -188,10 +188,10 @@ namespace org.GraphDefined.WWCP
 
         #region eMAId
 
-        private readonly eMA_Id _eMAId;
+        private readonly eMobilityAccount_Id _eMAId;
 
         [Optional]
-        public eMA_Id eMAId
+        public eMobilityAccount_Id eMAId
         {
             get
             {
@@ -318,10 +318,10 @@ namespace org.GraphDefined.WWCP
 
         #region eMAIds
 
-        private readonly HashSet<eMA_Id> _eMAIds;
+        private readonly HashSet<eMobilityAccount_Id> _eMAIds;
 
         [Optional]
-        public IEnumerable<eMA_Id> eMAIds
+        public IEnumerable<eMobilityAccount_Id> eMAIds
         {
             get
             {
@@ -362,7 +362,7 @@ namespace org.GraphDefined.WWCP
                                    ChargingReservationLevel  ReservationLevel,
 
                                    EMobilityProvider_Id                   ProviderId         = null,
-                                   eMA_Id                    eMAId              = null,
+                                   eMobilityAccount_Id                    eMAId              = null,
 
                                    RoamingNetwork            RoamingNetwork     = null,
                                    ChargingPool_Id           ChargingPoolId     = null,
@@ -371,7 +371,7 @@ namespace org.GraphDefined.WWCP
                                    ChargingProduct_Id        ChargingProductId  = null,
 
                                    IEnumerable<Auth_Token>   AuthTokens         = null,
-                                   IEnumerable<eMA_Id>       eMAIds             = null,
+                                   IEnumerable<eMobilityAccount_Id>       eMAIds             = null,
                                    IEnumerable<UInt32>       PINs               = null)
 
         {
@@ -401,7 +401,7 @@ namespace org.GraphDefined.WWCP
             this._ChargingProductId        = ChargingProductId;
 
             this._AuthTokens               = AuthTokens != null ? new HashSet<Auth_Token>(AuthTokens) : new HashSet<Auth_Token>();
-            this._eMAIds                   = eMAIds     != null ? new HashSet<eMA_Id>    (eMAIds)     : new HashSet<eMA_Id>();
+            this._eMAIds                   = eMAIds     != null ? new HashSet<eMobilityAccount_Id>    (eMAIds)     : new HashSet<eMobilityAccount_Id>();
             this._PINs                     = PINs       != null ? new HashSet<UInt32>    (PINs)       : new HashSet<UInt32>();
 
         }

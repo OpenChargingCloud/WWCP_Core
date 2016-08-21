@@ -19,9 +19,9 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The current status of a parking building.
+    /// The current admin status of a parking garage.
     /// </summary>
-    public enum ParkingBuildingStatusType
+    public enum ParkingGarageAdminStatusType
     {
 
         /// <summary>

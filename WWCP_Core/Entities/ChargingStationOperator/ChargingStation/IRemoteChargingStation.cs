@@ -126,10 +126,10 @@ namespace org.GraphDefined.WWCP
                     TimeSpan?                Duration,
                     ChargingReservation_Id   ReservationId      = null,
                     EMobilityProvider_Id     ProviderId         = null,
-                    eMA_Id                   eMAId              = null,
+                    eMobilityAccount_Id                   eMAId              = null,
                     ChargingProduct_Id       ChargingProductId  = null,
                     IEnumerable<Auth_Token>  AuthTokens         = null,
-                    IEnumerable<eMA_Id>      eMAIds             = null,
+                    IEnumerable<eMobilityAccount_Id>      eMAIds             = null,
                     IEnumerable<UInt32>      PINs               = null,
 
                     DateTime?                Timestamp          = null,
@@ -162,10 +162,10 @@ namespace org.GraphDefined.WWCP
                     TimeSpan?                Duration,
                     ChargingReservation_Id   ReservationId      = null,
                     EMobilityProvider_Id     ProviderId         = null,
-                    eMA_Id                   eMAId              = null,
+                    eMobilityAccount_Id                   eMAId              = null,
                     ChargingProduct_Id       ChargingProductId  = null,
                     IEnumerable<Auth_Token>  AuthTokens         = null,
-                    IEnumerable<eMA_Id>      eMAIds             = null,
+                    IEnumerable<eMobilityAccount_Id>      eMAIds             = null,
                     IEnumerable<UInt32>      PINs               = null,
 
                     DateTime?                Timestamp          = null,
@@ -238,7 +238,7 @@ namespace org.GraphDefined.WWCP
                         ChargingReservation_Id  ReservationId,
                         ChargingSession_Id      SessionId,
                         EMobilityProvider_Id    ProviderId,
-                        eMA_Id                  eMAId,
+                        eMobilityAccount_Id                  eMAId,
 
                         DateTime?               Timestamp          = null,
                         CancellationToken?      CancellationToken  = null,
@@ -267,7 +267,7 @@ namespace org.GraphDefined.WWCP
                         ChargingReservation_Id  ReservationId,
                         ChargingSession_Id      SessionId,
                         EMobilityProvider_Id    ProviderId,
-                        eMA_Id                  eMAId,
+                        eMobilityAccount_Id                  eMAId,
 
                         DateTime?               Timestamp          = null,
                         CancellationToken?      CancellationToken  = null,
@@ -297,7 +297,7 @@ namespace org.GraphDefined.WWCP
             RemoteStop(ChargingSession_Id    SessionId,
                        ReservationHandling   ReservationHandling,
                        EMobilityProvider_Id  ProviderId,
-                       eMA_Id                eMAId,
+                       eMobilityAccount_Id                eMAId,
 
                        DateTime?             Timestamp          = null,
                        CancellationToken?    CancellationToken  = null,
@@ -324,7 +324,7 @@ namespace org.GraphDefined.WWCP
                        ChargingSession_Id    SessionId,
                        ReservationHandling   ReservationHandling,
                        EMobilityProvider_Id  ProviderId,
-                       eMA_Id                eMAId,
+                       eMobilityAccount_Id                eMAId,
 
                        DateTime?             Timestamp          = null,
                        CancellationToken?    CancellationToken  = null,
@@ -351,7 +351,7 @@ namespace org.GraphDefined.WWCP
                        ChargingSession_Id    SessionId,
                        ReservationHandling   ReservationHandling,
                        EMobilityProvider_Id  ProviderId,
-                       eMA_Id                eMAId,
+                       eMobilityAccount_Id                eMAId,
 
                        DateTime?             Timestamp          = null,
                        CancellationToken?    CancellationToken  = null,

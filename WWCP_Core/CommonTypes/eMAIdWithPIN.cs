@@ -44,9 +44,9 @@ namespace org.GraphDefined.WWCP
 
         #region eMAId
 
-        private readonly eMA_Id _eMAId;
+        private readonly eMobilityAccount_Id _eMAId;
 
-        public eMA_Id eMAId
+        public eMobilityAccount_Id eMAId
         {
             get
             {
@@ -104,7 +104,7 @@ namespace org.GraphDefined.WWCP
 
         #region eMAIdWithPIN(eMAId, PIN)
 
-        public eMAIdWithPIN2(eMA_Id  eMAId,
+        public eMAIdWithPIN2(eMobilityAccount_Id  eMAId,
                             String  PIN)
         {
 
@@ -118,7 +118,7 @@ namespace org.GraphDefined.WWCP
 
         #region eMAIdWithPIN(eMAId, PIN, Function, Salt = "")
 
-        public eMAIdWithPIN2(eMA_Id     eMAId,
+        public eMAIdWithPIN2(eMobilityAccount_Id     eMAId,
                             String     PIN,
                             PINCrypto  Function,
                             String     Salt = "")
