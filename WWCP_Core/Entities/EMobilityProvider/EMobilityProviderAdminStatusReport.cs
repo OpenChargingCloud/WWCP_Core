@@ -27,10 +27,10 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// An e-mobility provider admin status report.
     /// </summary>
-    public class EMobilityProviderAdminStatusReport : StatusReport<eMobilityProvider, EMobilityProviderAdminStatusType>
+    public class eMobilityProviderAdminStatusReport : StatusReport<eMobilityProvider, eMobilityProviderAdminStatusType>
     {
 
-        public EMobilityProviderAdminStatusReport(IEnumerable<eMobilityProvider> EMobilityProviders)
+        public eMobilityProviderAdminStatusReport(IEnumerable<eMobilityProvider> EMobilityProviders)
 
             : base(EMobilityProviders,
                    provider => provider.AdminStatus.Value)

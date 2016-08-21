@@ -24,12 +24,12 @@ using System;
 namespace org.GraphDefined.WWCP
 {
 
-    #region EMobilityProviderAlreadyExists
+    #region eMobilityProviderAlreadyExists
 
     /// <summary>
     /// An exception thrown whenever a e-mobility provider already exists within the given roaming network.
     /// </summary>
-    public class EMobilityProviderAlreadyExists : RoamingNetworkException
+    public class eMobilityProviderAlreadyExists : RoamingNetworkException
     {
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="RoamingNetwork">The roaming network.</param>
         /// <param name="EMobilityProviderId">The e-mobility provider identification.</param>
-        public EMobilityProviderAlreadyExists(RoamingNetwork        RoamingNetwork,
+        public eMobilityProviderAlreadyExists(RoamingNetwork        RoamingNetwork,
                                               eMobilityProvider_Id  EMobilityProviderId)
 
             : base(RoamingNetwork,
@@ -50,12 +50,12 @@ namespace org.GraphDefined.WWCP
     #endregion
 
 
-    #region EMobilityProviderException
+    #region eMobilityProviderException
 
     /// <summary>
     /// An e-mobility provider exception.
     /// </summary>
-    public class EMobilityProviderException : RoamingNetworkException
+    public class eMobilityProviderException : RoamingNetworkException
     {
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="RoamingNetwork">The roaming network.</param>
         /// <param name="Message">An exception message.</param>
-        public EMobilityProviderException(RoamingNetwork  RoamingNetwork,
+        public eMobilityProviderException(RoamingNetwork  RoamingNetwork,
                                           String          Message)
 
             : base(RoamingNetwork,
@@ -77,7 +77,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RoamingNetwork">The roaming network.</param>
         /// <param name="Message">An exception message.</param>
         /// <param name="InnerException">An inner exception.</param>
-        public EMobilityProviderException(RoamingNetwork  RoamingNetwork,
+        public eMobilityProviderException(RoamingNetwork  RoamingNetwork,
                                           String          Message,
                                           Exception       InnerException)
 

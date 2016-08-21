@@ -62,7 +62,25 @@
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStartDelegates.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargingPool\ChargingPoolDelegates.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargingStation\ChargingStationDelegates.cs" />
+    <Compile Include="Entities\ChargingStationOperator\EVSE\EVSEDelegates.cs" />
     <Compile Include="Entities\eMobilityProvider\eMobilityAccount\eMobilityAccount.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityStation\eMobilityStationExceptions.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityStation\eMobilityStationAdminStatusType.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityStation\eMobilityStationDelegates.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityStation\eMobilityStation.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityStation\eMobilityStationAdminStatus.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityStation\eMobilityStation_Id.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityStation\INetworkEMobilityStation.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityStation\IRemoteEMobilityStation.cs" />
+    <Compile Include="Entities\eMobilityProvider\eVehicle\eVehicleDelegates.cs" />
+    <Compile Include="Entities\eMobilityProvider\eVehicle\eVehicleStatusType.cs" />
+    <Compile Include="Entities\eMobilityProvider\eVehicle\eVehicleAdminStatusType.cs" />
+    <Compile Include="Entities\eMobilityProvider\eVehicle\eVehicleStatus.cs" />
+    <Compile Include="Entities\eMobilityProvider\eVehicle\eVehicleAdminStatus.cs" />
+    <Compile Include="Entities\eMobilityProvider\eVehicle\eVehicle.cs" />
+    <Compile Include="Entities\eMobilityProvider\eVehicle\eVehicle_Id.cs" />
+    <Compile Include="Entities\eMobilityProvider\eVehicle\INetworkEVehicle.cs" />
+    <Compile Include="Entities\eMobilityProvider\eVehicle\IRemoteEVehicle.cs" />
     <Compile Include="Entities\eMobilityProvider\IRemoteEMobilityProvider.cs" />
     <Compile Include="Entities\GridOperator\GridOperatorPriority.cs" />
     <Compile Include="Entities\GridOperator\IGridOperator.cs" />
@@ -98,7 +116,7 @@
     <Compile Include="Entities\SmartCities\SmartCityStatusReport.cs" />
     <Compile Include="Entities\SmartCities\SmartCityStatusType.cs" />
     <Compile Include="Entities\SmartCities\SmartCity_Id.cs" />
-    <Compile Include="Entities\eMobilityProvider\EMobilityProviderPriority.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityProviderPriority.cs" />
     <Compile Include="Entities\ParkingOperator\ParkingOperatorExceptions.cs" />
     <Compile Include="Entities\ParkingOperator\ParkingOperatorAdminStatusType.cs" />
     <Compile Include="Entities\ParkingOperator\ParkingOperatorDelegates.cs" />
@@ -113,12 +131,12 @@
     <Compile Include="Entities\ParkingOperator\ParkingSensor\ParkingSensor_Id.cs" />
     <Compile Include="Entities\ParkingOperator\ParkingSensor\ParkingSensorStatusType.cs" />
     <Compile Include="Entities\EntityHashSet.cs" />
-    <Compile Include="Entities\eMobilityProvider\EMobilityProviderAdminStatusType.cs" />
-    <Compile Include="Entities\eMobilityProvider\EMobilityProviderStatusType.cs" />
-    <Compile Include="Entities\eMobilityProvider\EMobilityProviderAdminStatusReport.cs" />
-    <Compile Include="Entities\eMobilityProvider\EMobilityProviderDelegates.cs" />
-    <Compile Include="Entities\eMobilityProvider\EMobilityProviderExceptions.cs" />
-    <Compile Include="Entities\eMobilityProvider\EMobilityProviderStatusReport.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityProviderAdminStatusType.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityProviderStatusType.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityProviderAdminStatusReport.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityProviderDelegates.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityProviderExceptions.cs" />
+    <Compile Include="Entities\eMobilityProvider\eMobilityProviderStatusReport.cs" />
     <Compile Include="Entities\ParkingOperator\ParkingSpace\ParkingSpaceGroup.cs" />
     <Compile Include="Entities\ParkingOperator\ParkingSpace\ParkingSpaceGroup_Id.cs" />
     <Compile Include="Entities\UserDefinedDictionary.cs" />
@@ -309,8 +327,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Entities\ChargingStationOperator\ChargingPoolGroup\" />
-    <Folder Include="Entities\eMobilityProvider\eMobilityStation\" />
-    <Folder Include="Entities\eMobilityProvider\eVehicle\" />
     <Folder Include="Entities\SmartCities\ConstructionSite\" />
     <Folder Include="Entities\SmartCities\Street\" />
   </ItemGroup>

@@ -20,6 +20,7 @@
 using System;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -28,6 +29,35 @@ namespace org.GraphDefined.WWCP
 
     public delegate IRemoteEMobilityProvider RemoteEMobilityProviderCreatorDelegate(eMobilityProvider EMobilityProvider);
 
-    public delegate String EMobilityProviderNameSelectorDelegate(I18NString I18NText);
+    public delegate String eMobilityProviderNameSelectorDelegate(I18NString I18NText);
+
+
+
+
+    /// <summary>
+    /// A delegate called whenever the static data of the e-mobility station changed.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="eMobilityStation">The updated e-mobility station.</param>
+    /// <param name="PropertyName">The name of the changed property.</param>
+    /// <param name="OldValue">The old value of the changed property.</param>
+    /// <param name="NewValue">The new value of the changed property.</param>
+    public delegate Task OnEMobilityProviderDataChangedDelegate(DateTime          Timestamp,
+                                                                eMobilityStation  eMobilityStation,
+                                                                String            PropertyName,
+                                                                Object            OldValue,
+                                                                Object            NewValue);
+
+    /// <summary>
+    /// A delegate called whenever the admin status of the e-mobility station changed.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="eMobilityStation">The updated e-mobility station.</param>
+    /// <param name="OldStatus">The old timestamped status of the charging station.</param>
+    /// <param name="NewStatus">The new timestamped status of the charging station.</param>
+    public delegate Task OnEMobilityProviderAdminStatusChangedDelegate(DateTime                                      Timestamp,
+                                                                       eMobilityStation                              eMobilityStation,
+                                                                       Timestamped<eMobilityStationAdminStatusType>  OldStatus,
+                                                                       Timestamped<eMobilityStationAdminStatusType>  NewStatus);
 
 }

@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Threading.Tasks;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -29,5 +30,44 @@ namespace org.GraphDefined.WWCP
     public delegate IRemoteChargingStation RemoteChargingStationCreatorDelegate(ChargingStation ChargingStation);
 
     public delegate String ChargingStationNameSelectorDelegate(I18NString I18NText);
+
+
+    /// <summary>
+    /// A delegate called whenever the static data of the charging station changed.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="ChargingStation">The updated charging station.</param>
+    /// <param name="PropertyName">The name of the changed property.</param>
+    /// <param name="OldValue">The old value of the changed property.</param>
+    /// <param name="NewValue">The new value of the changed property.</param>
+    public delegate Task OnChargingStationDataChangedDelegate(DateTime         Timestamp,
+                                                              ChargingStation  ChargingStation,
+                                                              String           PropertyName,
+                                                              Object           OldValue,
+                                                              Object           NewValue);
+
+    /// <summary>
+    /// A delegate called whenever the dynamic status of the charging station changed.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="ChargingStation">The updated charging station.</param>
+    /// <param name="OldStatus">The old timestamped status of the charging station.</param>
+    /// <param name="NewStatus">The new timestamped status of the charging station.</param>
+    public delegate Task OnChargingStationStatusChangedDelegate(DateTime                                Timestamp,
+                                                                ChargingStation                         ChargingStation,
+                                                                Timestamped<ChargingStationStatusType>  OldStatus,
+                                                                Timestamped<ChargingStationStatusType>  NewStatus);
+
+    /// <summary>
+    /// A delegate called whenever the admin status of the charging station changed.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="ChargingStation">The updated charging station.</param>
+    /// <param name="OldStatus">The old timestamped status of the charging station.</param>
+    /// <param name="NewStatus">The new timestamped status of the charging station.</param>
+    public delegate Task OnChargingStationAdminStatusChangedDelegate(DateTime                                     Timestamp,
+                                                                     ChargingStation                              ChargingStation,
+                                                                     Timestamped<ChargingStationAdminStatusType>  OldStatus,
+                                                                     Timestamped<ChargingStationAdminStatusType>  NewStatus);
 
 }

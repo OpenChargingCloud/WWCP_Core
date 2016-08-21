@@ -15,28 +15,14 @@
  * limitations under the License.
  */
 
-#region Usings
-
-using System;
-
-#endregion
-
 namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The priority of an e-mobility provider.
+    /// A remote charging station attached via a computer network (TCP/IP).
     /// </summary>
-    public class eMobilityProviderPriority
-    {
-
-        public Int32 Value { get; }
-
-        public eMobilityProviderPriority(Int32 Priority)
-        {
-            Value = Priority;
-        }
-
-    }
+    public interface INetworkEMobilityStation : IRemoteEMobilityStation,
+                                                INetworkAttached
+    { }
 
 }

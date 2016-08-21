@@ -39,174 +39,96 @@ namespace org.GraphDefined.WWCP
         #region Data
 
         /// <summary>
-        /// The regular expression for parsing an EVSE Service Provider identification.
+        /// The regular expression for parsing a smart city identification.
         /// </summary>
-        public  const    String   ProviderId_RegEx            = @"^[A-Z0-9]{3}$";
-
-        /// <summary>
-        /// The regular expression for parsing an Alpha-2-CountryCode and an EV Service Provider identification.
-        /// The ISO format onyl allows '-' as a separator!
-        /// </summary>
-        public  const    String   CountryAndProviderId_RegEx  = @"^([A-Z]{2})([\*|\-]?)([A-Z0-9]{3})$";
+        public const String SmartCityId_RegEx  = @"^([A-Za-z]{2}\-?(.{0,60})$";
 
         #endregion
 
         #region Properties
 
-        #region Length
+        /// <summary>
+        /// The internal Alpha-2-CountryCode.
+        /// </summary>
+        public Country CountryCode  { get; }
+
+        /// <summary>
+        /// The internal smart city identification.
+        /// </summary>
+        public String  Suffix       { get; }
 
         /// <summary>
         /// Returns the length of the identificator.
         /// </summary>
         public UInt64 Length
-        {
-            get
-            {
-                return (UInt64) _ProviderId.Length;
-            }
-        }
-
-        #endregion
-
-        #region CountryCode
-
-        private readonly Country _CountryCode;
-
-        /// <summary>
-        /// The internal Alpha-2-CountryCode.
-        /// </summary>
-        public Country CountryCode
-        {
-            get
-            {
-                return _CountryCode;
-            }
-        }
-
-        #endregion
-
-        #region IdFormat
-
-        private readonly ProviderIdFormats _IdFormat;
-
-        /// <summary>
-        /// The EVSP Id format.
-        /// </summary>
-        public ProviderIdFormats IdFormat
-        {
-            get
-            {
-                return _IdFormat;
-            }
-        }
-
-        #endregion
-
-        #region ProviderId
-
-        private readonly String _ProviderId;
-
-        /// <summary>
-        /// The internal EV Service Provider identification.
-        /// </summary>
-        public String ProviderId
-        {
-            get
-            {
-                return _ProviderId;
-            }
-        }
-
-        #endregion
+            => 2 + 2 + (UInt64) Suffix.Length;
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new Electric Vehicle Service Provider (EVSP Id)
+        /// Generate a new smart city identification
         /// based on the given string.
         /// </summary>
-        /// <param name="CountryCode">The Alpha-2-CountryCode.</param>
-        /// <param name="IdFormat">The id format '-' (ISO) or '*|-' DIN to use.</param>
-        /// <param name="ProviderId">The EV Service Provider identification.</param>
-        private SmartCity_Id(Country            CountryCode,
-                                     ProviderIdFormats  IdFormat,
-                                     String             ProviderId)
+        /// <param name="CountryCode">The country code.</param>
+        /// <param name="Suffix">The suffix of the smart city identification.</param>
+        private SmartCity_Id(Country  CountryCode,
+                             String   Suffix)
         {
 
-            this._CountryCode  = CountryCode;
-            this._IdFormat     = IdFormat;
-            this._ProviderId   = ProviderId;
+            this.CountryCode  = CountryCode;
+            this.Suffix       = Suffix;
 
         }
 
         #endregion
 
 
-        #region Parse(CountryAndProviderId)
+        #region Parse(Text)
 
         /// <summary>
-        /// Parse the given string as an EV Service Provider identification.
+        /// Parse the given string as a smart city identification.
         /// </summary>
-        /// <param name="CountryAndProviderId">The country code and EV Service Provider identification as a string.</param>
-        public static SmartCity_Id Parse(String CountryAndProviderId)
+        /// <param name="Text">The smart city identification as a string.</param>
+        public static SmartCity_Id Parse(String Text)
         {
 
             #region Initial checks
 
-            if (CountryAndProviderId.IsNullOrEmpty())
-                throw new ArgumentException("The parameter must not be null or empty!", "CountryAndProviderId");
+            if (Text.Trim().IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Text),  "The given text must not be null or empty!");
 
             #endregion
 
-            var _MatchCollection = Regex.Matches(CountryAndProviderId.Trim().ToUpper(),
-                                                 CountryAndProviderId_RegEx,
+            var _MatchCollection = Regex.Matches(Text.Trim().ToUpper(),
+                                                 SmartCityId_RegEx,
                                                  RegexOptions.IgnorePatternWhitespace);
 
             if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal EV Service Provider identification '" + CountryAndProviderId + "'!", "CountryAndProviderId");
+                throw new ArgumentException("Illegal smart city identification '" + Text + "'!", nameof(Text));
 
             Country __CountryCode;
 
             if (Country.TryParseAlpha2Code(_MatchCollection[0].Groups[1].Value, out __CountryCode))
-            {
-
-                ProviderIdFormats Separator = ProviderIdFormats.ISO_HYPHEN;
-
-                switch (_MatchCollection[0].Groups[2].Value)
-                {
-
-                    case ""  : Separator = ProviderIdFormats.DIN|ProviderIdFormats.ISO; break;
-                    case "-" : Separator = ProviderIdFormats.DIN_HYPHEN|ProviderIdFormats.ISO_HYPHEN; break;
-                    case "*" : Separator = ProviderIdFormats.DIN_STAR; break;
-
-                    default: throw new ArgumentException("Illegal EV Service Provider identification!", "CountryAndProviderId");
-
-                }
-
                 return new SmartCity_Id(__CountryCode,
-                                   Separator,
-                                   _MatchCollection[0].Groups[3].Value);
-            }
+                                        _MatchCollection[0].Groups[2].Value);
 
-            throw new ArgumentException("Illegal EV Service Provider identification!", "CountryAndProviderId");
+            throw new ArgumentException("Illegal smart city identification!", nameof(Text));
 
         }
 
         #endregion
 
-        #region Parse(CountryCode, ProviderId, ProviderIdFormat = ProviderIdFormats.ISO_HYPHEN)
+        #region Parse(CountryCode, Text)
 
         /// <summary>
-        /// Parse the given string as an EV Service Provider identification.
+        /// Parse the given string as a smart city identification.
         /// </summary>
         /// <param name="CountryCode">A country code.</param>
-        /// <param name="ProviderId">An EV Service Provider identification as a string.</param>
-        /// <param name="ProviderIdFormat">The optional format of the provider identification.</param>
-        public static SmartCity_Id Parse(Country            CountryCode,
-                                    String             ProviderId,
-                                    ProviderIdFormats  ProviderIdFormat = ProviderIdFormats.ISO_HYPHEN)
+        /// <param name="Text">A smart city identification as a string.</param>
+        public static SmartCity_Id Parse(Country  CountryCode,
+                                         String   Text)
         {
 
             #region Initial checks
@@ -214,42 +136,41 @@ namespace org.GraphDefined.WWCP
             if (CountryCode == null)
                 throw new ArgumentNullException(nameof(CountryCode),  "The country code must not be null!");
 
-            if (ProviderId.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(ProviderId),   "The provider identification must not be null or empty!");
+            if (Text.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Text),   "The provider identification must not be null or empty!");
 
             #endregion
 
-            var _MatchCollection = Regex.Matches(ProviderId.Trim().ToUpper(),
-                                                 ProviderId_RegEx,
+            var _MatchCollection = Regex.Matches(Text.Trim().ToUpper(),
+                                                 SmartCityId_RegEx,
                                                  RegexOptions.IgnorePatternWhitespace);
 
             if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal EV Service Provider identification '" + CountryCode + " / " + ProviderId + "'!", nameof(ProviderId));
+                throw new ArgumentException("Illegal smart city identification '" + CountryCode + " / " + Text + "'!", nameof(Text));
 
             return new SmartCity_Id(CountryCode,
-                               ProviderIdFormat,
-                               _MatchCollection[0].Value);
+                                    _MatchCollection[0].Value);
 
         }
 
         #endregion
 
-        #region TryParse(CountryAndProviderId, out EVSEProviderId)
+        #region TryParse(Text, out SmartCityId)
 
         /// <summary>
-        /// Parse the given string as an EV Service Provider identification.
+        /// Parse the given string as a smart city identification.
         /// </summary>
-        /// <param name="CountryAndProviderId">The country code and EV Service Provider identification as a string.</param>
-        /// <param name="EVSEProviderId">The parsed EV Service Provider identification.</param>
-        public static Boolean TryParse(String       CountryAndProviderId,
-                                       out SmartCity_Id  EVSEProviderId)
+        /// <param name="Text">The country code and smart city identification as a string.</param>
+        /// <param name="SmartCityId">The parsed smart city identification.</param>
+        public static Boolean TryParse(String            Text,
+                                       out SmartCity_Id  SmartCityId)
         {
 
             #region Initial checks
 
-            if (CountryAndProviderId.IsNullOrEmpty())
+            if (Text.IsNullOrEmpty())
             {
-                EVSEProviderId = null;
+                SmartCityId = null;
                 return false;
             }
 
@@ -258,37 +179,23 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var _MatchCollection = Regex.Matches(CountryAndProviderId.Trim().ToUpper(),
-                                                     CountryAndProviderId_RegEx,
+                var _MatchCollection = Regex.Matches(Text.Trim().ToUpper(),
+                                                     SmartCityId_RegEx,
                                                      RegexOptions.IgnorePatternWhitespace);
 
                 if (_MatchCollection.Count != 1)
                 {
-                    EVSEProviderId = null;
+                    SmartCityId = null;
                     return false;
                 }
 
-                Country __CountryCode;
+                Country _CountryCode;
 
-                if (Country.TryParseAlpha2Code(_MatchCollection[0].Groups[1].Value, out __CountryCode))
+                if (Country.TryParseAlpha2Code(_MatchCollection[0].Groups[1].Value, out _CountryCode))
                 {
 
-                    ProviderIdFormats Separator = ProviderIdFormats.ISO_HYPHEN;
-
-                    switch (_MatchCollection[0].Groups[2].Value)
-                    {
-
-                        case ""  : Separator = ProviderIdFormats.DIN|ProviderIdFormats.ISO; break;
-                        case "-" : Separator = ProviderIdFormats.ISO_HYPHEN;                break;
-                        case "*" : Separator = ProviderIdFormats.DIN_STAR;                  break;
-
-                        default: throw new ArgumentException("Illegal EV Service Provider identification!", nameof(CountryAndProviderId));
-
-                    }
-
-                    EVSEProviderId = new SmartCity_Id(__CountryCode,
-                                                 Separator,
-                                                 _MatchCollection[0].Groups[3].Value);
+                    SmartCityId = new SmartCity_Id(_CountryCode,
+                                                   _MatchCollection[0].Groups[2].Value);
 
                     return true;
 
@@ -296,34 +203,37 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            catch (Exception e)
-            { }
+            catch (Exception)
+            {
+                SmartCityId = null;
+                return false;
+            }
 
-            EVSEProviderId = null;
+            SmartCityId = null;
             return false;
 
         }
 
         #endregion
 
-        #region TryParse(CountryCode, ProviderId, out EVSEProviderId, IdFormat = IdFormatType.NEW)
+        #region TryParse(CountryCode, Text, out EVSEProviderId, IdFormat = IdFormatType.NEW)
 
         /// <summary>
-        /// Parse the given string as an EVSE Operator identification.
+        /// Parse the given string as a smart city identification.
         /// </summary>
         /// <param name="CountryCode">A country code.</param>
-        /// <param name="ProviderId">An Charging Station Operator identification as a string.</param>
-        /// <param name="EVSEProviderId">The parsed EVSE Operator identification.</param>
-        public static Boolean TryParse(Country      CountryCode,
-                                       String       ProviderId,
-                                       out SmartCity_Id  EVSEProviderId)
+        /// <param name="Text">A smart city identification as a string.</param>
+        /// <param name="SmartCityId">The parsed smart city identification.</param>
+        public static Boolean TryParse(Country           CountryCode,
+                                       String            Text,
+                                       out SmartCity_Id  SmartCityId)
         {
 
             #region Initial checks
 
-            if (CountryCode == null || ProviderId.IsNullOrEmpty())
+            if (CountryCode == null || Text.IsNullOrEmpty())
             {
-                EVSEProviderId = null;
+                SmartCityId = null;
                 return false;
             }
 
@@ -332,19 +242,18 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var _MatchCollection = Regex.Matches(ProviderId.Trim().ToUpper(),
-                                                     ProviderId_RegEx,
+                var _MatchCollection = Regex.Matches(Text.Trim().ToUpper(),
+                                                     SmartCityId_RegEx,
                                                      RegexOptions.IgnorePatternWhitespace);
 
                 if (_MatchCollection.Count != 1)
                 {
-                    EVSEProviderId = null;
+                    SmartCityId = null;
                     return false;
                 }
 
-                EVSEProviderId = new SmartCity_Id(CountryCode,
-                                             ProviderIdFormats.DIN | ProviderIdFormats.ISO,
-                                             _MatchCollection[0].Value);
+                SmartCityId = new SmartCity_Id(CountryCode,
+                                               _MatchCollection[0].Value);
 
                 return true;
 
@@ -352,24 +261,10 @@ namespace org.GraphDefined.WWCP
 
             catch (Exception)
             {
-                EVSEProviderId = null;
+                SmartCityId = null;
                 return false;
             }
 
-        }
-
-        #endregion
-
-        #region ChangeIdFormat(NewIdFormat)
-
-        /// <summary>
-        /// Change the EVSP Id format.
-        /// </summary>
-        /// <param name="NewIdFormat">The new EVSP Id format.</param>
-        /// <returns>A new EVSPId object.</returns>
-        public SmartCity_Id ChangeIdFormat(ProviderIdFormats NewIdFormat)
-        {
-            return new SmartCity_Id(this._CountryCode, NewIdFormat, this.ProviderId);
         }
 
         #endregion
@@ -377,138 +272,135 @@ namespace org.GraphDefined.WWCP
         #region Clone
 
         /// <summary>
-        /// Clone this Electric Vehicle Service Provider identification.
+        /// Clone this smart city identification.
         /// </summary>
+
         public SmartCity_Id Clone
-        {
-            get
-            {
 
-                return new SmartCity_Id(_CountryCode,
-                                   _IdFormat,
-                                   new String(_ProviderId.ToCharArray()));
-
-            }
-        }
+            => new SmartCity_Id(CountryCode,
+                                new String(Suffix.ToCharArray()));
 
         #endregion
 
 
         #region Operator overloading
 
-        #region Operator == (EVSPId1, EVSPId2)
+        #region Operator == (SmartCityId1, SmartCityId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSPId1">A EVSPId.</param>
-        /// <param name="EVSPId2">Another EVSPId.</param>
+        /// <param name="SmartCityId1">A smart city.</param>
+        /// <param name="SmartCityId2">Another smart city.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (SmartCity_Id EVSPId1, SmartCity_Id EVSPId2)
+        public static Boolean operator == (SmartCity_Id  SmartCityId1,
+                                           SmartCity_Id  SmartCityId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(EVSPId1, EVSPId2))
+            if (Object.ReferenceEquals(SmartCityId1, SmartCityId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) EVSPId1 == null) || ((Object) EVSPId2 == null))
+            if (((Object) SmartCityId1 == null) || ((Object) SmartCityId2 == null))
                 return false;
 
-            return EVSPId1.Equals(EVSPId2);
+            return SmartCityId1.Equals(SmartCityId2);
 
         }
 
         #endregion
 
-        #region Operator != (EVSPId1, EVSPId2)
+        #region Operator != (SmartCityId1, SmartCityId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSPId1">A EVSPId.</param>
-        /// <param name="EVSPId2">Another EVSPId.</param>
+        /// <param name="SmartCityId1">A smart city.</param>
+        /// <param name="SmartCityId2">Another smart city.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (SmartCity_Id EVSPId1, SmartCity_Id EVSPId2)
-        {
-            return !(EVSPId1 == EVSPId2);
-        }
+        public static Boolean operator != (SmartCity_Id  SmartCityId1,
+                                           SmartCity_Id  SmartCityId2)
+
+            => !(SmartCityId1 == SmartCityId2);
 
         #endregion
 
-        #region Operator <  (EVSPId1, EVSPId2)
+        #region Operator <  (SmartCityId1, SmartCityId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSPId1">A EVSPId.</param>
-        /// <param name="EVSPId2">Another EVSPId.</param>
+        /// <param name="SmartCityId1">A smart city.</param>
+        /// <param name="SmartCityId2">Another smart city.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (SmartCity_Id EVSPId1, SmartCity_Id EVSPId2)
+        public static Boolean operator < (SmartCity_Id  SmartCityId1,
+                                          SmartCity_Id  SmartCityId2)
         {
 
-            if ((Object) EVSPId1 == null)
-                throw new ArgumentNullException("The given EVSPId1 must not be null!");
+            if ((Object) SmartCityId1 == null)
+                throw new ArgumentNullException(nameof(SmartCityId1),  "The given smart city identification must not be null!");
 
-            return EVSPId1.CompareTo(EVSPId2) < 0;
+            return SmartCityId1.CompareTo(SmartCityId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (EVSPId1, EVSPId2)
+        #region Operator <= (SmartCityId1, SmartCityId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSPId1">A EVSPId.</param>
-        /// <param name="EVSPId2">Another EVSPId.</param>
+        /// <param name="SmartCityId1">A smart city.</param>
+        /// <param name="SmartCityId2">Another smart city.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (SmartCity_Id EVSPId1, SmartCity_Id EVSPId2)
-        {
-            return !(EVSPId1 > EVSPId2);
-        }
+        public static Boolean operator <= (SmartCity_Id  SmartCityId1,
+                                           SmartCity_Id  SmartCityId2)
+
+            => !(SmartCityId1 > SmartCityId2);
 
         #endregion
 
-        #region Operator >  (EVSPId1, EVSPId2)
+        #region Operator >  (SmartCityId1, SmartCityId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSPId1">A EVSPId.</param>
-        /// <param name="EVSPId2">Another EVSPId.</param>
+        /// <param name="SmartCityId1">A smart city.</param>
+        /// <param name="SmartCityId2">Another smart city.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (SmartCity_Id EVSPId1, SmartCity_Id EVSPId2)
+        public static Boolean operator > (SmartCity_Id  SmartCityId1,
+                                          SmartCity_Id  SmartCityId2)
         {
 
-            if ((Object) EVSPId1 == null)
-                throw new ArgumentNullException("The given EVSPId1 must not be null!");
+            if ((Object) SmartCityId1 == null)
+                throw new ArgumentNullException(nameof(SmartCityId1),  "The given smart city identification must not be null!");
 
-            return EVSPId1.CompareTo(EVSPId2) > 0;
+            return SmartCityId1.CompareTo(SmartCityId2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (EVSPId1, EVSPId2)
+        #region Operator >= (SmartCityId1, SmartCityId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSPId1">A EVSPId.</param>
-        /// <param name="EVSPId2">Another EVSPId.</param>
+        /// <param name="SmartCityId1">A smart city.</param>
+        /// <param name="SmartCityId2">Another smart city.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (SmartCity_Id EVSPId1, SmartCity_Id EVSPId2)
-        {
-            return !(EVSPId1 < EVSPId2);
-        }
+        public static Boolean operator >= (SmartCity_Id  SmartCityId1,
+                                           SmartCity_Id  SmartCityId2)
+
+            => !(SmartCityId1 < SmartCityId2);
 
         #endregion
 
         #endregion
 
-        #region IComparable<EVSP_Id> Members
+        #region IComparable<SmartCityId> Members
 
         #region CompareTo(Object)
 
@@ -520,37 +412,40 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
-            // Check if the given object is an EVSPId.
-            var EVSPId = Object as SmartCity_Id;
-            if ((Object) EVSPId == null)
-                throw new ArgumentException("The given object is not a EVSPId!");
+            // Check if the given object is an smart city.
+            var SmartCityId = Object as SmartCity_Id;
+            if ((Object) SmartCityId == null)
+                throw new ArgumentException("The given object is not a smart city identification!");
 
-            return CompareTo(EVSPId);
+            return CompareTo(SmartCityId);
 
         }
 
         #endregion
 
-        #region CompareTo(EVSPId)
+        #region CompareTo(SmartCityId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSPId">An object to compare with.</param>
-        public Int32 CompareTo(SmartCity_Id EVSPId)
+        /// <param name="SmartCityId">An object to compare with.</param>
+        public Int32 CompareTo(SmartCity_Id SmartCityId)
         {
 
-            if ((Object) EVSPId == null)
-                throw new ArgumentNullException("The given EVSPId must not be null!");
+            if ((Object) SmartCityId == null)
+                throw new ArgumentNullException(nameof(SmartCityId),  "The given smart city identification must not be null!");
 
-            // Compare the length of the EVSPIds
-            var _Result = this.Length.CompareTo(EVSPId.Length);
+            // Compare the length of the smart city identifications
+            var _Result = this.Length.CompareTo(SmartCityId.Length);
 
-            // If equal: Compare Ids
+            // If equal: Compare country codes
             if (_Result == 0)
-                _Result = _ProviderId.CompareTo(EVSPId._ProviderId);
+                _Result = CountryCode.CompareTo(SmartCityId.CountryCode);
+
+            if (_Result == 0)
+                _Result = String.Compare(Suffix, SmartCityId.Suffix, StringComparison.Ordinal);
 
             return _Result;
 
@@ -560,7 +455,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<EVSP_Id> Members
+        #region IEquatable<SmartCityId> Members
 
         #region Equals(Object)
 
@@ -575,31 +470,34 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an EVSPId.
-            var EVSPId = Object as SmartCity_Id;
-            if ((Object) EVSPId == null)
+            // Check if the given object is an smart city.
+            var SmartCityId = Object as SmartCity_Id;
+            if ((Object) SmartCityId == null)
                 return false;
 
-            return this.Equals(EVSPId);
+            return this.Equals(SmartCityId);
 
         }
 
         #endregion
 
-        #region Equals(EVSPId)
+        #region Equals(SmartCityId)
 
         /// <summary>
-        /// Compares two EVSPIds for equality.
+        /// Compares two SmartCityIds for equality.
         /// </summary>
-        /// <param name="EVSPId">A EVSPId to compare with.</param>
+        /// <param name="SmartCityId">A SmartCityId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(SmartCity_Id EVSPId)
+        public Boolean Equals(SmartCity_Id SmartCityId)
         {
 
-            if ((Object) EVSPId == null)
+            if ((Object) SmartCityId == null)
                 return false;
 
-            return _ProviderId.Equals(EVSPId._ProviderId);
+            if (!CountryCode.Equals(SmartCityId.CountryCode))
+                return false;
+
+            return Suffix.Equals(SmartCityId.Suffix);
 
         }
 
@@ -615,35 +513,10 @@ namespace org.GraphDefined.WWCP
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
         {
-            return _ProviderId.GetHashCode();
-        }
-
-        #endregion
-
-        #region ToString(IdFormat)
-
-        /// <summary>
-        /// Return a string representation of this object
-        /// in the given Id format.
-        /// </summary>
-        public String ToString(ProviderIdFormats IdFormat)
-        {
-
-            switch (IdFormat)
+            unchecked
             {
-
-                case ProviderIdFormats.DIN_HYPHEN:
-                case ProviderIdFormats.ISO_HYPHEN:
-                    return String.Concat(CountryCode.Alpha2Code.ToUpper(), "-", _ProviderId.ToString());
-
-                case ProviderIdFormats.DIN_STAR:
-                    return String.Concat(CountryCode.Alpha2Code.ToUpper(), "*", _ProviderId.ToString());
-
-                default:
-                    return String.Concat(CountryCode.Alpha2Code.ToUpper(), _ProviderId.ToString());
-
+                return CountryCode.GetHashCode() * 17 ^ Suffix.GetHashCode();
             }
-
         }
 
         #endregion
@@ -654,9 +527,7 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return ToString(_IdFormat);
-        }
+            => String.Concat(CountryCode.ToString(), "-", Suffix);
 
         #endregion
 

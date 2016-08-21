@@ -343,7 +343,7 @@ namespace org.GraphDefined.WWCP
         /// The current admin status.
         /// </summary>
         [Optional]
-        public Timestamped<EMobilityProviderAdminStatusType> AdminStatus
+        public Timestamped<eMobilityProviderAdminStatusType> AdminStatus
 
             => _AdminStatusSchedule.CurrentStatus;
 
@@ -351,13 +351,13 @@ namespace org.GraphDefined.WWCP
 
         #region AdminStatusSchedule
 
-        private StatusSchedule<EMobilityProviderAdminStatusType> _AdminStatusSchedule;
+        private StatusSchedule<eMobilityProviderAdminStatusType> _AdminStatusSchedule;
 
         /// <summary>
         /// The admin status schedule.
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<EMobilityProviderAdminStatusType>> AdminStatusSchedule
+        public IEnumerable<Timestamped<eMobilityProviderAdminStatusType>> AdminStatusSchedule
 
             => _AdminStatusSchedule;
 
@@ -370,7 +370,7 @@ namespace org.GraphDefined.WWCP
         /// The current status.
         /// </summary>
         [Optional]
-        public Timestamped<EMobilityProviderStatusType> Status
+        public Timestamped<eMobilityProviderStatusType> Status
 
             => _StatusSchedule.CurrentStatus;
 
@@ -378,20 +378,20 @@ namespace org.GraphDefined.WWCP
 
         #region StatusSchedule
 
-        private StatusSchedule<EMobilityProviderStatusType> _StatusSchedule;
+        private StatusSchedule<eMobilityProviderStatusType> _StatusSchedule;
 
         /// <summary>
         /// The status schedule.
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<EMobilityProviderStatusType>> StatusSchedule
+        public IEnumerable<Timestamped<eMobilityProviderStatusType>> StatusSchedule
 
             => _StatusSchedule;
 
         #endregion
 
 
-        public EMobilityProviderPriority Priority { get; set; }
+        public eMobilityProviderPriority Priority { get; set; }
 
 
         #region AllTokens
@@ -542,9 +542,9 @@ namespace org.GraphDefined.WWCP
                                    RemoteEMobilityProviderCreatorDelegate  RemoteEMobilityProviderCreator  = null,
                                    I18NString                              Name                            = null,
                                    I18NString                              Description                     = null,
-                                   EMobilityProviderPriority               Priority                        = null,
-                                   EMobilityProviderAdminStatusType        AdminStatus                     = EMobilityProviderAdminStatusType.Available,
-                                   EMobilityProviderStatusType             Status                          = EMobilityProviderStatusType.Available,
+                                   eMobilityProviderPriority               Priority                        = null,
+                                   eMobilityProviderAdminStatusType        AdminStatus                     = eMobilityProviderAdminStatusType.Available,
+                                   eMobilityProviderStatusType             Status                          = eMobilityProviderStatusType.Available,
                                    UInt16                                  MaxAdminStatusListSize          = DefaultMaxAdminStatusListSize,
                                    UInt16                                  MaxStatusListSize               = DefaultMaxStatusListSize)
 
@@ -567,12 +567,12 @@ namespace org.GraphDefined.WWCP
             this._Description                 = Description ?? new I18NString();
             this._DataLicenses                = new List<DataLicense>();
 
-            this.Priority                     = Priority    ?? new EMobilityProviderPriority(0);
+            this.Priority                     = Priority    ?? new eMobilityProviderPriority(0);
 
-            this._AdminStatusSchedule         = new StatusSchedule<EMobilityProviderAdminStatusType>();
+            this._AdminStatusSchedule         = new StatusSchedule<eMobilityProviderAdminStatusType>();
             this._AdminStatusSchedule.Insert(AdminStatus);
 
-            this._StatusSchedule              = new StatusSchedule<EMobilityProviderStatusType>();
+            this._StatusSchedule              = new StatusSchedule<eMobilityProviderStatusType>();
             this._StatusSchedule.Insert(Status);
 
             #endregion

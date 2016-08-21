@@ -1026,10 +1026,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the admin status of all e-mobility providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderAdminStatusType>>>> EMobilityProviderAdminStatus
+        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusType>>>> EMobilityProviderAdminStatus
 
             => _EMobilityProviders.
-                   Select(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderAdminStatusType>>>(emp.Id, emp.AdminStatusSchedule));
+                   Select(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusType>>>(emp.Id, emp.AdminStatusSchedule));
 
         #endregion
 
@@ -1038,10 +1038,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the status of all e-mobility providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderStatusType>>>> EMobilityProviderStatus
+        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusType>>>> EMobilityProviderStatus
 
             => _EMobilityProviders.
-                   Select(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<EMobilityProviderStatusType>>>(emp.Id, emp.StatusSchedule));
+                   Select(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusType>>>(emp.Id, emp.StatusSchedule));
 
         #endregion
 
@@ -1082,9 +1082,9 @@ namespace org.GraphDefined.WWCP
         public eMobilityProvider CreateNewEMobilityProvider(eMobilityProvider_Id                          EMobilityProviderId,
                                                             I18NString                                    Name                            = null,
                                                             I18NString                                    Description                     = null,
-                                                            EMobilityProviderPriority                     Priority                        = null,
-                                                            EMobilityProviderAdminStatusType              AdminStatus                     = EMobilityProviderAdminStatusType.Available,
-                                                            EMobilityProviderStatusType                   Status                          = EMobilityProviderStatusType.Available,
+                                                            eMobilityProviderPriority                     Priority                        = null,
+                                                            eMobilityProviderAdminStatusType              AdminStatus                     = eMobilityProviderAdminStatusType.Available,
+                                                            eMobilityProviderStatusType                   Status                          = eMobilityProviderStatusType.Available,
                                                             Action<eMobilityProvider>                     Configurator                    = null,
                                                             Action<eMobilityProvider>                     OnSuccess                       = null,
                                                             Action<RoamingNetwork, eMobilityProvider_Id>  OnError                         = null,
@@ -1118,7 +1118,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            throw new EMobilityProviderAlreadyExists(this, EMobilityProviderId);
+            throw new eMobilityProviderAlreadyExists(this, EMobilityProviderId);
 
         }
 
