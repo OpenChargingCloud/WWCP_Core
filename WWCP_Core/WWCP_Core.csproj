@@ -72,6 +72,7 @@
     <Compile Include="Entities\eMobilityProvider\eMobilityStation\eMobilityStation_Id.cs" />
     <Compile Include="Entities\eMobilityProvider\eMobilityStation\INetworkEMobilityStation.cs" />
     <Compile Include="Entities\eMobilityProvider\eMobilityStation\IRemoteEMobilityStation.cs" />
+    <Compile Include="Entities\eMobilityProvider\eVehicle\eVehicleExceptions.cs" />
     <Compile Include="Entities\eMobilityProvider\eVehicle\eVehicleDelegates.cs" />
     <Compile Include="Entities\eMobilityProvider\eVehicle\eVehicleStatusType.cs" />
     <Compile Include="Entities\eMobilityProvider\eVehicle\eVehicleAdminStatusType.cs" />

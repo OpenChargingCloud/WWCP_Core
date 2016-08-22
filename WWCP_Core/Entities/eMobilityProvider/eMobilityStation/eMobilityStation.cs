@@ -805,6 +805,441 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region eVehicles
+
+        #region eVehicleAddition
+
+        internal readonly IVotingNotificator<DateTime, eMobilityStation, eVehicle, Boolean> eVehicleAddition;
+
+        /// <summary>
+        /// Called whenever an electric vehicle will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, eMobilityStation, eVehicle, Boolean> OnEVehicleAddition
+
+            => eVehicleAddition;
+
+        #endregion
+
+        #region eVehicleRemoval
+
+        internal readonly IVotingNotificator<DateTime, eMobilityStation, eVehicle, Boolean> eVehicleRemoval;
+
+        /// <summary>
+        /// Called whenever an electric vehicle will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, eMobilityStation, eVehicle, Boolean> OnEVehicleRemoval
+
+            => eVehicleRemoval;
+
+        #endregion
+
+
+        #region eVehicles
+
+        private EntityHashSet<ChargingStationOperator, eVehicle_Id, eVehicle> _eVehicles;
+
+        public IEnumerable<eVehicle> eVehicles
+
+            => _eVehicles;
+
+        #endregion
+
+        #region eVehicleIds
+
+        public IEnumerable<eVehicle_Id> eVehicleIds
+
+            => _eVehicles.Ids;
+
+        #endregion
+
+        #region eVehicleAdminStatus
+
+        public IEnumerable<KeyValuePair<eVehicle_Id, eVehicleAdminStatusType>> eVehicleAdminStatus
+
+            => _eVehicles.
+                   OrderBy(vehicle => vehicle.Id).
+                   Select (vehicle => new KeyValuePair<eVehicle_Id, eVehicleAdminStatusType>(vehicle.Id, vehicle.AdminStatus.Value));
+
+        #endregion
+
+        #region eVehicleStatus
+
+        public IEnumerable<KeyValuePair<eVehicle_Id, eVehicleStatusType>> eVehicleStatus
+
+            => _eVehicles.
+                   OrderBy(vehicle => vehicle.Id).
+                   Select (vehicle => new KeyValuePair<eVehicle_Id, eVehicleStatusType>(vehicle.Id, vehicle.Status.Value));
+
+        #endregion
+
+
+        #region CreateNeweVehicle(eVehicleId = null, Configurator = null, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create and register a new eVehicle having the given
+        /// unique eVehicle identification.
+        /// </summary>
+        /// <param name="eVehicleId">The unique identification of the new eVehicle.</param>
+        /// <param name="Configurator">An optional delegate to configure the new eVehicle before its successful creation.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new eVehicle after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the eVehicle failed.</param>
+        public eVehicle CreateNewEVehicle(eVehicle_Id                            eVehicleId             = null,
+                                          Action<eVehicle>                       Configurator           = null,
+                                          RemoteEVehicleCreatorDelegate          RemoteeVehicleCreator  = null,
+                                          eVehicleAdminStatusType                AdminStatus            = eVehicleAdminStatusType.Operational,
+                                          eVehicleStatusType                     Status                 = eVehicleStatusType.Available,
+                                          Action<eVehicle>                       OnSuccess              = null,
+                                          Action<eMobilityStation, eVehicle_Id>  OnError                = null)
+
+        {
+
+            #region Initial checks
+
+            if (eVehicleId == null)
+                eVehicleId = eVehicle_Id.Random(Provider.Id);
+
+            // Do not throw an exception when an OnError delegate was given!
+            if (_eVehicles.Any(pool => pool.Id == eVehicleId))
+            {
+                if (OnError == null)
+                    throw new eVehicleAlreadyExistsInStation(this, eVehicleId);
+                else
+                    OnError?.Invoke(this, eVehicleId);
+            }
+
+            #endregion
+
+            var _eVehicle = new eVehicle(eVehicleId,
+                                         Provider,
+                                         Configurator,
+                                         RemoteeVehicleCreator,
+                                         AdminStatus,
+                                         Status);
+
+
+            if (eVehicleAddition.SendVoting(DateTime.Now, this, _eVehicle))
+            {
+                if (_eVehicles.TryAdd(_eVehicle))
+                {
+
+                    _eVehicle.OnDataChanged                        += UpdateEVehicleData;
+                    _eVehicle.OnStatusChanged                      += UpdateEVehicleStatus;
+                    _eVehicle.OnAdminStatusChanged                 += UpdateEVehicleAdminStatus;
+
+                    //_eVehicle.OnNewReservation                     += SendNewReservation;
+                    //_eVehicle.OnReservationCancelled               += SendOnReservationCancelled;
+                    //_eVehicle.OnNewChargingSession                 += SendNewChargingSession;
+                    //_eVehicle.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
+
+
+                    OnSuccess?.Invoke(_eVehicle);
+                    eVehicleAddition.SendNotification(DateTime.Now, this, _eVehicle);
+
+                    return _eVehicle;
+
+                }
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+
+        #region ContainseVehicle(eVehicle)
+
+        /// <summary>
+        /// Check if the given eVehicle is already present within the Charging Station Operator.
+        /// </summary>
+        /// <param name="eVehicle">A eVehicle.</param>
+        public Boolean ContainseVehicle(eVehicle eVehicle)
+
+            => _eVehicles.Contains(eVehicle);
+
+        #endregion
+
+        #region ContainseVehicle(eVehicleId)
+
+        /// <summary>
+        /// Check if the given eVehicle identification is already present within the Charging Station Operator.
+        /// </summary>
+        /// <param name="eVehicleId">The unique identification of the eVehicle.</param>
+        public Boolean ContainseVehicle(eVehicle_Id eVehicleId)
+
+            => _eVehicles.Contains(eVehicleId);
+
+        #endregion
+
+        #region GetEVehicleById(eVehicleId)
+
+        public eVehicle GetEVehicleById(eVehicle_Id eVehicleId)
+
+            => _eVehicles.Get(eVehicleId);
+
+        #endregion
+
+        #region TryGetEVehicleById(eVehicleId, out eVehicle)
+
+        public Boolean TryGetEVehicleById(eVehicle_Id eVehicleId, out eVehicle eVehicle)
+
+            => _eVehicles.TryGet(eVehicleId, out eVehicle);
+
+        #endregion
+
+        #region RemoveEVehicle(eVehicleId)
+
+        public eVehicle RemoveEVehicle(eVehicle_Id eVehicleId)
+        {
+
+            eVehicle _eVehicle = null;
+
+            if (TryGetEVehicleById(eVehicleId, out _eVehicle))
+            {
+
+                if (eVehicleRemoval.SendVoting(DateTime.Now, this, _eVehicle))
+                {
+
+                    if (_eVehicles.TryRemove(eVehicleId, out _eVehicle))
+                    {
+
+                        eVehicleRemoval.SendNotification(DateTime.Now, this, _eVehicle);
+
+                        return _eVehicle;
+
+                    }
+
+                }
+
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryRemoveEVehicle(eVehicleId, out eVehicle)
+
+        public Boolean TryRemoveEVehicle(eVehicle_Id eVehicleId, out eVehicle eVehicle)
+        {
+
+            if (TryGetEVehicleById(eVehicleId, out eVehicle))
+            {
+
+                if (eVehicleRemoval.SendVoting(DateTime.Now, this, eVehicle))
+                {
+
+                    if (_eVehicles.TryRemove(eVehicleId, out eVehicle))
+                    {
+
+                        eVehicleRemoval.SendNotification(DateTime.Now, this, eVehicle);
+
+                        return true;
+
+                    }
+
+                }
+
+                return false;
+
+            }
+
+            return true;
+
+        }
+
+        #endregion
+
+        #region SeteVehicleAdminStatus(eVehicleId, NewStatus)
+
+        public void SeteVehicleAdminStatus(eVehicle_Id                           eVehicleId,
+                                               Timestamped<eVehicleAdminStatusType>  NewStatus,
+                                               Boolean                                   SendUpstream = false)
+        {
+
+            eVehicle _eVehicle = null;
+            if (TryGetEVehicleById(eVehicleId, out _eVehicle))
+                _eVehicle.SetAdminStatus(NewStatus);
+
+        }
+
+        #endregion
+
+        #region SetEVehicleAdminStatus(eVehicleId, NewStatus, Timestamp)
+
+        public void SetEVehicleAdminStatus(eVehicle_Id              eVehicleId,
+                                           eVehicleAdminStatusType  NewStatus,
+                                           DateTime                     Timestamp)
+        {
+
+            eVehicle _eVehicle  = null;
+            if (TryGetEVehicleById(eVehicleId, out _eVehicle))
+                _eVehicle.SetAdminStatus(NewStatus, Timestamp);
+
+        }
+
+        #endregion
+
+        #region SetEVehicleAdminStatus(eVehicleId, StatusList, ChangeMethod = ChangeMethods.Replace)
+
+        public void SetEVehicleAdminStatus(eVehicle_Id                                        eVehicleId,
+                                           IEnumerable<Timestamped<eVehicleAdminStatusType>>  StatusList,
+                                           ChangeMethods                                      ChangeMethod  = ChangeMethods.Replace)
+        {
+
+            eVehicle _eVehicle  = null;
+            if (TryGetEVehicleById(eVehicleId, out _eVehicle))
+                _eVehicle.SetAdminStatus(StatusList, ChangeMethod);
+
+            //if (SendUpstream)
+            //{
+            //
+            //    RoamingNetwork.
+            //        SendeVehicleAdminStatusDiff(new eVehicleAdminStatusDiff(DateTime.Now,
+            //                                               ChargingStationOperatorId:    Id,
+            //                                               ChargingStationOperatorName:  Name,
+            //                                               NewStatus:         new List<KeyValuePair<eVehicle_Id, eVehicleAdminStatusType>>(),
+            //                                               ChangedStatus:     new List<KeyValuePair<eVehicle_Id, eVehicleAdminStatusType>>() {
+            //                                                                          new KeyValuePair<eVehicle_Id, eVehicleAdminStatusType>(eVehicleId, NewStatus.Value)
+            //                                                                      },
+            //                                               RemovedIds:        new List<eVehicle_Id>()));
+            //
+            //}
+
+        }
+
+        #endregion
+
+
+        #region OnEVehicleData/(Admin)StatusChanged
+
+        /// <summary>
+        /// An event fired whenever the static data of any subordinated eVehicle changed.
+        /// </summary>
+        public event OnEVehicleDataChangedDelegate         OnEVehicleDataChanged;
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of any subordinated eVehicle changed.
+        /// </summary>
+        public event OnEVehicleStatusChangedDelegate       OnEVehicleStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of any subordinated eVehicle changed.
+        /// </summary>
+        public event OnEVehicleAdminStatusChangedDelegate  OnEVehicleAdminStatusChanged;
+
+        #endregion
+
+        #region OnEVehicleGeoLocationChanged
+
+        /// <summary>
+        /// An event fired whenever the geo coordinate changed.
+        /// </summary>
+        public event OnEVehicleGeoLocationChangedDelegate OnEVehicleGeoLocationChanged;
+
+        #endregion
+
+
+        #region (internal) UpdateEVehicleData(Timestamp, eVehicle, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the data of an eVehicle.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="eVehicle">The changed eVehicle.</param>
+        /// <param name="PropertyName">The name of the changed property.</param>
+        /// <param name="OldValue">The old value of the changed property.</param>
+        /// <param name="NewValue">The new value of the changed property.</param>
+        internal async Task UpdateEVehicleData(DateTime      Timestamp,
+                                                   eVehicle  eVehicle,
+                                                   String        PropertyName,
+                                                   Object        OldValue,
+                                                   Object        NewValue)
+        {
+
+            var OnEVehicleDataChangedLocal = OnEVehicleDataChanged;
+            if (OnEVehicleDataChangedLocal != null)
+                await OnEVehicleDataChangedLocal(Timestamp, eVehicle, PropertyName, OldValue, NewValue);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateEVehicleAdminStatus(Timestamp, eVehicle, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the current eVehicle admin status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="eVehicle">The updated eVehicle.</param>
+        /// <param name="OldStatus">The old aggreagted charging station status.</param>
+        /// <param name="NewStatus">The new aggreagted charging station status.</param>
+        internal async Task UpdateEVehicleAdminStatus(DateTime                                  Timestamp,
+                                                          eVehicle                              eVehicle,
+                                                          Timestamped<eVehicleAdminStatusType>  OldStatus,
+                                                          Timestamped<eVehicleAdminStatusType>  NewStatus)
+        {
+
+            var OnEVehicleAdminStatusChangedLocal = OnEVehicleAdminStatusChanged;
+            if (OnEVehicleAdminStatusChangedLocal != null)
+                await OnEVehicleAdminStatusChangedLocal(Timestamp, eVehicle, OldStatus, NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateEVehicleStatus(Timestamp, eVehicle, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the current eVehicle status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="eVehicle">The updated eVehicle.</param>
+        /// <param name="OldStatus">The old aggreagted charging station status.</param>
+        /// <param name="NewStatus">The new aggreagted charging station status.</param>
+        internal async Task UpdateEVehicleStatus(DateTime                             Timestamp,
+                                                     eVehicle                         eVehicle,
+                                                     Timestamped<eVehicleStatusType>  OldStatus,
+                                                     Timestamped<eVehicleStatusType>  NewStatus)
+        {
+
+            var OnEVehicleStatusChangedLocal = OnEVehicleStatusChanged;
+            if (OnEVehicleStatusChangedLocal != null)
+                await OnEVehicleStatusChangedLocal(Timestamp, eVehicle, OldStatus, NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateEVehicleGeoLocation(Timestamp, eVehicle, OldGeoCoordinate, NewGeoCoordinate)
+
+        /// <summary>
+        /// Update the current electric vehicle geo location.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="eVehicle">The updated eVehicle.</param>
+        /// <param name="OldGeoCoordinate">The old aggreagted charging station status.</param>
+        /// <param name="NewGeoCoordinate">The new aggreagted charging station status.</param>
+        internal async Task UpdateEVehicleGeoLocation(DateTime                    Timestamp,
+                                                      eVehicle                    eVehicle,
+                                                      Timestamped<GeoCoordinate>  OldGeoCoordinate,
+                                                      Timestamped<GeoCoordinate>  NewGeoCoordinate)
+        {
+
+            var OnEVehicleGeoLocationChangedLocal = OnEVehicleGeoLocationChanged;
+            if (OnEVehicleGeoLocationChangedLocal != null)
+                await OnEVehicleGeoLocationChangedLocal(Timestamp, eVehicle, OldGeoCoordinate, NewGeoCoordinate);
+
+        }
+
+        #endregion
+
+        #endregion
+
+
+
+
 
 
         public void AddParkingSpaces(params ParkingSpace[] ParkingSpaces)

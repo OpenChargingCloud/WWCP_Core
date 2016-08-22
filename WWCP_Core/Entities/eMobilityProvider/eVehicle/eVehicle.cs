@@ -518,18 +518,27 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An optional remote e-vehicle.
         /// </summary>
-        public IRemoteEVehicle  RemoteEVehicle  { get; }
+        public IRemoteEVehicle    RemoteEVehicle    { get; }
 
 
         /// <summary>
-        /// The e-vehicle Operator of this EVSE.
+        /// The e-vehicle station.
         /// </summary>
         [InternalUseOnly]
-        public eMobilityProvider Provider       { get; }
+        public eMobilityStation   Station           { get; }
+
+
+        /// <summary>
+        /// The e-mobility provider.
+        /// </summary>
+        [InternalUseOnly]
+        public eMobilityProvider  Provider          { get; }
 
         #endregion
 
         #region Constructor(s)
+
+        #region eVehicle(Id, Provider, ...)
 
         /// <summary>
         /// Create a new e-vehicle having the given identification.
@@ -539,7 +548,7 @@ namespace org.GraphDefined.WWCP
         internal eVehicle(eVehicle_Id                    Id,
                           eMobilityProvider              Provider,
                           Action<eVehicle>               Configurator            = null,
-                          RemoteEVehicleCreatorDelegate  RemoteeVehicleCreator   = null,
+                          RemoteEVehicleCreatorDelegate  RemoteEVehicleCreator   = null,
                           eVehicleAdminStatusType        AdminStatus             = eVehicleAdminStatusType.Operational,
                           eVehicleStatusType             Status                  = eVehicleStatusType.Available,
                           UInt16                         MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize,
@@ -595,9 +604,44 @@ namespace org.GraphDefined.WWCP
 
             Configurator?.Invoke(this);
 
-            this.RemoteEVehicle = RemoteeVehicleCreator?.Invoke(this);
+            this.RemoteEVehicle = RemoteEVehicleCreator?.Invoke(this);
 
         }
+
+        #endregion
+
+        #region eVehicle(Id, Station, ...)
+
+        /// <summary>
+        /// Create a new e-vehicle having the given identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the e-vehicle pool.</param>
+        /// <param name="MaxAdminStatusListSize">The default size of the admin status list.</param>
+        internal eVehicle(eVehicle_Id                    Id,
+                          eMobilityStation               Station,
+                          Action<eVehicle>               Configurator            = null,
+                          RemoteEVehicleCreatorDelegate  RemoteEVehicleCreator   = null,
+                          eVehicleAdminStatusType        AdminStatus             = eVehicleAdminStatusType.Operational,
+                          eVehicleStatusType             Status                  = eVehicleStatusType.Available,
+                          UInt16                         MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize,
+                          UInt16                         MaxStatusListSize       = DefaultMaxStatusListSize)
+
+            : this(Id,
+                   Station.Provider,
+                   Configurator,
+                   RemoteEVehicleCreator,
+                   AdminStatus,
+                   Status,
+                   MaxAdminStatusListSize,
+                   MaxStatusListSize)
+
+        {
+
+            this.Station = Station;
+
+        }
+
+        #endregion
 
         #endregion
 

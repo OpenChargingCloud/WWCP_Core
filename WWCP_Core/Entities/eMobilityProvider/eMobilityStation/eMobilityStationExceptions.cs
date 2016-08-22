@@ -31,11 +31,11 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// An exception thrown whenever a charging station already exists at the given e-mobility provider.
     /// </summary>
-    public class eMobilityStationAlreadyExistsAtProvider : eMobilityProviderException
+    public class eMobilityStationAlreadyExists : eMobilityProviderException
     {
 
-        public eMobilityStationAlreadyExistsAtProvider(eMobilityProvider    eMobilityProvider,
-                                                       eMobilityStation_Id  eMobilityStationId)
+        public eMobilityStationAlreadyExists(eMobilityProvider    eMobilityProvider,
+                                             eMobilityStation_Id  eMobilityStationId)
 
             : base(eMobilityProvider.RoamingNetwork,
                    "The given e-mobility station identification '" + eMobilityStationId + "' already exists within the given '" + eMobilityProvider.Id + "' e-mobility provider!")

@@ -4491,7 +4491,7 @@ namespace org.GraphDefined.WWCP
             RemoteStop(ChargingSession_Id    SessionId,
                        ReservationHandling   ReservationHandling,
                        eMobilityProvider_Id  ProviderId         = null,
-                       eMobilityAccount_Id                eMAId              = null,
+                       eMobilityAccount_Id   eMAId              = null,
 
                        DateTime?             Timestamp          = null,
                        CancellationToken?    CancellationToken  = null,
@@ -4984,24 +4984,26 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create an authorize start request.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="OperatorId">An Charging Station Operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStartResult>
 
-            AuthorizeStart(DateTime            Timestamp,
-                           CancellationToken   CancellationToken,
-                           EventTracking_Id    EventTrackingId,
-                           ChargingStationOperator_Id     OperatorId,
-                           Auth_Token          AuthToken,
-                           ChargingProduct_Id  ChargingProductId  = null,
-                           ChargingSession_Id  SessionId          = null,
-                           TimeSpan?           RequestTimeout       = null)
+            AuthorizeStart(ChargingStationOperator_Id  OperatorId,
+                           Auth_Token                  AuthToken,
+                           ChargingProduct_Id          ChargingProductId  = null,
+                           ChargingSession_Id          SessionId          = null,
+
+                           DateTime?                   Timestamp          = null,
+                           CancellationToken?          CancellationToken  = null,
+                           EventTracking_Id            EventTrackingId    = null,
+                           TimeSpan?                   RequestTimeout     = null)
 
         {
 
@@ -5013,6 +5015,12 @@ namespace org.GraphDefined.WWCP
             if (AuthToken  == null)
                 throw new ArgumentNullException(nameof(AuthToken),   "The given authentication token must not be null!");
 
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
             #endregion
 
             #region Send OnAuthorizeStart event
@@ -5022,7 +5030,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnAuthorizeStart?.Invoke(Timestamp,
+                OnAuthorizeStart?.Invoke(DateTime.Now,
+                                         Timestamp.Value,
                                          this,
                                          EventTrackingId,
                                          Id,
@@ -5150,7 +5159,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnAuthorizeStarted?.Invoke(Timestamp,
+                OnAuthorizeStarted?.Invoke(DateTime.Now,
+                                           Timestamp.Value,
                                            this,
                                            EventTrackingId,
                                            Id,
@@ -5181,26 +5191,28 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create an authorize start request at the given EVSE.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="OperatorId">An Charging Station Operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStartEVSEResult>
 
-            AuthorizeStart(DateTime            Timestamp,
-                           CancellationToken   CancellationToken,
-                           EventTracking_Id    EventTrackingId,
-                           ChargingStationOperator_Id     OperatorId,
-                           Auth_Token          AuthToken,
-                           EVSE_Id             EVSEId,
-                           ChargingProduct_Id  ChargingProductId  = null,
-                           ChargingSession_Id  SessionId          = null,
-                           TimeSpan?           RequestTimeout       = null)
+            AuthorizeStart(ChargingStationOperator_Id  OperatorId,
+                           Auth_Token                  AuthToken,
+                           EVSE_Id                     EVSEId,
+                           ChargingProduct_Id          ChargingProductId  = null,
+                           ChargingSession_Id          SessionId          = null,
+
+                           DateTime?                   Timestamp          = null,
+                           CancellationToken?          CancellationToken  = null,
+                           EventTracking_Id            EventTrackingId    = null,
+                           TimeSpan?                   RequestTimeout     = null)
 
         {
 
@@ -5215,6 +5227,12 @@ namespace org.GraphDefined.WWCP
             if (EVSEId     == null)
                 throw new ArgumentNullException(nameof(EVSEId),      "The given EVSE identification must not be null!");
 
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
             #endregion
 
             #region Send OnAuthorizeEVSEStart event
@@ -5224,7 +5242,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnAuthorizeEVSEStart?.Invoke(Timestamp,
+                OnAuthorizeEVSEStart?.Invoke(DateTime.Now,
+                                             Timestamp.Value,
                                              this,
                                              EventTrackingId,
                                              Id,
@@ -5359,7 +5378,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnAuthorizeEVSEStarted?.Invoke(Timestamp,
+                OnAuthorizeEVSEStarted?.Invoke(DateTime.Now,
+                                               Timestamp.Value,
                                                this,
                                                EventTrackingId,
                                                Id,
@@ -5391,26 +5411,28 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create an authorize start request at the given charging station.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="OperatorId">An Charging Station Operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="ChargingStationId">The unique identification charging station.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStartChargingStationResult>
 
-            AuthorizeStart(DateTime            Timestamp,
-                           CancellationToken   CancellationToken,
-                           EventTracking_Id    EventTrackingId,
-                           ChargingStationOperator_Id     OperatorId,
-                           Auth_Token          AuthToken,
-                           ChargingStation_Id  ChargingStationId,
-                           ChargingProduct_Id  ChargingProductId  = null,
-                           ChargingSession_Id  SessionId          = null,
-                           TimeSpan?           RequestTimeout       = null)
+            AuthorizeStart(ChargingStationOperator_Id  OperatorId,
+                           Auth_Token                  AuthToken,
+                           ChargingStation_Id          ChargingStationId,
+                           ChargingProduct_Id          ChargingProductId  = null,
+                           ChargingSession_Id          SessionId          = null,
+
+                           DateTime?                   Timestamp          = null,
+                           CancellationToken?          CancellationToken  = null,
+                           EventTracking_Id            EventTrackingId    = null,
+                           TimeSpan?                   RequestTimeout     = null)
 
         {
 
@@ -5425,6 +5447,12 @@ namespace org.GraphDefined.WWCP
             if (ChargingStationId == null)
                 throw new ArgumentNullException(nameof(ChargingStationId),  "The given charging station identification must not be null!");
 
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
             #endregion
 
             #region Send OnAuthorizeChargingStationStart event
@@ -5434,7 +5462,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnAuthorizeChargingStationStart?.Invoke(Timestamp,
+                OnAuthorizeChargingStationStart?.Invoke(DateTime.Now,
+                                                        Timestamp.Value,
                                                         this,
                                                         EventTrackingId,
                                                         Id,
@@ -5567,7 +5596,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnAuthorizeChargingStationStarted?.Invoke(Timestamp,
+                OnAuthorizeChargingStationStarted?.Invoke(DateTime.Now,
+                                                          Timestamp.Value,
                                                           this,
                                                           EventTrackingId,
                                                           Id,
@@ -5644,22 +5674,24 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create an authorize stop request.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="OperatorId">An Charging Station Operator identification.</param>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStopResult>
 
-            AuthorizeStop(DateTime            Timestamp,
-                          CancellationToken   CancellationToken,
-                          EventTracking_Id    EventTrackingId,
-                          ChargingStationOperator_Id     OperatorId,
-                          ChargingSession_Id  SessionId,
-                          Auth_Token          AuthToken,
-                          TimeSpan?           RequestTimeout  = null)
+            AuthorizeStop(ChargingStationOperator_Id  OperatorId,
+                          ChargingSession_Id          SessionId,
+                          Auth_Token                  AuthToken,
+
+                          DateTime?                   Timestamp          = null,
+                          CancellationToken?          CancellationToken  = null,
+                          EventTracking_Id            EventTrackingId    = null,
+                          TimeSpan?                   RequestTimeout     = null)
 
         {
 
@@ -5674,6 +5706,12 @@ namespace org.GraphDefined.WWCP
             if (AuthToken  == null)
                 throw new ArgumentNullException(nameof(AuthToken),   "The given parameter must not be null!");
 
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
             #endregion
 
             #region Send OnAuthorizeStop event
@@ -5681,7 +5719,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnAuthorizeStop?.Invoke(Timestamp,
+                OnAuthorizeStop?.Invoke(DateTime.Now,
+                                        Timestamp.Value,
                                         this,
                                         EventTrackingId,
                                         Id,
@@ -5788,7 +5827,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnAuthorizeStopped?.Invoke(Timestamp,
+                OnAuthorizeStopped?.Invoke(DateTime.Now,
+                                           Timestamp.Value,
                                            this,
                                            EventTrackingId,
                                            Id,
@@ -5817,24 +5857,26 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create an authorize stop request at the given EVSE.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="OperatorId">An Charging Station Operator identification.</param>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStopEVSEResult>
 
-            AuthorizeStop(DateTime            Timestamp,
-                          CancellationToken   CancellationToken,
-                          EventTracking_Id    EventTrackingId,
-                          ChargingStationOperator_Id     OperatorId,
-                          ChargingSession_Id  SessionId,
-                          Auth_Token          AuthToken,
-                          EVSE_Id             EVSEId,
-                          TimeSpan?           RequestTimeout  = null)
+            AuthorizeStop(ChargingStationOperator_Id  OperatorId,
+                          ChargingSession_Id          SessionId,
+                          Auth_Token                  AuthToken,
+                          EVSE_Id                     EVSEId,
+
+                          DateTime?                   Timestamp          = null,
+                          CancellationToken?          CancellationToken  = null,
+                          EventTracking_Id            EventTrackingId    = null,
+                          TimeSpan?                   RequestTimeout     = null)
 
         {
 
@@ -5852,6 +5894,12 @@ namespace org.GraphDefined.WWCP
             if (EVSEId     == null)
                 throw new ArgumentNullException(nameof(EVSEId),      "The given parameter must not be null!");
 
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
             #endregion
 
             #region Send OnAuthorizeEVSEStop event
@@ -5859,7 +5907,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnAuthorizeEVSEStop?.Invoke(Timestamp,
+                OnAuthorizeEVSEStop?.Invoke(DateTime.Now,
+                                            Timestamp.Value,
                                             this,
                                             EventTrackingId,
                                             Id,
@@ -5971,7 +6020,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnAuthorizeEVSEStopped?.Invoke(Timestamp,
+                OnAuthorizeEVSEStopped?.Invoke(DateTime.Now,
+                                               Timestamp.Value,
                                                this,
                                                EventTrackingId,
                                                Id,
@@ -6001,24 +6051,26 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create an authorize stop request at the given charging station.
         /// </summary>
-        /// <param name="Timestamp">The timestamp of the request.</param>
-        /// <param name="CancellationToken">A token to cancel this request.</param>
-        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="OperatorId">An Charging Station Operator identification.</param>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="ChargingStationId">The unique identification of a charging station.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStopChargingStationResult>
 
-            AuthorizeStop(DateTime            Timestamp,
-                          CancellationToken   CancellationToken,
-                          EventTracking_Id    EventTrackingId,
-                          ChargingStationOperator_Id     OperatorId,
-                          ChargingSession_Id  SessionId,
-                          Auth_Token          AuthToken,
-                          ChargingStation_Id  ChargingStationId,
-                          TimeSpan?           RequestTimeout  = null)
+            AuthorizeStop(ChargingStationOperator_Id  OperatorId,
+                          ChargingSession_Id          SessionId,
+                          Auth_Token                  AuthToken,
+                          ChargingStation_Id          ChargingStationId,
+
+                          DateTime?                   Timestamp          = null,
+                          CancellationToken?          CancellationToken  = null,
+                          EventTracking_Id            EventTrackingId    = null,
+                          TimeSpan?                   RequestTimeout     = null)
 
         {
 
@@ -6036,6 +6088,12 @@ namespace org.GraphDefined.WWCP
             if (ChargingStationId == null)
                 throw new ArgumentNullException(nameof(ChargingStationId),  "The given parameter must not be null!");
 
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
             #endregion
 
             #region Send OnAuthorizeChargingStationStop event
@@ -6043,7 +6101,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnAuthorizeChargingStationStop?.Invoke(Timestamp,
+                OnAuthorizeChargingStationStop?.Invoke(DateTime.Now,
+                                                       Timestamp.Value,
                                                        this,
                                                        EventTrackingId,
                                                        Id,
@@ -6155,7 +6214,8 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnAuthorizeChargingStationStopped?.Invoke(Timestamp,
+                OnAuthorizeChargingStationStopped?.Invoke(DateTime.Now,
+                                                          Timestamp.Value,
                                                           this,
                                                           EventTrackingId,
                                                           Id,

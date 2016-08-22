@@ -38,15 +38,16 @@ namespace org.GraphDefined.WWCP
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
-    /// <param name="QueryTimeout">An optional timeout for this request.</param>
-    public delegate void OnAuthorizeStopDelegate(DateTime            Timestamp,
-                                                 Object              Sender,
-                                                 EventTracking_Id    EventTrackingId,
-                                                 RoamingNetwork_Id   RoamingNetworkId,
-                                                 ChargingStationOperator_Id     OperatorId,
-                                                 ChargingSession_Id  SessionId,
-                                                 Auth_Token          AuthToken,
-                                                 TimeSpan?           QueryTimeout);
+    /// <param name="RequestTimeout">An optional timeout for this request.</param>
+    public delegate void OnAuthorizeStopDelegate(DateTime                    LogTimestamp,
+                                                 DateTime                    RequestTimestamp,
+                                                 Object                      Sender,
+                                                 EventTracking_Id            EventTrackingId,
+                                                 RoamingNetwork_Id           RoamingNetworkId,
+                                                 ChargingStationOperator_Id  OperatorId,
+                                                 ChargingSession_Id          SessionId,
+                                                 Auth_Token                  AuthToken,
+                                                 TimeSpan?                   RequestTimeout);
 
     /// <summary>
     /// An event fired whenever an authentication token had been verified to stop a charging process.
@@ -58,17 +59,18 @@ namespace org.GraphDefined.WWCP
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
-    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize stop result.</param>
-    public delegate void OnAuthorizeStoppedDelegate(DateTime            Timestamp,
-                                                    Object              Sender,
-                                                    EventTracking_Id    EventTrackingId,
-                                                    RoamingNetwork_Id   RoamingNetworkId,
-                                                    ChargingStationOperator_Id     OperatorId,
-                                                    ChargingSession_Id  SessionId,
-                                                    Auth_Token          AuthToken,
-                                                    TimeSpan?           QueryTimeout,
-                                                    AuthStopResult      Result);
+    public delegate void OnAuthorizeStoppedDelegate(DateTime                    LogTimestamp,
+                                                    DateTime                    RequestTimestamp,
+                                                    Object                      Sender,
+                                                    EventTracking_Id            EventTrackingId,
+                                                    RoamingNetwork_Id           RoamingNetworkId,
+                                                    ChargingStationOperator_Id  OperatorId,
+                                                    ChargingSession_Id          SessionId,
+                                                    Auth_Token                  AuthToken,
+                                                    TimeSpan?                   RequestTimeout,
+                                                    AuthStopResult              Result);
 
 
     // ----------------------------------------------------------------------------------------------------------
@@ -85,16 +87,17 @@ namespace org.GraphDefined.WWCP
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
-    /// <param name="QueryTimeout">An optional timeout for this request.</param>
-    public delegate void OnAuthorizeEVSEStopDelegate(DateTime            Timestamp,
-                                                     Object              Sender,
-                                                     EventTracking_Id    EventTrackingId,
-                                                     RoamingNetwork_Id   RoamingNetworkId,
-                                                     ChargingStationOperator_Id     OperatorId,
-                                                     EVSE_Id             EVSEId,
-                                                     ChargingSession_Id  SessionId,
-                                                     Auth_Token          AuthToken,
-                                                     TimeSpan?           QueryTimeout);
+    /// <param name="RequestTimeout">An optional timeout for this request.</param>
+    public delegate void OnAuthorizeEVSEStopDelegate(DateTime                    LogTimestamp,
+                                                     DateTime                    RequestTimestamp,
+                                                     Object                      Sender,
+                                                     EventTracking_Id            EventTrackingId,
+                                                     RoamingNetwork_Id           RoamingNetworkId,
+                                                     ChargingStationOperator_Id  OperatorId,
+                                                     EVSE_Id                     EVSEId,
+                                                     ChargingSession_Id          SessionId,
+                                                     Auth_Token                  AuthToken,
+                                                     TimeSpan?                   RequestTimeout);
 
     /// <summary>
     /// An event fired whenever an authentication token had been verified to stop a charging process at the given EVSE.
@@ -107,18 +110,19 @@ namespace org.GraphDefined.WWCP
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
-    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize stop result.</param>
-    public delegate void OnAuthorizeEVSEStoppedDelegate(DateTime            Timestamp,
-                                                        Object              Sender,
-                                                        EventTracking_Id    EventTrackingId,
-                                                        RoamingNetwork_Id   RoamingNetworkId,
-                                                        ChargingStationOperator_Id     OperatorId,
-                                                        EVSE_Id             EVSEId,
-                                                        ChargingSession_Id  SessionId,
-                                                        Auth_Token          AuthToken,
-                                                        TimeSpan?           QueryTimeout,
-                                                        AuthStopEVSEResult  Result);
+    public delegate void OnAuthorizeEVSEStoppedDelegate(DateTime                    LogTimestamp,
+                                                        DateTime                    RequestTimestamp,
+                                                        Object                      Sender,
+                                                        EventTracking_Id            EventTrackingId,
+                                                        RoamingNetwork_Id           RoamingNetworkId,
+                                                        ChargingStationOperator_Id  OperatorId,
+                                                        EVSE_Id                     EVSEId,
+                                                        ChargingSession_Id          SessionId,
+                                                        Auth_Token                  AuthToken,
+                                                        TimeSpan?                   RequestTimeout,
+                                                        AuthStopEVSEResult          Result);
 
 
 
@@ -132,7 +136,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
-    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<AuthStopEVSEResult> OnAuthorizeStopEVSEDelegate(DateTime            Timestamp,
                                                                          CancellationToken   CancellationToken,
                                                                          EventTracking_Id    EventTrackingId,
@@ -140,7 +144,7 @@ namespace org.GraphDefined.WWCP
                                                                          EVSE_Id             EVSEId,
                                                                          ChargingSession_Id  SessionId,
                                                                          Auth_Token          AuthToken,
-                                                                         TimeSpan?           QueryTimeout);
+                                                                         TimeSpan?           RequestTimeout);
 
     // ----------------------------------------------------------------------------------------------------------
 
@@ -157,16 +161,17 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargingStationId">The unique identification of a charging station.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
-    /// <param name="QueryTimeout">An optional timeout for this request.</param>
-    public delegate void OnAuthorizeChargingStationStopDelegate(DateTime            Timestamp,
-                                                                Object              Sender,
-                                                                EventTracking_Id    EventTrackingId,
-                                                                RoamingNetwork_Id   RoamingNetworkId,
-                                                                ChargingStationOperator_Id     OperatorId,
-                                                                ChargingStation_Id  ChargingStationId,
-                                                                ChargingSession_Id  SessionId,
-                                                                Auth_Token          AuthToken,
-                                                                TimeSpan?           QueryTimeout);
+    /// <param name="RequestTimeout">An optional timeout for this request.</param>
+    public delegate void OnAuthorizeChargingStationStopDelegate(DateTime                    LogTimestamp,
+                                                                DateTime                    RequestTimestamp,
+                                                                Object                      Sender,
+                                                                EventTracking_Id            EventTrackingId,
+                                                                RoamingNetwork_Id           RoamingNetworkId,
+                                                                ChargingStationOperator_Id  OperatorId,
+                                                                ChargingStation_Id          ChargingStationId,
+                                                                ChargingSession_Id          SessionId,
+                                                                Auth_Token                  AuthToken,
+                                                                TimeSpan?                   RequestTimeout);
 
     /// <summary>
     /// An event fired whenever an authentication token had been verified to stop a charging process at the given charging station.
@@ -179,17 +184,18 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargingStationId">The unique identification of a charging station.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
-    /// <param name="QueryTimeout">An optional timeout for this request.</param>
+    /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize stop result.</param>
-    public delegate void OnAuthorizeChargingStationStoppedDelegate(DateTime                       Timestamp,
+    public delegate void OnAuthorizeChargingStationStoppedDelegate(DateTime                       LogTimestamp,
+                                                                   DateTime                       RequestTimestamp,
                                                                    Object                         Sender,
                                                                    EventTracking_Id               EventTrackingId,
                                                                    RoamingNetwork_Id              RoamingNetworkId,
-                                                                   ChargingStationOperator_Id                OperatorId,
+                                                                   ChargingStationOperator_Id     OperatorId,
                                                                    ChargingStation_Id             ChargingStationId,
                                                                    ChargingSession_Id             SessionId,
                                                                    Auth_Token                     AuthToken,
-                                                                   TimeSpan?                      QueryTimeout,
+                                                                   TimeSpan?                      RequestTimeout,
                                                                    AuthStopChargingStationResult  Result);
 
 }
