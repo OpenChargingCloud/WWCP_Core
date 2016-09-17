@@ -1083,12 +1083,12 @@ namespace org.GraphDefined.WWCP
                                                             I18NString                                    Name                            = null,
                                                             I18NString                                    Description                     = null,
                                                             eMobilityProviderPriority                     Priority                        = null,
+                                                            Action<eMobilityProvider>                     Configurator                    = null,
+                                                            RemoteEMobilityProviderCreatorDelegate        RemoteEMobilityProviderCreator  = null,
                                                             eMobilityProviderAdminStatusType              AdminStatus                     = eMobilityProviderAdminStatusType.Available,
                                                             eMobilityProviderStatusType                   Status                          = eMobilityProviderStatusType.Available,
-                                                            Action<eMobilityProvider>                     Configurator                    = null,
                                                             Action<eMobilityProvider>                     OnSuccess                       = null,
-                                                            Action<RoamingNetwork, eMobilityProvider_Id>  OnError                         = null,
-                                                            RemoteEMobilityProviderCreatorDelegate        RemoteEMobilityProviderCreator  = null)
+                                                            Action<RoamingNetwork, eMobilityProvider_Id>  OnError                         = null)
         {
 
             #region Initial checks
