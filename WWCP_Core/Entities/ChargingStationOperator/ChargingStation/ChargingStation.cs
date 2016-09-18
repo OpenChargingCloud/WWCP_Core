@@ -1327,6 +1327,31 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region EVSEAdminStatus
+
+        /// <summary>
+        /// Return the admin status of all EVSEs registered within this charging station.
+        /// </summary>
+
+        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatus
+
+            => _EVSEs.Select(evse => new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>(evse.Id,
+                                                                                                              evse.AdminStatusSchedule));
+
+        #endregion
+
+        #region EVSEStatus
+
+        /// <summary>
+        /// Return the status of all EVSEs registered within this charging station.
+        /// </summary>
+        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatus
+
+            => _EVSEs.Select(evse => new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>(evse.Id,
+                                                                                                         evse.StatusSchedule));
+
+        #endregion
+
         #region EVSEAddition
 
         internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;

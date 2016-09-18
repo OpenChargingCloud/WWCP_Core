@@ -1056,6 +1056,42 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ChargingStationAdminStatus
+
+        /// <summary>
+        /// Return the admin status of all charging stations registered within this charging pool.
+        /// </summary>
+
+        public IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusType>>>> ChargingStationAdminStatus
+
+            => _ChargingStations.Select(station =>
+
+                                     new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusType>>>(
+                                         station.Id,
+                                         station.AdminStatusSchedule)
+
+                                 );
+
+        #endregion
+
+        #region ChargingStationStatus
+
+        /// <summary>
+        /// Return the status of all charging stations registered within this charging pool.
+        /// </summary>
+        public IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusType>>>> ChargingStationStatus
+
+            => _ChargingStations.Select(station =>
+
+                                     new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusType>>>(
+                                         station.Id,
+                                         station.StatusSchedule)
+
+                                 );
+
+        #endregion
+
+
         #region ChargingStationAddition
 
         internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
@@ -1471,6 +1507,41 @@ namespace org.GraphDefined.WWCP
             => _ChargingStations.
                        SelectMany(station => station.EVSEs).
                        Select    (evse    => evse.Id);
+
+        #endregion
+
+        #region EVSEAdminStatus
+
+        /// <summary>
+        /// Return the admin status of all EVSEs registered within this charging pool.
+        /// </summary>
+
+        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatus
+
+            => _ChargingStations.SelectMany(station => station.Select(evse =>
+
+                                     new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>(
+                                         evse.Id,
+                                         evse.AdminStatusSchedule)
+
+                                 ));
+
+        #endregion
+
+        #region EVSEStatus
+
+        /// <summary>
+        /// Return the status of all EVSEs registered within this charging pool.
+        /// </summary>
+        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatus
+
+            => _ChargingStations.SelectMany(station => station.Select(evse =>
+
+                                     new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>(
+                                         evse.Id,
+                                         evse.StatusSchedule)
+
+                                 ));
 
         #endregion
 

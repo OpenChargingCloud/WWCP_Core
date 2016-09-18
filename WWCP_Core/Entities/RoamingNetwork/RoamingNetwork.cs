@@ -2753,7 +2753,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSE methods
+        #region EVSEs...
 
         #region EVSEs
 
