@@ -355,6 +355,22 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region Replace(Old, New)
+
+        /// <summary>
+        /// Returns a new EVSE Id in which all occurrences of the specified
+        /// old string value are replaced with the new value.
+        /// </summary>
+        /// <param name="OldValue">The string to be replaced.</param>
+        /// <param name="NewValue">The new string value.</param>
+        public EVSE_Id Replace(String  OldValue,
+                               String  NewValue)
+
+            => Parse(ToString().Replace(OldValue, NewValue));
+
+        #endregion
+
+
         #region ToFormat(IdFormat)
 
         /// <summary>
