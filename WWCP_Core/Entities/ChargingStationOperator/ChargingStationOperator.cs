@@ -48,6 +48,7 @@ namespace org.GraphDefined.WWCP
     /// providers and the public. Pricing information can either be public
     /// information or part of business-to-business contracts.
     /// </summary>
+    [DebuggerDisplay("{Id.ToString()} - {Name.FirstText}")]
     public class ChargingStationOperator : AEMobilityEntity<ChargingStationOperator_Id>,
                                            IEquatable<ChargingStationOperator>, IComparable<ChargingStationOperator>, IComparable,
                                            IEnumerable<ChargingPool>,

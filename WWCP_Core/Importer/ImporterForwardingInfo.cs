@@ -54,6 +54,9 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region EVSEIds
 
+        public IEnumerable<EVSE_Id> EVSEIds
+            => _EVSEIds;
+
         private readonly HashSet<EVSE_Id> _EVSEIds;
 
         #endregion
@@ -225,9 +228,8 @@ namespace org.GraphDefined.WWCP.Importer
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return StationId.ToString();
-        }
+
+            => StationId.ToString() + " => " + ForwardedToRoamingNetworkId;
 
         #endregion
 

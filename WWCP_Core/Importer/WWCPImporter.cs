@@ -589,13 +589,18 @@ namespace org.GraphDefined.WWCP.Importer
         #endregion
 
 
-        #region AddOrUpdateForwardingInfos(ForwardingInfos)
+        #region AddOrUpdateForwardingInfos(ForwardingInfos, MarkAllOutOfService = true)
 
-        public WWCPImporter<T> AddOrUpdateForwardingInfos(IEnumerable<ImporterForwardingInfo> ForwardingInfos)
+        public WWCPImporter<T> AddOrUpdateForwardingInfos(IEnumerable<ImporterForwardingInfo>  ForwardingInfos,
+                                                          Boolean                              MarkAllOutOfService = true)
         {
 
             lock (_AllForwardingInfos)
             {
+
+                // Mark ForwardingInfos as 'OutOfService', to detect which are no longer within the XML...
+                if (MarkAllOutOfService)
+                    _AllForwardingInfos.Values.ForEach(FwdInfo => FwdInfo.OutOfService = true);
 
                 ImporterForwardingInfo ExistingForwardingInfo;
 
@@ -842,12 +847,6 @@ namespace org.GraphDefined.WWCP.Importer
 
                         if (_ImportedData.Count > _MaxNumberOfCachedDataImports)
                             _ImportedData.Remove(_ImportedData.First());
-
-                        // Mark ForwardingInfos as 'OutOfService', to detect which are no longer within the XML...
-                        lock (_AllForwardingInfos)
-                        {
-                            _AllForwardingInfos.Values.ForEach(FwdInfo => FwdInfo.OutOfService = true);
-                        }
 
                         // Update ForwardingInfos
                         OnEveryRun?.Invoke(this, ImporterTask);
