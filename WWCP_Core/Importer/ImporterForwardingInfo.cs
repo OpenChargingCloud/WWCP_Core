@@ -36,68 +36,37 @@ namespace org.GraphDefined.WWCP.Importer
 
         private Action<DateTime, ImporterForwardingInfo, RoamingNetwork_Id, RoamingNetwork_Id> _OnForwardingChanged;
 
-        public String         StationName;
-        public String         StationServiceTag;
-        public Address        StationAddress;
-        public GeoCoordinate  StationGeoCoordinate;
-
         #endregion
 
         #region Properties
 
-        #region StationId
+        public ChargingStation_Id   StationId               { get; }
 
-        private readonly ChargingStation_Id _StationId;
+        public String               StationName             { get; set; }
 
-        public ChargingStation_Id StationId
-        {
-            get
-            {
-                return _StationId;
-            }
-        }
+        public String               StationServiceTag       { get; set; }
 
-        #endregion
+        public Address              StationAddress          { get; set; }
+
+        public GeoCoordinate        StationGeoCoordinate    { get; set; }
+
+        public String               PhoneNumber             { get; set; }
 
         #region EVSEIds
 
         private readonly HashSet<EVSE_Id> _EVSEIds;
 
-        //public IEnumerable<EVSE_Id> EVSEIds
-        //{
-        //    get
-        //    {
-        //        return _EVSEIds;
-        //    }
-        //}
-
         #endregion
 
-        #region EVSEOperators
-
-        private readonly IEnumerable<ChargingStationOperator>  _EVSEOperators;
-
-        public IEnumerable<ChargingStationOperator> EVSEOperators
-        {
-            get
-            {
-                return _EVSEOperators;
-            }
-        }
-
-        #endregion
+        public IEnumerable<ChargingStationOperator> EVSEOperators { get; }
 
         #region ForwardedToRoamingNetworkId
 
         public RoamingNetwork_Id ForwardedToRoamingNetworkId
-        {
-            get
-            {
-                return _ForwardedToEVSEOperator != null
-                            ? _ForwardedToEVSEOperator.RoamingNetwork.Id
-                            : Defaults.UnknownRoamingNetwork;
-            }
-        }
+
+            => _ForwardedToEVSEOperator != null
+                ? _ForwardedToEVSEOperator.RoamingNetwork.Id
+                : Defaults.UnknownRoamingNetwork;
 
         #endregion
 
@@ -129,7 +98,7 @@ namespace org.GraphDefined.WWCP.Importer
                         _ChargingStationToMove.ChargingPool.RemoveChargingStation(StationId);
 
                         // Also remove empty charging pools
-                        if (_ChargingStationToMove.ChargingPool.ChargingStations.Count() == 0)
+                        if (!_ChargingStationToMove.ChargingPool.ChargingStations.Any())
                             _ChargingStationToMove.ChargingPool.Operator.RemoveChargingPool(_ChargingStationToMove.ChargingPool.Id);
 
                     }
@@ -156,39 +125,13 @@ namespace org.GraphDefined.WWCP.Importer
         #region ForwardedToEVSEOperatorId
 
         public ChargingStationOperator_Id ForwardedToEVSEOperatorId
-        {
-            get
-            {
 
-                return _ForwardedToEVSEOperator != null
-                            ? _ForwardedToEVSEOperator.Id
-                            : null;
-
-            }
-        }
+            => _ForwardedToEVSEOperator != null
+                ? _ForwardedToEVSEOperator.Id
+                : null;
 
         #endregion
 
-        #region PhoneNumber
-
-        private String _PhoneNumber;
-
-        public String PhoneNumber
-        {
-
-            get
-            {
-                return _PhoneNumber;
-            }
-
-            set
-            {
-                _PhoneNumber = value;
-            }
-
-        }
-
-        #endregion
 
         #region AdminStatus
 
@@ -211,88 +154,45 @@ namespace org.GraphDefined.WWCP.Importer
 
         #endregion
 
-        #region Created
+        public DateTime Created { get; }
 
-        private readonly DateTime _Created;
+        public Boolean OutOfService { get; set; }
 
-        public DateTime Created
-        {
-            get
-            {
-                return _Created;
-            }
-        }
-
-        #endregion
-
-        #region OutOfService
-
-        private Boolean _OutOfService;
-
-        public Boolean OutOfService
-        {
-
-            get
-            {
-                return _OutOfService;
-            }
-
-            set
-            {
-                _OutOfService = value;
-            }
-
-        }
-
-        #endregion
-
-        #region LastTimeSeen
-
-        private DateTime _LastTimeSeen;
-
-        public DateTime LastTimeSeen
-        {
-            get
-            {
-                return _LastTimeSeen;
-            }
-        }
-
-        #endregion
+        public DateTime LastTimeSeen { private set; get; }
 
         #endregion
 
         #region Constructor(s)
 
-        public ImporterForwardingInfo(Action<DateTime, ImporterForwardingInfo, RoamingNetwork_Id, RoamingNetwork_Id> OnChangedCallback,
-                                      IEnumerable<ChargingStationOperator>                     EVSEOperators,
-                                      ChargingStation_Id                            StationId                 = null,
-                                      String                                        StationName               = "",
-                                      String                                        StationServiceTag         = "",
-                                      Address                                       StationAddress            = null,
-                                      GeoCoordinate                                 StationGeoCoordinate      = null,
-                                      IEnumerable<EVSE_Id>                          EVSEIds                   = null,
-                                      String                                        PhoneNumber               = null,
-                                      Timestamped<ChargingStationAdminStatusType>?  AdminStatus               = null,
-                                      DateTime?                                     Created                   = null,
-                                      Boolean                                       OutOfService              = false,
-                                      ChargingStationOperator                                  ForwardedToEVSEOperator   = null)
+        public ImporterForwardingInfo(Action<DateTime, ImporterForwardingInfo, RoamingNetwork_Id, RoamingNetwork_Id>  OnChangedCallback,
+                                      IEnumerable<ChargingStationOperator>                                            EVSEOperators,
+                                      ChargingStation_Id                                                              StationId                 = null,
+                                      String                                                                          StationName               = "",
+                                      String                                                                          StationServiceTag         = "",
+                                      Address                                                                         StationAddress            = null,
+                                      GeoCoordinate                                                                   StationGeoCoordinate      = null,
+                                      IEnumerable<EVSE_Id>                                                            EVSEIds                   = null,
+                                      String                                                                          PhoneNumber               = null,
+                                      Timestamped<ChargingStationAdminStatusType>?                                    AdminStatus               = null,
+                                      DateTime?                                                                       Created                   = null,
+                                      Boolean                                                                         OutOfService              = false,
+                                      ChargingStationOperator                                                         ForwardedToEVSEOperator   = null)
         {
 
-            this._OnForwardingChanged         = OnChangedCallback;
-            this._EVSEOperators               = EVSEOperators;
-            this._EVSEIds                     = EVSEIds              != null ? new HashSet<EVSE_Id>(EVSEIds) : new HashSet<EVSE_Id>();
-            this._StationId                   = StationId            != null ? StationId                     : ChargingStation_Id.Create(EVSEIds);
-            this.StationName                  = StationName;
-            this.StationServiceTag            = StationServiceTag;
-            this.StationAddress               = StationAddress;
-            this.StationGeoCoordinate         = StationGeoCoordinate != null ? StationGeoCoordinate          : new GeoCoordinate(new Latitude(0), new Longitude(0));
-            this._AdminStatus                 = AdminStatus          != null ? AdminStatus.Value             : new Timestamped<ChargingStationAdminStatusType>(ChargingStationAdminStatusType.Operational);
-            this._PhoneNumber                 = PhoneNumber;
-            this._Created                     = Created              != null ? Created.Value                 : DateTime.Now;
-            this._OutOfService                = OutOfService;
-            this._LastTimeSeen                = _Created;
-            this._ForwardedToEVSEOperator     = ForwardedToEVSEOperator;
+            this._OnForwardingChanged        = OnChangedCallback;
+            this.EVSEOperators               = EVSEOperators;
+            this._EVSEIds                    = EVSEIds              != null ? new HashSet<EVSE_Id>(EVSEIds) : new HashSet<EVSE_Id>();
+            this.StationId                   = StationId            != null ? StationId                     : ChargingStation_Id.Create(EVSEIds);
+            this.StationName                 = StationName;
+            this.StationServiceTag           = StationServiceTag;
+            this.StationAddress              = StationAddress;
+            this.StationGeoCoordinate        = StationGeoCoordinate != null ? StationGeoCoordinate          : new GeoCoordinate(new Latitude(0), new Longitude(0));
+            this._AdminStatus                = AdminStatus          != null ? AdminStatus.Value             : new Timestamped<ChargingStationAdminStatusType>(ChargingStationAdminStatusType.Operational);
+            this.PhoneNumber                 = PhoneNumber;
+            this.Created                     = Created              != null ? Created.Value                 : DateTime.Now;
+            this.OutOfService                = OutOfService;
+            this.LastTimeSeen                = this.Created;
+            this._ForwardedToEVSEOperator    = ForwardedToEVSEOperator;
 
         }
 
@@ -312,8 +212,8 @@ namespace org.GraphDefined.WWCP.Importer
 
         public void UpdateTimestamp()
         {
-            this._LastTimeSeen  = DateTime.Now;
-            this._OutOfService  = false;
+            this.LastTimeSeen  = DateTime.Now;
+            this.OutOfService  = false;
         }
 
         #endregion

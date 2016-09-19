@@ -267,7 +267,7 @@ namespace org.GraphDefined.WWCP
                                                   return new String[] { "" };
 
                                               if (_EVSEIds[0].Format == IdFormatType.NEW)
-                                                  if (EVSEIdElements[2].StartsWith("E"))
+                                                  if (EVSEIdElements[2].StartsWith("E", StringComparison.Ordinal))
                                                       EVSEIdElements[2] = "S" + EVSEIdElements[2].Substring(1);
 
                                               return EVSEIdElements;
@@ -335,7 +335,7 @@ namespace org.GraphDefined.WWCP
 
                 var IdElements = Id.Split(new String[] { "*" }, StringSplitOptions.None);
 
-                return ChargingStation_Id.Parse(IdElements[0] + "*" + IdElements[1] + "*S" + IdElements.Skip(2).Aggregate("*"));
+                return ChargingStation_Id.Parse(IdElements[0] + "*" + IdElements[1] + "*" + IdElements.Skip(2).Aggregate("*"));
 
             }
 
