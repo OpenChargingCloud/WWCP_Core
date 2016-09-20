@@ -80,10 +80,10 @@ namespace org.GraphDefined.WWCP
                                     ? Description.Trim()
                                     : null;
 
-            this.Warnings     = Warnings.Any()
-                                    ? Warnings.Where (warning => warning != null).
-                                               Select(warning => warning.Trim()).
-                                               Where (warning => warning.IsNotNullOrEmpty())
+            this.Warnings     = Warnings != null
+                                    ? Warnings.Where     (warning => warning != null).
+                                               SafeSelect(warning => warning.Trim()).
+                                               Where     (warning => warning.IsNotNullOrEmpty())
                                     : null;
 
         }
