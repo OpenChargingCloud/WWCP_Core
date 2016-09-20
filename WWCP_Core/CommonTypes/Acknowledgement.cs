@@ -18,7 +18,10 @@
 #region Usings
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -72,8 +75,9 @@ namespace org.GraphDefined.WWCP
         {
 
             this.Result       = Result;
-            this.Description  = Description;
-            this.Warnings     = Warnings;
+            this.Description  = Description.Trim();
+            this.Warnings     = Warnings.Select(warning => warning.Trim()).
+                                         Where (warning => warning.IsNotNullOrEmpty());
 
         }
 
