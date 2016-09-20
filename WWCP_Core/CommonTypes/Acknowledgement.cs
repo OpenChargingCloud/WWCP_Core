@@ -75,7 +75,7 @@ namespace org.GraphDefined.WWCP
         {
 
             this.Result       = Result;
-            this.Description  = Description.Trim();
+            this.Description  = Description.IsNotNullOrEmpty() ? Description.Trim() : null;
             this.Warnings     = Warnings.Select(warning => warning.Trim()).
                                          Where (warning => warning.IsNotNullOrEmpty());
 
