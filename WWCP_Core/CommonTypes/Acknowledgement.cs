@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -43,17 +44,17 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The result of the operation.
         /// </summary>
-        public ResultType  Result          { get; }
+        public ResultType           Result          { get; }
 
         /// <summary>
         /// An optional description of the result code.
         /// </summary>
-        public String      Description     { get; }
+        public String               Description     { get; }
 
         /// <summary>
-        /// An optional additional information.
+        /// Warnings or additional information.
         /// </summary>
-        public String      AdditionalInfo  { get; }
+        public IEnumerable<String>  Warnings        { get; }
 
         #endregion
 
@@ -64,15 +65,15 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
-        /// <param name="AdditionalInfo">An optional additional information.</param>
-        public Acknowledgement(ResultType Result,
-                               String     Description     = null,
-                               String     AdditionalInfo  = null)
+        /// <param name="Warnings">Warnings or additional information.</param>
+        public Acknowledgement(ResultType           Result,
+                               String               Description  = null,
+                               IEnumerable<String>  Warnings     = null)
         {
 
-            this.Result          = Result;
-            this.Description     = Description;
-            this.AdditionalInfo  = AdditionalInfo;
+            this.Result       = Result;
+            this.Description  = Description;
+            this.Warnings     = Warnings;
 
         }
 
@@ -85,9 +86,8 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return String.Concat("Result: " + Result + "; " + Description);
-        }
+
+            => String.Concat("Result: " + Result + "; " + Description);
 
         #endregion
 
