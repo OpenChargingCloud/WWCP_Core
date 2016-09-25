@@ -18,6 +18,9 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -37,11 +40,13 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="RoamingNetwork">The roaming network.</param>
         /// <param name="ChargingStationOperatorId">The charging station operator identification.</param>
+        /// <param name="Name">The multi-language name of the charging station operator.</param>
         public ChargingStationOperatorAlreadyExists(RoamingNetwork              RoamingNetwork,
-                                                    ChargingStationOperator_Id  ChargingStationOperatorId)
+                                                    ChargingStationOperator_Id  ChargingStationOperatorId,
+                                                    I18NString                  Name)
 
             : base(RoamingNetwork,
-                   "The given charging station operator identification '" + ChargingStationOperatorId + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")
+                   "The given charging station operator identification '" + ChargingStationOperatorId + "' with name '" + Name?.FirstText + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")
 
         { }
 
@@ -84,6 +89,34 @@ namespace org.GraphDefined.WWCP
             : base(RoamingNetwork,
                    Message,
                    InnerException)
+
+        { }
+
+    }
+
+    #endregion
+
+
+    #region InvalidChargingStationOperatorId
+
+    /// <summary>
+    /// An invalid charging pool operator identification was given.
+    /// </summary>
+    public class InvalidChargingPoolOperatorId : ChargingPoolException
+    {
+
+        /// <summary>
+        /// An invalid charging pool operator identification was given.
+        /// </summary>
+        /// <param name="ChargingStationOperator">The charging station operator in which the exception occured.</param>
+        /// <param name="InvalidChargingStationOperatorId">The invalid operator identification.</param>
+        /// <param name="ValidChargingStationOperatorIds">All expected operator identifications.</param>
+        public InvalidChargingPoolOperatorId(ChargingStationOperator                  ChargingStationOperator,
+                                             ChargingStationOperator_Id               InvalidChargingStationOperatorId,
+                                             IEnumerable<ChargingStationOperator_Id>  ValidChargingStationOperatorIds)
+
+            : base(ChargingStationOperator,
+                   "Invalid charging station operator identification '" + InvalidChargingStationOperatorId + "' where only '" + ValidChargingStationOperatorIds.AggregateWith(", ") + "' are expected!")
 
         { }
 

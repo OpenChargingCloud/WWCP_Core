@@ -107,22 +107,29 @@ namespace org.GraphDefined.WWCP
 
         public static SendCDRResult NotForwared(Authorizator_Id  AuthorizatorId,
                                                 String           Description = null)
-        {
 
-            return new SendCDRResult(SendCDRResultType.NotForwared,
-                                     AuthorizatorId,
-                                     Description);
+            => new SendCDRResult(SendCDRResultType.NotForwared,
+                                 AuthorizatorId,
+                                 Description);
 
-        }
+        #endregion
+
+        #region (static) Enqueued(AuthorizatorId, Description = null)
+
+        public static SendCDRResult Enqueued(Authorizator_Id  AuthorizatorId,
+                                             String           Description = null)
+
+            => new SendCDRResult(SendCDRResultType.Enqueued,
+                                 AuthorizatorId,
+                                 Description);
 
         #endregion
 
         #region (static) Forwarded(AuthorizatorId)
 
         public static SendCDRResult Forwarded(Authorizator_Id AuthorizatorId)
-        {
-            return new SendCDRResult(SendCDRResultType.Forwarded, AuthorizatorId);
-        }
+
+            => new SendCDRResult(SendCDRResultType.Forwarded, AuthorizatorId);
 
         #endregion
 
@@ -130,13 +137,10 @@ namespace org.GraphDefined.WWCP
 
         public static SendCDRResult InvalidSessionId(Authorizator_Id  AuthorizatorId,
                                                      String           Description = null)
-        {
 
-            return new SendCDRResult(SendCDRResultType.InvalidSessionId,
-                                     AuthorizatorId,
-                                     Description != null ? Description : "Invalid session identification!");
-
-        }
+            => new SendCDRResult(SendCDRResultType.InvalidSessionId,
+                                 AuthorizatorId,
+                                 Description != null ? Description : "Invalid session identification!");
 
         #endregion
 
@@ -144,13 +148,9 @@ namespace org.GraphDefined.WWCP
 
         public static SendCDRResult UnknownEVSE(Authorizator_Id  AuthorizatorId,
                                                 String           Description = null)
-        {
-
-            return new SendCDRResult(SendCDRResultType.UnknownEVSE,
-                                     AuthorizatorId,
-                                     Description);
-
-        }
+            => new SendCDRResult(SendCDRResultType.UnknownEVSE,
+                                 AuthorizatorId,
+                                 Description);
 
         #endregion
 
@@ -158,13 +158,9 @@ namespace org.GraphDefined.WWCP
 
         public static SendCDRResult OutOfService(Authorizator_Id  AuthorizatorId,
                                                  String           Description = null)
-        {
-
-            return new SendCDRResult(SendCDRResultType.OutOfService,
-                                     AuthorizatorId,
-                                     Description);
-
-        }
+            => new SendCDRResult(SendCDRResultType.OutOfService,
+                                 AuthorizatorId,
+                                 Description);
 
         #endregion
 
@@ -172,13 +168,9 @@ namespace org.GraphDefined.WWCP
 
         public static SendCDRResult Error(Authorizator_Id  AuthorizatorId,
                                           String           Description = null)
-        {
-
-            return new SendCDRResult(SendCDRResultType.Error,
-                                     AuthorizatorId,
-                                     Description);
-
-        }
+            => new SendCDRResult(SendCDRResultType.Error,
+                                 AuthorizatorId,
+                                 Description);
 
         #endregion
 
@@ -189,6 +181,8 @@ namespace org.GraphDefined.WWCP
     {
 
         NotForwared,
+
+        Enqueued,
 
         Forwarded,
 

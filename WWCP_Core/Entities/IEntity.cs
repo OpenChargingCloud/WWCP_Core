@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -40,6 +41,8 @@ namespace org.GraphDefined.WWCP
     {
 
         TId Id { get; }
+
+        IEnumerable<TId> Ids { get; }
 
     }
 

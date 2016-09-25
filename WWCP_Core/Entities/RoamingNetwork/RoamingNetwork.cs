@@ -371,11 +371,34 @@ namespace org.GraphDefined.WWCP
 
         #region CreateNewChargingStationOperator(ChargingStationOperatorId, Name = null, Description = null, Configurator = null, OnSuccess = null, OnError = null)
 
+        public ChargingStationOperator
+
+            CreateNewChargingStationOperator(ChargingStationOperator_Id                          ChargingStationOperatorId,
+                                             I18NString                                          Name                                  = null,
+                                             I18NString                                          Description                           = null,
+                                             Action<ChargingStationOperator>                     Configurator                          = null,
+                                             RemoteChargingStationOperatorCreatorDelegate        RemoteChargingStationOperatorCreator  = null,
+                                             ChargingStationOperatorAdminStatusType              AdminStatus                           = ChargingStationOperatorAdminStatusType.Operational,
+                                             ChargingStationOperatorStatusType                   Status                                = ChargingStationOperatorStatusType.Available,
+                                             Action<ChargingStationOperator>                     OnSuccess                             = null,
+                                             Action<RoamingNetwork, ChargingStationOperator_Id>  OnError                               = null)
+
+            => CreateNewChargingStationOperator(new ChargingStationOperator_Id[] { ChargingStationOperatorId },
+                                                Name,
+                                                Description,
+                                                Configurator,
+                                                RemoteChargingStationOperatorCreator,
+                                                AdminStatus,
+                                                Status,
+                                                OnSuccess,
+                                                OnError);
+
+
         /// <summary>
         /// Create and register a new charging station operator having the given
         /// unique charging station operator identification.
         /// </summary>
-        /// <param name="ChargingStationOperatorId">The unique identification of the new charging station operator.</param>
+        /// <param name="ChargingStationOperatorIds">The unique identification of the new charging station operator.</param>
         /// <param name="Name">The offical (multi-language) name of the charging station operator.</param>
         /// <param name="Description">An optional (multi-language) description of the charging station operator.</param>
         /// <param name="Configurator">An optional delegate to configure the new charging station operator before its successful creation.</param>
@@ -383,7 +406,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station operator failed.</param>
         public ChargingStationOperator
 
-            CreateNewChargingStationOperator(ChargingStationOperator_Id                          ChargingStationOperatorId,
+            CreateNewChargingStationOperator(IEnumerable<ChargingStationOperator_Id>             ChargingStationOperatorIds,
                                              I18NString                                          Name                                  = null,
                                              I18NString                                          Description                           = null,
                                              Action<ChargingStationOperator>                     Configurator                          = null,
@@ -397,55 +420,70 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (ChargingStationOperatorId == null)
-                throw new ArgumentNullException(nameof(ChargingStationOperatorId),  "The given charging station operator identification must not be null!");
+            if (ChargingStationOperatorIds == null)
+                throw new ArgumentNullException(nameof(ChargingStationOperatorIds),  "The given charging station operator identification must not be null!");
 
             #endregion
 
-            var _ChargingStationOperator = new ChargingStationOperator(ChargingStationOperatorId,
-                                                                       this,
-                                                                       Configurator,
-                                                                       RemoteChargingStationOperatorCreator,
-                                                                       Name,
-                                                                       Description,
-                                                                       AdminStatus,
-                                                                       Status);
-
-
-            if (_ChargingStationOperators.TryAdd(_ChargingStationOperator, OnSuccess))
+            lock (_ChargingStationOperators)
             {
 
-                _ChargingStationOperator.OnDataChanged                                 += UpdatecsoData;
-                _ChargingStationOperator.OnStatusChanged                               += UpdateStatus;
-                _ChargingStationOperator.OnAdminStatusChanged                          += UpdateAdminStatus;
+                foreach (var ChargingStationOperatorId in ChargingStationOperatorIds)
+                {
 
-                _ChargingStationOperator.OnChargingPoolDataChanged                     += UpdateChargingPoolData;
-                _ChargingStationOperator.OnChargingPoolStatusChanged                   += UpdateChargingPoolStatus;
-                _ChargingStationOperator.OnChargingPoolAdminStatusChanged              += UpdateChargingPoolAdminStatus;
+                    if (_ChargingStationOperators.Contains(ChargingStationOperatorId))
+                        throw new ChargingStationOperatorAlreadyExists(this, ChargingStationOperatorId, Name);
 
-                _ChargingStationOperator.OnChargingStationDataChanged                  += UpdateChargingStationData;
-                _ChargingStationOperator.OnChargingStationStatusChanged                += UpdateChargingStationStatus;
-                _ChargingStationOperator.OnChargingStationAdminStatusChanged           += UpdateChargingStationAdminStatus;
-
-                //_cso.EVSEAddition.OnVoting                         += SendEVSEAdding;
-                _ChargingStationOperator.EVSEAddition.OnNotification                   += SendEVSEAdded;
-                //_cso.EVSERemoval.OnVoting                          += SendEVSERemoving;
-                _ChargingStationOperator.EVSERemoval.OnNotification                    += SendEVSERemoved;
-                _ChargingStationOperator.OnEVSEDataChanged                             += UpdateEVSEData;
-                _ChargingStationOperator.OnEVSEStatusChanged                           += UpdateEVSEStatus;
-                _ChargingStationOperator.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
+                }
 
 
-                _ChargingStationOperator.OnNewReservation                              += SendNewReservation;
-                _ChargingStationOperator.OnReservationCancelled                        += SendOnReservationCancelled;
-                _ChargingStationOperator.OnNewChargingSession                          += SendNewChargingSession;
-                _ChargingStationOperator.OnNewChargeDetailRecord                       += SendNewChargeDetailRecord;
+                var _ChargingStationOperator = new ChargingStationOperator(ChargingStationOperatorIds,
+                                                                           this,
+                                                                           Configurator,
+                                                                           RemoteChargingStationOperatorCreator,
+                                                                           Name,
+                                                                           Description,
+                                                                           AdminStatus,
+                                                                           Status);
 
-                return _ChargingStationOperator;
+
+                if (_ChargingStationOperators.TryAdd(_ChargingStationOperator, OnSuccess))
+                {
+
+                    _ChargingStationOperator.OnDataChanged                                 += UpdatecsoData;
+                    _ChargingStationOperator.OnStatusChanged                               += UpdateStatus;
+                    _ChargingStationOperator.OnAdminStatusChanged                          += UpdateAdminStatus;
+
+                    _ChargingStationOperator.OnChargingPoolDataChanged                     += UpdateChargingPoolData;
+                    _ChargingStationOperator.OnChargingPoolStatusChanged                   += UpdateChargingPoolStatus;
+                    _ChargingStationOperator.OnChargingPoolAdminStatusChanged              += UpdateChargingPoolAdminStatus;
+
+                    _ChargingStationOperator.OnChargingStationDataChanged                  += UpdateChargingStationData;
+                    _ChargingStationOperator.OnChargingStationStatusChanged                += UpdateChargingStationStatus;
+                    _ChargingStationOperator.OnChargingStationAdminStatusChanged           += UpdateChargingStationAdminStatus;
+
+                    //_cso.EVSEAddition.OnVoting                         += SendEVSEAdding;
+                    _ChargingStationOperator.EVSEAddition.OnNotification                   += SendEVSEAdded;
+                    //_cso.EVSERemoval.OnVoting                          += SendEVSERemoving;
+                    _ChargingStationOperator.EVSERemoval.OnNotification                    += SendEVSERemoved;
+                    _ChargingStationOperator.OnEVSEDataChanged                             += UpdateEVSEData;
+                    _ChargingStationOperator.OnEVSEStatusChanged                           += UpdateEVSEStatus;
+                    _ChargingStationOperator.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
+
+
+                    _ChargingStationOperator.OnNewReservation                              += SendNewReservation;
+                    _ChargingStationOperator.OnReservationCancelled                        += SendOnReservationCancelled;
+                    _ChargingStationOperator.OnNewChargingSession                          += SendNewChargingSession;
+                    _ChargingStationOperator.OnNewChargeDetailRecord                       += SendNewChargeDetailRecord;
+
+                    return _ChargingStationOperator;
+
+                }
+
+                //ToDo: Throw a more usefull exception!
+                throw new ChargingStationOperatorAlreadyExists(this, ChargingStationOperatorIds.FirstOrDefault(), Name);
 
             }
-
-            throw new ChargingStationOperatorAlreadyExists(this, ChargingStationOperatorId);
 
         }
 

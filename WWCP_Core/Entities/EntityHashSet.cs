@@ -112,7 +112,8 @@ namespace org.GraphDefined.WWCP
                 if (_Addition.SendVoting(DateTime.Now, _Host, Entity))
                 {
 
-                    _Dictionary.Add(Entity.Id, Entity);
+                    foreach (var Id in Entity.Ids)
+                        _Dictionary.Add(Id, Entity);
 
                     _Addition.SendNotification(DateTime.Now, _Host, Entity);
 
@@ -239,7 +240,21 @@ namespace org.GraphDefined.WWCP
         #region TryRemove(Id, out Entity)
 
         public Boolean TryRemove(TId Id, out T Entity)
-            => _Dictionary.TryGetValue(Id, out Entity) && _Dictionary.Remove(Id);
+        {
+
+            if (_Dictionary.TryGetValue(Id, out Entity))
+            {
+
+                foreach (var _Id in Entity.Ids)
+                    _Dictionary.Remove(_Id);
+
+                return true;
+
+            }
+
+            return false;
+
+        }
 
         #endregion
 

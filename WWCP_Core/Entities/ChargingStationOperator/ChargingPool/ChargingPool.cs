@@ -1151,6 +1151,11 @@ namespace org.GraphDefined.WWCP
                     OnError?.Invoke(this, ChargingStationId);
             }
 
+            if (!this.Operator.Ids.Contains(ChargingStationId.OperatorId))
+                throw new InvalidChargingStationOperatorId(this,
+                                                           ChargingStationId.OperatorId,
+                                                           this.Operator.Ids);
+
             #endregion
 
             var _ChargingStation = new ChargingStation(ChargingStationId,
@@ -1161,66 +1166,64 @@ namespace org.GraphDefined.WWCP
                                                        Status);
 
 
-            if (ChargingStationAddition.SendVoting(DateTime.Now, this, _ChargingStation))
+            if (ChargingStationAddition.SendVoting(DateTime.Now, this, _ChargingStation) &&
+                _ChargingStations.TryAdd(_ChargingStation))
             {
-                if (_ChargingStations.TryAdd(_ChargingStation))
+
+                _ChargingStation.OnEVSEDataChanged         += UpdateEVSEData;
+                _ChargingStation.OnEVSEStatusChanged       += UpdateEVSEStatus;
+                _ChargingStation.OnEVSEAdminStatusChanged  += UpdateEVSEAdminStatus;
+
+                _ChargingStation.OnDataChanged             += UpdateChargingStationData;
+                _ChargingStation.OnStatusChanged           += UpdateChargingStationStatus;
+                _ChargingStation.OnAdminStatusChanged      += UpdateChargingStationAdminStatus;
+
+                _ChargingStation.OnNewReservation          += SendNewReservation;
+                _ChargingStation.OnReservationCancelled    += SendOnReservationCancelled;
+                _ChargingStation.OnNewChargingSession      += SendNewChargingSession;
+                _ChargingStation.OnNewChargeDetailRecord   += SendNewChargeDetailRecord;
+
+                OnSuccess?.Invoke(_ChargingStation);
+                ChargingStationAddition.SendNotification(DateTime.Now, this, _ChargingStation);
+
+
+                if (RemoteChargingStationCreator != null)
                 {
 
-                    _ChargingStation.OnEVSEDataChanged         += UpdateEVSEData;
-                    _ChargingStation.OnEVSEStatusChanged       += UpdateEVSEStatus;
-                    _ChargingStation.OnEVSEAdminStatusChanged  += UpdateEVSEAdminStatus;
+                      _ChargingStation.RemoteChargingStation.OnNewReservation += SendNewReservation;
 
-                    _ChargingStation.OnDataChanged             += UpdateChargingStationData;
-                    _ChargingStation.OnStatusChanged           += UpdateChargingStationStatus;
-                    _ChargingStation.OnAdminStatusChanged      += UpdateChargingStationAdminStatus;
+                    _ChargingStation.RemoteChargingStation.OnNewReservation += (a, b, reservation) => {
 
-                    _ChargingStation.OnNewReservation          += SendNewReservation;
-                    _ChargingStation.OnReservationCancelled    += SendOnReservationCancelled;
-                    _ChargingStation.OnNewChargingSession      += SendNewChargingSession;
-                    _ChargingStation.OnNewChargeDetailRecord   += SendNewChargeDetailRecord;
+                        var __EVSE = GetEVSEbyId(reservation.EVSEId);
 
-                    OnSuccess?.Invoke(_ChargingStation);
-                    ChargingStationAddition.SendNotification(DateTime.Now, this, _ChargingStation);
+                        __EVSE.Reservation = reservation;
 
+                    };
 
-                    if (RemoteChargingStationCreator != null)
-                    {
+                    _ChargingStation.RemoteChargingStation.OnNewChargingSession += (a, b, session) => {
 
-//                        _ChargingStation.RemoteChargingStation.OnNewReservation += SendNewReservation;
+                        var __EVSE = GetEVSEbyId(session.EVSEId);
 
-                        _ChargingStation.RemoteChargingStation.OnNewReservation += (a, b, reservation) => {
+                        __EVSE.ChargingSession = session;
 
-                            var __EVSE = GetEVSEbyId(reservation.EVSEId);
+                    };
 
-                            __EVSE.Reservation = reservation;
+                    _ChargingStation.RemoteChargingStation.OnNewChargeDetailRecord += (a, b, cdr) => {
 
-                        };
+                        var __EVSE = GetEVSEbyId(cdr.EVSEId);
 
-                        _ChargingStation.RemoteChargingStation.OnNewChargingSession += (a, b, session) => {
+                        __EVSE.SendNewChargeDetailRecord(DateTime.Now, this, cdr);
 
-                            var __EVSE = GetEVSEbyId(session.EVSEId);
-
-                            __EVSE.ChargingSession = session;
-
-                        };
-
-                        _ChargingStation.RemoteChargingStation.OnNewChargeDetailRecord += (a, b, cdr) => {
-
-                            var __EVSE = GetEVSEbyId(cdr.EVSEId);
-
-                            __EVSE.SendNewChargeDetailRecord(DateTime.Now, this, cdr);
-
-                        };
+                    };
 
 
-                        _ChargingStation.RemoteChargingStation.OnReservationCancelled += _ChargingStation.SendOnReservationCancelled;
-                        _ChargingStation.RemoteChargingStation.OnEVSEStatusChanged += (Timestamp, EVSE, OldStatus, NewStatus) => _ChargingStation.UpdateEVSEStatus(Timestamp, GetEVSEbyId(EVSE.Id), OldStatus, NewStatus);
-
-                    }
-
-                    return _ChargingStation;
+                    _ChargingStation.RemoteChargingStation.OnReservationCancelled += _ChargingStation.SendOnReservationCancelled;
+                    _ChargingStation.RemoteChargingStation.OnEVSEStatusChanged += (Timestamp, EVSE, OldStatus, NewStatus) => _ChargingStation.UpdateEVSEStatus(Timestamp, GetEVSEbyId(EVSE.Id), OldStatus, NewStatus);
 
                 }
+
+                return _ChargingStation;
+
             }
 
             Debug.WriteLine("ChargingStation '" + ChargingStationId + "' could not be created!");

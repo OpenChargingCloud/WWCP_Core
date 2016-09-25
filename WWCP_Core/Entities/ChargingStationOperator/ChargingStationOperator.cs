@@ -71,6 +71,8 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
+      //  public IEnumerable<ChargingStationOperator_Id> OperatedIds { get; }
+
         #region Name
 
         private I18NString _Name;
@@ -455,7 +457,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Name">The offical (multi-language) name of the EVSE Operator.</param>
         /// <param name="Description">An optional (multi-language) description of the EVSE Operator.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        internal ChargingStationOperator(ChargingStationOperator_Id                     Id,
+        internal ChargingStationOperator(IEnumerable<ChargingStationOperator_Id>        Ids,
                                          RoamingNetwork                                 RoamingNetwork,
                                          Action<ChargingStationOperator>                Configurator                          = null,
                                          RemoteChargingStationOperatorCreatorDelegate   RemoteChargingStationOperatorCreator  = null,
@@ -466,7 +468,7 @@ namespace org.GraphDefined.WWCP
                                          UInt16                                         MaxAdminStatusListSize                = DefaultMaxAdminStatusListSize,
                                          UInt16                                         MaxStatusListSize                     = DefaultMaxStatusListSize)
 
-            : base(Id)
+            : base(Ids)
 
         {
 
@@ -479,7 +481,7 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this.RoamingNetwork              = RoamingNetwork;
+            this.RoamingNetwork               = RoamingNetwork;
 
             this._Name                        = Name        ?? new I18NString();
             this._Description                 = Description ?? new I18NString();
@@ -487,21 +489,13 @@ namespace org.GraphDefined.WWCP
 
             #region InvalidEVSEIds
 
-            this.InvalidEVSEIds            = new ReactiveSet<EVSE_Id>();
+            this.InvalidEVSEIds               = new ReactiveSet<EVSE_Id>();
 
             InvalidEVSEIds.OnItemAdded += (Timestamp, Set, EVSEId) =>
-            {
-                var OnInvalidEVSEIdAddedLocal = OnInvalidEVSEIdAdded;
-                if (OnInvalidEVSEIdAddedLocal != null)
-                    OnInvalidEVSEIdAddedLocal(Timestamp, this, EVSEId);
-            };
+                OnInvalidEVSEIdAdded?.Invoke(Timestamp, this, EVSEId);
 
             InvalidEVSEIds.OnItemRemoved += (Timestamp, Set, EVSEId) =>
-            {
-                var OnInvalidEVSEIdRemovedLocal = OnInvalidEVSEIdRemoved;
-                if (OnInvalidEVSEIdRemovedLocal != null)
-                    OnInvalidEVSEIdRemovedLocal(Timestamp, this, EVSEId);
-            };
+                OnInvalidEVSEIdRemoved?.Invoke(Timestamp, this, EVSEId);
 
             #endregion
 
@@ -852,6 +846,11 @@ namespace org.GraphDefined.WWCP
                     OnError?.Invoke(this, ChargingPoolId);
             }
 
+            if (!this.Ids.Contains(ChargingPoolId.OperatorId))
+                throw new InvalidChargingPoolOperatorId(this,
+                                                        ChargingPoolId.OperatorId,
+                                                        this.Ids);
+
             #endregion
 
             var _ChargingPool = new ChargingPool(ChargingPoolId,
@@ -862,35 +861,33 @@ namespace org.GraphDefined.WWCP
                                                  Status);
 
 
-            if (ChargingPoolAddition.SendVoting(DateTime.Now, this, _ChargingPool))
+            if (ChargingPoolAddition.SendVoting(DateTime.Now, this, _ChargingPool) &&
+                _ChargingPools.TryAdd(_ChargingPool))
             {
-                if (_ChargingPools.TryAdd(_ChargingPool))
-                {
 
-                    _ChargingPool.OnEVSEDataChanged                    += UpdateEVSEData;
-                    _ChargingPool.OnEVSEStatusChanged                  += UpdateEVSEStatus;
-                    _ChargingPool.OnEVSEAdminStatusChanged             += UpdateEVSEAdminStatus;
+                _ChargingPool.OnEVSEDataChanged                    += UpdateEVSEData;
+                _ChargingPool.OnEVSEStatusChanged                  += UpdateEVSEStatus;
+                _ChargingPool.OnEVSEAdminStatusChanged             += UpdateEVSEAdminStatus;
 
-                    _ChargingPool.OnChargingStationDataChanged         += UpdateChargingStationData;
-                    _ChargingPool.OnChargingStationStatusChanged       += UpdateChargingStationStatus;
-                    _ChargingPool.OnChargingStationAdminStatusChanged  += UpdateChargingStationAdminStatus;
+                _ChargingPool.OnChargingStationDataChanged         += UpdateChargingStationData;
+                _ChargingPool.OnChargingStationStatusChanged       += UpdateChargingStationStatus;
+                _ChargingPool.OnChargingStationAdminStatusChanged  += UpdateChargingStationAdminStatus;
 
-                    _ChargingPool.OnDataChanged                        += UpdateChargingPoolData;
-                    _ChargingPool.OnStatusChanged                      += UpdateChargingPoolStatus;
-                    _ChargingPool.OnAdminStatusChanged                 += UpdateChargingPoolAdminStatus;
+                _ChargingPool.OnDataChanged                        += UpdateChargingPoolData;
+                _ChargingPool.OnStatusChanged                      += UpdateChargingPoolStatus;
+                _ChargingPool.OnAdminStatusChanged                 += UpdateChargingPoolAdminStatus;
 
-                    _ChargingPool.OnNewReservation                     += SendNewReservation;
-                    _ChargingPool.OnReservationCancelled               += SendOnReservationCancelled;
-                    _ChargingPool.OnNewChargingSession                 += SendNewChargingSession;
-                    _ChargingPool.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
+                _ChargingPool.OnNewReservation                     += SendNewReservation;
+                _ChargingPool.OnReservationCancelled               += SendOnReservationCancelled;
+                _ChargingPool.OnNewChargingSession                 += SendNewChargingSession;
+                _ChargingPool.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
 
 
-                    OnSuccess?.Invoke(_ChargingPool);
-                    ChargingPoolAddition.SendNotification(DateTime.Now, this, _ChargingPool);
+                OnSuccess?.Invoke(_ChargingPool);
+                ChargingPoolAddition.SendNotification(DateTime.Now, this, _ChargingPool);
 
-                    return _ChargingPool;
+                return _ChargingPool;
 
-                }
             }
 
             return null;

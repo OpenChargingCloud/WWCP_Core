@@ -1398,7 +1398,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (ChargeDetailRecord == null)
-                throw new ArgumentNullException(nameof(ChargeDetailRecord), "The given charge detail record must not be null!");
+                throw new ArgumentNullException(nameof(ChargeDetailRecord),  "The given charge detail record must not be null!");
 
             #endregion
 
@@ -1411,7 +1411,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            return Task.FromResult(SendCDRResult.NotForwared(Authorizator_Id.Parse("EVSE Operator Roaming Provider")));
+            return Task.FromResult(SendCDRResult.Enqueued(Authorizator_Id.Parse("EVSE Operator Roaming Provider")));
 
         }
 
@@ -1619,7 +1619,7 @@ namespace org.GraphDefined.WWCP
                     }
 
                     //ToDo: Send results events...
-                    //ToDo: Readd to queue if it could not be sent...
+                    //ToDo: Read to queue if it could not be sent...
 
                 }
 

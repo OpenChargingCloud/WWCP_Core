@@ -19,7 +19,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -56,14 +57,16 @@ namespace org.GraphDefined.WWCP
     {
 
         public ChargingPoolException(ChargingStationOperator  ChargingStationOperator,
-                                         String                   Message)
+                                     String                   Message)
 
             : base(ChargingStationOperator.RoamingNetwork,
                    Message)
 
         { }
 
-        public ChargingPoolException(ChargingStationOperator ChargingStationOperator, String Message, Exception InnerException)
+        public ChargingPoolException(ChargingStationOperator  ChargingStationOperator,
+                                     String                   Message,
+                                     Exception                InnerException)
 
             : base(ChargingStationOperator.RoamingNetwork,
                    Message, InnerException)
@@ -73,7 +76,32 @@ namespace org.GraphDefined.WWCP
     }
 
 
+    #region InvalidChargingStationOperatorId
 
+    /// <summary>
+    /// An invalid charging station operator identification was given.
+    /// </summary>
+    public class InvalidChargingStationOperatorId : ChargingPoolException
+    {
+
+        /// <summary>
+        /// An invalid charging station operator identification was given.
+        /// </summary>
+        /// <param name="ChargingPool">The charging pool in which the exception occured.</param>
+        /// <param name="InvalidChargingStationOperatorId">The invalid operator identification.</param>
+        /// <param name="ValidChargingStationOperatorIds">All expected operator identifications.</param>
+        public InvalidChargingStationOperatorId(ChargingPool                             ChargingPool,
+                                                ChargingStationOperator_Id               InvalidChargingStationOperatorId,
+                                                IEnumerable<ChargingStationOperator_Id>  ValidChargingStationOperatorIds)
+
+            : base(ChargingPool.Operator,
+                   "Invalid charging station operator identification '" + InvalidChargingStationOperatorId + "' where only '" + ValidChargingStationOperatorIds.AggregateWith(", ") + "' are expected!")
+
+        { }
+
+    }
+
+    #endregion
 
 
 }

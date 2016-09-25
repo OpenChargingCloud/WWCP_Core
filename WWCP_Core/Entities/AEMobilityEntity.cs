@@ -18,12 +18,12 @@
 #region Usings
 
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Collections;
 
 #endregion
 
@@ -54,26 +54,34 @@ namespace org.GraphDefined.WWCP
         /// The global unique identification of this entity.
         /// </summary>
         [Mandatory]
-        public TId       Id           { get; }
+        public TId               Id
+            => Ids.FirstOrDefault();
+
+        /// <summary>
+        /// The global unique identification of this entity.
+        /// </summary>
+        [Mandatory]
+        public IEnumerable<TId>  Ids            { get; }
+
 
         /// <summary>
         /// A unique status identification of this entity.
         /// </summary>
         [Mandatory]
-        public String    ETag         { get; }
+        public String            ETag           { get; }
 
         /// <summary>
         /// The source of this information, e.g. the WWCP importer used.
         /// </summary>
         [Optional]
-        public String    DataSource   { get; set; }
+        public String            DataSource     { get; set; }
 
         /// <summary>
         /// The timestamp of the last changes within this ChargingPool.
         /// Can be used as a HTTP ETag.
         /// </summary>
         [Mandatory]
-        public DateTime  LastChange   { get; set; }
+        public DateTime          LastChange     { get; set; }
 
         #endregion
 
@@ -102,9 +110,33 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this.Id           = Id;
-            this.DataSource   = String.Empty;
-            this.LastChange   = DateTime.Now;
+            this.Ids           = new TId[] { Id };
+            this.DataSource    = String.Empty;
+            this.LastChange    = DateTime.Now;
+            this._UserDefined  = new UserDefinedDictionary();
+
+            this._UserDefined.OnPropertyChanged += (timestamp, sender, key, oldValue, newValue)
+                => OnPropertyChanged?.Invoke(timestamp, sender, key, oldValue, newValue);
+
+        }
+
+        /// <summary>
+        /// Create a new abstract entity.
+        /// </summary>
+        /// <param name="Ids">The unique entity identifications.</param>
+        public AEMobilityEntity(IEnumerable<TId> Ids)
+        {
+
+            #region Initial checks
+
+            if (Ids == null)
+                throw new ArgumentNullException(nameof(Ids),  "The given Ids must not be null!");
+
+            #endregion
+
+            this.Ids           = Ids;
+            this.DataSource    = String.Empty;
+            this.LastChange    = DateTime.Now;
             this._UserDefined  = new UserDefinedDictionary();
 
             this._UserDefined.OnPropertyChanged += (timestamp, sender, key, oldValue, newValue)
@@ -259,9 +291,7 @@ namespace org.GraphDefined.WWCP
 
 
         public int CompareTo(object obj)
-        {
-            return 0;// Id.CompareTo(obj.Id);
-        }
+            => 0;// Id.CompareTo(obj.Id);
 
     }
 
