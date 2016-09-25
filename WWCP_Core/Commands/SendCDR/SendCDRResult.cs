@@ -29,61 +29,13 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region AuthorizatorId
+        public Authorizator_Id    AuthorizatorId    { get; }
 
-        private readonly Authorizator_Id _AuthorizatorId;
+        public SendCDRResultType  Status            { get; }
 
-        public Authorizator_Id AuthorizatorId
-        {
-            get
-            {
-                return _AuthorizatorId;
-            }
-        }
+        public String             Description       { get; }
 
-        #endregion
-
-        #region Status
-
-        private SendCDRResultType _Status;
-
-        public SendCDRResultType Status
-        {
-            get
-            {
-                return _Status;
-            }
-        }
-
-        #endregion
-
-        #region Description
-
-        private String _Description;
-
-        public String Description
-        {
-            get
-            {
-                return _Description;
-            }
-        }
-
-        #endregion
-
-        #region AdditionalInfo
-
-        private String _AdditionalInfo;
-
-        public String AdditionalInfo
-        {
-            get
-            {
-                return _AdditionalInfo;
-            }
-        }
-
-        #endregion
+        public String             AdditionalInfo    { get; }
 
         #endregion
 
@@ -94,9 +46,9 @@ namespace org.GraphDefined.WWCP
                               String             Description = null)
         {
 
-            this._AuthorizatorId  = AuthorizatorId;
-            this._Status          = Result;
-            this._Description     = Description;
+            this.AuthorizatorId  = AuthorizatorId;
+            this.Status          = Result;
+            this.Description     = Description;
 
         }
 
@@ -171,6 +123,17 @@ namespace org.GraphDefined.WWCP
             => new SendCDRResult(SendCDRResultType.Error,
                                  AuthorizatorId,
                                  Description);
+
+        #endregion
+
+
+        #region (override) ToString()
+
+        /// <summary>
+        /// Return a string representation of this object.
+        /// </summary>
+        public override String ToString()
+            => Status + " via " + AuthorizatorId;
 
         #endregion
 
