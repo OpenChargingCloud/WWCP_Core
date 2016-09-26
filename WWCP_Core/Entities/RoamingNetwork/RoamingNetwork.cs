@@ -6546,6 +6546,8 @@ namespace org.GraphDefined.WWCP
             //ToDo: Merge information if required!
             _ChargeDetailRecords.TryAdd(ChargeDetailRecord.SessionId, ChargeDetailRecord);
 
+            var Timestamp = DateTime.Now;
+
             #region Send OnSendCDR event
 
             try
@@ -6708,7 +6710,7 @@ namespace org.GraphDefined.WWCP
                                   ChargeDetailRecord,
                                   RequestTimeout,
                                   result,
-                                  DateTime.Now - Timestamp.Value);
+                                  DateTime.Now - Timestamp);
 
             }
             catch (Exception e)
