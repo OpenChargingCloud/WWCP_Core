@@ -5874,7 +5874,8 @@ namespace org.GraphDefined.WWCP
                                            SessionId,
                                            AuthToken,
                                            RequestTimeout,
-                                           result);
+                                           result,
+                                           DateTime.Now - Timestamp.Value);
 
             }
             catch (Exception e)
@@ -6068,7 +6069,8 @@ namespace org.GraphDefined.WWCP
                                                SessionId,
                                                AuthToken,
                                                RequestTimeout,
-                                               result);
+                                               result,
+                                               DateTime.Now - Timestamp.Value);
 
             }
             catch (Exception e)
@@ -6482,17 +6484,17 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region OnSendCDR / OnCDRSent
+        #region OnSendCDRRequest/-Response
 
         /// <summary>
-        /// An event fired whenever a charge detail record was received.
+        /// An event fired whenever a charge detail record will be send upstream.
         /// </summary>
-        public event OnChargeDetailRecordSendDelegate OnCDRSend;
+        public event OnSendCDRRequestDelegate   OnSendCDRRequest;
 
         /// <summary>
-        /// An event fired whenever a charge detail record result was sent.
+        /// An event fired whenever a charge detail record had been sent upstream.
         /// </summary>
-        public event OnChargeDetailRecordSentDelegate OnCDRSent;
+        public event OnSendCDRResponseDelegate  OnSendCDRResponse;
 
         #endregion
 
@@ -6549,7 +6551,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnCDRSend?.Invoke(LogTimestamp,
+                OnSendCDRRequest?.Invoke(LogTimestamp,
                                   RequestTimestamp,
                                   this,
                                   EventTrackingId,
@@ -6560,7 +6562,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnCDRSend));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnSendCDRRequest));
             }
 
             #endregion
@@ -6698,19 +6700,20 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnCDRSent?.Invoke(DateTime.Now,
+                OnSendCDRResponse?.Invoke(DateTime.Now,
                                   DateTime.Now,
                                   this,
                                   EventTrackingId,
                                   this.Id,
                                   ChargeDetailRecord,
                                   RequestTimeout,
-                                  result);
+                                  result,
+                                  DateTime.Now - Timestamp.Value);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnCDRSent));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnSendCDRResponse));
             }
 
             #endregion

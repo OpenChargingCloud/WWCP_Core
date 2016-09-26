@@ -70,7 +70,8 @@ namespace org.GraphDefined.WWCP
                                                     ChargingSession_Id          SessionId,
                                                     Auth_Token                  AuthToken,
                                                     TimeSpan?                   RequestTimeout,
-                                                    AuthStopResult              Result);
+                                                    AuthStopResult              Result,
+                                                    TimeSpan                    Runtime);
 
 
     // ----------------------------------------------------------------------------------------------------------
@@ -122,7 +123,8 @@ namespace org.GraphDefined.WWCP
                                                         ChargingSession_Id          SessionId,
                                                         Auth_Token                  AuthToken,
                                                         TimeSpan?                   RequestTimeout,
-                                                        AuthStopEVSEResult          Result);
+                                                        AuthStopEVSEResult          Result,
+                                                        TimeSpan                    Runtime);
 
 
 

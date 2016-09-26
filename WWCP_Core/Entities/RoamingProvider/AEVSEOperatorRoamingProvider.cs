@@ -149,12 +149,12 @@ namespace org.GraphDefined.WWCP
 
         // Client methods (logging)
 
-        #region OnEVSEDataPush/-Pushed
+        #region OnPushEVSEDataRequest/-Response
 
         /// <summary>
         /// An event fired whenever new EVSE data will be send upstream.
         /// </summary>
-        public abstract event OnPushEVSEDataRequestDelegate    OnPushEVSEDataRequest;
+        public abstract event OnPushEVSEDataRequestDelegate   OnPushEVSEDataRequest;
 
         /// <summary>
         /// An event fired whenever new EVSE data had been sent upstream.
@@ -163,12 +163,12 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region OnEVSEStatusPush/-Pushed
+        #region OnPushEVSEStatusRequest/-Response
 
         /// <summary>
         /// An event fired whenever new EVSE status will be send upstream.
         /// </summary>
-        public abstract event OnPushEVSEStatusRequestDelegate    OnPushEVSEStatusRequest;
+        public abstract event OnPushEVSEStatusRequestDelegate   OnPushEVSEStatusRequest;
 
         /// <summary>
         /// An event fired whenever new EVSE status had been sent upstream.
@@ -242,6 +242,20 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever an authentication token had been verified to stop a charging process at the given charging station.
         /// </summary>
         public abstract event OnAuthorizeChargingStationStoppedDelegate  OnAuthorizeChargingStationStopped;
+
+        #endregion
+
+        #region OnSendCDRRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a charge detail record will be send upstream.
+        /// </summary>
+        public abstract event OnSendCDRRequestDelegate   OnSendCDRRequest;
+
+        /// <summary>
+        /// An event fired whenever a charge detail record had been sent upstream.
+        /// </summary>
+        public abstract event OnSendCDRResponseDelegate  OnSendCDRResponse;
 
         #endregion
 
