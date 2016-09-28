@@ -201,7 +201,7 @@ namespace org.GraphDefined.WWCP
 
                     // Remove any old status having the same timestamp!
                     var NewStatusSchedule = _StatusSchedule.
-                                                Where(status => status.Timestamp != Timestamp).
+                                                Where(status => status.Timestamp.ToIso8601() != Timestamp.ToIso8601()).
                                                 ToList();
 
                     NewStatusSchedule.Add(new Timestamped<T>(Timestamp, Value));

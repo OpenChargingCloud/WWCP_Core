@@ -41,7 +41,9 @@ namespace org.GraphDefined.WWCP
 
         private readonly THost               _Host;
 
-        private readonly Dictionary<TId, T>  _Dictionary;
+        private readonly Dictionary<TId, T>  _Lookup;
+
+        private readonly Dictionary<TId, T>  _MultiIdLookup;
 
         #endregion
 
@@ -71,11 +73,12 @@ namespace org.GraphDefined.WWCP
         public EntityHashSet(THost Host)
         {
 
-            this._Host        = Host;
-            this._Dictionary  = new Dictionary<TId, T>();
+            this._Host           = Host;
+            this._Lookup         = new Dictionary<TId, T>();
+            this._MultiIdLookup  = new Dictionary<TId, T>();
 
-            this._Addition    = new VotingNotificator<DateTime, THost, T, Boolean>(() => new VetoVote(), true);
-            this._Removal     = new VotingNotificator<DateTime, THost, T, Boolean>(() => new VetoVote(), true);
+            this._Addition       = new VotingNotificator<DateTime, THost, T, Boolean>(() => new VetoVote(), true);
+            this._Removal        = new VotingNotificator<DateTime, THost, T, Boolean>(() => new VetoVote(), true);
 
         }
 
@@ -85,19 +88,18 @@ namespace org.GraphDefined.WWCP
         #region Ids
 
         public IEnumerable<TId> Ids
-            => _Dictionary.Select(kvp => kvp.Key);
+            => _MultiIdLookup.Select(kvp => kvp.Key);
 
         #endregion
 
         #region Contains(...)
 
-
         public Boolean Contains(TId Id)
-            => _Dictionary.ContainsKey(Id);
+            => _MultiIdLookup.ContainsKey(Id);
 
 
         public Boolean Contains(T Entity)
-            => _Dictionary.ContainsValue(Entity);
+            => _Lookup.ContainsValue(Entity);
 
         #endregion
 
@@ -106,14 +108,16 @@ namespace org.GraphDefined.WWCP
         public Boolean TryAdd(T Entity)
         {
 
-            lock (_Dictionary)
+            lock (_Lookup)
             {
 
                 if (_Addition.SendVoting(DateTime.Now, _Host, Entity))
                 {
 
+                    _Lookup.Add(Entity.Id, Entity);
+
                     foreach (var Id in Entity.Ids)
-                        _Dictionary.Add(Id, Entity);
+                        _MultiIdLookup.Add(Id, Entity);
 
                     _Addition.SendNotification(DateTime.Now, _Host, Entity);
 
@@ -131,7 +135,7 @@ namespace org.GraphDefined.WWCP
                               Action<T>  OnSuccess)
         {
 
-            lock (_Dictionary)
+            lock (_Lookup)
             {
 
                 if (TryAdd(Entity))
@@ -153,7 +157,7 @@ namespace org.GraphDefined.WWCP
                               Action<DateTime, T>  OnSuccess)
         {
 
-            lock (_Dictionary)
+            lock (_Lookup)
             {
 
                 if (TryAdd(Entity))
@@ -175,7 +179,7 @@ namespace org.GraphDefined.WWCP
                               Action<DateTime, THost, T>  OnSuccess)
         {
 
-            lock (_Dictionary)
+            lock (_Lookup)
             {
 
                 if (TryAdd(Entity))
@@ -200,12 +204,12 @@ namespace org.GraphDefined.WWCP
         public T Get(TId Id)
         {
 
-            lock (_Dictionary)
+            lock (_Lookup)
             {
 
                 T _Entity;
 
-                if (_Dictionary.TryGetValue(Id, out _Entity))
+                if (_MultiIdLookup.TryGetValue(Id, out _Entity))
                     return _Entity;
 
                 return default(T);
@@ -221,10 +225,10 @@ namespace org.GraphDefined.WWCP
         public Boolean TryGet(TId Id, out T Entity)
         {
 
-            lock (_Dictionary)
+            lock (_Lookup)
             {
 
-                if (_Dictionary.TryGetValue(Id, out Entity))
+                if (_MultiIdLookup.TryGetValue(Id, out Entity))
                     return true;
 
                 Entity = default(T);
@@ -242,11 +246,13 @@ namespace org.GraphDefined.WWCP
         public Boolean TryRemove(TId Id, out T Entity)
         {
 
-            if (_Dictionary.TryGetValue(Id, out Entity))
+            if (_Lookup.TryGetValue(Id, out Entity))
             {
 
+                _Lookup.Remove(Id);
+
                 foreach (var _Id in Entity.Ids)
-                    _Dictionary.Remove(_Id);
+                    _MultiIdLookup.Remove(_Id);
 
                 return true;
 
@@ -260,11 +266,41 @@ namespace org.GraphDefined.WWCP
 
         #region Remove(...)
 
-        public Boolean Remove(TId Id)
-            => _Dictionary.Remove(Id);
+        public T Remove(TId Id)
+        {
 
-        public Boolean Remove(T Entity)
-            => _Dictionary.Remove(Entity.Id);
+            T _Entity = default(T);
+
+            if (_Lookup.TryGetValue(Id, out _Entity))
+            {
+
+                _Lookup.Remove(Id);
+
+                foreach (var _Id in _Entity.Ids)
+                    _MultiIdLookup.Remove(_Id);
+
+                return _Entity;
+
+            }
+
+            return default(T);
+
+        }
+
+        public void Remove(T Entity)
+        {
+
+            if (_Lookup.TryGetValue(Entity.Id, out Entity))
+            {
+
+                _Lookup.Remove(Entity.Id);
+
+                foreach (var _Id in Entity.Ids)
+                    _MultiIdLookup.Remove(_Id);
+
+            }
+
+        }
 
         #endregion
 
@@ -273,11 +309,11 @@ namespace org.GraphDefined.WWCP
 
         public IEnumerator<T> GetEnumerator()
 
-            => _Dictionary.Select(_ => _.Value).GetEnumerator();
+            => _Lookup.Select(_ => _.Value).GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator()
 
-            => _Dictionary.Select(_ => _.Value).GetEnumerator();
+            => _Lookup.Select(_ => _.Value).GetEnumerator();
 
         #endregion
 

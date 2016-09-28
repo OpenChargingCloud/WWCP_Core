@@ -404,40 +404,37 @@ namespace org.GraphDefined.WWCP
 
         #region StatusSchedule
 
-        private StatusSchedule<EVSEStatusType> _StatusSchedule;
+        private readonly StatusSchedule<EVSEStatusType> _StatusSchedule;
 
         /// <summary>
         /// The EVSE status schedule.
         /// </summary>
-        public IEnumerable<Timestamped<EVSEStatusType>> StatusSchedule
+        public IEnumerable<Timestamped<EVSEStatusType>> StatusSchedule(UInt64 HistorySize = 1)
         {
-            get
-            {
 
-                if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
-                    AdminStatus.Value == EVSEAdminStatusType.InternalUse)
-                {
+             if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
+                 AdminStatus.Value == EVSEAdminStatusType.InternalUse)
+             {
 
-                    return _StatusSchedule;
+                 return _StatusSchedule.Take(HistorySize);
 
-                }
+             }
 
-                else
-                {
+             else
+             {
 
-                    switch (AdminStatus.Value)
-                    {
+                 switch (AdminStatus.Value)
+                 {
 
-                        default:
-                            return new Timestamped<EVSEStatusType>[] {
-                                       new Timestamped<EVSEStatusType>(AdminStatus.Timestamp, EVSEStatusType.OutOfService)
-                                   };
+                     default:
+                         return new Timestamped<EVSEStatusType>[] {
+                                    new Timestamped<EVSEStatusType>(AdminStatus.Timestamp, EVSEStatusType.OutOfService)
+                                };
 
-                    }
+                 }
 
-                }
+             }
 
-            }
         }
 
         #endregion
@@ -473,18 +470,14 @@ namespace org.GraphDefined.WWCP
 
         #region AdminStatusSchedule
 
-        private StatusSchedule<EVSEAdminStatusType> _AdminStatusSchedule;
+        private readonly StatusSchedule<EVSEAdminStatusType> _AdminStatusSchedule;
 
         /// <summary>
         /// The EVSE admin status schedule.
         /// </summary>
-        public IEnumerable<Timestamped<EVSEAdminStatusType>> AdminStatusSchedule
-        {
-            get
-            {
-                return _AdminStatusSchedule;
-            }
-        }
+        public IEnumerable<Timestamped<EVSEAdminStatusType>> AdminStatusSchedule(UInt64 HistorySize = 1)
+
+            => _AdminStatusSchedule.Take(HistorySize);
 
         #endregion
 

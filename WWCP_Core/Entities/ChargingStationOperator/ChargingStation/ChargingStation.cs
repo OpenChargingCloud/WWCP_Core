@@ -1333,10 +1333,10 @@ namespace org.GraphDefined.WWCP
         /// Return the admin status of all EVSEs registered within this charging station.
         /// </summary>
 
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatus
+        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatus(UInt64 HistorySize)
 
             => _EVSEs.Select(evse => new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>(evse.Id,
-                                                                                                              evse.AdminStatusSchedule));
+                                                                                                              evse.AdminStatusSchedule(HistorySize)));
 
         #endregion
 
@@ -1345,10 +1345,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the status of all EVSEs registered within this charging station.
         /// </summary>
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatus
+        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatus(UInt64 HistorySize)
 
             => _EVSEs.Select(evse => new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>(evse.Id,
-                                                                                                         evse.StatusSchedule));
+                                                                                                         evse.StatusSchedule(HistorySize)));
 
         #endregion
 
@@ -1515,32 +1515,16 @@ namespace org.GraphDefined.WWCP
         #region RemoveEVSE(EVSEId)
 
         public EVSE RemoveEVSE(EVSE_Id EVSEId)
-        {
 
-            var _EVSE = GetEVSEbyId(EVSEId);
-
-            if (_EVSE != null && _EVSEs.Remove(_EVSE))
-                return _EVSE;
-
-            return null;
-
-        }
+            => _EVSEs.Remove(EVSEId);
 
         #endregion
 
         #region TryRemoveEVSE(EVSEId, out EVSE)
 
         public Boolean TryRemoveEVSE(EVSE_Id EVSEId, out EVSE EVSE)
-        {
 
-            EVSE = GetEVSEbyId(EVSEId);
-
-            if (EVSE == null)
-                return false;
-
-            return _EVSEs.Remove(EVSE);
-
-        }
+            => _EVSEs.TryRemove(EVSEId, out EVSE);
 
         #endregion
 

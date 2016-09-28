@@ -1519,13 +1519,13 @@ namespace org.GraphDefined.WWCP
         /// Return the admin status of all EVSEs registered within this charging pool.
         /// </summary>
 
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatus
+        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatus(UInt64 HistorySize)
 
             => _ChargingStations.SelectMany(station => station.Select(evse =>
 
                                      new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>(
                                          evse.Id,
-                                         evse.AdminStatusSchedule)
+                                         evse.AdminStatusSchedule(HistorySize))
 
                                  ));
 
@@ -1536,13 +1536,13 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the status of all EVSEs registered within this charging pool.
         /// </summary>
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatus
+        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatus(UInt64 HistorySize)
 
             => _ChargingStations.SelectMany(station => station.Select(evse =>
 
                                      new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>(
                                          evse.Id,
-                                         evse.StatusSchedule)
+                                         evse.StatusSchedule(HistorySize))
 
                                  ));
 
