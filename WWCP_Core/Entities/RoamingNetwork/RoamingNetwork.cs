@@ -198,12 +198,12 @@ namespace org.GraphDefined.WWCP
             this._NavigationProviders                               = new EntityHashSet<RoamingNetwork, NavigationProvider_Id,      NavigationProvider>     (this);
             this._GridOperators                                     = new EntityHashSet<RoamingNetwork, GridOperator_Id,            GridOperator>           (this);
 
-            this._ChargingStationOperatorRoamingProviders           = new ConcurrentDictionary<RoamingProvider_Id, AEVSEOperatorRoamingProvider>();
+            this._ChargingStationOperatorRoamingProviders           = new ConcurrentDictionary<RoamingProvider_Id, AChargingStationOperatorRoamingProvider>();
             this._EMPRoamingProviders                               = new ConcurrentDictionary<RoamingProvider_Id, AEMPRoamingProvider>();
             this._ChargingReservations_AtChargingStationOperators   = new ConcurrentDictionary<ChargingReservation_Id, ChargingStationOperator>();
             this._ChargingReservations_AtEMPRoamingProviders        = new ConcurrentDictionary<ChargingReservation_Id, AEMPRoamingProvider>();
 
-            this._ChargingStationOperatorRoamingProviderPriorities  = new ConcurrentDictionary<UInt32, AEVSEOperatorRoamingProvider>();
+            this._ChargingStationOperatorRoamingProviderPriorities  = new ConcurrentDictionary<UInt32, AChargingStationOperatorRoamingProvider>();
             this._eMobilityRoamingServices                          = new ConcurrentDictionary<UInt32, IEMPRoamingProvider>();
             this._PushEVSEDataToOperatorRoamingServices             = new ConcurrentDictionary<UInt32, IPushData>();
             this._PushEVSEStatusToOperatorRoamingServices           = new ConcurrentDictionary<UInt32, IPushStatus>();
@@ -224,8 +224,8 @@ namespace org.GraphDefined.WWCP
 
             // RoamingNetwork events
 
-            this.CPORoamingProviderAddition  = new VotingNotificator<RoamingNetwork, AEVSEOperatorRoamingProvider, Boolean>(() => new VetoVote(), true);
-            this.CPORoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, AEVSEOperatorRoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.CPORoamingProviderAddition  = new VotingNotificator<RoamingNetwork, AChargingStationOperatorRoamingProvider, Boolean>(() => new VetoVote(), true);
+            this.CPORoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, AChargingStationOperatorRoamingProvider, Boolean>(() => new VetoVote(), true);
 
             this.EMPRoamingProviderAddition  = new VotingNotificator<RoamingNetwork, AEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
             this.EMPRoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, AEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
@@ -1881,13 +1881,13 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingStationOperatorRoamingProviders
 
-        private readonly ConcurrentDictionary<UInt32,             AEVSEOperatorRoamingProvider>  _ChargingStationOperatorRoamingProviderPriorities;
-        private readonly ConcurrentDictionary<RoamingProvider_Id, AEVSEOperatorRoamingProvider>  _ChargingStationOperatorRoamingProviders;
+        private readonly ConcurrentDictionary<UInt32,             AChargingStationOperatorRoamingProvider>  _ChargingStationOperatorRoamingProviderPriorities;
+        private readonly ConcurrentDictionary<RoamingProvider_Id, AChargingStationOperatorRoamingProvider>  _ChargingStationOperatorRoamingProviders;
 
         /// <summary>
         /// Return all Charging Station Operator roaming providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<AEVSEOperatorRoamingProvider> ChargingStationOperatorRoamingProviders => _ChargingStationOperatorRoamingProviders.Values;
+        public IEnumerable<AChargingStationOperatorRoamingProvider> ChargingStationOperatorRoamingProviders => _ChargingStationOperatorRoamingProviders.Values;
 
         #endregion
 
@@ -1898,8 +1898,8 @@ namespace org.GraphDefined.WWCP
         /// unique electric vehicle roaming provider identification.
         /// </summary>
         /// <param name="Configurator">An optional delegate to configure the new roaming provider after its creation.</param>
-        public AEVSEOperatorRoamingProvider CreateNewRoamingProvider(AEVSEOperatorRoamingProvider          _CPORoamingProvider,
-                                                                     Action<AEVSEOperatorRoamingProvider>  Configurator        = null)
+        public AChargingStationOperatorRoamingProvider CreateNewRoamingProvider(AChargingStationOperatorRoamingProvider          _CPORoamingProvider,
+                                                                     Action<AChargingStationOperatorRoamingProvider>  Configurator        = null)
         {
 
             #region Initial checks
@@ -1952,7 +1952,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="csoRoamingProvider">The Charging Station Operator roaming provider.</param>
         /// <param name="Priority">The priority of the service.</param>
-        public Boolean SetRoamingProviderPriority(AEVSEOperatorRoamingProvider csoRoamingProvider,
+        public Boolean SetRoamingProviderPriority(AChargingStationOperatorRoamingProvider csoRoamingProvider,
                                                   UInt32                       Priority)
         {
 
@@ -1960,7 +1960,7 @@ namespace org.GraphDefined.WWCP
 
             if (a.Key > 0)
             {
-                AEVSEOperatorRoamingProvider b = null;
+                AChargingStationOperatorRoamingProvider b = null;
                 _ChargingStationOperatorRoamingProviderPriorities.TryRemove(a.Key, out b);
             }
 
@@ -1972,23 +1972,23 @@ namespace org.GraphDefined.WWCP
 
         #region CPORoamingProviderAddition
 
-        private readonly IVotingNotificator<RoamingNetwork, AEVSEOperatorRoamingProvider, Boolean> CPORoamingProviderAddition;
+        private readonly IVotingNotificator<RoamingNetwork, AChargingStationOperatorRoamingProvider, Boolean> CPORoamingProviderAddition;
 
         /// <summary>
         /// Called whenever a RoamingProvider will be or was added.
         /// </summary>
-        public IVotingSender<RoamingNetwork, AEVSEOperatorRoamingProvider, Boolean> OnCPORoamingProviderAddition => CPORoamingProviderAddition;
+        public IVotingSender<RoamingNetwork, AChargingStationOperatorRoamingProvider, Boolean> OnCPORoamingProviderAddition => CPORoamingProviderAddition;
 
         #endregion
 
         #region CPORoamingProviderRemoval
 
-        private readonly IVotingNotificator<RoamingNetwork, AEVSEOperatorRoamingProvider, Boolean> CPORoamingProviderRemoval;
+        private readonly IVotingNotificator<RoamingNetwork, AChargingStationOperatorRoamingProvider, Boolean> CPORoamingProviderRemoval;
 
         /// <summary>
         /// Called whenever a RoamingProvider will be or was removed.
         /// </summary>
-        public IVotingSender<RoamingNetwork, AEVSEOperatorRoamingProvider, Boolean> OnCPORoamingProviderRemoval => CPORoamingProviderRemoval;
+        public IVotingSender<RoamingNetwork, AChargingStationOperatorRoamingProvider, Boolean> OnCPORoamingProviderRemoval => CPORoamingProviderRemoval;
 
         #endregion
 

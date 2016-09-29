@@ -31,10 +31,10 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// An abstract Charging Station Operator roaming provider.
+    /// An abstract Charging Station Operator Roaming Provider.
     /// </summary>
-    public abstract class AEVSEOperatorRoamingProvider : ARoamingProvider,
-                                                         IEVSEOperatorRoamingProvider
+    public abstract class AChargingStationOperatorRoamingProvider : ARoamingProvider,
+                                                                    IChargingStationOperatorRoamingProvider
     {
 
         #region Data
@@ -263,7 +263,7 @@ namespace org.GraphDefined.WWCP
         #region OnEVSEOperatorRoamingProviderException
 
         public delegate Task OnEVSEOperatorRoamingProviderExceptionDelegate(DateTime                      Timestamp,
-                                                                            AEVSEOperatorRoamingProvider  Sender,
+                                                                            AChargingStationOperatorRoamingProvider  Sender,
                                                                             Exception                     Exception);
 
         public event OnEVSEOperatorRoamingProviderExceptionDelegate OnEVSEOperatorRoamingProviderException;
@@ -284,7 +284,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ServiceCheckEvery">The service check intervall.</param>
         /// <param name="StatusCheckEvery">The status check intervall.</param>
         /// <param name="DisableAutoUploads">This service can be disabled, e.g. for debugging reasons.</param>
-        public AEVSEOperatorRoamingProvider(RoamingProvider_Id       Id,
+        public AChargingStationOperatorRoamingProvider(RoamingProvider_Id       Id,
                                             I18NString               Name,
                                             RoamingNetwork           RoamingNetwork,
 
@@ -1524,7 +1524,7 @@ namespace org.GraphDefined.WWCP
                     while (e.InnerException != null)
                         e = e.InnerException;
 
-                    DebugX.LogT(nameof(AEVSEOperatorRoamingProvider) + " '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+                    DebugX.LogT(nameof(AChargingStationOperatorRoamingProvider) + " '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
 
                 }
 
@@ -1707,7 +1707,7 @@ namespace org.GraphDefined.WWCP
                     while (e.InnerException != null)
                         e = e.InnerException;
 
-                    DebugX.LogT(nameof(AEVSEOperatorRoamingProvider) + " '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+                    DebugX.LogT(nameof(AChargingStationOperatorRoamingProvider) + " '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
 
                 }
 

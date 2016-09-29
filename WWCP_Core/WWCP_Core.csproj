@@ -144,7 +144,7 @@
     <Compile Include="Entities\NavigationProvider\Beacon\Beacon.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargingStationOperatorDelegates.cs" />
     <Compile Include="Entities\RoamingProvider\IEMPRoamingProvider.cs" />
-    <Compile Include="Entities\RoamingProvider\IEVSEOperatorRoamingProvider.cs" />
+    <Compile Include="Entities\RoamingProvider\IChargingStationOperatorRoamingProvider.cs" />
     <Compile Include="Commands\PushDataAndStatus\AnonymousPushEVSEStatusService.cs" />
     <Compile Include="Commands\PushDataAndStatus\PushDataAndStatusDelegates.cs" />
     <Compile Include="Commands\RemoteStartStop\OnRemoteStopDelegates.cs" />
@@ -199,7 +199,7 @@
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkDelegates.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="Entities\RoamingProvider\ARoamingProvider.cs" />
-    <Compile Include="Entities\RoamingProvider\AEVSEOperatorRoamingProvider.cs" />
+    <Compile Include="Entities\RoamingProvider\AChargingStationOperatorRoamingProvider.cs" />
     <Compile Include="Entities\StatusSchedule.cs" />
     <Compile Include="CommonTypes\AuthInfo.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargeDetailRecord\ChargeDetailRecord.cs" />
