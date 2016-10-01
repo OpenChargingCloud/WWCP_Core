@@ -27,148 +27,52 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// An address.
+    /// A WWCP address.
     /// </summary>
     public class Address : IEquatable<Address>
     {
 
         #region Properties
 
-        #region Street
-
-        private readonly String _Street;
-
         /// <summary>
         /// The name of the street.
         /// </summary>
-        public String Street
-        {
-            get
-            {
-                return _Street;
-            }
-        }
-
-        #endregion
-
-        #region HouseNumber
-
-        private readonly String _HouseNumber;
+        public String      Street           { get; }
 
         /// <summary>
         /// The house number.
         /// </summary>
-        public String HouseNumber
-        {
-            get
-            {
-                return _HouseNumber;
-            }
-        }
-
-        #endregion
-
-        #region FloorLevel
-
-        private readonly String _FloorLevel;
+        public String      HouseNumber      { get; }
 
         /// <summary>
         /// The floor level.
         /// </summary>
-        public String FloorLevel
-        {
-            get
-            {
-                return _FloorLevel;
-            }
-        }
-
-        #endregion
-
-        #region PostalCode
-
-        private readonly String _PostalCode;
+        public String      FloorLevel       { get; }
 
         /// <summary>
         /// The postal code.
         /// </summary>
-        public String PostalCode
-        {
-            get
-            {
-                return _PostalCode;
-            }
-        }
-
-        #endregion
-
-        #region PostalCodeSub
-
-        private readonly String _PostalCodeSub;
+        public String      PostalCode       { get; }
 
         /// <summary>
         /// The postal code sub.
         /// </summary>
-        public String PostalCodeSub
-        {
-            get
-            {
-                return _PostalCodeSub;
-            }
-        }
-
-        #endregion
-
-        #region City
-
-        private readonly I18NString _City;
+        public String      PostalCodeSub    { get; }
 
         /// <summary>
         /// The city.
         /// </summary>
-        public I18NString City
-        {
-            get
-            {
-                return _City;
-            }
-        }
-
-        #endregion
-
-        #region Country
-
-        private readonly Country _Country;
+        public I18NString  City             { get; }
 
         /// <summary>
         /// The city.
         /// </summary>
-        public Country Country
-        {
-            get
-            {
-                return _Country;
-            }
-        }
-
-        #endregion
-
-        #region Comment
-
-        private readonly I18NString _Comment;
+        public Country     Country          { get; }
 
         /// <summary>
         /// An optional text/comment to describe the address.
         /// </summary>
-        public I18NString Comment
-        {
-            get
-            {
-                return _Comment;
-            }
-        }
-
-        #endregion
+        public I18NString  Comment          { get; }
 
         #endregion
 
@@ -182,14 +86,14 @@ namespace org.GraphDefined.WWCP
         public Address()
         {
 
-            this._FloorLevel     = "";
-            this._HouseNumber    = "";
-            this._Street         = "";
-            this._PostalCode     = "";
-            this._PostalCodeSub  = "";
-            this._City           = new I18NString();
-            this._Country        = Country.unknown;
-            this._Comment        = new I18NString();
+            this.FloorLevel     = "";
+            this.HouseNumber    = "";
+            this.Street         = "";
+            this.PostalCode     = "";
+            this.PostalCodeSub  = "";
+            this.City           = new I18NString();
+            this.Country        = Country.unknown;
+            this.Comment        = new I18NString();
 
         }
 
@@ -212,14 +116,14 @@ namespace org.GraphDefined.WWCP
                        String      HouseNumber)
         {
 
-            this._FloorLevel     = "";
-            this._HouseNumber    = HouseNumber;
-            this._Street         = Street;
-            this._PostalCode     = PostalCode;
-            this._PostalCodeSub  = "";
-            this._City           = City;
-            this._Country        = Country;
-            this._Comment        = new I18NString();
+            this.FloorLevel     = "";
+            this.HouseNumber    = HouseNumber;
+            this.Street         = Street;
+            this.PostalCode     = PostalCode;
+            this.PostalCodeSub  = "";
+            this.City           = City;
+            this.Country        = Country;
+            this.Comment        = new I18NString();
 
         }
 
@@ -249,14 +153,14 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            this._Street         = Street;
-            this._HouseNumber    = HouseNumber;
-            this._FloorLevel     = FloorLevel;
-            this._PostalCode     = PostalCode;
-            this._PostalCodeSub  = PostalCodeSub;
-            this._City           = City;
-            this._Country        = Country;
-            this._Comment        = Comment != null ? Comment : new I18NString();
+            this.Street         = Street;
+            this.HouseNumber    = HouseNumber;
+            this.FloorLevel     = FloorLevel;
+            this.PostalCode     = PostalCode;
+            this.PostalCodeSub  = PostalCodeSub;
+            this.City           = City;
+            this.Country        = Country;
+            this.Comment        = Comment != null ? Comment : new I18NString();
 
         }
 
@@ -280,11 +184,12 @@ namespace org.GraphDefined.WWCP
                                      I18NString  City,
                                      String      Street,
                                      String      HouseNumber)
-        {
 
-            return new Address(Country, PostalCode, City, Street, HouseNumber);
-
-        }
+            => new Address(Country,
+                           PostalCode,
+                           City,
+                           Street,
+                           HouseNumber);
 
         #endregion
 
@@ -296,7 +201,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two addresses for equality.
         /// </summary>
-        /// <param name="Address1">A geo coordinate.</param>
+        /// <param name="Address1">An address.</param>
         /// <param name="Address2">Another address.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public static Boolean operator == (Address Address1, Address Address2)
@@ -321,13 +226,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two addresses for inequality.
         /// </summary>
-        /// <param name="Address1">A geo coordinate.</param>
+        /// <param name="Address1">An address.</param>
         /// <param name="Address2">Another address.</param>
         /// <returns>False if both match; True otherwise.</returns>
         public static Boolean operator != (Address Address1, Address Address2)
-        {
-            return !(Address1 == Address2);
-        }
+
+            => !(Address1 == Address2);
 
         #endregion
 
@@ -362,7 +266,7 @@ namespace org.GraphDefined.WWCP
         #region Equals(Address)
 
         /// <summary>
-        /// Compares two EVSE_Ids for equality.
+        /// Compares two addresses for equality.
         /// </summary>
         /// <param name="Address">An address to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
@@ -372,13 +276,13 @@ namespace org.GraphDefined.WWCP
             if ((Object) Address == null)
                 return false;
 
-            return _Street.        Equals(Address.Street) &&
-                   _HouseNumber.   Equals(Address.HouseNumber) &&
-                   _FloorLevel.    Equals(Address.FloorLevel) &&
-                   _PostalCode.    Equals(Address.PostalCode) &&
-                   _PostalCodeSub. Equals(Address.PostalCodeSub) &&
-                   _City.          Equals(Address.City) &&
-                   _Country.       Equals(Address.Country);
+            return Street.        Equals(Address.Street) &&
+                   HouseNumber.   Equals(Address.HouseNumber) &&
+                   FloorLevel.    Equals(Address.FloorLevel) &&
+                   PostalCode.    Equals(Address.PostalCode) &&
+                   PostalCodeSub. Equals(Address.PostalCodeSub) &&
+                   City.          Equals(Address.City) &&
+                   Country.       Equals(Address.Country);
 
         }
 
@@ -394,15 +298,18 @@ namespace org.GraphDefined.WWCP
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
         {
+            unchecked
+            {
 
-            return _Street.       GetHashCode() ^
-                   _HouseNumber.  GetHashCode() ^
-                   _FloorLevel.   GetHashCode() ^
-                   _PostalCode.   GetHashCode() ^
-                   _PostalCodeSub.GetHashCode() ^
-                   _City.         GetHashCode() ^
-                   _Country.      GetHashCode();
+                return Street.        GetHashCode() * 41 ^
+                       HouseNumber.   GetHashCode() * 37 ^
+                       FloorLevel.    GetHashCode() * 31 ^
+                       PostalCode.    GetHashCode() * 23 ^
+                       PostalCodeSub. GetHashCode() * 17 ^
+                       City.          GetHashCode() * 11 ^
+                       Country.       GetHashCode();
 
+            }
         }
 
         #endregion
@@ -413,18 +320,15 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
 
-            return Street                         + " " +
-                   HouseNumber                    + " " +
-                   FloorLevel                     + ", " +
-                   PostalCode                     + " " +
-                   PostalCodeSub                  + " " +
-                   City                           + ", " +
-                   Country.CountryName.ToString() + " / " +
-                   Comment.ToString();
-
-        }
+            => Street                        + " " +
+               HouseNumber                   + " " +
+               FloorLevel                    + ", " +
+               PostalCode                    + " " +
+               PostalCodeSub                 + " " +
+               City                          + ", " +
+               Country.CountryName.FirstText + " / " +
+               Comment;
 
         #endregion
 

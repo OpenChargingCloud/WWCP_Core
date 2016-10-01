@@ -18,9 +18,10 @@
 #region Usings
 
 using System;
-using System.Xml.Linq;
 using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
+
+using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
@@ -32,24 +33,24 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// An abstract base class for all HTTP/SOAP clients.
+    /// An abstract base class for all HTTP/JSON clients.
     /// </summary>
-    public abstract class ASOAPClient : AHTTPClient
+    public abstract class AJSONClient : AHTTPClient
     {
 
         #region Events
 
-        #region OnSOAPError
+        #region OnJSONError
 
         /// <summary>
-        /// A delegate called whenever a SOAP error occured.
+        /// A delegate called whenever a JSON error occured.
         /// </summary>
-        public delegate void OnSOAPErrorDelegate(DateTime Timestamp, Object Sender, XElement SOAPXML);
+        public delegate void OnSOAPErrorDelegate(DateTime Timestamp, Object Sender, JObject JSON);
 
         /// <summary>
-        /// An event fired whenever a SOAP error occured.
+        /// An event fired whenever a JSON error occured.
         /// </summary>
-        public event OnSOAPErrorDelegate OnSOAPError;
+        public event OnSOAPErrorDelegate OnJSONError;
 
         #endregion
 
@@ -58,7 +59,7 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Create an abstract SOAP client.
+        /// Create an abstract HTTP/JSON client.
         /// </summary>
         /// <param name="ClientId">A unqiue identification of this client.</param>
         /// <param name="Hostname">The hostname to connect to.</param>
@@ -69,7 +70,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="UserAgent">An optional HTTP user agent to use.</param>
         /// <param name="QueryTimeout">An optional timeout for upstream queries.</param>
         /// <param name="DNSClient">An optional DNS client.</param>
-        public ASOAPClient(String                               ClientId,
+        public AJSONClient(String                               ClientId,
                            String                               Hostname,
                            IPPort                               RemotePort,
                            RemoteCertificateValidationCallback  RemoteCertificateValidator  = null,
@@ -94,22 +95,22 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (protected) SendSOAPError(Timestamp, Sender, SOAPXML)
+        #region (protected) SendJSONError(Timestamp, Sender, JSON)
 
         /// <summary>
-        /// Notify that an HTTP error occured.
+        /// Notify that a JSON error occured.
         /// </summary>
         /// <param name="Timestamp">The timestamp of the error received.</param>
         /// <param name="Sender">The sender of this error message.</param>
-        /// <param name="SOAPXML">The SOAP fault/error.</param>
-        protected void SendSOAPError(DateTime  Timestamp,
+        /// <param name="JSON">The JSON fault/error.</param>
+        protected void SendJSONError(DateTime  Timestamp,
                                      Object    Sender,
-                                     XElement  SOAPXML)
+                                     JObject   JSON)
         {
 
-            DebugX.Log("AOICPUpstreamService => SOAP Fault: " + SOAPXML != null ? SOAPXML.ToString() : "<null>");
+            DebugX.Log("AOICPUpstreamService => JSON Fault: " + JSON != null ? JSON.ToString() : "<null>");
 
-            OnSOAPError?.Invoke(Timestamp, Sender, SOAPXML);
+            OnJSONError?.Invoke(Timestamp, Sender, JSON);
 
         }
 
