@@ -19,6 +19,8 @@
 
 using System;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 #endregion
 
 namespace org.GraphDefined.WWCP
@@ -27,7 +29,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A unique authentication token.
     /// </summary>
-    public class Auth_Token : IId, IEquatable<Auth_Token>, IComparable<Auth_Token>
+    public class Auth_Token : IId,
+                              IEquatable<Auth_Token>,
+                              IComparable<Auth_Token>
     {
 
         #region Data
@@ -41,35 +45,12 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region New
-
-        /// <summary>
-        /// Generate a new token.
-        /// </summary>
-        public static Auth_Token New
-        {
-            get
-            {
-                return new Auth_Token(Guid.NewGuid().ToString());
-            }
-        }
-
-        #endregion
-
-        #region Length
-
         /// <summary>
         /// Returns the length of the identificator.
         /// </summary>
         public UInt64 Length
-        {
-            get
-            {
-                return (UInt64) _Value.Length;
-            }
-        }
 
-        #endregion
+            => (UInt64)_Value.Length;
 
         #endregion
 
@@ -78,9 +59,19 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Generate a new token based on the given string.
         /// </summary>
-        private Auth_Token(String String)
+        /// <param name="Text">The value of the authentication token.</param>
+        private Auth_Token(String Text)
         {
-            _Value = String.Trim();
+
+            #region Initial checks
+
+            if (Text.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Text),  "The given authentication token must not be null or empty!");
+
+            #endregion
+
+            _Value = Text.Trim();
+
         }
 
         #endregion
@@ -93,9 +84,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Text">A text representation of an authentication token.</param>
         public static Auth_Token Parse(String Text)
-        {
-            return new Auth_Token(Text);
-        }
+
+            => new Auth_Token(Text);
 
         #endregion
 
@@ -128,12 +118,8 @@ namespace org.GraphDefined.WWCP
         /// Clone this authentication token.
         /// </summary>
         public Auth_Token Clone
-        {
-            get
-            {
-                return new Auth_Token(_Value);
-            }
-        }
+
+            => new Auth_Token(_Value);
 
         #endregion
 
@@ -145,8 +131,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TokenId1">A TokenId.</param>
-        /// <param name="TokenId2">Another TokenId.</param>
+        /// <param name="TokenId1">An authentication token.</param>
+        /// <param name="TokenId2">Another authentication token.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (Auth_Token TokenId1, Auth_Token TokenId2)
         {
@@ -170,13 +156,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TokenId1">A TokenId.</param>
-        /// <param name="TokenId2">Another TokenId.</param>
+        /// <param name="TokenId1">An authentication token.</param>
+        /// <param name="TokenId2">Another authentication token.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (Auth_Token TokenId1, Auth_Token TokenId2)
-        {
-            return !(TokenId1 == TokenId2);
-        }
+
+            => !(TokenId1 == TokenId2);
 
         #endregion
 
@@ -185,14 +170,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TokenId1">A TokenId.</param>
-        /// <param name="TokenId2">Another TokenId.</param>
+        /// <param name="TokenId1">An authentication token.</param>
+        /// <param name="TokenId2">Another authentication token.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (Auth_Token TokenId1, Auth_Token TokenId2)
         {
 
             if ((Object) TokenId1 == null)
-                throw new ArgumentNullException("The given TokenId1 must not be null!");
+                throw new ArgumentNullException(nameof(TokenId1),  "The given authentication token must not be null!");
 
             return TokenId1.CompareTo(TokenId2) < 0;
 
@@ -205,13 +190,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TokenId1">A TokenId.</param>
-        /// <param name="TokenId2">Another TokenId.</param>
+        /// <param name="TokenId1">An authentication token.</param>
+        /// <param name="TokenId2">Another authentication token.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (Auth_Token TokenId1, Auth_Token TokenId2)
-        {
-            return !(TokenId1 > TokenId2);
-        }
+
+            => !(TokenId1 > TokenId2);
 
         #endregion
 
@@ -220,14 +204,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TokenId1">A TokenId.</param>
-        /// <param name="TokenId2">Another TokenId.</param>
+        /// <param name="TokenId1">An authentication token.</param>
+        /// <param name="TokenId2">Another authentication token.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (Auth_Token TokenId1, Auth_Token TokenId2)
         {
 
             if ((Object) TokenId1 == null)
-                throw new ArgumentNullException("The given TokenId1 must not be null!");
+                throw new ArgumentNullException(nameof(TokenId1),  "The given authentication token must not be null!");
 
             return TokenId1.CompareTo(TokenId2) > 0;
 
@@ -240,13 +224,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="TokenId1">A TokenId.</param>
-        /// <param name="TokenId2">Another TokenId.</param>
+        /// <param name="TokenId1">An authentication token.</param>
+        /// <param name="TokenId2">Another authentication token.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (Auth_Token TokenId1, Auth_Token TokenId2)
-        {
-            return !(TokenId1 < TokenId2);
-        }
+
+            => !(TokenId1 < TokenId2);
 
         #endregion
 
@@ -264,9 +247,9 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
-            // Check if the given object is an TokenId.
+            // Check if the given object is an authentication token.
             var Token = Object as Auth_Token;
             if ((Object) Token == null)
                 throw new ArgumentException("The given object is not an authentication token!");
@@ -287,9 +270,9 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) Token == null)
-                throw new ArgumentNullException("The given AuthToken must not be null!");
+                throw new ArgumentNullException(nameof(Token),  "The given authentication token must not be null!");
 
-            return _Value.CompareTo(Token._Value);
+            return String.Compare(_Value, Token._Value, StringComparison.Ordinal);
 
         }
 
@@ -312,7 +295,7 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an Token.
+            // Check if the given object is an authentication token.
             var Token = Object as Auth_Token;
             if ((Object) Token == null)
                 return false;
@@ -326,9 +309,9 @@ namespace org.GraphDefined.WWCP
         #region Equals(Token)
 
         /// <summary>
-        /// Compares two TokenIds for equality.
+        /// Compares two authentication tokens for equality.
         /// </summary>
-        /// <param name="Token">A TokenId to compare with.</param>
+        /// <param name="Token">An authentication token to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(Auth_Token Token)
         {
@@ -351,9 +334,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            return _Value.GetHashCode();
-        }
+
+            => _Value.GetHashCode();
 
         #endregion
 
@@ -363,9 +345,8 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return _Value.ToString();
-        }
+
+            => _Value;
 
         #endregion
 

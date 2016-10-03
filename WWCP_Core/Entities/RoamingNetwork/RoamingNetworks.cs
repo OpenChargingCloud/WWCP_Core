@@ -86,7 +86,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a new EV Roaming Network collection.
         /// </summary>
-        public RoamingNetworks()
+        /// <param name="RoamingNetwork">A initial roaming network to add after initialization.</param>
+        public RoamingNetworks(RoamingNetwork RoamingNetwork = null)
         {
 
             _RoamingNetworks  = new ConcurrentDictionary<RoamingNetwork_Id, RoamingNetwork>();
@@ -97,6 +98,9 @@ namespace org.GraphDefined.WWCP
             this.RoamingNetworkRemoval   = new VotingNotificator<RoamingNetworks, RoamingNetwork, Boolean>(() => new VetoVote(), true);
 
             #endregion
+
+            if (RoamingNetwork != null)
+                AddRoamingNetwork(RoamingNetwork);
 
         }
 
@@ -122,7 +126,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (RoamingNetworkId == null)
-                throw new ArgumentNullException("RoamingNetworkId", "The given roaming network identification must not be null!");
+                throw new ArgumentNullException(nameof(RoamingNetworkId),  "The given roaming network identification must not be null!");
 
             if (_RoamingNetworks.ContainsKey(RoamingNetworkId))
                 throw new RoamingNetworkAlreadyExists(RoamingNetworkId);
@@ -135,13 +139,43 @@ namespace org.GraphDefined.WWCP
 
             Action?.Invoke(_RoamingNetwork);
 
-            if (RoamingNetworkAddition.SendVoting(this, _RoamingNetwork))
+            if (RoamingNetworkAddition.SendVoting(this, _RoamingNetwork) &&
+                _RoamingNetworks.TryAdd(RoamingNetworkId, _RoamingNetwork))
             {
-                if (_RoamingNetworks.TryAdd(RoamingNetworkId, _RoamingNetwork))
-                {
-                    RoamingNetworkAddition.SendNotification(this, _RoamingNetwork);
-                    return _RoamingNetwork;
-                }
+                RoamingNetworkAddition.SendNotification(this, _RoamingNetwork);
+                return _RoamingNetwork;
+            }
+
+            throw new Exception();
+
+        }
+
+        #endregion
+
+        #region AddRoamingNetwork(RoamingNetwork)
+
+        /// <summary>
+        /// Register the given roaming network.
+        /// </summary>
+        /// <param name="RoamingNetwork">The roaming network to add.</param>
+        public RoamingNetwork AddRoamingNetwork(RoamingNetwork  RoamingNetwork)
+        {
+
+            #region Initial checks
+
+            if (RoamingNetwork == null)
+                throw new ArgumentNullException(nameof(RoamingNetwork),  "The given roaming network must not be null!");
+
+            if (_RoamingNetworks.ContainsKey(RoamingNetwork.Id))
+                throw new RoamingNetworkAlreadyExists(RoamingNetwork.Id);
+
+            #endregion
+
+            if (RoamingNetworkAddition.SendVoting(this, RoamingNetwork) &&
+                _RoamingNetworks.TryAdd(RoamingNetwork.Id, RoamingNetwork))
+            {
+                RoamingNetworkAddition.SendNotification(this, RoamingNetwork);
+                return RoamingNetwork;
             }
 
             throw new Exception();
@@ -224,14 +258,12 @@ namespace org.GraphDefined.WWCP
         #region IEnumerable<RoamingNetwork> Members
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-        {
-            return _RoamingNetworks.Values.GetEnumerator();
-        }
+
+            => _RoamingNetworks.Values.GetEnumerator();
 
         public IEnumerator<RoamingNetwork> GetEnumerator()
-        {
-            return _RoamingNetworks.Values.GetEnumerator();
-        }
+
+            => _RoamingNetworks.Values.GetEnumerator();
 
         #endregion
 
@@ -241,9 +273,8 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return _RoamingNetworks.Count + " roaming networks registered";
-        }
+
+            => _RoamingNetworks.Count + " roaming networks registered";
 
         #endregion
 

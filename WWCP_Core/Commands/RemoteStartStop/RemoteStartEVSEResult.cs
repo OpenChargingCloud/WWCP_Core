@@ -117,14 +117,14 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) UnknownChargingStationOperator
+        #region (static) UnknownOperator
 
         /// <summary>
         /// The charging station operator is unknown.
         /// </summary>
-        public static RemoteStartEVSEResult UnknownChargingStationOperator
+        public static RemoteStartEVSEResult UnknownOperator
 
-            => new RemoteStartEVSEResult(RemoteStartEVSEResultType.UnknownChargingStationOperator);
+            => new RemoteStartEVSEResult(RemoteStartEVSEResultType.UnknownOperator);
 
         #endregion
 
@@ -314,7 +314,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The charging station operator is unknown.
         /// </summary>
-        UnknownChargingStationOperator,
+        UnknownOperator,
 
         /// <summary>
         /// The EVSE is unknown.
