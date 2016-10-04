@@ -43,7 +43,7 @@ namespace org.GraphDefined.WWCP
     /// methods can be misused by any entity in the ev charging process to track the
     /// ev driver or its behaviour.
     /// </summary>
-    public class GridOperator : AEMobilityEntity<GridOperator_Id>,
+    public class GridOperator : ACryptoEMobilityEntity<GridOperator_Id>,
                                 IRemoteGridOperator,
                                 IEquatable <GridOperator>,
                                 IComparable<GridOperator>,

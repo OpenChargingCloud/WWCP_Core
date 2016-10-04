@@ -44,7 +44,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// A lookup for user-defined properties.
         /// </summary>
-        private UserDefinedDictionary _UserDefined;
+        private readonly UserDefinedDictionary _UserDefined;
 
         #endregion
 
@@ -105,8 +105,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (Id == null)
-                throw new ArgumentNullException(nameof(Id),  "The given Id must not be null!");
+            if (Id.Equals(default(TId)))
+                throw new ArgumentNullException(nameof(Id),  "The given Id must not be null or empty!");
 
             #endregion
 

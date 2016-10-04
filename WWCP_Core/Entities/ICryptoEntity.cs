@@ -20,51 +20,41 @@
 using System;
 using System.Collections.Generic;
 
+using Org.BouncyCastle.Bcpg.OpenPgp;
+
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The common interface of an entity having one or multiple unique identification(s).
+    /// The common interface of an entity having one or multiple unique
+    /// identification(s) and crypto methods.
     /// </summary>
-    public interface IEntity
+    public interface ICryptoEntity : IEntity
     {
 
-        /// <summary>
-        /// The timestamp of the last change of this entity.
-        /// </summary>
-        DateTime                         LastChange  { get; }
+        PgpSecretKeyRing  SecretKeyRing     { get; }
+
+        PgpPublicKeyRing  PublicKeyRing     { get; }
+
+        Signature         Signature         { get; }
 
 
-        /// <summary>
-        /// A delegate called whenever any (internal) state of this entity changed.
-        /// </summary>
-        event OnPropertyChangedDelegate  OnPropertyChanged;
+        Signature Sign();
 
     }
 
     /// <summary>
-    /// The common generic interface of an entity having one or multiple unique identification(s).
+    /// The common generic interface of an entity having one or multiple unique
+    /// identification(s) and crypto methods.
     /// </summary>
     /// <typeparam name="TId">THe type of the unique identificator.</typeparam>
-    public interface IEntity<TId> : IEntity
+    public interface ICryptoEntity<TId> : IEntity<TId>,
+                                          ICryptoEntity
 
         where TId : IId
 
-    {
-
-        /// <summary>
-        /// The primary unique identification of this entity.
-        /// </summary>
-        TId              Id     { get; }
-
-        /// <summary>
-        /// Auxilary unique identifications of this entity.
-        /// (Think of CNAMES in DNS, or brand names for companies)
-        /// </summary>
-        IEnumerable<TId> Ids    { get; }
-
-    }
+    { }
 
 }

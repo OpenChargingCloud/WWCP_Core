@@ -43,7 +43,7 @@ namespace org.GraphDefined.WWCP
     /// methods can be misused by any entity in the ev charging process to track the
     /// ev driver or its behaviour.
     /// </summary>
-    public class SmartCity : AEMobilityEntity<SmartCity_Id>,
+    public class SmartCity : ACryptoEMobilityEntity<SmartCity_Id>,
                              IRemoteSmartCity,
                              IEquatable <SmartCity>,
                              IComparable<SmartCity>,

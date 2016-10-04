@@ -24,21 +24,10 @@ using System;
 namespace org.GraphDefined.WWCP
 {
 
+    /// <summary>
+    /// The common interface of a datastructure used as an unique identification.
+    /// </summary>
     public interface IId : IComparable
-    {
-
-        //global::org.GraphDefined.WWCP.ChargingPool_Id Clone { get; }
-        //int CompareTo(global::org.GraphDefined.WWCP.ChargingPool_Id EVP_Id);
-        //bool Equals(global::org.GraphDefined.WWCP.ChargingPool_Id EVP_Id);
-        //int GetHashCode();
-        //ulong Length { get; }
-        //string ToString();
-
-    }
-
-    public interface IEntityId : IComparable
-    {
-
-    }
+    { }
 
 }

@@ -39,7 +39,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The parking operator is responsible for operating parking spaces.
     /// </summary>
-    public class ParkingOperator : AEMobilityEntity<ParkingOperator_Id>,
+    public class ParkingOperator : ACryptoEMobilityEntity<ParkingOperator_Id>,
                                    IEquatable<ParkingOperator>, IComparable<ParkingOperator>, IComparable,
                                    IEnumerable<ChargingPool>,
                                    IStatus<ParkingOperatorStatusType>

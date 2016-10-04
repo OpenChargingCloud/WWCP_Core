@@ -37,19 +37,19 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The Charging Station Operator (CSO), also known as Charge Point Operator (CPO),
-    /// is responsible for operating charging pools, charging stations and EVSEs.
-    /// The Charging Station Operator is not neccessarily also the owner of all devices.
-    /// For the delivered service (energy, parking, etc.) the Charging Station Operator
-    /// will either be payed directly by the ev driver or by a contracted e-mobility service provider.
+    /// The Charging Station Operator (CSO) is responsible for operating charging pools,
+    /// charging stations and EVSEs (power connectors), but is not neccessarily also the
+    /// owner of all these devices.
     /// The Charging Station Operator delivers the locations, characteristics and real-time
     /// status information of its charging pools/-stations and EVSEs as Linked
     /// Open Data (LOD) to e-mobility service providers, navigation service
-    /// providers and the public. Pricing information can either be public
-    /// information or part of business-to-business contracts.
+    /// providers and the public. For these delivered services (energy, parking, etc.) the
+    /// operator will either be payed directly by the ev driver or by a contracted
+    /// e-mobility service provider. The required pricing information can either be public
+    /// information or part of B2B contracts.
     /// </summary>
     [DebuggerDisplay("{Id.ToString()} - {Name.FirstText}")]
-    public class ChargingStationOperator : AEMobilityEntity<ChargingStationOperator_Id>,
+    public class ChargingStationOperator : ACryptoEMobilityEntity<ChargingStationOperator_Id>,
                                            IEquatable<ChargingStationOperator>, IComparable<ChargingStationOperator>, IComparable,
                                            IEnumerable<ChargingPool>,
                                            IStatus<ChargingStationOperatorStatusType>

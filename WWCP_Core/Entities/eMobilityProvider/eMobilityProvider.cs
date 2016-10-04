@@ -44,7 +44,7 @@ namespace org.GraphDefined.WWCP
     /// methods can be misused by any entity in the ev charging process to track the
     /// ev driver or its behaviour.
     /// </summary>
-    public class eMobilityProvider : AEMobilityEntity<eMobilityProvider_Id>,
+    public class eMobilityProvider : ACryptoEMobilityEntity<eMobilityProvider_Id>,
                                      IRemoteEMobilityProvider,
                                      IEquatable <eMobilityProvider>,
                                      IComparable<eMobilityProvider>,
