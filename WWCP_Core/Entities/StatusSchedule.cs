@@ -293,16 +293,10 @@ namespace org.GraphDefined.WWCP
                 var FutureList   = _StatusSchedule.Where(status => status.Timestamp > Now).ToArray();
                 _NextStatus      = FutureList.Any()
                                        ? FutureList.Last()
-                                       : new Nullable<Timestamped<T>>();
+                                       : new Timestamped<T>?();
 
                 if (!EqualityComparer<T>.Default.Equals(_CurrentStatus.Value, _OldStatus.Value))
-                {
-
-                    var OnStatusChangedLocal = OnStatusChanged;
-                    if (OnStatusChangedLocal != null)
-                        OnStatusChangedLocal(DateTime.Now, this, _OldStatus, _CurrentStatus);
-
-                }
+                    OnStatusChanged?.Invoke(DateTime.Now, this, _OldStatus, _CurrentStatus);
 
             }
 

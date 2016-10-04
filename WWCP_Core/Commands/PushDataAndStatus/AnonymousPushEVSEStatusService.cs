@@ -19,10 +19,11 @@
 
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Threading;
 
 #endregion
 
@@ -33,7 +34,7 @@ namespace org.GraphDefined.WWCP
     {
 
         public event OnPushEVSEStatusRequestDelegate   OnPushEVSEStatusRequest;
-        public event OnPushEVSEStatusResponseDelegate OnPushEVSEStatusResponse;
+        public event OnPushEVSEStatusResponseDelegate  OnPushEVSEStatusResponse;
 
         private readonly Action<EVSEStatusDiff> _EVSEStatusDiffDelegate;
 
@@ -44,146 +45,68 @@ namespace org.GraphDefined.WWCP
 
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(ILookup<ChargingStationOperator, EVSEStatus> GroupedEVSEStatus, ActionType ActionType = ActionType.update, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<Acknowledgement> PushEVSEStatus(ILookup<ChargingStationOperator, EVSEStatus> GroupedEVSEStatus, ActionType ActionType = ActionType.update, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            throw new NotImplementedException();
+            return new Acknowledgement(ResultType.True);
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(EVSEStatus EVSEStatus, ActionType ActionType = ActionType.update, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<Acknowledgement> PushEVSEStatus(EVSEStatus EVSEStatus, ActionType ActionType = ActionType.update, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            throw new NotImplementedException();
+            return new Acknowledgement(ResultType.True);
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(IEnumerable<EVSEStatus> EVSEStatus, ActionType ActionType = ActionType.update, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<Acknowledgement> PushEVSEStatus(IEnumerable<EVSEStatus> EVSEStatus, ActionType ActionType = ActionType.update, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            throw new NotImplementedException();
+            return new Acknowledgement(ResultType.True);
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(EVSE EVSE, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<Acknowledgement> PushEVSEStatus(EVSE EVSE, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            throw new NotImplementedException();
+            return new Acknowledgement(ResultType.True);
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(IEnumerable<EVSE> EVSEs, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<Acknowledgement> PushEVSEStatus(IEnumerable<EVSE> EVSEs, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            throw new NotImplementedException();
+            return new Acknowledgement(ResultType.True);
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(ChargingStation ChargingStation, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<Acknowledgement> PushEVSEStatus(ChargingStation ChargingStation, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            throw new NotImplementedException();
+            return new Acknowledgement(ResultType.True);
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(IEnumerable<ChargingStation> ChargingStations, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<Acknowledgement> PushEVSEStatus(IEnumerable<ChargingStation> ChargingStations, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            throw new NotImplementedException();
+            return new Acknowledgement(ResultType.True);
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(ChargingPool ChargingPool, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<Acknowledgement> PushEVSEStatus(ChargingPool ChargingPool, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            throw new NotImplementedException();
+            return new Acknowledgement(ResultType.True);
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(IEnumerable<ChargingPool> ChargingPools, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<Acknowledgement> PushEVSEStatus(IEnumerable<ChargingPool> ChargingPools, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            throw new NotImplementedException();
+            return new Acknowledgement(ResultType.True);
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(ChargingStationOperator EVSEOperator, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<Acknowledgement> PushEVSEStatus(ChargingStationOperator EVSEOperator, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            throw new NotImplementedException();
+            return new Acknowledgement(ResultType.True);
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(IEnumerable<ChargingStationOperator> EVSEOperators, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<Acknowledgement> PushEVSEStatus(IEnumerable<ChargingStationOperator> EVSEOperators, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            throw new NotImplementedException();
+            return new Acknowledgement(ResultType.True);
         }
 
-        public Task<Acknowledgement> PushEVSEStatus(RoamingNetwork RoamingNetwork, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<Acknowledgement> PushEVSEStatus(RoamingNetwork RoamingNetwork, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            throw new NotImplementedException();
+            return new Acknowledgement(ResultType.True);
         }
 
-        public Task PushEVSEStatus(EVSEStatusDiff EVSEStatusDiff, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
-        {
-            throw new NotImplementedException();
-        }
-
-
-        //public Task PushEVSEStatus(EVSEStatusDiff EVSEStatusDiff, TimeSpan? QueryTimeout = default(TimeSpan?))
-        //{
-        //    return Task.FromResult(new Acknowledgement(true));
-        //}
-
-        //public Task<Acknowledgement> PushEVSEStatus(EVSEStatus EVSEStatus, ActionType ActionType = ActionType.update, TimeSpan? QueryTimeout = default(TimeSpan?))
-        //{
-
-        //    this._EVSEStatusDiffDelegate(new EVSEStatusDiff(DateTime.Now, EVSEStatus.Id.OperatorId, null, new KeyValuePair<EVSE_Id, EVSEStatusType>[] { new KeyValuePair<EVSE_Id, EVSEStatusType>(EVSEStatus.Id, EVSEStatus.Status) }, null));
-
-        //    return Task.FromResult(new Acknowledgement(true));
-
-        //}
-
-        //public Task<Acknowledgement> PushEVSEStatus(ILookup<EVSEOperator_Id, EVSEStatus> GroupedEVSEs, ActionType ActionType = ActionType.update, TimeSpan? QueryTimeout = default(TimeSpan?))
-        //{
-        //    return Task.FromResult(new Acknowledgement(true));
-        //}
-
-        //public Task<Acknowledgement> PushEVSEStatus(IEnumerable<EVSEOperator> EVSEOperators, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        //{
-        //    return Task.FromResult(new Acknowledgement(true));
-        //}
-
-        //public Task<Acknowledgement> PushEVSEStatus(RoamingNetwork RoamingNetwork, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        //{
-        //    return Task.FromResult(new Acknowledgement(true));
-        //}
-
-        //public Task<Acknowledgement> PushEVSEStatus(EVSEOperator EVSEOperator, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        //{
-        //    return Task.FromResult(new Acknowledgement(true));
-        //}
-
-        //public Task<Acknowledgement> PushEVSEStatus(IEnumerable<EVSE> EVSEs, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        //{
-        //    return Task.FromResult(new Acknowledgement(true));
-        //}
-
-        //public Task<Acknowledgement> PushEVSEStatus(IEnumerable<ChargingStation> ChargingStations, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        //{
-        //    return Task.FromResult(new Acknowledgement(true));
-        //}
-
-        //public Task<Acknowledgement> PushEVSEStatus(IEnumerable<ChargingPool> ChargingPools, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        //{
-        //    return Task.FromResult(new Acknowledgement(true));
-        //}
-
-        //public Task<Acknowledgement> PushEVSEStatus(ChargingPool ChargingPool, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        //{
-        //    return Task.FromResult(new Acknowledgement(true));
-        //}
-
-        //public Task<Acknowledgement> PushEVSEStatus(EVSE EVSE, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        //{
-        //    return Task.FromResult(new Acknowledgement(true));
-        //}
-
-        //public Task<Acknowledgement> PushEVSEStatus(ChargingStation ChargingStation, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, TimeSpan? QueryTimeout = default(TimeSpan?))
-        //{
-        //    return Task.FromResult(new Acknowledgement(true));
-        //}
-
-        //public Task<Acknowledgement> PushEVSEStatus(IEnumerable<EVSEStatus> EVSEStatus, ActionType ActionType = ActionType.update, TimeSpan? QueryTimeout = default(TimeSpan?))
-        //{
-        //    return Task.FromResult(new Acknowledgement(true));
-        //}
-
-
-        //public Task<Acknowledgement> EnqueueEVSEStatusUpdate(EVSEStatus EVSEStatus, ActionType ActionType = ActionType.update, TimeSpan? QueryTimeout = default(TimeSpan?))
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public async Task PushEVSEStatus(EVSEStatusDiff EVSEStatusDiff, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        { }
 
     }
 
