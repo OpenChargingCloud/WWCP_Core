@@ -107,7 +107,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CreateNewRoamingNetwork(RoamingNetworkId, AuthorizatorId = null, Description = null, Action = null)
+        #region CreateNewRoamingNetwork(RoamingNetworkId, AuthorizatorId = null, Description = null, Configurator = null)
 
         /// <summary>
         /// Create and register a new roaming network having the given
@@ -115,12 +115,27 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="RoamingNetworkId">The unique identification of the new roaming network.</param>
         /// <param name="AuthorizatorId">The unique identification for the Auth service.</param>
-        /// <param name="Description">A multilanguage description of the roaming network.</param>
-        /// <param name="Action">An optional delegate to configure the new Charging Station Operator after its creation.</param>
-        public RoamingNetwork CreateNewRoamingNetwork(RoamingNetwork_Id       RoamingNetworkId,
-                                                      Authorizator_Id         AuthorizatorId  = null,
-                                                      I18NString              Description     = null,
-                                                      Action<RoamingNetwork>  Action          = null)
+        /// <param name="Description">A multilanguage description of the roaming networks object.</param>
+        /// <param name="Configurator">An optional delegate to configure the new roaming network after its creation.</param>
+        /// <param name="AdminStatus">The initial admin status of the roaming network.</param>
+        /// <param name="Status">The initial status of the roaming network.</param>
+        /// <param name="MaxAdminStatusListSize">The maximum number of entries in the admin status history.</param>
+        /// <param name="MaxStatusListSize">The maximum number of entries in the status history.</param>
+        /// <param name="ChargingStationSignatureGenerator">A delegate to sign a charging station.</param>
+        /// <param name="ChargingPoolSignatureGenerator">A delegate to sign a charging pool.</param>
+        /// <param name="ChargingStationOperatorSignatureGenerator">A delegate to sign a charging station operator.</param>
+        public RoamingNetwork CreateNewRoamingNetwork(RoamingNetwork_Id                         RoamingNetworkId,
+                                                      Authorizator_Id                           AuthorizatorId                             = null,
+                                                      I18NString                                Description                                = null,
+                                                      Action<RoamingNetwork>                    Configurator                               = null,
+                                                      RoamingNetworkAdminStatusType             AdminStatus                                = RoamingNetworkAdminStatusType.Operational,
+                                                      RoamingNetworkStatusType                  Status                                     = RoamingNetworkStatusType.Available,
+                                                      UInt16                                    MaxAdminStatusListSize                     = RoamingNetwork.DefaultMaxAdminStatusListSize,
+                                                      UInt16                                    MaxStatusListSize                          = RoamingNetwork.DefaultMaxStatusListSize,
+                                                      ChargingStationSignatureDelegate          ChargingStationSignatureGenerator          = null,
+                                                      ChargingPoolSignatureDelegate             ChargingPoolSignatureGenerator             = null,
+                                                      ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator  = null)
+
         {
 
             #region Initial checks
@@ -133,11 +148,18 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            var _RoamingNetwork = new RoamingNetwork(RoamingNetworkId, AuthorizatorId) {
-                                      Description = Description
-                                  };
+            var _RoamingNetwork = new RoamingNetwork(RoamingNetworkId,
+                                                     Description,
+                                                     AuthorizatorId,
+                                                     AdminStatus,
+                                                     Status,
+                                                     MaxAdminStatusListSize,
+                                                     MaxStatusListSize,
+                                                     ChargingStationSignatureGenerator,
+                                                     ChargingPoolSignatureGenerator,
+                                                     ChargingStationOperatorSignatureGenerator);
 
-            Action?.Invoke(_RoamingNetwork);
+            Configurator?.Invoke(_RoamingNetwork);
 
             if (RoamingNetworkAddition.SendVoting(this, _RoamingNetwork) &&
                 _RoamingNetworks.TryAdd(RoamingNetworkId, _RoamingNetwork))

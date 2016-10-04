@@ -40,7 +40,7 @@ namespace org.GraphDefined.WWCP
     /// This can e.g. be a differentation of service levels (premiun, basic,
     /// discount) or allow a simplified testing (production, qa, featureX, ...)
     /// </summary>
-    public class RoamingNetwork : AEMobilityEntity<RoamingNetwork_Id>,
+    public class RoamingNetwork : ACryptoEMobilityEntity<RoamingNetwork_Id>,
                                   IEquatable<RoamingNetwork>, IComparable<RoamingNetwork>, IComparable,
                                   IEnumerable<IEntity>,
                                   IStatus<RoamingNetworkStatusType>
@@ -62,14 +62,7 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region AuthorizatorId
-
-        private readonly Authorizator_Id _AuthorizatorId;
-
-        public Authorizator_Id AuthorizatorId
-            => _AuthorizatorId;
-
-        #endregion
+        public Authorizator_Id AuthorizatorId { get; }
 
 
         #region Description
@@ -77,7 +70,7 @@ namespace org.GraphDefined.WWCP
         private I18NString _Description;
 
         /// <summary>
-        /// An optional additional (multi-language) description of the RoamingNetwork.
+        /// An optional multi-language description of the roaming network.
         /// </summary>
         [Mandatory]
         public I18NString Description
@@ -151,36 +144,49 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        /// <summary>
+        /// A delegate to sign a charging station.
+        /// </summary>
+        public ChargingStationSignatureDelegate          ChargingStationSignatureGenerator            { get; }
+
+        /// <summary>
+        /// A delegate to sign a charging pool.
+        /// </summary>
+        public ChargingPoolSignatureDelegate             ChargingPoolSignatureGenerator               { get; }
+
+        /// <summary>
+        /// A delegate to sign a charging station operator.
+        /// </summary>
+        public ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator    { get; }
+
         #endregion
 
         #region Constructor(s)
 
-        #region RoamingNetwork()
-
         /// <summary>
-        /// Create a new roaming network having a random
-        /// roaming network identification.
-        /// </summary>
-        public RoamingNetwork()
-            : this(RoamingNetwork_Id.New)
-        { }
-
-        #endregion
-
-        #region RoamingNetwork(Id, AuthorizatorId = null)
-
-        /// <summary>
-        /// Create a new roaming network having the given
-        /// unique roaming network identification.
+        /// Create a new roaming network having the given unique roaming network identification.
         /// </summary>
         /// <param name="Id">The unique identification of the roaming network.</param>
         /// <param name="AuthorizatorId">The unique identification for the Auth service.</param>
-        public RoamingNetwork(RoamingNetwork_Id              Id,
-                              Authorizator_Id                AuthorizatorId          = null,
-                              RoamingNetworkAdminStatusType  AdminStatus             = RoamingNetworkAdminStatusType.Operational,
-                              RoamingNetworkStatusType       Status                  = RoamingNetworkStatusType.Available,
-                              UInt16                         MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize,
-                              UInt16                         MaxStatusListSize       = DefaultMaxStatusListSize)
+        /// <param name="Description">An optional multi-language description of the roaming network.</param>
+        /// <param name="AdminStatus">The initial admin status of the roaming network.</param>
+        /// <param name="Status">The initial status of the roaming network.</param>
+        /// <param name="MaxAdminStatusListSize">The maximum number of entries in the admin status history.</param>
+        /// <param name="MaxStatusListSize">The maximum number of entries in the status history.</param>
+        /// <param name="ChargingStationSignatureGenerator">A delegate to sign a charging station.</param>
+        /// <param name="ChargingPoolSignatureGenerator">A delegate to sign a charging pool.</param>
+        /// <param name="ChargingStationOperatorSignatureGenerator">A delegate to sign a charging station operator.</param>
+        public RoamingNetwork(RoamingNetwork_Id                         Id,
+                              I18NString                                Description                                = null,
+                              Authorizator_Id                           AuthorizatorId                             = null,
+                              RoamingNetworkAdminStatusType             AdminStatus                                = RoamingNetworkAdminStatusType.Operational,
+                              RoamingNetworkStatusType                  Status                                     = RoamingNetworkStatusType.Available,
+                              UInt16                                    MaxAdminStatusListSize                     = DefaultMaxAdminStatusListSize,
+                              UInt16                                    MaxStatusListSize                          = DefaultMaxStatusListSize,
+                              ChargingStationSignatureDelegate          ChargingStationSignatureGenerator          = null,
+                              ChargingPoolSignatureDelegate             ChargingPoolSignatureGenerator             = null,
+                              ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator  = null)
 
             : base(Id)
 
@@ -188,8 +194,8 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this._AuthorizatorId                                    = AuthorizatorId ?? Authorizator_Id.Parse("GraphDefined E-Mobility Gateway");
-            this._Description                                       = new I18NString();
+            this.AuthorizatorId                                     = AuthorizatorId ?? Authorizator_Id.Parse("GraphDefined E-Mobility Gateway");
+            this._Description                                       = Description ?? new I18NString();
 
             this._ChargingStationOperators                          = new EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator>(this);
             this._ParkingOperators                                  = new EntityHashSet<RoamingNetwork, ParkingOperator_Id,         ParkingOperator>        (this);
@@ -217,6 +223,10 @@ namespace org.GraphDefined.WWCP
 
             this._StatusSchedule                                    = new StatusSchedule<RoamingNetworkStatusType>(MaxStatusListSize);
             this._StatusSchedule.Insert(Status);
+
+            this.ChargingStationSignatureGenerator                  = ChargingStationSignatureGenerator;
+            this.ChargingPoolSignatureGenerator                     = ChargingPoolSignatureGenerator;
+            this.ChargingStationOperatorSignatureGenerator          = ChargingStationOperatorSignatureGenerator;
 
             #endregion
 
@@ -251,8 +261,6 @@ namespace org.GraphDefined.WWCP
             this.OnPropertyChanged += UpdateData;
 
         }
-
-        #endregion
 
         #endregion
 
@@ -3454,21 +3462,21 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<ReservationResult>
 
-            Reserve(EVSE_Id                  EVSEId,
-                    DateTime?                StartTime          = null,
-                    TimeSpan?                Duration           = null,
-                    ChargingReservation_Id   ReservationId      = null,
-                    eMobilityProvider_Id     ProviderId         = null,
-                    eMobilityAccount_Id                   eMAId              = null,
-                    ChargingProduct_Id       ChargingProductId  = null,
-                    IEnumerable<Auth_Token>  AuthTokens         = null,
-                    IEnumerable<eMobilityAccount_Id>      eMAIds             = null,
-                    IEnumerable<UInt32>      PINs               = null,
+            Reserve(EVSE_Id                           EVSEId,
+                    DateTime?                         StartTime          = null,
+                    TimeSpan?                         Duration           = null,
+                    ChargingReservation_Id            ReservationId      = null,
+                    eMobilityProvider_Id              ProviderId         = null,
+                    eMobilityAccount_Id               eMAId              = null,
+                    ChargingProduct_Id                ChargingProductId  = null,
+                    IEnumerable<Auth_Token>           AuthTokens         = null,
+                    IEnumerable<eMobilityAccount_Id>  eMAIds             = null,
+                    IEnumerable<UInt32>               PINs               = null,
 
-                    DateTime?                Timestamp          = null,
-                    CancellationToken?       CancellationToken  = null,
-                    EventTracking_Id         EventTrackingId    = null,
-                    TimeSpan?                RequestTimeout     = null)
+                    DateTime?                         Timestamp          = null,
+                    CancellationToken?                CancellationToken  = null,
+                    EventTracking_Id                  EventTrackingId    = null,
+                    TimeSpan?                         RequestTimeout     = null)
 
         {
 
@@ -3482,6 +3490,9 @@ namespace org.GraphDefined.WWCP
 
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -3648,21 +3659,21 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<ReservationResult>
 
-            Reserve(ChargingStation_Id       ChargingStationId,
-                    DateTime?                StartTime          = null,
-                    TimeSpan?                Duration           = null,
-                    ChargingReservation_Id   ReservationId      = null,
-                    eMobilityProvider_Id     ProviderId         = null,
-                    eMobilityAccount_Id                   eMAId              = null,
-                    ChargingProduct_Id       ChargingProductId  = null,
-                    IEnumerable<Auth_Token>  AuthTokens         = null,
-                    IEnumerable<eMobilityAccount_Id>      eMAIds             = null,
-                    IEnumerable<UInt32>      PINs               = null,
+            Reserve(ChargingStation_Id                ChargingStationId,
+                    DateTime?                         StartTime          = null,
+                    TimeSpan?                         Duration           = null,
+                    ChargingReservation_Id            ReservationId      = null,
+                    eMobilityProvider_Id              ProviderId         = null,
+                    eMobilityAccount_Id               eMAId              = null,
+                    ChargingProduct_Id                ChargingProductId  = null,
+                    IEnumerable<Auth_Token>           AuthTokens         = null,
+                    IEnumerable<eMobilityAccount_Id>  eMAIds             = null,
+                    IEnumerable<UInt32>               PINs               = null,
 
-                    DateTime?                Timestamp          = null,
-                    CancellationToken?       CancellationToken  = null,
-                    EventTracking_Id         EventTrackingId    = null,
-                    TimeSpan?                RequestTimeout     = null)
+                    DateTime?                         Timestamp          = null,
+                    CancellationToken?                CancellationToken  = null,
+                    EventTracking_Id                  EventTrackingId    = null,
+                    TimeSpan?                         RequestTimeout     = null)
 
         {
 
@@ -3676,6 +3687,9 @@ namespace org.GraphDefined.WWCP
 
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -3805,21 +3819,21 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<ReservationResult>
 
-            Reserve(ChargingPool_Id          ChargingPoolId,
-                    DateTime?                StartTime          = null,
-                    TimeSpan?                Duration           = null,
-                    ChargingReservation_Id   ReservationId      = null,
-                    eMobilityProvider_Id     ProviderId         = null,
-                    eMobilityAccount_Id                   eMAId              = null,
-                    ChargingProduct_Id       ChargingProductId  = null,
-                    IEnumerable<Auth_Token>  AuthTokens         = null,
-                    IEnumerable<eMobilityAccount_Id>      eMAIds             = null,
-                    IEnumerable<UInt32>      PINs               = null,
+            Reserve(ChargingPool_Id                   ChargingPoolId,
+                    DateTime?                         StartTime          = null,
+                    TimeSpan?                         Duration           = null,
+                    ChargingReservation_Id            ReservationId      = null,
+                    eMobilityProvider_Id              ProviderId         = null,
+                    eMobilityAccount_Id               eMAId              = null,
+                    ChargingProduct_Id                ChargingProductId  = null,
+                    IEnumerable<Auth_Token>           AuthTokens         = null,
+                    IEnumerable<eMobilityAccount_Id>  eMAIds             = null,
+                    IEnumerable<UInt32>               PINs               = null,
 
-                    DateTime?                Timestamp          = null,
-                    CancellationToken?       CancellationToken  = null,
-                    EventTracking_Id         EventTrackingId    = null,
-                    TimeSpan?                RequestTimeout     = null)
+                    DateTime?                         Timestamp          = null,
+                    CancellationToken?                CancellationToken  = null,
+                    EventTracking_Id                  EventTrackingId    = null,
+                    TimeSpan?                         RequestTimeout     = null)
 
         {
 
@@ -3833,6 +3847,9 @@ namespace org.GraphDefined.WWCP
 
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -4008,14 +4025,22 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            #region Initial checks
+
+            ChargingStationOperator _ChargingStationOperator  = null;
+            CancelReservationResult result                    = null;
+
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
-            CancelReservationResult result                    = null;
-            ChargingStationOperator _ChargingStationOperator  = null;
+            #endregion
+
 
             #region Check Charging Station Operator charging reservation lookup...
 
@@ -4215,6 +4240,9 @@ namespace org.GraphDefined.WWCP
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
 
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
@@ -4381,6 +4409,9 @@ namespace org.GraphDefined.WWCP
 
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -4549,6 +4580,9 @@ namespace org.GraphDefined.WWCP
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
 
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
@@ -4678,6 +4712,9 @@ namespace org.GraphDefined.WWCP
 
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -4905,6 +4942,9 @@ namespace org.GraphDefined.WWCP
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
 
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
@@ -5048,13 +5088,16 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (OperatorId == null)
-                throw new ArgumentNullException(nameof(OperatorId),  "The given Charging Station Operator must not be null!");
+                throw new ArgumentNullException(nameof(OperatorId),  "The given charging station operator must not be null!");
 
             if (AuthToken  == null)
                 throw new ArgumentNullException(nameof(AuthToken),   "The given authentication token must not be null!");
 
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -5267,6 +5310,9 @@ namespace org.GraphDefined.WWCP
 
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -5487,6 +5533,9 @@ namespace org.GraphDefined.WWCP
 
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -5747,6 +5796,9 @@ namespace org.GraphDefined.WWCP
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
 
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
@@ -5935,6 +5987,9 @@ namespace org.GraphDefined.WWCP
 
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -6130,6 +6185,9 @@ namespace org.GraphDefined.WWCP
 
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -6786,6 +6844,49 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Operator overloading
+
+        #region Operator == (RoamingNetwork1, RoamingNetwork2)
+
+        /// <summary>
+        /// Compares two roaming networks for equality.
+        /// </summary>
+        /// <param name="RoamingNetwork1">A roaming network.</param>
+        /// <param name="RoamingNetwork2">Another roaming network.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public static Boolean operator == (RoamingNetwork RoamingNetwork1, RoamingNetwork RoamingNetwork2)
+        {
+
+            // If both are null, or both are same instance, return true.
+            if (Object.ReferenceEquals(RoamingNetwork1, RoamingNetwork2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (((Object) RoamingNetwork1 == null) || ((Object) RoamingNetwork2 == null))
+                return false;
+
+            return RoamingNetwork1.Equals(RoamingNetwork2);
+
+        }
+
+        #endregion
+
+        #region Operator != (RoamingNetwork1, RoamingNetwork2)
+
+        /// <summary>
+        /// Compares two roaming networks for inequality.
+        /// </summary>
+        /// <param name="RoamingNetwork1">A roaming network.</param>
+        /// <param name="RoamingNetwork2">Another roaming network.</param>
+        /// <returns>False if both match; True otherwise.</returns>
+        public static Boolean operator != (RoamingNetwork RoamingNetwork1, RoamingNetwork RoamingNetwork2)
+
+            => !(RoamingNetwork1 == RoamingNetwork2);
+
+        #endregion
+
+        #endregion
+
         #region IComparable<RoamingNetwork> Members
 
         #region CompareTo(Object)
@@ -6798,12 +6899,12 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
-            // Check if the given object is an RoamingNetwork.
+            // Check if the given object is a roaming network.
             var RoamingNetwork = Object as RoamingNetwork;
             if ((Object) RoamingNetwork == null)
-                throw new ArgumentException("The given object is not an RoamingNetwork!");
+                throw new ArgumentException("The given object is not a roaming network!");
 
             return CompareTo(RoamingNetwork);
 
@@ -6816,7 +6917,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetwork">An RoamingNetwork object to compare with.</param>
+        /// <param name="RoamingNetwork">A roaming network object to compare with.</param>
         public Int32 CompareTo(RoamingNetwork RoamingNetwork)
         {
 
@@ -6846,7 +6947,7 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an RoamingNetwork.
+            // Check if the given object is a roaming network.
             var RoamingNetwork = Object as RoamingNetwork;
             if ((Object) RoamingNetwork == null)
                 return false;
@@ -6860,9 +6961,9 @@ namespace org.GraphDefined.WWCP
         #region Equals(RoamingNetwork)
 
         /// <summary>
-        /// Compares two RoamingNetwork for equality.
+        /// Compares two roaming networks for equality.
         /// </summary>
-        /// <param name="RoamingNetwork">An RoamingNetwork to compare with.</param>
+        /// <param name="RoamingNetwork">A roaming network to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(RoamingNetwork RoamingNetwork)
         {

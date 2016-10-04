@@ -20,6 +20,8 @@
 using System;
 using System.Threading.Tasks;
 
+using Org.BouncyCastle.Bcpg.OpenPgp;
+
 #endregion
 
 namespace org.GraphDefined.WWCP
@@ -34,5 +36,21 @@ namespace org.GraphDefined.WWCP
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
     public delegate Task OnPropertyChangedDelegate(DateTime Timestamp, Object Sender, String PropertyName, Object OldValue, Object NewValue);
+
+
+    /// <summary>
+    /// A delegate called whenever a charging station should be signed.
+    /// </summary>
+    public delegate Signature ChargingStationSignatureDelegate(ChargingStation ChargingStation, PgpSecretKey SecretKey);
+
+    /// <summary>
+    /// A delegate called whenever a charging pool should be signed.
+    /// </summary>
+    public delegate Signature ChargingPoolSignatureDelegate(ChargingPool ChargingPool, PgpSecretKey SecretKey);
+
+    /// <summary>
+    /// A delegate called whenever a charging station operator should be signed.
+    /// </summary>
+    public delegate Signature ChargingStationOperatorSignatureDelegate(ChargingStationOperator ChargingStationOperator, PgpSecretKey SecretKey);
 
 }
