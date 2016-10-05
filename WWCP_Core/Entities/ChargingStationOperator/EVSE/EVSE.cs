@@ -958,12 +958,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a reserve command was received.
         /// </summary>
-        public event OnEVSEReserveDelegate     OnReserve;
+        public event OnReserveEVSERequestDelegate     OnReserve;
 
         /// <summary>
         /// An event fired whenever a reserve command completed.
         /// </summary>
-        public event OnEVSEReservedDelegate    OnReserved;
+        public event OnReserveEVSEResponseDelegate    OnReserved;
 
         /// <summary>
         /// An event fired whenever a new charging reservation was created.
@@ -1273,12 +1273,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a remote start command was received.
         /// </summary>
-        public event OnRemoteEVSEStartDelegate    OnRemoteStart;
+        public event OnRemoteStartEVSERequestDelegate    OnRemoteStart;
 
         /// <summary>
         /// An event fired whenever a remote start command completed.
         /// </summary>
-        public event OnRemoteEVSEStartedDelegate  OnRemoteStarted;
+        public event OnRemoteStartEVSEResponseDelegate  OnRemoteStarted;
 
         #endregion
 
@@ -1510,12 +1510,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a remote stop command was received.
         /// </summary>
-        public event OnRemoteEVSEStopDelegate     OnRemoteStop;
+        public event OnRemoteStopEVSERequestDelegate     OnRemoteStop;
 
         /// <summary>
         /// An event fired whenever a remote stop command completed.
         /// </summary>
-        public event OnRemoteEVSEStoppedDelegate  OnRemoteStopped;
+        public event OnRemoteStopEVSEResponseDelegate  OnRemoteStopped;
 
         #endregion
 

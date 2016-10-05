@@ -48,7 +48,7 @@ namespace org.GraphDefined.WWCP
                                               ChargingSession_Id    SessionId,
                                               ReservationHandling   ReservationHandling,
                                               eMobilityProvider_Id  ProviderId,
-                                              eMobilityAccount_Id                eMAId,
+                                              eMobilityAccount_Id   eMAId,
                                               TimeSpan?             RequestTimeout);
 
     /// <summary>
@@ -73,7 +73,7 @@ namespace org.GraphDefined.WWCP
                                                  ChargingSession_Id    SessionId,
                                                  ReservationHandling   ReservationHandling,
                                                  eMobilityProvider_Id  ProviderId,
-                                                 eMobilityAccount_Id                eMAId,
+                                                 eMobilityAccount_Id   eMAId,
                                                  TimeSpan?             RequestTimeout,
                                                  RemoteStopResult      Result,
                                                  TimeSpan              Runtime);
@@ -96,171 +96,7 @@ namespace org.GraphDefined.WWCP
                                                                  ReservationHandling   ReservationHandling,
                                                                  ChargingSession_Id    SessionId,
                                                                  eMobilityProvider_Id  ProviderId,
-                                                                 eMobilityAccount_Id                eMAId,
+                                                                 eMobilityAccount_Id   eMAId,
                                                                  TimeSpan?             RequestTimeout);
-
-
-    // ----------------------------------------------------------------------------------------------------------
-
-
-    /// <summary>
-    /// Indicate a remote stop of the given charging session at the given EVSE.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="EVSEId">The unique identification of an EVSE.</param>
-    /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
-    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-    /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnRemoteEVSEStopDelegate(DateTime              LogTimestamp,
-                                                  DateTime              RequestTimestamp,
-                                                  Object                Sender,
-                                                  EventTracking_Id      EventTrackingId,
-                                                  RoamingNetwork_Id     RoamingNetworkId,
-                                                  EVSE_Id               EVSEId,
-                                                  ChargingSession_Id    SessionId,
-                                                  ReservationHandling   ReservationHandling,
-                                                  eMobilityProvider_Id  ProviderId,
-                                                  eMobilityAccount_Id                eMAId,
-                                                  TimeSpan?             RequestTimeout);
-
-    /// <summary>
-    /// Indicate a remote stop of the given charging session at the given EVSE
-    /// and for the given provider/eMAId.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="EVSEId">The unique identification of an EVSE.</param>
-    /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
-    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-    /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    /// <param name="Result">The remote stop result.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
-    public delegate void OnRemoteEVSEStoppedDelegate(DateTime              LogTimestamp,
-                                                     DateTime              RequestTimestamp,
-                                                     Object                Sender,
-                                                     EventTracking_Id      EventTrackingId,
-                                                     RoamingNetwork_Id     RoamingNetworkId,
-                                                     EVSE_Id               EVSEId,
-                                                     ChargingSession_Id    SessionId,
-                                                     ReservationHandling   ReservationHandling,
-                                                     eMobilityProvider_Id  ProviderId,
-                                                     eMobilityAccount_Id                eMAId,
-                                                     TimeSpan?             RequestTimeout,
-                                                     RemoteStopEVSEResult  Result,
-                                                     TimeSpan              Runtime);
-
-
-    /// <summary>
-    /// Stop the given charging session.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
-    /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-    /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-    /// <param name="EVSEId">The unique identification of an EVSE.</param>
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<RemoteStopEVSEResult> OnRemoteStopEVSEDelegate(DateTime              Timestamp,
-                                                                        CancellationToken     CancellationToken,
-                                                                        EventTracking_Id      EventTrackingId,
-                                                                        ReservationHandling   ReservationHandling,
-                                                                        ChargingSession_Id    SessionId,
-                                                                        eMobilityProvider_Id  ProviderId,
-                                                                        eMobilityAccount_Id                eMAId,
-                                                                        EVSE_Id               EVSEId,
-                                                                        TimeSpan?             RequestTimeout  = null);
-
-
-    // ----------------------------------------------------------------------------------------------------------
-
-
-    /// <summary>
-    /// Indicate a remote stop of the given charging session at the given charging station.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="ChargingStationId">The unique identification of a charging station.</param>
-    /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
-    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-    /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnRemoteChargingStationStopDelegate(DateTime              LogTimestamp,
-                                                             DateTime              RequestTimestamp,
-                                                             Object                Sender,
-                                                             EventTracking_Id      EventTrackingId,
-                                                             RoamingNetwork_Id     RoamingNetworkId,
-                                                             ChargingStation_Id    ChargingStationId,
-                                                             ChargingSession_Id    SessionId,
-                                                             ReservationHandling   ReservationHandling,
-                                                             eMobilityProvider_Id  ProviderId,
-                                                             eMobilityAccount_Id                eMAId,
-                                                             TimeSpan?             RequestTimeout);
-
-    /// <summary>
-    /// Indicate a remote stop of the given charging session at the given charging station
-    /// and for the given provider/eMAId.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="Sender">The sender of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="ChargingStationId">The unique identification of a charging station.</param>
-    /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
-    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-    /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    /// <param name="Result">The remote stop result.</param>
-    /// <param name="Runtime">The runtime of the request.</param>
-    public delegate void OnRemoteChargingStationStoppedDelegate(DateTime                         LogTimestamp,
-                                                                DateTime                         RequestTimestamp,
-                                                                Object                           Sender,
-                                                                EventTracking_Id                 EventTrackingId,
-                                                                RoamingNetwork_Id                RoamingNetworkId,
-                                                                ChargingStation_Id               ChargingStationId,
-                                                                ChargingSession_Id               SessionId,
-                                                                ReservationHandling              ReservationHandling,
-                                                                eMobilityProvider_Id             ProviderId,
-                                                                eMobilityAccount_Id                           eMAId,
-                                                                TimeSpan?                        RequestTimeout,
-                                                                RemoteStopChargingStationResult  Result,
-                                                                TimeSpan                         Runtime);
-
-
-    /// <summary>
-    /// Stop the given charging session.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
-    /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-    /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-    /// <param name="ChargingStationId">The unique identification of a charging station.</param>
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<RemoteStopChargingStationResult> OnRemoteStopChargingStationDelegate(DateTime              Timestamp,
-                                                                                              CancellationToken     CancellationToken,
-                                                                                              EventTracking_Id      EventTrackingId,
-                                                                                              ReservationHandling   ReservationHandling,
-                                                                                              ChargingSession_Id    SessionId,
-                                                                                              eMobilityProvider_Id  ProviderId,
-                                                                                              eMobilityAccount_Id                eMAId,
-                                                                                              ChargingStation_Id    ChargingStationId,
-                                                                                              TimeSpan?             RequestTimeout  = null);
 
 }

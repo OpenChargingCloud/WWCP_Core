@@ -60,6 +60,12 @@
     <Compile Include="Commands\IGeneralServices.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStopDelegates.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStartDelegates.cs" />
+    <Compile Include="Commands\RemoteStartStop\OnRemoteStartEVSEDelegates.cs" />
+    <Compile Include="Commands\RemoteStartStop\OnRemoteStopDelegates.cs" />
+    <Compile Include="Commands\RemoteStartStop\OnRemoteStopEVSEDelegates.cs" />
+    <Compile Include="Commands\Reserve\ReserveEVSEDelegates.cs" />
+    <Compile Include="Commands\Reserve\CancelReservationDelegates.cs" />
+    <Compile Include="Commands\Reserve\ReserveChargingPoolDelegates.cs" />
     <Compile Include="CommonTypes\Signature.cs" />
     <Compile Include="Entities\ACryptoEMobilityEntity.cs" />
     <Compile Include="Entities\ChargingStationOperator\ChargingPool\ChargingPoolDelegates.cs" />
@@ -150,7 +156,7 @@
     <Compile Include="Entities\RoamingProvider\IChargingStationOperatorRoamingProvider.cs" />
     <Compile Include="Commands\PushDataAndStatus\AnonymousPushEVSEStatusService.cs" />
     <Compile Include="Commands\PushDataAndStatus\PushDataAndStatusDelegates.cs" />
-    <Compile Include="Commands\RemoteStartStop\OnRemoteStopDelegates.cs" />
+    <Compile Include="Commands\RemoteStartStop\OnRemoteStopChargingStationDelegates.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStartChargingStationResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopChargingStationResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopResult.cs" />
@@ -237,8 +243,8 @@
     <Compile Include="Entities\ChargingStationOperator\EVSE\CurrentTypes.cs" />
     <Compile Include="Entities\ChargingStationOperator\EVSE\ChargingModes.cs" />
     <Compile Include="Entities\HubOperator_Id.cs" />
-    <Compile Include="Commands\RemoteStartStop\OnRemoteStartDelegates.cs" />
-    <Compile Include="Commands\Reserve\ReservationDelegates.cs" />
+    <Compile Include="Commands\RemoteStartStop\OnRemoteStartChargingStationDelegates.cs" />
+    <Compile Include="Commands\Reserve\ReserveChargingStationDelegates.cs" />
     <Compile Include="Commands\Reserve\ReservationHandling.cs" />
     <Compile Include="Commands\Reserve\ReservationResult.cs" />
     <Compile Include="Entities\ChargingStationOperator\EVSE\RedirectedEVSEs.cs" />

@@ -32,55 +32,22 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region IsKeepAlive
-
         /// <summary>
         /// The reservation should not end after the remote stop operation.
         /// </summary>
-        public Boolean IsKeepAlive
-        {
-            get
-            {
-                return _KeepAliveTime.HasValue;
-            }
-        }
-
-        #endregion
-
-        #region KeepAliveTime
-
-        private readonly TimeSpan? _KeepAliveTime;
+        public Boolean    IsKeepAlive
+            => KeepAliveTime.HasValue;
 
         /// <summary>
         /// The time span in which the reservation can be used
         /// for additional charging sessions.
         /// </summary>
-        public TimeSpan? KeepAliveTime
-        {
-            get
-            {
-                return _KeepAliveTime;
-            }
-        }
-
-        #endregion
-
-        #region EndTime
-
-        private readonly DateTime _EndTime;
+        public TimeSpan?  KeepAliveTime     { get; }
 
         /// <summary>
         /// The timestamp when the reservation will expire.
         /// </summary>
-        public DateTime EndTime
-        {
-            get
-            {
-                return _EndTime;
-            }
-        }
-
-        #endregion
+        public DateTime   EndTime           { get; }
 
         #endregion
 
@@ -95,14 +62,14 @@ namespace org.GraphDefined.WWCP
 
             if (KeepAliveTime.TotalSeconds > 0)
             {
-                this._KeepAliveTime  = KeepAliveTime;
-                this._EndTime        = DateTime.Now + KeepAliveTime;
+                this.KeepAliveTime  = KeepAliveTime;
+                this.EndTime        = DateTime.Now + KeepAliveTime;
             }
 
             else
             {
-                this._KeepAliveTime  = null;
-                this._EndTime        = DateTime.Now;
+                this.KeepAliveTime  = null;
+                this.EndTime        = DateTime.Now;
             }
 
         }
@@ -116,12 +83,8 @@ namespace org.GraphDefined.WWCP
         /// The reservation will end with the remote stop operation.
         /// </summary>
         public static ReservationHandling Close
-        {
-            get
-            {
-                return new ReservationHandling(TimeSpan.Zero);
-            }
-        }
+
+            => new ReservationHandling(TimeSpan.Zero);
 
         #endregion
 
@@ -132,11 +95,9 @@ namespace org.GraphDefined.WWCP
         /// within the given time span.
         /// </summary>
         /// <param name="KeepAliveTime">The time span in which the reservation can be used for additional charging sessions.</param>
-        /// <returns></returns>
         public static ReservationHandling KeepAlive(TimeSpan KeepAliveTime)
-        {
-            return new ReservationHandling(KeepAliveTime);
-        }
+
+            => new ReservationHandling(KeepAliveTime);
 
         #endregion
 

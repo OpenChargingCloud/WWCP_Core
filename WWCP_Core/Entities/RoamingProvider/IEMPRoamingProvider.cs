@@ -62,10 +62,66 @@ namespace org.GraphDefined.WWCP
 
         // Client methods (logging)
 
+        #region OnReserveEVSERequest/-Response
+
+        /// <summary>
+        /// An event sent whenever a reserve EVSE command will be send.
+        /// </summary>
+        event OnReserveEVSERequestDelegate         OnReserveEVSERequest;
+
+        /// <summary>
+        /// An event sent whenever a reserve EVSE command was sent.
+        /// </summary>
+        event OnReserveEVSEResponseDelegate        OnReserveEVSEResponse;
+
+        #endregion
+
+        #region OnCancelReservationRequest/-Response
+
+        /// <summary>
+        /// An event sent whenever a cancel reservation command will be send.
+        /// </summary>
+        event OnCancelReservationRequestDelegate   OnCancelReservationRequest;
+
+        /// <summary>
+        /// An event sent whenever a cancel reservation command was sent.
+        /// </summary>
+        event OnCancelReservationResponseDelegate  OnCancelReservationResponse;
+
+        #endregion
+
+        #region OnRemoteStartEVSERequest/-Response
+
+        /// <summary>
+        /// An event sent whenever a remote start EVSE command will be send.
+        /// </summary>
+        event OnRemoteStartEVSERequestDelegate     OnRemoteStartEVSERequest;
+
+        /// <summary>
+        /// An event sent whenever a remote start EVSE command was sent.
+        /// </summary>
+        event OnRemoteStartEVSEResponseDelegate    OnRemoteStartEVSEResponse;
+
+        #endregion
+
+        #region OnRemoteStopEVSERequest/-Response
+
+        /// <summary>
+        /// An event sent whenever a remote stop EVSE command will be send.
+        /// </summary>
+        event OnRemoteStopEVSERequestDelegate      OnRemoteStopEVSERequest;
+
+        /// <summary>
+        /// An event sent whenever a remote stop EVSE command was sent.
+        /// </summary>
+        event OnRemoteStopEVSEResponseDelegate     OnRemoteStopEVSEResponse;
+
+        #endregion
+
 
         // Server methods
 
-        #region OnAuthorizeStart/-Stop
+        #region OnAuthorizeStart/-StopEVSE
 
         /// <summary>
         /// An event sent whenever a authorize start command was received.
@@ -113,21 +169,21 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<ReservationResult>
 
-            Reserve(EVSE_Id                  EVSEId,
-                    DateTime?                StartTime          = null,
-                    TimeSpan?                Duration           = null,
-                    ChargingReservation_Id   ReservationId      = null,
-                    eMobilityProvider_Id                  ProviderId         = null,
-                    eMobilityAccount_Id                   eMAId              = null,
-                    ChargingProduct_Id       ChargingProductId  = null,
-                    IEnumerable<Auth_Token>  AuthTokens         = null,
-                    IEnumerable<eMobilityAccount_Id>      eMAIds             = null,
-                    IEnumerable<UInt32>      PINs               = null,
+            Reserve(EVSE_Id                           EVSEId,
+                    DateTime?                         StartTime          = null,
+                    TimeSpan?                         Duration           = null,
+                    ChargingReservation_Id            ReservationId      = null,
+                    eMobilityProvider_Id              ProviderId         = null,
+                    eMobilityAccount_Id               eMAId              = null,
+                    ChargingProduct_Id                ChargingProductId  = null,
+                    IEnumerable<Auth_Token>           AuthTokens         = null,
+                    IEnumerable<eMobilityAccount_Id>  eMAIds             = null,
+                    IEnumerable<UInt32>               PINs               = null,
 
-                    DateTime?                Timestamp          = null,
-                    CancellationToken?       CancellationToken  = null,
-                    EventTracking_Id         EventTrackingId    = null,
-                    TimeSpan?                RequestTimeout     = null);
+                    DateTime?                         Timestamp          = null,
+                    CancellationToken?                CancellationToken  = null,
+                    EventTracking_Id                  EventTrackingId    = null,
+                    TimeSpan?                         RequestTimeout     = null);
 
         #endregion
 
@@ -149,7 +205,7 @@ namespace org.GraphDefined.WWCP
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
-                              eMobilityProvider_Id                                ProviderId         = null,
+                              eMobilityProvider_Id                   ProviderId         = null,
                               EVSE_Id                                EVSEId             = null,
 
                               DateTime?                              Timestamp          = null,
@@ -182,8 +238,8 @@ namespace org.GraphDefined.WWCP
                         ChargingProduct_Id      ChargingProductId  = null,
                         ChargingReservation_Id  ReservationId      = null,
                         ChargingSession_Id      SessionId          = null,
-                        eMobilityProvider_Id                 ProviderId         = null,
-                        eMobilityAccount_Id                  eMAId              = null,
+                        eMobilityProvider_Id    ProviderId         = null,
+                        eMobilityAccount_Id     eMAId              = null,
 
                         DateTime?               Timestamp          = null,
                         CancellationToken?      CancellationToken  = null,
@@ -209,16 +265,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<RemoteStopEVSEResult>
 
-            RemoteStop(EVSE_Id              EVSEId,
-                       ChargingSession_Id   SessionId,
-                       ReservationHandling  ReservationHandling,
-                       eMobilityProvider_Id              ProviderId         = null,
-                       eMobilityAccount_Id               eMAId              = null,
+            RemoteStop(EVSE_Id               EVSEId,
+                       ChargingSession_Id    SessionId,
+                       ReservationHandling   ReservationHandling,
+                       eMobilityProvider_Id  ProviderId         = null,
+                       eMobilityAccount_Id   eMAId              = null,
 
-                       DateTime?            Timestamp          = null,
-                       CancellationToken?   CancellationToken  = null,
-                       EventTracking_Id     EventTrackingId    = null,
-                       TimeSpan?            RequestTimeout     = null);
+                       DateTime?             Timestamp          = null,
+                       CancellationToken?    CancellationToken  = null,
+                       EventTracking_Id      EventTrackingId    = null,
+                       TimeSpan?             RequestTimeout     = null);
 
         #endregion
 

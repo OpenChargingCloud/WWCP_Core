@@ -100,12 +100,12 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (static) UnknownEVSEOperator
+        #region (static) UnknownOperator
 
         /// <summary>
-        /// The Charging Station Operator is unknown.
+        /// The charging station operator is unknown.
         /// </summary>
-        public static CancelReservationResult UnknownEVSEOperator
+        public static CancelReservationResult UnknownOperator
 
             => new CancelReservationResult(CancelReservationResultType.UnknownEVSE);
 
@@ -160,7 +160,7 @@ namespace org.GraphDefined.WWCP
         #region (static) OutOfService
 
         /// <summary>
-        /// The EVSE, charging station, charging pool or Charging Station Operator is out-of-service.
+        /// The EVSE, charging station, charging pool or charging station operator is out-of-service.
         /// </summary>
         public static CancelReservationResult OutOfService
 
@@ -171,7 +171,7 @@ namespace org.GraphDefined.WWCP
         #region (static) Offline
 
         /// <summary>
-        /// The EVSE, charging station, charging pool or Charging Station Operator is offline.
+        /// The EVSE, charging station, charging pool or charging station operator is offline.
         /// </summary>
         public static CancelReservationResult Offline
 
@@ -251,9 +251,9 @@ namespace org.GraphDefined.WWCP
 
 
         /// <summary>
-        /// The Charging Station Operator is unknown.
+        /// The charging station operator is unknown.
         /// </summary>
-        UnknownEVSEOperator,
+        UnknownOperator,
 
         /// <summary>
         /// The given reservation identification is unknown or invalid.
@@ -275,14 +275,13 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         UnknownEVSE,
 
-
         /// <summary>
-        /// The EVSE, charging station, charging pool or Charging Station Operator is out-of-service.
+        /// The EVSE, charging station, charging pool or charging station operator is out-of-service.
         /// </summary>
         OutOfService,
 
         /// <summary>
-        /// The EVSE, charging station, charging pool or Charging Station Operator is offline.
+        /// The EVSE, charging station, charging pool or charging station operator is offline.
         /// </summary>
         Offline,
 

@@ -59,6 +59,11 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public IEnumerable<String>  Warnings        { get; }
 
+        /// <summary>
+        /// The runtime of the request.
+        /// </summary>
+        public TimeSpan?            Runtime         { get;  }
+
         #endregion
 
         #region Constructor(s)
@@ -69,9 +74,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         public Acknowledgement(ResultType           Result,
                                String               Description  = null,
-                               IEnumerable<String>  Warnings     = null)
+                               IEnumerable<String>  Warnings     = null,
+                               TimeSpan?            Runtime      = null)
         {
 
             this.Result       = Result;
@@ -85,6 +92,8 @@ namespace org.GraphDefined.WWCP
                                                SafeSelect(warning => warning.Trim()).
                                                Where     (warning => warning.IsNotNullOrEmpty())
                                     : null;
+
+            this.Runtime      = Runtime;
 
         }
 

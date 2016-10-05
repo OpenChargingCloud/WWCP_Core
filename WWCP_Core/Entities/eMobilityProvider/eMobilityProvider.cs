@@ -488,12 +488,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever an EVSE is being reserved.
         /// </summary>
-        public event OnEVSEReserveDelegate              OnReserveEVSE;
+        public event OnReserveEVSERequestDelegate              OnReserveEVSE;
 
         /// <summary>
         /// An event fired whenever an EVSE was reserved.
         /// </summary>
-        public event OnEVSEReservedDelegate             OnEVSEReserved;
+        public event OnReserveEVSEResponseDelegate             OnEVSEReserved;
 
         #endregion
 
@@ -502,12 +502,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a remote start EVSE command was received.
         /// </summary>
-        public event OnRemoteEVSEStartDelegate               OnRemoteEVSEStart;
+        public event OnRemoteStartEVSERequestDelegate               OnRemoteEVSEStart;
 
         /// <summary>
         /// An event fired whenever a remote start EVSE command completed.
         /// </summary>
-        public event OnRemoteEVSEStartedDelegate             OnRemoteEVSEStarted;
+        public event OnRemoteStartEVSEResponseDelegate             OnRemoteEVSEStarted;
 
         #endregion
 
@@ -516,12 +516,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a remote stop EVSE command was received.
         /// </summary>
-        public event OnRemoteEVSEStopDelegate                OnRemoteEVSEStop;
+        public event OnRemoteStopEVSERequestDelegate                OnRemoteEVSEStop;
 
         /// <summary>
         /// An event fired whenever a remote stop EVSE command completed.
         /// </summary>
-        public event OnRemoteEVSEStoppedDelegate             OnRemoteEVSEStopped;
+        public event OnRemoteStopEVSEResponseDelegate             OnRemoteEVSEStopped;
 
         #endregion
 

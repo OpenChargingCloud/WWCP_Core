@@ -1692,12 +1692,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever an EVSE is being reserved.
         /// </summary>
-        public event OnEVSEReserveDelegate              OnReserveEVSE;
+        public event OnReserveEVSERequestDelegate              OnReserveEVSE;
 
         /// <summary>
         /// An event fired whenever an EVSE was reserved.
         /// </summary>
-        public event OnEVSEReservedDelegate             OnEVSEReserved;
+        public event OnReserveEVSEResponseDelegate             OnEVSEReserved;
 
         /// <summary>
         /// An event fired whenever a charging station is being reserved.
@@ -2329,12 +2329,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a remote start EVSE command was received.
         /// </summary>
-        public event OnRemoteEVSEStartDelegate               OnRemoteEVSEStart;
+        public event OnRemoteStartEVSERequestDelegate               OnRemoteEVSEStart;
 
         /// <summary>
         /// An event fired whenever a remote start EVSE command completed.
         /// </summary>
-        public event OnRemoteEVSEStartedDelegate             OnRemoteEVSEStarted;
+        public event OnRemoteStartEVSEResponseDelegate             OnRemoteEVSEStarted;
 
         /// <summary>
         /// An event fired whenever a remote start charging station command was received.
@@ -2807,12 +2807,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a remote stop EVSE command was received.
         /// </summary>
-        public event OnRemoteEVSEStopDelegate                OnRemoteEVSEStop;
+        public event OnRemoteStopEVSERequestDelegate                OnRemoteEVSEStop;
 
         /// <summary>
         /// An event fired whenever a remote stop EVSE command completed.
         /// </summary>
-        public event OnRemoteEVSEStoppedDelegate             OnRemoteEVSEStopped;
+        public event OnRemoteStopEVSEResponseDelegate             OnRemoteEVSEStopped;
 
         /// <summary>
         /// An event fired whenever a remote stop charging station command was received.
