@@ -2707,16 +2707,22 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (internal) SendNewChargingSession(Timestamp, Sender, ChargingSession)
+        #region (internal) SendNewChargingSession(Timestamp, Sender, Session)
 
         internal void SendNewChargingSession(DateTime         Timestamp,
                                              Object           Sender,
-                                             ChargingSession  ChargingSession)
+                                             ChargingSession  Session)
         {
 
-            var OnNewChargingSessionLocal = OnNewChargingSession;
-            if (OnNewChargingSessionLocal != null)
-                OnNewChargingSessionLocal(Timestamp, Sender, ChargingSession);
+            if (Session != null)
+            {
+
+                if (Session.ChargingPool == null)
+                    Session.ChargingPool = this;
+
+            }
+
+            OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
 
         }
 

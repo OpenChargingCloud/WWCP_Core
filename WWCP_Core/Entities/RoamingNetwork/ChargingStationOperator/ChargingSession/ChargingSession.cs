@@ -42,28 +42,28 @@ namespace org.GraphDefined.WWCP
 
         public EventTracking_Id EventTrackingId { get; set; }
 
-        #region EVSEOperator
+        #region RoamingNetwork
 
-        private ChargingStationOperator _EVSEOperator;
+        private RoamingNetwork _RoamingNetwork;
 
         /// <summary>
-        /// The Charging Station Operator serving this session.
+        /// The roaming network serving this session.
         /// </summary>
-        public ChargingStationOperator ChargingStationOperator
+        public RoamingNetwork RoamingNetwork
         {
 
             get
             {
-                return _EVSEOperator;
+                return _RoamingNetwork;
             }
 
             set
             {
 
-                _EVSEOperator = value;
+                _RoamingNetwork = value;
 
                 if (value != null)
-                    _EVSEOperatorId  = value.Id;
+                    RoamingNetworkId = value.Id;
 
             }
 
@@ -71,27 +71,56 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEOperatorId
-
-        private ChargingStationOperator_Id _EVSEOperatorId;
+        #region RoamingNetworkId
 
         /// <summary>
-        /// The unqiue identification of the Charging Station Operator serving this session.
+        /// The unqiue identification of the roaming network serving this session.
         /// </summary>
-        public ChargingStationOperator_Id ChargingStationOperatorId
+        public RoamingNetwork_Id RoamingNetworkId { get; set; }
+
+        #endregion
+
+        #region Operator
+
+        private ChargingStationOperator _Operator;
+
+        /// <summary>
+        /// The charging station operator serving this session.
+        /// </summary>
+        public ChargingStationOperator Operator
+
         {
 
             get
             {
-                return _EVSEOperatorId;
+                return _Operator;
             }
 
             set
             {
-                _EVSEOperatorId = value;
+
+                _Operator = value;
+
+                if (value != null)
+                {
+                    OperatorId          = value.Id;
+                    _RoamingNetwork     = value.RoamingNetwork;
+                    RoamingNetworkId    = value.RoamingNetwork.Id;
+                }
+
+
             }
 
         }
+
+        #endregion
+
+        #region OperatorId
+
+        /// <summary>
+        /// The unqiue identification of the charging station operator serving this session.
+        /// </summary>
+        public ChargingStationOperator_Id OperatorId { get; set; }
 
         #endregion
 
@@ -118,8 +147,10 @@ namespace org.GraphDefined.WWCP
                 if (value != null)
                 {
                     _ChargingPoolId     = value.Id;
-                    _EVSEOperator       = value.Operator;
-                    _EVSEOperatorId     = value.Operator.Id;
+                    _Operator           = value.Operator;
+                    OperatorId          = value.Operator.Id;
+                    _RoamingNetwork     = value.Operator.RoamingNetwork;
+                    RoamingNetworkId    = value.Operator.RoamingNetwork.Id;
                 }
 
             }
@@ -187,8 +218,10 @@ namespace org.GraphDefined.WWCP
                     _ChargingStationId  = value.Id;
                     _ChargingPool       = value.ChargingPool;
                     _ChargingPoolId     = value.ChargingPool.Id;
-                    _EVSEOperator       = value.Operator;
-                    _EVSEOperatorId     = value.Operator.Id;
+                    _Operator           = value.Operator;
+                    OperatorId          = value.Operator.Id;
+                    _RoamingNetwork     = value.Operator.RoamingNetwork;
+                    RoamingNetworkId    = value.Operator.RoamingNetwork.Id;
                 }
 
             }
@@ -254,8 +287,10 @@ namespace org.GraphDefined.WWCP
                     _ChargingStationId  = value.ChargingStation.Id;
                     _ChargingPool       = value.ChargingStation.ChargingPool;
                     _ChargingPoolId     = value.ChargingStation.ChargingPool.Id;
-                    _EVSEOperator       = value.Operator;
-                    _EVSEOperatorId     = value.Operator.Id;
+                    _Operator           = value.Operator;
+                    OperatorId          = value.Operator.Id;
+                    _RoamingNetwork     = value.Operator.RoamingNetwork;
+                    RoamingNetworkId    = value.Operator.RoamingNetwork.Id;
                 }
 
             }

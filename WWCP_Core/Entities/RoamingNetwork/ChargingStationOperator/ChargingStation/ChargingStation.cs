@@ -2783,9 +2783,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            var OnNewChargingSessionLocal = OnNewChargingSession;
-            if (OnNewChargingSessionLocal != null)
-                OnNewChargingSessionLocal(Timestamp, Sender, Session);
+            OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
 
         }
 

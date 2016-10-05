@@ -3034,7 +3034,7 @@ namespace org.GraphDefined.WWCP
                 if (result.Result == RemoteStartEVSEResultType.Success)
                 {
 
-                    result.Session.ChargingStationOperator = this;
+                    result.Session.Operator = this;
 
                     OnNewChargingSession?.Invoke(DateTime.Now, this, result.Session);
 
@@ -3076,7 +3076,7 @@ namespace org.GraphDefined.WWCP
 
                     if (result.Result == RemoteStartEVSEResultType.Success)
                     {
-                        result.Session.ChargingStationOperator = this;
+                        result.Session.Operator = this;
                         _ChargingSessions.TryAdd(result.Session.Id, _ChargingPool);
                     }
 
@@ -3224,7 +3224,7 @@ namespace org.GraphDefined.WWCP
 
                 {
 
-                    result.Session.ChargingStationOperator = this;
+                    result.Session.Operator = this;
 
                     OnNewChargingSession?.Invoke(DateTime.Now, this, result.Session);
 
@@ -3311,14 +3311,22 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (internal) SendNewChargingSession(Timestamp, Sender, ChargingSession)
+        #region (internal) SendNewChargingSession(Timestamp, Sender, Session)
 
         internal void SendNewChargingSession(DateTime         Timestamp,
                                              Object           Sender,
-                                             ChargingSession  ChargingSession)
+                                             ChargingSession  Session)
         {
 
-            OnNewChargingSession?.Invoke(Timestamp, Sender, ChargingSession);
+            if (Session != null)
+            {
+
+                if (Session.Operator == null)
+                    Session.Operator = this;
+
+            }
+
+            OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
 
         }
 

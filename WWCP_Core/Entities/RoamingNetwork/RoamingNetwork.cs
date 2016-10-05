@@ -5377,7 +5377,7 @@ namespace org.GraphDefined.WWCP
                                                     this,
                                                     new ChargingSession(result.SessionId) {
                                                         AuthService                = AuthenticationService,
-                                                        ChargingStationOperatorId  = OperatorId,
+                                                        OperatorId  = OperatorId,
                                                         EVSEId                     = EVSEId,
                                                         AuthTokenStart             = AuthToken,
                                                         ChargingProductId          = ChargingProductId
@@ -5426,7 +5426,7 @@ namespace org.GraphDefined.WWCP
                                                     this,
                                                     new ChargingSession(result.SessionId) {
                                                         OperatorRoamingService  = OperatorRoamingService,
-                                                        ChargingStationOperatorId          = OperatorId,
+                                                        OperatorId          = OperatorId,
                                                         EVSEId                  = EVSEId,
                                                         AuthTokenStart          = AuthToken,
                                                         ChargingProductId       = ChargingProductId
@@ -6514,16 +6514,22 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (internal) SendNewChargingSession(Timestamp, Sender, ChargingSession)
+        #region (internal) SendNewChargingSession(Timestamp, Sender, Session)
 
         internal void SendNewChargingSession(DateTime         Timestamp,
                                              Object           Sender,
-                                             ChargingSession  ChargingSession)
+                                             ChargingSession  Session)
         {
 
-            var OnNewChargingSessionLocal = OnNewChargingSession;
-            if (OnNewChargingSessionLocal != null)
-                OnNewChargingSessionLocal(Timestamp, Sender, ChargingSession);
+            if (Session != null)
+            {
+
+                if (Session.RoamingNetwork == null)
+                    Session.RoamingNetwork = this;
+
+            }
+
+            OnNewChargingSession?.Invoke(Timestamp, Sender, Session);
 
         }
 
