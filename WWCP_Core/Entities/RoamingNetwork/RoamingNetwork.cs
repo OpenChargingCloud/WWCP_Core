@@ -5308,6 +5308,7 @@ namespace org.GraphDefined.WWCP
             if (EVSEId     == null)
                 throw new ArgumentNullException(nameof(EVSEId),      "The given EVSE identification must not be null!");
 
+
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
 

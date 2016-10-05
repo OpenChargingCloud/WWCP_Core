@@ -47,6 +47,8 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
+        private Double EPSILON = 0.01;
+
         /// <summary>
         /// The default max size of the EVSE status history.
         /// </summary>
@@ -93,7 +95,7 @@ namespace org.GraphDefined.WWCP
                     value = null;
 
                 if (_Description != value)
-                    SetProperty<I18NString>(ref _Description, value);
+                    SetProperty(ref _Description, value);
 
             }
 
@@ -149,7 +151,7 @@ namespace org.GraphDefined.WWCP
             set
             {
 
-                if (_AverageVoltage != value)
+                if (Math.Abs(_AverageVoltage - value) > EPSILON)
                     SetProperty(ref _AverageVoltage, value);
 
             }
@@ -205,7 +207,7 @@ namespace org.GraphDefined.WWCP
             set
             {
 
-                if (_MaxCurrent != value)
+                if (Math.Abs(_MaxCurrent - value) > EPSILON)
                     SetProperty(ref _MaxCurrent, value);
 
             }
@@ -686,19 +688,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region New(EVSEId)
-
-        /// <summary>
-        /// Create a new EVSE having the given EVSE identification.
-        /// </summary>
-        /// <param name="EVSEId"></param>
-        //public static EVSE New(EVSE_Id EVSEId)
-
-        //    => new EVSE(EVSEId);
-
-        #endregion
-
-
         #region Data/(Admin-)Status management
 
         #region OnData/(Admin)StatusChanged
@@ -936,9 +925,7 @@ namespace org.GraphDefined.WWCP
 
                         //SetStatus(EVSEStatusType.Reserved);
 
-                        var OnNewReservationLocal = OnNewReservation;
-                        if (OnNewReservationLocal != null)
-                            OnNewReservationLocal(DateTime.Now, this, _Reservation);
+                        OnNewReservation?.Invoke(DateTime.Now, this, _Reservation);
 
                     }
 
@@ -1466,9 +1453,7 @@ namespace org.GraphDefined.WWCP
 
                         //SetStatus(EVSEStatusType.Charging);
 
-                        var OnNewChargingSessionLocal = OnNewChargingSession;
-                        if (OnNewChargingSessionLocal != null)
-                            OnNewChargingSessionLocal(DateTime.Now, this, _ChargingSession);
+                        OnNewChargingSession?.Invoke(DateTime.Now, this, _ChargingSession);
 
                     }
 
@@ -1496,9 +1481,7 @@ namespace org.GraphDefined.WWCP
                                              ChargingSession  ChargingSession)
         {
 
-            var OnNewChargingSessionLocal = OnNewChargingSession;
-            if (OnNewChargingSessionLocal != null)
-                OnNewChargingSessionLocal(Timestamp, Sender, ChargingSession);
+            OnNewChargingSession?.Invoke(Timestamp, Sender, ChargingSession);
 
         }
 
