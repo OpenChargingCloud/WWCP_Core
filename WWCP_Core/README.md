@@ -1,4 +1,4 @@
-eMI3 Data Structures
+WWCP Data Structures
 ====================
 
-C#/.NET eMI3 data structures.
+C#/.NET WWCP data structures.
