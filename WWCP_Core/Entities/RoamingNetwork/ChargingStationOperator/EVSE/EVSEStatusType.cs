@@ -74,19 +74,24 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         Faulted             = 9,
 
+        /// <summary>
+        /// The EVSE not accessible because of a physical barrier, i.e. a car.
+        /// </summary>
+        Blocked             = 10,
 
-        AVAILABLE_DOOR_NOT_CLOSED = 10,
+
+        AVAILABLE_DOOR_NOT_CLOSED = 11,
 
         /// <summary>
         /// Private or internal use.
         /// </summary>
-        Other               = 11,
+        Other               = 12,
 
         /// <summary>
         /// The EVSE was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownEVSE         = 12
+        UnknownEVSE         = 13
 
     }
 
