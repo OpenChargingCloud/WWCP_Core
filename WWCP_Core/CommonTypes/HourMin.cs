@@ -34,39 +34,15 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Hour
-
-        private readonly UInt16 _Hour;
-
         /// <summary>
         /// The hour.
         /// </summary>
-        public UInt16 Hour
-        {
-            get
-            {
-                return _Hour;
-            }
-        }
-
-        #endregion
-
-        #region Minute
-
-        private readonly UInt16 _Minute;
+        public Byte Hour     { get; }
 
         /// <summary>
-        /// The hour.
+        /// The minute.
         /// </summary>
-        public UInt16 Minute
-        {
-            get
-            {
-                return _Minute;
-            }
-        }
-
-        #endregion
+        public Byte Minute   { get; }
 
         #endregion
 
@@ -77,22 +53,22 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Hour">The hour.</param>
         /// <param name="Minute">The minute.</param>
-        public HourMin(UInt16  Hour,
-                       UInt16  Minute)
+        public HourMin(Byte  Hour,
+                       Byte  Minute)
         {
 
             #region Initial checks
 
             if (Hour > 23)
-                throw new ArgumentNullException("Hour", "The given parameter is invalid!");
+                throw new ArgumentException("The given hour is invalid!",   nameof(Hour));
 
             if (Minute > 59)
-                throw new ArgumentNullException("Minute", "The given parameter is invalid!");
+                throw new ArgumentException("The given minute is invalid!", nameof(Minute));
 
             #endregion
 
-            this._Hour    = Hour;
-            this._Minute  = Minute;
+            this.Hour    = Hour;
+            this.Minute  = Minute;
 
         }
 
@@ -105,15 +81,15 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException("Text", "The given input is not valid!");
+                throw new ArgumentNullException(nameof(Text),  "The given text must not be null or empty!");
 
             var Splited = Text.Split(':');
 
             if (Splited.Length != 2)
                 throw new ArgumentException("The given input '" + Text + "' is not valid!");
 
-            return new HourMin(UInt16.Parse(Splited[0]),
-                               UInt16.Parse(Splited[1]));
+            return new HourMin(Byte.Parse(Splited[0]),
+                               Byte.Parse(Splited[1]));
 
         }
 
@@ -134,12 +110,12 @@ namespace org.GraphDefined.WWCP
             if (Splited.Length != 2)
                 return false;
 
-            UInt16 Hour = 0;
-            if (!UInt16.TryParse(Splited[0], out Hour))
+            Byte Hour = 0;
+            if (!Byte.TryParse(Splited[0], out Hour))
                 return false;
 
-            UInt16 Minute = 0;
-            if (!UInt16.TryParse(Splited[1], out Minute))
+            Byte Minute = 0;
+            if (!Byte.TryParse(Splited[1], out Minute))
                 return false;
 
             HourMin = new HourMin(Hour, Minute);
@@ -302,11 +278,11 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given HourMin must not be null!");
 
             // Compare CountryIds
-            var _Result = _Hour.CompareTo(HourMin._Hour);
+            var _Result = Hour.CompareTo(HourMin.Hour);
 
             // If equal: Compare OperatorIds
             if (_Result == 0)
-                _Result = _Minute.CompareTo(HourMin._Minute);
+                _Result = Minute.CompareTo(HourMin.Minute);
 
             return _Result;
 
@@ -354,8 +330,8 @@ namespace org.GraphDefined.WWCP
             if ((Object) HourMin == null)
                 return false;
 
-            return _Hour.  Equals(HourMin._Hour) &&
-                   _Minute.Equals(HourMin._Minute);
+            return Hour.  Equals(HourMin.Hour) &&
+                   Minute.Equals(HourMin.Minute);
 
         }
 
@@ -373,7 +349,7 @@ namespace org.GraphDefined.WWCP
         {
             unchecked
             {
-                return _Hour.GetHashCode() * 23 ^ _Minute.GetHashCode();
+                return Hour.GetHashCode() * 23 ^ Minute.GetHashCode();
             }
         }
 
@@ -385,9 +361,7 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return String.Concat(_Hour.ToString("D2"), ":", _Minute.ToString("D2"));
-        }
+            => String.Concat(Hour.ToString("D2"), ":", Minute.ToString("D2"));
 
         #endregion
 

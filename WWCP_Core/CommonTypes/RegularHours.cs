@@ -32,87 +32,98 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Weekday
-
-        private readonly DayOfWeek _Weekday;
+        /// <summary>
+        /// Day of the week.
+        /// </summary>
+        public DayOfWeek  DayOfWeek     { get; }
 
         /// <summary>
-        /// Day of the week, from Monday till Sunday.
+        /// Begin of the regular period.
         /// </summary>
-        public DayOfWeek Weekday
-        {
-            get
-            {
-                return _Weekday;
-            }
-        }
-
-        #endregion
-
-        #region Begin
-
-        private readonly HourMin _Begin;
+        public HourMin    PeriodBegin   { get; }
 
         /// <summary>
-        /// Begin of the regular period given in hours and minutes. Must be in 24h format.
+        /// End of the regular period.
         /// </summary>
-        public HourMin Begin
-        {
-            get
-            {
-                return _Begin;
-            }
-        }
-
-        #endregion
-
-        #region End
-
-        private readonly HourMin _End;
-
-        /// <summary>
-        /// End of the regular period, syntax as for period_begin. Must be later than the begin.
-        /// </summary>
-        public HourMin End
-        {
-            get
-            {
-                return _End;
-            }
-        }
-
-        #endregion
+        public HourMin    PeriodEnd     { get; }
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new specification of a regular recurring operation or access hours.
+        /// Create a new regular hours object.
         /// </summary>
-        /// <param name="Weekday">Day of the week, from Monday till Sunday.</param>
-        /// <param name="Begin">Begin of the regular period given in hours and minutes. Must be in 24h format.</param>
-        /// <param name="End">End of the regular period, syntax as for period_begin. Must be later than the begin.</param>
-        public RegularHours(DayOfWeek  Weekday,
-                            HourMin    Begin,
-                            HourMin    End)
+        /// <param name="DayOfWeek">Day of the week.</param>
+        /// <param name="PeriodBegin">Begin of the regular period.</param>
+        /// <param name="PeriodEnd">End of the regular period.</param>
+        public RegularHours(DayOfWeek  DayOfWeek,
+                            HourMin    PeriodBegin,
+                            HourMin    PeriodEnd)
         {
 
             #region Initial checks
 
-            if (Begin > End)
-                throw new ArgumentException("Begin time must be before the end time!");
+            if (PeriodEnd.Hour < PeriodBegin.Hour ||
+
+               (PeriodEnd.Hour   == PeriodBegin.Hour &&
+                PeriodEnd.Minute  < PeriodBegin.Minute))
+
+                throw new ArgumentException("The end period must be after the start period!", nameof(PeriodEnd));
 
             #endregion
 
-            this._Weekday  = Weekday;
-            this._Begin    = Begin;
-            this._End      = End;
+            this.DayOfWeek    = DayOfWeek;
+            this.PeriodBegin  = PeriodBegin;
+            this.PeriodEnd    = PeriodEnd;
 
         }
 
         #endregion
 
+
+        #region Operator overloading
+
+        #region Operator == (RegularHours1, RegularHours2)
+
+        /// <summary>
+        /// Compares two regular hourss for equality.
+        /// </summary>
+        /// <param name="RegularHours1">A regular hours.</param>
+        /// <param name="RegularHours2">Another regular hours.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public static Boolean operator == (RegularHours RegularHours1, RegularHours RegularHours2)
+        {
+
+            // If both are null, or both are same instance, return true.
+            if (Object.ReferenceEquals(RegularHours1, RegularHours2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (((Object) RegularHours1 == null) || ((Object) RegularHours2 == null))
+                return false;
+
+            return RegularHours1.Equals(RegularHours2);
+
+        }
+
+        #endregion
+
+        #region Operator != (RegularHours1, RegularHours2)
+
+        /// <summary>
+        /// Compares two regular hourss for inequality.
+        /// </summary>
+        /// <param name="RegularHours1">A regular hours.</param>
+        /// <param name="RegularHours2">Another regular hours.</param>
+        /// <returns>False if both match; True otherwise.</returns>
+        public static Boolean operator != (RegularHours RegularHours1, RegularHours RegularHours2)
+
+            => !(RegularHours1 == RegularHours2);
+
+        #endregion
+
+        #endregion
 
         #region IEquatable<RegularHours> Members
 
@@ -129,7 +140,7 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an RegularHours.
+            // Check if the given object is a regular hours object.
             if (!(Object is RegularHours))
                 return false;
 
@@ -142,9 +153,9 @@ namespace org.GraphDefined.WWCP
         #region Equals(RegularHours)
 
         /// <summary>
-        /// Compares two RegularHourss for equality.
+        /// Compares two regular hours objects for equality.
         /// </summary>
-        /// <param name="RegularHours">A RegularHours to compare with.</param>
+        /// <param name="RegularHours">A regular hours object to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(RegularHours RegularHours)
         {
@@ -152,9 +163,9 @@ namespace org.GraphDefined.WWCP
             if ((Object) RegularHours == null)
                 return false;
 
-            return _Weekday.Equals(RegularHours._Weekday) &&
-                   _Begin.  Equals(RegularHours._Begin)   &&
-                   _End.    Equals(RegularHours._End);
+            return DayOfWeek.Equals(RegularHours.DayOfWeek)       &&
+                   PeriodBegin.  Equals(RegularHours.PeriodBegin) &&
+                   PeriodEnd.    Equals(RegularHours.PeriodEnd);
 
         }
 
@@ -172,7 +183,7 @@ namespace org.GraphDefined.WWCP
         {
             unchecked
             {
-                return _Weekday.GetHashCode() * 23 ^ _Begin.GetHashCode() * 17 ^ _End.GetHashCode();
+                return DayOfWeek.GetHashCode() * 23 ^ PeriodBegin.GetHashCode() * 17 ^ PeriodEnd.GetHashCode();
             }
         }
 
@@ -186,10 +197,15 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
         {
 
-            if (_Weekday == DayOfWeek.Sunday && _Begin.Hour == 0 && _Begin.Minute == 0 && _End.Hour == 0 && _End.Minute == 0)
+            if (DayOfWeek           == DayOfWeek.Sunday &&
+                PeriodBegin.Hour    == 0                &&
+                PeriodBegin.Minute  == 0                &&
+                PeriodEnd.  Hour    == 0                &&
+                PeriodEnd.  Minute  == 0)
+
                 return "";
 
-            return String.Concat(_Weekday.ToString(), "s from ", _Begin.ToString(), " to ", _End.ToString());
+            return String.Concat(DayOfWeek.ToString(), "s from ", PeriodBegin.ToString(), " to ", PeriodEnd.ToString());
 
         }
 

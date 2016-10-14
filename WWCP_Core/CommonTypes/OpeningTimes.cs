@@ -46,7 +46,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _RegularOpenings.Where(rh => !(rh.Weekday == DayOfWeek.Sunday && rh.Begin.Hour == 0 && rh.Begin.Minute == 0 && rh.End.Hour == 0 && rh.End.Minute == 0));
+                return _RegularOpenings.Where(rh => !(rh.DayOfWeek == DayOfWeek.Sunday && rh.PeriodBegin.Hour == 0 && rh.PeriodBegin.Minute == 0 && rh.PeriodEnd.Hour == 0 && rh.PeriodEnd.Minute == 0));
             }
         }
 
