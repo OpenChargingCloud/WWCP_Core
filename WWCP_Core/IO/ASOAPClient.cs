@@ -37,6 +37,15 @@ namespace org.GraphDefined.WWCP
     public abstract class ASOAPClient : AHTTPClient
     {
 
+        #region Properties
+
+        /// <summary>
+        /// The default URI prefix.
+        /// </summary>
+        public String  URIPrefix   { get; }
+
+        #endregion
+
         #region Events
 
         #region OnSOAPError
@@ -66,6 +75,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RemoteCertificateValidator">A delegate to verify the remote TLS certificate.</param>
         /// <param name="ClientCert">The TLS client certificate to use.</param>
         /// <param name="HTTPVirtualHost">An optional HTTP virtual host name to use.</param>
+        /// <param name="URIPrefix">An default URI prefix.</param>
         /// <param name="UserAgent">An optional HTTP user agent to use.</param>
         /// <param name="QueryTimeout">An optional timeout for upstream queries.</param>
         /// <param name="DNSClient">An optional DNS client.</param>
@@ -75,6 +85,7 @@ namespace org.GraphDefined.WWCP
                            RemoteCertificateValidationCallback  RemoteCertificateValidator  = null,
                            X509Certificate                      ClientCert                  = null,
                            String                               HTTPVirtualHost             = null,
+                           String                               URIPrefix                   = null,
                            String                               UserAgent                   = DefaultHTTPUserAgent,
                            TimeSpan?                            QueryTimeout                = null,
                            DNSClient                            DNSClient                   = null)
@@ -89,7 +100,11 @@ namespace org.GraphDefined.WWCP
                    QueryTimeout,
                    DNSClient)
 
-        { }
+        {
+
+            this.URIPrefix  = URIPrefix.Trim();
+
+        }
 
         #endregion
 

@@ -61,7 +61,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever an authentication token will be verified for charging.
         /// </summary>
-        event OnAuthorizeStartDelegate                   OnAuthorizeStart;
+        event OnAuthorizeDelegate                   OnAuthorizeStart;
 
         /// <summary>
         /// An event fired whenever an authentication token had been verified for charging.

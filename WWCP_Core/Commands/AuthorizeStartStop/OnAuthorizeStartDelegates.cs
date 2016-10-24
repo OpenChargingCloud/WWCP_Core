@@ -40,7 +40,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnAuthorizeStartDelegate(DateTime                    LogTimestamp,
+    public delegate void OnAuthorizeDelegate(DateTime                    LogTimestamp,
                                                   DateTime                    RequestTimestamp,
                                                   Object                      Sender,
                                                   EventTracking_Id            EventTrackingId,

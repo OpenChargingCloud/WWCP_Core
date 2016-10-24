@@ -5718,7 +5718,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever an authorize start command was received.
         /// </summary>
-        public event OnAuthorizeStartDelegate OnAuthorizeStart;
+        public event OnAuthorizeDelegate OnAuthorizeStart;
 
         /// <summary>
         /// An event fired whenever an authorize start command completed.
