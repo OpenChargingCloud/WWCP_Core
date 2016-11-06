@@ -41,17 +41,17 @@ namespace org.GraphDefined.WWCP
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnRemoteChargingStationStopDelegate(DateTime              LogTimestamp,
-                                                             DateTime              RequestTimestamp,
-                                                             Object                Sender,
-                                                             EventTracking_Id      EventTrackingId,
-                                                             RoamingNetwork_Id     RoamingNetworkId,
-                                                             ChargingStation_Id    ChargingStationId,
-                                                             ChargingSession_Id    SessionId,
-                                                             ReservationHandling   ReservationHandling,
-                                                             eMobilityProvider_Id  ProviderId,
-                                                             eMobilityAccount_Id   eMAId,
-                                                             TimeSpan?             RequestTimeout);
+    public delegate void OnRemoteChargingStationStopDelegate(DateTime               LogTimestamp,
+                                                             DateTime               RequestTimestamp,
+                                                             Object                 Sender,
+                                                             EventTracking_Id       EventTrackingId,
+                                                             RoamingNetwork_Id      RoamingNetworkId,
+                                                             ChargingStation_Id     ChargingStationId,
+                                                             ChargingSession_Id     SessionId,
+                                                             ReservationHandling    ReservationHandling,
+                                                             eMobilityProvider_Id?  ProviderId,
+                                                             eMobilityAccount_Id    eMAId,
+                                                             TimeSpan?              RequestTimeout);
 
     /// <summary>
     /// Indicate a remote stop of the given charging session at the given charging station
@@ -77,7 +77,7 @@ namespace org.GraphDefined.WWCP
                                                                 ChargingStation_Id               ChargingStationId,
                                                                 ChargingSession_Id               SessionId,
                                                                 ReservationHandling              ReservationHandling,
-                                                                eMobilityProvider_Id             ProviderId,
+                                                                eMobilityProvider_Id?            ProviderId,
                                                                 eMobilityAccount_Id              eMAId,
                                                                 TimeSpan?                        RequestTimeout,
                                                                 RemoteStopChargingStationResult  Result,
@@ -96,14 +96,14 @@ namespace org.GraphDefined.WWCP
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="ChargingStationId">The unique identification of a charging station.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<RemoteStopChargingStationResult> OnRemoteStopChargingStationDelegate(DateTime              Timestamp,
-                                                                                              CancellationToken     CancellationToken,
-                                                                                              EventTracking_Id      EventTrackingId,
-                                                                                              ReservationHandling   ReservationHandling,
-                                                                                              ChargingSession_Id    SessionId,
-                                                                                              eMobilityProvider_Id  ProviderId,
-                                                                                              eMobilityAccount_Id   eMAId,
-                                                                                              ChargingStation_Id    ChargingStationId,
-                                                                                              TimeSpan?             RequestTimeout  = null);
+    public delegate Task<RemoteStopChargingStationResult> OnRemoteStopChargingStationDelegate(DateTime               Timestamp,
+                                                                                              CancellationToken      CancellationToken,
+                                                                                              EventTracking_Id       EventTrackingId,
+                                                                                              ReservationHandling    ReservationHandling,
+                                                                                              ChargingSession_Id     SessionId,
+                                                                                              eMobilityProvider_Id?  ProviderId,
+                                                                                              eMobilityAccount_Id    eMAId,
+                                                                                              ChargingStation_Id     ChargingStationId,
+                                                                                              TimeSpan?              RequestTimeout  = null);
 
 }

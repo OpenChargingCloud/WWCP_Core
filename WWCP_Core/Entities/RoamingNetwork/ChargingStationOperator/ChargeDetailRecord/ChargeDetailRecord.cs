@@ -100,25 +100,25 @@ namespace org.GraphDefined.WWCP
         /// The identification used for starting this charging process.
         /// </summary>
         [Optional]
-        public AuthInfo              IdentificationStart    { get; }
+        public AuthInfo               IdentificationStart    { get; }
 
         /// <summary>
         /// The identification used for stopping this charging process.
         /// </summary>
         [Optional]
-        public AuthInfo              IdentificationStop     { get; }
+        public AuthInfo               IdentificationStop     { get; }
 
         /// <summary>
         /// The identification of the e-mobility provider used for starting this charging process.
         /// </summary>
         [Optional]
-        public eMobilityProvider_Id  ProviderIdStart        { get; }
+        public eMobilityProvider_Id?  ProviderIdStart        { get; }
 
         /// <summary>
         /// The identification of the e-mobility provider used for stopping this charging process.
         /// </summary>
         [Optional]
-        public eMobilityProvider_Id  ProviderIdStop         { get; }
+        public eMobilityProvider_Id?  ProviderIdStop         { get; }
 
         #endregion
 
@@ -252,8 +252,8 @@ namespace org.GraphDefined.WWCP
 
                                   AuthInfo                          IdentificationStart      = null,
                                   AuthInfo                          IdentificationStop       = null,
-                                  eMobilityProvider_Id              ProviderIdStart          = null,
-                                  eMobilityProvider_Id              ProviderIdStop           = null,
+                                  eMobilityProvider_Id?             ProviderIdStart          = null,
+                                  eMobilityProvider_Id?             ProviderIdStop           = null,
 
                                   ChargingReservation               Reservation              = null,
                                   ChargingReservation_Id            ReservationId            = null,

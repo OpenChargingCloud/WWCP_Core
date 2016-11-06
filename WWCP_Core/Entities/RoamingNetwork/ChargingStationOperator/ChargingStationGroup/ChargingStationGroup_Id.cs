@@ -109,9 +109,9 @@ namespace org.GraphDefined.WWCP
 
         #region Format
 
-        private readonly IdFormatType _Format;
+        private readonly OperatorIdFormats _Format;
 
-        public IdFormatType Format
+        public OperatorIdFormats Format
         {
             get
             {
@@ -143,7 +143,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         private ChargingStationGroup_Id(ChargingStationOperator_Id   OperatorId,
                                         String            Suffix,
-                                        IdFormatType      Format = IdFormatType.NEW)
+                                        OperatorIdFormats      Format = OperatorIdFormats.NEW)
         {
 
             #region Initial checks
@@ -182,7 +182,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="IdFormat">The (EVSE-)format of the charging station identification [old|new].</param>
         public static ChargingStationGroup_Id Random(ChargingStationOperator_Id       OperatorId,
                                                      Func<String, String>  Mapper    = null,
-                                                     IdFormatType          IdFormat  = IdFormatType.NEW)
+                                                     OperatorIdFormats          IdFormat  = OperatorIdFormats.NEW)
         {
 
             #region Initial checks
@@ -253,17 +253,17 @@ namespace org.GraphDefined.WWCP
             if (_MatchCollection.Count != 1)
                 throw new ArgumentException("Illegal charging station group identification '" + Text + "'!", "Text");
 
-            ChargingStationOperator_Id __EVSEOperatorId = null;
+            ChargingStationOperator_Id __EVSEOperatorId;
 
             if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
                 return new ChargingStationGroup_Id(__EVSEOperatorId,
                                            _MatchCollection[0].Groups[2].Value,
-                                           IdFormatType.NEW);
+                                           OperatorIdFormats.NEW);
 
             if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
                 return new ChargingStationGroup_Id(__EVSEOperatorId,
                                            _MatchCollection[0].Groups[4].Value,
-                                           IdFormatType.OLD);
+                                           OperatorIdFormats.OLD);
 
 
             throw new ArgumentException("Illegal charging station group identification '" + Text + "'!", "Text");
@@ -325,7 +325,7 @@ namespace org.GraphDefined.WWCP
                 if (_MatchCollection.Count != 1)
                     return false;
 
-                ChargingStationOperator_Id __EVSEOperatorId = null;
+                ChargingStationOperator_Id __EVSEOperatorId;
 
                 // New format...
                 if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
@@ -333,7 +333,7 @@ namespace org.GraphDefined.WWCP
 
                     ChargingStationGroupId = new ChargingStationGroup_Id(__EVSEOperatorId,
                                                          _MatchCollection[0].Groups[2].Value,
-                                                         IdFormatType.NEW);
+                                                         OperatorIdFormats.NEW);
 
                     return true;
 
@@ -345,7 +345,7 @@ namespace org.GraphDefined.WWCP
 
                     ChargingStationGroupId = new ChargingStationGroup_Id(__EVSEOperatorId,
                                                          _MatchCollection[0].Groups[4].Value,
-                                                         IdFormatType.OLD);
+                                                         OperatorIdFormats.OLD);
 
                     return true;
 
@@ -438,10 +438,10 @@ namespace org.GraphDefined.WWCP
         /// Return the identification in the given format.
         /// </summary>
         /// <param name="IdFormat">The format.</param>
-        public String ToFormat(IdFormatType IdFormat)
+        public String ToFormat(OperatorIdFormats IdFormat)
         {
 
-            return (IdFormat == IdFormatType.NEW)
+            return (IdFormat == OperatorIdFormats.NEW)
                        ? String.Concat(_OperatorId.ToFormat(IdFormat), "*P", _Suffix)
                        : String.Concat(_OperatorId.ToFormat(IdFormat),  "*", _Suffix);
 
@@ -457,7 +457,7 @@ namespace org.GraphDefined.WWCP
             if (IdFormat == IdFormatOriginType.Origin)
                 return ToFormat(this.Format);
 
-            return ToFormat((IdFormatType) IdFormat);
+            return ToFormat((OperatorIdFormats) IdFormat);
 
         }
 

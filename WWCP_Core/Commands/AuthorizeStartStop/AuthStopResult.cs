@@ -32,90 +32,30 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region AuthorizatorId
-
-        private readonly Authorizator_Id _AuthorizatorId;
-
         /// <summary>
         /// The identification of the authorizing entity.
         /// </summary>
-        public Authorizator_Id AuthorizatorId
-        {
-            get
-            {
-                return _AuthorizatorId;
-            }
-        }
-
-        #endregion
-
-        #region AuthorizationResult
-
-        private readonly AuthStopResultType _Result;
+        public Authorizator_Id        AuthorizatorId        { get; }
 
         /// <summary>
         /// The result of the authorize stop operation.
         /// </summary>
-        public AuthStopResultType AuthorizationResult
-        {
-            get
-            {
-                return _Result;
-            }
-        }
-
-        #endregion
-
-        #region ProviderId
-
-        private readonly eMobilityProvider_Id _ProviderId;
+        public AuthStopResultType     AuthorizationResult   { get; }
 
         /// <summary>
         /// The unique identification of the ev service provider.
         /// </summary>
-        public eMobilityProvider_Id ProviderId
-        {
-            get
-            {
-                return _ProviderId;
-            }
-        }
-
-        #endregion
-
-        #region Description
-
-        private readonly String _Description;
+        public eMobilityProvider_Id?  ProviderId            { get; }
 
         /// <summary>
         /// A optional description of the authorize stop result.
         /// </summary>
-        public String Description
-        {
-            get
-            {
-                return _Description;
-            }
-        }
-
-        #endregion
-
-        #region AdditionalInfo
-
-        private readonly String _AdditionalInfo;
+        public String                 Description           { get; }
 
         /// <summary>
         /// An optional additional message.
         /// </summary>
-        public String AdditionalInfo
-        {
-            get
-            {
-                return _AdditionalInfo;
-            }
-        }
-
-        #endregion
+        public String                 AdditionalInfo        { get; }
 
         #endregion
 
@@ -131,25 +71,25 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">An optional identification of the ev service provider.</param>
         /// <param name="Description">An optional description of the auth stop result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
-        private AuthStopResult(Authorizator_Id         AuthorizatorId,
-                                   AuthStopResultType  Result,
-                                   eMobilityProvider_Id                 ProviderId      = null,
-                                   String                  Description     = null,
-                                   String                  AdditionalInfo  = null)
+        private AuthStopResult(Authorizator_Id        AuthorizatorId,
+                               AuthStopResultType     Result,
+                               eMobilityProvider_Id?  ProviderId      = null,
+                               String                 Description     = null,
+                               String                 AdditionalInfo  = null)
         {
 
             #region Initial checks
 
             if (AuthorizatorId == null)
-                throw new ArgumentNullException("AuthorizatorId", "The given parameter must not be null!");
+                throw new ArgumentNullException(nameof(AuthorizatorId), "The given parameter must not be null!");
 
             #endregion
 
-            this._AuthorizatorId  = AuthorizatorId;
-            this._Result          = Result;
-            this._ProviderId      = ProviderId;
-            this._Description     = Description    != null ? Description    : String.Empty;
-            this._AdditionalInfo  = AdditionalInfo != null ? AdditionalInfo : String.Empty;
+            this.AuthorizatorId       = AuthorizatorId;
+            this.AuthorizationResult  = Result;
+            this.ProviderId           = ProviderId     ?? new eMobilityProvider_Id?();
+            this.Description          = Description    ?? "";
+            this.AdditionalInfo       = AdditionalInfo ?? "";
 
         }
 
@@ -163,19 +103,19 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ErrorMessage">An error message.</param>
         private AuthStopResult(Authorizator_Id  AuthorizatorId,
-                                   String           ErrorMessage  = null)
+                               String           ErrorMessage  = null)
         {
 
             #region Initial checks
 
             if (AuthorizatorId == null)
-                throw new ArgumentNullException("AuthorizatorId", "The given parameter must not be null!");
+                throw new ArgumentNullException(nameof(AuthorizatorId), "The given parameter must not be null!");
 
             #endregion
 
-            this._Result          = AuthStopResultType.Error;
-            this._AuthorizatorId  = AuthorizatorId;
-            this._Description     = ErrorMessage != null ? ErrorMessage : String.Empty;
+            this.AuthorizationResult  = AuthStopResultType.Error;
+            this.AuthorizatorId       = AuthorizatorId;
+            this.Description          = ErrorMessage;
 
         }
 
@@ -190,12 +130,9 @@ namespace org.GraphDefined.WWCP
         /// The result is unknown and/or should be ignored.
         /// </summary>
         public static AuthStopResult Unspecified(Authorizator_Id AuthorizatorId)
-        {
 
-            return new AuthStopResult(AuthorizatorId,
-                                          AuthStopResultType.Unspecified);
-
-        }
+            => new AuthStopResult(AuthorizatorId,
+                                  AuthStopResultType.Unspecified);
 
         #endregion
 
@@ -205,31 +142,25 @@ namespace org.GraphDefined.WWCP
         /// The given charging session identification is unknown or invalid.
         /// </summary>
         public static AuthStopResult InvalidSessionId(Authorizator_Id AuthorizatorId)
-        {
 
-            return new AuthStopResult(AuthorizatorId,
-                                          AuthStopResultType.InvalidSessionId);
-
-        }
+            => new AuthStopResult(AuthorizatorId,
+                                  AuthStopResultType.InvalidSessionId);
 
         #endregion
 
-        #region (static) OutOfService(AuthorizatorId)
+        #region (static) OutOfService (AuthorizatorId)
 
         /// <summary>
         /// The EVSE or charging station is out of service.
         /// </summary>
         public static AuthStopResult OutOfService(Authorizator_Id AuthorizatorId)
-        {
 
-            return new AuthStopResult(AuthorizatorId,
-                                          AuthStopResultType.OutOfService);
-
-        }
+            => new AuthStopResult(AuthorizatorId,
+                                  AuthStopResultType.OutOfService);
 
         #endregion
 
-        #region (static) Authorized(AuthorizatorId, ProviderId, Description = null, AdditionalInfo = null)
+        #region (static) Authorized   (AuthorizatorId, ProviderId = null, Description = null, AdditionalInfo = null)
 
         /// <summary>
         /// The authorize stop was successful.
@@ -238,23 +169,20 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">The unique identification of the ev service provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
-        public static AuthStopResult Authorized(Authorizator_Id  AuthorizatorId,
-                                                    eMobilityProvider_Id          ProviderId,
-                                                    String           Description     = null,
-                                                    String           AdditionalInfo  = null)
-        {
+        public static AuthStopResult Authorized(Authorizator_Id        AuthorizatorId,
+                                                eMobilityProvider_Id?  ProviderId      = null,
+                                                String                 Description     = null,
+                                                String                 AdditionalInfo  = null)
 
-            return new AuthStopResult(AuthorizatorId,
-                                          AuthStopResultType.Authorized,
-                                          ProviderId,
-                                          Description,
-                                          AdditionalInfo);
-
-        }
+            => new AuthStopResult(AuthorizatorId,
+                                  AuthStopResultType.Authorized,
+                                  ProviderId,
+                                  Description,
+                                  AdditionalInfo);
 
         #endregion
 
-        #region (static) NotAuthorized(AuthorizatorId, SessionId)
+        #region (static) NotAuthorized(AuthorizatorId, ProviderId = null, Description = null, AdditionalInfo = null)
 
         /// <summary>
         /// The authorize stop was not successful (e.g. ev customer is unkown).
@@ -263,23 +191,20 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">The unique identification of the ev service provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
-        public static AuthStopResult NotAuthorized(Authorizator_Id  AuthorizatorId,
-                                                       eMobilityProvider_Id          ProviderId,
-                                                       String           Description    = null,
-                                                       String           AdditionalInfo = null)
-        {
+        public static AuthStopResult NotAuthorized(Authorizator_Id        AuthorizatorId,
+                                                   eMobilityProvider_Id?  ProviderId      = null,
+                                                   String                 Description     = null,
+                                                   String                 AdditionalInfo  = null)
 
-            return new AuthStopResult(AuthorizatorId,
-                                          AuthStopResultType.NotAuthorized,
-                                          ProviderId,
-                                          Description,
-                                          AdditionalInfo);
-
-        }
+            => new AuthStopResult(AuthorizatorId,
+                                  AuthStopResultType.NotAuthorized,
+                                  ProviderId,
+                                  Description,
+                                  AdditionalInfo);
 
         #endregion
 
-        #region (static) Blocked(AuthorizatorId, SessionId)
+        #region (static) Blocked      (AuthorizatorId, ProviderId = null, Description = null, AdditionalInfo = null)
 
         /// <summary>
         /// The authorize start operation is not allowed (ev customer is blocked).
@@ -288,19 +213,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">The unique identification of the ev service provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
-        public static AuthStopResult Blocked(Authorizator_Id  AuthorizatorId,
-                                                 eMobilityProvider_Id          ProviderId,
-                                                 String           Description     = null,
-                                                 String           AdditionalInfo  = null)
-        {
+        public static AuthStopResult Blocked(Authorizator_Id        AuthorizatorId,
+                                             eMobilityProvider_Id?  ProviderId      = null,
+                                             String                 Description     = null,
+                                             String                 AdditionalInfo  = null)
 
-            return new AuthStopResult(AuthorizatorId,
-                                          AuthStopResultType.Blocked,
-                                          ProviderId,
-                                          Description,
-                                          AdditionalInfo);
-
-        }
+            => new AuthStopResult(AuthorizatorId,
+                                  AuthStopResultType.Blocked,
+                                  ProviderId,
+                                  Description,
+                                  AdditionalInfo);
 
         #endregion
 
@@ -310,12 +232,9 @@ namespace org.GraphDefined.WWCP
         /// The authorize stop ran into a timeout between evse operator backend and charging station.
         /// </summary>
         public static AuthStopResult CommunicationTimeout(Authorizator_Id AuthorizatorId)
-        {
 
-            return new AuthStopResult(AuthorizatorId,
-                                          AuthStopResultType.CommunicationTimeout);
-
-        }
+            => new AuthStopResult(AuthorizatorId,
+                                  AuthStopResultType.CommunicationTimeout);
 
         #endregion
 
@@ -325,12 +244,9 @@ namespace org.GraphDefined.WWCP
         /// The authorize stop ran into a timeout between charging station and ev.
         /// </summary>
         public static AuthStopResult StartChargingTimeout(Authorizator_Id AuthorizatorId)
-        {
 
-            return new AuthStopResult(AuthorizatorId,
-                                          AuthStopResultType.StopChargingTimeout);
-
-        }
+            => new AuthStopResult(AuthorizatorId,
+                                  AuthStopResultType.StopChargingTimeout);
 
         #endregion
 
@@ -342,13 +258,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ErrorMessage">An error message.</param>
         public static AuthStopResult Error(Authorizator_Id  AuthorizatorId,
-                                               String           ErrorMessage = null)
-        {
+                                           String           ErrorMessage = null)
 
-            return new AuthStopResult(AuthorizatorId,
-                                          ErrorMessage);
-
-        }
+            => new AuthStopResult(AuthorizatorId,
+                                  ErrorMessage);
 
         #endregion
 

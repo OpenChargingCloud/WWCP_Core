@@ -122,20 +122,20 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<ReservationResult>
 
-            Reserve(DateTime?                StartTime,
-                    TimeSpan?                Duration,
-                    ChargingReservation_Id   ReservationId      = null,
-                    eMobilityProvider_Id     ProviderId         = null,
-                    eMobilityAccount_Id                   eMAId              = null,
-                    ChargingProduct_Id       ChargingProductId  = null,
-                    IEnumerable<Auth_Token>  AuthTokens         = null,
-                    IEnumerable<eMobilityAccount_Id>      eMAIds             = null,
-                    IEnumerable<UInt32>      PINs               = null,
+            Reserve(DateTime?                         StartTime,
+                    TimeSpan?                         Duration,
+                    ChargingReservation_Id            ReservationId       = null,
+                    eMobilityProvider_Id?             ProviderId          = null,
+                    eMobilityAccount_Id               eMAId               = null,
+                    ChargingProduct_Id                ChargingProductId   = null,
+                    IEnumerable<Auth_Token>           AuthTokens          = null,
+                    IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
+                    IEnumerable<UInt32>               PINs                = null,
 
-                    DateTime?                Timestamp          = null,
-                    CancellationToken?       CancellationToken  = null,
-                    EventTracking_Id         EventTrackingId    = null,
-                    TimeSpan?                RequestTimeout     = null);
+                    DateTime?                         Timestamp           = null,
+                    CancellationToken?                CancellationToken   = null,
+                    EventTracking_Id                  EventTrackingId     = null,
+                    TimeSpan?                         RequestTimeout      = null);
 
 
         /// <summary>
@@ -157,21 +157,21 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<ReservationResult>
 
-            Reserve(EVSE_Id                  EVSEId,
-                    DateTime?                StartTime,
-                    TimeSpan?                Duration,
-                    ChargingReservation_Id   ReservationId      = null,
-                    eMobilityProvider_Id     ProviderId         = null,
-                    eMobilityAccount_Id                   eMAId              = null,
-                    ChargingProduct_Id       ChargingProductId  = null,
-                    IEnumerable<Auth_Token>  AuthTokens         = null,
-                    IEnumerable<eMobilityAccount_Id>      eMAIds             = null,
-                    IEnumerable<UInt32>      PINs               = null,
+            Reserve(EVSE_Id                           EVSEId,
+                    DateTime?                         StartTime,
+                    TimeSpan?                         Duration,
+                    ChargingReservation_Id            ReservationId       = null,
+                    eMobilityProvider_Id?             ProviderId          = null,
+                    eMobilityAccount_Id               eMAId               = null,
+                    ChargingProduct_Id                ChargingProductId   = null,
+                    IEnumerable<Auth_Token>           AuthTokens          = null,
+                    IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
+                    IEnumerable<UInt32>               PINs                = null,
 
-                    DateTime?                Timestamp          = null,
-                    CancellationToken?       CancellationToken  = null,
-                    EventTracking_Id         EventTrackingId    = null,
-                    TimeSpan?                RequestTimeout     = null);
+                    DateTime?                         Timestamp           = null,
+                    CancellationToken?                CancellationToken   = null,
+                    EventTracking_Id                  EventTrackingId     = null,
+                    TimeSpan?                         RequestTimeout      = null);
 
 
         event OnNewReservationDelegate OnNewReservation;
@@ -204,7 +204,7 @@ namespace org.GraphDefined.WWCP
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
-                              eMobilityProvider_Id                   ProviderId         = null,
+                              eMobilityProvider_Id?                  ProviderId         = null,
                               EVSE_Id                                EVSEId             = null,
 
                               DateTime?                              Timestamp          = null,
@@ -237,8 +237,8 @@ namespace org.GraphDefined.WWCP
             RemoteStart(ChargingProduct_Id      ChargingProductId,
                         ChargingReservation_Id  ReservationId,
                         ChargingSession_Id      SessionId,
-                        eMobilityProvider_Id    ProviderId,
-                        eMobilityAccount_Id                  eMAId,
+                        eMobilityProvider_Id?   ProviderId,
+                        eMobilityAccount_Id     eMAId,
 
                         DateTime?               Timestamp          = null,
                         CancellationToken?      CancellationToken  = null,
@@ -266,8 +266,8 @@ namespace org.GraphDefined.WWCP
                         ChargingProduct_Id      ChargingProductId,
                         ChargingReservation_Id  ReservationId,
                         ChargingSession_Id      SessionId,
-                        eMobilityProvider_Id    ProviderId,
-                        eMobilityAccount_Id                  eMAId,
+                        eMobilityProvider_Id?   ProviderId,
+                        eMobilityAccount_Id     eMAId,
 
                         DateTime?               Timestamp          = null,
                         CancellationToken?      CancellationToken  = null,
@@ -294,15 +294,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<RemoteStopResult>
 
-            RemoteStop(ChargingSession_Id    SessionId,
-                       ReservationHandling   ReservationHandling,
-                       eMobilityProvider_Id  ProviderId,
-                       eMobilityAccount_Id                eMAId,
+            RemoteStop(ChargingSession_Id     SessionId,
+                       ReservationHandling    ReservationHandling,
+                       eMobilityProvider_Id?  ProviderId,
+                       eMobilityAccount_Id    eMAId,
 
-                       DateTime?             Timestamp          = null,
-                       CancellationToken?    CancellationToken  = null,
-                       EventTracking_Id      EventTrackingId    = null,
-                       TimeSpan?             RequestTimeout     = null);
+                       DateTime?              Timestamp          = null,
+                       CancellationToken?     CancellationToken  = null,
+                       EventTracking_Id       EventTrackingId    = null,
+                       TimeSpan?              RequestTimeout     = null);
 
 
         /// <summary>
@@ -320,16 +320,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<RemoteStopEVSEResult>
 
-            RemoteStop(EVSE_Id               EVSEId,
-                       ChargingSession_Id    SessionId,
-                       ReservationHandling   ReservationHandling,
-                       eMobilityProvider_Id  ProviderId,
-                       eMobilityAccount_Id                eMAId,
+            RemoteStop(EVSE_Id                EVSEId,
+                       ChargingSession_Id     SessionId,
+                       ReservationHandling    ReservationHandling,
+                       eMobilityProvider_Id?  ProviderId,
+                       eMobilityAccount_Id    eMAId,
 
-                       DateTime?             Timestamp          = null,
-                       CancellationToken?    CancellationToken  = null,
-                       EventTracking_Id      EventTrackingId    = null,
-                       TimeSpan?             RequestTimeout     = null);
+                       DateTime?              Timestamp          = null,
+                       CancellationToken?     CancellationToken  = null,
+                       EventTracking_Id       EventTrackingId    = null,
+                       TimeSpan?              RequestTimeout     = null);
 
 
         /// <summary>
@@ -347,16 +347,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<RemoteStopChargingStationResult>
 
-            RemoteStop(ChargingStation_Id    ChargingStationId,
-                       ChargingSession_Id    SessionId,
-                       ReservationHandling   ReservationHandling,
-                       eMobilityProvider_Id  ProviderId,
-                       eMobilityAccount_Id                eMAId,
+            RemoteStop(ChargingStation_Id     ChargingStationId,
+                       ChargingSession_Id     SessionId,
+                       ReservationHandling    ReservationHandling,
+                       eMobilityProvider_Id?  ProviderId,
+                       eMobilityAccount_Id    eMAId,
 
-                       DateTime?             Timestamp          = null,
-                       CancellationToken?    CancellationToken  = null,
-                       EventTracking_Id      EventTrackingId    = null,
-                       TimeSpan?             RequestTimeout     = null);
+                       DateTime?              Timestamp          = null,
+                       CancellationToken?     CancellationToken  = null,
+                       EventTracking_Id       EventTrackingId    = null,
+                       TimeSpan?              RequestTimeout     = null);
 
         #endregion
 

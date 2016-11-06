@@ -85,12 +85,12 @@ namespace org.GraphDefined.WWCP
 
         #region ProviderId
 
-        private readonly eMobilityProvider_Id _ProviderId;
+        private readonly eMobilityProvider_Id? _ProviderId;
 
         /// <summary>
         /// The unique identification of the ev service provider.
         /// </summary>
-        public eMobilityProvider_Id ProviderId
+        public eMobilityProvider_Id? ProviderId
         {
             get
             {
@@ -150,7 +150,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="AdditionalInfo">An optional additional message.</param>
         private AuthStopChargingStationResult(Authorizator_Id                    AuthorizatorId,
                                               AuthStopChargingStationResultType  Result,
-                                              eMobilityProvider_Id                            ProviderId      = null,
+                                              eMobilityProvider_Id?              ProviderId      = null,
                                               String                             Description     = null,
                                               String                             AdditionalInfo  = null)
         {

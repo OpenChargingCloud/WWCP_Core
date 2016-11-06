@@ -18,17 +18,6 @@
 namespace org.GraphDefined.WWCP
 {
 
-    public enum IdFormatType
-    {
-        OLD,
-        NEW
-    }
 
-    public enum IdFormatOriginType
-    {
-        OLD,
-        NEW,
-        Origin
-    }
 
 }

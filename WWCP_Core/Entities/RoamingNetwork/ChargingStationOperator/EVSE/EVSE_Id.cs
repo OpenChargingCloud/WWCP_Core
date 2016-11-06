@@ -106,9 +106,9 @@ namespace org.GraphDefined.WWCP
 
         #region Format
 
-        private readonly IdFormatType _Format;
+        private readonly OperatorIdFormats _Format;
 
-        public IdFormatType Format
+        public OperatorIdFormats Format
         {
             get
             {
@@ -140,7 +140,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         private EVSE_Id(ChargingStationOperator_Id   OperatorId,
                         String            IdSuffix,
-                        IdFormatType      IdFormat = IdFormatType.NEW)
+                        OperatorIdFormats      IdFormat = OperatorIdFormats.NEW)
         {
 
             #region Initial checks
@@ -191,17 +191,17 @@ namespace org.GraphDefined.WWCP
             if (_MatchCollection.Count != 1)
                 throw new ArgumentException("Illegal EVSE identification '" + Text + "'!");
 
-            ChargingStationOperator_Id __EVSEOperatorId = null;
+            ChargingStationOperator_Id _EVSEOperatorId;
 
-            if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
-                return new EVSE_Id(__EVSEOperatorId,
+            if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _EVSEOperatorId))
+                return new EVSE_Id(_EVSEOperatorId,
                                    _MatchCollection[0].Groups[2].Value,
-                                   IdFormatType.NEW);
+                                   OperatorIdFormats.NEW);
 
-            if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
-                return new EVSE_Id(__EVSEOperatorId,
+            if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out _EVSEOperatorId))
+                return new EVSE_Id(_EVSEOperatorId,
                                    _MatchCollection[0].Groups[4].Value,
-                                   IdFormatType.OLD);
+                                   OperatorIdFormats.OLD);
 
 
             throw new ArgumentException("Illegal EVSE identification '" + Text + "'!");
@@ -264,27 +264,27 @@ namespace org.GraphDefined.WWCP
                 if (_MatchCollection.Count != 1)
                     return false;
 
-                ChargingStationOperator_Id __EVSEOperatorId = null;
+                ChargingStationOperator_Id _EVSEOperatorId;
 
                 // New format...
-                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
+                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _EVSEOperatorId))
                 {
 
-                    EVSEId = new EVSE_Id(__EVSEOperatorId,
+                    EVSEId = new EVSE_Id(_EVSEOperatorId,
                                          _MatchCollection[0].Groups[2].Value,
-                                         IdFormatType.NEW);
+                                         OperatorIdFormats.NEW);
 
                     return true;
 
                 }
 
                 // Old format...
-                else if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
+                else if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out _EVSEOperatorId))
                 {
 
-                    EVSEId = new EVSE_Id(__EVSEOperatorId,
+                    EVSEId = new EVSE_Id(_EVSEOperatorId,
                                          _MatchCollection[0].Groups[4].Value,
-                                         IdFormatType.OLD);
+                                         OperatorIdFormats.OLD);
 
                     return true;
 
@@ -330,7 +330,7 @@ namespace org.GraphDefined.WWCP
         /// Return a new EVSE identification in the given format.
         /// </summary>
         /// <param name="Format">An EVSE identification format.</param>
-        public EVSE_Id ChangeFormat(IdFormatType Format)
+        public EVSE_Id ChangeFormat(OperatorIdFormats Format)
         {
             return new EVSE_Id(this._OperatorId.ChangeFormat(Format), this._Suffix, Format);
         }
@@ -377,10 +377,10 @@ namespace org.GraphDefined.WWCP
         /// Return the identification in the given format.
         /// </summary>
         /// <param name="IdFormat">The format.</param>
-        public String ToFormat(IdFormatType IdFormat)
+        public String ToFormat(OperatorIdFormats IdFormat)
         {
 
-            return (IdFormat == IdFormatType.NEW)
+            return (IdFormat == OperatorIdFormats.NEW)
                        ? String.Concat(_OperatorId.ToFormat(IdFormat), "*E", _Suffix)
                        : String.Concat(_OperatorId.ToFormat(IdFormat),  "*", _Suffix);
 
@@ -396,7 +396,7 @@ namespace org.GraphDefined.WWCP
             if (IdFormat == IdFormatOriginType.Origin)
                 return ToFormat(this.Format);
 
-            return ToFormat((IdFormatType) IdFormat);
+            return ToFormat((OperatorIdFormats) IdFormat);
 
         }
 
@@ -643,7 +643,7 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
         {
 
-            return Format == IdFormatType.NEW
+            return Format == OperatorIdFormats.NEW
                        ? String.Concat(_OperatorId, "*E", _Suffix)
                        : String.Concat(_OperatorId, "*",  _Suffix);
 

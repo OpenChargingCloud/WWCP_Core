@@ -51,7 +51,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the ev service provider.
         /// </summary>
-        public eMobilityProvider_Id                  ProviderId              { get; }
+        public eMobilityProvider_Id?    ProviderId              { get; }
 
         /// <summary>
         /// A optional description of the authorize start result.
@@ -93,12 +93,12 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="Runtime">The run time of the request.</param>
-        private AuthStartResult(Authorizator_Id      AuthorizatorId,
-                                AuthStartResultType  Result,
-                                eMobilityProvider_Id              ProviderId      = null,
-                                String               Description     = null,
-                                String               AdditionalInfo  = null,
-                                TimeSpan?            Runtime         = null)
+        private AuthStartResult(Authorizator_Id        AuthorizatorId,
+                                AuthStartResultType    Result,
+                                eMobilityProvider_Id?  ProviderId       = null,
+                                String                 Description      = null,
+                                String                 AdditionalInfo   = null,
+                                TimeSpan?              Runtime          = null)
         {
 
             #region Initial checks
@@ -110,9 +110,9 @@ namespace org.GraphDefined.WWCP
 
             this.AuthorizatorId        = AuthorizatorId;
             this.Result                = Result;
-            this.ProviderId            = ProviderId;
-            this.Description           = Description    ?? String.Empty;
-            this.AdditionalInfo        = AdditionalInfo ?? String.Empty;
+            this.ProviderId            = ProviderId     ?? new eMobilityProvider_Id?();
+            this.Description           = Description;
+            this.AdditionalInfo        = AdditionalInfo;
             this.Runtime               = Runtime        ?? TimeSpan.FromSeconds(0);
             this.ListOfAuthStopTokens  = new Auth_Token[0];
             this.ListOfAuthStopPINs    = new UInt32[0];
@@ -121,7 +121,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (private) AuthStartResult(AuthorizatorId, SessionId, ProviderId, Description = null, AdditionalInfo = null, Runtime = null, ListOfAuthStopTokens = null, ListOfAuthStopPINs = null)
+        #region (private) AuthStartResult(AuthorizatorId, SessionId, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null, ListOfAuthStopTokens = null, ListOfAuthStopPINs = null)
 
         /// <summary>
         /// Create a new successful authorize start result.
@@ -136,12 +136,12 @@ namespace org.GraphDefined.WWCP
         /// <param name="ListOfAuthStopPINs">An optional enumeration of authorize stop PINs.</param>
         private AuthStartResult(Authorizator_Id          AuthorizatorId,
                                 ChargingSession_Id       SessionId,
-                                eMobilityProvider_Id                  ProviderId,
-                                String                   Description           = null,
-                                String                   AdditionalInfo        = null,
-                                TimeSpan?                Runtime               = null,
-                                IEnumerable<Auth_Token>  ListOfAuthStopTokens  = null,
-                                IEnumerable<UInt32>      ListOfAuthStopPINs    = null)
+                                eMobilityProvider_Id?    ProviderId             = null,
+                                String                   Description            = null,
+                                String                   AdditionalInfo         = null,
+                                TimeSpan?                Runtime                = null,
+                                IEnumerable<Auth_Token>  ListOfAuthStopTokens   = null,
+                                IEnumerable<UInt32>      ListOfAuthStopPINs     = null)
         {
 
             #region Initial checks
@@ -160,12 +160,12 @@ namespace org.GraphDefined.WWCP
             this.Result                = AuthStartResultType.Authorized;
             this.AuthorizatorId        = AuthorizatorId;
             this.SessionId             = SessionId;
-            this.ProviderId            = ProviderId;
-            this.Description           = Description          != null ? Description          : String.Empty;
-            this.AdditionalInfo        = AdditionalInfo       != null ? AdditionalInfo       : String.Empty;
-            this.Runtime               = Runtime ?? TimeSpan.FromSeconds(0);
-            this.ListOfAuthStopTokens  = ListOfAuthStopTokens != null ? ListOfAuthStopTokens : new Auth_Token[0];
-            this.ListOfAuthStopPINs    = ListOfAuthStopPINs   != null ? ListOfAuthStopPINs   : new UInt32[0];
+            this.ProviderId            = ProviderId           ?? new eMobilityProvider_Id?();
+            this.Description           = Description;
+            this.AdditionalInfo        = AdditionalInfo;
+            this.Runtime               = Runtime              ?? TimeSpan.FromSeconds(0);
+            this.ListOfAuthStopTokens  = ListOfAuthStopTokens ?? new Auth_Token[0];
+            this.ListOfAuthStopPINs    = ListOfAuthStopPINs   ?? new UInt32[0];
 
         }
 
@@ -194,7 +194,7 @@ namespace org.GraphDefined.WWCP
             this.Result                = AuthStartResultType.Error;
             this.AuthorizatorId        = AuthorizatorId;
             this.Runtime               = Runtime;
-            this.Description           = ErrorMessage ?? String.Empty;
+            this.Description           = ErrorMessage;
             this.ListOfAuthStopTokens  = new Auth_Token[0];
             this.ListOfAuthStopPINs    = new UInt32[0];
 
@@ -257,7 +257,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Authorized(AuthorizatorId, SessionId, ProviderId, Description = null, AdditionalInfo = null, Runtime = null, ListOfAuthStopTokens = null, ListOfAuthStopPINs = null)
+        #region (static) Authorized   (AuthorizatorId, SessionId, ProviderId, Description = null, AdditionalInfo = null, Runtime = null, ListOfAuthStopTokens = null, ListOfAuthStopPINs = null)
 
         /// <summary>
         /// The authorize start was successful.
@@ -274,7 +274,7 @@ namespace org.GraphDefined.WWCP
 
             Authorized(Authorizator_Id          AuthorizatorId,
                        ChargingSession_Id       SessionId,
-                       eMobilityProvider_Id                  ProviderId,
+                       eMobilityProvider_Id?    ProviderId            = null,
                        String                   Description           = null,
                        String                   AdditionalInfo        = null,
                        TimeSpan?                Runtime               = null,
@@ -305,11 +305,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="Runtime">The run time of the request.</param>
         public static AuthStartResult
 
-            NotAuthorized(Authorizator_Id  AuthorizatorId,
-                          eMobilityProvider_Id          ProviderId,
-                          String           Description     = null,
-                          String           AdditionalInfo  = null,
-                          TimeSpan?        Runtime         = null)
+            NotAuthorized(Authorizator_Id        AuthorizatorId,
+                          eMobilityProvider_Id?  ProviderId,
+                          String                 Description     = null,
+                          String                 AdditionalInfo  = null,
+                          TimeSpan?              Runtime         = null)
 
 
             => new AuthStartResult(AuthorizatorId,
@@ -321,7 +321,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Blocked(AuthorizatorId, ProviderId, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) Blocked      (AuthorizatorId, ProviderId, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The authorize start operation is not allowed (ev customer is blocked).
@@ -333,11 +333,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="Runtime">The run time of the request.</param>
         public static AuthStartResult
 
-            Blocked(Authorizator_Id  AuthorizatorId,
-                    eMobilityProvider_Id          ProviderId,
-                    String           Description     = null,
-                    String           AdditionalInfo  = null,
-                    TimeSpan?        Runtime         = null)
+            Blocked(Authorizator_Id        AuthorizatorId,
+                    eMobilityProvider_Id?  ProviderId,
+                    String                 Description     = null,
+                    String                 AdditionalInfo  = null,
+                    TimeSpan?              Runtime         = null)
 
 
             => new AuthStartResult(AuthorizatorId,

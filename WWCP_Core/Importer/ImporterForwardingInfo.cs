@@ -127,11 +127,11 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region ForwardedToEVSEOperatorId
 
-        public ChargingStationOperator_Id ForwardedToEVSEOperatorId
+        public ChargingStationOperator_Id? ForwardedToEVSEOperatorId
 
             => _ForwardedToEVSEOperator != null
                 ? _ForwardedToEVSEOperator.Id
-                : null;
+                : new ChargingStationOperator_Id?();
 
         #endregion
 

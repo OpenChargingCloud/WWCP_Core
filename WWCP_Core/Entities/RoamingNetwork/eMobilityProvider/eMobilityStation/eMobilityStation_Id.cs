@@ -158,7 +158,7 @@ namespace org.GraphDefined.WWCP
             if (_MatchCollection.Count != 1)
                 throw new ArgumentException("Illegal e-mobility station identification '" + Text + "'!", nameof(Text));
 
-            eMobilityProvider_Id __EVSEOperatorId = null;
+            eMobilityProvider_Id __EVSEOperatorId;
 
             if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
                 return new eMobilityStation_Id(__EVSEOperatorId,
@@ -246,7 +246,7 @@ namespace org.GraphDefined.WWCP
                 if (_MatchCollection.Count != 1)
                     return false;
 
-                eMobilityProvider_Id __EVSEOperatorId = null;
+                eMobilityProvider_Id __EVSEOperatorId;
 
                 // New format...
                 if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
@@ -363,7 +363,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return new eMobilityStation_Id(ProviderId.Clone,
+                return new eMobilityStation_Id(ProviderId,
                                               new String(Suffix.ToCharArray()));
             }
         }

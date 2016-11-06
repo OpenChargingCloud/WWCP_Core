@@ -70,21 +70,6 @@ namespace org.GraphDefined.WWCP.UnitTests
         #endregion
 
 
-        #region op_Equality_BothNull_Test()
-
-        /// <summary>
-        /// A test for the equality operator both null.
-        /// </summary>
-        [Test]
-        public void op_Equality_BothNull_Test()
-        {
-            ChargingStationOperator_Id _EVSEOperator_Id1 = null;
-            ChargingStationOperator_Id _EVSEOperator_Id2 = null;
-            Assert.IsTrue(_EVSEOperator_Id1 == _EVSEOperator_Id2);
-        }
-
-        #endregion
-
         #region op_Equality_SameReference_Test()
 
         /// <summary>
@@ -132,21 +117,6 @@ namespace org.GraphDefined.WWCP.UnitTests
 
         #endregion
 
-
-        #region op_Inequality_BothNull_Test()
-
-        /// <summary>
-        /// A test for the inequality operator both null.
-        /// </summary>
-        [Test]
-        public void op_Inequality_BothNull_Test()
-        {
-            ChargingStationOperator_Id _EVSEOperator_Id1 = null;
-            ChargingStationOperator_Id _EVSEOperator_Id2 = null;
-            Assert.IsFalse(_EVSEOperator_Id1 != _EVSEOperator_Id2);
-        }
-
-        #endregion
 
         #region op_Inequality_SameReference_Test()
 
@@ -209,51 +179,6 @@ namespace org.GraphDefined.WWCP.UnitTests
 
         #endregion
 
-
-        #region op_Smaller_Null_Test1()
-
-        /// <summary>
-        /// A test for the smaller operator null.
-        /// </summary>
-        [Test]
-        public void op_Smaller_Null_Test1()
-        {
-            var      _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            ChargingStationOperator_Id _EVSEOperator_Id2 = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 < _EVSEOperator_Id2; });
-        }
-
-        #endregion
-
-        #region op_Smaller_Null_Test2()
-
-        /// <summary>
-        /// A test for the smaller operator null.
-        /// </summary>
-        [Test]
-        public void op_Smaller_Null_Test2()
-        {
-            ChargingStationOperator_Id _EVSEOperator_Id1 = null;
-            var      _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 < _EVSEOperator_Id2; });
-        }
-
-        #endregion
-
-        #region op_Smaller_BothNull_Test()
-
-        /// <summary>
-        /// A test for the smaller operator both null.
-        /// </summary>
-        [Test]
-        public void op_Smaller_BothNull_Test()
-        {
-            ChargingStationOperator_Id _EVSEOperator_Id1 = null;
-            ChargingStationOperator_Id _EVSEOperator_Id2 = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 < _EVSEOperator_Id2; });
-        }
-
-        #endregion
 
         #region op_Smaller_SameReference_Test()
 
@@ -347,51 +272,6 @@ namespace org.GraphDefined.WWCP.UnitTests
         #endregion
 
 
-        #region op_SmallerOrEqual_Null_Test1()
-
-        /// <summary>
-        /// A test for the smallerOrEqual operator null.
-        /// </summary>
-        [Test]
-        public void op_SmallerOrEqual_Null_Test1()
-        {
-            var      _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            ChargingStationOperator_Id _EVSEOperator_Id2 = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 <= _EVSEOperator_Id2; });
-        }
-
-        #endregion
-
-        #region op_SmallerOrEqual_Null_Test2()
-
-        /// <summary>
-        /// A test for the smallerOrEqual operator null.
-        /// </summary>
-        [Test]
-        public void op_SmallerOrEqual_Null_Test2()
-        {
-            ChargingStationOperator_Id _EVSEOperator_Id1 = null;
-            var      _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 <= _EVSEOperator_Id2; });
-        }
-
-        #endregion
-
-        #region op_SmallerOrEqual_BothNull_Test()
-
-        /// <summary>
-        /// A test for the smallerOrEqual operator both null.
-        /// </summary>
-        [Test]
-        public void op_SmallerOrEqual_BothNull_Test()
-        {
-            ChargingStationOperator_Id _EVSEOperator_Id1 = null;
-            ChargingStationOperator_Id _EVSEOperator_Id2 = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 <= _EVSEOperator_Id2; });
-        }
-
-        #endregion
-
         #region op_SmallerOrEqual_SameReference_Test()
 
         /// <summary>
@@ -483,51 +363,6 @@ namespace org.GraphDefined.WWCP.UnitTests
 
         #endregion
 
-
-        #region op_Bigger_Null_Test1()
-
-        /// <summary>
-        /// A test for the bigger operator null.
-        /// </summary>
-        [Test]
-        public void op_Bigger_Null_Test1()
-        {
-            var      _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            ChargingStationOperator_Id _EVSEOperator_Id2 = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 > _EVSEOperator_Id2; });
-        }
-
-        #endregion
-
-        #region op_Bigger_Null_Test2()
-
-        /// <summary>
-        /// A test for the bigger operator null.
-        /// </summary>
-        [Test]
-        public void op_Bigger_Null_Test2()
-        {
-            ChargingStationOperator_Id _EVSEOperator_Id1 = null;
-            var      _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 > _EVSEOperator_Id2; });
-        }
-
-        #endregion
-
-        #region op_Bigger_BothNull_Test()
-
-        /// <summary>
-        /// A test for the bigger operator both null.
-        /// </summary>
-        [Test]
-        public void op_Bigger_BothNull_Test()
-        {
-            ChargingStationOperator_Id _EVSEOperator_Id1 = null;
-            ChargingStationOperator_Id _EVSEOperator_Id2 = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 > _EVSEOperator_Id2; });
-        }
-
-        #endregion
 
         #region op_Bigger_SameReference_Test()
 
@@ -621,51 +456,6 @@ namespace org.GraphDefined.WWCP.UnitTests
         #endregion
 
 
-        #region op_BiggerOrEqual_Null_Test1()
-
-        /// <summary>
-        /// A test for the biggerOrEqual operator null.
-        /// </summary>
-        [Test]
-        public void op_BiggerOrEqual_Null_Test1()
-        {
-            var _EVSEOperator_Id1 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            ChargingStationOperator_Id _EVSEOperator_Id2 = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 >= _EVSEOperator_Id2; });
-        }
-
-        #endregion
-
-        #region op_BiggerOrEqual_Null_Test2()
-
-        /// <summary>
-        /// A test for the biggerOrEqual operator null.
-        /// </summary>
-        [Test]
-        public void op_BiggerOrEqual_Null_Test2()
-        {
-            ChargingStationOperator_Id _EVSEOperator_Id1 = null;
-            var _EVSEOperator_Id2 = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 >= _EVSEOperator_Id2; });
-        }
-
-        #endregion
-
-        #region op_BiggerOrEqual_BothNull_Test()
-
-        /// <summary>
-        /// A test for the biggerOrEqual operator both null.
-        /// </summary>
-        [Test]
-        public void op_BiggerOrEqual_BothNull_Test()
-        {
-            ChargingStationOperator_Id _EVSEOperator_Id1 = null;
-            ChargingStationOperator_Id _EVSEOperator_Id2 = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id1 >= _EVSEOperator_Id2; });
-        }
-
-        #endregion
-
         #region op_BiggerOrEqual_SameReference_Test()
 
         /// <summary>
@@ -758,36 +548,6 @@ namespace org.GraphDefined.WWCP.UnitTests
         #endregion
 
 
-        #region CompareToNullTest1()
-
-        /// <summary>
-        /// A test for CompareTo null.
-        /// </summary>
-        [Test]
-        public void CompareToNullTest1()
-        {
-            var _EVSEOperator_Id = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            Object _Object   = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id.CompareTo(_Object); });
-        }
-
-        #endregion
-
-        #region CompareToNullTest2()
-
-        /// <summary>
-        /// A test for CompareTo null.
-        /// </summary>
-        [Test]
-        public void CompareToNullTest2()
-        {
-            var _EVSEOperator_Id = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            ChargingStationOperator_Id _Object   = null;
-            Assert.Throws<ArgumentNullException>(() => { var x = _EVSEOperator_Id.CompareTo(_Object); });
-        }
-
-        #endregion
-
         #region CompareToNonEVSEOperator_IdTest()
 
         /// <summary>
@@ -863,36 +623,6 @@ namespace org.GraphDefined.WWCP.UnitTests
 
         #endregion
 
-
-        #region EqualsNullTest1()
-
-        /// <summary>
-        /// A test for equals null.
-        /// </summary>
-        [Test]
-        public void EqualsNullTest1()
-        {
-            var _EVSEOperator_Id = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            Object _Object   = null;
-            Assert.IsFalse(_EVSEOperator_Id.Equals(_Object));
-        }
-
-        #endregion
-
-        #region EqualsNullTest2()
-
-        /// <summary>
-        /// A test for equals null.
-        /// </summary>
-        [Test]
-        public void EqualsNullTest2()
-        {
-            var _EVSEOperator_Id = ChargingStationOperator_Id.Parse(Country.Germany, "123");
-            ChargingStationOperator_Id _Object   = null;
-            Assert.IsFalse(_EVSEOperator_Id.Equals(_Object));
-        }
-
-        #endregion
 
         #region EqualsNonEVSEOperator_IdTest()
 

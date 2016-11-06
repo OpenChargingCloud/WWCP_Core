@@ -63,7 +63,7 @@ namespace org.GraphDefined.WWCP
         public String        OperatorId   { get; }
 
 
-        public IdFormatType  Format       { get; }
+        public OperatorIdFormats  Format       { get; }
 
 
         public String OriginId
@@ -87,7 +87,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="IdFormat">The format of the Charging Station Operator identification [old|new].</param>
         private ParkingOperator_Id(Country       CountryCode,
                                            String        OperatorId,
-                                           IdFormatType  IdFormat = IdFormatType.NEW)
+                                           OperatorIdFormats  IdFormat = OperatorIdFormats.NEW)
         {
 
             this.CountryCode  = CountryCode;
@@ -127,12 +127,12 @@ namespace org.GraphDefined.WWCP
             if (Country.TryParseAlpha2Code(_MatchCollection[0].Groups[1].Value, out __CountryCode))
                 return new ParkingOperator_Id(__CountryCode,
                                            _MatchCollection[0].Groups[2].Value,
-                                           IdFormatType.NEW);
+                                           OperatorIdFormats.NEW);
 
             if (Country.TryParseTelefonCode(_MatchCollection[0].Groups[3].Value, out __CountryCode))
                 return new ParkingOperator_Id(__CountryCode,
                                            _MatchCollection[0].Groups[4].Value,
-                                           IdFormatType.OLD);
+                                           OperatorIdFormats.OLD);
 
             throw new ArgumentException("Illegal Charging Station Operator identification!", "EVSEId");
 
@@ -150,7 +150,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="IdFormat">The format of the Charging Station Operator identification [old|new].</param>
         public static ParkingOperator_Id Parse(Country       CountryCode,
                                             String        OperatorId,
-                                            IdFormatType  IdFormat = IdFormatType.NEW)
+                                            OperatorIdFormats  IdFormat = OperatorIdFormats.NEW)
         {
 
             #region Initial checks
@@ -216,7 +216,7 @@ namespace org.GraphDefined.WWCP
                 {
                     EVSEOperatorId = new ParkingOperator_Id(__CountryCode,
                                                          _MatchCollection[0].Groups[2].Value,
-                                                         IdFormatType.NEW);
+                                                         OperatorIdFormats.NEW);
                     return true;
                 }
 
@@ -224,7 +224,7 @@ namespace org.GraphDefined.WWCP
                 {
                     EVSEOperatorId = new ParkingOperator_Id(__CountryCode,
                                                          _MatchCollection[0].Groups[4].Value,
-                                                         IdFormatType.OLD);
+                                                         OperatorIdFormats.OLD);
                     return true;
                 }
 
@@ -232,7 +232,7 @@ namespace org.GraphDefined.WWCP
                 // Just e.g. "822"...
                 EVSEOperatorId = ParkingOperator_Id.Parse(Country.Germany,
                                                        _MatchCollection[0].Groups[5].Value).
-                                                 ChangeFormat(IdFormatType.OLD);
+                                                 ChangeFormat(OperatorIdFormats.OLD);
 
                 return true;
 
@@ -260,7 +260,7 @@ namespace org.GraphDefined.WWCP
         public static Boolean TryParse(Country              CountryCode,
                                        String               OperatorId,
                                        out ParkingOperator_Id  EVSEOperatorId,
-                                       IdFormatType         IdFormat = IdFormatType.NEW)
+                                       OperatorIdFormats         IdFormat = OperatorIdFormats.NEW)
         {
 
             #region Initial checks
@@ -307,7 +307,7 @@ namespace org.GraphDefined.WWCP
         /// Return a new Charging Station Operator identification in the given format.
         /// </summary>
         /// <param name="Format">An Charging Station Operator identification format.</param>
-        public ParkingOperator_Id ChangeFormat(IdFormatType Format)
+        public ParkingOperator_Id ChangeFormat(OperatorIdFormats Format)
         {
             return new ParkingOperator_Id(this.CountryCode, this.OperatorId, Format);
         }
@@ -340,10 +340,10 @@ namespace org.GraphDefined.WWCP
         /// Return the identification in the given format.
         /// </summary>
         /// <param name="IdFormat">The format.</param>
-        public String ToFormat(IdFormatType IdFormat)
+        public String ToFormat(OperatorIdFormats IdFormat)
         {
 
-            return (IdFormat == IdFormatType.NEW)
+            return (IdFormat == OperatorIdFormats.NEW)
                        ? String.Concat(     CountryCode.Alpha2Code,  "*", OperatorId)
                        : String.Concat("+", CountryCode.TelefonCode, "*", OperatorId);
 
@@ -359,7 +359,7 @@ namespace org.GraphDefined.WWCP
             if (IdFormat == IdFormatOriginType.Origin)
                 return ToFormat(this.Format);
 
-            return ToFormat((IdFormatType) IdFormat);
+            return ToFormat((OperatorIdFormats) IdFormat);
 
         }
 

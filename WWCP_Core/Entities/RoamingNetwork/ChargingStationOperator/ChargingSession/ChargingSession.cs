@@ -395,7 +395,7 @@ namespace org.GraphDefined.WWCP
         /// The e-Mobility service provider identification for starting this charging session.
         /// </summary>
         [Optional]
-        public eMobilityProvider_Id ProviderIdStart { get; set; }
+        public eMobilityProvider_Id? ProviderIdStart { get; set; }
 
         #endregion
 
@@ -405,7 +405,7 @@ namespace org.GraphDefined.WWCP
         /// The e-Mobility service provider identification for stopping this charging session.
         /// </summary>
         [Optional]
-        public eMobilityProvider_Id ProviderIdStop { get; set; }
+        public eMobilityProvider_Id? ProviderIdStop { get; set; }
 
         #endregion
 

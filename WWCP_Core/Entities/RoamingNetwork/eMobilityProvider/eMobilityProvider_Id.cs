@@ -38,32 +38,51 @@ namespace org.GraphDefined.WWCP
 
 
     /// <summary>
-    /// The unique identification of an Electric Vehicle Service Provider (EVSP Id).
+    /// The unique identification of an e-mobility service provider.
     /// </summary>
-    public class eMobilityProvider_Id : IId,
-                                        IEquatable <eMobilityProvider_Id>,
-                                        IComparable<eMobilityProvider_Id>
+    public struct eMobilityProvider_Id : IId,
+                                         IEquatable <eMobilityProvider_Id>,
+                                         IComparable<eMobilityProvider_Id>
 
     {
 
         #region Data
 
         /// <summary>
-        /// The regular expression for parsing an EVSE Service Provider identification.
+        /// The regular expression for parsing an e-mobility service provider identification.
         /// </summary>
-        public  const    String   ProviderId_RegEx            = @"^[A-Z0-9]{3}$";
+        public const String  ProviderId_RegEx            = @"^[A-Z0-9]{3}$";
 
         /// <summary>
-        /// The regular expression for parsing an Alpha-2-CountryCode and an EV Service Provider identification.
+        /// The regular expression for parsing an Alpha-2-CountryCode and an e-mobility service provider identification.
         /// The ISO format onyl allows '-' as a separator!
         /// </summary>
-        public  const    String   CountryAndProviderId_RegEx  = @"^([A-Z]{2})([\*|\-]?)([A-Z0-9]{3})$";
+        public const String  CountryAndProviderId_RegEx  = @"^([A-Z]{2})([\*|\-]?)([A-Z0-9]{3})$";
 
         #endregion
 
         #region Properties
 
-        #region Length
+        /// <summary>
+        /// The country code.
+        /// </summary>
+        public Country            CountryCode   { get; }
+
+        /// <summary>
+        /// The internal e-mobility service provider identification.
+        /// </summary>
+        public String             ProviderId    { get; }
+
+        /// <summary>
+        /// The format of the e-mobility service provider identification.
+        /// </summary>
+        public ProviderIdFormats  Format        { get; }
+
+        /// <summary>
+        /// Returns the original representation of the e-mobility service provider identification.
+        /// </summary>
+        public String             OriginId
+            => ToFormat(Format);
 
         /// <summary>
         /// Returns the length of the identificator.
@@ -72,194 +91,159 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return (UInt64) _ProviderId.Length;
+
+                switch (Format)
+                {
+
+                    case ProviderIdFormats.DIN:
+                        return (UInt64) (1 + CountryCode.TelefonCode.ToString().Length     + ProviderId.Length);
+
+                    case ProviderIdFormats.DIN_STAR:
+                    case ProviderIdFormats.DIN_HYPHEN:
+                        return (UInt64) (1 + CountryCode.TelefonCode.ToString().Length + 1 + ProviderId.Length);
+
+
+                    case ProviderIdFormats.ISO:
+                        return (UInt64)     (CountryCode.Alpha2Code.Length                 + ProviderId.Length);
+
+                    default:
+                        return (UInt64)     (CountryCode.Alpha2Code.Length             + 1 + ProviderId.Length);
+
+                }
+
             }
         }
-
-        #endregion
-
-        #region CountryCode
-
-        private readonly Country _CountryCode;
-
-        /// <summary>
-        /// The internal Alpha-2-CountryCode.
-        /// </summary>
-        public Country CountryCode
-        {
-            get
-            {
-                return _CountryCode;
-            }
-        }
-
-        #endregion
-
-        #region IdFormat
-
-        private readonly ProviderIdFormats _IdFormat;
-
-        /// <summary>
-        /// The EVSP Id format.
-        /// </summary>
-        public ProviderIdFormats IdFormat
-        {
-            get
-            {
-                return _IdFormat;
-            }
-        }
-
-        #endregion
-
-        #region ProviderId
-
-        private readonly String _ProviderId;
-
-        /// <summary>
-        /// The internal EV Service Provider identification.
-        /// </summary>
-        public String ProviderId
-        {
-            get
-            {
-                return _ProviderId;
-            }
-        }
-
-        #endregion
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new Electric Vehicle Service Provider (EVSP Id)
-        /// based on the given string.
+        /// Generate a new e-mobility service provider identification.
         /// </summary>
-        /// <param name="CountryCode">The Alpha-2-CountryCode.</param>
-        /// <param name="IdFormat">The id format '-' (ISO) or '*|-' DIN to use.</param>
-        /// <param name="ProviderId">The EV Service Provider identification.</param>
+        /// <param name="CountryCode">The country code.</param>
+        /// <param name="ProviderId">The e-mobility service provider identification.</param>
+        /// <param name="Format">The id format '-' (ISO) or '*|-' DIN to use.</param>
         private eMobilityProvider_Id(Country            CountryCode,
-                                     ProviderIdFormats  IdFormat,
-                                     String             ProviderId)
+                                     String             ProviderId,
+                                     ProviderIdFormats  Format = ProviderIdFormats.ISO_HYPHEN)
         {
 
-            this._CountryCode  = CountryCode;
-            this._IdFormat     = IdFormat;
-            this._ProviderId   = ProviderId;
+            this.CountryCode  = CountryCode;
+            this.Format       = Format;
+            this.ProviderId   = ProviderId;
 
         }
 
         #endregion
 
 
-        #region Parse(CountryAndProviderId)
+        #region Parse(Text)
 
         /// <summary>
-        /// Parse the given string as an EV Service Provider identification.
+        /// Parse the given text representation of an e-mobility service provider identification.
         /// </summary>
-        /// <param name="CountryAndProviderId">The country code and EV Service Provider identification as a string.</param>
-        public static eMobilityProvider_Id Parse(String CountryAndProviderId)
+        /// <param name="Text">A text representation of an e-mobility service provider identification.</param>
+        public static eMobilityProvider_Id Parse(String Text)
         {
 
             #region Initial checks
 
-            if (CountryAndProviderId.IsNullOrEmpty())
-                throw new ArgumentException("The parameter must not be null or empty!", "CountryAndProviderId");
+            if (Text.Trim().IsNullOrEmpty())
+                throw new ArgumentException("The given text representation of an e-mobility service provider identification must not be null or empty!", nameof(Text));
 
             #endregion
 
-            var _MatchCollection = Regex.Matches(CountryAndProviderId.Trim().ToUpper(),
-                                                 CountryAndProviderId_RegEx,
-                                                 RegexOptions.IgnorePatternWhitespace);
+            var MatchCollection = Regex.Matches(Text.Trim().ToUpper(),
+                                                CountryAndProviderId_RegEx,
+                                                RegexOptions.IgnorePatternWhitespace);
 
-            if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal EV Service Provider identification '" + CountryAndProviderId + "'!", "CountryAndProviderId");
+            if (MatchCollection.Count != 1)
+                throw new ArgumentException("Illegal text representation of an e-mobility service provider identification: '" + Text + "'!", nameof(Text));
 
-            Country __CountryCode;
+            Country _CountryCode;
 
-            if (Country.TryParseAlpha2Code(_MatchCollection[0].Groups[1].Value, out __CountryCode))
+            if (Country.TryParseAlpha2Code(MatchCollection[0].Groups[1].Value, out _CountryCode))
             {
 
                 ProviderIdFormats Separator = ProviderIdFormats.ISO_HYPHEN;
 
-                switch (_MatchCollection[0].Groups[2].Value)
+                switch (MatchCollection[0].Groups[2].Value)
                 {
 
                     case ""  : Separator = ProviderIdFormats.DIN|ProviderIdFormats.ISO; break;
                     case "-" : Separator = ProviderIdFormats.DIN_HYPHEN|ProviderIdFormats.ISO_HYPHEN; break;
                     case "*" : Separator = ProviderIdFormats.DIN_STAR; break;
 
-                    default: throw new ArgumentException("Illegal EV Service Provider identification!", "CountryAndProviderId");
+                    default: throw new ArgumentException("Illegal e-mobility service provider identification!", "CountryAndProviderId");
 
                 }
 
-                return new eMobilityProvider_Id(__CountryCode,
-                                   Separator,
-                                   _MatchCollection[0].Groups[3].Value);
+                return new eMobilityProvider_Id(_CountryCode,
+                                                MatchCollection[0].Groups[3].Value,
+                                                Separator);
             }
 
-            throw new ArgumentException("Illegal EV Service Provider identification!", "CountryAndProviderId");
+            throw new ArgumentException("Unknown country code in the given text representation of an e-mobility service provider identification: '" + Text + "'!", nameof(Text));
 
         }
 
         #endregion
 
-        #region Parse(CountryCode, ProviderId, ProviderIdFormat = ProviderIdFormats.ISO_HYPHEN)
+        #region Parse(CountryCode, ProviderId, IdFormat = ProviderIdFormats.ISO_HYPHEN)
 
         /// <summary>
-        /// Parse the given string as an EV Service Provider identification.
+        /// Parse the given string as an e-mobility service provider identification.
         /// </summary>
         /// <param name="CountryCode">A country code.</param>
-        /// <param name="ProviderId">An EV Service Provider identification as a string.</param>
-        /// <param name="ProviderIdFormat">The optional format of the provider identification.</param>
+        /// <param name="ProviderId">An e-mobility service provider identification as a string.</param>
+        /// <param name="IdFormat">The optional format of the provider identification.</param>
         public static eMobilityProvider_Id Parse(Country            CountryCode,
-                                    String             ProviderId,
-                                    ProviderIdFormats  ProviderIdFormat = ProviderIdFormats.ISO_HYPHEN)
+                                                 String             ProviderId,
+                                                 ProviderIdFormats  IdFormat = ProviderIdFormats.ISO_HYPHEN)
         {
 
             #region Initial checks
 
             if (CountryCode == null)
-                throw new ArgumentNullException(nameof(CountryCode),  "The country code must not be null!");
+                throw new ArgumentNullException(nameof(CountryCode), "The given country must not be null!");
 
             if (ProviderId.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(ProviderId),   "The provider identification must not be null or empty!");
+                throw new ArgumentNullException(nameof(ProviderId),  "The given e-mobility service provider identification suffix must not be null or empty!");
 
             #endregion
 
-            var _MatchCollection = Regex.Matches(ProviderId.Trim().ToUpper(),
-                                                 ProviderId_RegEx,
-                                                 RegexOptions.IgnorePatternWhitespace);
+            if (!Regex.IsMatch(ProviderId.Trim().ToUpper(),
+                               ProviderId_RegEx,
+                               RegexOptions.IgnorePatternWhitespace))
 
-            if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal EV Service Provider identification '" + CountryCode + " / " + ProviderId + "'!", nameof(ProviderId));
+                throw new ArgumentException("Illegal e-mobility service provider identification '" + CountryCode + "' / '" + ProviderId + "'!",
+                                            nameof(ProviderId));
 
             return new eMobilityProvider_Id(CountryCode,
-                               ProviderIdFormat,
-                               _MatchCollection[0].Value);
+                                            ProviderId,
+                                            IdFormat);
 
         }
 
         #endregion
 
-        #region TryParse(CountryAndProviderId, out EVSEProviderId)
+        #region TryParse(Text, out EVSEProviderId)
 
         /// <summary>
-        /// Parse the given string as an EV Service Provider identification.
+        /// Try to parse the given text representation of an e-mobility service provider identification.
         /// </summary>
-        /// <param name="CountryAndProviderId">The country code and EV Service Provider identification as a string.</param>
-        /// <param name="EVSEProviderId">The parsed EV Service Provider identification.</param>
-        public static Boolean TryParse(String       CountryAndProviderId,
+        /// <param name="Text">A text representation of an e-mobility service provider identification.</param>
+        /// <param name="EVSEProviderId">The parsed e-mobility service provider identification.</param>
+        public static Boolean TryParse(String                    Text,
                                        out eMobilityProvider_Id  EVSEProviderId)
         {
 
             #region Initial checks
 
-            if (CountryAndProviderId.IsNullOrEmpty())
+            if (Text.IsNullOrEmpty())
             {
-                EVSEProviderId = null;
+                EVSEProviderId = default(eMobilityProvider_Id);
                 return false;
             }
 
@@ -268,37 +252,37 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var _MatchCollection = Regex.Matches(CountryAndProviderId.Trim().ToUpper(),
-                                                     CountryAndProviderId_RegEx,
-                                                     RegexOptions.IgnorePatternWhitespace);
+                var MatchCollection = Regex.Matches(Text.Trim().ToUpper(),
+                                                    CountryAndProviderId_RegEx,
+                                                    RegexOptions.IgnorePatternWhitespace);
 
-                if (_MatchCollection.Count != 1)
+                if (MatchCollection.Count != 1)
                 {
-                    EVSEProviderId = null;
+                    EVSEProviderId = default(eMobilityProvider_Id);
                     return false;
                 }
 
-                Country __CountryCode;
+                Country _CountryCode;
 
-                if (Country.TryParseAlpha2Code(_MatchCollection[0].Groups[1].Value, out __CountryCode))
+                if (Country.TryParseAlpha2Code(MatchCollection[0].Groups[1].Value, out _CountryCode))
                 {
 
-                    ProviderIdFormats Separator = ProviderIdFormats.ISO_HYPHEN;
+                    var Separator = ProviderIdFormats.ISO_HYPHEN;
 
-                    switch (_MatchCollection[0].Groups[2].Value)
+                    switch (MatchCollection[0].Groups[2].Value)
                     {
 
                         case ""  : Separator = ProviderIdFormats.DIN|ProviderIdFormats.ISO; break;
                         case "-" : Separator = ProviderIdFormats.ISO_HYPHEN;                break;
                         case "*" : Separator = ProviderIdFormats.DIN_STAR;                  break;
 
-                        default: throw new ArgumentException("Illegal EV Service Provider identification!", nameof(CountryAndProviderId));
+                        default: throw new ArgumentException("Illegal e-mobility service provider identification!", nameof(Text));
 
                     }
 
-                    EVSEProviderId = new eMobilityProvider_Id(__CountryCode,
-                                                 Separator,
-                                                 _MatchCollection[0].Groups[3].Value);
+                    EVSEProviderId = new eMobilityProvider_Id(_CountryCode,
+                                                 MatchCollection[0].Groups[3].Value,
+                                                 Separator);
 
                     return true;
 
@@ -306,10 +290,14 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            catch (Exception e)
+#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+            catch (Exception)
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
+#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
             { }
 
-            EVSEProviderId = null;
+            EVSEProviderId = default(eMobilityProvider_Id);
             return false;
 
         }
@@ -333,7 +321,7 @@ namespace org.GraphDefined.WWCP
 
             if (CountryCode == null || ProviderId.IsNullOrEmpty())
             {
-                EVSEProviderId = null;
+                EVSEProviderId = default(eMobilityProvider_Id);
                 return false;
             }
 
@@ -348,13 +336,13 @@ namespace org.GraphDefined.WWCP
 
                 if (_MatchCollection.Count != 1)
                 {
-                    EVSEProviderId = null;
+                    EVSEProviderId = default(eMobilityProvider_Id);
                     return false;
                 }
 
                 EVSEProviderId = new eMobilityProvider_Id(CountryCode,
-                                             ProviderIdFormats.DIN | ProviderIdFormats.ISO,
-                                             _MatchCollection[0].Value);
+                                             _MatchCollection[0].Value,
+                                             ProviderIdFormats.DIN | ProviderIdFormats.ISO);
 
                 return true;
 
@@ -362,7 +350,7 @@ namespace org.GraphDefined.WWCP
 
             catch (Exception)
             {
-                EVSEProviderId = null;
+                EVSEProviderId = default(eMobilityProvider_Id);
                 return false;
             }
 
@@ -370,35 +358,63 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChangeIdFormat(NewIdFormat)
+
+        #region ChangeFormat(NewFormat)
 
         /// <summary>
-        /// Change the EVSP Id format.
+        /// Return a new e-mobility service provider identification in the given format.
         /// </summary>
-        /// <param name="NewIdFormat">The new EVSP Id format.</param>
-        /// <returns>A new EVSPId object.</returns>
-        public eMobilityProvider_Id ChangeIdFormat(ProviderIdFormats NewIdFormat)
-        {
-            return new eMobilityProvider_Id(this._CountryCode, NewIdFormat, this.ProviderId);
-        }
+        /// <param name="NewFormat">The new e-mobility service provider identification format.</param>
+        public eMobilityProvider_Id ChangeFormat(ProviderIdFormats NewFormat)
+
+            => new eMobilityProvider_Id(CountryCode,
+                                        ProviderId,
+                                        NewFormat);
 
         #endregion
 
-        #region Clone
+
+        #region ToFormat(Format)
 
         /// <summary>
-        /// Clone this Electric Vehicle Service Provider identification.
+        /// Return the identification in the given format.
         /// </summary>
-        public eMobilityProvider_Id Clone
+        /// <param name="Format">The format of the identification.</param>
+        public String ToFormat(ProviderIdFormats Format)
         {
-            get
+
+            switch (Format)
             {
 
-                return new eMobilityProvider_Id(_CountryCode,
-                                   _IdFormat,
-                                   new String(_ProviderId.ToCharArray()));
+                case ProviderIdFormats.DIN:
+                    return String.Concat("+",
+                                         CountryCode.TelefonCode,
+                                         ProviderId);
+
+                case ProviderIdFormats.DIN_STAR:
+                    return String.Concat("+",
+                                         CountryCode.TelefonCode,
+                                         "*",
+                                         ProviderId);
+
+                case ProviderIdFormats.DIN_HYPHEN:
+                    return String.Concat("+",
+                                         CountryCode.TelefonCode,
+                                         "-",
+                                         ProviderId);
+
+
+                case ProviderIdFormats.ISO:
+                    return String.Concat(CountryCode.Alpha2Code,
+                                         ProviderId);
+
+                default:
+                    return String.Concat(CountryCode.Alpha2Code,
+                                         "-",
+                                         ProviderId);
 
             }
+
         }
 
         #endregion
@@ -406,119 +422,119 @@ namespace org.GraphDefined.WWCP
 
         #region Operator overloading
 
-        #region Operator == (EVSPId1, EVSPId2)
+        #region Operator == (eMobilityProviderId1, eMobilityProviderId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSPId1">A EVSPId.</param>
-        /// <param name="EVSPId2">Another EVSPId.</param>
+        /// <param name="eMobilityProviderId1">An e-mobility service provider identification.</param>
+        /// <param name="eMobilityProviderId2">Another e-mobility service provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (eMobilityProvider_Id EVSPId1, eMobilityProvider_Id EVSPId2)
+        public static Boolean operator == (eMobilityProvider_Id eMobilityProviderId1, eMobilityProvider_Id eMobilityProviderId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(EVSPId1, EVSPId2))
+            if (Object.ReferenceEquals(eMobilityProviderId1, eMobilityProviderId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) EVSPId1 == null) || ((Object) EVSPId2 == null))
+            if (((Object) eMobilityProviderId1 == null) || ((Object) eMobilityProviderId2 == null))
                 return false;
 
-            return EVSPId1.Equals(EVSPId2);
+            return eMobilityProviderId1.Equals(eMobilityProviderId2);
 
         }
 
         #endregion
 
-        #region Operator != (EVSPId1, EVSPId2)
+        #region Operator != (eMobilityProviderId1, eMobilityProviderId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSPId1">A EVSPId.</param>
-        /// <param name="EVSPId2">Another EVSPId.</param>
+        /// <param name="eMobilityProviderId1">An e-mobility service provider identification.</param>
+        /// <param name="eMobilityProviderId2">Another e-mobility service provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (eMobilityProvider_Id EVSPId1, eMobilityProvider_Id EVSPId2)
+        public static Boolean operator != (eMobilityProvider_Id eMobilityProviderId1, eMobilityProvider_Id eMobilityProviderId2)
         {
-            return !(EVSPId1 == EVSPId2);
+            return !(eMobilityProviderId1 == eMobilityProviderId2);
         }
 
         #endregion
 
-        #region Operator <  (EVSPId1, EVSPId2)
+        #region Operator <  (eMobilityProviderId1, eMobilityProviderId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSPId1">A EVSPId.</param>
-        /// <param name="EVSPId2">Another EVSPId.</param>
+        /// <param name="eMobilityProviderId1">An e-mobility service provider identification.</param>
+        /// <param name="eMobilityProviderId2">Another e-mobility service provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (eMobilityProvider_Id EVSPId1, eMobilityProvider_Id EVSPId2)
+        public static Boolean operator < (eMobilityProvider_Id eMobilityProviderId1, eMobilityProvider_Id eMobilityProviderId2)
         {
 
-            if ((Object) EVSPId1 == null)
-                throw new ArgumentNullException("The given EVSPId1 must not be null!");
+            if ((Object) eMobilityProviderId1 == null)
+                throw new ArgumentNullException("The given eMobilityProviderId1 must not be null!");
 
-            return EVSPId1.CompareTo(EVSPId2) < 0;
+            return eMobilityProviderId1.CompareTo(eMobilityProviderId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (EVSPId1, EVSPId2)
+        #region Operator <= (eMobilityProviderId1, eMobilityProviderId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSPId1">A EVSPId.</param>
-        /// <param name="EVSPId2">Another EVSPId.</param>
+        /// <param name="eMobilityProviderId1">An e-mobility service provider identification.</param>
+        /// <param name="eMobilityProviderId2">Another e-mobility service provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (eMobilityProvider_Id EVSPId1, eMobilityProvider_Id EVSPId2)
+        public static Boolean operator <= (eMobilityProvider_Id eMobilityProviderId1, eMobilityProvider_Id eMobilityProviderId2)
         {
-            return !(EVSPId1 > EVSPId2);
+            return !(eMobilityProviderId1 > eMobilityProviderId2);
         }
 
         #endregion
 
-        #region Operator >  (EVSPId1, EVSPId2)
+        #region Operator >  (eMobilityProviderId1, eMobilityProviderId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSPId1">A EVSPId.</param>
-        /// <param name="EVSPId2">Another EVSPId.</param>
+        /// <param name="eMobilityProviderId1">An e-mobility service provider identification.</param>
+        /// <param name="eMobilityProviderId2">Another e-mobility service provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (eMobilityProvider_Id EVSPId1, eMobilityProvider_Id EVSPId2)
+        public static Boolean operator > (eMobilityProvider_Id eMobilityProviderId1, eMobilityProvider_Id eMobilityProviderId2)
         {
 
-            if ((Object) EVSPId1 == null)
-                throw new ArgumentNullException("The given EVSPId1 must not be null!");
+            if ((Object) eMobilityProviderId1 == null)
+                throw new ArgumentNullException("The given eMobilityProviderId1 must not be null!");
 
-            return EVSPId1.CompareTo(EVSPId2) > 0;
+            return eMobilityProviderId1.CompareTo(eMobilityProviderId2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (EVSPId1, EVSPId2)
+        #region Operator >= (eMobilityProviderId1, eMobilityProviderId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSPId1">A EVSPId.</param>
-        /// <param name="EVSPId2">Another EVSPId.</param>
+        /// <param name="eMobilityProviderId1">An e-mobility service provider identification.</param>
+        /// <param name="eMobilityProviderId2">Another e-mobility service provider identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (eMobilityProvider_Id EVSPId1, eMobilityProvider_Id EVSPId2)
+        public static Boolean operator >= (eMobilityProvider_Id eMobilityProviderId1, eMobilityProvider_Id eMobilityProviderId2)
         {
-            return !(EVSPId1 < EVSPId2);
+            return !(eMobilityProviderId1 < eMobilityProviderId2);
         }
 
         #endregion
 
         #endregion
 
-        #region IComparable<EVSP_Id> Members
+        #region IComparable<eMobilityProviderId> Members
 
         #region CompareTo(Object)
 
@@ -530,37 +546,39 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            // Check if the given object is an EVSPId.
-            var EVSPId = Object as eMobilityProvider_Id;
-            if ((Object) EVSPId == null)
-                throw new ArgumentException("The given object is not a EVSPId!");
+            if (!(Object is eMobilityProvider_Id))
+                throw new ArgumentException("The given object is not an e-mobility provider identification!", nameof(Object));
 
-            return CompareTo(EVSPId);
+            return CompareTo((eMobilityProvider_Id) Object);
 
         }
 
         #endregion
 
-        #region CompareTo(EVSPId)
+        #region CompareTo(eMobilityProviderId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSPId">An object to compare with.</param>
-        public Int32 CompareTo(eMobilityProvider_Id EVSPId)
+        /// <param name="eMobilityProviderId">An object to compare with.</param>
+        public Int32 CompareTo(eMobilityProvider_Id eMobilityProviderId)
         {
 
-            if ((Object) EVSPId == null)
-                throw new ArgumentNullException("The given EVSPId must not be null!");
+            if ((Object) eMobilityProviderId == null)
+                throw new ArgumentNullException(nameof(eMobilityProviderId), "The given e-mobility provider identification must not be null!");
 
-            // Compare the length of the EVSPIds
-            var _Result = this.Length.CompareTo(EVSPId.Length);
+            // Compare the length of the eMobilityProviderIds
+            var _Result = this.Length.CompareTo(eMobilityProviderId.Length);
 
-            // If equal: Compare Ids
+            // If equal: Compare country codes
             if (_Result == 0)
-                _Result = _ProviderId.CompareTo(EVSPId._ProviderId);
+                _Result = CountryCode.CompareTo(eMobilityProviderId.CountryCode);
+
+            // If equal: Compare provider ids
+            if (_Result == 0)
+                _Result = String.Compare(ProviderId, eMobilityProviderId.ProviderId, StringComparison.Ordinal);
 
             return _Result;
 
@@ -570,7 +588,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<EVSP_Id> Members
+        #region IEquatable<eMobilityProviderId> Members
 
         #region Equals(Object)
 
@@ -585,31 +603,30 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an EVSPId.
-            var EVSPId = Object as eMobilityProvider_Id;
-            if ((Object) EVSPId == null)
+            if (!(Object is eMobilityProvider_Id))
                 return false;
 
-            return this.Equals(EVSPId);
+            return this.Equals((eMobilityProvider_Id) Object);
 
         }
 
         #endregion
 
-        #region Equals(EVSPId)
+        #region Equals(eMobilityProviderId)
 
         /// <summary>
-        /// Compares two EVSPIds for equality.
+        /// Compares two eMobilityProviderIds for equality.
         /// </summary>
-        /// <param name="EVSPId">A EVSPId to compare with.</param>
+        /// <param name="eMobilityProviderId">A eMobilityProviderId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(eMobilityProvider_Id EVSPId)
+        public Boolean Equals(eMobilityProvider_Id eMobilityProviderId)
         {
 
-            if ((Object) EVSPId == null)
+            if ((Object) eMobilityProviderId == null)
                 return false;
 
-            return _ProviderId.Equals(EVSPId._ProviderId);
+            return CountryCode.Equals(eMobilityProviderId.CountryCode) &&
+                   ProviderId. Equals(eMobilityProviderId.ProviderId);
 
         }
 
@@ -624,37 +641,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            return _ProviderId.GetHashCode();
-        }
 
-        #endregion
+            => CountryCode.Alpha2Code.GetHashCode() ^
+               ProviderId.            GetHashCode();
 
-        #region ToString(IdFormat)
-
-        /// <summary>
-        /// Return a string representation of this object
-        /// in the given Id format.
-        /// </summary>
-        public String ToString(ProviderIdFormats IdFormat)
-        {
-
-            switch (IdFormat)
-            {
-
-                case ProviderIdFormats.DIN_HYPHEN:
-                case ProviderIdFormats.ISO_HYPHEN:
-                    return String.Concat(CountryCode.Alpha2Code.ToUpper(), "-", _ProviderId.ToString());
-
-                case ProviderIdFormats.DIN_STAR:
-                    return String.Concat(CountryCode.Alpha2Code.ToUpper(), "*", _ProviderId.ToString());
-
-                default:
-                    return String.Concat(CountryCode.Alpha2Code.ToUpper(), _ProviderId.ToString());
-
-            }
-
-        }
 
         #endregion
 
@@ -664,11 +654,10 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return ToString(_IdFormat);
-        }
+            => OriginId;
 
         #endregion
+
 
     }
 

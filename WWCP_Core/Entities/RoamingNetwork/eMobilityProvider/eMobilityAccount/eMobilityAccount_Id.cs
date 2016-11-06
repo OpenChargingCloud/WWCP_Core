@@ -95,7 +95,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _ProviderId.IdFormat;
+                return _ProviderId.Format;
             }
         }
 
@@ -140,7 +140,7 @@ namespace org.GraphDefined.WWCP
             if (_MatchCollection.Count != 1)
                 throw new ArgumentException("The given string can not be parsed as eMA identification!", nameof(Text));
 
-            eMobilityProvider_Id __ProviderId = null;
+            eMobilityProvider_Id __ProviderId;
 
             if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __ProviderId))
                 return new eMobilityAccount_Id(__ProviderId.ToString() +
@@ -181,7 +181,7 @@ namespace org.GraphDefined.WWCP
             if (_MatchCollection.Count != 1)
                 return false;
 
-            eMobilityProvider_Id __ProviderId = null;
+            eMobilityProvider_Id __ProviderId;
 
             if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __ProviderId))
             {

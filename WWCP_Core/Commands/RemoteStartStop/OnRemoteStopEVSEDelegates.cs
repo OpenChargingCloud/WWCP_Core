@@ -41,17 +41,17 @@ namespace org.GraphDefined.WWCP
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnRemoteStopEVSERequestDelegate(DateTime              LogTimestamp,
-                                                         DateTime              RequestTimestamp,
-                                                         Object                Sender,
-                                                         EventTracking_Id      EventTrackingId,
-                                                         RoamingNetwork_Id     RoamingNetworkId,
-                                                         EVSE_Id               EVSEId,
-                                                         ChargingSession_Id    SessionId,
-                                                         ReservationHandling   ReservationHandling,
-                                                         eMobilityProvider_Id  ProviderId,
-                                                         eMobilityAccount_Id   eMAId,
-                                                         TimeSpan?             RequestTimeout);
+    public delegate Task OnRemoteStopEVSERequestDelegate(DateTime               LogTimestamp,
+                                                         DateTime               RequestTimestamp,
+                                                         Object                 Sender,
+                                                         EventTracking_Id       EventTrackingId,
+                                                         RoamingNetwork_Id      RoamingNetworkId,
+                                                         EVSE_Id                EVSEId,
+                                                         ChargingSession_Id     SessionId,
+                                                         ReservationHandling    ReservationHandling,
+                                                         eMobilityProvider_Id?  ProviderId,
+                                                         eMobilityAccount_Id    eMAId,
+                                                         TimeSpan?              RequestTimeout);
 
 
     /// <summary>
@@ -66,15 +66,15 @@ namespace org.GraphDefined.WWCP
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<RemoteStopEVSEResult> OnRemoteStopEVSEDelegate(DateTime              Timestamp,
-                                                                        CancellationToken     CancellationToken,
-                                                                        EventTracking_Id      EventTrackingId,
-                                                                        ReservationHandling   ReservationHandling,
-                                                                        ChargingSession_Id    SessionId,
-                                                                        eMobilityProvider_Id  ProviderId,
-                                                                        eMobilityAccount_Id   eMAId,
-                                                                        EVSE_Id               EVSEId,
-                                                                        TimeSpan?             RequestTimeout  = null);
+    public delegate Task<RemoteStopEVSEResult> OnRemoteStopEVSEDelegate(DateTime               Timestamp,
+                                                                        CancellationToken      CancellationToken,
+                                                                        EventTracking_Id       EventTrackingId,
+                                                                        ReservationHandling    ReservationHandling,
+                                                                        ChargingSession_Id     SessionId,
+                                                                        eMobilityProvider_Id?  ProviderId,
+                                                                        eMobilityAccount_Id    eMAId,
+                                                                        EVSE_Id                EVSEId,
+                                                                        TimeSpan?              RequestTimeout = null);
 
 
     /// <summary>
@@ -93,18 +93,18 @@ namespace org.GraphDefined.WWCP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote stop result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnRemoteStopEVSEResponseDelegate(DateTime              LogTimestamp,
-                                                          DateTime              RequestTimestamp,
-                                                          Object                Sender,
-                                                          EventTracking_Id      EventTrackingId,
-                                                          RoamingNetwork_Id     RoamingNetworkId,
-                                                          EVSE_Id               EVSEId,
-                                                          ChargingSession_Id    SessionId,
-                                                          ReservationHandling   ReservationHandling,
-                                                          eMobilityProvider_Id  ProviderId,
-                                                          eMobilityAccount_Id   eMAId,
-                                                          TimeSpan?             RequestTimeout,
-                                                          RemoteStopEVSEResult  Result,
-                                                          TimeSpan              Runtime);
+    public delegate Task OnRemoteStopEVSEResponseDelegate(DateTime               LogTimestamp,
+                                                          DateTime               RequestTimestamp,
+                                                          Object                 Sender,
+                                                          EventTracking_Id       EventTrackingId,
+                                                          RoamingNetwork_Id      RoamingNetworkId,
+                                                          EVSE_Id                EVSEId,
+                                                          ChargingSession_Id     SessionId,
+                                                          ReservationHandling    ReservationHandling,
+                                                          eMobilityProvider_Id?  ProviderId,
+                                                          eMobilityAccount_Id    eMAId,
+                                                          TimeSpan?              RequestTimeout,
+                                                          RemoteStopEVSEResult   Result,
+                                                          TimeSpan               Runtime);
 
 }

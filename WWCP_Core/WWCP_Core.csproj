@@ -237,12 +237,10 @@
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\EVSEAdminStatusType.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\EVSEAdminStatusReport.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\ChargingStationAdminStatusDiff.cs" />
-    <Compile Include="Entities\HubProvider_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkAdminStatusType.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkStatusType.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\CurrentTypes.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\ChargingModes.cs" />
-    <Compile Include="Entities\HubOperator_Id.cs" />
     <Compile Include="Commands\RemoteStartStop\OnRemoteStartChargingStationDelegates.cs" />
     <Compile Include="Commands\Reserve\ReserveChargingStationDelegates.cs" />
     <Compile Include="Commands\Reserve\ReservationHandling.cs" />

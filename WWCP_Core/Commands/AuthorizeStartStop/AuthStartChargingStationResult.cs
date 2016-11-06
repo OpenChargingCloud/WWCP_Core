@@ -51,7 +51,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the ev service provider.
         /// </summary>
-        public eMobilityProvider_Id                             ProviderId              { get; }
+        public eMobilityProvider_Id?               ProviderId              { get; }
 
         /// <summary>
         /// A optional description of the authorize start result.
@@ -95,7 +95,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Runtime">The run time of the request.</param>
         private AuthStartChargingStationResult(Authorizator_Id                     AuthorizatorId,
                                                AuthStartChargingStationResultType  Result,
-                                               eMobilityProvider_Id                             ProviderId      = null,
+                                               eMobilityProvider_Id?               ProviderId      = null,
                                                String                              Description     = null,
                                                String                              AdditionalInfo  = null,
                                                TimeSpan?                           Runtime         = null)
@@ -111,7 +111,7 @@ namespace org.GraphDefined.WWCP
 
             this.AuthorizatorId        = AuthorizatorId;
             this.Result                = Result;
-            this.ProviderId            = ProviderId;
+            this.ProviderId            = ProviderId     ?? new eMobilityProvider_Id?();
             this.Description           = Description    ?? String.Empty;
             this.AdditionalInfo        = AdditionalInfo ?? String.Empty;
             this.Runtime               = Runtime        ?? TimeSpan.FromSeconds(0);

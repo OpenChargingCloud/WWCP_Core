@@ -59,19 +59,19 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
-        Task<ReservationResult> Reserve(DateTime                 Timestamp,
-                                        CancellationToken        CancellationToken,
-                                        EventTracking_Id         EventTrackingId,
-                                        EVSE_Id                  EVSEId,
-                                        DateTime?                StartTime,
-                                        TimeSpan?                Duration,
-                                        ChargingReservation_Id   ReservationId      = null,
-                                        eMobilityProvider_Id                  ProviderId         = null,
-                                        ChargingProduct_Id       ChargingProductId  = null,
-                                        IEnumerable<Auth_Token>  AuthTokens         = null,
-                                        IEnumerable<eMobilityAccount_Id>      eMAIds             = null,
-                                        IEnumerable<UInt32>      PINs               = null,
-                                        TimeSpan?                QueryTimeout       = null);
+        Task<ReservationResult> Reserve(DateTime                          Timestamp,
+                                        CancellationToken                 CancellationToken,
+                                        EventTracking_Id                  EventTrackingId,
+                                        EVSE_Id                           EVSEId,
+                                        DateTime?                         StartTime,
+                                        TimeSpan?                         Duration,
+                                        ChargingReservation_Id            ReservationId       = null,
+                                        eMobilityProvider_Id?             ProviderId          = null,
+                                        ChargingProduct_Id                ChargingProductId   = null,
+                                        IEnumerable<Auth_Token>           AuthTokens          = null,
+                                        IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
+                                        IEnumerable<UInt32>               PINs                = null,
+                                        TimeSpan?                         QueryTimeout        = null);
 
         /// <summary>
         /// Reserve the possibility to charge.
@@ -88,18 +88,18 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
         /// <param name="QueryTimeout">An optional timeout for this request.</param>
-        Task<ReservationResult> Reserve(DateTime                 Timestamp,
-                                        CancellationToken        CancellationToken,
-                                        EventTracking_Id         EventTrackingId,
-                                        DateTime?                StartTime,
-                                        TimeSpan?                Duration,
-                                        ChargingReservation_Id   ReservationId      = null,
-                                        eMobilityProvider_Id                  ProviderId         = null,
-                                        ChargingProduct_Id       ChargingProductId  = null,
-                                        IEnumerable<Auth_Token>  AuthTokens         = null,
-                                        IEnumerable<eMobilityAccount_Id>      eMAIds             = null,
-                                        IEnumerable<UInt32>      PINs               = null,
-                                        TimeSpan?                QueryTimeout       = null);
+        Task<ReservationResult> Reserve(DateTime                          Timestamp,
+                                        CancellationToken                 CancellationToken,
+                                        EventTracking_Id                  EventTrackingId,
+                                        DateTime?                         StartTime,
+                                        TimeSpan?                         Duration,
+                                        ChargingReservation_Id            ReservationId       = null,
+                                        eMobilityProvider_Id?             ProviderId          = null,
+                                        ChargingProduct_Id                ChargingProductId   = null,
+                                        IEnumerable<Auth_Token>           AuthTokens          = null,
+                                        IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
+                                        IEnumerable<UInt32>               PINs                = null,
+                                        TimeSpan?                         QueryTimeout        = null);
 
         #endregion
 
@@ -120,7 +120,7 @@ namespace org.GraphDefined.WWCP
                                                         EventTracking_Id                       EventTrackingId,
                                                         ChargingReservation_Id                 ReservationId,
                                                         ChargingReservationCancellationReason  Reason,
-                                                        TimeSpan?                              QueryTimeout  = null);
+                                                        TimeSpan?                              RequestTimeout = null);
 
         /// <summary>
         /// Initiate a remote start of the given charging session at the given charging station
@@ -137,9 +137,9 @@ namespace org.GraphDefined.WWCP
                                                            ChargingProduct_Id      ChargingProductId,
                                                            ChargingReservation_Id  ReservationId,
                                                            ChargingSession_Id      SessionId,
-                                                           eMobilityProvider_Id                 ProviderId,
-                                                           eMobilityAccount_Id                  eMAId,
-                                                           TimeSpan?               QueryTimeout  = null);
+                                                           eMobilityProvider_Id    ProviderId,
+                                                           eMobilityAccount_Id     eMAId,
+                                                           TimeSpan?               RequestTimeout = null);
 
         /// <summary>
         /// Initiate a remote start of the given charging session at the given EVSE
@@ -158,9 +158,9 @@ namespace org.GraphDefined.WWCP
                                                 ChargingProduct_Id      ChargingProductId,
                                                 ChargingReservation_Id  ReservationId,
                                                 ChargingSession_Id      SessionId,
-                                                eMobilityProvider_Id                 ProviderId,
-                                                eMobilityAccount_Id                  eMAId,
-                                                TimeSpan?               QueryTimeout  = null);
+                                                eMobilityProvider_Id    ProviderId,
+                                                eMobilityAccount_Id     eMAId,
+                                                TimeSpan?               RequestTimeout = null);
 
 
 
@@ -171,13 +171,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <returns>A RemoteStopResult task.</returns>
-        Task<RemoteStopResult> RemoteStop(DateTime             Timestamp,
-                                          CancellationToken    CancellationToken,
-                                          EventTracking_Id     EventTrackingId,
-                                          ChargingSession_Id   SessionId,
-                                          ReservationHandling  ReservationHandling,
-                                          eMobilityProvider_Id              ProviderId,
-                                          TimeSpan?            QueryTimeout  = null);
+        Task<RemoteStopResult> RemoteStop(DateTime              Timestamp,
+                                          CancellationToken     CancellationToken,
+                                          EventTracking_Id      EventTrackingId,
+                                          ChargingSession_Id    SessionId,
+                                          ReservationHandling   ReservationHandling,
+                                          eMobilityProvider_Id  ProviderId,
+                                          TimeSpan?             RequestTimeout = null);
 
 
         /// <summary>
@@ -187,14 +187,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <returns>A RemoteStopResult task.</returns>
-        Task<RemoteStopEVSEResult> RemoteStop(DateTime             Timestamp,
-                                              CancellationToken    CancellationToken,
-                                              EventTracking_Id     EventTrackingId,
-                                              EVSE_Id              EVSEId,
-                                              ChargingSession_Id   SessionId,
-                                              ReservationHandling  ReservationHandling,
-                                              eMobilityProvider_Id              ProviderId,
-                                              TimeSpan?            QueryTimeout  = null);
+        Task<RemoteStopEVSEResult> RemoteStop(DateTime              Timestamp,
+                                              CancellationToken     CancellationToken,
+                                              EventTracking_Id      EventTrackingId,
+                                              EVSE_Id               EVSEId,
+                                              ChargingSession_Id    SessionId,
+                                              ReservationHandling   ReservationHandling,
+                                              eMobilityProvider_Id  ProviderId,
+                                              TimeSpan?             RequestTimeout = null);
 
 
         /// <summary>
@@ -204,14 +204,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <returns>A RemoteStopResult task.</returns>
-        Task<RemoteStopChargingStationResult> RemoteStop(DateTime             Timestamp,
-                                                         CancellationToken    CancellationToken,
-                                                         EventTracking_Id     EventTrackingId,
-                                                         ChargingStation_Id   ChargingStationId,
-                                                         ChargingSession_Id   SessionId,
-                                                         ReservationHandling  ReservationHandling,
-                                                         eMobilityProvider_Id              ProviderId,
-                                                         TimeSpan?            QueryTimeout  = null);
+        Task<RemoteStopChargingStationResult> RemoteStop(DateTime              Timestamp,
+                                                         CancellationToken     CancellationToken,
+                                                         EventTracking_Id      EventTrackingId,
+                                                         ChargingStation_Id    ChargingStationId,
+                                                         ChargingSession_Id    SessionId,
+                                                         ReservationHandling   ReservationHandling,
+                                                         eMobilityProvider_Id  ProviderId,
+                                                         TimeSpan?             RequestTimeout = null);
 
 
     }

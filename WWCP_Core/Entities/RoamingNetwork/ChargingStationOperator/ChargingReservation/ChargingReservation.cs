@@ -173,10 +173,10 @@ namespace org.GraphDefined.WWCP
 
         #region ProviderId
 
-        private readonly eMobilityProvider_Id _ProviderId;
+        private readonly eMobilityProvider_Id? _ProviderId;
 
         [Optional]
-        public eMobilityProvider_Id ProviderId
+        public eMobilityProvider_Id? ProviderId
         {
             get
             {
@@ -353,26 +353,26 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a charging reservation.
         /// </summary>
-        public ChargingReservation(ChargingReservation_Id    ReservationId,
-                                   DateTime                  Timestamp,
-                                   DateTime                  StartTime,
-                                   TimeSpan                  Duration,
-                                   DateTime                  EndTime,
-                                   TimeSpan                  ConsumedReservationTime,
-                                   ChargingReservationLevel  ReservationLevel,
+        public ChargingReservation(ChargingReservation_Id            ReservationId,
+                                   DateTime                          Timestamp,
+                                   DateTime                          StartTime,
+                                   TimeSpan                          Duration,
+                                   DateTime                          EndTime,
+                                   TimeSpan                          ConsumedReservationTime,
+                                   ChargingReservationLevel          ReservationLevel,
 
-                                   eMobilityProvider_Id                   ProviderId         = null,
-                                   eMobilityAccount_Id                    eMAId              = null,
+                                   eMobilityProvider_Id?             ProviderId          = null,
+                                   eMobilityAccount_Id               eMAId               = null,
 
-                                   RoamingNetwork            RoamingNetwork     = null,
-                                   ChargingPool_Id           ChargingPoolId     = null,
-                                   ChargingStation_Id        ChargingStationId  = null,
-                                   EVSE_Id                   EVSEId             = null,
-                                   ChargingProduct_Id        ChargingProductId  = null,
+                                   RoamingNetwork                    RoamingNetwork      = null,
+                                   ChargingPool_Id                   ChargingPoolId      = null,
+                                   ChargingStation_Id                ChargingStationId   = null,
+                                   EVSE_Id                           EVSEId              = null,
+                                   ChargingProduct_Id                ChargingProductId   = null,
 
-                                   IEnumerable<Auth_Token>   AuthTokens         = null,
-                                   IEnumerable<eMobilityAccount_Id>       eMAIds             = null,
-                                   IEnumerable<UInt32>       PINs               = null)
+                                   IEnumerable<Auth_Token>           AuthTokens          = null,
+                                   IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
+                                   IEnumerable<UInt32>               PINs                = null)
 
         {
 
