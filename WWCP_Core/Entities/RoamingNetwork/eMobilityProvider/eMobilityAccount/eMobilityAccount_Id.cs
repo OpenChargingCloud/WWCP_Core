@@ -40,14 +40,18 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The regular expression for parsing an e-mobility contract identification.
         /// </summary>
-        public static readonly Regex eMobilityAccountId_RegEx  = new Regex(@"^([A-Za-z]{2}-[A-Za-z0-9]{3})-([A-Za-z0-9]{9})-([A-Za-z0-9])$ |" +
-                                                                   @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{9})([A-Za-z0-9])$ |" +
-                                                                   @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-([A-Za-z0-9]{9})$ |" +
-                                                                   @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{9})$",
-                                                                   RegexOptions.IgnorePatternWhitespace);
+        public static readonly Regex eMobilityAccountId_RegEx  = new Regex(@"^([A-Za-z]{2}\*[A-Za-z0-9]{3})\*([A-Za-z0-9]{6})\*([0-9|X])$ |"  +   // Hubject DIN STAR:  DE*BMW*0010LY*3
+                                                                           @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-([A-Za-z0-9]{6})-([0-9|X])$ |"     +   // Hubject DIN HYPEN: DE-BMW-0010LY-3
+                                                                           @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{6})([0-9|X])$ |"        +   // Hubject DIN:       DEBMW0010LY3
 
-        // ([A-Za-z]{2}    \- ?[A-Za-z0-9]{3}    \- ?C[A-Za-z0-9]{8}[\*|\-]?[\d|X])  ISO
-        // ([A-Za-z]{2}[\*|\-]?[A-Za-z0-9]{3}[\*|\-]? [A-Za-z0-9]{6}[\*|\-]?[\d|X])  DIN
+                                                                           @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-C([A-Za-z0-9]{8})-([0-9|X])$ |"    +   // Hubject ISO Hypen: DE-BMW-001000LY-3
+                                                                           @"^([A-Za-z]{2}[A-Za-z0-9]{3})C([A-Za-z0-9]{8})([0-9|X])$ |"       +   // Hubject ISO:       DEBMW001000LY3
+
+                                                                           @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-([A-Za-z0-9]{9})-([A-Za-z0-9])$ |" +   // e-clearing:
+                                                                           @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{9})([A-Za-z0-9])$ |" +
+                                                                           @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-([A-Za-z0-9]{9})$ |" +
+                                                                           @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{9})$",
+                                                                           RegexOptions.IgnorePatternWhitespace);
 
         /// <summary>
         /// The regular expression for parsing an e-mobility contract identification suffix.
@@ -107,9 +111,6 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            if (!IdSuffix_RegEx.IsMatch(IdSuffix))
-                throw new ArgumentException("Illegal e-mobility contract identification '" + ProviderId + "' with suffix '" + IdSuffix + "'!");
-
             this.ProviderId  = ProviderId;
             this.Suffix      = IdSuffix;
             this.CheckDigit  = CheckDigit;
@@ -153,7 +154,12 @@ namespace org.GraphDefined.WWCP
 
             if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[7].Value, out _ProviderId))
                 return new eMobilityAccount_Id(_ProviderId,
-                                       _MatchCollection[0].Groups[8].Value);
+                                       _MatchCollection[0].Groups[8].Value,
+                                       _MatchCollection[0].Groups[9].Value[0]);
+
+            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[10].Value, out _ProviderId))
+                return new eMobilityAccount_Id(_ProviderId,
+                                       _MatchCollection[0].Groups[11].Value);
 
 
             throw new ArgumentException("Illegal contract identification '" + Text + "'!");
@@ -170,10 +176,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">The unique identification of an e-mobility provider.</param>
         /// <param name="IdSuffix">The suffix of the e-mobility contract identification.</param>
         public static eMobilityAccount_Id Parse(eMobilityProvider_Id  ProviderId,
-                                        String                IdSuffix)
+                                                String                IdSuffix)
 
             => new eMobilityAccount_Id(ProviderId,
-                               IdSuffix);
+                                       IdSuffix);
 
         #endregion
 
@@ -209,32 +215,32 @@ namespace org.GraphDefined.WWCP
 
                 eMobilityProvider_Id _Provider;
 
-                // New format...
+                // ISO...
                 if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _Provider))
                 {
 
                     eMobilityAccountId = new eMobilityAccount_Id(_Provider,
-                                                 _MatchCollection[0].Groups[2].Value,
-                                                 _MatchCollection[0].Groups[3].Value[0]);
+                                                                 _MatchCollection[0].Groups[2].Value,
+                                                                 _MatchCollection[0].Groups[3].Value[0]);
 
                     return true;
 
                 }
 
-                // Old format...
-                else if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[4].Value, out _Provider))
+                // DIN...
+                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[4].Value, out _Provider))
                 {
 
                     eMobilityAccountId = new eMobilityAccount_Id(_Provider,
-                                                 _MatchCollection[0].Groups[5].Value,
-                                                 _MatchCollection[0].Groups[6].Value[0]);
+                                                                 _MatchCollection[0].Groups[5].Value,
+                                                                 _MatchCollection[0].Groups[6].Value[0]);
 
                     return true;
 
                 }
 
                 // Without check digit...
-                else if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[7].Value, out _Provider))
+                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[7].Value, out _Provider))
                 {
 
                     eMobilityAccountId = new eMobilityAccount_Id(_Provider,
@@ -245,7 +251,11 @@ namespace org.GraphDefined.WWCP
                 }
 
             }
-            catch (Exception e)
+#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+            catch (Exception)
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
+#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
             { }
 
             eMobilityAccountId = default(eMobilityAccount_Id);
@@ -548,13 +558,30 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
+        {
 
-            => String.Concat(ProviderId.CountryCode.Alpha2Code, "-",
-                             ProviderId.ProviderId, "-",
-                             Suffix,
-                             CheckDigit.HasValue
-                                 ? "-" + CheckDigit
-                                 : "");
+            switch (ProviderId.Format)
+            {
+
+                case ProviderIdFormats.DIN_STAR:
+                    return String.Concat(ProviderId.CountryCode.Alpha2Code, "*",
+                                         ProviderId.ProviderId, "*",
+                                         Suffix,
+                                         CheckDigit.HasValue
+                                             ? "*" + CheckDigit
+                                             : "");
+
+                default: // ISO_HYPHEN
+                    return String.Concat(ProviderId.CountryCode.Alpha2Code, "-",
+                                         ProviderId.ProviderId, "-",
+                                         "C", Suffix,
+                                         CheckDigit.HasValue
+                                             ? "-" + CheckDigit
+                                             : "");
+
+            }
+
+        }
 
         #endregion
 
