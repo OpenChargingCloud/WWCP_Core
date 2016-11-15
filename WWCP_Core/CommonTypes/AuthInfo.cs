@@ -37,74 +37,26 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region AuthToken
-
-        private readonly Auth_Token _AuthToken;
-
         /// <summary>
         /// An authentication token, e.g. the identification of a RFID card.
         /// </summary>
-        public Auth_Token AuthToken
-        {
-            get
-            {
-                return _AuthToken;
-            }
-        }
-
-        #endregion
-
-        #region QRCodeIdentification
-
-        private readonly eMAIdWithPIN2 _QRCodeIdentification;
+        public Auth_Token            AuthToken                     { get; }
 
         /// <summary>
         /// A e-mobility account identification and its password/PIN.
         /// Used within OICP.
         /// </summary>
-        public eMAIdWithPIN2 QRCodeIdentification
-        {
-            get
-            {
-                return _QRCodeIdentification;
-            }
-        }
-
-        #endregion
-
-        #region PlugAndChargeIdentification
-
-        private readonly eMobilityAccount_Id _PlugAndChargeIdentification;
+        public eMAIdWithPIN2         QRCodeIdentification          { get; }
 
         /// <summary>
         /// A e-mobility account identification transmitted via PnC.
         /// </summary>
-        public eMobilityAccount_Id PlugAndChargeIdentification
-        {
-            get
-            {
-                return _PlugAndChargeIdentification;
-            }
-        }
-
-        #endregion
-
-        #region RemoteIdentification
-
-        private readonly eMobilityAccount_Id _RemoteIdentification;
+        public eMobilityAccount_Id?  PlugAndChargeIdentification   { get; }
 
         /// <summary>
         /// A e-mobility account identification.
         /// </summary>
-        public eMobilityAccount_Id RemoteIdentification
-        {
-            get
-            {
-                return _RemoteIdentification;
-            }
-        }
-
-        #endregion
+        public eMobilityAccount_Id?  RemoteIdentification          { get; }
 
         #endregion
 
@@ -114,7 +66,7 @@ namespace org.GraphDefined.WWCP
 
         private AuthInfo(Auth_Token  AuthToken)
         {
-            this._AuthToken = AuthToken;
+            this.AuthToken = AuthToken;
         }
 
         #endregion
@@ -123,17 +75,17 @@ namespace org.GraphDefined.WWCP
 
         private AuthInfo(eMAIdWithPIN2 QRCodeIdentification)
         {
-            this._QRCodeIdentification = QRCodeIdentification;
+            this.QRCodeIdentification = QRCodeIdentification;
         }
 
         #endregion
 
         #region (private) AuthInfo(PlugAndChargeIdentification, IsPnC)
 
-        private AuthInfo(eMobilityAccount_Id PlugAndChargeIdentification,
-                                           Boolean IsPnC)
+        private AuthInfo(eMobilityAccount_Id  PlugAndChargeIdentification,
+                         Boolean              IsPnC)
         {
-            this._PlugAndChargeIdentification   = PlugAndChargeIdentification;
+            this.PlugAndChargeIdentification  = PlugAndChargeIdentification;
         }
 
         #endregion
@@ -142,7 +94,7 @@ namespace org.GraphDefined.WWCP
 
         private AuthInfo(eMobilityAccount_Id RemoteIdentification)
         {
-            this._RemoteIdentification = RemoteIdentification;
+            this.RemoteIdentification = RemoteIdentification;
         }
 
         #endregion
@@ -157,9 +109,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthToken">An authentication token.</param>
         public static AuthInfo FromAuthToken(Auth_Token AuthToken)
-        {
-            return new AuthInfo(AuthToken);
-        }
+
+            => new AuthInfo(AuthToken);
 
         #endregion
 
@@ -172,10 +123,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMAId">An e-mobility account identification.</param>
         /// <param name="PIN">A password/PIN.</param>
         public static AuthInfo FromQRCodeIdentification(eMobilityAccount_Id  eMAId,
-                                                        String  PIN)
-        {
-            return new AuthInfo(new eMAIdWithPIN2(eMAId, PIN));
-        }
+                                                        String               PIN)
+
+            => new AuthInfo(new eMAIdWithPIN2(eMAId, PIN));
 
         #endregion
 
@@ -187,9 +137,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="QRCodeIdentification">A QR code identification.</param>
         public static AuthInfo FromQRCodeIdentification(eMAIdWithPIN2 QRCodeIdentification)
-        {
-            return new AuthInfo(QRCodeIdentification);
-        }
+
+            => new AuthInfo(QRCodeIdentification);
 
         #endregion
 
@@ -201,9 +150,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="PlugAndChargeIdentification">A PnC e-mobility account identification.</param>
         public static AuthInfo FromPlugAndChargeIdentification(eMobilityAccount_Id PlugAndChargeIdentification)
-        {
-            return new AuthInfo(PlugAndChargeIdentification);
-        }
+
+            => new AuthInfo(PlugAndChargeIdentification);
 
         #endregion
 
@@ -215,9 +163,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="RemoteIdentification">An e-mobility account identification.</param>
         public static AuthInfo FromRemoteIdentification(eMobilityAccount_Id RemoteIdentification)
-        {
-            return new AuthInfo(RemoteIdentification);
-        }
+
+            => new AuthInfo(RemoteIdentification);
 
         #endregion
 
@@ -348,7 +295,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
             // Check if the given object is an AuthInfo.
             var AuthInfo = Object as AuthInfo;
@@ -371,21 +318,21 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) AuthInfo == null)
-                throw new ArgumentNullException("The given AuthInfo must not be null!");
+                throw new ArgumentNullException(nameof(AuthInfo),  "The given AuthInfo must not be null!");
 
-            if (_AuthToken != null && AuthInfo._AuthToken != null)
-                return _AuthToken.CompareTo(AuthInfo._AuthToken);
+            if (AuthToken != null && AuthInfo.AuthToken != null)
+                return AuthToken.CompareTo(AuthInfo.AuthToken);
 
-            if (_QRCodeIdentification != null && AuthInfo._QRCodeIdentification != null)
-                return _QRCodeIdentification.CompareTo(AuthInfo._QRCodeIdentification);
+            if (QRCodeIdentification != null && AuthInfo.QRCodeIdentification != null)
+                return QRCodeIdentification.CompareTo(AuthInfo.QRCodeIdentification);
 
-            if (_PlugAndChargeIdentification != null && AuthInfo._PlugAndChargeIdentification != null)
-                return _PlugAndChargeIdentification.CompareTo(AuthInfo._PlugAndChargeIdentification);
+            if (PlugAndChargeIdentification.HasValue && AuthInfo.PlugAndChargeIdentification.HasValue)
+                return PlugAndChargeIdentification.Value.CompareTo(AuthInfo.PlugAndChargeIdentification.Value);
 
-            if (_RemoteIdentification != null && AuthInfo._RemoteIdentification != null)
-                return _RemoteIdentification.CompareTo(AuthInfo._RemoteIdentification);
+            if (RemoteIdentification.HasValue && AuthInfo.RemoteIdentification.HasValue)
+                return RemoteIdentification.Value.CompareTo(AuthInfo.RemoteIdentification.Value);
 
-            return this.ToString().CompareTo(AuthInfo.ToString());
+            return String.Compare(ToString(), AuthInfo.ToString(), StringComparison.Ordinal);
 
         }
 
@@ -432,17 +379,17 @@ namespace org.GraphDefined.WWCP
             if ((Object) AuthInfo == null)
                 return false;
 
-            if (_AuthToken != null && AuthInfo._AuthToken != null)
-                return _AuthToken.Equals(AuthInfo._AuthToken);
+            if (AuthToken != null && AuthInfo.AuthToken != null)
+                return AuthToken.Equals(AuthInfo.AuthToken);
 
-            if (_QRCodeIdentification != null && AuthInfo._QRCodeIdentification != null)
-                return _QRCodeIdentification.Equals(AuthInfo._QRCodeIdentification);
+            if (QRCodeIdentification != null && AuthInfo.QRCodeIdentification != null)
+                return QRCodeIdentification.Equals(AuthInfo.QRCodeIdentification);
 
-            if (_PlugAndChargeIdentification != null && AuthInfo._PlugAndChargeIdentification != null)
-                return _PlugAndChargeIdentification.Equals(AuthInfo._PlugAndChargeIdentification);
+            if (PlugAndChargeIdentification.HasValue && AuthInfo.PlugAndChargeIdentification.HasValue)
+                return PlugAndChargeIdentification.Value.Equals(AuthInfo.PlugAndChargeIdentification.Value);
 
-            if (_RemoteIdentification != null && AuthInfo._RemoteIdentification != null)
-                return _RemoteIdentification.Equals(AuthInfo._RemoteIdentification);
+            if (RemoteIdentification.HasValue && AuthInfo.RemoteIdentification.HasValue)
+                return RemoteIdentification.Value.Equals(AuthInfo.RemoteIdentification.Value);
 
             return false;
 
@@ -476,17 +423,17 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
         {
 
-            if (_AuthToken != null)
-                return _AuthToken.ToString();
+            if (AuthToken != null)
+                return AuthToken.ToString();
 
-            if (_QRCodeIdentification != null)
-                return _QRCodeIdentification.ToString();
+            if (QRCodeIdentification != null)
+                return QRCodeIdentification.ToString();
 
-            if (_PlugAndChargeIdentification != null)
-                return _PlugAndChargeIdentification.ToString();
+            if (PlugAndChargeIdentification.HasValue)
+                return PlugAndChargeIdentification.Value.ToString();
 
-            if (_RemoteIdentification != null)
-                return _RemoteIdentification.ToString();
+            if (RemoteIdentification.HasValue)
+                return RemoteIdentification.Value.ToString();
 
             return String.Empty;
 
