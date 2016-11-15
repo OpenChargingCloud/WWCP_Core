@@ -1194,7 +1194,7 @@ namespace org.GraphDefined.WWCP
 
                     _ChargingStation.RemoteChargingStation.OnNewReservation += (a, b, reservation) => {
 
-                        var __EVSE = GetEVSEbyId(reservation.EVSEId);
+                        var __EVSE = GetEVSEbyId(reservation.EVSEId.Value);
 
                         __EVSE.Reservation = reservation;
 
@@ -1210,7 +1210,7 @@ namespace org.GraphDefined.WWCP
 
                     _ChargingStation.RemoteChargingStation.OnNewChargeDetailRecord += (a, b, cdr) => {
 
-                        var __EVSE = GetEVSEbyId(cdr.EVSEId);
+                        var __EVSE = GetEVSEbyId(cdr.EVSEId.Value);
 
                         __EVSE.SendNewChargeDetailRecord(DateTime.Now, this, cdr);
 
@@ -2287,7 +2287,7 @@ namespace org.GraphDefined.WWCP
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
                               eMobilityProvider_Id?                  ProviderId         = null,
-                              EVSE_Id                                EVSEId             = null,
+                              EVSE_Id?                               EVSEId             = null,
 
                               DateTime?                              Timestamp          = null,
                               CancellationToken?                     CancellationToken  = null,

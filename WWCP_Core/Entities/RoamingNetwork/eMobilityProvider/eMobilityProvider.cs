@@ -3031,7 +3031,7 @@ namespace org.GraphDefined.WWCP
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
-                              EVSE_Id                                EVSEId             = null,
+                              EVSE_Id?                               EVSEId             = null,
 
                               DateTime?                              Timestamp          = null,
                               CancellationToken?                     CancellationToken  = null,
@@ -3049,7 +3049,7 @@ namespace org.GraphDefined.WWCP
             var response = await RoamingNetwork.CancelReservation(ReservationId,
                                                                   Reason,
                                                                   Id,
-                                                                  EVSEId,
+                                                                  EVSEId ?? new EVSE_Id?(),
 
                                                                   Timestamp,
                                                                   CancellationToken,

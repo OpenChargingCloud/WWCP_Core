@@ -87,7 +87,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="IdFormat">The format of the Charging Station Operator identification [old|new].</param>
         private ParkingOperator_Id(Country       CountryCode,
                                            String        OperatorId,
-                                           OperatorIdFormats  IdFormat = OperatorIdFormats.NEW)
+                                           OperatorIdFormats  IdFormat = OperatorIdFormats.ISO)
         {
 
             this.CountryCode  = CountryCode;
@@ -127,12 +127,12 @@ namespace org.GraphDefined.WWCP
             if (Country.TryParseAlpha2Code(_MatchCollection[0].Groups[1].Value, out __CountryCode))
                 return new ParkingOperator_Id(__CountryCode,
                                            _MatchCollection[0].Groups[2].Value,
-                                           OperatorIdFormats.NEW);
+                                           OperatorIdFormats.ISO);
 
             if (Country.TryParseTelefonCode(_MatchCollection[0].Groups[3].Value, out __CountryCode))
                 return new ParkingOperator_Id(__CountryCode,
                                            _MatchCollection[0].Groups[4].Value,
-                                           OperatorIdFormats.OLD);
+                                           OperatorIdFormats.DIN);
 
             throw new ArgumentException("Illegal Charging Station Operator identification!", "EVSEId");
 
@@ -150,7 +150,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="IdFormat">The format of the Charging Station Operator identification [old|new].</param>
         public static ParkingOperator_Id Parse(Country       CountryCode,
                                             String        OperatorId,
-                                            OperatorIdFormats  IdFormat = OperatorIdFormats.NEW)
+                                            OperatorIdFormats  IdFormat = OperatorIdFormats.ISO)
         {
 
             #region Initial checks
@@ -216,7 +216,7 @@ namespace org.GraphDefined.WWCP
                 {
                     EVSEOperatorId = new ParkingOperator_Id(__CountryCode,
                                                          _MatchCollection[0].Groups[2].Value,
-                                                         OperatorIdFormats.NEW);
+                                                         OperatorIdFormats.ISO);
                     return true;
                 }
 
@@ -224,7 +224,7 @@ namespace org.GraphDefined.WWCP
                 {
                     EVSEOperatorId = new ParkingOperator_Id(__CountryCode,
                                                          _MatchCollection[0].Groups[4].Value,
-                                                         OperatorIdFormats.OLD);
+                                                         OperatorIdFormats.DIN);
                     return true;
                 }
 
@@ -232,7 +232,7 @@ namespace org.GraphDefined.WWCP
                 // Just e.g. "822"...
                 EVSEOperatorId = ParkingOperator_Id.Parse(Country.Germany,
                                                        _MatchCollection[0].Groups[5].Value).
-                                                 ChangeFormat(OperatorIdFormats.OLD);
+                                                 ChangeFormat(OperatorIdFormats.DIN);
 
                 return true;
 
@@ -260,7 +260,7 @@ namespace org.GraphDefined.WWCP
         public static Boolean TryParse(Country              CountryCode,
                                        String               OperatorId,
                                        out ParkingOperator_Id  EVSEOperatorId,
-                                       OperatorIdFormats         IdFormat = OperatorIdFormats.NEW)
+                                       OperatorIdFormats         IdFormat = OperatorIdFormats.ISO)
         {
 
             #region Initial checks
@@ -341,27 +341,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="IdFormat">The format.</param>
         public String ToFormat(OperatorIdFormats IdFormat)
-        {
 
-            return (IdFormat == OperatorIdFormats.NEW)
-                       ? String.Concat(     CountryCode.Alpha2Code,  "*", OperatorId)
-                       : String.Concat("+", CountryCode.TelefonCode, "*", OperatorId);
-
-        }
-
-        /// <summary>
-        /// Return the identification in the given format.
-        /// </summary>
-        /// <param name="IdFormat">The format.</param>
-        public String ToFormat(IdFormatOriginType IdFormat)
-        {
-
-            if (IdFormat == IdFormatOriginType.Origin)
-                return ToFormat(this.Format);
-
-            return ToFormat((OperatorIdFormats) IdFormat);
-
-        }
+            => IdFormat == OperatorIdFormats.ISO
+                   ? String.Concat(     CountryCode.Alpha2Code,  "*", OperatorId)
+                   : String.Concat("+", CountryCode.TelefonCode, "*", OperatorId);
 
         #endregion
 

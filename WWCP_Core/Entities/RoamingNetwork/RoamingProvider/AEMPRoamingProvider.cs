@@ -258,7 +258,7 @@ namespace org.GraphDefined.WWCP
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
                               eMobilityProvider_Id?                  ProviderId         = null,
-                              EVSE_Id                                EVSEId             = null,
+                              EVSE_Id?                               EVSEId             = null,
 
                               DateTime?                              Timestamp          = null,
                               CancellationToken?                     CancellationToken  = null,

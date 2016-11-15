@@ -4016,7 +4016,7 @@ namespace org.GraphDefined.WWCP
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
                               eMobilityProvider_Id?                  ProviderId          = null,
-                              EVSE_Id                                EVSEId              = null,
+                              EVSE_Id?                               EVSEId              = null,
 
                               DateTime?                              Timestamp           = null,
                               CancellationToken?                     CancellationToken   = null,
@@ -6648,12 +6648,12 @@ namespace org.GraphDefined.WWCP
             if (result == null)
             {
 
-                if (ChargeDetailRecord.EVSEId != null)
+                if (ChargeDetailRecord.EVSEId.HasValue)
                 {
 
                     EVSE _EVSE = null;
 
-                    if (TryGetEVSEbyId(ChargeDetailRecord.EVSEId, out _EVSE))
+                    if (TryGetEVSEbyId(ChargeDetailRecord.EVSEId.Value, out _EVSE))
                     {
 
                         if (_EVSE.ChargingSession    != null &&

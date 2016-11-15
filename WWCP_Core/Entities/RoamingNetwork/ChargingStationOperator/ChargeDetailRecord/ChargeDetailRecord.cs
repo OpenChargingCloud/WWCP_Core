@@ -66,7 +66,7 @@ namespace org.GraphDefined.WWCP
         /// The identification of the EVSE used for charging.
         /// </summary>
         [Optional]
-        public EVSE_Id                  EVSEId                      { get; }
+        public EVSE_Id?                 EVSEId                      { get; }
 
         /// <summary>
         /// The charging station of the charging station used for charging.
@@ -244,7 +244,7 @@ namespace org.GraphDefined.WWCP
                                   StartEndDateTime?                 SessionTime,
 
                                   EVSE                              EVSE                     = null,
-                                  EVSE_Id                           EVSEId                   = null,
+                                  EVSE_Id?                          EVSEId                   = null,
                                   ChargingStation                   ChargingStation          = null,
                                   ChargingPool                      ChargingPool             = null,
                                   ChargingStationOperator           ChargingStationOperator  = null,

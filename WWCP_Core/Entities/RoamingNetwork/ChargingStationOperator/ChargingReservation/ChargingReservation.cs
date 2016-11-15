@@ -171,111 +171,26 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region ProviderId
-
-        private readonly eMobilityProvider_Id? _ProviderId;
+        [Optional]
+        public eMobilityProvider_Id?  ProviderId          { get; }
 
         [Optional]
-        public eMobilityProvider_Id? ProviderId
-        {
-            get
-            {
-                return _ProviderId;
-            }
-        }
-
-        #endregion
-
-        #region eMAId
-
-        private readonly eMobilityAccount_Id _eMAId;
+        public eMobilityAccount_Id    eMAId               { get; }
 
         [Optional]
-        public eMobilityAccount_Id eMAId
-        {
-            get
-            {
-                return _eMAId;
-            }
-        }
-
-        #endregion
-
-
-        #region RoamingNetwork
-
-        private readonly RoamingNetwork _RoamingNetwork;
+        public RoamingNetwork         RoamingNetwork      { get; }
 
         [Optional]
-        public RoamingNetwork RoamingNetwork
-        {
-            get
-            {
-                return _RoamingNetwork;
-            }
-        }
-
-        #endregion
-
-        #region ChargingPoolId
-
-        private readonly ChargingPool_Id _ChargingPoolId;
+        public ChargingPool_Id        ChargingPoolId      { get; }
 
         [Optional]
-        public ChargingPool_Id ChargingPoolId
-        {
-            get
-            {
-                return _ChargingPoolId;
-            }
-        }
-
-        #endregion
-
-        #region ChargingStationId
-
-        private readonly ChargingStation_Id _ChargingStationId;
+        public ChargingStation_Id     ChargingStationId   { get; }
 
         [Optional]
-        public ChargingStation_Id ChargingStationId
-        {
-            get
-            {
-                return _ChargingStationId;
-            }
-        }
-
-        #endregion
-
-        #region EVSEId
-
-        private readonly EVSE_Id _EVSEId;
+        public EVSE_Id?               EVSEId              { get; }
 
         [Optional]
-        public EVSE_Id EVSEId
-        {
-            get
-            {
-                return _EVSEId;
-            }
-        }
-
-        #endregion
-
-        #region ChargingProductId
-
-        private readonly ChargingProduct_Id _ChargingProductId;
-
-        [Optional]
-        public ChargingProduct_Id ChargingProductId
-        {
-            get
-            {
-                return _ChargingProductId;
-            }
-        }
-
-        #endregion
+        public ChargingProduct_Id     ChargingProductId   { get; }
 
 
         #region ChargingSession
@@ -367,7 +282,7 @@ namespace org.GraphDefined.WWCP
                                    RoamingNetwork                    RoamingNetwork      = null,
                                    ChargingPool_Id                   ChargingPoolId      = null,
                                    ChargingStation_Id                ChargingStationId   = null,
-                                   EVSE_Id                           EVSEId              = null,
+                                   EVSE_Id?                          EVSEId              = null,
                                    ChargingProduct_Id                ChargingProductId   = null,
 
                                    IEnumerable<Auth_Token>           AuthTokens          = null,
@@ -391,14 +306,14 @@ namespace org.GraphDefined.WWCP
             this._ConsumedReservationTime  = ConsumedReservationTime;
             this._ReservationLevel         = ReservationLevel;
 
-            this._ProviderId               = ProviderId;
-            this._eMAId                    = eMAId;
+            this.ProviderId                = ProviderId;
+            this.eMAId                     = eMAId;
 
-            this._RoamingNetwork           = RoamingNetwork;
-            this._ChargingPoolId           = ChargingPoolId;
-            this._ChargingStationId        = ChargingStationId;
-            this._EVSEId                   = EVSEId;
-            this._ChargingProductId        = ChargingProductId;
+            this.RoamingNetwork            = RoamingNetwork;
+            this.ChargingPoolId            = ChargingPoolId;
+            this.ChargingStationId         = ChargingStationId;
+            this.EVSEId                    = EVSEId;
+            this.ChargingProductId         = ChargingProductId;
 
             this._AuthTokens               = AuthTokens != null ? new HashSet<Auth_Token>(AuthTokens) : new HashSet<Auth_Token>();
             this._eMAIds                   = eMAIds     != null ? new HashSet<eMobilityAccount_Id>    (eMAIds)     : new HashSet<eMobilityAccount_Id>();
@@ -546,9 +461,8 @@ namespace org.GraphDefined.WWCP
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            return _ReservationId.GetHashCode();
-        }
+
+            => _ReservationId.GetHashCode();
 
         #endregion
 
@@ -558,9 +472,8 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return _ReservationId.ToString();
-        }
+
+            => _ReservationId.ToString();
 
         #endregion
 
