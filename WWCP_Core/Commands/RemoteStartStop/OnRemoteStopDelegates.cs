@@ -48,7 +48,7 @@ namespace org.GraphDefined.WWCP
                                               ChargingSession_Id     SessionId,
                                               ReservationHandling    ReservationHandling,
                                               eMobilityProvider_Id?  ProviderId,
-                                              eMobilityAccount_Id    eMAId,
+                                              eMobilityAccount_Id?   eMAId,
                                               TimeSpan?              RequestTimeout);
 
     /// <summary>
@@ -73,7 +73,7 @@ namespace org.GraphDefined.WWCP
                                                  ChargingSession_Id     SessionId,
                                                  ReservationHandling    ReservationHandling,
                                                  eMobilityProvider_Id?  ProviderId,
-                                                 eMobilityAccount_Id    eMAId,
+                                                 eMobilityAccount_Id?   eMAId,
                                                  TimeSpan?              RequestTimeout,
                                                  RemoteStopResult       Result,
                                                  TimeSpan               Runtime);
@@ -96,7 +96,7 @@ namespace org.GraphDefined.WWCP
                                                                  ReservationHandling    ReservationHandling,
                                                                  ChargingSession_Id     SessionId,
                                                                  eMobilityProvider_Id?  ProviderId,
-                                                                 eMobilityAccount_Id    eMAId,
+                                                                 eMobilityAccount_Id?   eMAId,
                                                                  TimeSpan?              RequestTimeout);
 
 }

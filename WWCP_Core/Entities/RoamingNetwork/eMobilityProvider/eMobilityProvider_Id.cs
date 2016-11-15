@@ -358,6 +358,19 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Clone
+
+        /// <summary>
+        /// Clone this e-mobility service provider identification.
+        /// </summary>
+        public eMobilityProvider_Id Clone
+
+            => new eMobilityProvider_Id(CountryCode,
+                                        ProviderId,
+                                        Format);
+
+        #endregion
+
 
         #region ChangeFormat(NewFormat)
 

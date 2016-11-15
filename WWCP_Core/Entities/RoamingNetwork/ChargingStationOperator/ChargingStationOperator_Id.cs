@@ -351,7 +351,7 @@ namespace org.GraphDefined.WWCP
         #region Clone
 
         /// <summary>
-        /// Clone an ChargingStationOperatorId.
+        /// Clone this charging station operator identification.
         /// </summary>
         public ChargingStationOperator_Id Clone
 

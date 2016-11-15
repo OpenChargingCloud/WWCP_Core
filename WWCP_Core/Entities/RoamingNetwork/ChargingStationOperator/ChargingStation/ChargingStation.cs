@@ -1743,7 +1743,7 @@ namespace org.GraphDefined.WWCP
                     TimeSpan?                         Duration            = null,
                     ChargingReservation_Id            ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
-                    eMobilityAccount_Id               eMAId               = null,
+                    eMobilityAccount_Id?              eMAId               = null,
                     ChargingProduct_Id                ChargingProductId   = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
@@ -1976,7 +1976,7 @@ namespace org.GraphDefined.WWCP
                     TimeSpan?                         Duration            = null,
                     ChargingReservation_Id            ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
-                    eMobilityAccount_Id               eMAId               = null,
+                    eMobilityAccount_Id?              eMAId               = null,
                     ChargingProduct_Id                ChargingProductId   = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
@@ -2376,7 +2376,7 @@ namespace org.GraphDefined.WWCP
                         ChargingReservation_Id  ReservationId       = null,
                         ChargingSession_Id      SessionId           = null,
                         eMobilityProvider_Id?   ProviderId          = null,
-                        eMobilityAccount_Id     eMAId               = null,
+                        eMobilityAccount_Id?    eMAId               = null,
 
                         DateTime?               Timestamp           = null,
                         CancellationToken?      CancellationToken   = null,
@@ -2583,7 +2583,7 @@ namespace org.GraphDefined.WWCP
                         ChargingReservation_Id  ReservationId       = null,
                         ChargingSession_Id      SessionId           = null,
                         eMobilityProvider_Id?   ProviderId          = null,
-                        eMobilityAccount_Id     eMAId               = null,
+                        eMobilityAccount_Id?    eMAId               = null,
 
                         DateTime?               Timestamp           = null,
                         CancellationToken?      CancellationToken   = null,
@@ -2848,7 +2848,7 @@ namespace org.GraphDefined.WWCP
             RemoteStop(ChargingSession_Id     SessionId,
                        ReservationHandling    ReservationHandling,
                        eMobilityProvider_Id?  ProviderId          = null,
-                       eMobilityAccount_Id    eMAId               = null,
+                       eMobilityAccount_Id?   eMAId               = null,
 
                        DateTime?              Timestamp           = null,
                        CancellationToken?     CancellationToken   = null,
@@ -3033,7 +3033,7 @@ namespace org.GraphDefined.WWCP
                        ChargingSession_Id     SessionId,
                        ReservationHandling    ReservationHandling,
                        eMobilityProvider_Id?  ProviderId          = null,
-                       eMobilityAccount_Id    eMAId               = null,
+                       eMobilityAccount_Id?   eMAId               = null,
 
                        DateTime?              Timestamp           = null,
                        CancellationToken?     CancellationToken   = null,

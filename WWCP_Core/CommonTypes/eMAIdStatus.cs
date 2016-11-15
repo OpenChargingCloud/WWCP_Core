@@ -33,39 +33,15 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region Id
-
-        private readonly eMobilityAccount_Id _Id;
-
         /// <summary>
         /// The unique identification of an eMAId.
         /// </summary>
-        public eMobilityAccount_Id Id
-        {
-            get
-            {
-                return _Id;
-            }
-        }
-
-        #endregion
-
-        #region Status
-
-        private readonly eMAIdStatusType _Status;
+        public eMobilityAccount_Id  Id       { get; }
 
         /// <summary>
         /// The current status of an eMAId.
         /// </summary>
-        public eMAIdStatusType Status
-        {
-            get
-            {
-                return _Status;
-            }
-        }
-
-        #endregion
+        public eMAIdStatusType      Status   { get; }
 
         #endregion
 
@@ -76,8 +52,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="eMAId">The unique identification of an eMAId.</param>
         /// <param name="Status">The current status of an eMAId.</param>
-        public eMAIdStatus(eMobilityAccount_Id           eMAId,
-                           eMAIdStatusType  Status)
+        public eMAIdStatus(eMobilityAccount_Id  eMAId,
+                           eMAIdStatusType      Status)
 
         {
 
@@ -88,8 +64,8 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._Id      = eMAId;
-            this._Status  = Status;
+            this.Id      = eMAId;
+            this.Status  = Status;
 
         }
 
@@ -248,11 +224,11 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given eMAIdStatus must not be null!");
 
             // Compare EVSE Ids
-            var _Result = _Id.CompareTo(eMAIdStatus._Id);
+            var _Result = Id.CompareTo(eMAIdStatus.Id);
 
             // If equal: Compare EVSE status
             if (_Result == 0)
-                _Result = _Status.CompareTo(eMAIdStatus._Status);
+                _Result = Status.CompareTo(eMAIdStatus.Status);
 
             return _Result;
 
@@ -301,8 +277,8 @@ namespace org.GraphDefined.WWCP
             if ((Object)eMAIdStatus == null)
                 return false;
 
-            return _Id.Equals(eMAIdStatus._Id) &&
-                   _Status.Equals(eMAIdStatus._Status);
+            return Id.Equals(eMAIdStatus.Id) &&
+                   Status.Equals(eMAIdStatus.Status);
 
         }
 
@@ -320,7 +296,7 @@ namespace org.GraphDefined.WWCP
         {
             unchecked
             {
-                return _Id.GetHashCode() * 17 ^ _Status.GetHashCode();
+                return Id.GetHashCode() * 17 ^ Status.GetHashCode();
             }
         }
 
@@ -335,7 +311,7 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
         {
 
-            return String.Concat(_Id, " -> ", _Status.ToString());
+            return String.Concat(Id, " -> ", Status.ToString());
 
         }
 

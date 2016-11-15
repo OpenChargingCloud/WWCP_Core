@@ -50,7 +50,7 @@ namespace org.GraphDefined.WWCP
                                                          ChargingSession_Id     SessionId,
                                                          ReservationHandling    ReservationHandling,
                                                          eMobilityProvider_Id?  ProviderId,
-                                                         eMobilityAccount_Id    eMAId,
+                                                         eMobilityAccount_Id?   eMAId,
                                                          TimeSpan?              RequestTimeout);
 
 
@@ -72,7 +72,7 @@ namespace org.GraphDefined.WWCP
                                                                         ReservationHandling    ReservationHandling,
                                                                         ChargingSession_Id     SessionId,
                                                                         eMobilityProvider_Id?  ProviderId,
-                                                                        eMobilityAccount_Id    eMAId,
+                                                                        eMobilityAccount_Id?   eMAId,
                                                                         EVSE_Id                EVSEId,
                                                                         TimeSpan?              RequestTimeout = null);
 
@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP
                                                           ChargingSession_Id     SessionId,
                                                           ReservationHandling    ReservationHandling,
                                                           eMobilityProvider_Id?  ProviderId,
-                                                          eMobilityAccount_Id    eMAId,
+                                                          eMobilityAccount_Id?   eMAId,
                                                           TimeSpan?              RequestTimeout,
                                                           RemoteStopEVSEResult   Result,
                                                           TimeSpan               Runtime);

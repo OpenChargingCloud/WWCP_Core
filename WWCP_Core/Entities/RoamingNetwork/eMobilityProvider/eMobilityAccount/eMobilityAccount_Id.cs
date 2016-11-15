@@ -18,9 +18,9 @@
 #region Usings
 
 using System;
+using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Text.RegularExpressions;
 
 #endregion
 
@@ -30,88 +30,90 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The unique identification of an Electric Mobility Account (driver contract) (eMAId).
     /// </summary>
-    public class eMobilityAccount_Id : IId,
-                                       IEquatable<eMobilityAccount_Id>,
-                                       IComparable<eMobilityAccount_Id>
+    public struct eMobilityAccount_Id : IId,
+                                        IEquatable<eMobilityAccount_Id>,
+                                        IComparable<eMobilityAccount_Id>
     {
 
         #region Data
 
         /// <summary>
-        /// The internal identification.
+        /// The regular expression for parsing an e-mobility contract identification.
         /// </summary>
-        protected readonly String _Id;
+        public static readonly Regex eMobilityAccountId_RegEx  = new Regex(@"^([A-Za-z]{2}-[A-Za-z0-9]{3})-([A-Za-z0-9]{9})-([A-Za-z0-9])$ |" +
+                                                                   @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{9})([A-Za-z0-9])$ |" +
+                                                                   @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-([A-Za-z0-9]{9})$ |" +
+                                                                   @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{9})$",
+                                                                   RegexOptions.IgnorePatternWhitespace);
 
-        /// <summary>
-        /// The regular expression for parsing an Alpha-2-CountryCode and an EV Service Provider identification.
-        /// The ISO format onyl allows '-' as a separator!
-        /// </summary>
-        public const String eMAId_RegEx = @"^(([A-Z]{2})([\*|\-]?)([A-Z0-9]{3}))([\*|\-]?)([A-Za-z0-9]{6,9})([\*|\-]?)([\d|X])$";
         // ([A-Za-z]{2}    \- ?[A-Za-z0-9]{3}    \- ?C[A-Za-z0-9]{8}[\*|\-]?[\d|X])  ISO
         // ([A-Za-z]{2}[\*|\-]?[A-Za-z0-9]{3}[\*|\-]? [A-Za-z0-9]{6}[\*|\-]?[\d|X])  DIN
+
+        /// <summary>
+        /// The regular expression for parsing an e-mobility contract identification suffix.
+        /// </summary>
+        public static readonly Regex IdSuffix_RegEx  = new Regex(@"^[A-Za-z0-9]{9}-[A-Za-z0-9]$ | ^[A-Za-z0-9]{9}[A-Za-z0-9]$ | ^[A-Za-z0-9]{9}$",
+                                                                 RegexOptions.IgnorePatternWhitespace);
 
         #endregion
 
         #region Properties
 
-        #region Length
+        /// <summary>
+        /// The e-mobility provider identification.
+        /// </summary>
+        public eMobilityProvider_Id  ProviderId    { get; }
+
+        /// <summary>
+        /// The suffix of the identification.
+        /// </summary>
+        public String                Suffix        { get; }
+
+        /// <summary>
+        /// An optional check digit of the e-mobility contract identification.
+        /// </summary>
+        public Char?                 CheckDigit    { get; }
 
         /// <summary>
         /// Returns the length of the identificator.
         /// </summary>
         public UInt64 Length
-        {
-            get
-            {
-                return (UInt64) _Id.Length;
-            }
-        }
 
-        #endregion
-
-        #region ProviderId
-
-        private readonly eMobilityProvider_Id _ProviderId;
-
-        /// <summary>
-        /// The EVSP Id format.
-        /// </summary>
-        public eMobilityProvider_Id ProviderId
-        {
-            get
-            {
-                return _ProviderId;
-            }
-        }
-
-        #endregion
-
-        #region IdFormat
-
-        /// <summary>
-        /// The EVSP Id format.
-        /// </summary>
-        public ProviderIdFormats IdFormat
-        {
-            get
-            {
-                return _ProviderId.Format;
-            }
-        }
-
-        #endregion
+            => ProviderId.Length +
+               1UL +
+               (UInt64) Suffix.Length +
+               (CheckDigit.HasValue ? 2UL : 0UL);
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new Electric Vehicle Mobility Account (driver contract) identification (eMobilityAccount_Id)
+        /// Generate a new e-mobility contract identification
         /// based on the given string.
         /// </summary>
-        private eMobilityAccount_Id(String String)
+        /// <param name="ProviderId">The unique identification of an e-mobility provider.</param>
+        /// <param name="IdSuffix">The suffix of the e-mobility contract identification.</param>
+        /// <param name="CheckDigit">An optional check digit of the e-mobility contract identification.</param>
+        private eMobilityAccount_Id(eMobilityProvider_Id  ProviderId,
+                                    String                IdSuffix,
+                                    Char?                 CheckDigit = null)
         {
-            _Id = String.Trim();
+
+            #region Initial checks
+
+            if (IdSuffix.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(IdSuffix),  "The identification suffix must not be null or empty!");
+
+            #endregion
+
+            if (!IdSuffix_RegEx.IsMatch(IdSuffix))
+                throw new ArgumentException("Illegal e-mobility contract identification '" + ProviderId + "' with suffix '" + IdSuffix + "'!");
+
+            this.ProviderId  = ProviderId;
+            this.Suffix      = IdSuffix;
+            this.CheckDigit  = CheckDigit;
+
         }
 
         #endregion
@@ -120,9 +122,8 @@ namespace org.GraphDefined.WWCP
         #region Parse(Text)
 
         /// <summary>
-        /// Parse the given string as an Electric Mobility Account (driver contract) (eMobilityAccount_Id).
+        /// Parse the given string as a contract identification.
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Mobility Account (driver contract) identification.</param>
         public static eMobilityAccount_Id Parse(String Text)
         {
 
@@ -133,61 +134,143 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            var _MatchCollection = Regex.Matches(Text.Trim().ToUpper(),
-                                                 eMAId_RegEx,
-                                                 RegexOptions.IgnorePatternWhitespace);
+            var _MatchCollection = eMobilityAccountId_RegEx.Matches(Text);
 
             if (_MatchCollection.Count != 1)
-                throw new ArgumentException("The given string can not be parsed as eMA identification!", nameof(Text));
+                throw new ArgumentException("Illegal contract identification '" + Text + "'!");
 
-            eMobilityProvider_Id __ProviderId;
+            eMobilityProvider_Id _ProviderId;
 
-            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __ProviderId))
-                return new eMobilityAccount_Id(__ProviderId.ToString() +
-                                  _MatchCollection[0].Groups[5].Value +
-                                  _MatchCollection[0].Groups[6].Value +
-                                  _MatchCollection[0].Groups[7].Value +
-                                  _MatchCollection[0].Groups[8].Value);
+            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _ProviderId))
+                return new eMobilityAccount_Id(_ProviderId,
+                                       _MatchCollection[0].Groups[2].Value,
+                                       _MatchCollection[0].Groups[3].Value[0]);
 
-            throw new ArgumentException("The given string can not be parsed as eMA identification!", nameof(Text));
+            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[4].Value, out _ProviderId))
+                return new eMobilityAccount_Id(_ProviderId,
+                                       _MatchCollection[0].Groups[5].Value,
+                                       _MatchCollection[0].Groups[6].Value[0]);
+
+            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[7].Value, out _ProviderId))
+                return new eMobilityAccount_Id(_ProviderId,
+                                       _MatchCollection[0].Groups[8].Value);
+
+
+            throw new ArgumentException("Illegal contract identification '" + Text + "'!");
 
         }
 
         #endregion
 
-        #region TryParse(Text, out eMAId)
+        #region Parse(ProviderId, IdSuffix)
 
         /// <summary>
-        /// Parse the given string as an Electric Mobility Account (driver contract) (eMobilityAccount_Id).
+        /// Parse the given string as an contract identification.
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Mobility Account (driver contract) identification.</param>
-        /// <param name="eMAId">The parsed Electric Mobility Account (driver contract) identification.</param>
-        public static Boolean TryParse(String Text, out eMobilityAccount_Id eMAId)
+        /// <param name="ProviderId">The unique identification of an e-mobility provider.</param>
+        /// <param name="IdSuffix">The suffix of the e-mobility contract identification.</param>
+        public static eMobilityAccount_Id Parse(eMobilityProvider_Id  ProviderId,
+                                        String                IdSuffix)
+
+            => new eMobilityAccount_Id(ProviderId,
+                               IdSuffix);
+
+        #endregion
+
+        #region TryParse(Text, out eMobilityAccountId)
+
+        /// <summary>
+        /// Parse the given string as an e-mobility contract identification.
+        /// </summary>
+        /// <param name="Text">A text representation of an e-mobility contract identification.</param>
+        /// <param name="eMobilityAccountId">The parsed e-mobility contract identification.</param>
+        public static Boolean TryParse(String Text, out eMobilityAccount_Id eMobilityAccountId)
         {
 
             #region Initial checks
 
             if (Text.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Text), "The parameter must not be null or empty!");
-
-            eMAId = null;
+            {
+                eMobilityAccountId = default(eMobilityAccount_Id);
+                return false;
+            }
 
             #endregion
 
-            var _MatchCollection = Regex.Matches(Text.Trim().ToUpper(),
-                                                 eMAId_RegEx,
-                                                 RegexOptions.IgnorePatternWhitespace);
-
-            if (_MatchCollection.Count != 1)
-                return false;
-
-            eMobilityProvider_Id __ProviderId;
-
-            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __ProviderId))
+            try
             {
-                eMAId = new eMobilityAccount_Id(__ProviderId.ToString() + "*" + _MatchCollection[0].Groups[6].Value + "*" + _MatchCollection[0].Groups[8].Value);
+
+                eMobilityAccountId = default(eMobilityAccount_Id);
+
+                var _MatchCollection = eMobilityAccountId_RegEx.Matches(Text.Trim().ToUpper());
+
+                if (_MatchCollection.Count != 1)
+                    return false;
+
+                eMobilityProvider_Id _Provider;
+
+                // New format...
+                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _Provider))
+                {
+
+                    eMobilityAccountId = new eMobilityAccount_Id(_Provider,
+                                                 _MatchCollection[0].Groups[2].Value,
+                                                 _MatchCollection[0].Groups[3].Value[0]);
+
+                    return true;
+
+                }
+
+                // Old format...
+                else if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[4].Value, out _Provider))
+                {
+
+                    eMobilityAccountId = new eMobilityAccount_Id(_Provider,
+                                                 _MatchCollection[0].Groups[5].Value,
+                                                 _MatchCollection[0].Groups[6].Value[0]);
+
+                    return true;
+
+                }
+
+                // Without check digit...
+                else if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[7].Value, out _Provider))
+                {
+
+                    eMobilityAccountId = new eMobilityAccount_Id(_Provider,
+                                                 _MatchCollection[0].Groups[8].Value);
+
+                    return true;
+
+                }
+
+            }
+            catch (Exception e)
+            { }
+
+            eMobilityAccountId = default(eMobilityAccount_Id);
+            return false;
+
+        }
+
+
+        /// <summary>
+        /// Parse the given string as an e-mobility contract identification.
+        /// </summary>
+        /// <param name="Text">A text representation of an e-mobility contract identification.</param>
+        /// <param name="eMobilityAccountId">The parsed e-mobility contract identification.</param>
+        public static Boolean TryParse(String Text, out eMobilityAccount_Id? eMobilityAccountId)
+        {
+
+            eMobilityAccount_Id eMAId;
+
+            if (TryParse(Text, out eMAId))
+            {
+                eMobilityAccountId = eMAId;
                 return true;
             }
+
+            eMobilityAccountId = new eMobilityAccount_Id?();
 
             return false;
 
@@ -198,134 +281,128 @@ namespace org.GraphDefined.WWCP
         #region Clone
 
         /// <summary>
-        /// Clone this Electric Mobility Account (driver contract) identification.
+        /// Clone this EVSE identification.
         /// </summary>
         public eMobilityAccount_Id Clone
-        {
-            get
-            {
-                return new eMobilityAccount_Id(_Id);
-            }
-        }
+
+            => new eMobilityAccount_Id(ProviderId.Clone,
+                                       Suffix);
 
         #endregion
 
 
         #region Operator overloading
 
-        #region Operator == (eMobilityAccount_Id1, eMobilityAccount_Id2)
+        #region Operator == (eMobilityAccountId1, eMobilityAccountId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMobilityAccount_Id1">A eMobilityAccount_Id.</param>
-        /// <param name="eMobilityAccount_Id2">Another eMobilityAccount_Id.</param>
+        /// <param name="eMobilityAccountId1">A contract identification.</param>
+        /// <param name="eMobilityAccountId2">Another contract identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (eMobilityAccount_Id eMobilityAccount_Id1, eMobilityAccount_Id eMobilityAccount_Id2)
+        public static Boolean operator == (eMobilityAccount_Id eMobilityAccountId1, eMobilityAccount_Id eMobilityAccountId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(eMobilityAccount_Id1, eMobilityAccount_Id2))
+            if (Object.ReferenceEquals(eMobilityAccountId1, eMobilityAccountId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) eMobilityAccount_Id1 == null) || ((Object) eMobilityAccount_Id2 == null))
+            if (((Object) eMobilityAccountId1 == null) || ((Object) eMobilityAccountId2 == null))
                 return false;
 
-            return eMobilityAccount_Id1.Equals(eMobilityAccount_Id2);
+            if ((Object) eMobilityAccountId1 == null)
+                throw new ArgumentNullException(nameof(eMobilityAccountId1),  "The given contract identification must not be null!");
+
+            return eMobilityAccountId1.Equals(eMobilityAccountId2);
 
         }
 
         #endregion
 
-        #region Operator != (eMobilityAccount_Id1, eMobilityAccount_Id2)
+        #region Operator != (eMobilityAccountId1, eMobilityAccountId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMobilityAccount_Id1">A eMobilityAccount_Id.</param>
-        /// <param name="eMobilityAccount_Id2">Another eMobilityAccount_Id.</param>
+        /// <param name="eMobilityAccountId1">A contract identification.</param>
+        /// <param name="eMobilityAccountId2">Another contract identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (eMobilityAccount_Id eMobilityAccount_Id1, eMobilityAccount_Id eMobilityAccount_Id2)
-        {
-            return !(eMobilityAccount_Id1 == eMobilityAccount_Id2);
-        }
+        public static Boolean operator != (eMobilityAccount_Id eMobilityAccountId1, eMobilityAccount_Id eMobilityAccountId2)
+            => !(eMobilityAccountId1 == eMobilityAccountId2);
 
         #endregion
 
-        #region Operator <  (eMobilityAccount_Id1, eMobilityAccount_Id2)
+        #region Operator <  (eMobilityAccountId1, eMobilityAccountId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMobilityAccount_Id1">A eMobilityAccount_Id.</param>
-        /// <param name="eMobilityAccount_Id2">Another eMobilityAccount_Id.</param>
+        /// <param name="eMobilityAccountId1">A contract identification.</param>
+        /// <param name="eMobilityAccountId2">Another contract identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (eMobilityAccount_Id eMobilityAccount_Id1, eMobilityAccount_Id eMobilityAccount_Id2)
+        public static Boolean operator < (eMobilityAccount_Id eMobilityAccountId1, eMobilityAccount_Id eMobilityAccountId2)
         {
 
-            if ((Object) eMobilityAccount_Id1 == null)
-                throw new ArgumentNullException("The given eMobilityAccount_Id1 must not be null!");
+            if ((Object) eMobilityAccountId1 == null)
+                throw new ArgumentNullException(nameof(eMobilityAccountId1),  "The given contract identification must not be null!");
 
-            return eMobilityAccount_Id1.CompareTo(eMobilityAccount_Id2) < 0;
+            return eMobilityAccountId1.CompareTo(eMobilityAccountId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (eMobilityAccount_Id1, eMobilityAccount_Id2)
+        #region Operator <= (eMobilityAccountId1, eMobilityAccountId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMobilityAccount_Id1">A eMobilityAccount_Id.</param>
-        /// <param name="eMobilityAccount_Id2">Another eMobilityAccount_Id.</param>
+        /// <param name="eMobilityAccountId1">A contract identification.</param>
+        /// <param name="eMobilityAccountId2">Another contract identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (eMobilityAccount_Id eMobilityAccount_Id1, eMobilityAccount_Id eMobilityAccount_Id2)
-        {
-            return !(eMobilityAccount_Id1 > eMobilityAccount_Id2);
-        }
+        public static Boolean operator <= (eMobilityAccount_Id eMobilityAccountId1, eMobilityAccount_Id eMobilityAccountId2)
+            => !(eMobilityAccountId1 > eMobilityAccountId2);
 
         #endregion
 
-        #region Operator >  (eMobilityAccount_Id1, eMobilityAccount_Id2)
+        #region Operator >  (eMobilityAccountId1, eMobilityAccountId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMobilityAccount_Id1">A eMobilityAccount_Id.</param>
-        /// <param name="eMobilityAccount_Id2">Another eMobilityAccount_Id.</param>
+        /// <param name="eMobilityAccountId1">A contract identification.</param>
+        /// <param name="eMobilityAccountId2">Another contract identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (eMobilityAccount_Id eMobilityAccount_Id1, eMobilityAccount_Id eMobilityAccount_Id2)
+        public static Boolean operator > (eMobilityAccount_Id eMobilityAccountId1, eMobilityAccount_Id eMobilityAccountId2)
         {
 
-            if ((Object) eMobilityAccount_Id1 == null)
-                throw new ArgumentNullException("The given eMobilityAccount_Id1 must not be null!");
+            if ((Object) eMobilityAccountId1 == null)
+                throw new ArgumentNullException(nameof(eMobilityAccountId1),  "The given contract identification must not be null!");
 
-            return eMobilityAccount_Id1.CompareTo(eMobilityAccount_Id2) > 0;
+            return eMobilityAccountId1.CompareTo(eMobilityAccountId2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (eMobilityAccount_Id1, eMobilityAccount_Id2)
+        #region Operator >= (eMobilityAccountId1, eMobilityAccountId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMobilityAccount_Id1">A eMobilityAccount_Id.</param>
-        /// <param name="eMobilityAccount_Id2">Another eMobilityAccount_Id.</param>
+        /// <param name="eMobilityAccountId1">A contract identification.</param>
+        /// <param name="eMobilityAccountId2">Another contract identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (eMobilityAccount_Id eMobilityAccount_Id1, eMobilityAccount_Id eMobilityAccount_Id2)
-        {
-            return !(eMobilityAccount_Id1 < eMobilityAccount_Id2);
-        }
+        public static Boolean operator >= (eMobilityAccount_Id eMobilityAccountId1, eMobilityAccount_Id eMobilityAccountId2)
+            => !(eMobilityAccountId1 < eMobilityAccountId2);
 
         #endregion
 
         #endregion
 
-        #region IComparable<eMobilityAccount_Id> Members
+        #region IComparable<eMobilityAccountId> Members
 
         #region CompareTo(Object)
 
@@ -337,37 +414,52 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
-            // Check if the given object is an eMAId.
-            var eMAId = Object as eMobilityAccount_Id;
-            if ((Object) eMAId == null)
-                throw new ArgumentException("The given object is not a eMAId!");
+            // Check if the given object is a contract identification.
+            if (!(Object is eMobilityAccount_Id))
+                throw new ArgumentException("The given object is not a eMobilityAccountId!", nameof(Object));
 
-            return CompareTo(eMAId);
+            return CompareTo((eMobilityAccount_Id) Object);
 
         }
 
         #endregion
 
-        #region CompareTo(eMAId)
+        #region CompareTo(eMobilityAccountId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="eMAId">An object to compare with.</param>
-        public Int32 CompareTo(eMobilityAccount_Id eMAId)
+        /// <param name="eMobilityAccountId">An object to compare with.</param>
+        public Int32 CompareTo(eMobilityAccount_Id eMobilityAccountId)
         {
 
-            if ((Object) eMAId == null)
-                throw new ArgumentNullException("The given eMAId must not be null!");
+            if ((Object) eMobilityAccountId == null)
+                throw new ArgumentNullException(nameof(eMobilityAccountId),  "The given contract identification must not be null!");
 
-            // Compare the length of the eMAIds
-            var _Result = this.Length.CompareTo(eMAId.Length);
+            // Compare the length of the contract identifications
+            var _Result = this.Length.CompareTo(eMobilityAccountId.Length);
 
-            // If equal: Compare Ids
+            // If equal: Compare OperatorIds
             if (_Result == 0)
-                _Result = _Id.CompareTo(eMAId._Id);
+                _Result = ProviderId.CompareTo(eMobilityAccountId.ProviderId);
+
+            // If equal: Compare contract identification suffix
+            if (_Result == 0)
+                _Result = String.Compare(Suffix, eMobilityAccountId.Suffix, StringComparison.Ordinal);
+
+            // If equal: Compare contract check digit
+            if (_Result == 0)
+            {
+
+                if (!CheckDigit.HasValue && !eMobilityAccountId.CheckDigit.HasValue)
+                    _Result = 0;
+
+                if ( CheckDigit.HasValue &&  eMobilityAccountId.CheckDigit.HasValue)
+                    _Result = CheckDigit.Value.CompareTo(eMobilityAccountId.CheckDigit.Value);
+
+            }
 
             return _Result;
 
@@ -377,7 +469,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<eMobilityAccount_Id> Members
+        #region IEquatable<eMobilityAccountId> Members
 
         #region Equals(Object)
 
@@ -392,31 +484,34 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an eMAId.
-            var eMAId = Object as eMobilityAccount_Id;
-            if ((Object) eMAId == null)
+            // Check if the given object is a contract identification.
+            if (!(Object is eMobilityAccount_Id))
                 return false;
 
-            return this.Equals(eMAId);
+            return this.Equals((eMobilityAccount_Id) Object);
 
         }
 
         #endregion
 
-        #region Equals(eMAId)
+        #region Equals(eMobilityAccountId)
 
         /// <summary>
-        /// Compares two eMAIds for equality.
+        /// Compares two contract identifications for equality.
         /// </summary>
-        /// <param name="eMAId">A eMAId to compare with.</param>
+        /// <param name="eMobilityAccountId">A contract identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(eMobilityAccount_Id eMAId)
+        public Boolean Equals(eMobilityAccount_Id eMobilityAccountId)
         {
 
-            if ((Object) eMAId == null)
+            if ((Object) eMobilityAccountId == null)
                 return false;
 
-            return _Id.Equals(eMAId._Id);
+            return ProviderId.Equals(eMobilityAccountId.ProviderId) &&
+                   Suffix.    Equals(eMobilityAccountId.Suffix)     &&
+
+                   ((!CheckDigit.HasValue && !eMobilityAccountId.CheckDigit.HasValue) ||
+                     (CheckDigit.HasValue &&  eMobilityAccountId.CheckDigit.HasValue && CheckDigit.Value.Equals(eMobilityAccountId.CheckDigit.Value)));
 
         }
 
@@ -424,7 +519,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
 
         /// <summary>
         /// Return the HashCode of this object.
@@ -432,7 +527,17 @@ namespace org.GraphDefined.WWCP
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
         {
-            return _Id.GetHashCode();
+            unchecked
+            {
+
+                return ProviderId.GetHashCode() * 7 ^
+                       Suffix.    GetHashCode() * 5 ^
+
+                       (CheckDigit.HasValue
+                            ? CheckDigit.GetHashCode()
+                            : 0);
+
+            }
         }
 
         #endregion
@@ -443,9 +548,13 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return _Id.ToString();
-        }
+
+            => String.Concat(ProviderId.CountryCode.Alpha2Code, "-",
+                             ProviderId.ProviderId, "-",
+                             Suffix,
+                             CheckDigit.HasValue
+                                 ? "-" + CheckDigit
+                                 : "");
 
         #endregion
 
