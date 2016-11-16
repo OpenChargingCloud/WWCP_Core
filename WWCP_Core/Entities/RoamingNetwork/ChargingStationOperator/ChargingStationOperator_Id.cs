@@ -62,7 +62,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static readonly Regex  CountryAndOperatorId_RegEx  = new Regex(@"^([a-zA-Z]{2})\*?([A-Za-z0-9]{3})$ | " +
                                                                               @"^\+?([0-9]{1,5})\*([0-9]{3})$ | "      +
-                                                                              @"^[0-9]{3}$",
+                                                                              @"^([0-9]{3})$",
                                                                               RegexOptions.IgnorePatternWhitespace);
 
         /// <summary>
