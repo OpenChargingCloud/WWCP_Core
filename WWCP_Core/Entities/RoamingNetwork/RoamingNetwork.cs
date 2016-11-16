@@ -5299,14 +5299,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (OperatorId == null)
-                throw new ArgumentNullException(nameof(OperatorId),  "The given Charging Station Operator must not be null!");
-
             if (AuthToken  == null)
                 throw new ArgumentNullException(nameof(AuthToken),   "The given authentication token must not be null!");
-
-            if (EVSEId     == null)
-                throw new ArgumentNullException(nameof(EVSEId),      "The given EVSE identification must not be null!");
 
 
             if (!Timestamp.HasValue)
