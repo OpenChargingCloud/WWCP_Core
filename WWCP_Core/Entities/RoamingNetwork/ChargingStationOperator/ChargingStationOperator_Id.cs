@@ -27,10 +27,22 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
+    /// <summary>
+    /// The different formats of charging station operators.
+    /// </summary>
     public enum OperatorIdFormats
     {
+
+        /// <summary>
+        /// The old DIN format.
+        /// </summary>
         DIN,
+
+        /// <summary>
+        /// The new ISO format.
+        /// </summary>
         ISO
+
     }
 
 
@@ -49,7 +61,8 @@ namespace org.GraphDefined.WWCP
         /// The regular expression for parsing an Alpha-2-CountryCode and a charging station operator identification.
         /// </summary>
         public static readonly Regex  CountryAndOperatorId_RegEx  = new Regex(@"^([a-zA-Z]{2})\*?([A-Za-z0-9]{3})$ | " +
-                                                                              @"^\+?([0-9]{1,5})\*([0-9]{3})$",
+                                                                              @"^\+?([0-9]{1,5})\*([0-9]{3})$ | "      +
+                                                                              @"^([0-9]{3})$",
                                                                               RegexOptions.IgnorePatternWhitespace);
 
         /// <summary>
