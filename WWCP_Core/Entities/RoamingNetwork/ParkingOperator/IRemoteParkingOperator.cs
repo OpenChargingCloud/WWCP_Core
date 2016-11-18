@@ -88,7 +88,7 @@ namespace org.GraphDefined.WWCP
                     ChargingReservation_Id            ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
                     eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id                ChargingProductId   = null,
+                    ChargingProduct_Id?               ChargingProductId   = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                     IEnumerable<UInt32>               PINs                = null,
@@ -125,7 +125,7 @@ namespace org.GraphDefined.WWCP
                     ChargingReservation_Id            ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
                     eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id                ChargingProductId   = null,
+                    ChargingProduct_Id?               ChargingProductId   = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                     IEnumerable<UInt32>               PINs                = null,
@@ -162,7 +162,7 @@ namespace org.GraphDefined.WWCP
                     ChargingReservation_Id            ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
                     eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id                ChargingProductId   = null,
+                    ChargingProduct_Id?               ChargingProductId   = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                     IEnumerable<UInt32>               PINs                = null,
@@ -225,9 +225,9 @@ namespace org.GraphDefined.WWCP
         Task<RemoteStartEVSEResult>
 
             RemoteStart(EVSE_Id                 EVSEId,
-                        ChargingProduct_Id      ChargingProductId  = null,
+                        ChargingProduct_Id?     ChargingProductId  = null,
                         ChargingReservation_Id  ReservationId      = null,
-                        ChargingSession_Id      SessionId          = null,
+                        ChargingSession_Id?     SessionId          = null,
                         eMobilityProvider_Id?   ProviderId         = null,
                         eMobilityAccount_Id?    eMAId              = null,
 
@@ -254,9 +254,9 @@ namespace org.GraphDefined.WWCP
         Task<RemoteStartChargingStationResult>
 
             RemoteStart(ChargingStation_Id      ChargingStationId,
-                        ChargingProduct_Id      ChargingProductId  = null,
+                        ChargingProduct_Id?     ChargingProductId  = null,
                         ChargingReservation_Id  ReservationId      = null,
-                        ChargingSession_Id      SessionId          = null,
+                        ChargingSession_Id?     SessionId          = null,
                         eMobilityProvider_Id?   ProviderId         = null,
                         eMobilityAccount_Id?    eMAId              = null,
 

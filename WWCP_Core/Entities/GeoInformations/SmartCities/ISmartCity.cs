@@ -79,7 +79,7 @@ namespace org.GraphDefined.WWCP
                     TimeSpan?                         Duration            = null,
                     ChargingReservation_Id            ReservationId       = null,
                     eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id                ChargingProductId   = null,
+                    ChargingProduct_Id?               ChargingProductId   = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                     IEnumerable<UInt32>               PINs                = null,
@@ -107,12 +107,12 @@ namespace org.GraphDefined.WWCP
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
-                              EVSE_Id?                               EVSEId             = null,
+                              EVSE_Id?                               EVSEId              = null,
 
-                              DateTime?                              Timestamp          = null,
-                              CancellationToken?                     CancellationToken  = null,
-                              EventTracking_Id                       EventTrackingId    = null,
-                              TimeSpan?                              RequestTimeout     = null);
+                              DateTime?                              Timestamp           = null,
+                              CancellationToken?                     CancellationToken   = null,
+                              EventTracking_Id                       EventTrackingId     = null,
+                              TimeSpan?                              RequestTimeout      = null);
 
         #endregion
 
@@ -135,9 +135,9 @@ namespace org.GraphDefined.WWCP
         Task<RemoteStartEVSEResult>
 
             RemoteStart(EVSE_Id                 EVSEId,
-                        ChargingProduct_Id      ChargingProductId   = null,
+                        ChargingProduct_Id?     ChargingProductId   = null,
                         ChargingReservation_Id  ReservationId       = null,
-                        ChargingSession_Id      SessionId           = null,
+                        ChargingSession_Id?     SessionId           = null,
                         eMobilityAccount_Id?    eMAId               = null,
 
                         DateTime?               Timestamp           = null,

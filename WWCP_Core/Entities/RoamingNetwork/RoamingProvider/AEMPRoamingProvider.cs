@@ -227,7 +227,7 @@ namespace org.GraphDefined.WWCP
                     ChargingReservation_Id            ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
                     eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id                ChargingProductId   = null,
+                    ChargingProduct_Id?               ChargingProductId   = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                     IEnumerable<UInt32>               PINs                = null,
@@ -257,13 +257,13 @@ namespace org.GraphDefined.WWCP
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
-                              eMobilityProvider_Id?                  ProviderId         = null,
-                              EVSE_Id?                               EVSEId             = null,
+                              eMobilityProvider_Id?                  ProviderId          = null,
+                              EVSE_Id?                               EVSEId              = null,
 
-                              DateTime?                              Timestamp          = null,
-                              CancellationToken?                     CancellationToken  = null,
-                              EventTracking_Id                       EventTrackingId    = null,
-                              TimeSpan?                              RequestTimeout     = null);
+                              DateTime?                              Timestamp           = null,
+                              CancellationToken?                     CancellationToken   = null,
+                              EventTracking_Id                       EventTrackingId     = null,
+                              TimeSpan?                              RequestTimeout      = null);
 
         #endregion
 
@@ -287,9 +287,9 @@ namespace org.GraphDefined.WWCP
         public abstract Task<RemoteStartEVSEResult>
 
             RemoteStart(EVSE_Id                 EVSEId,
-                        ChargingProduct_Id      ChargingProductId   = null,
+                        ChargingProduct_Id?     ChargingProductId   = null,
                         ChargingReservation_Id  ReservationId       = null,
-                        ChargingSession_Id      SessionId           = null,
+                        ChargingSession_Id?     SessionId           = null,
                         eMobilityProvider_Id?   ProviderId          = null,
                         eMobilityAccount_Id?    eMAId               = null,
 

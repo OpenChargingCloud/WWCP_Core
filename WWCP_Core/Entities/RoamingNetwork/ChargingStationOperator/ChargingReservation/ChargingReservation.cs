@@ -190,7 +190,7 @@ namespace org.GraphDefined.WWCP
         public EVSE_Id?               EVSEId              { get; }
 
         [Optional]
-        public ChargingProduct_Id     ChargingProductId   { get; }
+        public ChargingProduct_Id?    ChargingProductId   { get; }
 
 
         #region ChargingSession
@@ -283,7 +283,7 @@ namespace org.GraphDefined.WWCP
                                    ChargingPool_Id                   ChargingPoolId      = null,
                                    ChargingStation_Id                ChargingStationId   = null,
                                    EVSE_Id?                          EVSEId              = null,
-                                   ChargingProduct_Id                ChargingProductId   = null,
+                                   ChargingProduct_Id?               ChargingProductId   = null,
 
                                    IEnumerable<Auth_Token>           AuthTokens          = null,
                                    IEnumerable<eMobilityAccount_Id>  eMAIds              = null,

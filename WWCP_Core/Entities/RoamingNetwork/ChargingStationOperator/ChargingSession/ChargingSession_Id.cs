@@ -25,11 +25,11 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The unique identification of an Electric Vehicle Charging Session.
+    /// The unique identification of a charging session.
     /// </summary>
-    public class ChargingSession_Id : IId,
-                                      IEquatable<ChargingSession_Id>,
-                                      IComparable<ChargingSession_Id>
+    public struct ChargingSession_Id : IId,
+                                       IEquatable<ChargingSession_Id>,
+                                       IComparable<ChargingSession_Id>
 
     {
 
@@ -38,7 +38,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The internal identification.
         /// </summary>
-        protected readonly String _Id;
+        private readonly String InternalId;
 
         #endregion
 
@@ -47,15 +47,11 @@ namespace org.GraphDefined.WWCP
         #region New
 
         /// <summary>
-        /// Returns a new Electric Vehicle Charging Session identification.
+        /// Returns a new charging session identification.
         /// </summary>
         public static ChargingSession_Id New
-        {
-            get
-            {
-                return ChargingSession_Id.Parse(Guid.NewGuid().ToString());
-            }
-        }
+
+            => ChargingSession_Id.Parse(Guid.NewGuid().ToString());
 
         #endregion
 
@@ -65,12 +61,8 @@ namespace org.GraphDefined.WWCP
         /// Returns the length of the identificator.
         /// </summary>
         public UInt64 Length
-        {
-            get
-            {
-                return (UInt64) _Id.Length;
-            }
-        }
+
+            => (UInt64) InternalId.Length;
 
         #endregion
 
@@ -79,12 +71,12 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new Electric Vehicle Charging Session identification.
+        /// Create a new charging session identification.
         /// based on the given string.
         /// </summary>
-        private ChargingSession_Id(String String)
+        private ChargingSession_Id(String Text)
         {
-            _Id = String.Trim();
+            InternalId = Text;
         }
 
         #endregion
@@ -93,33 +85,35 @@ namespace org.GraphDefined.WWCP
         #region Parse(Text)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle Charging Session identification.
+        /// Parse the given string as a charging session identification.
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Vehicle Charging Session identification.</param>
+        /// <param name="Text">A text representation of a charging session identification.</param>
         public static ChargingSession_Id Parse(String Text)
-        {
-            return new ChargingSession_Id(Text);
-        }
+
+            => new ChargingSession_Id(Text);
 
         #endregion
 
         #region TryParse(Text, out ChargingSessionId)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle Charging Session identification.
+        /// Parse the given string as a charging session identification.
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Vehicle Charging Session identification.</param>
-        /// <param name="ChargingSessionId">The parsed Electric Vehicle Charging Session identification.</param>
+        /// <param name="Text">A text representation of a charging session identification.</param>
+        /// <param name="ChargingSessionId">The parsed charging session identification.</param>
         public static Boolean TryParse(String Text, out ChargingSession_Id ChargingSessionId)
         {
             try
             {
+
                 ChargingSessionId = new ChargingSession_Id(Text);
+
                 return true;
+
             }
             catch (Exception)
             {
-                ChargingSessionId = null;
+                ChargingSessionId = default(ChargingSession_Id);
                 return false;
             }
         }
@@ -129,15 +123,13 @@ namespace org.GraphDefined.WWCP
         #region Clone
 
         /// <summary>
-        /// Clone this Electric Vehicle Charging Session identification.
+        /// Clone this charging session identification.
         /// </summary>
         public ChargingSession_Id Clone
-        {
-            get
-            {
-                return new ChargingSession_Id(_Id);
-            }
-        }
+
+            => new ChargingSession_Id(
+                   new String(InternalId.ToCharArray())
+               );
 
         #endregion
 
@@ -178,9 +170,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingSessionId2">Another ChargingSessionId.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (ChargingSession_Id ChargingSessionId1, ChargingSession_Id ChargingSessionId2)
-        {
-            return !(ChargingSessionId1 == ChargingSessionId2);
-        }
+            => !(ChargingSessionId1 == ChargingSessionId2);
 
         #endregion
 
@@ -196,7 +186,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) ChargingSessionId1 == null)
-                throw new ArgumentNullException("The given ChargingSessionId1 must not be null!");
+                throw new ArgumentNullException(nameof(ChargingSessionId1), "The given ChargingSessionId1 must not be null!");
 
             return ChargingSessionId1.CompareTo(ChargingSessionId2) < 0;
 
@@ -213,9 +203,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingSessionId2">Another ChargingSessionId.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (ChargingSession_Id ChargingSessionId1, ChargingSession_Id ChargingSessionId2)
-        {
-            return !(ChargingSessionId1 > ChargingSessionId2);
-        }
+            => !(ChargingSessionId1 > ChargingSessionId2);
 
         #endregion
 
@@ -231,7 +219,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) ChargingSessionId1 == null)
-                throw new ArgumentNullException("The given ChargingSessionId1 must not be null!");
+                throw new ArgumentNullException(nameof(ChargingSessionId1), "The given ChargingSessionId1 must not be null!");
 
             return ChargingSessionId1.CompareTo(ChargingSessionId2) > 0;
 
@@ -248,9 +236,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingSessionId2">Another ChargingSessionId.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (ChargingSession_Id ChargingSessionId1, ChargingSession_Id ChargingSessionId2)
-        {
-            return !(ChargingSessionId1 < ChargingSessionId2);
-        }
+            => !(ChargingSessionId1 < ChargingSessionId2);
 
         #endregion
 
@@ -268,14 +254,13 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            // Check if the given object is an ChargingSessionId.
-            var ChargingSessionId = Object as ChargingSession_Id;
-            if ((Object) ChargingSessionId == null)
-                throw new ArgumentException("The given object is not a ChargingSessionId!");
+            if (!(Object is ChargingSession_Id))
+                throw new ArgumentException("The given object is not a charging session identification!",
+                                            nameof(Object));
 
-            return CompareTo(ChargingSessionId);
+            return CompareTo((ChargingSession_Id) Object);
 
         }
 
@@ -291,14 +276,13 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) ChargingSessionId == null)
-                throw new ArgumentNullException("The given ChargingSessionId must not be null!");
+                throw new ArgumentNullException(nameof(ChargingSessionId),  "The given charging session identification must not be null!");
 
             // Compare the length of the ChargingSessionIds
             var _Result = this.Length.CompareTo(ChargingSessionId.Length);
 
-            // If equal: Compare Ids
             if (_Result == 0)
-                _Result = _Id.CompareTo(ChargingSessionId._Id);
+                _Result = String.Compare(InternalId, ChargingSessionId.InternalId, StringComparison.Ordinal);
 
             return _Result;
 
@@ -323,12 +307,10 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an ChargingSessionId.
-            var ChargingSessionId = Object as ChargingSession_Id;
-            if ((Object) ChargingSessionId == null)
+            if (!(Object is ChargingSession_Id))
                 return false;
 
-            return this.Equals(ChargingSessionId);
+            return Equals((ChargingSession_Id) Object);
 
         }
 
@@ -347,7 +329,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) ChargingSessionId == null)
                 return false;
 
-            return _Id.Equals(ChargingSessionId._Id);
+            return InternalId.Equals(ChargingSessionId.InternalId);
 
         }
 
@@ -362,9 +344,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            return _Id.GetHashCode();
-        }
+            => InternalId.GetHashCode();
 
         #endregion
 
@@ -374,11 +354,10 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return _Id.ToString();
-        }
+            => InternalId;
 
         #endregion
+
 
     }
 

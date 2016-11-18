@@ -45,7 +45,7 @@ namespace org.GraphDefined.WWCP
                                                  EventTracking_Id            EventTrackingId,
                                                  RoamingNetwork_Id           RoamingNetworkId,
                                                  ChargingStationOperator_Id  OperatorId,
-                                                 ChargingSession_Id          SessionId,
+                                                 ChargingSession_Id?         SessionId,
                                                  Auth_Token                  AuthToken,
                                                  TimeSpan?                   RequestTimeout);
 
@@ -67,7 +67,7 @@ namespace org.GraphDefined.WWCP
                                                     EventTracking_Id            EventTrackingId,
                                                     RoamingNetwork_Id           RoamingNetworkId,
                                                     ChargingStationOperator_Id  OperatorId,
-                                                    ChargingSession_Id          SessionId,
+                                                    ChargingSession_Id?         SessionId,
                                                     Auth_Token                  AuthToken,
                                                     TimeSpan?                   RequestTimeout,
                                                     AuthStopResult              Result,

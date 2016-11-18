@@ -90,7 +90,7 @@ namespace org.GraphDefined.WWCP
         /// The unqiue identification for the consumed charging product.
         /// </summary>
         [Optional]
-        public ChargingProduct_Id       ChargingProductId           { get; }
+        public ChargingProduct_Id?      ChargingProductId           { get; }
 
         #endregion
 
@@ -248,7 +248,7 @@ namespace org.GraphDefined.WWCP
                                   ChargingStation                   ChargingStation          = null,
                                   ChargingPool                      ChargingPool             = null,
                                   ChargingStationOperator           ChargingStationOperator  = null,
-                                  ChargingProduct_Id                ChargingProductId        = null,
+                                  ChargingProduct_Id?               ChargingProductId        = null,
 
                                   AuthInfo                          IdentificationStart      = null,
                                   AuthInfo                          IdentificationStop       = null,

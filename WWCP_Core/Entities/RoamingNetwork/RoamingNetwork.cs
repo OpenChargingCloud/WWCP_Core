@@ -3468,7 +3468,7 @@ namespace org.GraphDefined.WWCP
                     ChargingReservation_Id            ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
                     eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id                ChargingProductId   = null,
+                    ChargingProduct_Id?               ChargingProductId   = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                     IEnumerable<UInt32>               PINs                = null,
@@ -3665,7 +3665,7 @@ namespace org.GraphDefined.WWCP
                     ChargingReservation_Id            ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
                     eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id                ChargingProductId   = null,
+                    ChargingProduct_Id?               ChargingProductId   = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                     IEnumerable<UInt32>               PINs                = null,
@@ -3825,7 +3825,7 @@ namespace org.GraphDefined.WWCP
                     ChargingReservation_Id            ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
                     eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id                ChargingProductId   = null,
+                    ChargingProduct_Id?               ChargingProductId   = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                     IEnumerable<UInt32>               PINs                = null,
@@ -4216,9 +4216,9 @@ namespace org.GraphDefined.WWCP
         public async Task<RemoteStartEVSEResult>
 
             RemoteStart(EVSE_Id                 EVSEId,
-                        ChargingProduct_Id      ChargingProductId   = null,
+                        ChargingProduct_Id?     ChargingProductId   = null,
                         ChargingReservation_Id  ReservationId       = null,
-                        ChargingSession_Id      SessionId           = null,
+                        ChargingSession_Id?     SessionId           = null,
                         eMobilityProvider_Id?   ProviderId          = null,
                         eMobilityAccount_Id?    eMAId               = null,
 
@@ -4386,9 +4386,9 @@ namespace org.GraphDefined.WWCP
         public async Task<RemoteStartChargingStationResult>
 
             RemoteStart(ChargingStation_Id      ChargingStationId,
-                        ChargingProduct_Id      ChargingProductId   = null,
+                        ChargingProduct_Id?     ChargingProductId   = null,
                         ChargingReservation_Id  ReservationId       = null,
-                        ChargingSession_Id      SessionId           = null,
+                        ChargingSession_Id?     SessionId           = null,
                         eMobilityProvider_Id?   ProviderId          = null,
                         eMobilityAccount_Id?    eMAId               = null,
 
@@ -5075,13 +5075,13 @@ namespace org.GraphDefined.WWCP
 
             AuthorizeStart(ChargingStationOperator_Id  OperatorId,
                            Auth_Token                  AuthToken,
-                           ChargingProduct_Id          ChargingProductId  = null,
-                           ChargingSession_Id          SessionId          = null,
+                           ChargingProduct_Id?         ChargingProductId   = null,
+                           ChargingSession_Id?         SessionId           = null,
 
-                           DateTime?                   Timestamp          = null,
-                           CancellationToken?          CancellationToken  = null,
-                           EventTracking_Id            EventTrackingId    = null,
-                           TimeSpan?                   RequestTimeout     = null)
+                           DateTime?                   Timestamp           = null,
+                           CancellationToken?          CancellationToken   = null,
+                           EventTracking_Id            EventTrackingId     = null,
+                           TimeSpan?                   RequestTimeout      = null)
 
         {
 
@@ -5287,13 +5287,13 @@ namespace org.GraphDefined.WWCP
             AuthorizeStart(ChargingStationOperator_Id  OperatorId,
                            Auth_Token                  AuthToken,
                            EVSE_Id                     EVSEId,
-                           ChargingProduct_Id          ChargingProductId  = null,
-                           ChargingSession_Id          SessionId          = null,
+                           ChargingProduct_Id?         ChargingProductId   = null,
+                           ChargingSession_Id?         SessionId           = null,
 
-                           DateTime?                   Timestamp          = null,
-                           CancellationToken?          CancellationToken  = null,
-                           EventTracking_Id            EventTrackingId    = null,
-                           TimeSpan?                   RequestTimeout     = null)
+                           DateTime?                   Timestamp           = null,
+                           CancellationToken?          CancellationToken   = null,
+                           EventTracking_Id            EventTrackingId     = null,
+                           TimeSpan?                   RequestTimeout      = null)
 
         {
 
@@ -5370,11 +5370,11 @@ namespace org.GraphDefined.WWCP
                     RegisterExternalChargingSession(DateTime.Now,
                                                     this,
                                                     new ChargingSession(result.SessionId) {
-                                                        AuthService                = AuthenticationService,
-                                                        OperatorId  = OperatorId,
-                                                        EVSEId                     = EVSEId,
-                                                        AuthTokenStart             = AuthToken,
-                                                        ChargingProductId          = ChargingProductId
+                                                        AuthService        = AuthenticationService,
+                                                        OperatorId         = OperatorId,
+                                                        EVSEId             = EVSEId,
+                                                        AuthTokenStart     = AuthToken,
+                                                        ChargingProductId  = ChargingProductId
                                                     });
 
                     break;
@@ -5505,13 +5505,13 @@ namespace org.GraphDefined.WWCP
             AuthorizeStart(ChargingStationOperator_Id  OperatorId,
                            Auth_Token                  AuthToken,
                            ChargingStation_Id          ChargingStationId,
-                           ChargingProduct_Id          ChargingProductId  = null,
-                           ChargingSession_Id          SessionId          = null,
+                           ChargingProduct_Id?         ChargingProductId   = null,
+                           ChargingSession_Id?         SessionId           = null,
 
-                           DateTime?                   Timestamp          = null,
-                           CancellationToken?          CancellationToken  = null,
-                           EventTracking_Id            EventTrackingId    = null,
-                           TimeSpan?                   RequestTimeout     = null)
+                           DateTime?                   Timestamp           = null,
+                           CancellationToken?          CancellationToken   = null,
+                           EventTracking_Id            EventTrackingId     = null,
+                           TimeSpan?                   RequestTimeout      = null)
 
         {
 
@@ -5770,10 +5770,10 @@ namespace org.GraphDefined.WWCP
                           ChargingSession_Id          SessionId,
                           Auth_Token                  AuthToken,
 
-                          DateTime?                   Timestamp          = null,
-                          CancellationToken?          CancellationToken  = null,
-                          EventTracking_Id            EventTrackingId    = null,
-                          TimeSpan?                   RequestTimeout     = null)
+                          DateTime?                   Timestamp           = null,
+                          CancellationToken?          CancellationToken   = null,
+                          EventTracking_Id            EventTrackingId     = null,
+                          TimeSpan?                   RequestTimeout      = null)
 
         {
 
@@ -5959,10 +5959,10 @@ namespace org.GraphDefined.WWCP
                           Auth_Token                  AuthToken,
                           EVSE_Id                     EVSEId,
 
-                          DateTime?                   Timestamp          = null,
-                          CancellationToken?          CancellationToken  = null,
-                          EventTracking_Id            EventTrackingId    = null,
-                          TimeSpan?                   RequestTimeout     = null)
+                          DateTime?                   Timestamp           = null,
+                          CancellationToken?          CancellationToken   = null,
+                          EventTracking_Id            EventTrackingId     = null,
+                          TimeSpan?                   RequestTimeout      = null)
 
         {
 
@@ -6157,10 +6157,10 @@ namespace org.GraphDefined.WWCP
                           Auth_Token                  AuthToken,
                           ChargingStation_Id          ChargingStationId,
 
-                          DateTime?                   Timestamp          = null,
-                          CancellationToken?          CancellationToken  = null,
-                          EventTracking_Id            EventTrackingId    = null,
-                          TimeSpan?                   RequestTimeout     = null)
+                          DateTime?                   Timestamp           = null,
+                          CancellationToken?          CancellationToken   = null,
+                          EventTracking_Id            EventTrackingId     = null,
+                          TimeSpan?                   RequestTimeout      = null)
 
         {
 

@@ -192,7 +192,7 @@ namespace org.GraphDefined.WWCP
                     ChargingReservation_Id            ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
                     eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id                ChargingProductId   = null,
+                    ChargingProduct_Id?               ChargingProductId   = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                     IEnumerable<UInt32>               PINs                = null,
@@ -245,9 +245,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<RemoteStartEVSEResult>
 
-            RemoteStart(ChargingProduct_Id      ChargingProductId,
+            RemoteStart(ChargingProduct_Id?     ChargingProductId,
                         ChargingReservation_Id  ReservationId,
-                        ChargingSession_Id      SessionId,
+                        ChargingSession_Id?     SessionId,
                         eMobilityProvider_Id?   ProviderId          = null,
                         eMobilityAccount_Id?    eMAId               = null,
 

@@ -432,7 +432,7 @@ namespace org.GraphDefined.WWCP
         /// The charging product selected for this charging session.
         /// </summary>
         [Optional]
-        public ChargingProduct_Id ChargingProductId { get; set; }
+        public ChargingProduct_Id?  ChargingProductId   { get; set; }
 
         #endregion
 
@@ -543,23 +543,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
-        private Boolean _RemoveMe;
-
-        public Boolean RemoveMe
-        {
-
-            get
-            {
-                return _RemoveMe;
-            }
-
-            set
-            {
-                _RemoveMe = value;
-            }
-
-        }
+        public Boolean RemoveMe { get; set; }
 
         #endregion
 

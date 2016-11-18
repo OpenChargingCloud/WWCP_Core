@@ -1763,8 +1763,8 @@ namespace org.GraphDefined.WWCP
 
             AuthorizeStart(ChargingStationOperator_Id  ChargingStationOperatorId,
                            Auth_Token                  AuthToken,
-                           ChargingProduct_Id          ChargingProductId,
-                           ChargingSession_Id          SessionId,
+                           ChargingProduct_Id?         ChargingProductId,
+                           ChargingSession_Id?         SessionId,
 
                            DateTime?                   Timestamp          = null,
                            CancellationToken?          CancellationToken  = null,
@@ -1812,8 +1812,8 @@ namespace org.GraphDefined.WWCP
             AuthorizeStart(ChargingStationOperator_Id  ChargingStationOperatorId,
                            Auth_Token                  AuthToken,
                            EVSE_Id                     EVSEId,
-                           ChargingProduct_Id          ChargingProductId,
-                           ChargingSession_Id          SessionId,
+                           ChargingProduct_Id?         ChargingProductId,
+                           ChargingSession_Id?         SessionId,
 
                            DateTime?                   Timestamp          = null,
                            CancellationToken?          CancellationToken  = null,
@@ -1862,8 +1862,8 @@ namespace org.GraphDefined.WWCP
             AuthorizeStart(ChargingStationOperator_Id  ChargingStationOperatorId,
                            Auth_Token                  AuthToken,
                            ChargingStation_Id          ChargingStationId,
-                           ChargingProduct_Id          ChargingProductId,
-                           ChargingSession_Id          SessionId,
+                           ChargingProduct_Id?         ChargingProductId,
+                           ChargingSession_Id?         SessionId,
 
                            DateTime?                   Timestamp          = null,
                            CancellationToken?          CancellationToken  = null,
@@ -2106,7 +2106,7 @@ namespace org.GraphDefined.WWCP
                     TimeSpan?                         Duration            = null,
                     ChargingReservation_Id            ReservationId       = null,
                     eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id                ChargingProductId   = null,
+                    ChargingProduct_Id?               ChargingProductId   = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                     IEnumerable<UInt32>               PINs                = null,
@@ -2297,9 +2297,9 @@ namespace org.GraphDefined.WWCP
         public async Task<RemoteStartEVSEResult>
 
             RemoteStart(EVSE_Id                 EVSEId,
-                        ChargingProduct_Id      ChargingProductId  = null,
+                        ChargingProduct_Id?     ChargingProductId  = null,
                         ChargingReservation_Id  ReservationId      = null,
-                        ChargingSession_Id      SessionId          = null,
+                        ChargingSession_Id?     SessionId          = null,
                         eMobilityAccount_Id?    eMAId              = null,
 
                         DateTime?               Timestamp          = null,

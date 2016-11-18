@@ -52,8 +52,8 @@ namespace org.GraphDefined.WWCP
 
             AuthorizeStart(ChargingStationOperator_Id  ChargingStationOperatorId,
                            Auth_Token                  AuthToken,
-                           ChargingProduct_Id          ChargingProductId  = null,
-                           ChargingSession_Id          SessionId          = null,
+                           ChargingProduct_Id?         ChargingProductId  = null,
+                           ChargingSession_Id?         SessionId          = null,
 
                            DateTime?                   Timestamp          = null,
                            CancellationToken?          CancellationToken  = null,
@@ -78,8 +78,8 @@ namespace org.GraphDefined.WWCP
             AuthorizeStart(ChargingStationOperator_Id  ChargingStationOperatorId,
                            Auth_Token                  AuthToken,
                            EVSE_Id                     EVSEId,
-                           ChargingProduct_Id          ChargingProductId  = null,
-                           ChargingSession_Id          SessionId          = null,
+                           ChargingProduct_Id?         ChargingProductId  = null,
+                           ChargingSession_Id?         SessionId          = null,
 
                            DateTime?                   Timestamp          = null,
                            CancellationToken?          CancellationToken  = null,
@@ -104,8 +104,8 @@ namespace org.GraphDefined.WWCP
             AuthorizeStart(ChargingStationOperator_Id   ChargingStationOperatorId,
                            Auth_Token                   AuthToken,
                            ChargingStation_Id           ChargingStationId,
-                           ChargingProduct_Id           ChargingProductId  = null,
-                           ChargingSession_Id           SessionId          = null,
+                           ChargingProduct_Id?          ChargingProductId  = null,
+                           ChargingSession_Id?          SessionId          = null,
 
                            DateTime?                    Timestamp          = null,
                            CancellationToken?           CancellationToken  = null,
@@ -133,10 +133,10 @@ namespace org.GraphDefined.WWCP
                           ChargingSession_Id          SessionId,
                           Auth_Token                  AuthToken,
 
-                          DateTime?                   Timestamp          = null,
-                          CancellationToken?          CancellationToken  = null,
-                          EventTracking_Id            EventTrackingId    = null,
-                          TimeSpan?                   RequestTimeout     = null);
+                          DateTime?                   Timestamp           = null,
+                          CancellationToken?          CancellationToken   = null,
+                          EventTracking_Id            EventTrackingId     = null,
+                          TimeSpan?                   RequestTimeout      = null);
 
         /// <summary>
         /// Create an authorize stop request at the given EVSE.
@@ -157,10 +157,10 @@ namespace org.GraphDefined.WWCP
                           ChargingSession_Id          SessionId,
                           Auth_Token                  AuthToken,
 
-                          DateTime?                   Timestamp          = null,
-                          CancellationToken?          CancellationToken  = null,
-                          EventTracking_Id            EventTrackingId    = null,
-                          TimeSpan?                   RequestTimeout     = null);
+                          DateTime?                   Timestamp           = null,
+                          CancellationToken?          CancellationToken   = null,
+                          EventTracking_Id            EventTrackingId     = null,
+                          TimeSpan?                   RequestTimeout      = null);
 
         /// <summary>
         /// Create an authorize stop request at the given charging station.
@@ -181,10 +181,10 @@ namespace org.GraphDefined.WWCP
                           ChargingSession_Id          SessionId,
                           Auth_Token                  AuthToken,
 
-                          DateTime?                   Timestamp          = null,
-                          CancellationToken?          CancellationToken  = null,
-                          EventTracking_Id            EventTrackingId    = null,
-                          TimeSpan?                   RequestTimeout     = null);
+                          DateTime?                   Timestamp           = null,
+                          CancellationToken?          CancellationToken   = null,
+                          EventTracking_Id            EventTrackingId     = null,
+                          TimeSpan?                   RequestTimeout      = null);
 
         #endregion
 
