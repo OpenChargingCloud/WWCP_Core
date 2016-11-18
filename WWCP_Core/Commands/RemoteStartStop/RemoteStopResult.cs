@@ -35,32 +35,32 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The result of a remote stop operation.
         /// </summary>
-        public RemoteStopResultType    Result                   { get; }
+        public RemoteStopResultType     Result                   { get; }
 
         /// <summary>
         /// The charging session identification for an invalid remote stop operation.
         /// </summary>
-        public ChargingSession_Id      SessionId                { get; }
+        public ChargingSession_Id       SessionId                { get; }
 
         /// <summary>
         /// The charge detail record for a successfully stopped charging process.
         /// </summary>
-        public ChargeDetailRecord      ChargeDetailRecord       { get; }
+        public ChargeDetailRecord       ChargeDetailRecord       { get; }
 
         /// <summary>
         /// The charging reservation identification.
         /// </summary>
-        public ChargingReservation_Id  ReservationId            { get; }
+        public ChargingReservation_Id?  ReservationId            { get; }
 
         /// <summary>
         /// The handling of the charging reservation after the charging session stopped.
         /// </summary>
-        public ReservationHandling     ReservationHandling      { get; }
+        public ReservationHandling      ReservationHandling      { get; }
 
         /// <summary>
         /// An optional (error) message.
         /// </summary>
-        public String                  Message                  { get; }
+        public String                   Message                  { get; }
 
         #endregion
 
@@ -79,16 +79,9 @@ namespace org.GraphDefined.WWCP
                                  String                ErrorMessage = null)
         {
 
-            #region Initial checks
-
-            if (SessionId == null)
-                throw new ArgumentNullException(nameof(SessionId), "The given charging session identification must not be null!");
-
-            #endregion
-
-            this.SessionId     = SessionId;
-            this.Result        = Result;
-            this.Message  = ErrorMessage;
+            this.SessionId  = SessionId;
+            this.Result     = Result;
+            this.Message    = ErrorMessage;
 
         }
 
@@ -103,18 +96,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="Result">The result of the remote stop request.</param>
         /// <param name="ReservationId">The optional charging reservation identification of the charging session.</param>
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
-        private RemoteStopResult(ChargingSession_Id      SessionId,
-                                 RemoteStopResultType    Result,
-                                 ChargingReservation_Id  ReservationId,
-                                 ReservationHandling     ReservationHandling)
+        private RemoteStopResult(ChargingSession_Id       SessionId,
+                                 RemoteStopResultType     Result,
+                                 ChargingReservation_Id?  ReservationId,
+                                 ReservationHandling      ReservationHandling)
         {
-
-            #region Initial checks
-
-            if (SessionId == null)
-                throw new ArgumentNullException(nameof(SessionId), "The given charging session identification must not be null!");
-
-            #endregion
 
             this.SessionId            = SessionId;
             this.Result               = Result;
@@ -134,10 +120,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="Result">The result of the remote stop request.</param>
         /// <param name="ReservationId">The optional charging reservation identification of the charging session.</param>
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
-        private RemoteStopResult(ChargeDetailRecord      ChargeDetailRecord,
-                                 RemoteStopResultType    Result,
-                                 ChargingReservation_Id  ReservationId,
-                                 ReservationHandling     ReservationHandling)
+        private RemoteStopResult(ChargeDetailRecord       ChargeDetailRecord,
+                                 RemoteStopResultType     Result,
+                                 ChargingReservation_Id?  ReservationId,
+                                 ReservationHandling      ReservationHandling)
         {
 
             #region Initial checks
@@ -297,17 +283,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="ReservationId">The optional charging reservation identification of the charging session.</param>
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
-        public static RemoteStopResult Success(ChargingSession_Id      SessionId,
-                                               ChargingReservation_Id  ReservationId        = null,
-                                               ReservationHandling     ReservationHandling  = null)
-        {
+        public static RemoteStopResult Success(ChargingSession_Id       SessionId,
+                                               ChargingReservation_Id?  ReservationId        = null,
+                                               ReservationHandling      ReservationHandling  = null)
 
-            return new RemoteStopResult(SessionId,
-                                        RemoteStopResultType.Success,
-                                        ReservationId,
-                                        ReservationHandling);
-
-        }
+            => new RemoteStopResult(SessionId,
+                                    RemoteStopResultType.Success,
+                                    ReservationId,
+                                    ReservationHandling);
 
         #endregion
 
@@ -319,17 +302,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargeDetailRecord">The charge detail record for a successfully stopped charging process.</param>
         /// <param name="ReservationId">The optional charging reservation identification of the charging session.</param>
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
-        public static RemoteStopResult Success(ChargeDetailRecord      ChargeDetailRecord,
-                                               ChargingReservation_Id  ReservationId        = null,
-                                               ReservationHandling     ReservationHandling  = null)
-        {
+        public static RemoteStopResult Success(ChargeDetailRecord       ChargeDetailRecord,
+                                               ChargingReservation_Id?  ReservationId        = null,
+                                               ReservationHandling      ReservationHandling  = null)
 
-            return new RemoteStopResult(ChargeDetailRecord,
-                                        RemoteStopResultType.Success,
-                                        ReservationId,
-                                        ReservationHandling);
-
-        }
+            => new RemoteStopResult(ChargeDetailRecord,
+                                    RemoteStopResultType.Success,
+                                    ReservationId,
+                                    ReservationHandling);
 
         #endregion
 
@@ -340,12 +320,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         public static RemoteStopResult Timeout(ChargingSession_Id SessionId)
-        {
 
-            return new RemoteStopResult(SessionId,
-                                        RemoteStopResultType.Timeout);
-
-        }
+            => new RemoteStopResult(SessionId,
+                                    RemoteStopResultType.Timeout);
 
         #endregion
 
@@ -358,13 +335,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="Message">An optional error message.</param>
         public static RemoteStopResult Error(ChargingSession_Id  SessionId,
                                              String              Message = null)
-        {
 
-            return new RemoteStopResult(SessionId,
-                                        RemoteStopResultType.Error,
-                                        Message);
-
-        }
+            => new RemoteStopResult(SessionId,
+                                    RemoteStopResultType.Error,
+                                    Message);
 
         #endregion
 

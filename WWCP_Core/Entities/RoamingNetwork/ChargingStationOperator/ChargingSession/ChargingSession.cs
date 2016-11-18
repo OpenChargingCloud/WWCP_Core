@@ -361,13 +361,13 @@ namespace org.GraphDefined.WWCP
 
         #region ReservationId
 
-        private ChargingReservation_Id _ReservationId;
+        private ChargingReservation_Id? _ReservationId;
 
         /// <summary>
         /// An optional charging reservation for this charging session.
         /// </summary>
         [Optional]
-        public ChargingReservation_Id ReservationId
+        public ChargingReservation_Id? ReservationId
         {
 
             get

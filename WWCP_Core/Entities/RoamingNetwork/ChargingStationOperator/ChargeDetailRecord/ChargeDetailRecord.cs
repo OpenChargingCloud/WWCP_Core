@@ -256,7 +256,7 @@ namespace org.GraphDefined.WWCP
                                   eMobilityProvider_Id?             ProviderIdStop           = null,
 
                                   ChargingReservation               Reservation              = null,
-                                  ChargingReservation_Id            ReservationId            = null,
+                                  ChargingReservation_Id?           ReservationId            = null,
                                   StartEndDateTime?                 ReservationTime          = null,
 
                                   ParkingSpace_Id                   ParkingSpaceId           = null,
@@ -292,7 +292,7 @@ namespace org.GraphDefined.WWCP
             this.ProviderIdStop           = ProviderIdStop;
 
             this.Reservation              = Reservation;
-            this.ReservationId            = ReservationId != null ? ReservationId : Reservation != null ? Reservation.Id : null;
+            this.ReservationId            = ReservationId.HasValue ? ReservationId.Value : Reservation != null ? Reservation.Id : new ChargingReservation_Id();
             this.ReservationTime          = ReservationTime;
 
             this.ParkingSpaceId           = ParkingSpaceId;

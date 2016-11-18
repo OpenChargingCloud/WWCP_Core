@@ -18,6 +18,9 @@
 #region Usings
 
 using System;
+using System.Text.RegularExpressions;
+
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -25,66 +28,73 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The unique identification of an Electric Vehicle Charging Reservation.
+    /// The unique identification of a charging reservation.
     /// </summary>
-    public class ChargingReservation_Id : IId,
-                                          IEquatable<ChargingReservation_Id>,
-                                          IComparable<ChargingReservation_Id>
+    public struct ChargingReservation_Id : IId,
+                                           IEquatable<ChargingReservation_Id>,
+                                           IComparable<ChargingReservation_Id>
 
     {
 
         #region Data
 
         /// <summary>
-        /// The internal identification.
+        /// The regular expression for parsing a charging reservation identification.
         /// </summary>
-        protected readonly String _Id;
+        public static readonly Regex  ReservationId_RegEx  = new Regex(@"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?R([A-Za-z0-9][A-Za-z0-9\*]{0,30})$",
+                                                                       RegexOptions.IgnorePatternWhitespace);
+
+        /// <summary>
+        /// The regular expression for parsing a charging reservation identification suffix.
+        /// </summary>
+        public static readonly Regex  IdSuffixISO_RegEx    = new Regex(@"^([A-Za-z0-9\*]{1,30})$",
+                                                                       RegexOptions.IgnorePatternWhitespace);
 
         #endregion
 
         #region Properties
 
-        #region New
+        /// <summary>
+        /// The internal identification.
+        /// </summary>
+        public ChargingStationOperator_Id  OperatorId   { get; }
 
         /// <summary>
-        /// Returns a new Electric Vehicle Charging Session identification.
+        /// The suffix of the identification.
         /// </summary>
-        public static ChargingReservation_Id New
-        {
-            get
-            {
-                return ChargingReservation_Id.Parse(Guid.NewGuid().ToString());
-            }
-        }
-
-        #endregion
-
-        #region Length
+        public String                      Suffix       { get; }
 
         /// <summary>
         /// Returns the length of the identificator.
         /// </summary>
         public UInt64 Length
-        {
-            get
-            {
-                return (UInt64) _Id.Length;
-            }
-        }
 
-        #endregion
+            => OperatorId.Length + 2 + (UInt64) Suffix.Length;
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new Electric Vehicle Charging Reservation identification.
-        /// based on the given string.
+        /// Generate a new charging reservation identification
+        /// based on the given charging station operator and identification suffix.
         /// </summary>
-        private ChargingReservation_Id(String String)
+        /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="Suffix">The suffix of the charging reservation identification.</param>
+        private ChargingReservation_Id(ChargingStationOperator_Id  OperatorId,
+                                       String                      Suffix)
         {
-            _Id = String.Trim();
+
+            #region Initial checks
+
+            if (Suffix.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Suffix),  "The charging reservation identification suffix must not be null or empty!");
+
+            #endregion
+
+            this.OperatorId  = OperatorId;
+            this.Suffix      = Suffix;
+
         }
 
         #endregion
@@ -93,35 +103,123 @@ namespace org.GraphDefined.WWCP
         #region Parse(Text)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle Charging Session identification.
+        /// Parse the given string as a charging reservation identification.
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Vehicle Charging Session identification.</param>
+        /// <param name="Text">A text representation of a charging reservation identification.</param>
         public static ChargingReservation_Id Parse(String Text)
         {
-            return new ChargingReservation_Id(Text);
+
+            #region Initial checks
+
+            if (Text.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Text),  "The given text representation of a charging reservation identification must not be null or empty!");
+
+            #endregion
+
+            var MatchCollection = ReservationId_RegEx.Matches(Text);
+
+            ChargingStationOperator_Id _OperatorId;
+
+            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out _OperatorId))
+                return new ChargingReservation_Id(_OperatorId,
+                                                  MatchCollection[0].Groups[2].Value);
+
+            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[3].Value, out _OperatorId))
+                return new ChargingReservation_Id(_OperatorId,
+                                                  MatchCollection[0].Groups[4].Value);
+
+
+            throw new ArgumentException("Illegal charging reservation identification '" + Text + "'!",
+                                        nameof(Text));
+
         }
 
         #endregion
 
-        #region TryParse(Text, out ChargingReservationId)
+        #region Parse(OperatorId, Suffix)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle Charging Session identification.
+        /// Parse the given string as a charging reservation identification.
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Vehicle Charging Session identification.</param>
-        /// <param name="ChargingReservationId">The parsed Electric Vehicle Charging Session identification.</param>
-        public static Boolean TryParse(String Text, out ChargingReservation_Id ChargingReservationId)
+        /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="Suffix">The suffix of the charging reservation identification.</param>
+        public static ChargingReservation_Id Parse(ChargingStationOperator_Id  OperatorId,
+                                                   String                      Suffix)
         {
-            try
+
+            if (!IdSuffixISO_RegEx.IsMatch(Suffix))
+                    throw new ArgumentException("Illegal charging reservation identification suffix '" + Suffix + "'!",
+                                                nameof(Suffix));
+
+            return new ChargingReservation_Id(OperatorId,
+                                              Suffix);
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ChargingReservation_Id)
+
+        /// <summary>
+        /// Parse the given string as a charging reservation identification.
+        /// </summary>
+        public static Boolean TryParse(String Text, out ChargingReservation_Id ReservationId)
+        {
+
+            #region Initial checks
+
+            if (Text.IsNullOrEmpty())
             {
-                ChargingReservationId = new ChargingReservation_Id(Text);
-                return true;
-            }
-            catch (Exception)
-            {
-                ChargingReservationId = null;
+                ReservationId = default(ChargingReservation_Id);
                 return false;
             }
+
+            #endregion
+
+            try
+            {
+
+                ReservationId = default(ChargingReservation_Id);
+
+                var _MatchCollection = ReservationId_RegEx.Matches(Text);
+
+                if (_MatchCollection.Count != 1)
+                    return false;
+
+                ChargingStationOperator_Id _OperatorId;
+
+                // New format...
+                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _OperatorId))
+                {
+
+                    ReservationId = new ChargingReservation_Id(_OperatorId,
+                                                               _MatchCollection[0].Groups[2].Value);
+
+                    return true;
+
+                }
+
+                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out _OperatorId))
+                {
+
+                    ReservationId = new ChargingReservation_Id(_OperatorId,
+                                                               _MatchCollection[0].Groups[4].Value);
+
+                    return true;
+
+                }
+
+            }
+#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
+            catch (Exception e)
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
+#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
+            { }
+
+            ReservationId = default(ChargingReservation_Id);
+            return false;
+
         }
 
         #endregion
@@ -129,134 +227,125 @@ namespace org.GraphDefined.WWCP
         #region Clone
 
         /// <summary>
-        /// Clone this Electric Vehicle Charging Session identification.
+        /// Clone this charging reservation identification.
         /// </summary>
         public ChargingReservation_Id Clone
-        {
-            get
-            {
-                return new ChargingReservation_Id(_Id);
-            }
-        }
+
+            => new ChargingReservation_Id(OperatorId.Clone,
+                                          Suffix);
 
         #endregion
 
 
         #region Operator overloading
 
-        #region Operator == (ChargingReservationId1, ChargingReservationId2)
+        #region Operator == (ReservationId1, ReservationId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingReservationId1">A ChargingReservationId.</param>
-        /// <param name="ChargingReservationId2">Another ChargingReservationId.</param>
+        /// <param name="ReservationId1">A charging reservation identification.</param>
+        /// <param name="ReservationId2">Another charging reservation identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ChargingReservation_Id ChargingReservationId1, ChargingReservation_Id ChargingReservationId2)
+        public static Boolean operator == (ChargingReservation_Id ReservationId1, ChargingReservation_Id ReservationId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(ChargingReservationId1, ChargingReservationId2))
+            if (Object.ReferenceEquals(ReservationId1, ReservationId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChargingReservationId1 == null) || ((Object) ChargingReservationId2 == null))
+            if (((Object) ReservationId1 == null) || ((Object) ReservationId2 == null))
                 return false;
 
-            return ChargingReservationId1.Equals(ChargingReservationId2);
+            return ReservationId1.Equals(ReservationId2);
 
         }
 
         #endregion
 
-        #region Operator != (ChargingReservationId1, ChargingReservationId2)
+        #region Operator != (ReservationId1, ReservationId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingReservationId1">A ChargingReservationId.</param>
-        /// <param name="ChargingReservationId2">Another ChargingReservationId.</param>
+        /// <param name="ReservationId1">A charging reservation identification.</param>
+        /// <param name="ReservationId2">Another charging reservation identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ChargingReservation_Id ChargingReservationId1, ChargingReservation_Id ChargingReservationId2)
-        {
-            return !(ChargingReservationId1 == ChargingReservationId2);
-        }
+        public static Boolean operator != (ChargingReservation_Id ReservationId1, ChargingReservation_Id ReservationId2)
+            => !(ReservationId1 == ReservationId2);
 
         #endregion
 
-        #region Operator <  (ChargingReservationId1, ChargingReservationId2)
+        #region Operator <  (ReservationId1, ReservationId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingReservationId1">A ChargingReservationId.</param>
-        /// <param name="ChargingReservationId2">Another ChargingReservationId.</param>
+        /// <param name="ReservationId1">A charging reservation identification.</param>
+        /// <param name="ReservationId2">Another charging reservation identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ChargingReservation_Id ChargingReservationId1, ChargingReservation_Id ChargingReservationId2)
+        public static Boolean operator < (ChargingReservation_Id ReservationId1, ChargingReservation_Id ReservationId2)
         {
 
-            if ((Object) ChargingReservationId1 == null)
-                throw new ArgumentNullException("The given ChargingReservationId1 must not be null!");
+            if ((Object) ReservationId1 == null)
+                throw new ArgumentNullException(nameof(ReservationId1), "The given charging ReservationId1 must not be null!");
 
-            return ChargingReservationId1.CompareTo(ChargingReservationId2) < 0;
+            return ReservationId1.CompareTo(ReservationId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (ChargingReservationId1, ChargingReservationId2)
+        #region Operator <= (ReservationId1, ReservationId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingReservationId1">A ChargingReservationId.</param>
-        /// <param name="ChargingReservationId2">Another ChargingReservationId.</param>
+        /// <param name="ReservationId1">A charging reservation identification.</param>
+        /// <param name="ReservationId2">Another charging reservation identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ChargingReservation_Id ChargingReservationId1, ChargingReservation_Id ChargingReservationId2)
-        {
-            return !(ChargingReservationId1 > ChargingReservationId2);
-        }
+        public static Boolean operator <= (ChargingReservation_Id ReservationId1, ChargingReservation_Id ReservationId2)
+            => !(ReservationId1 > ReservationId2);
 
         #endregion
 
-        #region Operator >  (ChargingReservationId1, ChargingReservationId2)
+        #region Operator >  (ReservationId1, ReservationId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingReservationId1">A ChargingReservationId.</param>
-        /// <param name="ChargingReservationId2">Another ChargingReservationId.</param>
+        /// <param name="ReservationId1">A charging reservation identification.</param>
+        /// <param name="ReservationId2">Another charging reservation identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ChargingReservation_Id ChargingReservationId1, ChargingReservation_Id ChargingReservationId2)
+        public static Boolean operator > (ChargingReservation_Id ReservationId1, ChargingReservation_Id ReservationId2)
         {
 
-            if ((Object) ChargingReservationId1 == null)
-                throw new ArgumentNullException("The given ChargingReservationId1 must not be null!");
+            if ((Object) ReservationId1 == null)
+                throw new ArgumentNullException(nameof(ReservationId1), "The given charging ReservationId1 must not be null!");
 
-            return ChargingReservationId1.CompareTo(ChargingReservationId2) > 0;
+            return ReservationId1.CompareTo(ReservationId2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (ChargingReservationId1, ChargingReservationId2)
+        #region Operator >= (ReservationId1, ReservationId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingReservationId1">A ChargingReservationId.</param>
-        /// <param name="ChargingReservationId2">Another ChargingReservationId.</param>
+        /// <param name="ReservationId1">A charging reservation identification.</param>
+        /// <param name="ReservationId2">Another charging reservation identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ChargingReservation_Id ChargingReservationId1, ChargingReservation_Id ChargingReservationId2)
-        {
-            return !(ChargingReservationId1 < ChargingReservationId2);
-        }
+        public static Boolean operator >= (ChargingReservation_Id ReservationId1, ChargingReservation_Id ReservationId2)
+            => !(ReservationId1 < ReservationId2);
 
         #endregion
 
         #endregion
 
-        #region IComparable<ChargingReservationId> Members
+        #region IComparable<charging reservationId> Members
 
         #region CompareTo(Object)
 
@@ -268,37 +357,36 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            // Check if the given object is an ChargingReservationId.
-            var ChargingReservationId = Object as ChargingReservation_Id;
-            if ((Object) ChargingReservationId == null)
-                throw new ArgumentException("The given object is not a ChargingReservationId!");
+            if (!(Object is ChargingReservation_Id))
+                throw new ArgumentException("The given object is not a charging reservation identification!",
+                                            nameof(Object));
 
-            return CompareTo(ChargingReservationId);
+            return CompareTo((ChargingReservation_Id) Object);
 
         }
 
         #endregion
 
-        #region CompareTo(ChargingReservationId)
+        #region CompareTo(ReservationId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingReservationId">An object to compare with.</param>
-        public Int32 CompareTo(ChargingReservation_Id ChargingReservationId)
+        /// <param name="ReservationId">An object to compare with.</param>
+        public Int32 CompareTo(ChargingReservation_Id ReservationId)
         {
 
-            if ((Object) ChargingReservationId == null)
-                throw new ArgumentNullException("The given ChargingReservationId must not be null!");
+            if ((Object) ReservationId == null)
+                throw new ArgumentNullException(nameof(ReservationId),  "The given charging reservation identification must not be null!");
 
-            // Compare the length of the ChargingReservationIds
-            var _Result = this.Length.CompareTo(ChargingReservationId.Length);
+            // If equal: Compare OperatorIds
+            var _Result = OperatorId.CompareTo(ReservationId.OperatorId);
 
-            // If equal: Compare Ids
+            // If equal: Compare charging reservationId suffix
             if (_Result == 0)
-                _Result = _Id.CompareTo(ChargingReservationId._Id);
+                _Result = String.Compare(Suffix, ReservationId.Suffix, StringComparison.Ordinal);
 
             return _Result;
 
@@ -308,7 +396,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<ChargingReservationId> Members
+        #region IEquatable<charging reservationId> Members
 
         #region Equals(Object)
 
@@ -323,31 +411,30 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an ChargingReservationId.
-            var ChargingReservationId = Object as ChargingReservation_Id;
-            if ((Object) ChargingReservationId == null)
+            if (!(Object is ChargingReservation_Id))
                 return false;
 
-            return this.Equals(ChargingReservationId);
+            return this.Equals((ChargingReservation_Id) Object);
 
         }
 
         #endregion
 
-        #region Equals(ChargingReservationId)
+        #region Equals(ReservationId)
 
         /// <summary>
-        /// Compares two ChargingReservationIds for equality.
+        /// Compares two charging reservation identifications for equality.
         /// </summary>
-        /// <param name="ChargingReservationId">A ChargingReservationId to compare with.</param>
+        /// <param name="ReservationId">An charging reservation identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingReservation_Id ChargingReservationId)
+        public Boolean Equals(ChargingReservation_Id ReservationId)
         {
 
-            if ((Object) ChargingReservationId == null)
+            if ((Object) ReservationId == null)
                 return false;
 
-            return _Id.Equals(ChargingReservationId._Id);
+            return OperatorId.Equals(ReservationId.OperatorId) &&
+                   Suffix.    Equals(ReservationId.Suffix);
 
         }
 
@@ -355,16 +442,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region GetHashCode()
+        #region (override) GetHashCode()
 
         /// <summary>
         /// Return the HashCode of this object.
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            return _Id.GetHashCode();
-        }
+
+            => OperatorId.GetHashCode() ^
+               Suffix.    GetHashCode();
 
         #endregion
 
@@ -372,11 +459,13 @@ namespace org.GraphDefined.WWCP
 
         /// <summary>
         /// Return a string representation of this object.
+        /// ISO-IEC-15118 – Annex H "Specification of Identifiers"
         /// </summary>
         public override String ToString()
-        {
-            return _Id.ToString();
-        }
+
+            => String.Concat(OperatorId,
+                             "*R",
+                             Suffix);
 
         #endregion
 

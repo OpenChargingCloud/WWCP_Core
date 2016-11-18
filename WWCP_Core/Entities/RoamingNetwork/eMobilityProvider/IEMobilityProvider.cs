@@ -77,7 +77,7 @@ namespace org.GraphDefined.WWCP
             Reserve(EVSE_Id                           EVSEId,
                     DateTime?                         StartTime           = null,
                     TimeSpan?                         Duration            = null,
-                    ChargingReservation_Id            ReservationId       = null,
+                    ChargingReservation_Id?           ReservationId       = null,
                     eMobilityAccount_Id?              eMAId               = null,
                     ChargingProduct_Id?               ChargingProductId   = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
@@ -136,7 +136,7 @@ namespace org.GraphDefined.WWCP
 
             RemoteStart(EVSE_Id                  EVSEId,
                         ChargingProduct_Id?      ChargingProductId   = null,
-                        ChargingReservation_Id   ReservationId       = null,
+                        ChargingReservation_Id?  ReservationId       = null,
                         ChargingSession_Id?      SessionId           = null,
                         eMobilityAccount_Id?     eMAId               = null,
 

@@ -43,18 +43,18 @@ namespace org.GraphDefined.WWCP
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnRemoteChargingStationStartDelegate(DateTime                LogTimestamp,
-                                                              DateTime                RequestTimestamp,
-                                                              Object                  Sender,
-                                                              EventTracking_Id        EventTrackingId,
-                                                              RoamingNetwork_Id       RoamingNetworkId,
-                                                              ChargingStation_Id      ChargingStationId,
-                                                              ChargingProduct_Id?     ChargingProductId,
-                                                              ChargingReservation_Id  ReservationId,
-                                                              ChargingSession_Id?     SessionId,
-                                                              eMobilityProvider_Id?   ProviderId,
-                                                              eMobilityAccount_Id?    eMAId,
-                                                              TimeSpan?               RequestTimeout);
+    public delegate void OnRemoteChargingStationStartDelegate(DateTime                 LogTimestamp,
+                                                              DateTime                 RequestTimestamp,
+                                                              Object                   Sender,
+                                                              EventTracking_Id         EventTrackingId,
+                                                              RoamingNetwork_Id        RoamingNetworkId,
+                                                              ChargingStation_Id       ChargingStationId,
+                                                              ChargingProduct_Id?      ChargingProductId,
+                                                              ChargingReservation_Id?  ReservationId,
+                                                              ChargingSession_Id?      SessionId,
+                                                              eMobilityProvider_Id?    ProviderId,
+                                                              eMobilityAccount_Id?     eMAId,
+                                                              TimeSpan?                RequestTimeout);
 
 
     /// <summary>
@@ -71,16 +71,16 @@ namespace org.GraphDefined.WWCP
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<RemoteStartChargingStationResult> OnRemoteStartChargingStationDelegate(DateTime                Timestamp,
-                                                                                                CancellationToken       CancellationToken,
-                                                                                                EventTracking_Id        EventTrackingId,
-                                                                                                ChargingStation_Id      ChargingStationId,
-                                                                                                ChargingProduct_Id      ChargingProductId,
-                                                                                                ChargingReservation_Id  ReservationId,
-                                                                                                ChargingSession_Id      SessionId,
-                                                                                                eMobilityProvider_Id?   ProviderId,
-                                                                                                eMobilityAccount_Id?    eMAId,
-                                                                                                TimeSpan?               RequestTimeout  = null);
+    public delegate Task<RemoteStartChargingStationResult> OnRemoteStartChargingStationDelegate(DateTime                 Timestamp,
+                                                                                                CancellationToken        CancellationToken,
+                                                                                                EventTracking_Id         EventTrackingId,
+                                                                                                ChargingStation_Id       ChargingStationId,
+                                                                                                ChargingProduct_Id       ChargingProductId,
+                                                                                                ChargingReservation_Id?  ReservationId,
+                                                                                                ChargingSession_Id       SessionId,
+                                                                                                eMobilityProvider_Id?    ProviderId,
+                                                                                                eMobilityAccount_Id?     eMAId,
+                                                                                                TimeSpan?                RequestTimeout  = null);
 
 
     /// <summary>
@@ -107,7 +107,7 @@ namespace org.GraphDefined.WWCP
                                                                 RoamingNetwork_Id                 RoamingNetworkId,
                                                                 ChargingStation_Id                ChargingStationId,
                                                                 ChargingProduct_Id?               ChargingProductId,
-                                                                ChargingReservation_Id            ReservationId,
+                                                                ChargingReservation_Id?           ReservationId,
                                                                 ChargingSession_Id?               SessionId,
                                                                 eMobilityProvider_Id?             ProviderId,
                                                                 eMobilityAccount_Id?              eMAId,

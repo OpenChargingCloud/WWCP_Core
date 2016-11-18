@@ -40,7 +40,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The reservation identification.
         /// </summary>
-        public ChargingReservation_Id       ReservationId     { get; }
+        public ChargingReservation_Id?      ReservationId     { get; }
 
         /// <summary>
         /// An optional (error) message.
@@ -89,7 +89,7 @@ namespace org.GraphDefined.WWCP
         {
 
             this.Result          = Result;
-            this.ReservationId   = null;
+            this.ReservationId   = default(ChargingReservation_Id);
             this.Message         = Message;
             this.AdditionalInfo  = AdditionalInfo;
 

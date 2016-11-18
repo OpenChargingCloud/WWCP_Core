@@ -2229,7 +2229,7 @@ namespace org.GraphDefined.WWCP
             Reserve(EVSE_Id                           EVSEId,
                     DateTime?                         StartTime           = null,
                     TimeSpan?                         Duration            = null,
-                    ChargingReservation_Id            ReservationId       = null,
+                    ChargingReservation_Id?           ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
                     eMobilityAccount_Id?              eMAId               = null,
                     ChargingProduct_Id?               ChargingProductId   = null,
@@ -2298,21 +2298,22 @@ namespace org.GraphDefined.WWCP
                !LocalEVSEIds.Contains(EVSEId))
             {
 
-                result = await RemoteChargingStationOperator.Reserve(EVSEId,
-                                                                      StartTime,
-                                                                      Duration,
-                                                                      ReservationId,
-                                                                      ProviderId,
-                                                                      eMAId,
-                                                                      ChargingProductId,
-                                                                      AuthTokens,
-                                                                      eMAIds,
-                                                                      PINs,
+                result = await RemoteChargingStationOperator.
+                                   Reserve(EVSEId,
+                                           StartTime,
+                                           Duration,
+                                           ReservationId,
+                                           ProviderId,
+                                           eMAId,
+                                           ChargingProductId,
+                                           AuthTokens,
+                                           eMAIds,
+                                           PINs,
 
-                                                                      Timestamp,
-                                                                      CancellationToken,
-                                                                      EventTrackingId,
-                                                                      RequestTimeout);
+                                           Timestamp,
+                                           CancellationToken,
+                                           EventTrackingId,
+                                           RequestTimeout);
 
 
                 if (result.Result == ReservationResultType.Success)
@@ -2440,7 +2441,7 @@ namespace org.GraphDefined.WWCP
             Reserve(ChargingStation_Id                ChargingStationId,
                     DateTime?                         StartTime           = null,
                     TimeSpan?                         Duration            = null,
-                    ChargingReservation_Id            ReservationId       = null,
+                    ChargingReservation_Id?           ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
                     eMobilityAccount_Id?              eMAId               = null,
                     ChargingProduct_Id?               ChargingProductId   = null,
@@ -2601,7 +2602,7 @@ namespace org.GraphDefined.WWCP
             Reserve(ChargingPool_Id                   ChargingPoolId,
                     DateTime?                         StartTime           = null,
                     TimeSpan?                         Duration            = null,
-                    ChargingReservation_Id            ReservationId       = null,
+                    ChargingReservation_Id?           ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
                     eMobilityAccount_Id?              eMAId               = null,
                     ChargingProduct_Id?               ChargingProductId   = null,
@@ -2954,17 +2955,17 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<RemoteStartEVSEResult>
 
-            RemoteStart(EVSE_Id                 EVSEId,
-                        ChargingProduct_Id?     ChargingProductId   = null,
-                        ChargingReservation_Id  ReservationId       = null,
-                        ChargingSession_Id?     SessionId           = null,
-                        eMobilityProvider_Id?   ProviderId          = null,
-                        eMobilityAccount_Id?    eMAId               = null,
+            RemoteStart(EVSE_Id                  EVSEId,
+                        ChargingProduct_Id?      ChargingProductId   = null,
+                        ChargingReservation_Id?  ReservationId       = null,
+                        ChargingSession_Id?      SessionId           = null,
+                        eMobilityProvider_Id?    ProviderId          = null,
+                        eMobilityAccount_Id?     eMAId               = null,
 
-                        DateTime?               Timestamp           = null,
-                        CancellationToken?      CancellationToken   = null,
-                        EventTracking_Id        EventTrackingId     = null,
-                        TimeSpan?               RequestTimeout      = null)
+                        DateTime?                Timestamp           = null,
+                        CancellationToken?       CancellationToken   = null,
+                        EventTracking_Id         EventTrackingId     = null,
+                        TimeSpan?                RequestTimeout      = null)
 
         {
 
@@ -3018,17 +3019,18 @@ namespace org.GraphDefined.WWCP
                !LocalEVSEIds.Contains(EVSEId))
             {
 
-                result = await RemoteChargingStationOperator.RemoteStart(EVSEId,
-                                                                          ChargingProductId,
-                                                                          ReservationId,
-                                                                          SessionId,
-                                                                          ProviderId,
-                                                                          eMAId,
+                result = await RemoteChargingStationOperator.
+                                   RemoteStart(EVSEId,
+                                               ChargingProductId,
+                                               ReservationId,
+                                               SessionId,
+                                               ProviderId,
+                                               eMAId,
 
-                                                                          Timestamp,
-                                                                          CancellationToken,
-                                                                          EventTrackingId,
-                                                                          RequestTimeout);
+                                               Timestamp,
+                                               CancellationToken,
+                                               EventTrackingId,
+                                               RequestTimeout);
 
 
                 if (result.Result == RemoteStartEVSEResultType.Success)
@@ -3144,17 +3146,17 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<RemoteStartChargingStationResult>
 
-            RemoteStart(ChargingStation_Id      ChargingStationId,
-                        ChargingProduct_Id?     ChargingProductId   = null,
-                        ChargingReservation_Id  ReservationId       = null,
-                        ChargingSession_Id?     SessionId           = null,
-                        eMobilityProvider_Id?   ProviderId          = null,
-                        eMobilityAccount_Id?    eMAId               = null,
+            RemoteStart(ChargingStation_Id       ChargingStationId,
+                        ChargingProduct_Id?      ChargingProductId   = null,
+                        ChargingReservation_Id?  ReservationId       = null,
+                        ChargingSession_Id?      SessionId           = null,
+                        eMobilityProvider_Id?    ProviderId          = null,
+                        eMobilityAccount_Id?     eMAId               = null,
 
-                        DateTime?               Timestamp           = null,
-                        CancellationToken?      CancellationToken   = null,
-                        EventTracking_Id        EventTrackingId     = null,
-                        TimeSpan?               RequestTimeout      = null)
+                        DateTime?                Timestamp           = null,
+                        CancellationToken?       CancellationToken   = null,
+                        EventTracking_Id         EventTrackingId     = null,
+                        TimeSpan?                RequestTimeout      = null)
 
         {
 
@@ -3207,17 +3209,18 @@ namespace org.GraphDefined.WWCP
             if (RemoteChargingStationOperator != null)
             {
 
-                result = await RemoteChargingStationOperator.RemoteStart(ChargingStationId,
-                                                                          ChargingProductId,
-                                                                          ReservationId,
-                                                                          SessionId,
-                                                                          ProviderId,
-                                                                          eMAId,
+                result = await RemoteChargingStationOperator.
+                                   RemoteStart(ChargingStationId,
+                                               ChargingProductId,
+                                               ReservationId,
+                                               SessionId,
+                                               ProviderId,
+                                               eMAId,
 
-                                                                          Timestamp,
-                                                                          CancellationToken,
-                                                                          EventTrackingId,
-                                                                          RequestTimeout);
+                                               Timestamp,
+                                               CancellationToken,
+                                               EventTrackingId,
+                                               RequestTimeout);
 
 
                 if (result.Result == RemoteStartChargingStationResultType.Success)

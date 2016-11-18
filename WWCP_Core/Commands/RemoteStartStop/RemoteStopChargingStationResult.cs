@@ -50,7 +50,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The charging reservation identification.
         /// </summary>
-        public ChargingReservation_Id               ReservationId           { get; }
+        public ChargingReservation_Id?              ReservationId           { get; }
 
         /// <summary>
         /// The handling of the charging reservation after the charging session stopped.
@@ -79,16 +79,9 @@ namespace org.GraphDefined.WWCP
                                                 String                               ErrorMessage  = null)
         {
 
-            #region Initial checks
-
-            if (SessionId == null)
-                throw new ArgumentNullException(nameof(SessionId), "The given charging session identification must not be null!");
-
-            #endregion
-
-            this.SessionId            = SessionId;
-            this.Result               = Result;
-            this.Message         = ErrorMessage;
+            this.SessionId  = SessionId;
+            this.Result     = Result;
+            this.Message    = ErrorMessage;
 
         }
 
@@ -105,16 +98,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
         private RemoteStopChargingStationResult(ChargingSession_Id                   SessionId,
                                                 RemoteStopChargingStationResultType  Result,
-                                                ChargingReservation_Id               ReservationId,
+                                                ChargingReservation_Id?              ReservationId,
                                                 ReservationHandling                  ReservationHandling)
         {
-
-            #region Initial checks
-
-            if (SessionId == null)
-                throw new ArgumentNullException(nameof(SessionId), "The given charging session identification must not be null!");
-
-            #endregion
 
             this.SessionId            = SessionId;
             this.Result               = Result;
@@ -136,7 +122,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
         private RemoteStopChargingStationResult(ChargeDetailRecord                   ChargeDetailRecord,
                                                 RemoteStopChargingStationResultType  Result,
-                                                ChargingReservation_Id               ReservationId,
+                                                ChargingReservation_Id?              ReservationId,
                                                 ReservationHandling                  ReservationHandling)
         {
 
@@ -301,17 +287,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="ReservationId">The optional charging reservation identification of the charging session.</param>
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
-        public static RemoteStopChargingStationResult Success(ChargingSession_Id      SessionId,
-                                                              ChargingReservation_Id  ReservationId        = null,
-                                                              ReservationHandling     ReservationHandling  = null)
-        {
+        public static RemoteStopChargingStationResult Success(ChargingSession_Id       SessionId,
+                                                              ChargingReservation_Id?  ReservationId        = null,
+                                                              ReservationHandling      ReservationHandling  = null)
 
-            return new RemoteStopChargingStationResult(SessionId,
-                                                       RemoteStopChargingStationResultType.Success,
-                                                       ReservationId,
-                                                       ReservationHandling);
-
-        }
+            => new RemoteStopChargingStationResult(SessionId,
+                                                   RemoteStopChargingStationResultType.Success,
+                                                   ReservationId,
+                                                   ReservationHandling);
 
         #endregion
 
@@ -323,17 +306,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargeDetailRecord">The charge detail record for a successfully stopped charging process.</param>
         /// <param name="ReservationId">The optional charging reservation identification of the charging session.</param>
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
-        public static RemoteStopChargingStationResult Success(ChargeDetailRecord      ChargeDetailRecord,
-                                                              ChargingReservation_Id  ReservationId        = null,
-                                                              ReservationHandling     ReservationHandling  = null)
-        {
+        public static RemoteStopChargingStationResult Success(ChargeDetailRecord       ChargeDetailRecord,
+                                                              ChargingReservation_Id?  ReservationId        = null,
+                                                              ReservationHandling      ReservationHandling  = null)
 
-            return new RemoteStopChargingStationResult(ChargeDetailRecord,
-                                                       RemoteStopChargingStationResultType.Success,
-                                                       ReservationId,
-                                                       ReservationHandling);
-
-        }
+            => new RemoteStopChargingStationResult(ChargeDetailRecord,
+                                                   RemoteStopChargingStationResultType.Success,
+                                                   ReservationId,
+                                                   ReservationHandling);
 
         #endregion
 
