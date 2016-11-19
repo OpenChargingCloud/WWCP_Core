@@ -60,6 +60,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="GroupedEVSEs">A lookup of EVSEs grouped by their Charging Station Operator.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -68,12 +69,13 @@ namespace org.GraphDefined.WWCP
         Task<Acknowledgement>
 
             PushEVSEData(ILookup<ChargingStationOperator, EVSE>  GroupedEVSEs,
-                         ActionType                              ActionType         = WWCP.ActionType.fullLoad,
+                         ActionType                              ActionType          = WWCP.ActionType.fullLoad,
+                         IncludeEVSEDelegate                     IncludeEVSEs        = null,
 
-                         DateTime?                               Timestamp          = null,
-                         CancellationToken?                      CancellationToken  = null,
-                         EventTracking_Id                        EventTrackingId    = null,
-                         TimeSpan?                               RequestTimeout     = null);
+                         DateTime?                               Timestamp           = null,
+                         CancellationToken?                      CancellationToken   = null,
+                         EventTracking_Id                        EventTrackingId     = null,
+                         TimeSpan?                               RequestTimeout      = null);
 
         /// <summary>
         /// Upload the EVSE data of the given EVSE.
@@ -88,12 +90,12 @@ namespace org.GraphDefined.WWCP
         Task<Acknowledgement>
 
             PushEVSEData(EVSE                 EVSE,
-                         ActionType           ActionType         = WWCP.ActionType.insert,
+                         ActionType           ActionType          = WWCP.ActionType.insert,
 
-                         DateTime?            Timestamp          = null,
-                         CancellationToken?   CancellationToken  = null,
-                         EventTracking_Id     EventTrackingId    = null,
-                         TimeSpan?            RequestTimeout     = null);
+                         DateTime?            Timestamp           = null,
+                         CancellationToken?   CancellationToken   = null,
+                         EventTracking_Id     EventTrackingId     = null,
+                         TimeSpan?            RequestTimeout      = null);
 
         /// <summary>
         /// Upload the EVSE data of the given enumeration of EVSEs.
@@ -131,13 +133,13 @@ namespace org.GraphDefined.WWCP
         Task<Acknowledgement>
 
             PushEVSEData(ChargingStation      ChargingStation,
-                         ActionType           ActionType         = WWCP.ActionType.fullLoad,
-                         IncludeEVSEDelegate  IncludeEVSEs       = null,
+                         ActionType           ActionType          = WWCP.ActionType.fullLoad,
+                         IncludeEVSEDelegate  IncludeEVSEs        = null,
 
-                         DateTime?            Timestamp          = null,
-                         CancellationToken?   CancellationToken  = null,
-                         EventTracking_Id     EventTrackingId    = null,
-                         TimeSpan?            RequestTimeout     = null);
+                         DateTime?            Timestamp           = null,
+                         CancellationToken?   CancellationToken   = null,
+                         EventTracking_Id     EventTrackingId     = null,
+                         TimeSpan?            RequestTimeout      = null);
 
         /// <summary>
         /// Upload the EVSE data of the given charging stations.
@@ -153,13 +155,13 @@ namespace org.GraphDefined.WWCP
         Task<Acknowledgement>
 
             PushEVSEData(IEnumerable<ChargingStation>  ChargingStations,
-                         ActionType                    ActionType         = WWCP.ActionType.fullLoad,
-                         IncludeEVSEDelegate           IncludeEVSEs       = null,
+                         ActionType                    ActionType          = WWCP.ActionType.fullLoad,
+                         IncludeEVSEDelegate           IncludeEVSEs        = null,
 
-                         DateTime?                     Timestamp          = null,
-                         CancellationToken?            CancellationToken  = null,
-                         EventTracking_Id              EventTrackingId    = null,
-                         TimeSpan?                     RequestTimeout     = null);
+                         DateTime?                     Timestamp           = null,
+                         CancellationToken?            CancellationToken   = null,
+                         EventTracking_Id              EventTrackingId     = null,
+                         TimeSpan?                     RequestTimeout      = null);
 
         /// <summary>
         /// Upload the EVSE data of the given charging pool.
@@ -175,13 +177,13 @@ namespace org.GraphDefined.WWCP
         Task<Acknowledgement>
 
             PushEVSEData(ChargingPool         ChargingPool,
-                         ActionType           ActionType         = WWCP.ActionType.fullLoad,
-                         IncludeEVSEDelegate  IncludeEVSEs       = null,
+                         ActionType           ActionType          = WWCP.ActionType.fullLoad,
+                         IncludeEVSEDelegate  IncludeEVSEs        = null,
 
-                         DateTime?            Timestamp          = null,
-                         CancellationToken?   CancellationToken  = null,
-                         EventTracking_Id     EventTrackingId    = null,
-                         TimeSpan?            RequestTimeout     = null);
+                         DateTime?            Timestamp           = null,
+                         CancellationToken?   CancellationToken   = null,
+                         EventTracking_Id     EventTrackingId     = null,
+                         TimeSpan?            RequestTimeout      = null);
 
         /// <summary>
         /// Upload the EVSE data of the given charging pools.
@@ -197,13 +199,13 @@ namespace org.GraphDefined.WWCP
         Task<Acknowledgement>
 
             PushEVSEData(IEnumerable<ChargingPool>  ChargingPools,
-                         ActionType                 ActionType         = WWCP.ActionType.fullLoad,
-                         IncludeEVSEDelegate        IncludeEVSEs       = null,
+                         ActionType                 ActionType          = WWCP.ActionType.fullLoad,
+                         IncludeEVSEDelegate        IncludeEVSEs        = null,
 
-                         DateTime?                  Timestamp          = null,
-                         CancellationToken?         CancellationToken  = null,
-                         EventTracking_Id           EventTrackingId    = null,
-                         TimeSpan?                  RequestTimeout     = null);
+                         DateTime?                  Timestamp           = null,
+                         CancellationToken?         CancellationToken   = null,
+                         EventTracking_Id           EventTrackingId     = null,
+                         TimeSpan?                  RequestTimeout      = null);
 
         /// <summary>
         /// Upload the EVSE data of the given Charging Station Operator.
@@ -218,14 +220,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            PushEVSEData(ChargingStationOperator         EVSEOperator,
-                         ActionType           ActionType         = WWCP.ActionType.fullLoad,
-                         IncludeEVSEDelegate  IncludeEVSEs       = null,
+            PushEVSEData(ChargingStationOperator  EVSEOperator,
+                         ActionType               ActionType          = WWCP.ActionType.fullLoad,
+                         IncludeEVSEDelegate      IncludeEVSEs        = null,
 
-                         DateTime?            Timestamp          = null,
-                         CancellationToken?   CancellationToken  = null,
-                         EventTracking_Id     EventTrackingId    = null,
-                         TimeSpan?            RequestTimeout     = null);
+                         DateTime?                Timestamp           = null,
+                         CancellationToken?       CancellationToken   = null,
+                         EventTracking_Id         EventTrackingId     = null,
+                         TimeSpan?                RequestTimeout      = null);
 
 
         /// <summary>
@@ -242,13 +244,13 @@ namespace org.GraphDefined.WWCP
         Task<Acknowledgement>
 
             PushEVSEData(IEnumerable<ChargingStationOperator>  EVSEOperators,
-                         ActionType                 ActionType         = WWCP.ActionType.fullLoad,
-                         IncludeEVSEDelegate        IncludeEVSEs       = null,
+                         ActionType                            ActionType          = WWCP.ActionType.fullLoad,
+                         IncludeEVSEDelegate                   IncludeEVSEs        = null,
 
-                         DateTime?                  Timestamp          = null,
-                         CancellationToken?         CancellationToken  = null,
-                         EventTracking_Id           EventTrackingId    = null,
-                         TimeSpan?                  RequestTimeout     = null);
+                         DateTime?                             Timestamp           = null,
+                         CancellationToken?                    CancellationToken   = null,
+                         EventTracking_Id                      EventTrackingId     = null,
+                         TimeSpan?                             RequestTimeout      = null);
 
         /// <summary>
         /// Upload the EVSE data of the given roaming network.
@@ -264,13 +266,13 @@ namespace org.GraphDefined.WWCP
         Task<Acknowledgement>
 
             PushEVSEData(RoamingNetwork       RoamingNetwork,
-                         ActionType           ActionType         = WWCP.ActionType.fullLoad,
-                         IncludeEVSEDelegate  IncludeEVSEs       = null,
+                         ActionType           ActionType          = WWCP.ActionType.fullLoad,
+                         IncludeEVSEDelegate  IncludeEVSEs        = null,
 
-                         DateTime?            Timestamp          = null,
-                         CancellationToken?   CancellationToken  = null,
-                         EventTracking_Id     EventTrackingId    = null,
-                         TimeSpan?            RequestTimeout     = null);
+                         DateTime?            Timestamp           = null,
+                         CancellationToken?   CancellationToken   = null,
+                         EventTracking_Id     EventTrackingId     = null,
+                         TimeSpan?            RequestTimeout      = null);
 
         #endregion
 
@@ -278,5 +280,216 @@ namespace org.GraphDefined.WWCP
                                     IEnumerable<ChargingStation>  ChargingStations);
 
     }
+
+
+    public interface IRemotePushData
+    {
+
+        // Events
+
+        #region OnEVSEDataPush/-Pushed
+
+        /// <summary>
+        /// An event fired whenever new EVSE data will be send upstream.
+        /// </summary>
+        event OnPushEVSEDataRequestDelegate OnPushEVSEDataRequest;
+
+        /// <summary>
+        /// An event fired whenever new EVSE data had been sent upstream.
+        /// </summary>
+        event OnPushEVSEDataResponseDelegate OnPushEVSEDataResponse;
+
+        #endregion
+
+
+        /// <summary>
+        /// Upload the EVSE data of the given EVSE.
+        /// </summary>
+        /// <param name="EVSE">An EVSE.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateEVSEData(EVSE                 EVSE,
+                           ActionType           ActionType,
+
+                           DateTime?            Timestamp           = null,
+                           CancellationToken?   CancellationToken   = null,
+                           EventTracking_Id     EventTrackingId     = null,
+                           TimeSpan?            RequestTimeout      = null);
+
+        /// <summary>
+        /// Upload the EVSE data of the given enumeration of EVSEs.
+        /// </summary>
+        /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateEVSEData(IEnumerable<EVSE>    EVSEs,
+                           ActionType           ActionType,
+
+                           DateTime?            Timestamp          = null,
+                           CancellationToken?   CancellationToken  = null,
+                           EventTracking_Id     EventTrackingId    = null,
+                           TimeSpan?            RequestTimeout     = null);
+
+        /// <summary>
+        /// Upload the EVSE data of the given charging station.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateChargingStationData(ChargingStation      ChargingStation,
+                                      ActionType           ActionType,
+
+                                      DateTime?            Timestamp           = null,
+                                      CancellationToken?   CancellationToken   = null,
+                                      EventTracking_Id     EventTrackingId     = null,
+                                      TimeSpan?            RequestTimeout      = null);
+
+        /// <summary>
+        /// Upload the EVSE data of the given charging stations.
+        /// </summary>
+        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateChargingStationData(IEnumerable<ChargingStation>  ChargingStations,
+                                      ActionType                    ActionType,
+
+                                      DateTime?                     Timestamp           = null,
+                                      CancellationToken?            CancellationToken   = null,
+                                      EventTracking_Id              EventTrackingId     = null,
+                                      TimeSpan?                     RequestTimeout      = null);
+
+        /// <summary>
+        /// Upload the EVSE data of the given charging pool.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateChargingPoolData(ChargingPool         ChargingPool,
+                                   ActionType           ActionType,
+
+                                   DateTime?            Timestamp           = null,
+                                   CancellationToken?   CancellationToken   = null,
+                                   EventTracking_Id     EventTrackingId     = null,
+                                   TimeSpan?            RequestTimeout      = null);
+
+        /// <summary>
+        /// Upload the EVSE data of the given charging pools.
+        /// </summary>
+        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateChargingPoolData(IEnumerable<ChargingPool>  ChargingPools,
+                                   ActionType                 ActionType,
+
+                                   DateTime?                  Timestamp           = null,
+                                   CancellationToken?         CancellationToken   = null,
+                                   EventTracking_Id           EventTrackingId     = null,
+                                   TimeSpan?                  RequestTimeout      = null);
+
+        /// <summary>
+        /// Upload the EVSE data of the given Charging Station Operator.
+        /// </summary>
+        /// <param name="EVSEOperator">An Charging Station Operator.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateChargingStationOperatorData(ChargingStationOperator  EVSEOperator,
+                                              ActionType               ActionType,
+
+                                              DateTime?                Timestamp           = null,
+                                              CancellationToken?       CancellationToken   = null,
+                                              EventTracking_Id         EventTrackingId     = null,
+                                              TimeSpan?                RequestTimeout      = null);
+
+
+        /// <summary>
+        /// Upload the EVSE data of the given Charging Station Operators.
+        /// </summary>
+        /// <param name="EVSEOperators">An enumeration of Charging Station Operators.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateChargingStationOperatorData(IEnumerable<ChargingStationOperator>  EVSEOperators,
+                                              ActionType                            ActionType,
+
+                                              DateTime?                             Timestamp           = null,
+                                              CancellationToken?                    CancellationToken   = null,
+                                              EventTracking_Id                      EventTrackingId     = null,
+                                              TimeSpan?                             RequestTimeout      = null);
+
+        /// <summary>
+        /// Upload the EVSE data of the given roaming network.
+        /// </summary>
+        /// <param name="RoamingNetwork">A roaming network.</param>
+        /// <param name="ActionType">The server-side data management operation.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateRoamingNetworkData(RoamingNetwork       RoamingNetwork,
+                                     ActionType           ActionType,
+
+                                     DateTime?            Timestamp           = null,
+                                     CancellationToken?   CancellationToken   = null,
+                                     EventTracking_Id     EventTrackingId     = null,
+                                     TimeSpan?            RequestTimeout      = null);
+
+
+        void RemoveChargingStations(DateTime                      Timestamp,
+                                    IEnumerable<ChargingStation>  ChargingStations);
+
+
+    }
+
+
 
 }

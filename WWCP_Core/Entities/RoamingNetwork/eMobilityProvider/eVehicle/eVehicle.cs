@@ -532,7 +532,7 @@ namespace org.GraphDefined.WWCP
         /// The e-mobility provider.
         /// </summary>
         [InternalUseOnly]
-        public eMobilityProvider  Provider          { get; }
+        public eMobilityProviderStub  Provider          { get; }
 
         #endregion
 
@@ -546,7 +546,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique identification of the e-vehicle pool.</param>
         /// <param name="MaxAdminStatusListSize">The default size of the admin status list.</param>
         internal eVehicle(eVehicle_Id                    Id,
-                          eMobilityProvider              Provider,
+                          eMobilityProviderStub              Provider,
                           Action<eVehicle>               Configurator            = null,
                           RemoteEVehicleCreatorDelegate  RemoteEVehicleCreator   = null,
                           eVehicleAdminStatusType        AdminStatus             = eVehicleAdminStatusType.Operational,

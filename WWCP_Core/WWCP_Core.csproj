@@ -117,7 +117,7 @@
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\Exceptions.cs" />
     <Compile Include="Entities\GeoInformations\SmartCities\ISmartCity.cs" />
     <Compile Include="Entities\GeoInformations\SmartCities\IRemoteSmartCity.cs" />
-    <Compile Include="Entities\GeoInformations\SmartCities\SmartCity.cs" />
+    <Compile Include="Entities\GeoInformations\SmartCities\SmartCityStub.cs" />
     <Compile Include="Entities\GeoInformations\SmartCities\SmartCityAdminStatusReport.cs" />
     <Compile Include="Entities\GeoInformations\SmartCities\SmartCityAdminStatusType.cs" />
     <Compile Include="Entities\GeoInformations\SmartCities\SmartCityDelegates.cs" />
@@ -290,7 +290,7 @@
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationOperator.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\ChargingStation_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPool\ChargingPool_Id.cs" />
-    <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityProvider.cs" />
+    <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityProviderStub.cs" />
     <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityProvider_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationOperator_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityAccount\eMobilityAccount_Id.cs" />
@@ -344,7 +344,7 @@
     <Folder Include="Entities\GeoInformations\EnergySources\" />
     <Folder Include="Entities\GeoInformations\SmartCities\ConstructionSite\" />
     <Folder Include="Entities\GeoInformations\SmartCities\Street\" />
-    <Folder Include="Entities\GeoInformations\WLAN\" />
+    <Folder Include="Entities\GeoInformations\SmartCities\WLAN\" />
     <Folder Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPoolGroup\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

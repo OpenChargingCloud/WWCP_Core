@@ -23,13 +23,18 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Linq;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
-    public interface IRemoteEMobilityProvider : IPushData, IPushStatus, IAuthorizeStartStop, ISendChargeDetailRecord
+    public interface IRemoteEMobilityProvider : IRemotePushData,
+                                                IRemotePushStatus,
+                                                IRemoteAuthorizeStartStop,
+                                                IRemoteSendChargeDetailRecord
+
     {
 
         /// <summary>

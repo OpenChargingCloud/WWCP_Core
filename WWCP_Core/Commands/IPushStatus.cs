@@ -43,7 +43,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever new EVSE status will be send upstream.
         /// </summary>
-        event OnPushEVSEStatusRequestDelegate    OnPushEVSEStatusRequest;
+        event OnPushEVSEStatusRequestDelegate   OnPushEVSEStatusRequest;
 
         /// <summary>
         /// An event fired whenever new EVSE status had been sent upstream.
@@ -343,5 +343,105 @@ namespace org.GraphDefined.WWCP
         #endregion
 
     }
+
+
+        public interface IRemotePushStatus
+    {
+
+        #region OnEVSEStatusPush/-Pushed
+
+        /// <summary>
+        /// An event fired whenever new EVSE status will be send upstream.
+        /// </summary>
+        event OnPushEVSEStatusRequestDelegate   OnPushEVSEStatusRequest;
+
+        /// <summary>
+        /// An event fired whenever new EVSE status had been sent upstream.
+        /// </summary>
+        event OnPushEVSEStatusResponseDelegate  OnPushEVSEStatusResponse;
+
+        #endregion
+
+
+        #region PushEVSEStatus
+
+        /// <summary>
+        /// Upload the given EVSE status.
+        /// </summary>
+        /// <param name="EVSEStatus">An EVSE status.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateEVSEStatus(EVSEStatus          EVSEStatus,
+
+                             DateTime?           Timestamp          = null,
+                             CancellationToken?  CancellationToken  = null,
+                             EventTracking_Id    EventTrackingId    = null,
+                             TimeSpan?           RequestTimeout     = null);
+
+        /// <summary>
+        /// Upload the given enumeration of EVSE status.
+        /// </summary>
+        /// <param name="EVSEStatus">An enumeration of EVSE status.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateEVSEStatus(IEnumerable<EVSEStatus>  EVSEStatus,
+
+                             DateTime?                Timestamp          = null,
+                             CancellationToken?       CancellationToken  = null,
+                             EventTracking_Id         EventTrackingId    = null,
+                             TimeSpan?                RequestTimeout     = null);
+
+        /// <summary>
+        /// Upload the EVSE status of the given EVSE.
+        /// </summary>
+        /// <param name="EVSE">An EVSE.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateEVSEStatus(EVSE                 EVSE,
+
+                             DateTime?            Timestamp          = null,
+                             CancellationToken?   CancellationToken  = null,
+                             EventTracking_Id     EventTrackingId    = null,
+                             TimeSpan?            RequestTimeout     = null);
+
+        /// <summary>
+        /// Upload all EVSE status of the given enumeration of EVSEs.
+        /// </summary>
+        /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateEVSEStatus(IEnumerable<EVSE>    EVSEs,
+
+                             DateTime?            Timestamp          = null,
+                             CancellationToken?   CancellationToken  = null,
+                             EventTracking_Id     EventTrackingId    = null,
+                             TimeSpan?            RequestTimeout     = null);
+
+        #endregion
+
+
+    }
+
+
 
 }

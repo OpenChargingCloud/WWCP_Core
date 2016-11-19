@@ -199,8 +199,8 @@ namespace org.GraphDefined.WWCP
 
             this._ChargingStationOperators                          = new EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator>(this);
             this._ParkingOperators                                  = new EntityHashSet<RoamingNetwork, ParkingOperator_Id,         ParkingOperator>        (this);
-            this._EMobilityProviders                                = new EntityHashSet<RoamingNetwork, eMobilityProvider_Id,       eMobilityProvider>      (this);
-            this._SmartCities                                       = new EntityHashSet<RoamingNetwork, SmartCity_Id,               SmartCity>              (this);
+            this._EMobilityProviders                                = new EntityHashSet<RoamingNetwork, eMobilityProvider_Id,       eMobilityProviderStub>      (this);
+            this._SmartCities                                       = new EntityHashSet<RoamingNetwork, SmartCity_Id,               SmartCityStub>              (this);
             this._NavigationProviders                               = new EntityHashSet<RoamingNetwork, NavigationProvider_Id,      NavigationProvider>     (this);
             this._GridOperators                                     = new EntityHashSet<RoamingNetwork, GridOperator_Id,            GridOperator>           (this);
 
@@ -1056,12 +1056,12 @@ namespace org.GraphDefined.WWCP
 
         #region EMobilityProviders
 
-        private readonly EntityHashSet<RoamingNetwork, eMobilityProvider_Id, eMobilityProvider> _EMobilityProviders;
+        private readonly EntityHashSet<RoamingNetwork, eMobilityProvider_Id, eMobilityProviderStub> _EMobilityProviders;
 
         /// <summary>
         /// Return all e-mobility providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<eMobilityProvider> EMobilityProviders
+        public IEnumerable<eMobilityProviderStub> EMobilityProviders
 
             => _EMobilityProviders;
 
@@ -1097,7 +1097,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Called whenever an e-mobility provider will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, eMobilityProvider, Boolean> OnEMobilityProviderAddition
+        public IVotingSender<DateTime, RoamingNetwork, eMobilityProviderStub, Boolean> OnEMobilityProviderAddition
             => _EMobilityProviders.OnAddition;
 
         #endregion
@@ -1107,7 +1107,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Called whenever an e-mobility provider will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, eMobilityProvider, Boolean> OnEMobilityProviderRemoval
+        public IVotingSender<DateTime, RoamingNetwork, eMobilityProviderStub, Boolean> OnEMobilityProviderRemoval
             => _EMobilityProviders.OnRemoval;
 
         #endregion
@@ -1125,15 +1125,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="Configurator">An optional delegate to configure the new e-mobility provider before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new e-mobility provider after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the e-mobility provider failed.</param>
-        public eMobilityProvider CreateNewEMobilityProvider(eMobilityProvider_Id                          EMobilityProviderId,
+        public eMobilityProviderStub CreateNewEMobilityProvider(eMobilityProvider_Id                          EMobilityProviderId,
                                                             I18NString                                    Name                            = null,
                                                             I18NString                                    Description                     = null,
                                                             eMobilityProviderPriority                     Priority                        = null,
-                                                            Action<eMobilityProvider>                     Configurator                    = null,
+                                                            Action<eMobilityProviderStub>                     Configurator                    = null,
                                                             RemoteEMobilityProviderCreatorDelegate        RemoteEMobilityProviderCreator  = null,
                                                             eMobilityProviderAdminStatusType              AdminStatus                     = eMobilityProviderAdminStatusType.Available,
                                                             eMobilityProviderStatusType                   Status                          = eMobilityProviderStatusType.Available,
-                                                            Action<eMobilityProvider>                     OnSuccess                       = null,
+                                                            Action<eMobilityProviderStub>                     OnSuccess                       = null,
                                                             Action<RoamingNetwork, eMobilityProvider_Id>  OnError                         = null)
         {
 
@@ -1144,7 +1144,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            var _EMobilityProvider = new eMobilityProvider(EMobilityProviderId,
+            var _EMobilityProvider = new eMobilityProviderStub(EMobilityProviderId,
                                                            this,
                                                            Configurator,
                                                            RemoteEMobilityProviderCreator,
@@ -1202,7 +1202,7 @@ namespace org.GraphDefined.WWCP
         /// Check if the given EMobilityProvider is already present within the roaming network.
         /// </summary>
         /// <param name="EMobilityProvider">An Charging Station Operator.</param>
-        public Boolean ContainsEMobilityProvider(eMobilityProvider EMobilityProvider)
+        public Boolean ContainsEMobilityProvider(eMobilityProviderStub EMobilityProvider)
 
             => _EMobilityProviders.Contains(EMobilityProvider.Id);
 
@@ -1222,7 +1222,7 @@ namespace org.GraphDefined.WWCP
 
         #region GetEMobilityProviderById(EMobilityProviderId)
 
-        public eMobilityProvider GetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId)
+        public eMobilityProviderStub GetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId)
 
             => _EMobilityProviders.Get(EMobilityProviderId);
 
@@ -1230,7 +1230,7 @@ namespace org.GraphDefined.WWCP
 
         #region TryGetEMobilityProviderById(EMobilityProviderId, out EMobilityProvider)
 
-        public Boolean TryGetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId, out eMobilityProvider EMobilityProvider)
+        public Boolean TryGetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId, out eMobilityProviderStub EMobilityProvider)
 
             => _EMobilityProviders.TryGet(EMobilityProviderId, out EMobilityProvider);
 
@@ -1238,10 +1238,10 @@ namespace org.GraphDefined.WWCP
 
         #region RemoveEMobilityProvider(EMobilityProviderId)
 
-        public eMobilityProvider RemoveEMobilityProvider(eMobilityProvider_Id EMobilityProviderId)
+        public eMobilityProviderStub RemoveEMobilityProvider(eMobilityProvider_Id EMobilityProviderId)
         {
 
-            eMobilityProvider _EMobilityProvider = null;
+            eMobilityProviderStub _EMobilityProvider = null;
 
             if (_EMobilityProviders.TryRemove(EMobilityProviderId, out _EMobilityProvider))
                 return _EMobilityProvider;
@@ -1254,7 +1254,7 @@ namespace org.GraphDefined.WWCP
 
         #region TryRemoveEMobilityProvider(RemoveEMobilityProviderId, out RemoveEMobilityProvider)
 
-        public Boolean TryRemoveEMobilityProvider(eMobilityProvider_Id EMobilityProviderId, out eMobilityProvider EMobilityProvider)
+        public Boolean TryRemoveEMobilityProvider(eMobilityProvider_Id EMobilityProviderId, out eMobilityProviderStub EMobilityProvider)
 
             => _EMobilityProviders.TryRemove(EMobilityProviderId, out EMobilityProvider);
 
@@ -1299,12 +1299,12 @@ namespace org.GraphDefined.WWCP
 
         #region SmartCities
 
-        private readonly EntityHashSet<RoamingNetwork, SmartCity_Id, SmartCity> _SmartCities;
+        private readonly EntityHashSet<RoamingNetwork, SmartCity_Id, SmartCityStub> _SmartCities;
 
         /// <summary>
         /// Return all smart cities registered within this roaming network.
         /// </summary>
-        public IEnumerable<SmartCity> SmartCities
+        public IEnumerable<SmartCityStub> SmartCities
 
             => _SmartCities;
 
@@ -1340,7 +1340,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, SmartCity, Boolean> OnSmartCityAddition
+        public IVotingSender<DateTime, RoamingNetwork, SmartCityStub, Boolean> OnSmartCityAddition
             => _SmartCities.OnAddition;
 
         #endregion
@@ -1350,7 +1350,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Called whenever an EVServiceProvider will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, SmartCity, Boolean> OnSmartCityRemoval
+        public IVotingSender<DateTime, RoamingNetwork, SmartCityStub, Boolean> OnSmartCityRemoval
             => _SmartCities.OnRemoval;
 
         #endregion
@@ -1368,14 +1368,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="Configurator">An optional delegate to configure the new smart city before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new smart city after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the smart city failed.</param>
-        public SmartCity CreateNewSmartCity(SmartCity_Id                          SmartCityId,
+        public SmartCityStub CreateNewSmartCity(SmartCity_Id                          SmartCityId,
                                             I18NString                            Name                    = null,
                                             I18NString                            Description             = null,
                                             SmartCityPriority                     Priority                = null,
                                             SmartCityAdminStatusType              AdminStatus             = SmartCityAdminStatusType.Available,
                                             SmartCityStatusType                   Status                  = SmartCityStatusType.Available,
-                                            Action<SmartCity>                     Configurator            = null,
-                                            Action<SmartCity>                     OnSuccess               = null,
+                                            Action<SmartCityStub>                     Configurator            = null,
+                                            Action<SmartCityStub>                     OnSuccess               = null,
                                             Action<RoamingNetwork, SmartCity_Id>  OnError                 = null,
                                             RemoteSmartCityCreatorDelegate        RemoteSmartCityCreator  = null)
         {
@@ -1387,7 +1387,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            var _SmartCity = new SmartCity(SmartCityId,
+            var _SmartCity = new SmartCityStub(SmartCityId,
                                            this,
                                            Configurator,
                                            RemoteSmartCityCreator,
@@ -1419,7 +1419,7 @@ namespace org.GraphDefined.WWCP
         /// Check if the given SmartCity is already present within the roaming network.
         /// </summary>
         /// <param name="SmartCity">An Charging Station Operator.</param>
-        public Boolean ContainsSmartCity(SmartCity SmartCity)
+        public Boolean ContainsSmartCity(SmartCityStub SmartCity)
 
             => _SmartCities.Contains(SmartCity.Id);
 
@@ -1439,7 +1439,7 @@ namespace org.GraphDefined.WWCP
 
         #region GetSmartCityById(SmartCityId)
 
-        public SmartCity GetSmartCityById(SmartCity_Id SmartCityId)
+        public SmartCityStub GetSmartCityById(SmartCity_Id SmartCityId)
 
             => _SmartCities.Get(SmartCityId);
 
@@ -1447,7 +1447,7 @@ namespace org.GraphDefined.WWCP
 
         #region TryGetSmartCityById(SmartCityId, out SmartCity)
 
-        public Boolean TryGetSmartCityById(SmartCity_Id SmartCityId, out SmartCity SmartCity)
+        public Boolean TryGetSmartCityById(SmartCity_Id SmartCityId, out SmartCityStub SmartCity)
 
             => _SmartCities.TryGet(SmartCityId, out SmartCity);
 
@@ -1455,10 +1455,10 @@ namespace org.GraphDefined.WWCP
 
         #region RemoveSmartCity(SmartCityId)
 
-        public SmartCity RemoveSmartCity(SmartCity_Id SmartCityId)
+        public SmartCityStub RemoveSmartCity(SmartCity_Id SmartCityId)
         {
 
-            SmartCity _SmartCity = null;
+            SmartCityStub _SmartCity = null;
 
             if (_SmartCities.TryRemove(SmartCityId, out _SmartCity))
                 return _SmartCity;
@@ -1471,7 +1471,7 @@ namespace org.GraphDefined.WWCP
 
         #region TryRemoveSmartCity(RemoveSmartCityId, out RemoveSmartCity)
 
-        public Boolean TryRemoveSmartCity(SmartCity_Id SmartCityId, out SmartCity SmartCity)
+        public Boolean TryRemoveSmartCity(SmartCity_Id SmartCityId, out SmartCityStub SmartCity)
 
             => _SmartCities.TryRemove(SmartCityId, out SmartCity);
 
@@ -3281,11 +3281,11 @@ namespace org.GraphDefined.WWCP
             Acknowledgement result = null;
 
 
-            foreach (var AuthenticationService in _EMobilityProviders.
-                                                      OrderByDescending(provider => provider.Priority.Value))
+            foreach (IRemotePushStatus providerstub in _EMobilityProviders.
+                                                            OrderByDescending(provider => provider.Priority.Value))
             {
 
-                result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp));
+                result = await providerstub.UpdateEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp));
 
             }
 

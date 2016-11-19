@@ -29,7 +29,11 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-    public interface IRemoteSmartCity : IPushData, IPushStatus, IAuthorizeStartStop, ISendChargeDetailRecord
+    public interface IRemoteSmartCity : IRemotePushData,
+                                        IRemotePushStatus,
+                                        IRemoteAuthorizeStartStop,
+                                        IRemoteSendChargeDetailRecord
+
     {
 
         /// <summary>

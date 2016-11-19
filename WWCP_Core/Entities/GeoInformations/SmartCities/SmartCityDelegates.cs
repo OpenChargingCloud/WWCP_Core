@@ -26,7 +26,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-    public delegate IRemoteSmartCity RemoteSmartCityCreatorDelegate(SmartCity SmartCity);
+    public delegate IRemoteSmartCity RemoteSmartCityCreatorDelegate(SmartCityStub SmartCity);
 
     public delegate String SmartCityNameSelectorDelegate(I18NString I18NText);
 

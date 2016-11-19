@@ -533,7 +533,7 @@ namespace org.GraphDefined.WWCP
 
         #region AuthService
 
-        public IAuthorizeStartStop AuthService { get; set; }
+        public IRemoteAuthorizeStartStop AuthService { get; set; }
 
         #endregion
 

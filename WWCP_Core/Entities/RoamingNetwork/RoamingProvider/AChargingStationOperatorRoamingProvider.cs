@@ -333,13 +333,14 @@ namespace org.GraphDefined.WWCP
 
         #region PushEVSEData...
 
-        #region PushEVSEData(GroupedEVSEs,     ActionType = fullLoad, ...)
+        #region PushEVSEData(GroupedEVSEs,     ActionType = fullLoad, IncludeEVSEs = null, ...)
 
         /// <summary>
         /// Upload the EVSE data of the given lookup of EVSEs grouped by their Charging Station Operator.
         /// </summary>
         /// <param name="GroupedEVSEs">A lookup of EVSEs grouped by their Charging Station Operator.</param>
         /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -348,12 +349,13 @@ namespace org.GraphDefined.WWCP
         public abstract Task<Acknowledgement>
 
             PushEVSEData(ILookup<ChargingStationOperator, EVSE>  GroupedEVSEs,
-                         ActionType                   ActionType         = WWCP.ActionType.fullLoad,
+                         ActionType                              ActionType         = WWCP.ActionType.fullLoad,
+                         IncludeEVSEDelegate                     IncludeEVSEs       = null,
 
-                         DateTime?                    Timestamp          = null,
-                         CancellationToken?           CancellationToken  = null,
-                         EventTracking_Id             EventTrackingId    = null,
-                         TimeSpan?                    RequestTimeout     = null);
+                         DateTime?                               Timestamp          = null,
+                         CancellationToken?                      CancellationToken  = null,
+                         EventTracking_Id                        EventTrackingId    = null,
+                         TimeSpan?                               RequestTimeout     = null);
 
         #endregion
 

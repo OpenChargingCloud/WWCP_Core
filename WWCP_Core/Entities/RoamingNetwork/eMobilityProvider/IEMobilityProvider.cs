@@ -32,8 +32,21 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The EV Roaming Provider provided EVSE Operator services interface.
     /// </summary>
-    public interface IEMobilityProvider : IRemoteEMobilityProvider
+    public interface IEMobilityProviderUserInterface
     {
+
+        /// <summary>
+        /// The unique identification of the e-mobility service provider.
+        /// </summary>
+        eMobilityProvider_Id Id { get; }
+
+        Authorizator_Id AuthorizatorId { get; }
+
+        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens            { get; }
+        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens     { get; }
+        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens  { get; }
+        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens        { get; }
+
 
         // User and credential management
 

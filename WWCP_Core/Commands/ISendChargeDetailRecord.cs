@@ -59,4 +59,34 @@ namespace org.GraphDefined.WWCP
 
     }
 
+    /// <summary>
+    /// The interface for sending charge detail records.
+    /// </summary>
+    public interface IRemoteSendChargeDetailRecord
+    {
+
+        #region SendChargeDetailRecord(...ChargeDetailRecord, ...)
+
+        /// <summary>
+        /// Send a charge detail record.
+        /// </summary>
+        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<SendCDRResult>
+
+            SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
+
+                                   DateTime?           Timestamp          = null,
+                                   CancellationToken?  CancellationToken  = null,
+                                   EventTracking_Id    EventTrackingId    = null,
+                                   TimeSpan?           RequestTimeout     = null);
+
+        #endregion
+
+    }
+
 }

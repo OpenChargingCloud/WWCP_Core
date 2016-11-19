@@ -29,7 +29,9 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-    public interface IRemoteNavigationProvider : IPushData, IPushStatus
+    public interface IRemoteNavigationProvider : IRemotePushData,
+                                                 IRemotePushStatus
+
     {
 
         /// <summary>

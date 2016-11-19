@@ -37,7 +37,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="eMobilityProvider">The e-mobility provider.</param>
         /// <param name="eVehicleId">The electric vehicle identification.</param>
-        public eVehicleAlreadyExists(eMobilityProvider  eMobilityProvider,
+        public eVehicleAlreadyExists(eMobilityProviderStub  eMobilityProvider,
                                      eVehicle_Id        eVehicleId)
 
             : base(eMobilityProvider.RoamingNetwork,
@@ -88,7 +88,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="eMobilityProvider">The e-mobility provider.</param>
         /// <param name="Message">An exception message.</param>
-        public eVehicleException(eMobilityProvider  eMobilityProvider,
+        public eVehicleException(eMobilityProviderStub  eMobilityProvider,
                                  String             Message)
 
             : base(eMobilityProvider.RoamingNetwork,
@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMobilityProvider">The e-mobility provider.</param>
         /// <param name="Message">An exception message.</param>
         /// <param name="InnerException">An inner exception.</param>
-        public eVehicleException(eMobilityProvider  eMobilityProvider,
+        public eVehicleException(eMobilityProviderStub  eMobilityProvider,
                                  String             Message,
                                  Exception          InnerException)
 

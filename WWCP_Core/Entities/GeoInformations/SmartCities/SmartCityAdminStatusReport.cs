@@ -27,10 +27,10 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// An smart city admin status report.
     /// </summary>
-    public class SmartCityAdminStatusReport : StatusReport<SmartCity, SmartCityAdminStatusType>
+    public class SmartCityAdminStatusReport : StatusReport<SmartCityStub, SmartCityAdminStatusType>
     {
 
-        public SmartCityAdminStatusReport(IEnumerable<SmartCity> SmartCitys)
+        public SmartCityAdminStatusReport(IEnumerable<SmartCityStub> SmartCitys)
 
             : base(SmartCitys,
                    provider => provider.AdminStatus.Value)
