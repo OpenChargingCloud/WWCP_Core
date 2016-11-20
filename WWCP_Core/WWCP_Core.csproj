@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\AuthenticationData\OnPushAuthenticationData.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStartChargingStationResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStartResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStopChargingStationResult.cs" />

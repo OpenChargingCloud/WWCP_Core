@@ -168,7 +168,7 @@ namespace org.GraphDefined.WWCP
         /// Stop the given charging session at the given charging station.
         /// </summary>
         /// <param name="ChargingStationId">The unique identification of a charging station.</param>
-        /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+        /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <returns>A RemoteStopResult task.</returns>
         Task<RemoteStopResult> RemoteStop(DateTime               Timestamp,
@@ -184,7 +184,7 @@ namespace org.GraphDefined.WWCP
         /// Stop the given charging session at the given EVSE.
         /// </summary>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+        /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <returns>A RemoteStopResult task.</returns>
         Task<RemoteStopEVSEResult> RemoteStop(DateTime               Timestamp,
@@ -201,7 +201,7 @@ namespace org.GraphDefined.WWCP
         /// Stop the given charging session at the given charging station.
         /// </summary>
         /// <param name="ChargingStationId">The unique identification of a charging station.</param>
-        /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+        /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <returns>A RemoteStopResult task.</returns>
         Task<RemoteStopChargingStationResult> RemoteStop(DateTime               Timestamp,

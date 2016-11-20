@@ -37,7 +37,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+    /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
@@ -60,7 +60,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Timestamp">The timestamp of the request.</param>
     /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-    /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+    /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
@@ -87,7 +87,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="ReservationHandling">Wether to remove the reservation after session end, or to keep it open for some more time.</param>
+    /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
