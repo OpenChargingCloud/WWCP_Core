@@ -342,7 +342,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Entities\GeoInformations\EnergySources\" />
+    <Folder Include="Entities\GeoInformations\Energy\PV\" />
+    <Folder Include="Entities\GeoInformations\Energy\Storage\" />
+    <Folder Include="Entities\GeoInformations\Energy\Wind\" />
     <Folder Include="Entities\GeoInformations\SmartCities\ConstructionSite\" />
     <Folder Include="Entities\GeoInformations\SmartCities\Street\" />
     <Folder Include="Entities\GeoInformations\SmartCities\WLAN\" />
