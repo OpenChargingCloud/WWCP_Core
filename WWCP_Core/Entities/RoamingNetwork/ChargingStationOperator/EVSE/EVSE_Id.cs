@@ -337,8 +337,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEId1">A EVSE_Id.</param>
-        /// <param name="EVSEId2">Another EVSE_Id.</param>
+        /// <param name="EVSEId1">A EVSE identification.</param>
+        /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
         {
@@ -362,13 +362,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEId1">A EVSE_Id.</param>
-        /// <param name="EVSEId2">Another EVSE_Id.</param>
+        /// <param name="EVSEId1">A EVSE identification.</param>
+        /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
-        {
-            return !(EVSEId1 == EVSEId2);
-        }
+            => !(EVSEId1 == EVSEId2);
 
         #endregion
 
@@ -377,14 +375,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEId1">A EVSE_Id.</param>
-        /// <param name="EVSEId2">Another EVSE_Id.</param>
+        /// <param name="EVSEId1">A EVSE identification.</param>
+        /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
         {
 
             if ((Object) EVSEId1 == null)
-                throw new ArgumentNullException("The given EVSEId1 must not be null!");
+                throw new ArgumentNullException(nameof(EVSEId1), "The given EVSEId1 must not be null!");
 
             return EVSEId1.CompareTo(EVSEId2) < 0;
 
@@ -397,13 +395,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEId1">A EVSE_Id.</param>
-        /// <param name="EVSEId2">Another EVSE_Id.</param>
+        /// <param name="EVSEId1">A EVSE identification.</param>
+        /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
-        {
-            return !(EVSEId1 > EVSEId2);
-        }
+            => !(EVSEId1 > EVSEId2);
 
         #endregion
 
@@ -412,14 +408,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEId1">A EVSE_Id.</param>
-        /// <param name="EVSEId2">Another EVSE_Id.</param>
+        /// <param name="EVSEId1">A EVSE identification.</param>
+        /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
         {
 
             if ((Object) EVSEId1 == null)
-                throw new ArgumentNullException("The given EVSEId1 must not be null!");
+                throw new ArgumentNullException(nameof(EVSEId1), "The given EVSEId1 must not be null!");
 
             return EVSEId1.CompareTo(EVSEId2) > 0;
 
@@ -432,13 +428,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEId1">A EVSE_Id.</param>
-        /// <param name="EVSEId2">Another EVSE_Id.</param>
+        /// <param name="EVSEId1">A EVSE identification.</param>
+        /// <param name="EVSEId2">Another EVSE identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (EVSE_Id EVSEId1, EVSE_Id EVSEId2)
-        {
-            return !(EVSEId1 < EVSEId2);
-        }
+            => !(EVSEId1 < EVSEId2);
 
         #endregion
 
