@@ -918,36 +918,35 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The charging station status schedule.
         /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<ChargingStationStatusType>> StatusSchedule
+        public IEnumerable<Timestamped<ChargingStationStatusType>> StatusSchedule(UInt64? HistorySize = null)
         {
-            get
+
+            if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
+                AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
             {
 
-                if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
-                    AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
+                if (HistorySize.HasValue)
+                    return _StatusSchedule.Take(HistorySize);
+
+                return _StatusSchedule;
+
+            }
+
+            else
+            {
+
+                switch (AdminStatus.Value)
                 {
 
-                    return _StatusSchedule;
-
-                }
-
-                else
-                {
-
-                    switch (AdminStatus.Value)
-                    {
-
-                        default:
-                            return new Timestamped<ChargingStationStatusType>[] {
-                                       new Timestamped<ChargingStationStatusType>(AdminStatus.Timestamp, ChargingStationStatusType.OutOfService)
-                                   };
-
-                    }
+                    default:
+                        return new Timestamped<ChargingStationStatusType>[] {
+                                   new Timestamped<ChargingStationStatusType>(AdminStatus.Timestamp, ChargingStationStatusType.OutOfService)
+                               };
 
                 }
 
             }
+
         }
 
         #endregion
@@ -992,10 +991,15 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The charging station admin status schedule.
         /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<ChargingStationAdminStatusType>> AdminStatusSchedule
+        public IEnumerable<Timestamped<ChargingStationAdminStatusType>> AdminStatusSchedule(UInt64? HistorySize = null)
+        {
 
-            => _AdminStatusSchedule;
+            if (HistorySize.HasValue)
+                return _AdminStatusSchedule.Take(HistorySize);
+
+            return _AdminStatusSchedule;
+
+        }
 
         #endregion
 

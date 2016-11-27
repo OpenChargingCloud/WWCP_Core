@@ -43,7 +43,7 @@ namespace org.GraphDefined.WWCP
     /// methods can be misused by any entity in the ev charging process to track the
     /// ev driver or its behaviour.
     /// </summary>
-    public class SmartCityStub : ACryptoEMobilityEntity<SmartCity_Id>,
+    public class SmartCityStub : ABaseEMobilityEntity<SmartCity_Id>,
                                  IRemoteSmartCity,
                                  IEquatable <SmartCityStub>,
                                  IComparable<SmartCityStub>,
@@ -66,7 +66,7 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        public Authorizator_Id AuthorizatorId { get; }
+        //public Authorizator_Id AuthorizatorId { get; }
 
         #region Name
 
@@ -394,45 +394,45 @@ namespace org.GraphDefined.WWCP
         public SmartCityPriority Priority { get; set; }
 
 
-        #region AllTokens
+        //#region AllTokens
 
-        public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens
+        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens
 
-            => RemoteSmartCity != null
-                   ? RemoteSmartCity.AllTokens
-                   : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
+        //    => RemoteSmartCity != null
+        //           ? RemoteSmartCity.AllTokens
+        //           : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
 
-        #endregion
+        //#endregion
 
-        #region AuthorizedTokens
+        //#region AuthorizedTokens
 
-        public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens
+        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens
 
-            => RemoteSmartCity != null
-                   ? RemoteSmartCity.AuthorizedTokens
-                   : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
+        //    => RemoteSmartCity != null
+        //           ? RemoteSmartCity.AuthorizedTokens
+        //           : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
 
-        #endregion
+        //#endregion
 
-        #region NotAuthorizedTokens
+        //#region NotAuthorizedTokens
 
-        public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens
+        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens
 
-            => RemoteSmartCity != null
-                   ? RemoteSmartCity.NotAuthorizedTokens
-                   : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
+        //    => RemoteSmartCity != null
+        //           ? RemoteSmartCity.NotAuthorizedTokens
+        //           : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
 
-        #endregion
+        //#endregion
 
-        #region BlockedTokens
+        //#region BlockedTokens
 
-        public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens
+        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens
 
-            => RemoteSmartCity != null
-                   ? RemoteSmartCity.BlockedTokens
-                   : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
+        //    => RemoteSmartCity != null
+        //           ? RemoteSmartCity.BlockedTokens
+        //           : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
 
-        #endregion
+        //#endregion
 
         #endregion
 
@@ -442,12 +442,6 @@ namespace org.GraphDefined.WWCP
         /// The remote smart city.
         /// </summary>
         public IRemoteSmartCity          RemoteSmartCity    { get; }
-
-
-        /// <summary>
-        /// The parent roaming network.
-        /// </summary>
-        public RoamingNetwork            RoamingNetwork             { get; }
 
         #endregion
 
@@ -535,33 +529,33 @@ namespace org.GraphDefined.WWCP
         /// unique identification.
         /// </summary>
         /// <param name="Id">The unique smart city identification.</param>
+        /// <param name="Name">The offical (multi-language) name of the smart city.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         internal SmartCityStub(SmartCity_Id                    Id,
-                           RoamingNetwork                  RoamingNetwork,
-                           Action<SmartCityStub>               Configurator            = null,
-                           RemoteSmartCityCreatorDelegate  RemoteSmartCityCreator  = null,
-                           I18NString                      Name                    = null,
-                           I18NString                      Description             = null,
-                           SmartCityPriority               Priority                = null,
-                           SmartCityAdminStatusType        AdminStatus             = SmartCityAdminStatusType.Available,
-                           SmartCityStatusType             Status                  = SmartCityStatusType.Available,
-                           UInt16                          MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize,
-                           UInt16                          MaxStatusListSize       = DefaultMaxStatusListSize)
+                               I18NString                      Name,
+                               RoamingNetwork                  RoamingNetwork,
+                               I18NString                      Description              = null,
+                               Action<SmartCityStub>           Configurator             = null,
+                               RemoteSmartCityCreatorDelegate  RemoteSmartCityCreator   = null,
+                               SmartCityPriority               Priority                 = null,
+                               SmartCityAdminStatusType        AdminStatus              = SmartCityAdminStatusType.Available,
+                               SmartCityStatusType             Status                   = SmartCityStatusType.Available,
+                               UInt16                          MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
+                               UInt16                          MaxStatusListSize        = DefaultMaxStatusListSize)
 
-            : base(Id)
+            : base(Id,
+                   RoamingNetwork)
 
         {
 
             #region Initial checks
 
-            if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(SmartCityStub),  "The roaming network must not be null!");
+            if (Name.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Name), "The given smart city name must not be null or empty!");
 
             #endregion
 
             #region Init data and properties
-
-            this.RoamingNetwork              = RoamingNetwork;
 
             this._Name                        = Name        ?? new I18NString();
             this._Description                 = Description ?? new I18NString();
@@ -586,32 +580,31 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region PushEVSEData/-Status directly...
 
-        #region Incoming requests from the roaming network
+        #region (Set/Add/Update/Delete) EVSE(s)...
 
-        #region Receive incoming EVSEData
-
-        #region UpdateEVSEData                   (EVSE,             ActionType, ...)
+        #region SetStaticData   (EVSE, TransmissionType = Enqueued, ...)
 
         /// <summary>
-        /// Upload the EVSE data of the given EVSE.
+        /// Set the given EVSE as new static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
-        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="EVSE">An EVSE to upload.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        async Task<Acknowledgement>
 
-            IRemotePushData.UpdateEVSEData(EVSE                 EVSE,
-                                            ActionType           ActionType,
+            IRemotePushData.SetStaticData(EVSE                EVSE,
+                                          TransmissionTypes   TransmissionType,
 
-                                            DateTime?            Timestamp          = null,
-                                            CancellationToken?   CancellationToken  = null,
-                                            EventTracking_Id     EventTrackingId    = null,
-                                            TimeSpan?            RequestTimeout     = null)
+                                          DateTime?           Timestamp,
+                                          CancellationToken?  CancellationToken,
+                                          EventTracking_Id    EventTrackingId,
+                                          TimeSpan?           RequestTimeout)
 
         {
 
@@ -622,33 +615,150 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return Task.FromResult(new Acknowledgement(ResultType.True));
+            return new Acknowledgement(ResultType.NoOperation);
 
         }
 
         #endregion
 
-        #region UpdateEVSEData                   (EVSEs,            ActionType, ...)
+        #region AddStaticData   (EVSE, TransmissionType = Enqueued, ...)
 
         /// <summary>
-        /// Upload the EVSE data of the given enumeration of EVSEs.
+        /// Add the given EVSE to the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
-        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="EVSE">An EVSE to upload.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        async Task<Acknowledgement>
 
-            IRemotePushData.UpdateEVSEData(IEnumerable<EVSE>    EVSEs,
-                                            ActionType           ActionType,
+            IRemotePushData.AddStaticData(EVSE                EVSE,
+                                          TransmissionTypes   TransmissionType,
 
-                                            DateTime?            Timestamp          = null,
-                                            CancellationToken?   CancellationToken  = null,
-                                            EventTracking_Id     EventTrackingId    = null,
-                                            TimeSpan?            RequestTimeout     = null)
+                                          DateTime?           Timestamp,
+                                          CancellationToken?  CancellationToken,
+                                          EventTracking_Id    EventTrackingId,
+                                          TimeSpan?           RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (EVSE == null)
+                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region UpdateStaticData(EVSE, PropertyName = null, OldValue = null, NewValue = null, TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the static data of the given EVSE.
+        /// The EVSE can be uploaded as a whole, or just a single property of the EVSE.
+        /// </summary>
+        /// <param name="EVSE">An EVSE to update.</param>
+        /// <param name="PropertyName">The name of the EVSE property to update.</param>
+        /// <param name="OldValue">The old value of the EVSE property to update.</param>
+        /// <param name="NewValue">The new value of the EVSE property to update.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.UpdateStaticData(EVSE                EVSE,
+                                             String              PropertyName,
+                                             Object              OldValue,
+                                             Object              NewValue,
+                                             TransmissionTypes   TransmissionType,
+
+                                             DateTime?           Timestamp,
+                                             CancellationToken?  CancellationToken,
+                                             EventTracking_Id    EventTrackingId,
+                                             TimeSpan?           RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (EVSE == null)
+                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region DeleteStaticData(EVSE, TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Delete the static data of the given EVSE.
+        /// </summary>
+        /// <param name="EVSE">An EVSE to delete.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE deletion directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.DeleteStaticData(EVSE                EVSE,
+                                             TransmissionTypes   TransmissionType,
+
+                                             DateTime?           Timestamp,
+                                             CancellationToken?  CancellationToken,
+                                             EventTracking_Id    EventTrackingId,
+                                             TimeSpan?           RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (EVSE == null)
+                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+
+        #region SetStaticData   (EVSEs, ...)
+
+        /// <summary>
+        /// Set the given enumeration of EVSEs as new static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.SetStaticData(IEnumerable<EVSE>   EVSEs,
+
+                                          DateTime?           Timestamp,
+                                          CancellationToken?  CancellationToken,
+                                          EventTracking_Id    EventTrackingId,
+                                          TimeSpan?           RequestTimeout)
 
         {
 
@@ -659,33 +769,201 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return Task.FromResult(new Acknowledgement(ResultType.True));
+            return new Acknowledgement(ResultType.NoOperation);
 
         }
 
         #endregion
 
-        #region UpdateChargingStationData        (ChargingStation,  ActionType, ...)
+        #region AddStaticData   (EVSEs, ...)
 
         /// <summary>
-        /// Upload the EVSE data of the given charging station.
+        /// Add the given enumeration of EVSEs to the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
-        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="EVSEs">An enumeration of EVSEs.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        async Task<Acknowledgement>
 
-            IRemotePushData.UpdateChargingStationData(ChargingStation      ChargingStation,
-                                                      ActionType           ActionType,
+            IRemotePushData.AddStaticData(IEnumerable<EVSE>   EVSEs,
 
-                                                      DateTime?            Timestamp          = null,
-                                                      CancellationToken?   CancellationToken  = null,
-                                                      EventTracking_Id     EventTrackingId    = null,
-                                                      TimeSpan?            RequestTimeout     = null)
+                                          DateTime?           Timestamp,
+                                          CancellationToken?  CancellationToken,
+                                          EventTracking_Id    EventTrackingId,
+                                          TimeSpan?           RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (EVSEs == null)
+                throw new ArgumentNullException(nameof(EVSEs), "The given enumeration of EVSEs must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region UpdateStaticData(EVSEs, ...)
+
+        /// <summary>
+        /// Update the given enumeration of EVSEs within the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.UpdateStaticData(IEnumerable<EVSE>   EVSEs,
+
+                                             DateTime?           Timestamp,
+                                             CancellationToken?  CancellationToken,
+                                             EventTracking_Id    EventTrackingId,
+                                             TimeSpan?           RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (EVSEs == null)
+                throw new ArgumentNullException(nameof(EVSEs), "The given enumeration of EVSEs must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region DeleteStaticData(EVSEs, ...)
+
+        /// <summary>
+        /// Delete the given enumeration of EVSEs from the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.DeleteStaticData(IEnumerable<EVSE>   EVSEs,
+
+                                             DateTime?           Timestamp,
+                                             CancellationToken?  CancellationToken,
+                                             EventTracking_Id    EventTrackingId,
+                                             TimeSpan?           RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (EVSEs == null)
+                throw new ArgumentNullException(nameof(EVSEs), "The given enumeration of EVSEs must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+
+        #region UpdateEVSEAdminStatus(AdminStatusUpdates, TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the given enumeration of EVSE admin status updates.
+        /// </summary>
+        /// <param name="AdminStatusUpdates">An enumeration of EVSE admin status updates.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushStatus.UpdateEVSEAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
+                                                    TransmissionTypes                   TransmissionType,
+
+                                                    DateTime?                           Timestamp,
+                                                    CancellationToken?                  CancellationToken,
+                                                    EventTracking_Id                    EventTrackingId,
+                                                    TimeSpan?                           RequestTimeout)
+
+        {
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region UpdateEVSEStatus     (StatusUpdates,      TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the given enumeration of EVSE status updates.
+        /// </summary>
+        /// <param name="StatusUpdates">An enumeration of EVSE status updates.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushStatus.UpdateEVSEStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
+                                               TransmissionTypes              TransmissionType,
+
+                                               DateTime?                      Timestamp,
+                                               CancellationToken?             CancellationToken,
+                                               EventTracking_Id               EventTrackingId,
+                                               TimeSpan?                      RequestTimeout)
+
+        {
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region (Set/Add/Update/Delete) Charging station(s)...
+
+        #region SetStaticData   (ChargingStation, ...)
+
+        /// <summary>
+        /// Set the EVSE data of the given charging station as new static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.SetStaticData(ChargingStation     ChargingStation,
+
+                                          DateTime?           Timestamp,
+                                          CancellationToken?  CancellationToken,
+                                          EventTracking_Id    EventTrackingId,
+                                          TimeSpan?           RequestTimeout)
 
         {
 
@@ -696,33 +974,137 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return Task.FromResult(new Acknowledgement(ResultType.True));
+            return new Acknowledgement(ResultType.NoOperation);
 
         }
 
         #endregion
 
-        #region UpdateChargingStationData        (ChargingStations, ActionType, ...)
+        #region AddStaticData   (ChargingStation, ...)
 
         /// <summary>
-        /// Upload the EVSE data of the given charging stations.
+        /// Add the EVSE data of the given charging station to the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
-        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="ChargingStation">A charging station.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        async Task<Acknowledgement>
 
-            IRemotePushData.UpdateChargingStationData(IEnumerable<ChargingStation>  ChargingStations,
-                                                      ActionType                    ActionType,
+            IRemotePushData.AddStaticData(ChargingStation     ChargingStation,
 
-                                                      DateTime?                     Timestamp          = null,
-                                                      CancellationToken?            CancellationToken  = null,
-                                                      EventTracking_Id              EventTrackingId    = null,
-                                                      TimeSpan?                     RequestTimeout     = null)
+                                          DateTime?           Timestamp,
+                                          CancellationToken?  CancellationToken,
+                                          EventTracking_Id    EventTrackingId,
+                                          TimeSpan?           RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStation == null)
+                throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region UpdateStaticData(ChargingStation, ...)
+
+        /// <summary>
+        /// Update the EVSE data of the given charging station within the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.UpdateStaticData(ChargingStation     ChargingStation,
+
+                                             DateTime?           Timestamp,
+                                             CancellationToken?  CancellationToken,
+                                             EventTracking_Id    EventTrackingId,
+                                             TimeSpan?           RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStation == null)
+                throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region DeleteStaticData(ChargingStation, ...)
+
+        /// <summary>
+        /// Delete the EVSE data of the given charging station from the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.DeleteStaticData(ChargingStation     ChargingStation,
+
+                                             DateTime?           Timestamp,
+                                             CancellationToken?  CancellationToken,
+                                             EventTracking_Id    EventTrackingId,
+                                             TimeSpan?           RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStation == null)
+                throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+
+        #region SetStaticData   (ChargingStations, ...)
+
+        /// <summary>
+        /// Set the EVSE data of the given enumeration of charging stations as new static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.SetStaticData(IEnumerable<ChargingStation>  ChargingStations,
+
+                                          DateTime?                     Timestamp,
+                                          CancellationToken?            CancellationToken,
+                                          EventTracking_Id              EventTrackingId,
+                                          TimeSpan?                     RequestTimeout)
 
         {
 
@@ -733,33 +1115,201 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return Task.FromResult(new Acknowledgement(ResultType.True));
+            return new Acknowledgement(ResultType.NoOperation);
 
         }
 
         #endregion
 
-        #region UpdateChargingPoolData           (ChargingPool,     ActionType, ...)
+        #region AddStaticData   (ChargingStations, ...)
 
         /// <summary>
-        /// Upload the EVSE data of the given charging pool.
+        /// Add the EVSE data of the given enumeration of charging stations to the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="ChargingStations">An enumeration of charging stations.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        async Task<Acknowledgement>
 
-            IRemotePushData.UpdateChargingPoolData(ChargingPool         ChargingPool,
-                                                    ActionType           ActionType,
+            IRemotePushData.AddStaticData(IEnumerable<ChargingStation>  ChargingStations,
 
-                                                    DateTime?            Timestamp          = null,
-                                                    CancellationToken?   CancellationToken  = null,
-                                                    EventTracking_Id     EventTrackingId    = null,
-                                                    TimeSpan?            RequestTimeout     = null)
+                                          DateTime?                     Timestamp,
+                                          CancellationToken?            CancellationToken,
+                                          EventTracking_Id              EventTrackingId,
+                                          TimeSpan?                     RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStations == null)
+                throw new ArgumentNullException(nameof(ChargingStations), "The given enumeration of charging stations must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region UpdateStaticData(ChargingStations, ...)
+
+        /// <summary>
+        /// Update the EVSE data of the given enumeration of charging stations within the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.UpdateStaticData(IEnumerable<ChargingStation>  ChargingStations,
+
+                                             DateTime?                     Timestamp,
+                                             CancellationToken?            CancellationToken,
+                                             EventTracking_Id              EventTrackingId,
+                                             TimeSpan?                     RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStations == null)
+                throw new ArgumentNullException(nameof(ChargingStations), "The given enumeration of charging stations must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region DeleteStaticData(ChargingStations, ...)
+
+        /// <summary>
+        /// Delete the EVSE data of the given enumeration of charging stations from the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.DeleteStaticData(IEnumerable<ChargingStation>  ChargingStations,
+
+                                             DateTime?                     Timestamp,
+                                             CancellationToken?            CancellationToken,
+                                             EventTracking_Id              EventTrackingId,
+                                             TimeSpan?                     RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStations == null)
+                throw new ArgumentNullException(nameof(ChargingStations), "The given enumeration of charging stations must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+
+        #region UpdateChargingStationAdminStatus(AdminStatusUpdates, TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging station admin status updates.
+        /// </summary>
+        /// <param name="AdminStatusUpdates">An enumeration of charging station admin status updates.</param>
+        /// <param name="TransmissionType">Whether to send the charging station admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushStatus.UpdateChargingStationAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  AdminStatusUpdates,
+                                                               TransmissionTypes                              TransmissionType,
+
+                                                               DateTime?                                      Timestamp,
+                                                               CancellationToken?                             CancellationToken,
+                                                               EventTracking_Id                               EventTrackingId,
+                                                               TimeSpan?                                      RequestTimeout)
+
+        {
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingStationStatus     (StatusUpdates,      TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging station status updates.
+        /// </summary>
+        /// <param name="StatusUpdates">An enumeration of charging station status updates.</param>
+        /// <param name="TransmissionType">Whether to send the charging station status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushStatus.UpdateChargingStationStatus(IEnumerable<ChargingStationStatusUpdate>  StatusUpdates,
+                                                          TransmissionTypes                         TransmissionType,
+
+                                                          DateTime?                                 Timestamp,
+                                                          CancellationToken?                        CancellationToken,
+                                                          EventTracking_Id                          EventTrackingId,
+                                                          TimeSpan?                                 RequestTimeout)
+
+        {
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region (Set/Add/Update/Delete) Charging pool(s)...
+
+        #region SetStaticData   (ChargingPool, ...)
+
+        /// <summary>
+        /// Set the EVSE data of the given charging pool as new static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.SetStaticData(ChargingPool        ChargingPool,
+
+                                          DateTime?           Timestamp,
+                                          CancellationToken?  CancellationToken,
+                                          EventTracking_Id    EventTrackingId,
+                                          TimeSpan?           RequestTimeout)
 
         {
 
@@ -770,33 +1320,137 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return Task.FromResult(new Acknowledgement(ResultType.True));
+            return new Acknowledgement(ResultType.NoOperation);
 
         }
 
         #endregion
 
-        #region UpdateChargingPoolData           (ChargingPools,    ActionType, ...)
+        #region AddStaticData   (ChargingPool, ...)
 
         /// <summary>
-        /// Upload the EVSE data of the given charging pools.
+        /// Add the EVSE data of the given charging pool to the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="ChargingPools">An enumeration of charging pools.</param>
-        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="ChargingPool">A charging pool.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        async Task<Acknowledgement>
 
-            IRemotePushData.UpdateChargingPoolData(IEnumerable<ChargingPool>  ChargingPools,
-                                                    ActionType                 ActionType,
+            IRemotePushData.AddStaticData(ChargingPool        ChargingPool,
 
-                                                    DateTime?                  Timestamp          = null,
-                                                    CancellationToken?         CancellationToken  = null,
-                                                    EventTracking_Id           EventTrackingId    = null,
-                                                    TimeSpan?                  RequestTimeout     = null)
+                                          DateTime?           Timestamp,
+                                          CancellationToken?  CancellationToken,
+                                          EventTracking_Id    EventTrackingId,
+                                          TimeSpan?           RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingPool == null)
+                throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region UpdateStaticData(ChargingPool, ...)
+
+        /// <summary>
+        /// Update the EVSE data of the given charging pool within the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.UpdateStaticData(ChargingPool        ChargingPool,
+
+                                             DateTime?           Timestamp,
+                                             CancellationToken?  CancellationToken,
+                                             EventTracking_Id    EventTrackingId,
+                                             TimeSpan?           RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingPool == null)
+                throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region DeleteStaticData(ChargingPool, ...)
+
+        /// <summary>
+        /// Delete the EVSE data of the given charging pool from the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingPool">A charging pool.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.DeleteStaticData(ChargingPool        ChargingPool,
+
+                                             DateTime?           Timestamp,
+                                             CancellationToken?  CancellationToken,
+                                             EventTracking_Id    EventTrackingId,
+                                             TimeSpan?           RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingPool == null)
+                throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+
+        #region SetStaticData   (ChargingPools, ...)
+
+        /// <summary>
+        /// Set the EVSE data of the given enumeration of charging pools as new static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.SetStaticData(IEnumerable<ChargingPool>  ChargingPools,
+
+                                          DateTime?                  Timestamp,
+                                          CancellationToken?         CancellationToken,
+                                          EventTracking_Id           EventTrackingId,
+                                          TimeSpan?                  RequestTimeout)
 
         {
 
@@ -807,33 +1461,201 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return Task.FromResult(new Acknowledgement(ResultType.True));
+            return new Acknowledgement(ResultType.NoOperation);
 
         }
 
         #endregion
 
-        #region UpdateChargingStationOperatorData(EVSEOperator,     ActionType, ...)
+        #region AddStaticData   (ChargingPools, ...)
 
         /// <summary>
-        /// Upload the EVSE data of the given Charging Station Operator.
+        /// Add the EVSE data of the given enumeration of charging pools to the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="ChargingStationOperator">An Charging Station Operator.</param>
-        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="ChargingPools">An enumeration of charging pools.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        async Task<Acknowledgement>
 
-            IRemotePushData.UpdateChargingStationOperatorData(ChargingStationOperator  ChargingStationOperator,
-                                                               ActionType               ActionType,
+            IRemotePushData.AddStaticData(IEnumerable<ChargingPool>  ChargingPools,
 
-                                                               DateTime?                Timestamp          = null,
-                                                               CancellationToken?       CancellationToken  = null,
-                                                               EventTracking_Id         EventTrackingId    = null,
-                                                               TimeSpan?                RequestTimeout     = null)
+                                          DateTime?                  Timestamp,
+                                          CancellationToken?         CancellationToken,
+                                          EventTracking_Id           EventTrackingId,
+                                          TimeSpan?                  RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingPools == null)
+                throw new ArgumentNullException(nameof(ChargingPools), "The given enumeration of charging pools must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region UpdateStaticData(ChargingPools, ...)
+
+        /// <summary>
+        /// Update the EVSE data of the given enumeration of charging pools within the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.UpdateStaticData(IEnumerable<ChargingPool>  ChargingPools,
+
+                                             DateTime?                  Timestamp,
+                                             CancellationToken?         CancellationToken,
+                                             EventTracking_Id           EventTrackingId,
+                                             TimeSpan?                  RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingPools == null)
+                throw new ArgumentNullException(nameof(ChargingPools), "The given enumeration of charging pools must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region DeleteStaticData(ChargingPools, ...)
+
+        /// <summary>
+        /// Delete the EVSE data of the given enumeration of charging pools from the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingPools">An enumeration of charging pools.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.DeleteStaticData(IEnumerable<ChargingPool>  ChargingPools,
+
+                                             DateTime?                  Timestamp,
+                                             CancellationToken?         CancellationToken,
+                                             EventTracking_Id           EventTrackingId,
+                                             TimeSpan?                  RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingPools == null)
+                throw new ArgumentNullException(nameof(ChargingPools), "The given enumeration of charging pools must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+
+        #region UpdateChargingPoolAdminStatus(AdminStatusUpdates, TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging pool admin status updates.
+        /// </summary>
+        /// <param name="AdminStatusUpdates">An enumeration of charging pool admin status updates.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushStatus.UpdateChargingPoolAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  AdminStatusUpdates,
+                                                            TransmissionTypes                           TransmissionType,
+
+                                                            DateTime?                                   Timestamp,
+                                                            CancellationToken?                          CancellationToken,
+                                                            EventTracking_Id                            EventTrackingId,
+                                                            TimeSpan?                                   RequestTimeout)
+
+        {
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingPoolStatus     (StatusUpdates,      TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging pool status updates.
+        /// </summary>
+        /// <param name="StatusUpdates">An enumeration of charging pool status updates.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushStatus.UpdateChargingPoolStatus(IEnumerable<ChargingPoolStatusUpdate>  StatusUpdates,
+                                                       TransmissionTypes                      TransmissionType,
+
+                                                       DateTime?                              Timestamp,
+                                                       CancellationToken?                     CancellationToken,
+                                                       EventTracking_Id                       EventTrackingId,
+                                                       TimeSpan?                              RequestTimeout)
+
+        {
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region (Set/Add/Update/Delete) Charging station operator(s)...
+
+        #region SetStaticData   (ChargingStationOperator, ...)
+
+        /// <summary>
+        /// Set the EVSE data of the given charging station operator as new static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.SetStaticData(ChargingStationOperator  ChargingStationOperator,
+
+                                          DateTime?                Timestamp,
+                                          CancellationToken?       CancellationToken,
+                                          EventTracking_Id         EventTrackingId,
+                                          TimeSpan?                RequestTimeout)
 
         {
 
@@ -844,108 +1666,365 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return Task.FromResult(new Acknowledgement(ResultType.True));
+            return new Acknowledgement(ResultType.NoOperation);
 
         }
 
         #endregion
 
-        #region UpdateChargingStationOperatorData(EVSEOperators,    ActionType, ...)
+        #region AddStaticData   (ChargingStationOperator, ...)
 
         /// <summary>
-        /// Upload the EVSE data of the given Charging Station Operators.
+        /// Add the EVSE data of the given charging station operator to the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="ChargingStationOperators">An enumeration of Charging Station Operators.</param>
-        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        async Task<Acknowledgement>
 
-            IRemotePushData.UpdateChargingStationOperatorData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
-                                                               ActionType                            ActionType,
+            IRemotePushData.AddStaticData(ChargingStationOperator  ChargingStationOperator,
 
-                                                               DateTime?                             Timestamp          = null,
-                                                               CancellationToken?                    CancellationToken  = null,
-                                                               EventTracking_Id                      EventTrackingId    = null,
-                                                               TimeSpan?                             RequestTimeout     = null)
+                                          DateTime?                Timestamp,
+                                          CancellationToken?       CancellationToken,
+                                          EventTracking_Id         EventTrackingId,
+                                          TimeSpan?                RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStationOperator == null)
+                throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region UpdateStaticData(ChargingStationOperator, ...)
+
+        /// <summary>
+        /// Update the EVSE data of the given charging station operator within the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.UpdateStaticData(ChargingStationOperator  ChargingStationOperator,
+
+                                             DateTime?                Timestamp,
+                                             CancellationToken?       CancellationToken,
+                                             EventTracking_Id         EventTrackingId,
+                                             TimeSpan?                RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStationOperator == null)
+                throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region DeleteStaticData(ChargingStationOperator, ...)
+
+        /// <summary>
+        /// Delete the EVSE data of the given charging station operator from the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStationOperator">A charging station operator.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.DeleteStaticData(ChargingStationOperator  ChargingStationOperator,
+
+                                             DateTime?                Timestamp,
+                                             CancellationToken?       CancellationToken,
+                                             EventTracking_Id         EventTrackingId,
+                                             TimeSpan?                RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStationOperator == null)
+                throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+
+        #region SetStaticData   (ChargingStationOperators, ...)
+
+        /// <summary>
+        /// Set the EVSE data of the given enumeration of charging station operators as new static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.SetStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+
+                                          DateTime?                             Timestamp,
+                                          CancellationToken?                    CancellationToken,
+                                          EventTracking_Id                      EventTrackingId,
+                                          TimeSpan?                             RequestTimeout)
 
         {
 
             #region Initial checks
 
             if (ChargingStationOperators == null)
-                throw new ArgumentNullException(nameof(ChargingStationOperators),  "The given enumeration of charging station operators must not be null!");
+                throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
 
             #endregion
 
-            return Task.FromResult(new Acknowledgement(ResultType.True));
+            return new Acknowledgement(ResultType.NoOperation);
 
         }
 
         #endregion
 
-        #region UpdateRoamingNetworkData         (RoamingNetwork,   ActionType, ...)
+        #region AddStaticData   (ChargingStationOperators, ...)
 
         /// <summary>
-        /// Upload the EVSE data of the given roaming network.
+        /// Add the EVSE data of the given enumeration of charging station operators to the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
-        /// <param name="ActionType">The server-side data management operation.</param>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        async Task<Acknowledgement>
 
-            IRemotePushData.UpdateRoamingNetworkData(RoamingNetwork       RoamingNetwork,
-                                                      ActionType           ActionType,
+            IRemotePushData.AddStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
-                                                      DateTime?            Timestamp          = null,
-                                                      CancellationToken?   CancellationToken  = null,
-                                                      EventTracking_Id     EventTrackingId    = null,
-                                                      TimeSpan?            RequestTimeout     = null)
+                                          DateTime?                             Timestamp,
+                                          CancellationToken?                    CancellationToken,
+                                          EventTracking_Id                      EventTrackingId,
+                                          TimeSpan?                             RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStationOperators == null)
+                throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+
+        }
+
+        #endregion
+
+        #region UpdateStaticData(ChargingStationOperators, ...)
+
+        /// <summary>
+        /// Update the EVSE data of the given enumeration of charging station operators within the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.UpdateStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+
+                                             DateTime?                             Timestamp,
+                                             CancellationToken?                    CancellationToken,
+                                             EventTracking_Id                      EventTrackingId,
+                                             TimeSpan?                             RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStationOperators == null)
+                throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region DeleteStaticData(ChargingStationOperators, ...)
+
+        /// <summary>
+        /// Delete the EVSE data of the given enumeration of charging station operators from the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.DeleteStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+
+                                             DateTime?                             Timestamp,
+                                             CancellationToken?                    CancellationToken,
+                                             EventTracking_Id                      EventTrackingId,
+                                             TimeSpan?                             RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStationOperators == null)
+                throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+
+        #region UpdateChargingStationOperatorAdminStatus(AdminStatusUpdates, TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging station operator admin status updates.
+        /// </summary>
+        /// <param name="AdminStatusUpdates">An enumeration of charging station operator admin status updates.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushStatus.UpdateChargingStationOperatorAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  AdminStatusUpdates,
+                                                                       TransmissionTypes                                      TransmissionType,
+
+                                                                       DateTime?                                              Timestamp,
+                                                                       CancellationToken?                                     CancellationToken,
+                                                                       EventTracking_Id                                       EventTrackingId,
+                                                                       TimeSpan?                                              RequestTimeout)
+
+        {
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingStationOperatorStatus     (StatusUpdates,      TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging station operator status updates.
+        /// </summary>
+        /// <param name="StatusUpdates">An enumeration of charging station operator status updates.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushStatus.UpdateChargingStationOperatorStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  StatusUpdates,
+                                                                  TransmissionTypes                                 TransmissionType,
+
+                                                                  DateTime?                                         Timestamp,
+                                                                  CancellationToken?                                CancellationToken,
+                                                                  EventTracking_Id                                  EventTrackingId,
+                                                                  TimeSpan?                                         RequestTimeout)
+
+        {
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region (Set/Add/Update/Delete) Roaming network...
+
+        #region SetStaticData   (RoamingNetwork, ...)
+
+        /// <summary>
+        /// Set the EVSE data of the given roaming network as new static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="RoamingNetwork">A roaming network.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.SetStaticData(RoamingNetwork      RoamingNetwork,
+
+                                          DateTime?           Timestamp,
+                                          CancellationToken?  CancellationToken,
+                                          EventTracking_Id    EventTrackingId,
+                                          TimeSpan?           RequestTimeout)
 
         {
 
             #region Initial checks
 
             if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(SmartCityStub), "The given roaming network must not be null!");
+                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
 
             #endregion
 
-            return Task.FromResult(new Acknowledgement(ResultType.True));
+            return new Acknowledgement(ResultType.NoOperation);
 
         }
 
         #endregion
 
-
-        public void RemoveChargingStations(DateTime                      Timestamp,
-                                           IEnumerable<ChargingStation>  ChargingStations)
-        {
-
-            foreach (var _ChargingStation in ChargingStations)
-                Console.WriteLine(DateTime.Now + " LocalEMobilityService says: " + _ChargingStation.Id + " was removed!");
-
-        }
-
-        #endregion
-
-        #region Receive incoming EVSEStatus
-
-        private IRemotePushStatus AsIPushStatus2Remote => this;
-
-        #region UpdateEVSEStatus(EVSEStatus, ...)
+        #region AddStaticData   (RoamingNetwork, ...)
 
         /// <summary>
-        /// Upload the given EVSE status.
+        /// Add the EVSE data of the given roaming network to the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="EVSEStatus">An EVSE status.</param>
+        /// <param name="RoamingNetwork">A roaming network.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -953,82 +2032,34 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<Acknowledgement>
 
-            IRemotePushStatus.UpdateEVSEStatus(EVSEStatus          EVSEStatus,
+            IRemotePushData.AddStaticData(RoamingNetwork      RoamingNetwork,
 
-                                                DateTime?           Timestamp,
-                                                CancellationToken?  CancellationToken,
-                                                EventTracking_Id    EventTrackingId,
-                                                TimeSpan?           RequestTimeout)
+                                          DateTime?           Timestamp,
+                                          CancellationToken?  CancellationToken,
+                                          EventTracking_Id    EventTrackingId,
+                                          TimeSpan?           RequestTimeout)
 
         {
 
             #region Initial checks
 
-            if (EVSEStatus == null)
-                throw new ArgumentNullException(nameof(EVSEStatus), "The given EVSE status must not be null!");
-
-
-            Acknowledgement result;
+            if (RoamingNetwork == null)
+                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
 
             #endregion
 
-            #region Send OnUpdateEVSEStatusRequest event
-
-            //   OnPushEVSEStatusRequest?.Invoke(DateTime.Now,
-            //                                   Timestamp.Value,
-            //                                   this,
-            //                                   this.Id.ToString(),
-            //                                   EventTrackingId,
-            //                                   this.RoamingNetwork.Id,
-            //                                   ActionType,
-            //                                   GroupedEVSEStatus,
-            //                                   (UInt32) _NumberOfEVSEStatus,
-            //                                   RequestTimeout);
-
-            #endregion
-
-
-            if (RemoteSmartCity != null)
-                result = await RemoteSmartCity.UpdateEVSEStatus(EVSEStatus,
-
-                                                                Timestamp,
-                                                                CancellationToken,
-                                                                EventTrackingId,
-                                                                RequestTimeout);
-
-            else
-                result = new Acknowledgement(ResultType.NoOperation);
-
-
-            #region Send OnUpdateEVSEStatusResponse event
-
-            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
-            //                                    Timestamp.Value,
-            //                                    this,
-            //                                    this.Id.ToString(),
-            //                                    EventTrackingId,
-            //                                    this.RoamingNetwork.Id,
-            //                                    ActionType,
-            //                                    GroupedEVSEStatus,
-            //                                    (UInt32) _NumberOfEVSEStatus,
-            //                                    RequestTimeout,
-            //                                    result,
-            //                                    DateTime.Now - Timestamp.Value);
-
-            #endregion
-
-            return result;
+            return new Acknowledgement(ResultType.NoOperation);
 
         }
 
         #endregion
 
-        #region UpdateEVSEStatus(EVSEStatus, ...)
+        #region UpdateStaticData(RoamingNetwork, ...)
 
         /// <summary>
-        /// Upload the given enumeration of EVSE status.
+        /// Update the EVSE data of the given roaming network within the static EVSE data at the OICP server.
         /// </summary>
-        /// <param name="EVSEStatus">An enumeration of EVSE status.</param>
+        /// <param name="RoamingNetwork">A roaming network.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -1036,95 +2067,144 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<Acknowledgement>
 
-            IRemotePushStatus.UpdateEVSEStatus(IEnumerable<EVSEStatus>  EVSEStatus,
+            IRemotePushData.UpdateStaticData(RoamingNetwork      RoamingNetwork,
 
-                                                DateTime?                Timestamp,
-                                                CancellationToken?       CancellationToken,
-                                                EventTracking_Id         EventTrackingId,
-                                                TimeSpan?                RequestTimeout)
+                                             DateTime?           Timestamp,
+                                             CancellationToken?  CancellationToken,
+                                             EventTracking_Id    EventTrackingId,
+                                             TimeSpan?           RequestTimeout)
 
         {
 
             #region Initial checks
 
-            if (EVSEStatus == null)
-                throw new ArgumentNullException(nameof(EVSEStatus),  "The given enumeration of EVSE status must not be null!");
-
-
-            Acknowledgement result;
+            if (RoamingNetwork == null)
+                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
 
             #endregion
 
-            #region Send OnUpdateEVSEStatusRequest event
-
-            //   OnPushEVSEStatusRequest?.Invoke(DateTime.Now,
-            //                                   Timestamp.Value,
-            //                                   this,
-            //                                   this.Id.ToString(),
-            //                                   EventTrackingId,
-            //                                   this.RoamingNetwork.Id,
-            //                                   ActionType,
-            //                                   GroupedEVSEStatus,
-            //                                   (UInt32) _NumberOfEVSEStatus,
-            //                                   RequestTimeout);
-
-            #endregion
-
-
-            if (RemoteSmartCity != null)
-                result = await RemoteSmartCity.UpdateEVSEStatus(EVSEStatus,
-
-                                                                Timestamp,
-                                                                CancellationToken,
-                                                                EventTrackingId,
-                                                                RequestTimeout);
-
-            else
-                result = new Acknowledgement(ResultType.NoOperation);
-
-
-            #region Send OnUpdateEVSEStatusResponse event
-
-            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
-            //                                    Timestamp.Value,
-            //                                    this,
-            //                                    this.Id.ToString(),
-            //                                    EventTrackingId,
-            //                                    this.RoamingNetwork.Id,
-            //                                    ActionType,
-            //                                    GroupedEVSEStatus,
-            //                                    (UInt32) _NumberOfEVSEStatus,
-            //                                    RequestTimeout,
-            //                                    result,
-            //                                    DateTime.Now - Timestamp.Value);
-
-            #endregion
-
-            return result;
+            return new Acknowledgement(ResultType.NoOperation);
 
         }
 
         #endregion
 
-        #region UpdateEVSEStatus(EVSE, ...)
+        #region DeleteStaticData(RoamingNetwork, ...)
 
         /// <summary>
-        /// Upload the EVSE status of the given EVSE.
+        /// Delete the EVSE data of the given roaming network from the static EVSE data at the OICP server.
+        /// </summary>
+        /// <param name="RoamingNetwork">A roaming network to upload.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushData.DeleteStaticData(RoamingNetwork      RoamingNetwork,
+
+                                             DateTime?           Timestamp,
+                                             CancellationToken?  CancellationToken,
+                                             EventTracking_Id    EventTrackingId,
+                                             TimeSpan?           RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (RoamingNetwork == null)
+                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
+
+            #endregion
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+
+        #region UpdateRoamingNetworkAdminStatus(AdminStatusUpdates, TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the given enumeration of roaming network admin status updates.
+        /// </summary>
+        /// <param name="AdminStatusUpdates">An enumeration of roaming network admin status updates.</param>
+        /// <param name="TransmissionType">Whether to send the roaming network admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushStatus.UpdateRoamingNetworkAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  AdminStatusUpdates,
+                                                              TransmissionTypes                             TransmissionType,
+
+                                                              DateTime?                                     Timestamp,
+                                                              CancellationToken?                            CancellationToken,
+                                                              EventTracking_Id                              EventTrackingId,
+                                                              TimeSpan?                                     RequestTimeout)
+
+        {
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #region UpdateRoamingNetworkStatus     (StatusUpdates,      TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the given enumeration of roaming network status updates.
+        /// </summary>
+        /// <param name="StatusUpdates">An enumeration of roaming network status updates.</param>
+        /// <param name="TransmissionType">Whether to send the roaming network status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            IRemotePushStatus.UpdateRoamingNetworkStatus(IEnumerable<RoamingNetworkStatusUpdate>  StatusUpdates,
+                                                         TransmissionTypes                        TransmissionType,
+
+                                                         DateTime?                                Timestamp,
+                                                         CancellationToken?                       CancellationToken,
+                                                         EventTracking_Id                         EventTrackingId,
+                                                         TimeSpan?                                RequestTimeout)
+
+        {
+
+            return new Acknowledgement(ResultType.NoOperation);
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+
+        #region Delayed upstream methods...
+
+        #region EnqueueEVSEStatusUpdate(EVSE, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Enqueue the given EVSE status for a delayed upload.
         /// </summary>
         /// <param name="EVSE">An EVSE.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        /// <param name="OldStatus">The old status of the EVSE.</param>
+        /// <param name="NewStatus">The new status of the EVSE.</param>
+        public Task<WWCP.Acknowledgement>
 
-            IRemotePushStatus.UpdateEVSEStatus(EVSE                 EVSE,
-
-                                                DateTime?            Timestamp,
-                                                CancellationToken?   CancellationToken,
-                                                EventTracking_Id     EventTrackingId,
-                                                TimeSpan?            RequestTimeout)
+            EnqueueEVSEStatusUpdate(EVSE                         EVSE,
+                                    Timestamped<EVSEStatusType>  OldStatus,
+                                    Timestamped<EVSEStatusType>  NewStatus)
 
         {
 
@@ -1133,928 +2213,197 @@ namespace org.GraphDefined.WWCP
             if (EVSE == null)
                 throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
 
-
-            Acknowledgement result;
-
             #endregion
 
-            #region Send OnUpdateEVSEStatusRequest event
-
-            //   OnPushEVSEStatusRequest?.Invoke(DateTime.Now,
-            //                                   Timestamp.Value,
-            //                                   this,
-            //                                   this.Id.ToString(),
-            //                                   EventTrackingId,
-            //                                   this.RoamingNetwork.Id,
-            //                                   ActionType,
-            //                                   GroupedEVSEStatus,
-            //                                   (UInt32) _NumberOfEVSEStatus,
-            //                                   RequestTimeout);
-
-            #endregion
-
-
-            if (RemoteSmartCity != null)
-                result = await RemoteSmartCity.UpdateEVSEStatus(EVSE,
-
-                                                                Timestamp,
-                                                                CancellationToken,
-                                                                EventTrackingId,
-                                                                RequestTimeout);
-
-            else
-                result = new Acknowledgement(ResultType.NoOperation);
-
-
-            #region Send OnUpdateEVSEStatusResponse event
-
-            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
-            //                                    Timestamp.Value,
-            //                                    this,
-            //                                    this.Id.ToString(),
-            //                                    EventTrackingId,
-            //                                    this.RoamingNetwork.Id,
-            //                                    ActionType,
-            //                                    GroupedEVSEStatus,
-            //                                    (UInt32) _NumberOfEVSEStatus,
-            //                                    RequestTimeout,
-            //                                    result,
-            //                                    DateTime.Now - Timestamp.Value);
-
-            #endregion
-
-            return result;
+            return Task.FromResult(new WWCP.Acknowledgement(ResultType.True));
 
         }
 
         #endregion
 
-        #region UpdateEVSEStatus(EVSEs, ...)
+
+        #region EnqueueChargingPoolDataUpdate(ChargingPool, PropertyName, OldValue, NewValue)
 
         /// <summary>
-        /// Upload all EVSE status of the given enumeration of EVSEs.
+        /// Enqueue the given EVSE data for a delayed upload.
         /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        /// <param name="ChargingPool">A charging station.</param>
+        public Task<WWCP.Acknowledgement>
 
-            IRemotePushStatus.UpdateEVSEStatus(IEnumerable<EVSE>    EVSEs,
-
-                                                DateTime?            Timestamp,
-                                                CancellationToken?   CancellationToken,
-                                                EventTracking_Id     EventTrackingId,
-                                                TimeSpan?            RequestTimeout)
+            EnqueueChargingPoolDataUpdate(ChargingPool  ChargingPool,
+                                          String        PropertyName,
+                                          Object        OldValue,
+                                          Object        NewValue)
 
         {
 
             #region Initial checks
 
-            if (EVSEs == null)
-                throw new ArgumentNullException(nameof(EVSEs), "The given enumeration of EVSEs must not be null!");
-
-
-            Acknowledgement result;
+            if (ChargingPool == null)
+                throw new ArgumentNullException(nameof(ChargingPool), "The given charging station must not be null!");
 
             #endregion
 
-            #region Send OnUpdateEVSEStatusRequest event
-
-            //   OnPushEVSEStatusRequest?.Invoke(DateTime.Now,
-            //                                   Timestamp.Value,
-            //                                   this,
-            //                                   this.Id.ToString(),
-            //                                   EventTrackingId,
-            //                                   this.RoamingNetwork.Id,
-            //                                   ActionType,
-            //                                   GroupedEVSEStatus,
-            //                                   (UInt32) _NumberOfEVSEStatus,
-            //                                   RequestTimeout);
-
-            #endregion
-
-
-            if (RemoteSmartCity != null)
-                result = await RemoteSmartCity.UpdateEVSEStatus(EVSEs,
-
-                                                                Timestamp,
-                                                                CancellationToken,
-                                                                EventTrackingId,
-                                                                RequestTimeout);
-
-            else
-                result = new Acknowledgement(ResultType.NoOperation);
-
-
-            #region Send OnUpdateEVSEStatusResponse event
-
-            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
-            //                                    Timestamp.Value,
-            //                                    this,
-            //                                    this.Id.ToString(),
-            //                                    EventTrackingId,
-            //                                    this.RoamingNetwork.Id,
-            //                                    ActionType,
-            //                                    GroupedEVSEStatus,
-            //                                    (UInt32) _NumberOfEVSEStatus,
-            //                                    RequestTimeout,
-            //                                    result,
-            //                                    DateTime.Now - Timestamp.Value);
-
-            #endregion
-
-            return result;
+            return Task.FromResult(new WWCP.Acknowledgement(ResultType.True));
 
         }
 
         #endregion
 
-        #endregion
-
-        #region Receive incoming AuthStart/-Stop
-
-        #region AuthorizeStart(ChargingStationOperatorId, AuthToken, ChargingProductId, SessionId, ...)
+        #region EnqueueChargingStationDataUpdate(ChargingStation, PropertyName, OldValue, NewValue)
 
         /// <summary>
-        /// Create an authorize start request.
+        /// Enqueue the given EVSE data for a delayed upload.
         /// </summary>
-        /// <param name="ChargingStationOperatorId">An Charging Station Operator identification.</param>
-        /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="ChargingProductId">An optional charging product identification.</param>
-        /// <param name="SessionId">An optional session identification.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<AuthStartResult>
-
-            AuthorizeStart(ChargingStationOperator_Id  ChargingStationOperatorId,
-                           Auth_Token                  AuthToken,
-                           ChargingProduct_Id?         ChargingProductId,
-                           ChargingSession_Id?         SessionId,
-
-                           DateTime?                   Timestamp,
-                           CancellationToken?          CancellationToken,
-                           EventTracking_Id            EventTrackingId,
-                           TimeSpan?                   RequestTimeout)
-
-        {
-
-            if (RemoteSmartCity != null)
-                return await RemoteSmartCity.AuthorizeStart(ChargingStationOperatorId,
-                                                                     AuthToken,
-                                                                     ChargingProductId,
-                                                                     SessionId,
-
-                                                                     Timestamp,
-                                                                     CancellationToken,
-                                                                     EventTrackingId,
-                                                                     RequestTimeout);
-
-
-
-            return AuthStartResult.OutOfService(AuthorizatorId);
-
-        }
-
-        #endregion
-
-        #region AuthorizeStart(ChargingStationOperatorId, AuthToken, EVSEId, ChargingProductId, SessionId, ...)
-
-        /// <summary>
-        /// Create an authorize start request at the given EVSE.
-        /// </summary>
-        /// <param name="ChargingStationOperatorId">An Charging Station Operator identification.</param>
-        /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        /// <param name="ChargingProductId">An optional charging product identification.</param>
-        /// <param name="SessionId">An optional session identification.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<AuthStartEVSEResult>
-
-            AuthorizeStart(ChargingStationOperator_Id  ChargingStationOperatorId,
-                           Auth_Token                  AuthToken,
-                           EVSE_Id                     EVSEId,
-                           ChargingProduct_Id?         ChargingProductId,
-                           ChargingSession_Id?         SessionId,
-
-                           DateTime?                   Timestamp,
-                           CancellationToken?          CancellationToken,
-                           EventTracking_Id            EventTrackingId,
-                           TimeSpan?                   RequestTimeout)
-
-        {
-
-            if (RemoteSmartCity != null)
-                return await RemoteSmartCity.AuthorizeStart(ChargingStationOperatorId,
-                                                                     AuthToken,
-                                                                     EVSEId,
-                                                                     ChargingProductId,
-                                                                     SessionId,
-
-                                                                     Timestamp,
-                                                                     CancellationToken,
-                                                                     EventTrackingId,
-                                                                     RequestTimeout);
-
-
-
-            return AuthStartEVSEResult.OutOfService(AuthorizatorId);
-
-        }
-
-        #endregion
-
-        #region AuthorizeStart(ChargingStationOperatorId, AuthToken, ChargingStationId, ChargingProductId, SessionId, ...)
-
-        /// <summary>
-        /// Create an AuthorizeStart request at the given charging station.
-        /// </summary>
-        /// <param name="ChargingStationOperatorId">An Charging Station Operator identification.</param>
-        /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
-        /// <param name="ChargingProductId">An optional charging product identification.</param>
-        /// <param name="SessionId">An optional session identification.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<AuthStartChargingStationResult>
-
-            AuthorizeStart(ChargingStationOperator_Id  ChargingStationOperatorId,
-                           Auth_Token                  AuthToken,
-                           ChargingStation_Id          ChargingStationId,
-                           ChargingProduct_Id?         ChargingProductId,
-                           ChargingSession_Id?         SessionId,
-
-                           DateTime?                   Timestamp,
-                           CancellationToken?          CancellationToken,
-                           EventTracking_Id            EventTrackingId,
-                           TimeSpan?                   RequestTimeout)
-
-        {
-
-            if (RemoteSmartCity != null)
-                return await RemoteSmartCity.AuthorizeStart(ChargingStationOperatorId,
-                                                                     AuthToken,
-                                                                     ChargingStationId,
-                                                                     ChargingProductId,
-                                                                     SessionId,
-
-                                                                     Timestamp,
-                                                                     CancellationToken,
-                                                                     EventTrackingId,
-                                                                     RequestTimeout);
-
-
-
-            return AuthStartChargingStationResult.OutOfService(AuthorizatorId);
-
-        }
-
-        #endregion
-
-
-        #region AuthorizeStop(ChargingStationOperatorId, SessionId, AuthToken, ...)
-
-        /// <summary>
-        /// Create an authorize stop request.
-        /// </summary>
-        /// <param name="ChargingStationOperatorId">An Charging Station Operator identification.</param>
-        /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
-        /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<AuthStopResult>
-
-            AuthorizeStop(ChargingStationOperator_Id  ChargingStationOperatorId,
-                          ChargingSession_Id          SessionId,
-                          Auth_Token                  AuthToken,
-
-                          DateTime?                   Timestamp,
-                          CancellationToken?          CancellationToken,
-                          EventTracking_Id            EventTrackingId,
-                          TimeSpan?                   RequestTimeout)
-
-        {
-
-            if (RemoteSmartCity != null)
-                return await RemoteSmartCity.AuthorizeStop(ChargingStationOperatorId,
-                                                                    SessionId,
-                                                                    AuthToken,
-
-                                                                    Timestamp,
-                                                                    CancellationToken,
-                                                                    EventTrackingId,
-                                                                    RequestTimeout);
-
-
-
-            return AuthStopResult.OutOfService(AuthorizatorId);
-
-        }
-
-        #endregion
-
-        #region AuthorizeStop(ChargingStationOperatorId, EVSEId, SessionId, AuthToken, ...)
-
-        /// <summary>
-        /// Create an authorize stop request at the given EVSE.
-        /// </summary>
-        /// <param name="ChargingStationOperatorId">An Charging Station Operator identification.</param>
-        /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
-        /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<AuthStopEVSEResult>
-
-            AuthorizeStop(ChargingStationOperator_Id  ChargingStationOperatorId,
-                          EVSE_Id                     EVSEId,
-                          ChargingSession_Id          SessionId,
-                          Auth_Token                  AuthToken,
-
-                          DateTime?                   Timestamp,
-                          CancellationToken?          CancellationToken,
-                          EventTracking_Id            EventTrackingId,
-                          TimeSpan?                   RequestTimeout)
-
-        {
-
-            if (RemoteSmartCity != null)
-                return await RemoteSmartCity.AuthorizeStop(ChargingStationOperatorId,
-                                                                    EVSEId,
-                                                                    SessionId,
-                                                                    AuthToken,
-
-                                                                    Timestamp,
-                                                                    CancellationToken,
-                                                                    EventTrackingId,
-                                                                    RequestTimeout);
-
-
-
-            return AuthStopEVSEResult.OutOfService(AuthorizatorId);
-
-        }
-
-        #endregion
-
-        #region AuthorizeStop(ChargingStationOperatorId, ChargingStationId, SessionId, AuthToken, ...)
-
-        /// <summary>
-        /// Create an authorize stop request at the given charging station.
-        /// </summary>
-        /// <param name="ChargingStationOperatorId">An Charging Station Operator identification.</param>
-        /// <param name="ChargingStationId">A charging station identification.</param>
-        /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
-        /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<AuthStopChargingStationResult>
-
-            AuthorizeStop(ChargingStationOperator_Id  ChargingStationOperatorId,
-                          ChargingStation_Id          ChargingStationId,
-                          ChargingSession_Id          SessionId,
-                          Auth_Token                  AuthToken,
-
-                          DateTime?                   Timestamp,
-                          CancellationToken?          CancellationToken,
-                          EventTracking_Id            EventTrackingId,
-                          TimeSpan?                   RequestTimeout)
-
-        {
-
-            if (RemoteSmartCity != null)
-                return await RemoteSmartCity.AuthorizeStop(ChargingStationOperatorId,
-                                                                    ChargingStationId,
-                                                                    SessionId,
-                                                                    AuthToken,
-
-                                                                    Timestamp,
-                                                                    CancellationToken,
-                                                                    EventTrackingId,
-                                                                    RequestTimeout);
-
-
-
-            return AuthStopChargingStationResult.OutOfService(AuthorizatorId);
-
-        }
-
-        #endregion
-
-        #endregion
-
-        #region Receive incoming ChargeDetailRecords
-
-        #region SendChargeDetailRecord(ChargeDetailRecord, ...)
-
-        /// <summary>
-        /// Send a charge detail record.
-        /// </summary>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<SendCDRResult>
-
-            SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
-
-                                   DateTime?           Timestamp,
-                                   CancellationToken?  CancellationToken,
-                                   EventTracking_Id    EventTrackingId,
-                                   TimeSpan?           RequestTimeout)
-        {
-
-            if (RemoteSmartCity != null)
-                return await RemoteSmartCity.SendChargeDetailRecord(ChargeDetailRecord,
-
-                                                                            Timestamp,
-                                                                            CancellationToken,
-                                                                            EventTrackingId,
-                                                                            RequestTimeout);
-
-            return SendCDRResult.OutOfService(AuthorizatorId);
-
-        }
-
-        #endregion
-
-        #endregion
-
-        #endregion
-
-
-        #region Outgoing requests towards the roaming network
-
-        //ToDo: Send Tokens!
-        //ToDo: Download CDRs!
-
-        #region Reserve(...EVSEId, StartTime, Duration, ReservationId = null, ...)
-
-        /// <summary>
-        /// Reserve the possibility to charge at the given EVSE.
-        /// </summary>
-        /// <param name="EVSEId">The unique identification of the EVSE to be reserved.</param>
-        /// <param name="StartTime">The starting time of the reservation.</param>
-        /// <param name="Duration">The duration of the reservation.</param>
-        /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
-        /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-        /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
-        /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
-        /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
-        /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<ReservationResult>
-
-            Reserve(EVSE_Id                           EVSEId,
-                    DateTime?                         StartTime           = null,
-                    TimeSpan?                         Duration            = null,
-                    ChargingReservation_Id?           ReservationId       = null,
-                    eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id?               ChargingProductId   = null,
-                    IEnumerable<Auth_Token>           AuthTokens          = null,
-                    IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
-                    IEnumerable<UInt32>               PINs                = null,
-
-                    DateTime?                         Timestamp           = null,
-                    CancellationToken?                CancellationToken   = null,
-                    EventTracking_Id                  EventTrackingId     = null,
-                    TimeSpan?                         RequestTimeout      = null)
+        /// <param name="ChargingStation">A charging station.</param>
+        public Task<WWCP.Acknowledgement>
+
+            EnqueueChargingStationDataUpdate(ChargingStation  ChargingStation,
+                                             String           PropertyName,
+                                             Object           OldValue,
+                                             Object           NewValue)
 
         {
 
             #region Initial checks
 
-            if (EVSEId == null)
-                throw new ArgumentNullException(nameof(EVSEId),  "The given EVSE identification must not be null!");
-
-            if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            if (ChargingStation == null)
+                throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
 
             #endregion
 
-            #region Send OnReserveEVSE event
-
-            var Runtime = Stopwatch.StartNew();
-
-            try
-            {
-
-                OnReserveEVSE?.Invoke(DateTime.Now,
-                                      Timestamp.Value,
-                                      this,
-                                      EventTrackingId,
-                                      RoamingNetwork.Id,
-                                      ReservationId,
-                                      EVSEId,
-                                      StartTime,
-                                      Duration,
-                                      null,
-                                      eMAId,
-                                      ChargingProductId,
-                                      AuthTokens,
-                                      eMAIds,
-                                      PINs,
-                                      RequestTimeout);
-
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(SmartCityStub) + "." + nameof(OnReserveEVSE));
-            }
-
-            #endregion
-
-
-            var response = await RoamingNetwork.Reserve(EVSEId,
-                                                        StartTime,
-                                                        Duration,
-                                                        ReservationId,
-                                                        null,
-                                                        eMAId,
-                                                        ChargingProductId,
-                                                        AuthTokens,
-                                                        eMAIds,
-                                                        PINs,
-
-                                                        Timestamp,
-                                                        CancellationToken,
-                                                        EventTrackingId,
-                                                        RequestTimeout);
-
-
-            #region Send OnEVSEReserved event
-
-            Runtime.Stop();
-
-            try
-            {
-
-                OnEVSEReserved?.Invoke(DateTime.Now,
-                                       Timestamp.Value,
-                                       this,
-                                       EventTrackingId,
-                                       RoamingNetwork.Id,
-                                       ReservationId,
-                                       EVSEId,
-                                       StartTime,
-                                       Duration,
-                                       null,
-                                       eMAId,
-                                       ChargingProductId,
-                                       AuthTokens,
-                                       eMAIds,
-                                       PINs,
-                                       response,
-                                       Runtime.Elapsed,
-                                       RequestTimeout);
-
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(SmartCityStub) + "." + nameof(OnEVSEReserved));
-            }
-
-            #endregion
-
-            return response;
+            return Task.FromResult(new WWCP.Acknowledgement(ResultType.True));
 
         }
 
         #endregion
 
-        #region CancelReservation(...ReservationId, Reason, EVSEId = null, ...)
+        #endregion
+
+
+
+
+
+
+
+
+
+        #region Operator overloading
+
+        #region Operator == (SmartCity1, SmartCity2)
 
         /// <summary>
-        /// Cancel the given charging reservation.
+        /// Compares two smart citys for equality.
         /// </summary>
-        /// <param name="ReservationId">The unique charging reservation identification.</param>
-        /// <param name="Reason">A reason for this cancellation.</param>
-        /// <param name="EVSEId">An optional identification of the EVSE.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<CancelReservationResult>
-
-            CancelReservation(ChargingReservation_Id                 ReservationId,
-                              ChargingReservationCancellationReason  Reason,
-                              EVSE_Id?                               EVSEId              = null,
-
-                              DateTime?                              Timestamp           = null,
-                              CancellationToken?                     CancellationToken   = null,
-                              EventTracking_Id                       EventTrackingId     = null,
-                              TimeSpan?                              RequestTimeout      = null)
-
+        /// <param name="SmartCity1">A smart city.</param>
+        /// <param name="SmartCity2">Another smart city.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public static Boolean operator == (SmartCityStub SmartCity1, SmartCityStub SmartCity2)
         {
 
-            if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+            // If both are null, or both are same instance, return true.
+            if (Object.ReferenceEquals(SmartCity1, SmartCity2))
+                return true;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+            // If one is null, but not both, return false.
+            if (((Object) SmartCity1 == null) || ((Object) SmartCity2 == null))
+                return false;
 
-            var response = await RoamingNetwork.CancelReservation(ReservationId,
-                                                                  Reason,
-                                                                  null,
-                                                                  EVSEId,
-
-                                                                  Timestamp,
-                                                                  CancellationToken,
-                                                                  EventTrackingId,
-                                                                  RequestTimeout);
-
-
-            //var OnReservationCancelledLocal = OnReservationCancelled;
-            //if (OnReservationCancelledLocal != null)
-            //    OnReservationCancelledLocal(DateTime.Now,
-            //                                this,
-            //                                EventTracking_Id.New,
-            //                                ReservationId,
-            //                                Reason);
-
-            return response;
+            return SmartCity1.Equals(SmartCity2);
 
         }
 
         #endregion
 
-
-        #region RemoteStart(...EVSEId, ChargingProductId = null, ReservationId = null, SessionId = null, eMAId = null, ...)
+        #region Operator != (SmartCity1, SmartCity2)
 
         /// <summary>
-        /// Start a charging session at the given EVSE.
+        /// Compares two smart citys for inequality.
         /// </summary>
-        /// <param name="EVSEId">The unique identification of the EVSE to be started.</param>
-        /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
-        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<RemoteStartEVSEResult>
+        /// <param name="SmartCity1">A smart city.</param>
+        /// <param name="SmartCity2">Another smart city.</param>
+        /// <returns>False if both match; True otherwise.</returns>
+        public static Boolean operator != (SmartCityStub SmartCity1, SmartCityStub SmartCity2)
 
-            RemoteStart(EVSE_Id                  EVSEId,
-                        ChargingProduct_Id?      ChargingProductId  = null,
-                        ChargingReservation_Id?  ReservationId      = null,
-                        ChargingSession_Id?      SessionId          = null,
-                        eMobilityAccount_Id?     eMAId              = null,
-
-                        DateTime?                Timestamp          = null,
-                        CancellationToken?       CancellationToken  = null,
-                        EventTracking_Id         EventTrackingId    = null,
-                        TimeSpan?                RequestTimeout     = null)
-
-        {
-
-            #region Initial checks
-
-            if (EVSEId == null)
-                throw new ArgumentNullException(nameof(EVSEId),  "The given EVSE identification must not be null!");
-
-            if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            #endregion
-
-            #region Send OnRemoteEVSEStart event
-
-            var Runtime = Stopwatch.StartNew();
-
-            try
-            {
-
-                OnRemoteEVSEStart?.Invoke(DateTime.Now,
-                                          Timestamp.Value,
-                                          this,
-                                          EventTrackingId,
-                                          RoamingNetwork.Id,
-                                          EVSEId,
-                                          ChargingProductId,
-                                          ReservationId,
-                                          SessionId,
-                                          null,
-                                          eMAId,
-                                          RequestTimeout);
-
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(SmartCityStub) + "." + nameof(OnRemoteEVSEStart));
-            }
-
-            #endregion
-
-
-            var response = await RoamingNetwork.RemoteStart(EVSEId,
-                                                            ChargingProductId,
-                                                            ReservationId,
-                                                            SessionId,
-                                                            null,
-                                                            eMAId,
-
-                                                            Timestamp,
-                                                            CancellationToken,
-                                                            EventTrackingId,
-                                                            RequestTimeout);
-
-
-            #region Send OnRemoteEVSEStarted event
-
-            Runtime.Stop();
-
-            try
-            {
-
-                OnRemoteEVSEStarted?.Invoke(DateTime.Now,
-                                            Timestamp.Value,
-                                            this,
-                                            EventTrackingId,
-                                            RoamingNetwork.Id,
-                                            EVSEId,
-                                            ChargingProductId,
-                                            ReservationId,
-                                            SessionId,
-                                            null,
-                                            eMAId,
-                                            RequestTimeout,
-                                            response,
-                                            Runtime.Elapsed);
-
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(SmartCityStub) + "." + nameof(OnRemoteEVSEStarted));
-            }
-
-            #endregion
-
-            return response;
-
-        }
+            => !(SmartCity1 == SmartCity2);
 
         #endregion
 
-        #region RemoteStop(...EVSEId, SessionId, ReservationHandling, eMAId = null, ...)
+        #region Operator <  (SmartCity1, SmartCity2)
 
         /// <summary>
-        /// Stop the given charging session at the given EVSE.
+        /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEId">The unique identification of the EVSE to be stopped.</param>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<RemoteStopEVSEResult>
-
-            RemoteStop(EVSE_Id               EVSEId,
-                       ChargingSession_Id    SessionId,
-                       ReservationHandling   ReservationHandling,
-                       eMobilityAccount_Id?  eMAId               = null,
-
-                       DateTime?             Timestamp           = null,
-                       CancellationToken?    CancellationToken   = null,
-                       EventTracking_Id      EventTrackingId     = null,
-                       TimeSpan?             RequestTimeout      = null)
-
+        /// <param name="SmartCity1">A smart city.</param>
+        /// <param name="SmartCity2">Another smart city.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (SmartCityStub  SmartCity1,
+                                          SmartCityStub  SmartCity2)
         {
 
-            #region Initial checks
+            if ((Object) SmartCity1 == null)
+                throw new ArgumentNullException(nameof(SmartCity1),  "The given smart city must not be null!");
 
-            if (EVSEId == null)
-                throw new ArgumentNullException(nameof(EVSEId),     "The given EVSE identification must not be null!");
-
-            if (SessionId == null)
-                throw new ArgumentNullException(nameof(SessionId),  "The given charging session identification must not be null!");
-
-            if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            #endregion
-
-            #region Send OnRemoteEVSEStop event
-
-            var Runtime = Stopwatch.StartNew();
-
-            try
-            {
-
-                OnRemoteEVSEStop?.Invoke(DateTime.Now,
-                                         Timestamp.Value,
-                                         this,
-                                         EventTrackingId,
-                                         RoamingNetwork.Id,
-                                         EVSEId,
-                                         SessionId,
-                                         ReservationHandling,
-                                         null,
-                                         eMAId,
-                                         RequestTimeout);
-
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(SmartCityStub) + "." + nameof(OnRemoteEVSEStop));
-            }
-
-            #endregion
-
-
-            var response = await RoamingNetwork.RemoteStop(EVSEId,
-                                                           SessionId,
-                                                           ReservationHandling,
-                                                           null,
-                                                           eMAId,
-
-                                                           Timestamp,
-                                                           CancellationToken,
-                                                           EventTrackingId,
-                                                           RequestTimeout);
-
-
-            #region Send OnRemoteEVSEStopped event
-
-            Runtime.Stop();
-
-            try
-            {
-
-                OnRemoteEVSEStopped?.Invoke(DateTime.Now,
-                                            Timestamp.Value,
-                                            this,
-                                            EventTrackingId,
-                                            RoamingNetwork.Id,
-                                            EVSEId,
-                                            SessionId,
-                                            ReservationHandling,
-                                            null,
-                                            eMAId,
-                                            RequestTimeout,
-                                            response,
-                                            Runtime.Elapsed);
-
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(SmartCityStub) + "." + nameof(OnRemoteEVSEStopped));
-            }
-
-            #endregion
-
-            return response;
+            return SmartCity1.CompareTo(SmartCity2) < 0;
 
         }
 
         #endregion
 
+        #region Operator <= (SmartCity1, SmartCity2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="SmartCity1">A smart city.</param>
+        /// <param name="SmartCity2">Another smart city.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (SmartCityStub SmartCity1,
+                                           SmartCityStub SmartCity2)
+
+            => !(SmartCity1 > SmartCity2);
+
         #endregion
 
+        #region Operator >  (SmartCity1, SmartCity2)
 
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="SmartCity1">A smart city.</param>
+        /// <param name="SmartCity2">Another smart city.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (SmartCityStub SmartCity1,
+                                          SmartCityStub SmartCity2)
+        {
 
-        #region IComparable<EVSE_Operator> Members
+            if ((Object) SmartCity1 == null)
+                throw new ArgumentNullException(nameof(SmartCity1),  "The given smart city must not be null!");
+
+            return SmartCity1.CompareTo(SmartCity2) > 0;
+
+        }
+
+        #endregion
+
+        #region Operator >= (SmartCity1, SmartCity2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="SmartCity1">A smart city.</param>
+        /// <param name="SmartCity2">Another smart city.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (SmartCityStub SmartCity1,
+                                           SmartCityStub SmartCity2)
+
+            => !(SmartCity1 < SmartCity2);
+
+        #endregion
+
+        #endregion
+
+        #region IComparable<SmartCityStub> Members
 
         #region CompareTo(Object)
 
@@ -2066,32 +2415,31 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            // Check if the given object is an EVSE_Operator.
-            var EVSE_Operator = Object as SmartCityStub;
-            if ((Object) EVSE_Operator == null)
-                throw new ArgumentException("The given object is not an EVSE_Operator!");
+            var SmartCityStub = Object as SmartCityStub;
+            if ((Object) SmartCityStub == null)
+                throw new ArgumentException("The given object is not an SmartCityStub!", nameof(Object));
 
-            return CompareTo(EVSE_Operator);
+            return CompareTo(SmartCityStub);
 
         }
 
         #endregion
 
-        #region CompareTo(EVSE_Operator)
+        #region CompareTo(SmartCityStub)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSE_Operator">An EVSE_Operator object to compare with.</param>
-        public Int32 CompareTo(SmartCityStub EVSE_Operator)
+        /// <param name="SmartCityStub">An SmartCityStub object to compare with.</param>
+        public Int32 CompareTo(SmartCityStub SmartCityStub)
         {
 
-            if ((Object) EVSE_Operator == null)
-                throw new ArgumentNullException("The given EVSE_Operator must not be null!");
+            if ((Object) SmartCityStub == null)
+                throw new ArgumentNullException(nameof(SmartCityStub), "The given SmartCityStub must not be null!");
 
-            return Id.CompareTo(EVSE_Operator.Id);
+            return Id.CompareTo(SmartCityStub.Id);
 
         }
 
@@ -2099,7 +2447,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<EVSE_Operator> Members
+        #region IEquatable<SmartCityStub> Members
 
         #region Equals(Object)
 
@@ -2114,31 +2462,30 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an EVSE_Operator.
-            var EVSE_Operator = Object as SmartCityStub;
-            if ((Object) EVSE_Operator == null)
+            var SmartCityStub = Object as SmartCityStub;
+            if ((Object) SmartCityStub == null)
                 return false;
 
-            return this.Equals(EVSE_Operator);
+            return this.Equals(SmartCityStub);
 
         }
 
         #endregion
 
-        #region Equals(EVSE_Operator)
+        #region Equals(SmartCityStub)
 
         /// <summary>
-        /// Compares two EVSE_Operator for equality.
+        /// Compares two SmartCityStub for equality.
         /// </summary>
-        /// <param name="EVSE_Operator">An EVSE_Operator to compare with.</param>
+        /// <param name="SmartCityStub">An SmartCityStub to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(SmartCityStub EVSE_Operator)
+        public Boolean Equals(SmartCityStub SmartCityStub)
         {
 
-            if ((Object) EVSE_Operator == null)
+            if ((Object) SmartCityStub == null)
                 return false;
 
-            return Id.Equals(EVSE_Operator.Id);
+            return Id.Equals(SmartCityStub.Id);
 
         }
 
@@ -2152,6 +2499,7 @@ namespace org.GraphDefined.WWCP
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
+
             => Id.GetHashCode();
 
         #endregion
@@ -2162,9 +2510,12 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-            => Id.ToString();
+
+            => "Smart City " + Id;
 
         #endregion
+
+
 
     }
 

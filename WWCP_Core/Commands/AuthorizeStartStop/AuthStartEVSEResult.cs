@@ -36,7 +36,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The identification of the authorizing entity.
         /// </summary>
-        public Authorizator_Id          AuthorizatorId          { get; }
+        public IId                      AuthorizatorId          { get; }
 
         /// <summary>
         /// The result of the authorize start operation.
@@ -93,7 +93,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="Runtime">The run time of the request.</param>
-        private AuthStartEVSEResult(Authorizator_Id          AuthorizatorId,
+        private AuthStartEVSEResult(IId          AuthorizatorId,
                                     AuthStartEVSEResultType  Result,
                                     eMobilityProvider_Id?    ProviderId      = null,
                                     String                   Description     = null,
@@ -135,7 +135,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Runtime">The run time of the request.</param>
         /// <param name="ListOfAuthStopTokens">An optional enumeration of authorize stop tokens.</param>
         /// <param name="ListOfAuthStopPINs">An optional enumeration of authorize stop PINs.</param>
-        private AuthStartEVSEResult(Authorizator_Id          AuthorizatorId,
+        private AuthStartEVSEResult(IId          AuthorizatorId,
                                     ChargingSession_Id       SessionId,
                                     eMobilityProvider_Id?    ProviderId            = null,
                                     String                   Description           = null,
@@ -180,7 +180,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ErrorMessage">An error message.</param>
         /// <param name="Runtime">The run time of the request.</param>
-        private AuthStartEVSEResult(Authorizator_Id  AuthorizatorId,
+        private AuthStartEVSEResult(IId  AuthorizatorId,
                                     String           ErrorMessage  = null,
                                     TimeSpan?        Runtime       = null)
         {
@@ -212,7 +212,7 @@ namespace org.GraphDefined.WWCP
         /// The result is unknown and/or should be ignored.
         /// </summary>
 
-        public static AuthStartEVSEResult Unspecified(Authorizator_Id AuthorizatorId)
+        public static AuthStartEVSEResult Unspecified(IId AuthorizatorId)
 
             => new AuthStartEVSEResult(AuthorizatorId,
                                        AuthStartEVSEResultType.Unspecified);
@@ -225,7 +225,7 @@ namespace org.GraphDefined.WWCP
         /// The given charging session identification is unknown or invalid.
         /// </summary>
 
-        public static AuthStartEVSEResult InvalidSessionId(Authorizator_Id AuthorizatorId)
+        public static AuthStartEVSEResult InvalidSessionId(IId AuthorizatorId)
 
             => new AuthStartEVSEResult(AuthorizatorId,
                                        AuthStartEVSEResultType.InvalidSessionId);
@@ -238,7 +238,7 @@ namespace org.GraphDefined.WWCP
         /// The EVSE is reserved.
         /// </summary>
 
-        public static AuthStartEVSEResult Reserved(Authorizator_Id AuthorizatorId)
+        public static AuthStartEVSEResult Reserved(IId AuthorizatorId)
 
             => new AuthStartEVSEResult(AuthorizatorId,
                                        AuthStartEVSEResultType.Reserved);
@@ -251,7 +251,7 @@ namespace org.GraphDefined.WWCP
         /// The EVSE or charging station is out of service.
         /// </summary>
 
-        public static AuthStartEVSEResult OutOfService(Authorizator_Id AuthorizatorId)
+        public static AuthStartEVSEResult OutOfService(IId AuthorizatorId)
 
             => new AuthStartEVSEResult(AuthorizatorId,
                                        AuthStartEVSEResultType.OutOfService);
@@ -273,7 +273,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ListOfAuthStopPINs">An optional enumeration of authorize stop PINs.</param>
         public static AuthStartEVSEResult
 
-            Authorized(Authorizator_Id          AuthorizatorId,
+            Authorized(IId          AuthorizatorId,
                        ChargingSession_Id       SessionId,
                        eMobilityProvider_Id?    ProviderId            = null,
                        String                   Description           = null,
@@ -306,7 +306,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Runtime">The run time of the request.</param>
         public static AuthStartEVSEResult
 
-            NotAuthorized(Authorizator_Id        AuthorizatorId,
+            NotAuthorized(IId        AuthorizatorId,
                           eMobilityProvider_Id?  ProviderId      = null,
                           String                 Description     = null,
                           String                 AdditionalInfo  = null,
@@ -334,7 +334,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Runtime">The run time of the request.</param>
         public static AuthStartEVSEResult
 
-            Blocked(Authorizator_Id        AuthorizatorId,
+            Blocked(IId        AuthorizatorId,
                     eMobilityProvider_Id?  ProviderId      = null,
                     String                 Description     = null,
                     String                 AdditionalInfo  = null,
@@ -357,7 +357,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="Runtime">The run time of the request.</param>
-        public static AuthStartEVSEResult CommunicationTimeout(Authorizator_Id  AuthorizatorId,
+        public static AuthStartEVSEResult CommunicationTimeout(IId  AuthorizatorId,
                                                                TimeSpan         Runtime)
 
             => new AuthStartEVSEResult(AuthorizatorId,
@@ -373,7 +373,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="Runtime">The run time of the request.</param>
-        public static AuthStartEVSEResult StartChargingTimeout(Authorizator_Id  AuthorizatorId,
+        public static AuthStartEVSEResult StartChargingTimeout(IId  AuthorizatorId,
                                                                TimeSpan         Runtime)
 
             => new AuthStartEVSEResult(AuthorizatorId,
@@ -390,7 +390,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ErrorMessage">An error message.</param>
         /// <param name="Runtime">The run time of the request.</param>
-        public static AuthStartEVSEResult Error(Authorizator_Id  AuthorizatorId,
+        public static AuthStartEVSEResult Error(IId  AuthorizatorId,
                                                 String           ErrorMessage  = null,
                                                 TimeSpan?        Runtime       = null)
 

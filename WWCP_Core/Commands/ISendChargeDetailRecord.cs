@@ -65,12 +65,11 @@ namespace org.GraphDefined.WWCP
     public interface IRemoteSendChargeDetailRecord
     {
 
-        #region SendChargeDetailRecord(...ChargeDetailRecord, ...)
-
         /// <summary>
         /// Send a charge detail record.
         /// </summary>
         /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="TransmissionType">Whether to send the CDR directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -79,13 +78,12 @@ namespace org.GraphDefined.WWCP
         Task<SendCDRResult>
 
             SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
+                                   TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
 
-                                   DateTime?           Timestamp          = null,
-                                   CancellationToken?  CancellationToken  = null,
-                                   EventTracking_Id    EventTrackingId    = null,
-                                   TimeSpan?           RequestTimeout     = null);
-
-        #endregion
+                                   DateTime?           Timestamp           = null,
+                                   CancellationToken?  CancellationToken   = null,
+                                   EventTracking_Id    EventTrackingId     = null,
+                                   TimeSpan?           RequestTimeout      = null);
 
     }
 

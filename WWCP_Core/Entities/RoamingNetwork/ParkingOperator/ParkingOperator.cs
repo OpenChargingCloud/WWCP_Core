@@ -39,7 +39,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The parking operator is responsible for operating parking spaces.
     /// </summary>
-    public class ParkingOperator : ACryptoEMobilityEntity<ParkingOperator_Id>,
+    public class ParkingOperator : ABaseEMobilityEntity<ParkingOperator_Id>,
                                    IEquatable<ParkingOperator>, IComparable<ParkingOperator>, IComparable,
                                    IEnumerable<ChargingPool>,
                                    IStatus<ParkingOperatorStatusType>
@@ -393,12 +393,6 @@ namespace org.GraphDefined.WWCP
         [Optional]
         public IRemoteParkingOperator  RemoteParkingOperator    { get; }
 
-
-        /// <summary>
-        /// The parent roaming network.
-        /// </summary>
-        public RoamingNetwork                  RoamingNetwork                   { get; }
-
         #endregion
 
         #region Events
@@ -446,17 +440,18 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional (multi-language) description of the EVSE Operator.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         internal ParkingOperator(ParkingOperator_Id                     Id,
-                                         RoamingNetwork                                 RoamingNetwork,
-                                         Action<ParkingOperator>                Configurator                          = null,
-                                         RemoteParkingOperatorCreatorDelegate   RemoteParkingOperatorCreator  = null,
-                                         I18NString                                     Name                                  = null,
-                                         I18NString                                     Description                           = null,
-                                         ParkingOperatorAdminStatusType         AdminStatus                           = ParkingOperatorAdminStatusType.Operational,
-                                         ParkingOperatorStatusType              Status                                = ParkingOperatorStatusType.Available,
-                                         UInt16                                         MaxAdminStatusListSize                = DefaultMaxAdminStatusListSize,
-                                         UInt16                                         MaxStatusListSize                     = DefaultMaxStatusListSize)
+                                 RoamingNetwork                         RoamingNetwork,
+                                 Action<ParkingOperator>                Configurator                   = null,
+                                 RemoteParkingOperatorCreatorDelegate   RemoteParkingOperatorCreator   = null,
+                                 I18NString                             Name                           = null,
+                                 I18NString                             Description                    = null,
+                                 ParkingOperatorAdminStatusType         AdminStatus                    = ParkingOperatorAdminStatusType.Operational,
+                                 ParkingOperatorStatusType              Status                         = ParkingOperatorStatusType.Available,
+                                 UInt16                                 MaxAdminStatusListSize         = DefaultMaxAdminStatusListSize,
+                                 UInt16                                 MaxStatusListSize              = DefaultMaxStatusListSize)
 
-            : base(Id)
+            : base(Id,
+                   RoamingNetwork)
 
         {
 
@@ -468,8 +463,6 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             #region Init data and properties
-
-            this.RoamingNetwork              = RoamingNetwork;
 
             this._Name                        = Name        ?? new I18NString();
             this._Description                 = Description ?? new I18NString();

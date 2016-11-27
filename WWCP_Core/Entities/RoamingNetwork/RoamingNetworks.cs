@@ -125,7 +125,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingPoolSignatureGenerator">A delegate to sign a charging pool.</param>
         /// <param name="ChargingStationOperatorSignatureGenerator">A delegate to sign a charging station operator.</param>
         public RoamingNetwork CreateNewRoamingNetwork(RoamingNetwork_Id                         RoamingNetworkId,
-                                                      Authorizator_Id                           AuthorizatorId                             = null,
+                                                      I18NString                                Name,
+                                                      //String                                    AuthorizatorId                             = null,
                                                       I18NString                                Description                                = null,
                                                       Action<RoamingNetwork>                    Configurator                               = null,
                                                       RoamingNetworkAdminStatusType             AdminStatus                                = RoamingNetworkAdminStatusType.Operational,
@@ -149,8 +150,9 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             var _RoamingNetwork = new RoamingNetwork(RoamingNetworkId,
+                                                     Name,
                                                      Description,
-                                                     AuthorizatorId,
+                                                     //AuthorizatorId,
                                                      AdminStatus,
                                                      Status,
                                                      MaxAdminStatusListSize,

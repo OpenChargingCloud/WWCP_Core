@@ -411,16 +411,19 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The EVSE status schedule.
         /// </summary>
-        public IEnumerable<Timestamped<EVSEStatusType>> StatusSchedule(UInt64 HistorySize = 1)
+        public IEnumerable<Timestamped<EVSEStatusType>> StatusSchedule(UInt64? HistorySize = null)
         {
 
              if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
                  AdminStatus.Value == EVSEAdminStatusType.InternalUse)
              {
 
-                 return _StatusSchedule.Take(HistorySize);
+                if (HistorySize.HasValue)
+                    return _StatusSchedule.Take(HistorySize);
 
-             }
+                return _StatusSchedule;
+
+            }
 
              else
              {
@@ -477,9 +480,15 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The EVSE admin status schedule.
         /// </summary>
-        public IEnumerable<Timestamped<EVSEAdminStatusType>> AdminStatusSchedule(UInt64 HistorySize = 1)
+        public IEnumerable<Timestamped<EVSEAdminStatusType>> AdminStatusSchedule(UInt64? HistorySize = null)
+        {
 
-            => _AdminStatusSchedule.Take(HistorySize);
+            if (HistorySize.HasValue)
+                return _AdminStatusSchedule.Take(HistorySize);
+
+            return _AdminStatusSchedule;
+
+        }
 
         #endregion
 

@@ -26,19 +26,39 @@ using System.Collections.Concurrent;
 namespace org.GraphDefined.WWCP
 {
 
-    #region RoamingProviderAlreadyExists
+    #region CSORoamingProviderAlreadyExists
 
     /// <summary>
-    /// An exception thrown whenever a roaming provider already exists within the given roaming network.
+    /// An exception thrown whenever a charging station roaming provider already exists within the given roaming network.
     /// </summary>
-    public class RoamingProviderAlreadyExists : RoamingNetworkException
+    public class CSORoamingProviderAlreadyExists : RoamingNetworkException
     {
 
-        public RoamingProviderAlreadyExists(RoamingNetwork      RoamingNetwork,
-                                            RoamingProvider_Id  RoamingProviderId)
+        public CSORoamingProviderAlreadyExists(RoamingNetwork         RoamingNetwork,
+                                               CSORoamingProvider_Id  RoamingProviderId)
 
             : base(RoamingNetwork,
-                   "The given roaming provider identification '" + RoamingProviderId + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")
+                   "The given charging station roaming provider identification '" + RoamingProviderId + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")
+
+        { }
+
+    }
+
+    #endregion
+
+    #region EMPRoamingProviderAlreadyExists
+
+    /// <summary>
+    /// An exception thrown whenever an e-mobility roaming provider already exists within the given roaming network.
+    /// </summary>
+    public class EMPRoamingProviderAlreadyExists : RoamingNetworkException
+    {
+
+        public EMPRoamingProviderAlreadyExists(RoamingNetwork         RoamingNetwork,
+                                               EMPRoamingProvider_Id  RoamingProviderId)
+
+            : base(RoamingNetwork,
+                   "The given e-mobility roaming provider identification '" + RoamingProviderId + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")
 
         { }
 

@@ -19,6 +19,8 @@
 
 using System;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 #endregion
 
 namespace org.GraphDefined.WWCP
@@ -27,8 +29,8 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current status of an EVSE.
     /// </summary>
-    public class EVSEStatus : IEquatable<EVSEStatus>,
-                              IComparable<EVSEStatus>
+    public struct EVSEStatus : IEquatable <EVSEStatus>,
+                               IComparable<EVSEStatus>
     {
 
         #region Properties
@@ -47,6 +49,12 @@ namespace org.GraphDefined.WWCP
         /// The timestamp of the current status of the EVSE.
         /// </summary>
         public DateTime        Timestamp   { get; }
+
+        /// <summary>
+        /// The timestamped status of the EVSE.
+        /// </summary>
+        public Timestamped<EVSEStatusType> Combined
+            => new Timestamped<EVSEStatusType>(Timestamp, Status);
 
         #endregion
 
@@ -80,13 +88,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSE">An EVSE.</param>
         public static EVSEStatus Snapshot(EVSE EVSE)
-        {
 
-            return new EVSEStatus(EVSE.Id,
-                                  EVSE.Status.Value,
-                                  EVSE.Status.Timestamp);
-
-        }
+            => new EVSEStatus(EVSE.Id,
+                              EVSE.Status.Value,
+                              EVSE.Status.Timestamp);
 
         #endregion
 
@@ -98,8 +103,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatus1">A EVSEStatus.</param>
-        /// <param name="EVSEStatus2">Another EVSEStatus.</param>
+        /// <param name="EVSEStatus1">An EVSE status.</param>
+        /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
         {
@@ -123,13 +128,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatus1">A EVSEStatus.</param>
-        /// <param name="EVSEStatus2">Another EVSEStatus.</param>
+        /// <param name="EVSEStatus1">An EVSE status.</param>
+        /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
-        {
-            return !(EVSEStatus1 == EVSEStatus2);
-        }
+            => !(EVSEStatus1 == EVSEStatus2);
 
         #endregion
 
@@ -138,14 +141,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatus1">A EVSEStatus.</param>
-        /// <param name="EVSEStatus2">Another EVSEStatus.</param>
+        /// <param name="EVSEStatus1">An EVSE status.</param>
+        /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
         {
 
             if ((Object) EVSEStatus1 == null)
-                throw new ArgumentNullException("The given EVSEStatus1 must not be null!");
+                throw new ArgumentNullException(nameof(EVSEStatus1), "The given EVSEStatus1 must not be null!");
 
             return EVSEStatus1.CompareTo(EVSEStatus2) < 0;
 
@@ -158,13 +161,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatus1">A EVSEStatus.</param>
-        /// <param name="EVSEStatus2">Another EVSEStatus.</param>
+        /// <param name="EVSEStatus1">An EVSE status.</param>
+        /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
-        {
-            return !(EVSEStatus1 > EVSEStatus2);
-        }
+            => !(EVSEStatus1 > EVSEStatus2);
 
         #endregion
 
@@ -173,14 +174,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatus1">A EVSEStatus.</param>
-        /// <param name="EVSEStatus2">Another EVSEStatus.</param>
+        /// <param name="EVSEStatus1">An EVSE status.</param>
+        /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
         {
 
             if ((Object) EVSEStatus1 == null)
-                throw new ArgumentNullException("The given EVSEStatus1 must not be null!");
+                throw new ArgumentNullException(nameof(EVSEStatus1), "The given EVSEStatus1 must not be null!");
 
             return EVSEStatus1.CompareTo(EVSEStatus2) > 0;
 
@@ -193,13 +194,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVSEStatus1">A EVSEStatus.</param>
-        /// <param name="EVSEStatus2">Another EVSEStatus.</param>
+        /// <param name="EVSEStatus1">An EVSE status.</param>
+        /// <param name="EVSEStatus2">Another EVSE status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (EVSEStatus EVSEStatus1, EVSEStatus EVSEStatus2)
-        {
-            return !(EVSEStatus1 < EVSEStatus2);
-        }
+            => !(EVSEStatus1 < EVSEStatus2);
 
         #endregion
 
@@ -217,14 +216,13 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            // Check if the given object is an EVSEStatus.
-            var EVSEStatus = Object as EVSEStatus;
-            if ((Object) EVSEStatus == null)
-                throw new ArgumentException("The given object is not a EVSEStatus!");
+            if (!(Object is EVSEStatus))
+                throw new ArgumentException("The given object is not a EVSEStatus!",
+                                            nameof(Object));
 
-            return CompareTo(EVSEStatus);
+            return CompareTo((EVSEStatus) Object);
 
         }
 
@@ -240,7 +238,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) EVSEStatus == null)
-                throw new ArgumentNullException("The given EVSEStatus must not be null!");
+                throw new ArgumentNullException(nameof(EVSEStatus), "The given EVSEStatus must not be null!");
 
             // Compare EVSE Ids
             var _Result = Id.CompareTo(EVSEStatus.Id);
@@ -272,12 +270,10 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an EVSEStatus.
-            var EVSEStatus = Object as EVSEStatus;
-            if ((Object) EVSEStatus == null)
+            if (!(Object is EVSEStatus))
                 return false;
 
-            return this.Equals(EVSEStatus);
+            return this.Equals((EVSEStatus) Object);
 
         }
 
@@ -296,8 +292,9 @@ namespace org.GraphDefined.WWCP
             if ((Object) EVSEStatus == null)
                 return false;
 
-            return Id.    Equals(EVSEStatus.Id) &&
-                   Status.Equals(EVSEStatus.Status);
+            return Id.       Equals(EVSEStatus.Id)     &&
+                   Status.   Equals(EVSEStatus.Status) &&
+                   Timestamp.Equals(EVSEStatus.Timestamp);
 
         }
 
@@ -315,7 +312,11 @@ namespace org.GraphDefined.WWCP
         {
             unchecked
             {
-                return Id.GetHashCode() * 17 ^ Status.GetHashCode();
+
+                return Id.       GetHashCode() * 7 ^
+                       Status.   GetHashCode() * 5 ^
+                       Timestamp.GetHashCode();
+
             }
         }
 
@@ -325,14 +326,13 @@ namespace org.GraphDefined.WWCP
 
         /// <summary>
         /// Return a string representation of this object.
-        /// ISO-IEC-15118 – Annex H "Specification of Identifiers"
         /// </summary>
         public override String ToString()
-        {
 
-            return String.Concat(Id, " -> ", Status.ToString());
-
-        }
+            => String.Concat(Id, " -> ",
+                             Status,
+                             " since ",
+                             Timestamp.ToIso8601());
 
         #endregion
 

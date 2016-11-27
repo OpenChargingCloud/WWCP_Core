@@ -17,13 +17,9 @@
 
 #region Usings
 
-using System;
-using System.Linq;
 using System.Collections.Generic;
 
 using Org.BouncyCastle.Bcpg.OpenPgp;
-
-using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -52,13 +48,15 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
+        #region ABaseEMobilityEntity(Id,  ...)
+
         /// <summary>
         /// Create a new abstract crypto entity.
         /// </summary>
         /// <param name="Id">The unique entity identification.</param>
-        public ACryptoEMobilityEntity(TId               Id,
-                                      PgpPublicKeyRing  PublicKeyRing  = null,
-                                      PgpSecretKeyRing  SecretKeyRing  = null)
+        protected ACryptoEMobilityEntity(TId               Id,
+                                         PgpPublicKeyRing  PublicKeyRing  = null,
+                                         PgpSecretKeyRing  SecretKeyRing  = null)
 
             : base(Id)
 
@@ -67,13 +65,17 @@ namespace org.GraphDefined.WWCP
 
         }
 
+        #endregion
+
+        #region ABaseEMobilityEntity(Ids, ...)
+
         /// <summary>
         /// Create a new abstract crypto entity.
         /// </summary>
         /// <param name="Ids">The unique entity identifications.</param>
-        public ACryptoEMobilityEntity(IEnumerable<TId>  Ids,
-                                      PgpPublicKeyRing  PublicKeyRing  = null,
-                                      PgpSecretKeyRing  SecretKeyRing  = null)
+        protected ACryptoEMobilityEntity(IEnumerable<TId>  Ids,
+                                         PgpPublicKeyRing  PublicKeyRing  = null,
+                                         PgpSecretKeyRing  SecretKeyRing  = null)
 
             : base(Ids)
 
@@ -83,10 +85,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #endregion
+
+
+        #region Sign()
 
         public Signature Sign()
 
             => new Signature("");
+
+        #endregion
 
 
     }

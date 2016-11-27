@@ -705,10 +705,15 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The admin status schedule.
         /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<ChargingPoolAdminStatusType>> AdminStatusSchedule
+        public IEnumerable<Timestamped<ChargingPoolAdminStatusType>> AdminStatusSchedule(UInt64? HistorySize = null)
+        {
 
-            => _AdminStatusSchedule;
+            if (HistorySize.HasValue)
+                return _AdminStatusSchedule.Take(HistorySize);
+
+            return _AdminStatusSchedule;
+
+        }
 
         #endregion
 
@@ -732,10 +737,15 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The status schedule.
         /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<ChargingPoolStatusType>> StatusSchedule
+        public IEnumerable<Timestamped<ChargingPoolStatusType>> StatusSchedule(UInt64? HistorySize = null)
+        {
 
-            => _StatusSchedule;
+            if (HistorySize.HasValue)
+                return _StatusSchedule.Take(HistorySize);
+
+            return _StatusSchedule;
+
+        }
 
         #endregion
 
@@ -1068,7 +1078,7 @@ namespace org.GraphDefined.WWCP
 
                                      new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusType>>>(
                                          station.Id,
-                                         station.AdminStatusSchedule)
+                                         station.AdminStatusSchedule())
 
                                  );
 
@@ -1085,7 +1095,7 @@ namespace org.GraphDefined.WWCP
 
                                      new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusType>>>(
                                          station.Id,
-                                         station.StatusSchedule)
+                                         station.StatusSchedule())
 
                                  );
 
@@ -1202,7 +1212,7 @@ namespace org.GraphDefined.WWCP
 
                     _ChargingStation.RemoteChargingStation.OnNewChargingSession += (a, b, session) => {
 
-                        var __EVSE = GetEVSEbyId(session.EVSEId);
+                        var __EVSE = GetEVSEbyId(session.EVSEId.Value);
 
                         __EVSE.ChargingSession = session;
 

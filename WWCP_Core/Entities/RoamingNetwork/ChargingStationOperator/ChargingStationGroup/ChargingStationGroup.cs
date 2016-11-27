@@ -479,11 +479,11 @@ namespace org.GraphDefined.WWCP
         /// Create a new group/pool of charging stations having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charing pool.</param>
-        /// <param name="EVSEOperator">The parent Charging Station Operator.</param>
+        /// <param name="ChargingStationOperator">The parent Charging Station Operator.</param>
         /// <param name="MaxPoolStatusListSize">The default size of the charging pool (aggregated charging station) status list.</param>
         /// <param name="MaxPoolAdminStatusListSize">The default size of the charging pool admin status list.</param>
         internal ChargingStationGroup(ChargingStationGroup_Id  Id,
-                                      ChargingStationOperator             EVSEOperator,
+                                      ChargingStationOperator  ChargingStationOperator,
                                       UInt16                   MaxPoolStatusListSize       = DefaultMaxPoolStatusListSize,
                                       UInt16                   MaxPoolAdminStatusListSize  = DefaultMaxPoolAdminStatusListSize)
 
@@ -493,14 +493,14 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (EVSEOperator == null)
+            if (ChargingStationOperator == null)
                 throw new ArgumentNullException("EVSEOperator", "The Charging Station Operator must not be null!");
 
             #endregion
 
             #region Init data and properties
 
-            this._EVSEOperator               = EVSEOperator;
+            this._EVSEOperator               = ChargingStationOperator;
 
             //this._ChargingStations           = new ConcurrentDictionary<ChargingStation_Id, ChargingStation>();
 
@@ -543,18 +543,18 @@ namespace org.GraphDefined.WWCP
             //this.OnChargingStationRemoval. OnNotification += (timestamp, evseoperator, pool)       => EVSEOperator.ChargingStationRemoval. SendNotification(timestamp, evseoperator, pool);
 
             // ChargingStation events
-            this.OnEVSEAddition.           OnVoting       += (timestamp, station, evse, vote)      => EVSEOperator.EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
-            this.OnEVSEAddition.           OnNotification += (timestamp, station, evse)            => EVSEOperator.EVSEAddition.           SendNotification(timestamp, station, evse);
+            this.OnEVSEAddition.           OnVoting       += (timestamp, station, evse, vote)      => ChargingStationOperator.EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
+            this.OnEVSEAddition.           OnNotification += (timestamp, station, evse)            => ChargingStationOperator.EVSEAddition.           SendNotification(timestamp, station, evse);
 
-            this.OnEVSERemoval.            OnVoting       += (timestamp, station, evse, vote)      => EVSEOperator.EVSERemoval .           SendVoting      (timestamp, station, evse, vote);
-            this.OnEVSERemoval.            OnNotification += (timestamp, station, evse)            => EVSEOperator.EVSERemoval .           SendNotification(timestamp, station, evse);
+            this.OnEVSERemoval.            OnVoting       += (timestamp, station, evse, vote)      => ChargingStationOperator.EVSERemoval .           SendVoting      (timestamp, station, evse, vote);
+            this.OnEVSERemoval.            OnNotification += (timestamp, station, evse)            => ChargingStationOperator.EVSERemoval .           SendNotification(timestamp, station, evse);
 
             // EVSE events
-            this.SocketOutletAddition.     OnVoting       += (timestamp, evse, outlet, vote)       => EVSEOperator.SocketOutletAddition.   SendVoting      (timestamp, evse, outlet, vote);
-            this.SocketOutletAddition.     OnNotification += (timestamp, evse, outlet)             => EVSEOperator.SocketOutletAddition.   SendNotification(timestamp, evse, outlet);
+            this.SocketOutletAddition.     OnVoting       += (timestamp, evse, outlet, vote)       => ChargingStationOperator.SocketOutletAddition.   SendVoting      (timestamp, evse, outlet, vote);
+            this.SocketOutletAddition.     OnNotification += (timestamp, evse, outlet)             => ChargingStationOperator.SocketOutletAddition.   SendNotification(timestamp, evse, outlet);
 
-            this.SocketOutletRemoval.      OnVoting       += (timestamp, evse, outlet, vote)       => EVSEOperator.SocketOutletRemoval.    SendVoting      (timestamp, evse, outlet, vote);
-            this.SocketOutletRemoval.      OnNotification += (timestamp, evse, outlet)             => EVSEOperator.SocketOutletRemoval.    SendNotification(timestamp, evse, outlet);
+            this.SocketOutletRemoval.      OnVoting       += (timestamp, evse, outlet, vote)       => ChargingStationOperator.SocketOutletRemoval.    SendVoting      (timestamp, evse, outlet, vote);
+            this.SocketOutletRemoval.      OnNotification += (timestamp, evse, outlet)             => ChargingStationOperator.SocketOutletRemoval.    SendNotification(timestamp, evse, outlet);
 
             #endregion
 

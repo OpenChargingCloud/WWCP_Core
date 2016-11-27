@@ -19,6 +19,8 @@
 
 using System;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 #endregion
 
 namespace org.GraphDefined.WWCP
@@ -27,62 +29,32 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current status of a charging station.
     /// </summary>
-    public class ChargingStationStatus : IEquatable<ChargingStationStatus>,
-                                         IComparable<ChargingStationStatus>
+    public struct ChargingStationStatus : IEquatable <ChargingStationStatus>,
+                                          IComparable<ChargingStationStatus>
     {
 
         #region Properties
 
-        #region Id
-
-        private readonly ChargingStation_Id _Id;
+        /// <summary>
+        /// The unique identification of the charging station.
+        /// </summary>
+        public ChargingStation_Id         Id          { get; }
 
         /// <summary>
-        /// The unique identification of a charging station.
+        /// The current status of the charging station.
         /// </summary>
-        public ChargingStation_Id Id
-        {
-            get
-            {
-                return _Id;
-            }
-        }
-
-        #endregion
-
-        #region Status
-
-        private readonly ChargingStationStatusType _Status;
-
-        /// <summary>
-        /// The current status of a charging station.
-        /// </summary>
-        public ChargingStationStatusType Status
-        {
-            get
-            {
-                return _Status;
-            }
-        }
-
-        #endregion
-
-        #region Timestamp
-
-        private readonly DateTime _Timestamp;
+        public ChargingStationStatusType  Status      { get; }
 
         /// <summary>
         /// The timestamp of the current status of the charging station.
         /// </summary>
-        public DateTime Timestamp
-        {
-            get
-            {
-                return _Timestamp;
-            }
-        }
+        public DateTime                   Timestamp   { get; }
 
-        #endregion
+        /// <summary>
+        /// The timestamped status of the charging station.
+        /// </summary>
+        public Timestamped<ChargingStationStatusType> Combined
+            => new Timestamped<ChargingStationStatusType>(Timestamp, Status);
 
         #endregion
 
@@ -91,8 +63,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a new charging station status.
         /// </summary>
-        /// <param name="Id">The unique identification of a charging station.</param>
-        /// <param name="Status">The current status of a charging station.</param>
+        /// <param name="Id">The unique identification of the charging station.</param>
+        /// <param name="Status">The current status of the charging station.</param>
         /// <param name="Timestamp">The timestamp of the current status of the charging station.</param>
         public ChargingStationStatus(ChargingStation_Id         Id,
                                      ChargingStationStatusType  Status,
@@ -100,16 +72,9 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            #region Initial checks
-
-            if (Id == null)
-                throw new ArgumentNullException(nameof(Id), "The given unique identification of a charging station must not be null!");
-
-            #endregion
-
-            this._Id         = Id;
-            this._Status     = Status;
-            this._Timestamp  = Timestamp;
+            this.Id         = Id;
+            this.Status     = Status;
+            this.Timestamp  = Timestamp;
 
         }
 
@@ -121,15 +86,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Take a snapshot of the current charging station status.
         /// </summary>
-        /// <param name="ChargingStation">An charging station.</param>
+        /// <param name="ChargingStation">A charging station.</param>
         public static ChargingStationStatus Snapshot(ChargingStation ChargingStation)
-        {
 
-            return new ChargingStationStatus(ChargingStation.Id,
-                                             ChargingStation.Status.Value,
-                                             ChargingStation.Status.Timestamp);
-
-        }
+            => new ChargingStationStatus(ChargingStation.Id,
+                                         ChargingStation.Status.Value,
+                                         ChargingStation.Status.Timestamp);
 
         #endregion
 
@@ -141,8 +103,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationStatus1">A ChargingStationStatus.</param>
-        /// <param name="ChargingStationStatus2">Another ChargingStationStatus.</param>
+        /// <param name="ChargingStationStatus1">A charging station status.</param>
+        /// <param name="ChargingStationStatus2">Another charging station status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (ChargingStationStatus ChargingStationStatus1, ChargingStationStatus ChargingStationStatus2)
         {
@@ -166,13 +128,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationStatus1">A ChargingStationStatus.</param>
-        /// <param name="ChargingStationStatus2">Another ChargingStationStatus.</param>
+        /// <param name="ChargingStationStatus1">A charging station status.</param>
+        /// <param name="ChargingStationStatus2">Another charging station status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (ChargingStationStatus ChargingStationStatus1, ChargingStationStatus ChargingStationStatus2)
-        {
-            return !(ChargingStationStatus1 == ChargingStationStatus2);
-        }
+            => !(ChargingStationStatus1 == ChargingStationStatus2);
 
         #endregion
 
@@ -181,14 +141,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationStatus1">A ChargingStationStatus.</param>
-        /// <param name="ChargingStationStatus2">Another ChargingStationStatus.</param>
+        /// <param name="ChargingStationStatus1">A charging station status.</param>
+        /// <param name="ChargingStationStatus2">Another charging station status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (ChargingStationStatus ChargingStationStatus1, ChargingStationStatus ChargingStationStatus2)
         {
 
             if ((Object) ChargingStationStatus1 == null)
-                throw new ArgumentNullException("The given ChargingStationStatus1 must not be null!");
+                throw new ArgumentNullException(nameof(ChargingStationStatus1), "The given ChargingStationStatus1 must not be null!");
 
             return ChargingStationStatus1.CompareTo(ChargingStationStatus2) < 0;
 
@@ -201,13 +161,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationStatus1">A ChargingStationStatus.</param>
-        /// <param name="ChargingStationStatus2">Another ChargingStationStatus.</param>
+        /// <param name="ChargingStationStatus1">A charging station status.</param>
+        /// <param name="ChargingStationStatus2">Another charging station status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (ChargingStationStatus ChargingStationStatus1, ChargingStationStatus ChargingStationStatus2)
-        {
-            return !(ChargingStationStatus1 > ChargingStationStatus2);
-        }
+            => !(ChargingStationStatus1 > ChargingStationStatus2);
 
         #endregion
 
@@ -216,14 +174,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationStatus1">A ChargingStationStatus.</param>
-        /// <param name="ChargingStationStatus2">Another ChargingStationStatus.</param>
+        /// <param name="ChargingStationStatus1">A charging station status.</param>
+        /// <param name="ChargingStationStatus2">Another charging station status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (ChargingStationStatus ChargingStationStatus1, ChargingStationStatus ChargingStationStatus2)
         {
 
             if ((Object) ChargingStationStatus1 == null)
-                throw new ArgumentNullException("The given ChargingStationStatus1 must not be null!");
+                throw new ArgumentNullException(nameof(ChargingStationStatus1), "The given ChargingStationStatus1 must not be null!");
 
             return ChargingStationStatus1.CompareTo(ChargingStationStatus2) > 0;
 
@@ -236,13 +194,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationStatus1">A ChargingStationStatus.</param>
-        /// <param name="ChargingStationStatus2">Another ChargingStationStatus.</param>
+        /// <param name="ChargingStationStatus1">A charging station status.</param>
+        /// <param name="ChargingStationStatus2">Another charging station status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (ChargingStationStatus ChargingStationStatus1, ChargingStationStatus ChargingStationStatus2)
-        {
-            return !(ChargingStationStatus1 < ChargingStationStatus2);
-        }
+            => !(ChargingStationStatus1 < ChargingStationStatus2);
 
         #endregion
 
@@ -260,14 +216,13 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            // Check if the given object is a charging stationStatus.
-            var ChargingStationStatus = Object as ChargingStationStatus;
-            if ((Object) ChargingStationStatus == null)
-                throw new ArgumentException("The given object is not a ChargingStationStatus!");
+            if (!(Object is ChargingStationStatus))
+                throw new ArgumentException("The given object is not a ChargingStationStatus!",
+                                            nameof(Object));
 
-            return CompareTo(ChargingStationStatus);
+            return CompareTo((ChargingStationStatus) Object);
 
         }
 
@@ -283,14 +238,14 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) ChargingStationStatus == null)
-                throw new ArgumentNullException("The given ChargingStationStatus must not be null!");
+                throw new ArgumentNullException(nameof(ChargingStationStatus), "The given ChargingStationStatus must not be null!");
 
             // Compare ChargingStation Ids
-            var _Result = _Id.CompareTo(ChargingStationStatus._Id);
+            var _Result = Id.CompareTo(ChargingStationStatus.Id);
 
             // If equal: Compare ChargingStation status
             if (_Result == 0)
-                _Result = _Status.CompareTo(ChargingStationStatus._Status);
+                _Result = Status.CompareTo(ChargingStationStatus.Status);
 
             return _Result;
 
@@ -315,12 +270,10 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is a charging stationStatus.
-            var ChargingStationStatus = Object as ChargingStationStatus;
-            if ((Object) ChargingStationStatus == null)
+            if (!(Object is ChargingStationStatus))
                 return false;
 
-            return this.Equals(ChargingStationStatus);
+            return this.Equals((ChargingStationStatus) Object);
 
         }
 
@@ -331,7 +284,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two ChargingStation identifications for equality.
         /// </summary>
-        /// <param name="ChargingStationStatus">An ChargingStation identification to compare with.</param>
+        /// <param name="ChargingStationStatus">A charging station identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingStationStatus ChargingStationStatus)
         {
@@ -339,8 +292,9 @@ namespace org.GraphDefined.WWCP
             if ((Object) ChargingStationStatus == null)
                 return false;
 
-            return _Id.    Equals(ChargingStationStatus._Id) &&
-                   _Status.Equals(ChargingStationStatus._Status);
+            return Id.       Equals(ChargingStationStatus.Id)     &&
+                   Status.   Equals(ChargingStationStatus.Status) &&
+                   Timestamp.Equals(ChargingStationStatus.Timestamp);
 
         }
 
@@ -358,7 +312,11 @@ namespace org.GraphDefined.WWCP
         {
             unchecked
             {
-                return _Id.GetHashCode() * 17 ^ _Status.GetHashCode();
+
+                return Id.       GetHashCode() * 7 ^
+                       Status.   GetHashCode() * 5 ^
+                       Timestamp.GetHashCode();
+
             }
         }
 
@@ -370,11 +328,11 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
 
-            return String.Concat(_Id, " -> ", _Status.ToString());
-
-        }
+            => String.Concat(Id, " -> ",
+                             Status,
+                             " since ",
+                             Timestamp.ToIso8601());
 
         #endregion
 

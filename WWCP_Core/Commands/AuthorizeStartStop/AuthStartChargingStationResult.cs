@@ -36,7 +36,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The identification of the authorizing entity.
         /// </summary>
-        public Authorizator_Id                     AuthorizatorId          { get; }
+        public IId                     AuthorizatorId          { get; }
 
         /// <summary>
         /// The result of the authorize start operation.
@@ -93,7 +93,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="Runtime">The run time of the request.</param>
-        private AuthStartChargingStationResult(Authorizator_Id                     AuthorizatorId,
+        private AuthStartChargingStationResult(IId                     AuthorizatorId,
                                                AuthStartChargingStationResultType  Result,
                                                eMobilityProvider_Id?               ProviderId      = null,
                                                String                              Description     = null,
@@ -135,7 +135,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Runtime">The run time of the request.</param>
         /// <param name="ListOfAuthStopTokens">An optional enumeration of authorize stop tokens.</param>
         /// <param name="ListOfAuthStopPINs">An optional enumeration of authorize stop PINs.</param>
-        private AuthStartChargingStationResult(Authorizator_Id          AuthorizatorId,
+        private AuthStartChargingStationResult(IId          AuthorizatorId,
                                                ChargingSession_Id       SessionId,
                                                eMobilityProvider_Id                  ProviderId,
                                                String                   Description           = null,
@@ -180,7 +180,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ErrorMessage">An error message.</param>
         /// <param name="Runtime">The run time of the request.</param>
-        private AuthStartChargingStationResult(Authorizator_Id  AuthorizatorId,
+        private AuthStartChargingStationResult(IId  AuthorizatorId,
                                                String           ErrorMessage  = null,
                                                TimeSpan?        Runtime       = null)
         {
@@ -212,7 +212,7 @@ namespace org.GraphDefined.WWCP
         /// The result is unknown and/or should be ignored.
         /// </summary>
 
-        public static AuthStartChargingStationResult Unspecified(Authorizator_Id AuthorizatorId)
+        public static AuthStartChargingStationResult Unspecified(IId AuthorizatorId)
 
             => new AuthStartChargingStationResult(AuthorizatorId,
                                                   AuthStartChargingStationResultType.Unspecified);
@@ -225,7 +225,7 @@ namespace org.GraphDefined.WWCP
         /// The given charging session identification is unknown or invalid.
         /// </summary>
 
-        public static AuthStartChargingStationResult InvalidSessionId(Authorizator_Id AuthorizatorId)
+        public static AuthStartChargingStationResult InvalidSessionId(IId AuthorizatorId)
 
             => new AuthStartChargingStationResult(AuthorizatorId,
                                                   AuthStartChargingStationResultType.InvalidSessionId);
@@ -238,7 +238,7 @@ namespace org.GraphDefined.WWCP
         /// The EVSE is reserved.
         /// </summary>
 
-        public static AuthStartChargingStationResult Reserved(Authorizator_Id AuthorizatorId)
+        public static AuthStartChargingStationResult Reserved(IId AuthorizatorId)
 
             => new AuthStartChargingStationResult(AuthorizatorId,
                                                   AuthStartChargingStationResultType.Reserved);
@@ -251,7 +251,7 @@ namespace org.GraphDefined.WWCP
         /// The EVSE or charging station is out of service.
         /// </summary>
 
-        public static AuthStartChargingStationResult OutOfService(Authorizator_Id AuthorizatorId)
+        public static AuthStartChargingStationResult OutOfService(IId AuthorizatorId)
 
             => new AuthStartChargingStationResult(AuthorizatorId,
                                                   AuthStartChargingStationResultType.OutOfService);
@@ -273,7 +273,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ListOfAuthStopPINs">An optional enumeration of authorize stop PINs.</param>
         public static AuthStartChargingStationResult
 
-            Authorized(Authorizator_Id          AuthorizatorId,
+            Authorized(IId          AuthorizatorId,
                        ChargingSession_Id       SessionId,
                        eMobilityProvider_Id                  ProviderId,
                        String                   Description           = null,
@@ -306,7 +306,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Runtime">The run time of the request.</param>
         public static AuthStartChargingStationResult
 
-            NotAuthorized(Authorizator_Id  AuthorizatorId,
+            NotAuthorized(IId  AuthorizatorId,
                           eMobilityProvider_Id          ProviderId,
                           String           Description     = null,
                           String           AdditionalInfo  = null,
@@ -334,7 +334,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Runtime">The run time of the request.</param>
         public static AuthStartChargingStationResult
 
-            Blocked(Authorizator_Id  AuthorizatorId,
+            Blocked(IId  AuthorizatorId,
                     eMobilityProvider_Id          ProviderId,
                     String           Description     = null,
                     String           AdditionalInfo  = null,
@@ -357,7 +357,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="Runtime">The run time of the request.</param>
-        public static AuthStartChargingStationResult CommunicationTimeout(Authorizator_Id  AuthorizatorId,
+        public static AuthStartChargingStationResult CommunicationTimeout(IId  AuthorizatorId,
                                                                           TimeSpan         Runtime)
 
             => new AuthStartChargingStationResult(AuthorizatorId,
@@ -373,7 +373,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="Runtime">The run time of the request.</param>
-        public static AuthStartChargingStationResult StartChargingTimeout(Authorizator_Id  AuthorizatorId,
+        public static AuthStartChargingStationResult StartChargingTimeout(IId  AuthorizatorId,
                                                                           TimeSpan         Runtime)
 
             => new AuthStartChargingStationResult(AuthorizatorId,
@@ -390,9 +390,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ErrorMessage">An error message.</param>
         /// <param name="Runtime">The run time of the request.</param>
-        public static AuthStartChargingStationResult Error(Authorizator_Id  AuthorizatorId,
-                                                           String           ErrorMessage  = null,
-                                                           TimeSpan?        Runtime       = null)
+        public static AuthStartChargingStationResult Error(IId        AuthorizatorId,
+                                                           String     ErrorMessage  = null,
+                                                           TimeSpan?  Runtime       = null)
 
             => new AuthStartChargingStationResult(AuthorizatorId,
                                                   ErrorMessage,

@@ -27,11 +27,11 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The unique identification of an Electric Vehicle Roaming Network (EVRN Id).
+    /// The unique identification of an e-mobility roaming network.
     /// </summary>
-    public class RoamingNetwork_Id : IId,
-                                     IEquatable<RoamingNetwork_Id>,
-                                     IComparable<RoamingNetwork_Id>
+    public struct RoamingNetwork_Id : IId,
+                                      IEquatable <RoamingNetwork_Id>,
+                                      IComparable<RoamingNetwork_Id>
 
     {
 
@@ -40,62 +40,29 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The internal identification.
         /// </summary>
-        protected readonly String _Id;
+        private readonly String InternalId;
 
         #endregion
 
         #region Properties
 
-        #region New
-
         /// <summary>
-        /// Generate a new unique identification of an Electric Vehicle Roaming Network (EVRN Id).
-        /// </summary>
-        public static RoamingNetwork_Id New
-        {
-            get
-            {
-                return new RoamingNetwork_Id(Guid.NewGuid().ToString());
-            }
-        }
-
-        #endregion
-
-        #region Length
-
-        /// <summary>
-        /// Returns the length of the identificator.
+        /// The length of the roaming network identificator.
         /// </summary>
         public UInt64 Length
-        {
-            get
-            {
-                return (UInt64) _Id.Length;
-            }
-        }
-
-        #endregion
+            => (UInt64) InternalId.Length;
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new Electric Vehicle Roaming Network (EVRN Id) identification
+        /// Create a new roaming network identification.
         /// based on the given string.
         /// </summary>
         private RoamingNetwork_Id(String Text)
         {
-
-            #region Initial checks
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentException("The parameter must not be null or empty!", "Text");
-
-            #endregion
-
-            _Id = Text.Trim();
-
+            InternalId = Text;
         }
 
         #endregion
@@ -104,12 +71,24 @@ namespace org.GraphDefined.WWCP
         #region Parse(Text)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle Roaming Network identification (EVRN Id).
+        /// Parse the given string as a roaming network identification.
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Vehicle Roaming Network identification.</param>
+        /// <param name="Text">A text representation of a roaming network identification.</param>
         public static RoamingNetwork_Id Parse(String Text)
         {
+
+            #region Initial checks
+
+            if (Text != null)
+                Text = Text.Trim();
+
+            if (Text.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Text), "The given text representation of a roaming network identification must not be null or empty!");
+
+            #endregion
+
             return new RoamingNetwork_Id(Text);
+
         }
 
         #endregion
@@ -117,18 +96,21 @@ namespace org.GraphDefined.WWCP
         #region TryParse(Text, out RoamingNetworkId)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle Roaming Network identification (EVRN Id).
+        /// Parse the given string as a roaming network identification.
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Vehicle Roaming Network identification.</param>
-        /// <param name="RoamingNetworkId">The parsed Electric Vehicle Roaming Network identification.</param>
+        /// <param name="Text">A text representation of a roaming network identification.</param>
+        /// <param name="RoamingNetworkId">The parsed roaming network identification.</param>
         public static Boolean TryParse(String Text, out RoamingNetwork_Id RoamingNetworkId)
         {
 
             #region Initial checks
 
+            if (Text != null)
+                Text = Text.Trim();
+
             if (Text.IsNullOrEmpty())
             {
-                RoamingNetworkId = null;
+                RoamingNetworkId = default(RoamingNetwork_Id);
                 return false;
             }
 
@@ -136,14 +118,22 @@ namespace org.GraphDefined.WWCP
 
             try
             {
+
                 RoamingNetworkId = new RoamingNetwork_Id(Text);
+
                 return true;
+
             }
+
+#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
             catch (Exception)
-            {
-                RoamingNetworkId = null;
-                return false;
-            }
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
+#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
+            { }
+
+            RoamingNetworkId = default(RoamingNetwork_Id);
+            return false;
 
         }
 
@@ -152,15 +142,13 @@ namespace org.GraphDefined.WWCP
         #region Clone
 
         /// <summary>
-        /// Clone this Electric Vehicle Roaming Network identification.
+        /// Clone this roaming network identification.
         /// </summary>
         public RoamingNetwork_Id Clone
-        {
-            get
-            {
-                return new RoamingNetwork_Id(new String(_Id.ToCharArray()));
-            }
-        }
+
+            => new RoamingNetwork_Id(
+                   new String(InternalId.ToCharArray())
+               );
 
         #endregion
 
@@ -172,8 +160,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkId1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetworkId2">Another RoamingNetwork_Id.</param>
+        /// <param name="RoamingNetworkId1">A roaming network identification.</param>
+        /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
         {
@@ -197,13 +185,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkId1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetworkId2">Another RoamingNetwork_Id.</param>
+        /// <param name="RoamingNetworkId1">A roaming network identification.</param>
+        /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
-        {
-            return !(RoamingNetworkId1 == RoamingNetworkId2);
-        }
+            => !(RoamingNetworkId1 == RoamingNetworkId2);
 
         #endregion
 
@@ -212,14 +198,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkId1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetworkId2">Another RoamingNetwork_Id.</param>
+        /// <param name="RoamingNetworkId1">A roaming network identification.</param>
+        /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
         {
 
             if ((Object) RoamingNetworkId1 == null)
-                throw new ArgumentNullException("The given RoamingNetworkId1 must not be null!");
+                throw new ArgumentNullException(nameof(RoamingNetworkId1), "The given RoamingNetworkId1 must not be null!");
 
             return RoamingNetworkId1.CompareTo(RoamingNetworkId2) < 0;
 
@@ -232,13 +218,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkId1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetworkId2">Another RoamingNetwork_Id.</param>
+        /// <param name="RoamingNetworkId1">A roaming network identification.</param>
+        /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
-        {
-            return !(RoamingNetworkId1 > RoamingNetworkId2);
-        }
+            => !(RoamingNetworkId1 > RoamingNetworkId2);
 
         #endregion
 
@@ -247,14 +231,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkId1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetworkId2">Another RoamingNetwork_Id.</param>
+        /// <param name="RoamingNetworkId1">A roaming network identification.</param>
+        /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
         {
 
             if ((Object) RoamingNetworkId1 == null)
-                throw new ArgumentNullException("The given RoamingNetworkId1 must not be null!");
+                throw new ArgumentNullException(nameof(RoamingNetworkId1), "The given RoamingNetworkId1 must not be null!");
 
             return RoamingNetworkId1.CompareTo(RoamingNetworkId2) > 0;
 
@@ -267,19 +251,17 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="RoamingNetworkId1">A RoamingNetwork_Id.</param>
-        /// <param name="RoamingNetworkId2">Another RoamingNetwork_Id.</param>
+        /// <param name="RoamingNetworkId1">A roaming network identification.</param>
+        /// <param name="RoamingNetworkId2">Another roaming network identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (RoamingNetwork_Id RoamingNetworkId1, RoamingNetwork_Id RoamingNetworkId2)
-        {
-            return !(RoamingNetworkId1 < RoamingNetworkId2);
-        }
+            => !(RoamingNetworkId1 < RoamingNetworkId2);
 
         #endregion
 
         #endregion
 
-        #region IComparable<RoamingNetwork_Id> Members
+        #region IComparable<RoamingNetworkId> Members
 
         #region CompareTo(Object)
 
@@ -291,14 +273,13 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            // Check if the given object is an RoamingNetworkId.
-            var RoamingNetworkId = Object as RoamingNetwork_Id;
-            if ((Object) RoamingNetworkId == null)
-                throw new ArgumentException("The given object is not a RoamingNetworkId!");
+            if (!(Object is RoamingNetwork_Id))
+                throw new ArgumentException("The given object is not a roaming network identification!",
+                                            nameof(Object));
 
-            return CompareTo(RoamingNetworkId);
+            return CompareTo((RoamingNetwork_Id) Object);
 
         }
 
@@ -314,9 +295,15 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) RoamingNetworkId == null)
-                throw new ArgumentNullException("The given RoamingNetworkId must not be null!");
+                throw new ArgumentNullException(nameof(RoamingNetworkId),  "The given roaming network identification must not be null!");
 
-            return _Id.CompareTo(RoamingNetworkId._Id);
+            // Compare the length of the RoamingNetworkIds
+            var _Result = this.Length.CompareTo(RoamingNetworkId.Length);
+
+            if (_Result == 0)
+                _Result = String.Compare(InternalId, RoamingNetworkId.InternalId, StringComparison.Ordinal);
+
+            return _Result;
 
         }
 
@@ -324,7 +311,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<RoamingNetwork_Id> Members
+        #region IEquatable<RoamingNetworkId> Members
 
         #region Equals(Object)
 
@@ -339,12 +326,10 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an RoamingNetworkId.
-            var RoamingNetworkId = Object as RoamingNetwork_Id;
-            if ((Object) RoamingNetworkId == null)
+            if (!(Object is RoamingNetwork_Id))
                 return false;
 
-            return this.Equals(RoamingNetworkId);
+            return Equals((RoamingNetwork_Id) Object);
 
         }
 
@@ -355,7 +340,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two RoamingNetworkIds for equality.
         /// </summary>
-        /// <param name="RoamingNetworkId">A RoamingNetworkId to compare with.</param>
+        /// <param name="RoamingNetworkId">A roaming network identification to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(RoamingNetwork_Id RoamingNetworkId)
         {
@@ -363,7 +348,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) RoamingNetworkId == null)
                 return false;
 
-            return _Id.Equals(RoamingNetworkId._Id);
+            return InternalId.Equals(RoamingNetworkId.InternalId);
 
         }
 
@@ -378,9 +363,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            return _Id.GetHashCode();
-        }
+            => InternalId.GetHashCode();
 
         #endregion
 
@@ -390,16 +373,9 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return _Id.ToString();
-        }
+            => InternalId;
 
         #endregion
-
-        //public static implicit operator String(RoamingNetwork_Id d)
-        //{
-        //    return d.ToString();
-        //}
 
     }
 

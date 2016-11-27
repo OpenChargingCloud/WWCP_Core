@@ -120,7 +120,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unqiue identification of the charging station operator serving this session.
         /// </summary>
-        public ChargingStationOperator_Id OperatorId { get; set; }
+        public ChargingStationOperator_Id?  OperatorId   { get; set; }
 
         #endregion
 
@@ -301,12 +301,12 @@ namespace org.GraphDefined.WWCP
 
         #region EVSEId
 
-        private EVSE_Id _EVSEId;
+        private EVSE_Id? _EVSEId;
 
         /// <summary>
         /// The unqiue identification of the EVSE serving this session.
         /// </summary>
-        public EVSE_Id EVSEId
+        public EVSE_Id? EVSEId
         {
 
             get
@@ -534,12 +534,6 @@ namespace org.GraphDefined.WWCP
         #region AuthService
 
         public IRemoteAuthorizeStartStop AuthService { get; set; }
-
-        #endregion
-
-        #region OperatorRoamingService
-
-        public IChargingStationOperatorRoamingProvider OperatorRoamingService { get; set; }
 
         #endregion
 

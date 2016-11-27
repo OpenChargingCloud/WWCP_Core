@@ -30,10 +30,10 @@ using System.Linq;
 namespace org.GraphDefined.WWCP
 {
 
-    public interface IRemoteEMobilityProvider : IRemotePushData,
-                                                IRemotePushStatus,
-                                                IRemoteAuthorizeStartStop,
-                                                IRemoteSendChargeDetailRecord
+    public interface IRemoteEMobilityProvider // IRemotePushData,
+                                              // IRemotePushStatus,
+                                              // IRemoteAuthorizeStartStop,
+                                              // IRemoteSendChargeDetailRecord
 
     {
 
@@ -42,7 +42,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         eMobilityProvider_Id Id { get; }
 
-        Authorizator_Id AuthorizatorId { get; }
+      //  Authorizator_Id AuthorizatorId { get; }
 
         IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens            { get; }
         IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens     { get; }

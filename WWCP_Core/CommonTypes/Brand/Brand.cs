@@ -151,7 +151,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             this._Name      = Name;
-            this._LogoURI      = Logo;
+            this._LogoURI   = Logo;
             this._Homepage  = Homepage;
 
         }

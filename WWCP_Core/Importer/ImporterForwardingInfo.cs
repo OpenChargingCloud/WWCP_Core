@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region Data
 
-        private Action<DateTime, ImporterForwardingInfo, RoamingNetwork_Id, RoamingNetwork_Id> _OnForwardingChanged;
+        private Action<DateTime, ImporterForwardingInfo, RoamingNetwork_Id?, RoamingNetwork_Id?> _OnForwardingChanged;
 
         #endregion
 
@@ -116,8 +116,8 @@ namespace org.GraphDefined.WWCP.Importer
 
                 this._OnForwardingChanged(DateTime.Now,
                                           this,
-                                          Old_ForwardedToEVSEOperator != null ? Old_ForwardedToEVSEOperator.RoamingNetwork.Id : null,
-                                          value                       != null ? value.RoamingNetwork.Id                       : null);
+                                          Old_ForwardedToEVSEOperator != null ? Old_ForwardedToEVSEOperator.RoamingNetwork.Id : new RoamingNetwork_Id?(),
+                                          value                       != null ? value.RoamingNetwork.Id                       : new RoamingNetwork_Id?());
 
             }
 
@@ -167,19 +167,19 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region Constructor(s)
 
-        public ImporterForwardingInfo(Action<DateTime, ImporterForwardingInfo, RoamingNetwork_Id, RoamingNetwork_Id>  OnChangedCallback,
-                                      IEnumerable<ChargingStationOperator>                                            EVSEOperators,
-                                      ChargingStation_Id                                                              StationId                 = null,
-                                      String                                                                          StationName               = "",
-                                      String                                                                          StationServiceTag         = "",
-                                      Address                                                                         StationAddress            = null,
-                                      GeoCoordinate                                                                   StationGeoCoordinate      = null,
-                                      IEnumerable<EVSE_Id>                                                            EVSEIds                   = null,
-                                      String                                                                          PhoneNumber               = null,
-                                      Timestamped<ChargingStationAdminStatusType>?                                    AdminStatus               = null,
-                                      DateTime?                                                                       Created                   = null,
-                                      Boolean                                                                         OutOfService              = false,
-                                      ChargingStationOperator                                                         ForwardedToEVSEOperator   = null)
+        public ImporterForwardingInfo(Action<DateTime, ImporterForwardingInfo, RoamingNetwork_Id?, RoamingNetwork_Id?>  OnChangedCallback,
+                                      IEnumerable<ChargingStationOperator>                                              EVSEOperators,
+                                      ChargingStation_Id                                                                StationId                 = null,
+                                      String                                                                            StationName               = "",
+                                      String                                                                            StationServiceTag         = "",
+                                      Address                                                                           StationAddress            = null,
+                                      GeoCoordinate                                                                     StationGeoCoordinate      = null,
+                                      IEnumerable<EVSE_Id>                                                              EVSEIds                   = null,
+                                      String                                                                            PhoneNumber               = null,
+                                      Timestamped<ChargingStationAdminStatusType>?                                      AdminStatus               = null,
+                                      DateTime?                                                                         Created                   = null,
+                                      Boolean                                                                           OutOfService              = false,
+                                      ChargingStationOperator                                                           ForwardedToEVSEOperator   = null)
         {
 
             this._OnForwardingChanged        = OnChangedCallback;

@@ -19,6 +19,8 @@
 
 using System;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 #endregion
 
 namespace org.GraphDefined.WWCP
@@ -27,89 +29,52 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current admin status of an EVSE.
     /// </summary>
-    public class EVSEAdminStatus : IEquatable<EVSEAdminStatus>,
-                                   IComparable<EVSEAdminStatus>
+    public struct EVSEAdminStatus : IEquatable <EVSEAdminStatus>,
+                                    IComparable<EVSEAdminStatus>
     {
 
         #region Properties
 
-        #region Id
-
-        private readonly EVSE_Id _Id;
+        /// <summary>
+        /// The unique identification of the EVSE.
+        /// </summary>
+        public EVSE_Id              Id            { get; }
 
         /// <summary>
-        /// The unique identification of an EVSE.
+        /// The current admin status of the EVSE.
         /// </summary>
-        public EVSE_Id Id
-        {
-            get
-            {
-                return _Id;
-            }
-        }
-
-        #endregion
-
-        #region Status
-
-        private readonly EVSEAdminStatusType _Status;
+        public EVSEAdminStatusType  AdminStatus   { get; }
 
         /// <summary>
-        /// The current status of an EVSE.
+        /// The timestamp of the current admin status of the EVSE.
         /// </summary>
-        public EVSEAdminStatusType Status
-        {
-            get
-            {
-                return _Status;
-            }
-        }
-
-        #endregion
-
-        #region Timestamp
-
-        private readonly DateTime _Timestamp;
+        public DateTime             Timestamp     { get; }
 
         /// <summary>
-        /// The timestamp of the current status of the EVSE.
+        /// The timestamped admin status of the EVSE.
         /// </summary>
-        public DateTime Timestamp
-        {
-            get
-            {
-                return _Timestamp;
-            }
-        }
-
-        #endregion
+        public Timestamped<EVSEAdminStatusType> Combined
+            => new Timestamped<EVSEAdminStatusType>(Timestamp, AdminStatus);
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new EVSE status.
+        /// Create a new EVSE admin status.
         /// </summary>
-        /// <param name="Id">The unique identification of an EVSE.</param>
-        /// <param name="Status">The current status of an EVSE.</param>
-        /// <param name="Timestamp">The timestamp of the current status of the EVSE.</param>
+        /// <param name="Id">The unique identification of the EVSE.</param>
+        /// <param name="Status">The current admin status of the EVSE.</param>
+        /// <param name="Timestamp">The timestamp of the current admin status of the EVSE.</param>
         public EVSEAdminStatus(EVSE_Id              Id,
                                EVSEAdminStatusType  Status,
                                DateTime             Timestamp)
 
         {
 
-            #region Initial checks
-
-            if (Id == null)
-                throw new ArgumentNullException(nameof(Id), "The given unique identification of an EVSE must not be null!");
-
-            #endregion
-
-            this._Id         = Id;
-            this._Status     = Status;
-            this._Timestamp  = Timestamp;
+            this.Id           = Id;
+            this.AdminStatus  = Status;
+            this.Timestamp    = Timestamp;
 
         }
 
@@ -123,13 +88,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSE">An EVSE.</param>
         public static EVSEAdminStatus Snapshot(EVSE EVSE)
-        {
 
-            return new EVSEAdminStatus(EVSE.Id,
-                                       EVSE.AdminStatus.Value,
-                                       EVSE.AdminStatus.Timestamp);
-
-        }
+            => new EVSEAdminStatus(EVSE.Id,
+                                   EVSE.AdminStatus.Value,
+                                   EVSE.AdminStatus.Timestamp);
 
         #endregion
 
@@ -170,9 +132,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EVSEAdminStatus EVSEAdminStatus1, EVSEAdminStatus EVSEAdminStatus2)
-        {
-            return !(EVSEAdminStatus1 == EVSEAdminStatus2);
-        }
+            => !(EVSEAdminStatus1 == EVSEAdminStatus2);
 
         #endregion
 
@@ -188,7 +148,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) EVSEAdminStatus1 == null)
-                throw new ArgumentNullException("The given EVSEAdminStatus1 must not be null!");
+                throw new ArgumentNullException(nameof(EVSEAdminStatus1), "The given EVSEAdminStatus1 must not be null!");
 
             return EVSEAdminStatus1.CompareTo(EVSEAdminStatus2) < 0;
 
@@ -205,9 +165,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (EVSEAdminStatus EVSEAdminStatus1, EVSEAdminStatus EVSEAdminStatus2)
-        {
-            return !(EVSEAdminStatus1 > EVSEAdminStatus2);
-        }
+            => !(EVSEAdminStatus1 > EVSEAdminStatus2);
 
         #endregion
 
@@ -223,7 +181,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) EVSEAdminStatus1 == null)
-                throw new ArgumentNullException("The given EVSEAdminStatus1 must not be null!");
+                throw new ArgumentNullException(nameof(EVSEAdminStatus1), "The given EVSEAdminStatus1 must not be null!");
 
             return EVSEAdminStatus1.CompareTo(EVSEAdminStatus2) > 0;
 
@@ -240,9 +198,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEAdminStatus2">Another EVSE admin status.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (EVSEAdminStatus EVSEAdminStatus1, EVSEAdminStatus EVSEAdminStatus2)
-        {
-            return !(EVSEAdminStatus1 < EVSEAdminStatus2);
-        }
+            => !(EVSEAdminStatus1 < EVSEAdminStatus2);
 
         #endregion
 
@@ -260,14 +216,13 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            // Check if the given object is an EVSEAdminStatus.
-            var EVSEAdminStatus = Object as EVSEAdminStatus;
-            if ((Object) EVSEAdminStatus == null)
-                throw new ArgumentException("The given object is not a EVSEAdminStatus!");
+            if (!(Object is EVSEAdminStatus))
+                throw new ArgumentException("The given object is not a EVSEAdminStatus!",
+                                            nameof(Object));
 
-            return CompareTo(EVSEAdminStatus);
+            return CompareTo((EVSEAdminStatus) Object);
 
         }
 
@@ -283,14 +238,14 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) EVSEAdminStatus == null)
-                throw new ArgumentNullException(nameof(EVSEAdminStatus), "The given EVSE admin status must not be null!");
+                throw new ArgumentNullException(nameof(EVSEAdminStatus), "The given EVSEAdminStatus must not be null!");
 
             // Compare EVSE Ids
-            var _Result = _Id.CompareTo(EVSEAdminStatus._Id);
+            var _Result = Id.CompareTo(EVSEAdminStatus.Id);
 
             // If equal: Compare EVSE status
             if (_Result == 0)
-                _Result = _Status.CompareTo(EVSEAdminStatus._Status);
+                _Result = AdminStatus.CompareTo(EVSEAdminStatus.AdminStatus);
 
             return _Result;
 
@@ -315,12 +270,10 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an EVSEAdminStatus.
-            var EVSEAdminStatus = Object as EVSEAdminStatus;
-            if ((Object) EVSEAdminStatus == null)
+            if (!(Object is EVSEAdminStatus))
                 return false;
 
-            return this.Equals(EVSEAdminStatus);
+            return this.Equals((EVSEAdminStatus) Object);
 
         }
 
@@ -339,8 +292,9 @@ namespace org.GraphDefined.WWCP
             if ((Object) EVSEAdminStatus == null)
                 return false;
 
-            return _Id.    Equals(EVSEAdminStatus._Id) &&
-                   _Status.Equals(EVSEAdminStatus._Status);
+            return Id.         Equals(EVSEAdminStatus.Id)          &&
+                   AdminStatus.Equals(EVSEAdminStatus.AdminStatus) &&
+                   Timestamp.  Equals(EVSEAdminStatus.Timestamp);
 
         }
 
@@ -358,7 +312,11 @@ namespace org.GraphDefined.WWCP
         {
             unchecked
             {
-                return _Id.GetHashCode() * 17 ^ _Status.GetHashCode();
+
+                return Id.         GetHashCode() * 7 ^
+                       AdminStatus.GetHashCode() * 5 ^
+                       Timestamp.  GetHashCode();
+
             }
         }
 
@@ -368,14 +326,13 @@ namespace org.GraphDefined.WWCP
 
         /// <summary>
         /// Return a string representation of this object.
-        /// ISO-IEC-15118 – Annex H "Specification of Identifiers"
         /// </summary>
         public override String ToString()
-        {
 
-            return String.Concat(_Id, " -> ", _Status.ToString());
-
-        }
+            => String.Concat(Id, " -> ",
+                             AdminStatus,
+                             " since ",
+                             Timestamp.ToIso8601());
 
         #endregion
 

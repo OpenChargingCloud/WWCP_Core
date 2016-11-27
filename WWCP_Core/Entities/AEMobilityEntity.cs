@@ -61,14 +61,13 @@ namespace org.GraphDefined.WWCP
         /// The global unique identification of this entity.
         /// </summary>
         [Mandatory]
-        public IEnumerable<TId>  Ids            { get; }
-
+        public IEnumerable<TId>  Ids              { get; }
 
         /// <summary>
         /// A unique status identification of this entity.
         /// </summary>
         [Mandatory]
-        public String            ETag           { get; }
+        public String            ETag             { get; }
 
         /// <summary>
         /// The source of this information, e.g. the WWCP importer used.
@@ -110,10 +109,10 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this.Ids           = new TId[] { Id };
-            this.DataSource    = String.Empty;
-            this.LastChange    = DateTime.Now;
-            this._UserDefined  = new UserDefinedDictionary();
+            this.Ids             = new TId[] { Id };
+            this.DataSource      = String.Empty;
+            this.LastChange      = DateTime.Now;
+            this._UserDefined    = new UserDefinedDictionary();
 
             this._UserDefined.OnPropertyChanged += (timestamp, sender, key, oldValue, newValue)
                 => OnPropertyChanged?.Invoke(timestamp, sender, key, oldValue, newValue);
@@ -124,7 +123,7 @@ namespace org.GraphDefined.WWCP
         /// Create a new abstract entity.
         /// </summary>
         /// <param name="Ids">The unique entity identifications.</param>
-        public AEMobilityEntity(IEnumerable<TId> Ids)
+        public AEMobilityEntity(IEnumerable<TId>  Ids)
         {
 
             #region Initial checks
@@ -134,10 +133,10 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this.Ids           = Ids;
-            this.DataSource    = String.Empty;
-            this.LastChange    = DateTime.Now;
-            this._UserDefined  = new UserDefinedDictionary();
+            this.Ids             = Ids;
+            this.DataSource      = String.Empty;
+            this.LastChange      = DateTime.Now;
+            this._UserDefined    = new UserDefinedDictionary();
 
             this._UserDefined.OnPropertyChanged += (timestamp, sender, key, oldValue, newValue)
                 => OnPropertyChanged?.Invoke(timestamp, sender, key, oldValue, newValue);
@@ -289,9 +288,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
-        public int CompareTo(object obj)
-            => 0;// Id.CompareTo(obj.Id);
 
     }
 

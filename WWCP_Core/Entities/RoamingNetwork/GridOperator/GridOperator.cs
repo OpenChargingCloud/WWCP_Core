@@ -43,7 +43,7 @@ namespace org.GraphDefined.WWCP
     /// methods can be misused by any entity in the ev charging process to track the
     /// ev driver or its behaviour.
     /// </summary>
-    public class GridOperator : ACryptoEMobilityEntity<GridOperator_Id>,
+    public class GridOperator : ABaseEMobilityEntity<GridOperator_Id>,
                                 IRemoteGridOperator,
                                 IEquatable <GridOperator>,
                                 IComparable<GridOperator>,
@@ -66,7 +66,7 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        public Authorizator_Id AuthorizatorId { get; }
+        //public Authorizator_Id AuthorizatorId { get; }
 
         #region Name
 
@@ -402,12 +402,6 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public IRemoteGridOperator  RemoteGridOperator    { get; }
 
-
-        /// <summary>
-        /// The parent roaming network.
-        /// </summary>
-        public RoamingNetwork            RoamingNetwork             { get; }
-
         #endregion
 
         #region Events
@@ -496,18 +490,19 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique e-mobility provider identification.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         internal GridOperator(GridOperator_Id                    Id,
-                                   RoamingNetwork                          RoamingNetwork,
-                                   Action<GridOperator>               Configurator                    = null,
-                                   RemoteGridOperatorCreatorDelegate  RemoteGridOperatorCreator  = null,
-                                   I18NString                              Name                            = null,
-                                   I18NString                              Description                     = null,
-                                   GridOperatorPriority               Priority                        = null,
-                                   GridOperatorAdminStatusType        AdminStatus                     = GridOperatorAdminStatusType.Available,
-                                   GridOperatorStatusType             Status                          = GridOperatorStatusType.Available,
-                                   UInt16                                  MaxAdminStatusListSize          = DefaultMaxAdminStatusListSize,
-                                   UInt16                                  MaxStatusListSize               = DefaultMaxStatusListSize)
+                              RoamingNetwork                     RoamingNetwork,
+                              Action<GridOperator>               Configurator                = null,
+                              RemoteGridOperatorCreatorDelegate  RemoteGridOperatorCreator   = null,
+                              I18NString                         Name                        = null,
+                              I18NString                         Description                 = null,
+                              GridOperatorPriority               Priority                    = null,
+                              GridOperatorAdminStatusType        AdminStatus                 = GridOperatorAdminStatusType.Available,
+                              GridOperatorStatusType             Status                      = GridOperatorStatusType.Available,
+                              UInt16                             MaxAdminStatusListSize      = DefaultMaxAdminStatusListSize,
+                              UInt16                             MaxStatusListSize           = DefaultMaxStatusListSize)
 
-            : base(Id)
+            : base(Id,
+                   RoamingNetwork)
 
         {
 
@@ -519,8 +514,6 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             #region Init data and properties
-
-            this.RoamingNetwork              = RoamingNetwork;
 
             this._Name                        = Name        ?? new I18NString();
             this._Description                 = Description ?? new I18NString();

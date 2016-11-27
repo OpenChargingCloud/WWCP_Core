@@ -29,22 +29,26 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-    public interface IRemoteSmartCity : IRemotePushData,
-                                        IRemotePushStatus,
-                                        IRemoteAuthorizeStartStop,
-                                        IRemoteSendChargeDetailRecord
+    public interface IRemoteSmartCity  : IRemotePushData,
+                                         IRemotePushStatus
+                                        //IRemoteAuthorizeStartStop,
+                                        //IRemoteSendChargeDetailRecord
 
     {
 
-        /// <summary>
-        /// The unique identification of the e-mobility service provider.
-        /// </summary>
-        SmartCity_Id Id { get; }
+        #region Properties
 
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens            { get; }
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens     { get; }
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens  { get; }
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens        { get; }
+        /// <summary>
+        /// The unique identification of the smart city.
+        /// </summary>
+        SmartCity_Id  Id     { get; }
+
+        /// <summary>
+        /// The offical (multi-language) name of the smart city.
+        /// </summary>
+        I18NString    Name   { get; }
+
+        #endregion
 
     }
 

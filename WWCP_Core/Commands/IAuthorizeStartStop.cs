@@ -201,10 +201,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create an authorize start request.
         /// </summary>
-        /// <param name="ChargingStationOperatorId">A charging station operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -212,24 +212,25 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<AuthStartResult>
 
-            AuthorizeStart(ChargingStationOperator_Id  ChargingStationOperatorId,
-                           Auth_Token                  AuthToken,
-                           ChargingProduct_Id?         ChargingProductId  = null,
-                           ChargingSession_Id?         SessionId          = null,
+            AuthorizeStart(Auth_Token                   AuthToken,
+                           ChargingProduct_Id?          ChargingProductId   = null,
+                           ChargingSession_Id?          SessionId           = null,
+                           ChargingStationOperator_Id?  OperatorId          = null,
 
-                           DateTime?                   Timestamp          = null,
-                           CancellationToken?          CancellationToken  = null,
-                           EventTracking_Id            EventTrackingId    = null,
-                           TimeSpan?                   RequestTimeout     = null);
+                           DateTime?                    Timestamp           = null,
+                           CancellationToken?           CancellationToken   = null,
+                           EventTracking_Id             EventTrackingId     = null,
+                           TimeSpan?                    RequestTimeout      = null);
+
 
         /// <summary>
         /// Create an authorize start request at the given EVSE.
         /// </summary>
-        /// <param name="ChargingStationOperatorId">A charging station operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -237,25 +238,26 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<AuthStartEVSEResult>
 
-            AuthorizeStart(ChargingStationOperator_Id  ChargingStationOperatorId,
-                           Auth_Token                  AuthToken,
-                           EVSE_Id                     EVSEId,
-                           ChargingProduct_Id?         ChargingProductId  = null,
-                           ChargingSession_Id?         SessionId          = null,
+            AuthorizeStart(Auth_Token                   AuthToken,
+                           EVSE_Id                      EVSEId,
+                           ChargingProduct_Id?          ChargingProductId   = null,
+                           ChargingSession_Id?          SessionId           = null,
+                           ChargingStationOperator_Id?  OperatorId          = null,
 
-                           DateTime?                   Timestamp          = null,
-                           CancellationToken?          CancellationToken  = null,
-                           EventTracking_Id            EventTrackingId    = null,
-                           TimeSpan?                   RequestTimeout     = null);
+                           DateTime?                    Timestamp           = null,
+                           CancellationToken?           CancellationToken   = null,
+                           EventTracking_Id             EventTrackingId     = null,
+                           TimeSpan?                    RequestTimeout      = null);
+
 
         /// <summary>
         /// Create an authorize start request at the given charging station.
         /// </summary>
-        /// <param name="ChargingStationOperatorId">A charging station operator identification.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
+        /// <param name="ChargingStationId">The unique identification charging station.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -263,16 +265,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<AuthStartChargingStationResult>
 
-            AuthorizeStart(ChargingStationOperator_Id   ChargingStationOperatorId,
-                           Auth_Token                   AuthToken,
+            AuthorizeStart(Auth_Token                   AuthToken,
                            ChargingStation_Id           ChargingStationId,
-                           ChargingProduct_Id?          ChargingProductId  = null,
-                           ChargingSession_Id?          SessionId          = null,
+                           ChargingProduct_Id?          ChargingProductId   = null,
+                           ChargingSession_Id?          SessionId           = null,
+                           ChargingStationOperator_Id?  OperatorId          = null,
 
-                           DateTime?                    Timestamp          = null,
-                           CancellationToken?           CancellationToken  = null,
-                           EventTracking_Id             EventTrackingId    = null,
-                           TimeSpan?                    RequestTimeout     = null);
+                           DateTime?                    Timestamp           = null,
+                           CancellationToken?           CancellationToken   = null,
+                           EventTracking_Id             EventTrackingId     = null,
+                           TimeSpan?                    RequestTimeout      = null);
 
         #endregion
 
@@ -281,9 +283,9 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create an authorize stop request.
         /// </summary>
-        /// <param name="ChargingStationOperatorId">A charging station operator identification.</param>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -291,22 +293,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<AuthStopResult>
 
-            AuthorizeStop(ChargingStationOperator_Id  ChargingStationOperatorId,
-                          ChargingSession_Id          SessionId,
-                          Auth_Token                  AuthToken,
+            AuthorizeStop(ChargingSession_Id           SessionId,
+                          Auth_Token                   AuthToken,
+                          ChargingStationOperator_Id?  OperatorId          = null,
 
-                          DateTime?                   Timestamp           = null,
-                          CancellationToken?          CancellationToken   = null,
-                          EventTracking_Id            EventTrackingId     = null,
-                          TimeSpan?                   RequestTimeout      = null);
+                          DateTime?                    Timestamp           = null,
+                          CancellationToken?           CancellationToken   = null,
+                          EventTracking_Id             EventTrackingId     = null,
+                          TimeSpan?                    RequestTimeout      = null);
+
 
         /// <summary>
         /// Create an authorize stop request at the given EVSE.
         /// </summary>
-        /// <param name="ChargingStationOperatorId">A charging station operator identification.</param>
-        /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -314,23 +317,24 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<AuthStopEVSEResult>
 
-            AuthorizeStop(ChargingStationOperator_Id  ChargingStationOperatorId,
-                          EVSE_Id                     EVSEId,
-                          ChargingSession_Id          SessionId,
-                          Auth_Token                  AuthToken,
+            AuthorizeStop(ChargingSession_Id           SessionId,
+                          Auth_Token                   AuthToken,
+                          EVSE_Id                      EVSEId,
+                          ChargingStationOperator_Id?  OperatorId          = null,
 
-                          DateTime?                   Timestamp           = null,
-                          CancellationToken?          CancellationToken   = null,
-                          EventTracking_Id            EventTrackingId     = null,
-                          TimeSpan?                   RequestTimeout      = null);
+                          DateTime?                    Timestamp           = null,
+                          CancellationToken?           CancellationToken   = null,
+                          EventTracking_Id             EventTrackingId     = null,
+                          TimeSpan?                    RequestTimeout      = null);
+
 
         /// <summary>
         /// Create an authorize stop request at the given charging station.
         /// </summary>
-        /// <param name="ChargingStationOperatorId">A charging station operator identification.</param>
-        /// <param name="ChargingStationId">A charging station identification.</param>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
         /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -338,15 +342,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<AuthStopChargingStationResult>
 
-            AuthorizeStop(ChargingStationOperator_Id  ChargingStationOperatorId,
-                          ChargingStation_Id          ChargingStationId,
-                          ChargingSession_Id          SessionId,
-                          Auth_Token                  AuthToken,
+            AuthorizeStop(ChargingSession_Id           SessionId,
+                          Auth_Token                   AuthToken,
+                          ChargingStation_Id           ChargingStationId,
+                          ChargingStationOperator_Id?  OperatorId          = null,
 
-                          DateTime?                   Timestamp           = null,
-                          CancellationToken?          CancellationToken   = null,
-                          EventTracking_Id            EventTrackingId     = null,
-                          TimeSpan?                   RequestTimeout      = null);
+                          DateTime?                    Timestamp           = null,
+                          CancellationToken?           CancellationToken   = null,
+                          EventTracking_Id             EventTrackingId     = null,
+                          TimeSpan?                    RequestTimeout      = null);
 
         #endregion
 

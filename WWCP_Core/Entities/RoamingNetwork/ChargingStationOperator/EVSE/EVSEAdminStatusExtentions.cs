@@ -49,7 +49,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (adminstatus.Id     == Id &&
-                    adminstatus.Status == Status)
+                    adminstatus.AdminStatus == Status)
                     return true;
 
             }

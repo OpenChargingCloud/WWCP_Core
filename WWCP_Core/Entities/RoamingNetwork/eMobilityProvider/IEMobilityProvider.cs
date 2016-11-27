@@ -40,7 +40,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         eMobilityProvider_Id Id { get; }
 
-        Authorizator_Id AuthorizatorId { get; }
+        //Authorizator_Id AuthorizatorId { get; }
 
         IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens            { get; }
         IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens     { get; }

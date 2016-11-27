@@ -200,7 +200,7 @@ namespace org.GraphDefined.WWCP.Importer
         /// <summary>
         /// A delegate called whenever a new forwarding information was changed.
         /// </summary>
-        public delegate void OnForwardingChangedDelegate(DateTime Timestamp, WWCPImporter<T> Sender, ImporterForwardingInfo ForwardingInfo, RoamingNetwork_Id OldRN, RoamingNetwork_Id NewRN);
+        public delegate void OnForwardingChangedDelegate(DateTime Timestamp, WWCPImporter<T> Sender, ImporterForwardingInfo ForwardingInfo, RoamingNetwork_Id? OldRN, RoamingNetwork_Id? NewRN);
 
         /// <summary>
         /// An event fired whenever a new forwarding information was changed.
@@ -223,8 +223,8 @@ namespace org.GraphDefined.WWCP.Importer
 
                             DownloadData<T>                                 DownloadData                      = null,
 
-                            IEnumerable<ChargingStationOperator>            ChargingStationOperators          = null,
-                            ChargingStationOperator                         DefaultChargingStationOperator    = null,
+                            IEnumerable<ChargingStationOperator>        ChargingStationOperators          = null,
+                            ChargingStationOperator                     DefaultChargingStationOperator    = null,
                             CreateForwardingTableDelegate<T>                CreateForwardingTable             = null,
 
                             Action<WWCPImporter<T>, Task<HTTPResponse<T>>>  OnFirstRun                        = null,
@@ -772,15 +772,13 @@ namespace org.GraphDefined.WWCP.Importer
 
         public void SendOnForwardingChanged(DateTime                Timestamp,
                                             ImporterForwardingInfo  ForwardingInfo,
-                                            RoamingNetwork_Id       OldRN,
-                                            RoamingNetwork_Id       NewRN)
+                                            RoamingNetwork_Id?      OldRN,
+                                            RoamingNetwork_Id?      NewRN)
         {
 
             SaveForwardingDataToFile();
 
-            var OnForwardingChangedLocal = OnForwardingChanged;
-            if (OnForwardingChangedLocal != null)
-                OnForwardingChangedLocal(Timestamp, this, ForwardingInfo, OldRN, NewRN);
+            OnForwardingChanged?.Invoke(Timestamp, this, ForwardingInfo, OldRN, NewRN);
 
         }
 

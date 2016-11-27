@@ -49,7 +49,8 @@ namespace org.GraphDefined.WWCP
     /// information or part of B2B contracts.
     /// </summary>
     [DebuggerDisplay("{Id.ToString()} - {Name.FirstText}")]
-    public class ChargingStationOperator : ACryptoEMobilityEntity<ChargingStationOperator_Id>,
+    public class ChargingStationOperator : ABaseEMobilityEntity<ChargingStationOperator_Id>,
+                                           IReserveRemoteStartStop,
                                            IEquatable<ChargingStationOperator>, IComparable<ChargingStationOperator>, IComparable,
                                            IEnumerable<ChargingPool>,
                                            IStatus<ChargingStationOperatorStatusType>
@@ -361,10 +362,15 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The admin status schedule.
         /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<ChargingStationOperatorAdminStatusType>> AdminStatusSchedule
+        public IEnumerable<Timestamped<ChargingStationOperatorAdminStatusType>> AdminStatusSchedule(UInt64? HistorySize = null)
+        {
 
-            => _AdminStatusSchedule;
+            if (HistorySize.HasValue)
+                return _AdminStatusSchedule.Take(HistorySize);
+
+            return _AdminStatusSchedule;
+
+        }
 
         #endregion
 
@@ -388,10 +394,15 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The status schedule.
         /// </summary>
-        [Optional]
-        public IEnumerable<Timestamped<ChargingStationOperatorStatusType>> StatusSchedule
+        public IEnumerable<Timestamped<ChargingStationOperatorStatusType>> StatusSchedule(UInt64? HistorySize = null)
+        {
 
-            => _StatusSchedule;
+            if (HistorySize.HasValue)
+                return _StatusSchedule.Take(HistorySize);
+
+            return _StatusSchedule;
+
+        }
 
         #endregion
 
@@ -404,12 +415,6 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         [Optional]
         public IRemoteChargingStationOperator  RemoteChargingStationOperator    { get; }
-
-
-        /// <summary>
-        /// The parent roaming network.
-        /// </summary>
-        public RoamingNetwork                  RoamingNetwork                   { get; }
 
         #endregion
 
@@ -468,7 +473,8 @@ namespace org.GraphDefined.WWCP
                                          UInt16                                         MaxAdminStatusListSize                = DefaultMaxAdminStatusListSize,
                                          UInt16                                         MaxStatusListSize                     = DefaultMaxStatusListSize)
 
-            : base(Ids)
+            : base(Ids,
+                   RoamingNetwork)
 
         {
 
@@ -480,8 +486,6 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             #region Init data and properties
-
-            this.RoamingNetwork               = RoamingNetwork;
 
             this._Name                        = Name        ?? new I18NString();
             this._Description                 = Description ?? new I18NString();
