@@ -126,7 +126,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
         /// <param name="EVSEs">An enumeration of EVSEs to upload.</param>
-        /// <param name="TransmissionType">Whether to send the EVSE admin status update directly or enqueue it for a while.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -220,7 +220,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
         /// <param name="ChargingStations">An enumeration of charging stations to upload.</param>
-        /// <param name="TransmissionType">Whether to send the EVSE admin status update directly or enqueue it for a while.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -316,7 +316,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
         /// <param name="ChargingPools">An enumeration of charging pools to upload.</param>
-        /// <param name="TransmissionType">Whether to send the EVSE admin status update directly or enqueue it for a while.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -412,7 +412,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
         /// <param name="ChargingStationOperators">An enumeration of charging station operators to upload.</param>
-        /// <param name="TransmissionType">Whether to send the EVSE admin status update directly or enqueue it for a while.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -593,7 +593,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
         /// <param name="EVSEs">An enumeration of EVSEs to upload.</param>
-        /// <param name="TransmissionType">Whether to send the EVSE status update directly or enqueue it for a while.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -687,7 +687,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
         /// <param name="ChargingStations">An enumeration of charging stations to upload.</param>
-        /// <param name="TransmissionType">Whether to send the EVSE status update directly or enqueue it for a while.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -783,7 +783,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
         /// <param name="ChargingPools">An enumeration of charging pools to upload.</param>
-        /// <param name="TransmissionType">Whether to send the EVSE status update directly or enqueue it for a while.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -879,7 +879,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
         /// <param name="ChargingStationOperators">An enumeration of charging station operators to upload.</param>
-        /// <param name="TransmissionType">Whether to send the EVSE status update directly or enqueue it for a while.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -1061,7 +1061,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
         /// <param name="ChargingStations">An enumeration of charging stations to upload.</param>
-        /// <param name="TransmissionType">Whether to send the charging station admin status update directly or enqueue it for a while.</param>
+        /// <param name="TransmissionType">Whether to send the charging station admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -1155,7 +1155,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
         /// <param name="ChargingPools">An enumeration of charging pools to upload.</param>
-        /// <param name="TransmissionType">Whether to send the charging station admin status update directly or enqueue it for a while.</param>
+        /// <param name="TransmissionType">Whether to send the charging station admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -1251,7 +1251,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
         /// <param name="ChargingStationOperators">An enumeration of charging station operators to upload.</param>
-        /// <param name="TransmissionType">Whether to send the charging station admin status update directly or enqueue it for a while.</param>
+        /// <param name="TransmissionType">Whether to send the charging station admin status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -1432,7 +1432,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
         /// <param name="ChargingStations">An enumeration of charging stations to upload.</param>
-        /// <param name="TransmissionType">Whether to send the charging station status update directly or enqueue it for a while.</param>
+        /// <param name="TransmissionType">Whether to send the charging station status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -1526,7 +1526,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
         /// <param name="ChargingPools">An enumeration of charging pools to upload.</param>
-        /// <param name="TransmissionType">Whether to send the charging station status update directly or enqueue it for a while.</param>
+        /// <param name="TransmissionType">Whether to send the charging station status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -1622,7 +1622,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
         /// <param name="ChargingStationOperators">An enumeration of charging station operators to upload.</param>
-        /// <param name="TransmissionType">Whether to send the charging station status update directly or enqueue it for a while.</param>
+        /// <param name="TransmissionType">Whether to send the charging station status updates directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -1713,7 +1713,7 @@ namespace org.GraphDefined.WWCP
 
 
 
-        #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, ChargingPoolAdminStatusUpdate,    TransmissionType = Enqueued, ...)
+        #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, ChargingPoolAdminStatusUpdate, TransmissionType = Enqueued, ...)
 
         /// <summary>
         /// Update the given charging pool admin status update.
@@ -1750,8 +1750,245 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, ChargingPool,                  TransmissionType = Enqueued, ...)
 
-        #region UpdateChargingPoolStatus(this IRemotePushStatus, ChargingPoolStatusUpdate,    TransmissionType = Enqueued, ...)
+        /// <summary>
+        /// Update the admin status of the given charging pool.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="ChargingPool">A charging pool to upload.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool status update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateChargingPoolAdminStatus(this IRemotePushStatus  IRemotePushStatus,
+                                          ChargingPool            ChargingPool,
+                                          TransmissionTypes       TransmissionType    = TransmissionTypes.Enqueued,
+
+                                          DateTime?               Timestamp           = null,
+                                          CancellationToken?      CancellationToken   = null,
+                                          EventTracking_Id        EventTrackingId     = null,
+                                          TimeSpan?               RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingPool == null)
+                throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateChargingPoolAdminStatus(ChargingPoolAdminStatusUpdate.Snapshot(ChargingPool),
+                                                                         TransmissionType,
+
+                                                                         Timestamp,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         RequestTimeout).
+
+                                                                         ConfigureAwait(false);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, ChargingPools,                 TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging pool admin status.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="ChargingPools">An enumeration of charging pools to upload.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateChargingPoolAdminStatus(this IRemotePushStatus     IRemotePushStatus,
+                                          IEnumerable<ChargingPool>  ChargingPools,
+                                          TransmissionTypes          TransmissionType    = TransmissionTypes.Enqueued,
+
+                                          DateTime?                  Timestamp           = null,
+                                          CancellationToken?         CancellationToken   = null,
+                                          EventTracking_Id           EventTrackingId     = null,
+                                          TimeSpan?                  RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingPools == null)
+                throw new ArgumentNullException(nameof(ChargingPools), "The given enumeration of charging pools must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateChargingPoolAdminStatus(ChargingPools.SafeSelect(pool => ChargingPoolAdminStatusUpdate.Snapshot(pool)),
+                                                                         TransmissionType,
+
+                                                                         Timestamp,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         RequestTimeout).
+
+                                                                         ConfigureAwait(false);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, ChargingStationOperator,       TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update all charging pool admin status of the given charging station operator.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="ChargingStationOperator">A charging station operator to upload.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator admin status update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateChargingPoolAdminStatus(this IRemotePushStatus   IRemotePushStatus,
+                                          ChargingStationOperator  ChargingStationOperator,
+                                          TransmissionTypes        TransmissionType    = TransmissionTypes.Enqueued,
+
+                                          DateTime?                Timestamp           = null,
+                                          CancellationToken?       CancellationToken   = null,
+                                          EventTracking_Id         EventTrackingId     = null,
+                                          TimeSpan?                RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStationOperator == null)
+                throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateChargingPoolAdminStatus(ChargingStationOperator.ChargingPools.SafeSelect(pool => ChargingPoolAdminStatusUpdate.Snapshot(pool)),
+                                                                         TransmissionType,
+
+                                                                         Timestamp,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         RequestTimeout).
+
+                                                                         ConfigureAwait(false);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, ChargingStationOperators,      TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update all charging pool admin status of the given enumeration of charging station operators.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators to upload.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateChargingPoolAdminStatus(this IRemotePushStatus                IRemotePushStatus,
+                                          IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+                                          TransmissionTypes                     TransmissionType    = TransmissionTypes.Enqueued,
+
+                                          DateTime?                             Timestamp           = null,
+                                          CancellationToken?                    CancellationToken   = null,
+                                          EventTracking_Id                      EventTrackingId     = null,
+                                          TimeSpan?                             RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStationOperators == null)
+                throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateChargingPoolAdminStatus(ChargingStationOperators.
+                                                                             SafeSelectMany(cso  => cso.ChargingPools).
+                                                                             SafeSelect    (pool => ChargingPoolAdminStatusUpdate.Snapshot(pool)),
+                                                                         TransmissionType,
+
+                                                                         Timestamp,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         RequestTimeout).
+
+                                                                         ConfigureAwait(false);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, RoamingNetwork,                TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update all charging pool admin status of the given roaming network.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="RoamingNetwork">A roaming network to upload.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool admin status update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateChargingPoolAdminStatus(this IRemotePushStatus  IRemotePushStatus,
+                                          RoamingNetwork          RoamingNetwork,
+                                          TransmissionTypes       TransmissionType    = TransmissionTypes.Enqueued,
+
+                                          DateTime?               Timestamp           = null,
+                                          CancellationToken?      CancellationToken   = null,
+                                          EventTracking_Id        EventTrackingId     = null,
+                                          TimeSpan?               RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (RoamingNetwork == null)
+                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateChargingPoolAdminStatus(RoamingNetwork.ChargingPools.SafeSelect(pool => ChargingPoolAdminStatusUpdate.Snapshot(pool)),
+                                                                         TransmissionType,
+
+                                                                         Timestamp,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         RequestTimeout).
+
+                                                                         ConfigureAwait(false);
+
+        }
+
+        #endregion
+
+
+        #region UpdateChargingPoolStatus(this IRemotePushStatus, ChargingPoolStatusUpdate, TransmissionType = Enqueued, ...)
 
         /// <summary>
         /// Update the given charging pool status update.
@@ -1788,9 +2025,246 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region UpdateChargingPoolStatus(this IRemotePushStatus, ChargingPool,             TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the status of the given charging pool.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="ChargingPool">A charging pool to upload.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool status update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateChargingPoolStatus(this IRemotePushStatus  IRemotePushStatus,
+                                     ChargingPool            ChargingPool,
+                                     TransmissionTypes       TransmissionType    = TransmissionTypes.Enqueued,
+
+                                     DateTime?               Timestamp           = null,
+                                     CancellationToken?      CancellationToken   = null,
+                                     EventTracking_Id        EventTrackingId     = null,
+                                     TimeSpan?               RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingPool == null)
+                throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateChargingPoolStatus(ChargingPoolStatusUpdate.Snapshot(ChargingPool),
+                                                                    TransmissionType,
+
+                                                                    Timestamp,
+                                                                    CancellationToken,
+                                                                    EventTrackingId,
+                                                                    RequestTimeout).
+
+                                                                    ConfigureAwait(false);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingPoolStatus(this IRemotePushStatus, ChargingPools,            TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging pool status.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="ChargingPools">An enumeration of charging pools to upload.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateChargingPoolStatus(this IRemotePushStatus     IRemotePushStatus,
+                                     IEnumerable<ChargingPool>  ChargingPools,
+                                     TransmissionTypes          TransmissionType    = TransmissionTypes.Enqueued,
+
+                                     DateTime?                  Timestamp           = null,
+                                     CancellationToken?         CancellationToken   = null,
+                                     EventTracking_Id           EventTrackingId     = null,
+                                     TimeSpan?                  RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingPools == null)
+                throw new ArgumentNullException(nameof(ChargingPools), "The given enumeration of charging pools must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateChargingPoolStatus(ChargingPools.SafeSelect(pool => ChargingPoolStatusUpdate.Snapshot(pool)),
+                                                                    TransmissionType,
+
+                                                                    Timestamp,
+                                                                    CancellationToken,
+                                                                    EventTrackingId,
+                                                                    RequestTimeout).
+
+                                                                    ConfigureAwait(false);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingPoolStatus(this IRemotePushStatus, ChargingStationOperator,  TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update all charging pool status of the given charging station operator.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="ChargingStationOperator">A charging station operator to upload.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator status update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateChargingPoolStatus(this IRemotePushStatus   IRemotePushStatus,
+                                     ChargingStationOperator  ChargingStationOperator,
+                                     TransmissionTypes        TransmissionType    = TransmissionTypes.Enqueued,
+
+                                     DateTime?                Timestamp           = null,
+                                     CancellationToken?       CancellationToken   = null,
+                                     EventTracking_Id         EventTrackingId     = null,
+                                     TimeSpan?                RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStationOperator == null)
+                throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateChargingPoolStatus(ChargingStationOperator.ChargingPools.SafeSelect(pool => ChargingPoolStatusUpdate.Snapshot(pool)),
+                                                                    TransmissionType,
+
+                                                                    Timestamp,
+                                                                    CancellationToken,
+                                                                    EventTrackingId,
+                                                                    RequestTimeout).
+
+                                                                    ConfigureAwait(false);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingPoolStatus(this IRemotePushStatus, ChargingStationOperators, TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update all charging pool status of the given enumeration of charging station operators.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators to upload.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateChargingPoolStatus(this IRemotePushStatus                IRemotePushStatus,
+                                     IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+                                     TransmissionTypes                     TransmissionType    = TransmissionTypes.Enqueued,
+
+                                     DateTime?                             Timestamp           = null,
+                                     CancellationToken?                    CancellationToken   = null,
+                                     EventTracking_Id                      EventTrackingId     = null,
+                                     TimeSpan?                             RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStationOperators == null)
+                throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateChargingPoolStatus(ChargingStationOperators.
+                                                                        SafeSelectMany(cso  => cso.ChargingPools).
+                                                                        SafeSelect    (pool => ChargingPoolStatusUpdate.Snapshot(pool)),
+                                                                    TransmissionType,
+
+                                                                    Timestamp,
+                                                                    CancellationToken,
+                                                                    EventTrackingId,
+                                                                    RequestTimeout).
+
+                                                                    ConfigureAwait(false);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingPoolStatus(this IRemotePushStatus, RoamingNetwork,           TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update all charging pool status of the given roaming network.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="RoamingNetwork">A roaming network to upload.</param>
+        /// <param name="TransmissionType">Whether to send the charging pool status update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateChargingPoolStatus(this IRemotePushStatus  IRemotePushStatus,
+                                     RoamingNetwork          RoamingNetwork,
+                                     TransmissionTypes       TransmissionType    = TransmissionTypes.Enqueued,
+
+                                     DateTime?               Timestamp           = null,
+                                     CancellationToken?      CancellationToken   = null,
+                                     EventTracking_Id        EventTrackingId     = null,
+                                     TimeSpan?               RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (RoamingNetwork == null)
+                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateChargingPoolStatus(RoamingNetwork.ChargingPools.SafeSelect(pool => ChargingPoolStatusUpdate.Snapshot(pool)),
+                                                                    TransmissionType,
+
+                                                                    Timestamp,
+                                                                    CancellationToken,
+                                                                    EventTrackingId,
+                                                                    RequestTimeout).
+
+                                                                    ConfigureAwait(false);
+
+        }
+
+        #endregion
 
 
-        #region UpdateChargingStationOperatorAdminStatus(this IRemotePushStatus, ChargingStationOperatorAdminStatusUpdate,    TransmissionType = Enqueued, ...)
+
+        #region UpdateChargingStationOperatorAdminStatus(this IRemotePushStatus, ChargingStationOperatorAdminStatusUpdate, TransmissionType = Enqueued, ...)
 
         /// <summary>
         /// Update the given charging station operator admin status update.
@@ -1827,8 +2301,149 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region UpdateChargingStationOperatorAdminStatus(this IRemotePushStatus, ChargingStationOperator,                  TransmissionType = Enqueued, ...)
 
-        #region UpdateChargingStationOperatorStatus(this IRemotePushStatus, ChargingStationOperatorStatusUpdate,    TransmissionType = Enqueued, ...)
+        /// <summary>
+        /// Update the admin status of the given charging station operator.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="ChargingStationOperator">A charging station operator to upload.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator status update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateChargingStationOperatorAdminStatus(this IRemotePushStatus   IRemotePushStatus,
+                                                     ChargingStationOperator  ChargingStationOperator,
+                                                     TransmissionTypes        TransmissionType    = TransmissionTypes.Enqueued,
+
+                                                     DateTime?                Timestamp           = null,
+                                                     CancellationToken?       CancellationToken   = null,
+                                                     EventTracking_Id         EventTrackingId     = null,
+                                                     TimeSpan?                RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStationOperator == null)
+                throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateChargingStationOperatorAdminStatus(ChargingStationOperatorAdminStatusUpdate.Snapshot(ChargingStationOperator),
+                                                                                    TransmissionType,
+
+                                                                                    Timestamp,
+                                                                                    CancellationToken,
+                                                                                    EventTrackingId,
+                                                                                    RequestTimeout).
+
+                                                                                    ConfigureAwait(false);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingStationOperatorAdminStatus(this IRemotePushStatus, ChargingStationOperators,                 TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging station operator admin status.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators to upload.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateChargingStationOperatorAdminStatus(this IRemotePushStatus                IRemotePushStatus,
+                                                     IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+                                                     TransmissionTypes                     TransmissionType    = TransmissionTypes.Enqueued,
+
+                                                     DateTime?                             Timestamp           = null,
+                                                     CancellationToken?                    CancellationToken   = null,
+                                                     EventTracking_Id                      EventTrackingId     = null,
+                                                     TimeSpan?                             RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStationOperators == null)
+                throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateChargingStationOperatorAdminStatus(ChargingStationOperators.SafeSelect(cso => ChargingStationOperatorAdminStatusUpdate.Snapshot(cso)),
+                                                                                    TransmissionType,
+
+                                                                                    Timestamp,
+                                                                                    CancellationToken,
+                                                                                    EventTrackingId,
+                                                                                    RequestTimeout).
+
+                                                                                    ConfigureAwait(false);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingStationOperatorAdminStatus(this IRemotePushStatus, RoamingNetwork,                           TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update all charging station operator admin status of the given roaming network.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="RoamingNetwork">A roaming network to upload.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator admin status update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateChargingStationOperatorAdminStatus(this IRemotePushStatus  IRemotePushStatus,
+                                                     RoamingNetwork          RoamingNetwork,
+                                                     TransmissionTypes       TransmissionType    = TransmissionTypes.Enqueued,
+
+                                                     DateTime?               Timestamp           = null,
+                                                     CancellationToken?      CancellationToken   = null,
+                                                     EventTracking_Id        EventTrackingId     = null,
+                                                     TimeSpan?               RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (RoamingNetwork == null)
+                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateChargingStationOperatorAdminStatus(RoamingNetwork.ChargingStationOperators.SafeSelect(cso => ChargingStationOperatorAdminStatusUpdate.Snapshot(cso)),
+                                                                                    TransmissionType,
+
+                                                                                    Timestamp,
+                                                                                    CancellationToken,
+                                                                                    EventTrackingId,
+                                                                                    RequestTimeout).
+
+                                                                                    ConfigureAwait(false);
+
+        }
+
+        #endregion
+
+
+        #region UpdateChargingStationOperatorStatus(this IRemotePushStatus, ChargingStationOperatorStatusUpdate, TransmissionType = Enqueued, ...)
 
         /// <summary>
         /// Update the given charging station operator status update.
@@ -1865,9 +2480,150 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region UpdateChargingStationOperatorStatus(this IRemotePushStatus, ChargingStationOperator,             TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the status of the given charging station operator.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="ChargingStationOperator">A charging station operator to upload.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator status update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateChargingStationOperatorStatus(this IRemotePushStatus   IRemotePushStatus,
+                                                ChargingStationOperator  ChargingStationOperator,
+                                                TransmissionTypes        TransmissionType    = TransmissionTypes.Enqueued,
+
+                                                DateTime?                Timestamp           = null,
+                                                CancellationToken?       CancellationToken   = null,
+                                                EventTracking_Id         EventTrackingId     = null,
+                                                TimeSpan?                RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStationOperator == null)
+                throw new ArgumentNullException(nameof(ChargingStationOperator), "The given charging station operator must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateChargingStationOperatorStatus(ChargingStationOperatorStatusUpdate.Snapshot(ChargingStationOperator),
+                                                                               TransmissionType,
+
+                                                                               Timestamp,
+                                                                               CancellationToken,
+                                                                               EventTrackingId,
+                                                                               RequestTimeout).
+
+                                                                               ConfigureAwait(false);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingStationOperatorStatus(this IRemotePushStatus, ChargingStationOperators,            TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the given enumeration of charging station operator status.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="ChargingStationOperators">An enumeration of charging station operators to upload.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateChargingStationOperatorStatus(this IRemotePushStatus                IRemotePushStatus,
+                                                IEnumerable<ChargingStationOperator>  ChargingStationOperators,
+                                                TransmissionTypes                     TransmissionType    = TransmissionTypes.Enqueued,
+
+                                                DateTime?                             Timestamp           = null,
+                                                CancellationToken?                    CancellationToken   = null,
+                                                EventTracking_Id                      EventTrackingId     = null,
+                                                TimeSpan?                             RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStationOperators == null)
+                throw new ArgumentNullException(nameof(ChargingStationOperators), "The given enumeration of charging station operators must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateChargingStationOperatorStatus(ChargingStationOperators.SafeSelect(cso => ChargingStationOperatorStatusUpdate.Snapshot(cso)),
+                                                                               TransmissionType,
+
+                                                                               Timestamp,
+                                                                               CancellationToken,
+                                                                               EventTrackingId,
+                                                                               RequestTimeout).
+
+                                                                               ConfigureAwait(false);
+
+        }
+
+        #endregion
+
+        #region UpdateChargingStationOperatorStatus(this IRemotePushStatus, RoamingNetwork,                      TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update all charging station operator status of the given roaming network.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="RoamingNetwork">A roaming network to upload.</param>
+        /// <param name="TransmissionType">Whether to send the charging station operator status update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateChargingStationOperatorStatus(this IRemotePushStatus  IRemotePushStatus,
+                                                RoamingNetwork          RoamingNetwork,
+                                                TransmissionTypes       TransmissionType    = TransmissionTypes.Enqueued,
+
+                                                DateTime?               Timestamp           = null,
+                                                CancellationToken?      CancellationToken   = null,
+                                                EventTracking_Id        EventTrackingId     = null,
+                                                TimeSpan?               RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (RoamingNetwork == null)
+                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateChargingStationOperatorStatus(RoamingNetwork.ChargingStationOperators.SafeSelect(cso => ChargingStationOperatorStatusUpdate.Snapshot(cso)),
+                                                                               TransmissionType,
+
+                                                                               Timestamp,
+                                                                               CancellationToken,
+                                                                               EventTrackingId,
+                                                                               RequestTimeout).
+
+                                                                               ConfigureAwait(false);
+
+        }
+
+        #endregion
 
 
-        #region UpdateRoamingNetworkAdminStatus(this IRemotePushStatus, RoamingNetworkAdminStatusUpdate,    TransmissionType = Enqueued, ...)
+
+        #region UpdateRoamingNetworkAdminStatus(this IRemotePushStatus, RoamingNetworkAdminStatusUpdate, TransmissionType = Enqueued, ...)
 
         /// <summary>
         /// Update the given roaming network admin status update.
@@ -1882,14 +2638,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public static async Task<Acknowledgement>
 
-            UpdateChargingRoamingNetworkAdminStatus(this IRemotePushStatus           IRemotePushStatus,
-                                                    RoamingNetworkAdminStatusUpdate  RoamingNetworkAdminStatusUpdate,
-                                                    TransmissionTypes                TransmissionType    = TransmissionTypes.Enqueued,
+            UpdateRoamingNetworkAdminStatus(this IRemotePushStatus           IRemotePushStatus,
+                                            RoamingNetworkAdminStatusUpdate  RoamingNetworkAdminStatusUpdate,
+                                            TransmissionTypes                TransmissionType    = TransmissionTypes.Enqueued,
 
-                                                    DateTime?                        Timestamp           = null,
-                                                    CancellationToken?               CancellationToken   = null,
-                                                    EventTracking_Id                 EventTrackingId     = null,
-                                                    TimeSpan?                        RequestTimeout      = null)
+                                            DateTime?                        Timestamp           = null,
+                                            CancellationToken?               CancellationToken   = null,
+                                            EventTracking_Id                 EventTrackingId     = null,
+                                            TimeSpan?                        RequestTimeout      = null)
 
 
             => await IRemotePushStatus.UpdateRoamingNetworkAdminStatus(new RoamingNetworkAdminStatusUpdate[] { RoamingNetworkAdminStatusUpdate },
@@ -1904,8 +2660,55 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region UpdateRoamingNetworkAdminStatus(this IRemotePushStatus, RoamingNetwork,                  TransmissionType = Enqueued, ...)
 
-        #region UpdateRoamingNetworkStatus(this IRemotePushStatus, RoamingNetworkStatusUpdate,    TransmissionType = Enqueued, ...)
+        /// <summary>
+        /// Update the admin status of the given roaming network.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="RoamingNetwork">A roaming network to upload.</param>
+        /// <param name="TransmissionType">Whether to send the roaming network status update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateRoamingNetworkAdminStatus(this IRemotePushStatus  IRemotePushStatus,
+                                            RoamingNetwork          RoamingNetwork,
+                                            TransmissionTypes       TransmissionType    = TransmissionTypes.Enqueued,
+
+                                            DateTime?               Timestamp           = null,
+                                            CancellationToken?      CancellationToken   = null,
+                                            EventTracking_Id        EventTrackingId     = null,
+                                            TimeSpan?               RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (RoamingNetwork == null)
+                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateRoamingNetworkAdminStatus(RoamingNetworkAdminStatusUpdate.Snapshot(RoamingNetwork),
+                                                                           TransmissionType,
+
+                                                                           Timestamp,
+                                                                           CancellationToken,
+                                                                           EventTrackingId,
+                                                                           RequestTimeout).
+
+                                                                           ConfigureAwait(false);
+
+        }
+
+        #endregion
+
+
+        #region UpdateRoamingNetworkStatus(this IRemotePushStatus, RoamingNetworkStatusUpdate, TransmissionType = Enqueued, ...)
 
         /// <summary>
         /// Update the given roaming network status update.
@@ -1920,14 +2723,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public static async Task<Acknowledgement>
 
-            UpdateChargingRoamingNetworkStatus(this IRemotePushStatus      IRemotePushStatus,
-                                               RoamingNetworkStatusUpdate  RoamingNetworkStatusUpdate,
-                                               TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueued,
+            UpdateRoamingNetworkStatus(this IRemotePushStatus      IRemotePushStatus,
+                                       RoamingNetworkStatusUpdate  RoamingNetworkStatusUpdate,
+                                       TransmissionTypes           TransmissionType    = TransmissionTypes.Enqueued,
 
-                                               DateTime?                   Timestamp           = null,
-                                               CancellationToken?          CancellationToken   = null,
-                                               EventTracking_Id            EventTrackingId     = null,
-                                               TimeSpan?                   RequestTimeout      = null)
+                                       DateTime?                   Timestamp           = null,
+                                       CancellationToken?          CancellationToken   = null,
+                                       EventTracking_Id            EventTrackingId     = null,
+                                       TimeSpan?                   RequestTimeout      = null)
 
 
             => await IRemotePushStatus.UpdateRoamingNetworkStatus(new RoamingNetworkStatusUpdate[] { RoamingNetworkStatusUpdate },
@@ -1939,6 +2742,53 @@ namespace org.GraphDefined.WWCP
                                                                   RequestTimeout).
 
                                                                   ConfigureAwait(false);
+
+        #endregion
+
+        #region UpdateRoamingNetworkStatus(this IRemotePushStatus, RoamingNetwork,             TransmissionType = Enqueued, ...)
+
+        /// <summary>
+        /// Update the status of the given roaming network.
+        /// </summary>
+        /// <param name="IRemotePushStatus">A class implementing the IRemotePushStatus interface.</param>
+        /// <param name="RoamingNetwork">A roaming network to upload.</param>
+        /// <param name="TransmissionType">Whether to send the roaming network status update directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public static async Task<Acknowledgement>
+
+            UpdateRoamingNetworkStatus(this IRemotePushStatus  IRemotePushStatus,
+                                       RoamingNetwork          RoamingNetwork,
+                                       TransmissionTypes       TransmissionType    = TransmissionTypes.Enqueued,
+
+                                       DateTime?               Timestamp           = null,
+                                       CancellationToken?      CancellationToken   = null,
+                                       EventTracking_Id        EventTrackingId     = null,
+                                       TimeSpan?               RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (RoamingNetwork == null)
+                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
+
+            #endregion
+
+            return await IRemotePushStatus.UpdateRoamingNetworkStatus(RoamingNetworkStatusUpdate.Snapshot(RoamingNetwork),
+                                                                      TransmissionType,
+
+                                                                      Timestamp,
+                                                                      CancellationToken,
+                                                                      EventTrackingId,
+                                                                      RequestTimeout).
+
+                                                                      ConfigureAwait(false);
+
+        }
 
         #endregion
 
