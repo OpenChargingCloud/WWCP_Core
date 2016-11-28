@@ -189,7 +189,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            var _Array = EVSEId.OriginId.Split('*', '-');
+            var _Array = EVSEId.ToString().Split('*', '-');
 
             if (EVSEId.Format == OperatorIdFormats.ISO)
             {
@@ -207,7 +207,7 @@ namespace org.GraphDefined.WWCP
             if (_Array.Length == 3)
             {
 
-                if (EVSEId.OriginId.Contains('-'))
+                if (EVSEId.ToString().Contains('-'))
                     return ChargingStation_Id.Parse(_Array.AggregateWith("-"));
 
                 return ChargingStation_Id.Parse(_Array.AggregateWith("*"));
@@ -215,7 +215,7 @@ namespace org.GraphDefined.WWCP
             }
 
             // e.g. "DE*822*E123456*1" => "DE*822*S123456"
-            if (EVSEId.OriginId.Contains('-'))
+            if (EVSEId.ToString().Contains('-'))
                 return ChargingStation_Id.Parse(_Array.Take(_Array.Length - 1).AggregateWith("-"));
 
             return ChargingStation_Id.Parse(_Array.Take(_Array.Length - 1).AggregateWith("*"));
@@ -260,7 +260,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 EVSEIdPrefixStrings = _EVSEIds.
-                                          Select(EVSEId         => EVSEId.OriginId.Split('*', '-')).
+                                          Select(EVSEId         => EVSEId.ToString().Split('*', '-')).
                                           Select(EVSEIdElements => {
 
                                               if (EVSEIdElements.Length < 4)
@@ -289,8 +289,8 @@ namespace org.GraphDefined.WWCP
             else
             {
 
-                var _Array      = _EVSEIds.Select(EVSEId => EVSEId.OriginId).ToArray();
-                var _MinLength  = _Array.Select(v => v.Length).Min();
+                var _Array      = _EVSEIds.Select(evse => evse.ToString()).ToArray();
+                var _MinLength  = (Int32) _Array.Select(v => v.Length).Min();
 
                 var _Prefix     = "";
 
@@ -300,15 +300,15 @@ namespace org.GraphDefined.WWCP
                         _Prefix += _Array[0][i];
                 }
 
-                if (_Prefix.Length > _EVSEIds[0].OperatorId.OriginId.Length + 1)
+                if (((UInt64) _Prefix.Length) > _EVSEIds[0].OperatorId.Length + 1)
                 {
 
                     var TmpEVSEId = EVSE_Id.Parse(_Prefix);
 
                     if (TmpEVSEId.Format == OperatorIdFormats.ISO)
                     {
-                        if (_Prefix.Length > _EVSEIds[0].OperatorId.OriginId.Length + 2)
-                            _Prefix = TmpEVSEId.OperatorId.OriginId + "*S" + TmpEVSEId.Suffix;
+                        if (((UInt64) _Prefix.Length) > _EVSEIds[0].OperatorId.Length + 2)
+                            _Prefix = TmpEVSEId.OperatorId + "*S" + TmpEVSEId.Suffix;
                         else
                             return null;
                     }

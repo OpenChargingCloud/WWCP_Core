@@ -26,68 +26,7 @@ using System.Linq;
 namespace org.GraphDefined.WWCP
 {
 
-    /// <summary>
-    /// A delegate called whenever new EVSE data will be send upstream.
-    /// </summary>
-    public delegate void OnPushEVSEDataRequestDelegate (DateTime                                LogTimestamp,
-                                                        DateTime                                RequestTimestamp,
-                                                        Object                                  Sender,
-                                                        String                                  SenderId,
-                                                        EventTracking_Id                        EventTrackingId,
-                                                        RoamingNetwork_Id                       RoamingNetworkId,
-                                                        ActionType                              ActionType,
-                                                        ILookup<ChargingStationOperator, EVSE>  EVSEData,
-                                                        UInt32                                  NumberOfEVSEs,
-                                                        TimeSpan?                               RequestTimeout);
 
-
-    /// <summary>
-    /// A delegate called whenever new EVSE data had been send upstream.
-    /// </summary>
-    public delegate void OnPushEVSEDataResponseDelegate(DateTime                                LogTimestamp,
-                                                        DateTime                                RequestTimestamp,
-                                                        Object                                  Sender,
-                                                        String                                  SenderId,
-                                                        EventTracking_Id                        EventTrackingId,
-                                                        RoamingNetwork_Id                       RoamingNetworkId,
-                                                        ActionType                              ActionType,
-                                                        ILookup<ChargingStationOperator, EVSE>  EVSEData,
-                                                        UInt32                                  NumberOfEVSEs,
-                                                        TimeSpan?                               RequestTimeout,
-                                                        Acknowledgement                         Result,
-                                                        TimeSpan                                Runtime);
-
-
-    /// <summary>
-    /// A delegate called whenever new EVSE status will be send upstream.
-    /// </summary>
-    public delegate void OnPushEVSEStatusRequestDelegate (DateTime                                      LogTimestamp,
-                                                          DateTime                                      RequestTimestamp,
-                                                          Object                                        Sender,
-                                                          String                                        SenderId,
-                                                          EventTracking_Id                              EventTrackingId,
-                                                          RoamingNetwork_Id                             RoamingNetworkId,
-                                                          ActionType                                    ActionType,
-                                                          ILookup<ChargingStationOperator, EVSEStatus>  EVSEStatus,
-                                                          UInt32                                        NumberOfEVSEs,
-                                                          TimeSpan?                                     RequestTimeout);
-
-
-    /// <summary>
-    /// A delegate called whenever new EVSE status had been send upstream.
-    /// </summary>
-    public delegate void OnPushEVSEStatusResponseDelegate(DateTime                                      LogTimestamp,
-                                                          DateTime                                      RequestTimestamp,
-                                                          Object                                        Sender,
-                                                          String                                        SenderId,
-                                                          EventTracking_Id                              EventTrackingId,
-                                                          RoamingNetwork_Id                             RoamingNetworkId,
-                                                          ActionType                                    ActionType,
-                                                          ILookup<ChargingStationOperator, EVSEStatus>  EVSEStatus,
-                                                          UInt32                                        NumberOfEVSEs,
-                                                          TimeSpan?                                     RequestTimeout,
-                                                          Acknowledgement                               Result,
-                                                          TimeSpan                                      Runtime);
 
     public delegate Boolean IncludeEVSEDelegate(EVSE EVSE);
 

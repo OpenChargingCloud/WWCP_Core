@@ -420,16 +420,16 @@ namespace org.GraphDefined.WWCP
         {
 
             if (AuthToken != null)
-                return AuthToken.ToString();
+                return AuthToken.                        ToString();
 
             if (QRCodeIdentification != null)
-                return QRCodeIdentification.ToString();
+                return QRCodeIdentification.             ToString();
 
             if (PlugAndChargeIdentification.HasValue)
                 return PlugAndChargeIdentification.Value.ToString();
 
             if (RemoteIdentification.HasValue)
-                return RemoteIdentification.Value.ToString();
+                return RemoteIdentification.       Value.ToString();
 
             return String.Empty;
 

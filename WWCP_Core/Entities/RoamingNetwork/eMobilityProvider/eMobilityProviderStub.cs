@@ -451,29 +451,98 @@ namespace org.GraphDefined.WWCP
 
         #region OnEVSEDataPush/-Pushed
 
-        /// <summary>
-        /// An event fired whenever new EVSE data will be send upstream.
-        /// </summary>
-        public event OnPushEVSEDataRequestDelegate OnPushEVSEDataRequest;
+        ///// <summary>
+        ///// An event fired whenever new EVSE data will be send upstream.
+        ///// </summary>
+        //public event OnPushEVSEDataRequestDelegate OnPushEVSEDataRequest;
 
-        /// <summary>
-        /// An event fired whenever new EVSE data had been sent upstream.
-        /// </summary>
-        public event OnPushEVSEDataResponseDelegate OnPushEVSEDataResponse;
+        ///// <summary>
+        ///// An event fired whenever new EVSE data had been sent upstream.
+        ///// </summary>
+        //public event OnPushEVSEDataResponseDelegate OnPushEVSEDataResponse;
 
         #endregion
 
         #region OnEVSEStatusPush/-Pushed
 
-        /// <summary>
-        /// An event fired whenever new EVSE status will be send upstream.
-        /// </summary>
-        public event OnPushEVSEStatusRequestDelegate OnPushEVSEStatusRequest;
+        ///// <summary>
+        ///// An event fired whenever new EVSE status will be send upstream.
+        ///// </summary>
+        //public event OnPushEVSEStatusRequestDelegate OnPushEVSEStatusRequest;
+
+        ///// <summary>
+        ///// An event fired whenever new EVSE status had been sent upstream.
+        ///// </summary>
+        //public event OnPushEVSEStatusResponseDelegate OnPushEVSEStatusResponse;
+
+        #endregion
+
+
+        #region OnAuthorizeStartRequest/-Response
 
         /// <summary>
-        /// An event fired whenever new EVSE status had been sent upstream.
+        /// An event fired whenever an authentication token will be verified for charging.
         /// </summary>
-        public event OnPushEVSEStatusResponseDelegate OnPushEVSEStatusResponse;
+        public event OnAuthorizeStartRequestDelegate                  OnAuthorizeStartRequest;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified for charging.
+        /// </summary>
+        public event OnAuthorizeStartResponseDelegate                 OnAuthorizeStartResponse;
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified for charging at the given EVSE.
+        /// </summary>
+        public event OnAuthorizeEVSEStartRequestDelegate              OnAuthorizeEVSEStartRequest;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified for charging at the given EVSE.
+        /// </summary>
+        public event OnAuthorizeEVSEStartResponseDelegate             OnAuthorizeEVSEStartResponse;
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified for charging at the given charging station.
+        /// </summary>
+        public event OnAuthorizeChargingStationStartRequestDelegate   OnAuthorizeChargingStationStartRequest;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified for charging at the given charging station.
+        /// </summary>
+        public event OnAuthorizeChargingStationStartResponseDelegate  OnAuthorizeChargingStationStartResponse;
+
+        #endregion
+
+        #region OnAuthorizeStopRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified to stop a charging process.
+        /// </summary>
+        public event OnAuthorizeStopRequestDelegate                  OnAuthorizeStopRequest;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified to stop a charging process.
+        /// </summary>
+        public event OnAuthorizeStopResponseDelegate                 OnAuthorizeStopResponse;
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified to stop a charging process at the given EVSE.
+        /// </summary>
+        public event OnAuthorizeEVSEStopRequestDelegate              OnAuthorizeEVSEStopRequest;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified to stop a charging process at the given EVSE.
+        /// </summary>
+        public event OnAuthorizeEVSEStopResponseDelegate             OnAuthorizeEVSEStopResponse;
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified to stop a charging process at the given charging station.
+        /// </summary>
+        public event OnAuthorizeChargingStationStopRequestDelegate   OnAuthorizeChargingStationStopRequest;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified to stop a charging process at the given charging station.
+        /// </summary>
+        public event OnAuthorizeChargingStationStopResponseDelegate  OnAuthorizeChargingStationStopResponse;
 
         #endregion
 

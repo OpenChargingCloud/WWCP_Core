@@ -78,11 +78,6 @@ namespace org.GraphDefined.WWCP
         public String                      Suffix       { get; }
 
         /// <summary>
-        /// The origin EVSE identification.
-        /// </summary>
-        public String                      OriginId     { get; }
-
-        /// <summary>
         /// The detected format of the EVSE identification.
         /// </summary>
         public OperatorIdFormats           Format
@@ -92,8 +87,26 @@ namespace org.GraphDefined.WWCP
         /// Returns the length of the identificator.
         /// </summary>
         public UInt64 Length
+        {
+            get
+            {
 
-            => OperatorId.Length + 2 + (UInt64) Suffix.Length;
+                switch (Format)
+                {
+
+                    case OperatorIdFormats.DIN:
+                        return OperatorId.Length + 1 + (UInt64) Suffix.Length;
+
+                    case OperatorIdFormats.ISO_STAR:
+                        return OperatorId.Length + 2 + (UInt64) Suffix.Length;
+
+                    default:  // ISO
+                        return OperatorId.Length + 1 + (UInt64) Suffix.Length;
+
+                }
+
+            }
+        }
 
         #endregion
 
@@ -106,8 +119,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="OperatorId">The unique identification of a charging station operator.</param>
         /// <param name="Suffix">The suffix of the EVSE identification.</param>
         private EVSE_Id(ChargingStationOperator_Id  OperatorId,
-                        String                      Suffix,
-                        String                      OriginId  = null)
+                        String                      Suffix)
         {
 
             #region Initial checks
@@ -119,9 +131,6 @@ namespace org.GraphDefined.WWCP
 
             this.OperatorId  = OperatorId;
             this.Suffix      = Suffix;
-            this.OriginId    = OriginId ?? (OperatorId.Format == OperatorIdFormats.ISO
-                                                ? OperatorId.OriginId + "*E" + Suffix
-                                                : OperatorId.OriginId + "*"  + Suffix);
 
         }
 
@@ -150,13 +159,11 @@ namespace org.GraphDefined.WWCP
 
             if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out _OperatorId))
                 return new EVSE_Id(_OperatorId,
-                                   MatchCollection[0].Groups[2].Value,
-                                   Text);
+                                   MatchCollection[0].Groups[2].Value);
 
             if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[3].Value, out _OperatorId))
                 return new EVSE_Id(_OperatorId,
-                                   MatchCollection[0].Groups[4].Value,
-                                   Text);
+                                   MatchCollection[0].Groups[4].Value);
 
 
             throw new ArgumentException("Illegal EVSE identification '" + Text + "'!",
@@ -238,8 +245,7 @@ namespace org.GraphDefined.WWCP
                 {
 
                     EVSEId = new EVSE_Id(_OperatorId,
-                                         _MatchCollection[0].Groups[2].Value,
-                                         Text);
+                                         _MatchCollection[0].Groups[2].Value);
 
                     return true;
 
@@ -249,8 +255,7 @@ namespace org.GraphDefined.WWCP
                 {
 
                     EVSEId = new EVSE_Id(_OperatorId,
-                                         _MatchCollection[0].Groups[4].Value,
-                                         Text);
+                                         _MatchCollection[0].Groups[4].Value);
 
                     return true;
 
@@ -280,8 +285,7 @@ namespace org.GraphDefined.WWCP
         public EVSE_Id ChangeFormat(OperatorIdFormats NewFormat)
 
             => new EVSE_Id(OperatorId.ChangeFormat(NewFormat),
-                           Suffix,
-                           OriginId);
+                           Suffix);
 
         #endregion
 
@@ -293,8 +297,7 @@ namespace org.GraphDefined.WWCP
         public EVSE_Id Clone
 
             => new EVSE_Id(OperatorId.Clone,
-                           Suffix,
-                           OriginId);
+                           new String(Suffix.ToCharArray()));
 
         #endregion
 
@@ -558,10 +561,23 @@ namespace org.GraphDefined.WWCP
         /// ISO-IEC-15118 – Annex H "Specification of Identifiers"
         /// </summary>
         public override String ToString()
+        {
 
-            => Format == OperatorIdFormats.ISO
-                   ? String.Concat(OperatorId, "*E", Suffix)
-                   : String.Concat(OperatorId, "*",  Suffix);
+            switch (Format)
+            {
+
+                case OperatorIdFormats.DIN:
+                    return String.Concat(OperatorId,  "*", Suffix);
+
+                case OperatorIdFormats.ISO_STAR:
+                    return String.Concat(OperatorId, "*E", Suffix);
+
+                default:  // ISO
+                    return String.Concat(OperatorId,  "E", Suffix);
+
+            }
+
+        }
 
         #endregion
 

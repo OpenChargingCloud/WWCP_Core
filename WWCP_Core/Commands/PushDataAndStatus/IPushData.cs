@@ -38,418 +38,418 @@ namespace org.GraphDefined.WWCP
 
         #region OnEVSEDataPush/-Pushed
 
-        /// <summary>
-        /// An event fired whenever new EVSE data will be send upstream.
-        /// </summary>
-        event OnPushEVSEDataRequestDelegate   OnPushEVSEDataRequest;
+        ///// <summary>
+        ///// An event fired whenever new EVSE data will be send upstream.
+        ///// </summary>
+        //event OnPushEVSEDataRequestDelegate   OnPushEVSEDataRequest;
 
-        /// <summary>
-        /// An event fired whenever new EVSE data had been sent upstream.
-        /// </summary>
-        event OnPushEVSEDataResponseDelegate  OnPushEVSEDataResponse;
-
-        #endregion
-
-        IncludeEVSEDelegate IncludeEVSEs { get; }
-
-
-        #region PushEVSEData
-
-        #region SetStaticData   (EVSE,  IncludeEVSEs = null, ...)
-
-        /// <summary>
-        /// Upload the static data of the given EVSE.
-        /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
-        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
-
-            SetStaticData(EVSE                 EVSE,
-                          IncludeEVSEDelegate  IncludeEVSEs        = null,
-
-                          DateTime?            Timestamp           = null,
-                          CancellationToken?   CancellationToken   = null,
-                          EventTracking_Id     EventTrackingId     = null,
-                          TimeSpan?            RequestTimeout      = null);
+        ///// <summary>
+        ///// An event fired whenever new EVSE data had been sent upstream.
+        ///// </summary>
+        //event OnPushEVSEDataResponseDelegate  OnPushEVSEDataResponse;
 
         #endregion
 
-        #region AddStaticData   (EVSE,  IncludeEVSEs = null, ...)
-
-        /// <summary>
-        /// Upload the static data of the given EVSE.
-        /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
-        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
-
-            AddStaticData(EVSE                 EVSE,
-                          IncludeEVSEDelegate  IncludeEVSEs        = null,
-
-                          DateTime?            Timestamp           = null,
-                          CancellationToken?   CancellationToken   = null,
-                          EventTracking_Id     EventTrackingId     = null,
-                          TimeSpan?            RequestTimeout      = null);
-
-        #endregion
-
-        #region UpdateStaticData(EVSE,  IncludeEVSEs = null, ...)
-
-        /// <summary>
-        /// Upload the static data of the given EVSE.
-        /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
-        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
-
-            UpdateStaticData(EVSE                 EVSE,
-                             IncludeEVSEDelegate  IncludeEVSEs        = null,
-
-                             DateTime?            Timestamp           = null,
-                             CancellationToken?   CancellationToken   = null,
-                             EventTracking_Id     EventTrackingId     = null,
-                             TimeSpan?            RequestTimeout      = null);
-
-        #endregion
-
-        #region DeleteStaticData(EVSE,  IncludeEVSEs = null, ...)
-
-        /// <summary>
-        /// Upload the static data of the given EVSE.
-        /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
-        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
-
-            DeleteStaticData(EVSE                 EVSE,
-                             IncludeEVSEDelegate  IncludeEVSEs        = null,
-
-                             DateTime?            Timestamp           = null,
-                             CancellationToken?   CancellationToken   = null,
-                             EventTracking_Id     EventTrackingId     = null,
-                             TimeSpan?            RequestTimeout      = null);
-
-        #endregion
-
-
-        #region SetStaticData   (EVSEs,  IncludeEVSEs = null, ...)
-
-        /// <summary>
-        /// Upload the static data of the given EVSEs.
-        /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
-        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
-
-            SetStaticData(IEnumerable<EVSE>    EVSEs,
-                          IncludeEVSEDelegate  IncludeEVSEs        = null,
-
-                          DateTime?            Timestamp           = null,
-                          CancellationToken?   CancellationToken   = null,
-                          EventTracking_Id     EventTrackingId     = null,
-                          TimeSpan?            RequestTimeout      = null);
-
-        #endregion
-
-        #region AddStaticData   (EVSEs,  IncludeEVSEs = null, ...)
-
-        /// <summary>
-        /// Upload the static data of the given EVSEs.
-        /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
-        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
-
-            AddStaticData(IEnumerable<EVSE>    EVSEs,
-                          IncludeEVSEDelegate  IncludeEVSEs        = null,
-
-                          DateTime?            Timestamp           = null,
-                          CancellationToken?   CancellationToken   = null,
-                          EventTracking_Id     EventTrackingId     = null,
-                          TimeSpan?            RequestTimeout      = null);
-
-        #endregion
-
-        #region UpdateStaticData(EVSEs,  IncludeEVSEs = null, ...)
-
-        /// <summary>
-        /// Upload the static data of the given EVSEs.
-        /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
-        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
-
-            UpdateStaticData(IEnumerable<EVSE>    EVSEs,
-                             IncludeEVSEDelegate  IncludeEVSEs        = null,
-
-                             DateTime?            Timestamp           = null,
-                             CancellationToken?   CancellationToken   = null,
-                             EventTracking_Id     EventTrackingId     = null,
-                             TimeSpan?            RequestTimeout      = null);
-
-        #endregion
-
-        #region DeleteStaticData(EVSEs,  IncludeEVSEs = null, ...)
-
-        /// <summary>
-        /// Upload the static data of the given EVSEs.
-        /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
-        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
-
-            DeleteStaticData(IEnumerable<EVSE>    EVSEs,
-                             IncludeEVSEDelegate  IncludeEVSEs        = null,
-
-                             DateTime?            Timestamp           = null,
-                             CancellationToken?   CancellationToken   = null,
-                             EventTracking_Id     EventTrackingId     = null,
-                             TimeSpan?            RequestTimeout      = null);
-
-        #endregion
-
-
-
-
-
-        #region SetStaticData   (ChargingStationOperator,  IncludeEVSEs = null, ...)
-
-        /// <summary>
-        /// Upload the EVSE data of the given roaming network.
-        /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
-        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
-
-            SetStaticData(ChargingStationOperator  ChargingStationOperator,
-                          IncludeEVSEDelegate      IncludeEVSEs        = null,
-
-                          DateTime?                Timestamp           = null,
-                          CancellationToken?       CancellationToken   = null,
-                          EventTracking_Id         EventTrackingId     = null,
-                          TimeSpan?                RequestTimeout      = null);
-
-        #endregion
-
-        #region AddStaticData   (ChargingStationOperator,  IncludeEVSEs = null, ...)
-
-        /// <summary>
-        /// Upload the EVSE data of the given roaming network.
-        /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
-        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
-
-            AddStaticData(ChargingStationOperator  ChargingStationOperator,
-                          IncludeEVSEDelegate      IncludeEVSEs        = null,
-
-                          DateTime?                Timestamp           = null,
-                          CancellationToken?       CancellationToken   = null,
-                          EventTracking_Id         EventTrackingId     = null,
-                          TimeSpan?                RequestTimeout      = null);
-
-        #endregion
-
-        #region UpdateStaticData(ChargingStationOperator,  IncludeEVSEs = null, ...)
-
-        /// <summary>
-        /// Upload the EVSE data of the given roaming network.
-        /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
-        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
-
-            UpdateStaticData(ChargingStationOperator  ChargingStationOperator,
-                             IncludeEVSEDelegate      IncludeEVSEs        = null,
-
-                             DateTime?                Timestamp           = null,
-                             CancellationToken?       CancellationToken   = null,
-                             EventTracking_Id         EventTrackingId     = null,
-                             TimeSpan?                RequestTimeout      = null);
-
-        #endregion
-
-        #region DeleteStaticData(ChargingStationOperator,  IncludeEVSEs = null, ...)
-
-        /// <summary>
-        /// Upload the EVSE data of the given roaming network.
-        /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
-        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
-
-            DeleteStaticData(ChargingStationOperator  ChargingStationOperator,
-                             IncludeEVSEDelegate      IncludeEVSEs        = null,
-
-                             DateTime?                Timestamp           = null,
-                             CancellationToken?       CancellationToken   = null,
-                             EventTracking_Id         EventTrackingId     = null,
-                             TimeSpan?                RequestTimeout      = null);
-
-        #endregion
-
-
-
-
-
-
-        #region SetStaticData   (RoamingNetwork,  IncludeEVSEs = null, ...)
-
-        /// <summary>
-        /// Upload the EVSE data of the given roaming network.
-        /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
-        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
-
-            SetStaticData(RoamingNetwork       RoamingNetwork,
-                          IncludeEVSEDelegate  IncludeEVSEs       = null,
-
-                          DateTime?            Timestamp          = null,
-                          CancellationToken?   CancellationToken  = null,
-                          EventTracking_Id     EventTrackingId    = null,
-                          TimeSpan?            RequestTimeout     = null);
-
-        #endregion
-
-        #region AddStaticData   (RoamingNetwork,  IncludeEVSEs = null, ...)
-
-        /// <summary>
-        /// Upload the EVSE data of the given roaming network.
-        /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
-        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
-
-            AddStaticData(RoamingNetwork       RoamingNetwork,
-                          IncludeEVSEDelegate  IncludeEVSEs       = null,
-
-                          DateTime?            Timestamp          = null,
-                          CancellationToken?   CancellationToken  = null,
-                          EventTracking_Id     EventTrackingId    = null,
-                          TimeSpan?            RequestTimeout     = null);
-
-        #endregion
-
-        #region UpdateStaticData(RoamingNetwork,  IncludeEVSEs = null, ...)
-
-        /// <summary>
-        /// Upload the EVSE data of the given roaming network.
-        /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
-        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
-
-            UpdateStaticData(RoamingNetwork       RoamingNetwork,
-                             IncludeEVSEDelegate  IncludeEVSEs       = null,
-
-                             DateTime?            Timestamp          = null,
-                             CancellationToken?   CancellationToken  = null,
-                             EventTracking_Id     EventTrackingId    = null,
-                             TimeSpan?            RequestTimeout     = null);
-
-        #endregion
-
-        #region DeleteStaticData(RoamingNetwork,  IncludeEVSEs = null, ...)
-
-        /// <summary>
-        /// Upload the EVSE data of the given roaming network.
-        /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
-        /// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
-
-            DeleteStaticData(RoamingNetwork       RoamingNetwork,
-                             IncludeEVSEDelegate  IncludeEVSEs       = null,
-
-                             DateTime?            Timestamp          = null,
-                             CancellationToken?   CancellationToken  = null,
-                             EventTracking_Id     EventTrackingId    = null,
-                             TimeSpan?            RequestTimeout     = null);
-
-        #endregion
-
-        #endregion
+        //IncludeEVSEDelegate IncludeEVSEs { get; }
+
+
+        //#region PushEVSEData
+
+        //#region SetStaticData   (EVSE,  IncludeEVSEs = null, ...)
+
+        ///// <summary>
+        ///// Upload the static data of the given EVSE.
+        ///// </summary>
+        ///// <param name="EVSE">An EVSE.</param>
+        ///// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //Task<Acknowledgement>
+
+        //    SetStaticData(EVSE                 EVSE,
+        //                  IncludeEVSEDelegate  IncludeEVSEs        = null,
+
+        //                  DateTime?            Timestamp           = null,
+        //                  CancellationToken?   CancellationToken   = null,
+        //                  EventTracking_Id     EventTrackingId     = null,
+        //                  TimeSpan?            RequestTimeout      = null);
+
+        //#endregion
+
+        //#region AddStaticData   (EVSE,  IncludeEVSEs = null, ...)
+
+        ///// <summary>
+        ///// Upload the static data of the given EVSE.
+        ///// </summary>
+        ///// <param name="EVSE">An EVSE.</param>
+        ///// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //Task<Acknowledgement>
+
+        //    AddStaticData(EVSE                 EVSE,
+        //                  IncludeEVSEDelegate  IncludeEVSEs        = null,
+
+        //                  DateTime?            Timestamp           = null,
+        //                  CancellationToken?   CancellationToken   = null,
+        //                  EventTracking_Id     EventTrackingId     = null,
+        //                  TimeSpan?            RequestTimeout      = null);
+
+        //#endregion
+
+        //#region UpdateStaticData(EVSE,  IncludeEVSEs = null, ...)
+
+        ///// <summary>
+        ///// Upload the static data of the given EVSE.
+        ///// </summary>
+        ///// <param name="EVSE">An EVSE.</param>
+        ///// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //Task<Acknowledgement>
+
+        //    UpdateStaticData(EVSE                 EVSE,
+        //                     IncludeEVSEDelegate  IncludeEVSEs        = null,
+
+        //                     DateTime?            Timestamp           = null,
+        //                     CancellationToken?   CancellationToken   = null,
+        //                     EventTracking_Id     EventTrackingId     = null,
+        //                     TimeSpan?            RequestTimeout      = null);
+
+        //#endregion
+
+        //#region DeleteStaticData(EVSE,  IncludeEVSEs = null, ...)
+
+        ///// <summary>
+        ///// Upload the static data of the given EVSE.
+        ///// </summary>
+        ///// <param name="EVSE">An EVSE.</param>
+        ///// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //Task<Acknowledgement>
+
+        //    DeleteStaticData(EVSE                 EVSE,
+        //                     IncludeEVSEDelegate  IncludeEVSEs        = null,
+
+        //                     DateTime?            Timestamp           = null,
+        //                     CancellationToken?   CancellationToken   = null,
+        //                     EventTracking_Id     EventTrackingId     = null,
+        //                     TimeSpan?            RequestTimeout      = null);
+
+        //#endregion
+
+
+        //#region SetStaticData   (EVSEs,  IncludeEVSEs = null, ...)
+
+        ///// <summary>
+        ///// Upload the static data of the given EVSEs.
+        ///// </summary>
+        ///// <param name="EVSEs">An enumeration of EVSEs.</param>
+        ///// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //Task<Acknowledgement>
+
+        //    SetStaticData(IEnumerable<EVSE>    EVSEs,
+        //                  IncludeEVSEDelegate  IncludeEVSEs        = null,
+
+        //                  DateTime?            Timestamp           = null,
+        //                  CancellationToken?   CancellationToken   = null,
+        //                  EventTracking_Id     EventTrackingId     = null,
+        //                  TimeSpan?            RequestTimeout      = null);
+
+        //#endregion
+
+        //#region AddStaticData   (EVSEs,  IncludeEVSEs = null, ...)
+
+        ///// <summary>
+        ///// Upload the static data of the given EVSEs.
+        ///// </summary>
+        ///// <param name="EVSEs">An enumeration of EVSEs.</param>
+        ///// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //Task<Acknowledgement>
+
+        //    AddStaticData(IEnumerable<EVSE>    EVSEs,
+        //                  IncludeEVSEDelegate  IncludeEVSEs        = null,
+
+        //                  DateTime?            Timestamp           = null,
+        //                  CancellationToken?   CancellationToken   = null,
+        //                  EventTracking_Id     EventTrackingId     = null,
+        //                  TimeSpan?            RequestTimeout      = null);
+
+        //#endregion
+
+        //#region UpdateStaticData(EVSEs,  IncludeEVSEs = null, ...)
+
+        ///// <summary>
+        ///// Upload the static data of the given EVSEs.
+        ///// </summary>
+        ///// <param name="EVSEs">An enumeration of EVSEs.</param>
+        ///// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //Task<Acknowledgement>
+
+        //    UpdateStaticData(IEnumerable<EVSE>    EVSEs,
+        //                     IncludeEVSEDelegate  IncludeEVSEs        = null,
+
+        //                     DateTime?            Timestamp           = null,
+        //                     CancellationToken?   CancellationToken   = null,
+        //                     EventTracking_Id     EventTrackingId     = null,
+        //                     TimeSpan?            RequestTimeout      = null);
+
+        //#endregion
+
+        //#region DeleteStaticData(EVSEs,  IncludeEVSEs = null, ...)
+
+        ///// <summary>
+        ///// Upload the static data of the given EVSEs.
+        ///// </summary>
+        ///// <param name="EVSEs">An enumeration of EVSEs.</param>
+        ///// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //Task<Acknowledgement>
+
+        //    DeleteStaticData(IEnumerable<EVSE>    EVSEs,
+        //                     IncludeEVSEDelegate  IncludeEVSEs        = null,
+
+        //                     DateTime?            Timestamp           = null,
+        //                     CancellationToken?   CancellationToken   = null,
+        //                     EventTracking_Id     EventTrackingId     = null,
+        //                     TimeSpan?            RequestTimeout      = null);
+
+        //#endregion
+
+
+
+
+
+        //#region SetStaticData   (ChargingStationOperator,  IncludeEVSEs = null, ...)
+
+        ///// <summary>
+        ///// Upload the EVSE data of the given roaming network.
+        ///// </summary>
+        ///// <param name="ChargingStationOperator">A charging station operator.</param>
+        ///// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //Task<Acknowledgement>
+
+        //    SetStaticData(ChargingStationOperator  ChargingStationOperator,
+        //                  IncludeEVSEDelegate      IncludeEVSEs        = null,
+
+        //                  DateTime?                Timestamp           = null,
+        //                  CancellationToken?       CancellationToken   = null,
+        //                  EventTracking_Id         EventTrackingId     = null,
+        //                  TimeSpan?                RequestTimeout      = null);
+
+        //#endregion
+
+        //#region AddStaticData   (ChargingStationOperator,  IncludeEVSEs = null, ...)
+
+        ///// <summary>
+        ///// Upload the EVSE data of the given roaming network.
+        ///// </summary>
+        ///// <param name="ChargingStationOperator">A charging station operator.</param>
+        ///// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //Task<Acknowledgement>
+
+        //    AddStaticData(ChargingStationOperator  ChargingStationOperator,
+        //                  IncludeEVSEDelegate      IncludeEVSEs        = null,
+
+        //                  DateTime?                Timestamp           = null,
+        //                  CancellationToken?       CancellationToken   = null,
+        //                  EventTracking_Id         EventTrackingId     = null,
+        //                  TimeSpan?                RequestTimeout      = null);
+
+        //#endregion
+
+        //#region UpdateStaticData(ChargingStationOperator,  IncludeEVSEs = null, ...)
+
+        ///// <summary>
+        ///// Upload the EVSE data of the given roaming network.
+        ///// </summary>
+        ///// <param name="ChargingStationOperator">A charging station operator.</param>
+        ///// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //Task<Acknowledgement>
+
+        //    UpdateStaticData(ChargingStationOperator  ChargingStationOperator,
+        //                     IncludeEVSEDelegate      IncludeEVSEs        = null,
+
+        //                     DateTime?                Timestamp           = null,
+        //                     CancellationToken?       CancellationToken   = null,
+        //                     EventTracking_Id         EventTrackingId     = null,
+        //                     TimeSpan?                RequestTimeout      = null);
+
+        //#endregion
+
+        //#region DeleteStaticData(ChargingStationOperator,  IncludeEVSEs = null, ...)
+
+        ///// <summary>
+        ///// Upload the EVSE data of the given roaming network.
+        ///// </summary>
+        ///// <param name="ChargingStationOperator">A charging station operator.</param>
+        ///// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //Task<Acknowledgement>
+
+        //    DeleteStaticData(ChargingStationOperator  ChargingStationOperator,
+        //                     IncludeEVSEDelegate      IncludeEVSEs        = null,
+
+        //                     DateTime?                Timestamp           = null,
+        //                     CancellationToken?       CancellationToken   = null,
+        //                     EventTracking_Id         EventTrackingId     = null,
+        //                     TimeSpan?                RequestTimeout      = null);
+
+        //#endregion
+
+
+
+
+
+
+        //#region SetStaticData   (RoamingNetwork,  IncludeEVSEs = null, ...)
+
+        ///// <summary>
+        ///// Upload the EVSE data of the given roaming network.
+        ///// </summary>
+        ///// <param name="RoamingNetwork">A roaming network.</param>
+        ///// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //Task<Acknowledgement>
+
+        //    SetStaticData(RoamingNetwork       RoamingNetwork,
+        //                  IncludeEVSEDelegate  IncludeEVSEs       = null,
+
+        //                  DateTime?            Timestamp          = null,
+        //                  CancellationToken?   CancellationToken  = null,
+        //                  EventTracking_Id     EventTrackingId    = null,
+        //                  TimeSpan?            RequestTimeout     = null);
+
+        //#endregion
+
+        //#region AddStaticData   (RoamingNetwork,  IncludeEVSEs = null, ...)
+
+        ///// <summary>
+        ///// Upload the EVSE data of the given roaming network.
+        ///// </summary>
+        ///// <param name="RoamingNetwork">A roaming network.</param>
+        ///// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //Task<Acknowledgement>
+
+        //    AddStaticData(RoamingNetwork       RoamingNetwork,
+        //                  IncludeEVSEDelegate  IncludeEVSEs       = null,
+
+        //                  DateTime?            Timestamp          = null,
+        //                  CancellationToken?   CancellationToken  = null,
+        //                  EventTracking_Id     EventTrackingId    = null,
+        //                  TimeSpan?            RequestTimeout     = null);
+
+        //#endregion
+
+        //#region UpdateStaticData(RoamingNetwork,  IncludeEVSEs = null, ...)
+
+        ///// <summary>
+        ///// Upload the EVSE data of the given roaming network.
+        ///// </summary>
+        ///// <param name="RoamingNetwork">A roaming network.</param>
+        ///// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //Task<Acknowledgement>
+
+        //    UpdateStaticData(RoamingNetwork       RoamingNetwork,
+        //                     IncludeEVSEDelegate  IncludeEVSEs       = null,
+
+        //                     DateTime?            Timestamp          = null,
+        //                     CancellationToken?   CancellationToken  = null,
+        //                     EventTracking_Id     EventTrackingId    = null,
+        //                     TimeSpan?            RequestTimeout     = null);
+
+        //#endregion
+
+        //#region DeleteStaticData(RoamingNetwork,  IncludeEVSEs = null, ...)
+
+        ///// <summary>
+        ///// Upload the EVSE data of the given roaming network.
+        ///// </summary>
+        ///// <param name="RoamingNetwork">A roaming network.</param>
+        ///// <param name="IncludeEVSEs">Only upload the EVSEs returned by the given filter delegate.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //Task<Acknowledgement>
+
+        //    DeleteStaticData(RoamingNetwork       RoamingNetwork,
+        //                     IncludeEVSEDelegate  IncludeEVSEs       = null,
+
+        //                     DateTime?            Timestamp          = null,
+        //                     CancellationToken?   CancellationToken  = null,
+        //                     EventTracking_Id     EventTrackingId    = null,
+        //                     TimeSpan?            RequestTimeout     = null);
+
+        //#endregion
+
+        //#endregion
 
     }
 

@@ -33,8 +33,8 @@ namespace org.GraphDefined.WWCP
     public class AnonymousPushEVSEStatusService : IPushStatus
     {
 
-        public event OnPushEVSEStatusRequestDelegate   OnPushEVSEStatusRequest;
-        public event OnPushEVSEStatusResponseDelegate  OnPushEVSEStatusResponse;
+        //public event OnPushEVSEStatusRequestDelegate   OnPushEVSEStatusRequest;
+        //public event OnPushEVSEStatusResponseDelegate  OnPushEVSEStatusResponse;
 
         private readonly Action<EVSEStatusDiff> _EVSEStatusDiffDelegate;
 

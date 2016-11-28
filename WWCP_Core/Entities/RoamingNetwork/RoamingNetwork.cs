@@ -3408,17 +3408,17 @@ namespace org.GraphDefined.WWCP
             Acknowledgement result = null;
 
 
-            foreach (IRemotePushStatus iRemotePushStatus in _EMobilityProviders.
-                                                                OrderByDescending(provider => provider.Priority.Value))
-            {
+            //foreach (IRemotePushStatus iRemotePushStatus in _EMobilityProviders.
+            //                                                    OrderByDescending(provider => provider.Priority.Value))
+            //{
 
-                result = await iRemotePushStatus.
-                                   UpdateEVSEStatus(new EVSEStatusUpdate(EVSE.Id,
-                                                                         OldStatus,
-                                                                         NewStatus)).
-                                   ConfigureAwait(false);
+            //    result = await iRemotePushStatus.
+            //                       UpdateEVSEStatus(new EVSEStatusUpdate(EVSE.Id,
+            //                                                             OldStatus,
+            //                                                             NewStatus)).
+            //                       ConfigureAwait(false);
 
-            }
+            //}
 
             foreach (var iRemotePushStatus in _IRemotePushStatus.
                                                   OrderBy(kvp => kvp.Key).
@@ -3433,18 +3433,19 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            foreach (var iPushStatus in _PushEVSEStatusToOperatorRoamingServices.
-                                                      OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-                                                      Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            {
+            //foreach (var iPushStatus in _PushEVSEStatusToOperatorRoamingServices.
+            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
+            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
+            //{
 
-                result = await iPushStatus.
-                                   PushEVSEStatus(new EVSEStatus(EVSE.Id,
-                                                                 NewStatus.Value,
-                                                                 NewStatus.Timestamp)).
-                                   ConfigureAwait(false);
+            //    result = await iPushStatus.
+            //                       Update
+            //                       PushEVSEStatus(new EVSEStatus(EVSE.Id,
+            //                                                     NewStatus.Value,
+            //                                                     NewStatus.Timestamp)).
+            //                       ConfigureAwait(false);
 
-            }
+            //}
 
 
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;

@@ -266,9 +266,6 @@
     <Compile Include="Commands\Reserve\ReservationHandling.cs" />
     <Compile Include="Commands\Reserve\ReservationResult.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\RedirectedEVSEs.cs" />
-    <Compile Include="IO\AHTTPClient.cs" />
-    <Compile Include="IO\AJSONClient.cs" />
-    <Compile Include="IO\ASOAPClient.cs" />
     <Compile Include="Importer\WWCPImporter.cs" />
     <Compile Include="Importer\ImporterDefaults.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\EVSEStatusReport.cs" />
@@ -368,6 +365,7 @@
     <Folder Include="Entities\GeoInformations\SmartCities\Street\" />
     <Folder Include="Entities\GeoInformations\SmartCities\WLAN\" />
     <Folder Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPoolGroup\" />
+    <Folder Include="IO\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

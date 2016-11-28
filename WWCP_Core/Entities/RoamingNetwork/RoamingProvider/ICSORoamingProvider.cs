@@ -18,7 +18,6 @@
 #region Usings
 
 using System;
-using System.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -42,17 +41,22 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the roaming provider.
         /// </summary>
-        CSORoamingProvider_Id  Id               { get; }
+        CSORoamingProvider_Id  Id                   { get; }
 
         /// <summary>
         /// The offical (multi-language) name of the roaming provider.
         /// </summary>
-        I18NString             Name             { get; }
+        I18NString             Name                 { get; }
 
         /// <summary>
         /// The hosting WWCP roaming network.
         /// </summary>
-        RoamingNetwork         RoamingNetwork   { get; }
+        RoamingNetwork         RoamingNetwork       { get; }
+
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        Boolean                DisableAutoUploads   { get; set; }
 
         #endregion
 
@@ -60,73 +64,7 @@ namespace org.GraphDefined.WWCP
 
         // Client methods (logging)
 
-        #region OnAuthorizeStart/-Started
 
-        /// <summary>
-        /// An event fired whenever an authentication token will be verified for charging.
-        /// </summary>
-        event OnAuthorizeStartRequestDelegate                   OnAuthorizeStart;
-
-        /// <summary>
-        /// An event fired whenever an authentication token had been verified for charging.
-        /// </summary>
-        event OnAuthorizeStartResponseDelegate                 OnAuthorizeStarted;
-
-        /// <summary>
-        /// An event fired whenever an authentication token will be verified for charging at the given EVSE.
-        /// </summary>
-        event OnAuthorizeEVSEStartRequestDelegate               OnAuthorizeEVSEStart;
-
-        /// <summary>
-        /// An event fired whenever an authentication token had been verified for charging at the given EVSE.
-        /// </summary>
-        event OnAuthorizeEVSEStartResponseDelegate             OnAuthorizeEVSEStarted;
-
-        /// <summary>
-        /// An event fired whenever an authentication token will be verified for charging at the given charging station.
-        /// </summary>
-        event OnAuthorizeChargingStationStartRequestDelegate    OnAuthorizeChargingStationStart;
-
-        /// <summary>
-        /// An event fired whenever an authentication token had been verified for charging at the given charging station.
-        /// </summary>
-        event OnAuthorizeChargingStationStartResponseDelegate  OnAuthorizeChargingStationStarted;
-
-        #endregion
-
-        #region OnAuthorizeStop/-Stopped
-
-        /// <summary>
-        /// An event fired whenever an authentication token will be verified to stop a charging process.
-        /// </summary>
-        event OnAuthorizeStopRequestDelegate                    OnAuthorizeStop;
-
-        /// <summary>
-        /// An event fired whenever an authentication token had been verified to stop a charging process.
-        /// </summary>
-        event OnAuthorizeStopResponseDelegate                 OnAuthorizeStopped;
-
-        /// <summary>
-        /// An event fired whenever an authentication token will be verified to stop a charging process at the given EVSE.
-        /// </summary>
-        event OnAuthorizeEVSEStopRequestDelegate                OnAuthorizeEVSEStop;
-
-        /// <summary>
-        /// An event fired whenever an authentication token had been verified to stop a charging process at the given EVSE.
-        /// </summary>
-        event OnAuthorizeEVSEStopResponseDelegate             OnAuthorizeEVSEStopped;
-
-        /// <summary>
-        /// An event fired whenever an authentication token will be verified to stop a charging process at the given charging station.
-        /// </summary>
-        event OnAuthorizeChargingStationStopRequestDelegate     OnAuthorizeChargingStationStop;
-
-        /// <summary>
-        /// An event fired whenever an authentication token had been verified to stop a charging process at the given charging station.
-        /// </summary>
-        event OnAuthorizeChargingStationStopResponseDelegate  OnAuthorizeChargingStationStopped;
-
-        #endregion
 
         #endregion
 
