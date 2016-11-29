@@ -125,6 +125,37 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ArrivalInstructions
+
+        private I18NString _ArrivalInstructions;
+
+        /// <summary>
+        /// An optional (multi-language) description of hot to find the charging pool.
+        /// </summary>
+        [Optional]
+        public I18NString ArrivalInstructions
+        {
+
+            get
+            {
+                return _ArrivalInstructions;
+            }
+
+            set
+            {
+
+                if (value == null)
+                    value = new I18NString();
+
+                if (_ArrivalInstructions != value)
+                    SetProperty(ref _ArrivalInstructions, value);
+
+            }
+
+        }
+
+        #endregion
+
         #region BrandName
 
         private I18NString _BrandName;
@@ -1129,7 +1160,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CreateNewStation(ChargingStationId = null, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateChargingStation(ChargingStationId = null, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging station having the given
@@ -1139,13 +1170,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
-        public ChargingStation CreateNewStation(ChargingStation_Id                        ChargingStationId             = null,
-                                                Action<ChargingStation>                   Configurator                  = null,
-                                                RemoteChargingStationCreatorDelegate      RemoteChargingStationCreator  = null,
-                                                ChargingStationAdminStatusType            AdminStatus                   = ChargingStationAdminStatusType.Operational,
-                                                ChargingStationStatusType                 Status                        = ChargingStationStatusType.Available,
-                                                Action<ChargingStation>                   OnSuccess                     = null,
-                                                Action<ChargingPool, ChargingStation_Id>  OnError                       = null)
+        public ChargingStation CreateChargingStation(ChargingStation_Id                        ChargingStationId             = null,
+                                                     Action<ChargingStation>                   Configurator                  = null,
+                                                     RemoteChargingStationCreatorDelegate      RemoteChargingStationCreator  = null,
+                                                     ChargingStationAdminStatusType            AdminStatus                   = ChargingStationAdminStatusType.Operational,
+                                                     ChargingStationStatusType                 Status                        = ChargingStationStatusType.Available,
+                                                     Action<ChargingStation>                   OnSuccess                     = null,
+                                                     Action<ChargingPool, ChargingStation_Id>  OnError                       = null)
         {
 
             #region Initial checks

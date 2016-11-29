@@ -364,15 +364,11 @@ namespace org.GraphDefined.WWCP
         #region (static) Open24Hours
 
         /// <summary>
-        /// Is open for 24 hours a day.
+        /// Is open for 24 hours a day (7 days a week).
         /// </summary>
         public static OpeningTimes Open24Hours
-        {
-            get
-            {
-                return new OpeningTimes(IsOpen24Hours: true);
-            }
-        }
+
+            => new OpeningTimes(IsOpen24Hours: true);
 
         #endregion
 

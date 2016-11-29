@@ -816,7 +816,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CreateNewChargingPool(ChargingPoolId = null, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateChargingPool(ChargingPoolId = null, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging pool having the given
@@ -826,13 +826,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public ChargingPool CreateNewChargingPool(ChargingPool_Id                                   ChargingPoolId             = null,
-                                                  Action<ChargingPool>                              Configurator               = null,
-                                                  RemoteChargingPoolCreatorDelegate                 RemoteChargingPoolCreator  = null,
-                                                  ChargingPoolAdminStatusType                       AdminStatus                = ChargingPoolAdminStatusType.Operational,
-                                                  ChargingPoolStatusType                            Status                     = ChargingPoolStatusType.Available,
-                                                  Action<ChargingPool>                              OnSuccess                  = null,
-                                                  Action<ChargingStationOperator, ChargingPool_Id>  OnError                    = null)
+        public ChargingPool CreateChargingPool(ChargingPool_Id                                   ChargingPoolId             = null,
+                                               Action<ChargingPool>                              Configurator               = null,
+                                               RemoteChargingPoolCreatorDelegate                 RemoteChargingPoolCreator  = null,
+                                               ChargingPoolAdminStatusType                       AdminStatus                = ChargingPoolAdminStatusType.Operational,
+                                               ChargingPoolStatusType                            Status                     = ChargingPoolStatusType.Available,
+                                               Action<ChargingPool>                              OnSuccess                  = null,
+                                               Action<ChargingStationOperator, ChargingPool_Id>  OnError                    = null)
 
         {
 
