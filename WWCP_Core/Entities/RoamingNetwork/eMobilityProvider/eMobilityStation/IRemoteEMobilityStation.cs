@@ -41,7 +41,7 @@ namespace org.GraphDefined.WWCP
 
         eMobilityStation_Id                         Id          { get; }
 
-        Timestamped<ChargingStationAdminStatusType> AdminStatus { get; set; }
+        Timestamped<ChargingStationAdminStatusTypes> AdminStatus { get; set; }
 
         #region OnEVSEData/(Admin)StatusChanged
 

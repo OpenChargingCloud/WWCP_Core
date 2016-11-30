@@ -380,7 +380,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                                                         #region AdminStatus
 
-                                                        var AdminStatus = ChargingStationAdminStatusType.Operational;
+                                                        var AdminStatus = ChargingStationAdminStatusTypes.Operational;
 
                                                         if (CurrentSettings.TryGetValue("Adminstatus", out JSONToken2) &&
                                                             !Enum.TryParse(JSONToken2.Value<String>(), true, out AdminStatus))

@@ -66,7 +66,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargingStation">The charging station.</param>
     /// <param name="OldEVSEStatus">The old timestamped status of the charging station.</param>
     /// <param name="NewEVSEStatus">The new timestamped status of the charging station.</param>
-    public delegate void OnRemoteChargingStationAdminStatusChangedDelegate(DateTime Timestamp, IRemoteChargingStation ChargingStation, Timestamped<ChargingStationAdminStatusType> OldEVSEStatus, Timestamped<ChargingStationAdminStatusType> NewEVSEStatus);
+    public delegate void OnRemoteChargingStationAdminStatusChangedDelegate(DateTime Timestamp, IRemoteChargingStation ChargingStation, Timestamped<ChargingStationAdminStatusTypes> OldEVSEStatus, Timestamped<ChargingStationAdminStatusTypes> NewEVSEStatus);
 
 
 

@@ -1103,11 +1103,11 @@ namespace org.GraphDefined.WWCP
         /// Return the admin status of all charging stations registered within this charging pool.
         /// </summary>
 
-        public IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusType>>>> ChargingStationAdminStatus
+        public IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>> ChargingStationAdminStatus
 
             => _ChargingStations.Select(station =>
 
-                                     new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusType>>>(
+                                     new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>(
                                          station.Id,
                                          station.AdminStatusSchedule())
 
@@ -1173,7 +1173,7 @@ namespace org.GraphDefined.WWCP
         public ChargingStation CreateChargingStation(ChargingStation_Id                        ChargingStationId             = null,
                                                      Action<ChargingStation>                   Configurator                  = null,
                                                      RemoteChargingStationCreatorDelegate      RemoteChargingStationCreator  = null,
-                                                     ChargingStationAdminStatusType            AdminStatus                   = ChargingStationAdminStatusType.Operational,
+                                                     ChargingStationAdminStatusTypes            AdminStatus                   = ChargingStationAdminStatusTypes.Operational,
                                                      ChargingStationStatusType                 Status                        = ChargingStationStatusType.Available,
                                                      Action<ChargingStation>                   OnSuccess                     = null,
                                                      Action<ChargingPool, ChargingStation_Id>  OnError                       = null)
@@ -1496,8 +1496,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="NewStatus">The new charging station admin status.</param>
         internal async Task UpdateChargingStationAdminStatus(DateTime                                     Timestamp,
                                                              ChargingStation                              ChargingStation,
-                                                             Timestamped<ChargingStationAdminStatusType>  OldStatus,
-                                                             Timestamped<ChargingStationAdminStatusType>  NewStatus)
+                                                             Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
+                                                             Timestamped<ChargingStationAdminStatusTypes>  NewStatus)
         {
 
             var OnChargingStationAdminStatusChangedLocal = OnChargingStationAdminStatusChanged;

@@ -39,19 +39,25 @@ namespace org.GraphDefined.WWCP
         /// The type of the charging plug.
         /// </summary>
         [Mandatory]
-        public PlugTypes  Plug          { get; }
+        public PlugTypes  Plug            { get; }
 
         /// <summary>
-        /// The type of the charging cable.
+        /// Whether the charging plug is lockable or not.
         /// </summary>
-        [Mandatory]
-        public CableType  Cable         { get; }
+        [Optional]
+        public Boolean    Lockable        { get; }
 
         /// <summary>
-        /// The length of the charging cable [mm].
+        /// Whether the charging plug has an attached cable or not.
         /// </summary>
-        [Mandatory]
-        public Double     CableLength   { get; }
+        [Optional]
+        public Boolean?   CableAttached   { get; }
+
+        /// <summary>
+        /// The length of the charging cable [cm].
+        /// </summary>
+        [Optional]
+        public Double     CableLength     { get; }
 
         #endregion
 
@@ -61,21 +67,66 @@ namespace org.GraphDefined.WWCP
         /// Create a new socket outlet.
         /// </summary>
         /// <param name="Plug">The type of the charging plug.</param>
+        /// <param name="Lockable">Whether the charging plug is lockable or not.</param>
         /// <param name="Cable">The type of the charging cable.</param>
         /// <param name="CableLength">The length of the charging cable [mm].</param>
         public SocketOutlet(PlugTypes  Plug,
-                            CableType  Cable        = CableType.unspecified,
+                            Boolean    Lockable     = true,
+                            Boolean?   Cable        = null,
                             Double     CableLength  = 0)
         {
 
             this.Plug         = Plug;
-            this.Cable        = Cable;
+            this.Lockable     = Lockable;
+            this.CableAttached        = Cable;
             this.CableLength  = CableLength;
 
         }
 
         #endregion
 
+
+        #region Operator overloading
+
+        #region Operator == (SocketOutlet1, SocketOutlet2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="SocketOutlet1">An socket outlet.</param>
+        /// <param name="SocketOutlet2">Another socket outlet.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (SocketOutlet SocketOutlet1, SocketOutlet SocketOutlet2)
+        {
+
+            // If both are null, or both are same instance, return true.
+            if (Object.ReferenceEquals(SocketOutlet1, SocketOutlet2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (((Object) SocketOutlet1 == null) || ((Object) SocketOutlet2 == null))
+                return false;
+
+            return SocketOutlet1.Equals(SocketOutlet2);
+
+        }
+
+        #endregion
+
+        #region Operator != (SocketOutlet1, SocketOutlet2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="SocketOutlet1">An socket outlet.</param>
+        /// <param name="SocketOutlet2">Another socket outlet.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (SocketOutlet SocketOutlet1, SocketOutlet SocketOutlet2)
+            => !(SocketOutlet1 == SocketOutlet2);
+
+        #endregion
+
+        #endregion
 
         #region IEquatable<SocketOutlet> Members
 
@@ -92,12 +143,11 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an SocketOutlet.
             var SocketOutlet = Object as SocketOutlet;
             if ((Object) SocketOutlet == null)
                 return false;
 
-            return this.Equals(SocketOutlet);
+            return Equals(SocketOutlet);
 
         }
 
@@ -116,9 +166,10 @@ namespace org.GraphDefined.WWCP
             if ((Object) SocketOutlet == null)
                 return false;
 
-            return Plug.       Equals(SocketOutlet.Plug)  &&
-                   Cable.      Equals(SocketOutlet.Cable) &&
-                   CableLength.Equals(SocketOutlet.CableLength);
+            return Plug.         Equals(SocketOutlet.Plug)          &&
+                   Lockable.     Equals(SocketOutlet.Lockable)      &&
+                   CableAttached.Equals(SocketOutlet.CableAttached) &&
+                   CableLength.  Equals(SocketOutlet.CableLength);
 
         }
 
@@ -133,7 +184,15 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override Int32 GetHashCode()
         {
-            return ToString().GetHashCode();
+            unchecked
+            {
+
+                return Plug.         GetHashCode() * 7 ^
+                       Lockable.     GetHashCode() * 5 ^
+                       CableAttached.GetHashCode() * 3 ^
+                       CableLength.  GetHashCode();
+
+            }
         }
 
         #endregion
@@ -144,13 +203,11 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
 
-            return String.Concat(Plug,
-                                 Cable       != CableType.unspecified ? ", " + Cable.ToString()   : "",
-                                 CableLength >  0                     ? ", " + CableLength + "mm" : "");
-
-        }
+            => String.Concat(Plug,
+                             Lockable                             ? " (lockable) "            : "",
+                             CableAttached       != CableType.unspecified ? ", " + CableAttached.ToString()   : "",
+                             CableLength >  0                     ? ", " + CableLength + "cm" : "");
 
         #endregion
 

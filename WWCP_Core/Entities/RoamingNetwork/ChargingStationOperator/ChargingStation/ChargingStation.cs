@@ -701,7 +701,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (_IsHubjectCompatible != value)
-                    SetProperty<Boolean>(ref _IsHubjectCompatible, value);
+                    SetProperty(ref _IsHubjectCompatible, value);
 
             }
 
@@ -726,7 +726,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (_DynamicInfoAvailable != value)
-                    SetProperty<Boolean>(ref _DynamicInfoAvailable, value);
+                    SetProperty(ref _DynamicInfoAvailable, value);
 
             }
 
@@ -873,8 +873,8 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
-                    AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
+                if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
+                    AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
                 {
 
                     return _StatusSchedule.CurrentStatus;
@@ -921,8 +921,8 @@ namespace org.GraphDefined.WWCP
         public IEnumerable<Timestamped<ChargingStationStatusType>> StatusSchedule(UInt64? HistorySize = null)
         {
 
-            if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
-                AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
+            if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
+                AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
             {
 
                 if (HistorySize.HasValue)
@@ -967,7 +967,7 @@ namespace org.GraphDefined.WWCP
         /// The current charging station admin status.
         /// </summary>
         [Optional]
-        public Timestamped<ChargingStationAdminStatusType> AdminStatus
+        public Timestamped<ChargingStationAdminStatusTypes> AdminStatus
         {
 
             get
@@ -986,12 +986,12 @@ namespace org.GraphDefined.WWCP
 
         #region AdminStatusSchedule
 
-        private StatusSchedule<ChargingStationAdminStatusType> _AdminStatusSchedule;
+        private StatusSchedule<ChargingStationAdminStatusTypes> _AdminStatusSchedule;
 
         /// <summary>
         /// The charging station admin status schedule.
         /// </summary>
-        public IEnumerable<Timestamped<ChargingStationAdminStatusType>> AdminStatusSchedule(UInt64? HistorySize = null)
+        public IEnumerable<Timestamped<ChargingStationAdminStatusTypes>> AdminStatusSchedule(UInt64? HistorySize = null)
         {
 
             if (HistorySize.HasValue)
@@ -1043,7 +1043,7 @@ namespace org.GraphDefined.WWCP
                                  ChargingPool                          ChargingPool,
                                  Action<ChargingStation>               Configurator                  = null,
                                  RemoteChargingStationCreatorDelegate  RemoteChargingStationCreator  = null,
-                                 ChargingStationAdminStatusType        AdminStatus                   = ChargingStationAdminStatusType.Operational,
+                                 ChargingStationAdminStatusTypes        AdminStatus                   = ChargingStationAdminStatusTypes.Operational,
                                  ChargingStationStatusType             Status                        = ChargingStationStatusType.Available,
                                  UInt16                                MaxAdminStatusListSize        = DefaultMaxAdminStatusListSize,
                                  UInt16                                MaxStatusListSize             = DefaultMaxStatusListSize)
@@ -1076,7 +1076,7 @@ namespace org.GraphDefined.WWCP
 
             this._PaymentOptions             = new ReactiveSet<PaymentOptions>();
 
-            this._AdminStatusSchedule        = new StatusSchedule<ChargingStationAdminStatusType>(MaxAdminStatusListSize);
+            this._AdminStatusSchedule        = new StatusSchedule<ChargingStationAdminStatusTypes>(MaxAdminStatusListSize);
             this._AdminStatusSchedule.Insert(AdminStatus);
 
             this._StatusSchedule             = new StatusSchedule<ChargingStationStatusType>(MaxStatusListSize);
@@ -1175,7 +1175,7 @@ namespace org.GraphDefined.WWCP
         /// Set the admin status.
         /// </summary>
         /// <param name="NewAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(ChargingStationAdminStatusType  NewAdminStatus)
+        public void SetAdminStatus(ChargingStationAdminStatusTypes  NewAdminStatus)
         {
 
             _AdminStatusSchedule.Insert(NewAdminStatus);
@@ -1190,7 +1190,7 @@ namespace org.GraphDefined.WWCP
         /// Set the admin status.
         /// </summary>
         /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<ChargingStationAdminStatusType> NewTimestampedAdminStatus)
+        public void SetAdminStatus(Timestamped<ChargingStationAdminStatusTypes> NewTimestampedAdminStatus)
         {
 
             _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
@@ -1206,7 +1206,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="NewAdminStatus">A new admin status.</param>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetAdminStatus(ChargingStationAdminStatusType  NewAdminStatus,
+        public void SetAdminStatus(ChargingStationAdminStatusTypes  NewAdminStatus,
                                    DateTime                        Timestamp)
         {
 
@@ -1223,7 +1223,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
         /// <param name="ChangeMethod">The change mode.</param>
-        public void SetAdminStatus(IEnumerable<Timestamped<ChargingStationAdminStatusType>>  NewAdminStatusList,
+        public void SetAdminStatus(IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>  NewAdminStatusList,
                                    ChangeMethods                                             ChangeMethod = ChangeMethods.Replace)
         {
 
@@ -1289,8 +1289,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
         internal void UpdateAdminStatus(DateTime                                    Timestamp,
-                                        Timestamped<ChargingStationAdminStatusType>  OldStatus,
-                                        Timestamped<ChargingStationAdminStatusType>  NewStatus)
+                                        Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
+                                        Timestamped<ChargingStationAdminStatusTypes>  NewStatus)
         {
 
             var OnAdminStatusChangedLocal = OnAdminStatusChanged;
@@ -1808,8 +1808,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
-                AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
+            if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
+                AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
             {
 
                 #region Try the remote charging station...
@@ -1903,7 +1903,7 @@ namespace org.GraphDefined.WWCP
                 switch (AdminStatus.Value)
                 {
 
-                    case ChargingStationAdminStatusType.OutOfService:
+                    case ChargingStationAdminStatusTypes.OutOfService:
                         result = ReservationResult.OutOfService;
                         break;
 
@@ -2038,8 +2038,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
-                AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
+            if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
+                AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
             {
 
                 if (RemoteChargingStation != null)
@@ -2073,7 +2073,7 @@ namespace org.GraphDefined.WWCP
                 switch (AdminStatus.Value)
                 {
 
-                    case ChargingStationAdminStatusType.OutOfService:
+                    case ChargingStationAdminStatusTypes.OutOfService:
                         result = ReservationResult.OutOfService;
                         break;
 
@@ -2209,8 +2209,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
-                AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
+            if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
+                AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
             {
 
                 #region Try the remote charging station...
@@ -2260,7 +2260,7 @@ namespace org.GraphDefined.WWCP
                 switch (AdminStatus.Value)
                 {
 
-                    case ChargingStationAdminStatusType.OutOfService:
+                    case ChargingStationAdminStatusTypes.OutOfService:
                         result = CancelReservationResult.OutOfService;
                         break;
 
@@ -2433,8 +2433,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
-                AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
+            if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
+                AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
             {
 
                 #region Try the remote charging station...
@@ -2637,8 +2637,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
-                AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
+            if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
+                AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
             {
 
                 if (RemoteChargingStation != null)
@@ -2903,8 +2903,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
-                AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
+            if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
+                AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
             {
 
                 if (RemoteChargingStation != null)
@@ -3092,8 +3092,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (AdminStatus.Value == ChargingStationAdminStatusType.Operational ||
-                AdminStatus.Value == ChargingStationAdminStatusType.InternalUse)
+            if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
+                AdminStatus.Value == ChargingStationAdminStatusTypes.InternalUse)
             {
 
                 #region Try the remote charging station...

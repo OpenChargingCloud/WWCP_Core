@@ -138,9 +138,9 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region AdminStatus
 
-        private Timestamped<ChargingStationAdminStatusType> _AdminStatus;
+        private Timestamped<ChargingStationAdminStatusTypes> _AdminStatus;
 
-        public Timestamped<ChargingStationAdminStatusType> AdminStatus
+        public Timestamped<ChargingStationAdminStatusTypes> AdminStatus
         {
 
             get
@@ -176,7 +176,7 @@ namespace org.GraphDefined.WWCP.Importer
                                       GeoCoordinate                                                                     StationGeoCoordinate      = null,
                                       IEnumerable<EVSE_Id>                                                              EVSEIds                   = null,
                                       String                                                                            PhoneNumber               = null,
-                                      Timestamped<ChargingStationAdminStatusType>?                                      AdminStatus               = null,
+                                      Timestamped<ChargingStationAdminStatusTypes>?                                      AdminStatus               = null,
                                       DateTime?                                                                         Created                   = null,
                                       Boolean                                                                           OutOfService              = false,
                                       ChargingStationOperator                                                           ForwardedToEVSEOperator   = null)
@@ -190,7 +190,7 @@ namespace org.GraphDefined.WWCP.Importer
             this.StationServiceTag           = StationServiceTag;
             this.StationAddress              = StationAddress;
             this.StationGeoCoordinate        = StationGeoCoordinate != null ? StationGeoCoordinate          : new GeoCoordinate(new Latitude(0), new Longitude(0));
-            this._AdminStatus                = AdminStatus          != null ? AdminStatus.Value             : new Timestamped<ChargingStationAdminStatusType>(ChargingStationAdminStatusType.Operational);
+            this._AdminStatus                = AdminStatus          != null ? AdminStatus.Value             : new Timestamped<ChargingStationAdminStatusTypes>(ChargingStationAdminStatusTypes.Operational);
             this.PhoneNumber                 = PhoneNumber;
             this.Created                     = Created              != null ? Created.Value                 : DateTime.Now;
             this.OutOfService                = OutOfService;

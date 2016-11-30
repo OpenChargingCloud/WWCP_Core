@@ -1207,13 +1207,13 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingStationAdminStatus(IncludeStation = null)
 
-        public IEnumerable<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>> ChargingStationAdminStatus(Func<ChargingStation, Boolean> IncludeStation = null)
+        public IEnumerable<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusTypes>> ChargingStationAdminStatus(Func<ChargingStation, Boolean> IncludeStation = null)
 
             => _ChargingPools.
                    SelectMany(pool    => pool.ChargingStations).
                    Where     (station => IncludeStation == null || IncludeStation(station)).
                    OrderBy   (station => station.Id).
-                   Select    (station => new KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>(station.Id, station.AdminStatus.Value));
+                   Select    (station => new KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusTypes>(station.Id, station.AdminStatus.Value));
 
         #endregion
 
@@ -1300,7 +1300,7 @@ namespace org.GraphDefined.WWCP
         #region SetChargingStationAdminStatus(ChargingStationId, NewStatus)
 
         public void SetChargingStationAdminStatus(ChargingStation_Id              ChargingStationId,
-                                                  ChargingStationAdminStatusType  NewStatus)
+                                                  ChargingStationAdminStatusTypes  NewStatus)
         {
 
             ChargingStation _ChargingStation  = null;
@@ -1314,7 +1314,7 @@ namespace org.GraphDefined.WWCP
         #region SetChargingStationAdminStatus(ChargingStationId, NewTimestampedStatus)
 
         public void SetChargingStationAdminStatus(ChargingStation_Id                           ChargingStationId,
-                                                  Timestamped<ChargingStationAdminStatusType>  NewTimestampedStatus)
+                                                  Timestamped<ChargingStationAdminStatusTypes>  NewTimestampedStatus)
         {
 
             ChargingStation _ChargingStation = null;
@@ -1328,7 +1328,7 @@ namespace org.GraphDefined.WWCP
         #region SetChargingStationAdminStatus(ChargingStationId, NewStatus, Timestamp)
 
         public void SetChargingStationAdminStatus(ChargingStation_Id              ChargingStationId,
-                                                  ChargingStationAdminStatusType  NewStatus,
+                                                  ChargingStationAdminStatusTypes  NewStatus,
                                                   DateTime                        Timestamp)
         {
 
@@ -1343,7 +1343,7 @@ namespace org.GraphDefined.WWCP
         #region SetChargingStationAdminStatus(ChargingStationId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
         public void SetChargingStationAdminStatus(ChargingStation_Id                                        ChargingStationId,
-                                                  IEnumerable<Timestamped<ChargingStationAdminStatusType>>  StatusList,
+                                                  IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>  StatusList,
                                                   ChangeMethods                                             ChangeMethod  = ChangeMethods.Replace)
         {
 
@@ -1476,8 +1476,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="NewStatus">The new aggreagted charging station admin status.</param>
         internal async Task UpdateChargingStationAdminStatus(DateTime                                     Timestamp,
                                                              ChargingStation                              ChargingStation,
-                                                             Timestamped<ChargingStationAdminStatusType>  OldStatus,
-                                                             Timestamped<ChargingStationAdminStatusType>  NewStatus)
+                                                             Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
+                                                             Timestamped<ChargingStationAdminStatusTypes>  NewStatus)
         {
 
             var OnChargingStationAdminStatusChangedLocal = OnChargingStationAdminStatusChanged;

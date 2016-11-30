@@ -27,7 +27,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-    public class ChargingStationAdminStatusDiff : StatusDiff<ChargingStation_Id, ChargingStationAdminStatusType>
+    public class ChargingStationAdminStatusDiff : StatusDiff<ChargingStation_Id, ChargingStationAdminStatusTypes>
     {
 
         #region StatusDiff(EVSEOperatorId, EVSEOperatorName = null)
@@ -61,8 +61,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEOperatorName">The optional internationalized name of the Charging Station Operator.</param>
         public ChargingStationAdminStatusDiff(DateTime                                                                       Timestamp,
                                               ChargingStationOperator_Id                                                                EVSEOperatorId,
-                                              IEnumerable<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>  NewStatus,
-                                              IEnumerable<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>  ChangedStatus,
+                                              IEnumerable<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusTypes>>  NewStatus,
+                                              IEnumerable<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusTypes>>  ChangedStatus,
                                               IEnumerable<ChargingStation_Id>                                                RemovedIds,
                                               I18NString                                                                     EVSEOperatorName = null)
 
