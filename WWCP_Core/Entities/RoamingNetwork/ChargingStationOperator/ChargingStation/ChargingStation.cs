@@ -40,7 +40,7 @@ namespace org.GraphDefined.WWCP
     public class ChargingStation : AEMobilityEntity<ChargingStation_Id>,
                                    IEquatable<ChargingStation>, IComparable<ChargingStation>, IComparable,
                                    IEnumerable<EVSE>,
-                                   IStatus<ChargingStationStatusType>
+                                   IStatus<ChargingStationStatusTypes>
     {
 
         #region Data
@@ -867,7 +867,7 @@ namespace org.GraphDefined.WWCP
         /// The current charging station status.
         /// </summary>
         [Optional]
-        public Timestamped<ChargingStationStatusType> Status
+        public Timestamped<ChargingStationStatusTypes> Status
         {
 
             get
@@ -888,7 +888,7 @@ namespace org.GraphDefined.WWCP
                     {
 
                         default:
-                            return new Timestamped<ChargingStationStatusType>(AdminStatus.Timestamp, ChargingStationStatusType.OutOfService);
+                            return new Timestamped<ChargingStationStatusTypes>(AdminStatus.Timestamp, ChargingStationStatusTypes.OutOfService);
 
                     }
 
@@ -913,12 +913,12 @@ namespace org.GraphDefined.WWCP
 
         #region StatusSchedule
 
-        private StatusSchedule<ChargingStationStatusType> _StatusSchedule;
+        private StatusSchedule<ChargingStationStatusTypes> _StatusSchedule;
 
         /// <summary>
         /// The charging station status schedule.
         /// </summary>
-        public IEnumerable<Timestamped<ChargingStationStatusType>> StatusSchedule(UInt64? HistorySize = null)
+        public IEnumerable<Timestamped<ChargingStationStatusTypes>> StatusSchedule(UInt64? HistorySize = null)
         {
 
             if (AdminStatus.Value == ChargingStationAdminStatusTypes.Operational ||
@@ -939,8 +939,8 @@ namespace org.GraphDefined.WWCP
                 {
 
                     default:
-                        return new Timestamped<ChargingStationStatusType>[] {
-                                   new Timestamped<ChargingStationStatusType>(AdminStatus.Timestamp, ChargingStationStatusType.OutOfService)
+                        return new Timestamped<ChargingStationStatusTypes>[] {
+                                   new Timestamped<ChargingStationStatusTypes>(AdminStatus.Timestamp, ChargingStationStatusTypes.OutOfService)
                                };
 
                 }
@@ -956,7 +956,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// A delegate called to aggregate the dynamic status of all subordinated EVSEs.
         /// </summary>
-        public Func<EVSEStatusReport, ChargingStationStatusType> StatusAggregationDelegate { get; set; }
+        public Func<EVSEStatusReport, ChargingStationStatusTypes> StatusAggregationDelegate { get; set; }
 
         #endregion
 
@@ -1044,7 +1044,7 @@ namespace org.GraphDefined.WWCP
                                  Action<ChargingStation>               Configurator                  = null,
                                  RemoteChargingStationCreatorDelegate  RemoteChargingStationCreator  = null,
                                  ChargingStationAdminStatusTypes        AdminStatus                   = ChargingStationAdminStatusTypes.Operational,
-                                 ChargingStationStatusType             Status                        = ChargingStationStatusType.Available,
+                                 ChargingStationStatusTypes             Status                        = ChargingStationStatusTypes.Available,
                                  UInt16                                MaxAdminStatusListSize        = DefaultMaxAdminStatusListSize,
                                  UInt16                                MaxStatusListSize             = DefaultMaxStatusListSize)
 
@@ -1079,7 +1079,7 @@ namespace org.GraphDefined.WWCP
             this._AdminStatusSchedule        = new StatusSchedule<ChargingStationAdminStatusTypes>(MaxAdminStatusListSize);
             this._AdminStatusSchedule.Insert(AdminStatus);
 
-            this._StatusSchedule             = new StatusSchedule<ChargingStationStatusType>(MaxStatusListSize);
+            this._StatusSchedule             = new StatusSchedule<ChargingStationStatusTypes>(MaxStatusListSize);
             this._StatusSchedule.Insert(Status);
 
             #endregion
@@ -1159,7 +1159,7 @@ namespace org.GraphDefined.WWCP
         /// Set the status.
         /// </summary>
         /// <param name="NewStatus">A new timestamped status.</param>
-        public void SetStatus(Timestamped<ChargingStationStatusType>  NewStatus)
+        public void SetStatus(Timestamped<ChargingStationStatusTypes>  NewStatus)
         {
 
             _StatusSchedule.Insert(NewStatus);
@@ -1268,8 +1268,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
         internal void UpdateStatus(DateTime                                Timestamp,
-                                   Timestamped<ChargingStationStatusType>  OldStatus,
-                                   Timestamped<ChargingStationStatusType>  NewStatus)
+                                   Timestamped<ChargingStationStatusTypes>  OldStatus,
+                                   Timestamped<ChargingStationStatusTypes>  NewStatus)
         {
 
             var OnAggregatedStatusChangedLocal = OnStatusChanged;

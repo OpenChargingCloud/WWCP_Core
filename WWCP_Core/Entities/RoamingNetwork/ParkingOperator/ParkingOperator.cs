@@ -1271,7 +1271,7 @@ namespace org.GraphDefined.WWCP
         #region SetChargingStationStatus(ChargingStationId, NewStatus)
 
         public void SetChargingStationStatus(ChargingStation_Id         ChargingStationId,
-                                             ChargingStationStatusType  NewStatus)
+                                             ChargingStationStatusTypes  NewStatus)
         {
 
             ChargingStation _ChargingStation  = null;
@@ -1285,7 +1285,7 @@ namespace org.GraphDefined.WWCP
         #region SetChargingStationStatus(ChargingStationId, NewTimestampedStatus)
 
         public void SetChargingStationStatus(ChargingStation_Id                      ChargingStationId,
-                                             Timestamped<ChargingStationStatusType>  NewTimestampedStatus)
+                                             Timestamped<ChargingStationStatusTypes>  NewTimestampedStatus)
         {
 
             ChargingStation _ChargingStation = null;
@@ -1453,8 +1453,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
         internal async Task UpdateChargingStationStatus(DateTime                                Timestamp,
                                                         ChargingStation                         ChargingStation,
-                                                        Timestamped<ChargingStationStatusType>  OldStatus,
-                                                        Timestamped<ChargingStationStatusType>  NewStatus)
+                                                        Timestamped<ChargingStationStatusTypes>  OldStatus,
+                                                        Timestamped<ChargingStationStatusTypes>  NewStatus)
         {
 
             var OnChargingStationStatusChangedLocal = OnChargingStationStatusChanged;

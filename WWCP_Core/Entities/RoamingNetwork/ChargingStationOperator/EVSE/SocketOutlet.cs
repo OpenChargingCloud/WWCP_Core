@@ -68,18 +68,18 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Plug">The type of the charging plug.</param>
         /// <param name="Lockable">Whether the charging plug is lockable or not.</param>
-        /// <param name="Cable">The type of the charging cable.</param>
+        /// <param name="CableAttached">The type of the charging cable.</param>
         /// <param name="CableLength">The length of the charging cable [mm].</param>
         public SocketOutlet(PlugTypes  Plug,
-                            Boolean    Lockable     = true,
-                            Boolean?   Cable        = null,
-                            Double     CableLength  = 0)
+                            Boolean    Lockable       = true,
+                            Boolean?   CableAttached  = null,
+                            Double     CableLength    = 0)
         {
 
-            this.Plug         = Plug;
-            this.Lockable     = Lockable;
-            this.CableAttached        = Cable;
-            this.CableLength  = CableLength;
+            this.Plug           = Plug;
+            this.Lockable       = Lockable;
+            this.CableAttached  = CableAttached;
+            this.CableLength    = CableLength;
 
         }
 
@@ -205,9 +205,9 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
 
             => String.Concat(Plug,
-                             Lockable                             ? " (lockable) "            : "",
-                             CableAttached       != CableType.unspecified ? ", " + CableAttached.ToString()   : "",
-                             CableLength >  0                     ? ", " + CableLength + "cm" : "");
+                             Lockable               ? ", lockable "             : "",
+                             CableAttached.HasValue ? ", with cable "           : "",
+                             CableLength >  0       ? ", " + CableLength + "cm" : "");
 
         #endregion
 

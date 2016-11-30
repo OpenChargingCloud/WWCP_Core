@@ -41,7 +41,7 @@ namespace org.GraphDefined.WWCP
 
         IEnumerable<EVSE>                           EVSEs       { get; }
         ChargingStation_Id                          Id          { get; }
-        Timestamped<ChargingStationStatusType>      Status      { get; }
+        Timestamped<ChargingStationStatusTypes>      Status      { get; }
 
         Timestamped<ChargingStationAdminStatusTypes> AdminStatus { get; set; }
 

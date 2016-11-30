@@ -44,12 +44,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The old timestamped status of the charging station.
         /// </summary>
-        public Timestamped<ChargingStationStatusType>  OldStatus   { get; }
+        public Timestamped<ChargingStationStatusTypes>  OldStatus   { get; }
 
         /// <summary>
         /// The new timestamped status of the charging station.
         /// </summary>
-        public Timestamped<ChargingStationStatusType>  NewStatus   { get; }
+        public Timestamped<ChargingStationStatusTypes>  NewStatus   { get; }
 
         #endregion
 
@@ -64,8 +64,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="OldStatus">The old timestamped status of the charging station.</param>
         /// <param name="NewStatus">The new timestamped status of the charging station.</param>
         public ChargingStationStatusUpdate(ChargingStation_Id                      Id,
-                                           Timestamped<ChargingStationStatusType>  OldStatus,
-                                           Timestamped<ChargingStationStatusType>  NewStatus)
+                                           Timestamped<ChargingStationStatusTypes>  OldStatus,
+                                           Timestamped<ChargingStationStatusTypes>  NewStatus)
 
         {
 

@@ -21,7 +21,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current status of a charging station.
     /// </summary>
-    public enum ChargingStationStatusType
+    public enum ChargingStationStatusTypes
     {
 
         /// <summary>

@@ -55,8 +55,8 @@ namespace org.GraphDefined.WWCP
     /// <param name="NewStatus">The new timestamped status of the charging station.</param>
     public delegate Task OnChargingStationStatusChangedDelegate(DateTime                                Timestamp,
                                                                 ChargingStation                         ChargingStation,
-                                                                Timestamped<ChargingStationStatusType>  OldStatus,
-                                                                Timestamped<ChargingStationStatusType>  NewStatus);
+                                                                Timestamped<ChargingStationStatusTypes>  OldStatus,
+                                                                Timestamped<ChargingStationStatusTypes>  NewStatus);
 
     /// <summary>
     /// A delegate called whenever the admin status of the charging station changed.

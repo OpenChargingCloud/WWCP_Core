@@ -477,7 +477,7 @@ namespace org.GraphDefined.WWCP
 
         public ChargingStationOperator
 
-            CreateNewChargingStationOperator(ChargingStationOperator_Id                          ChargingStationOperatorId,
+            CreateChargingStationOperator(ChargingStationOperator_Id                          ChargingStationOperatorId,
                                              I18NString                                          Name                                  = null,
                                              I18NString                                          Description                           = null,
                                              Action<ChargingStationOperator>                     Configurator                          = null,
@@ -2596,14 +2596,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the status of all charging stations registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusType>>>> ChargingStationStatus
+        public IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>> ChargingStationStatus
 
             => _ChargingStationOperators.
                    SelectMany(cso =>
                        cso.SelectMany(pool =>
                            pool.Select(station =>
 
-                                   new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusType>>>(
+                                   new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>(
                                        station.Id,
                                        station.StatusSchedule())
 
@@ -2690,7 +2690,7 @@ namespace org.GraphDefined.WWCP
         #region SetChargingStationStatus(ChargingStationId, CurrentStatus)
 
         public void SetChargingStationStatus(ChargingStation_Id                      ChargingStationId,
-                                             Timestamped<ChargingStationStatusType>  CurrentStatus)
+                                             Timestamped<ChargingStationStatusTypes>  CurrentStatus)
         {
 
             ChargingStationOperator _cso  = null;
@@ -2879,8 +2879,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="NewStatus">The new charging station admin status.</param>
         internal async Task UpdateChargingStationStatus(DateTime                                Timestamp,
                                                         ChargingStation                         ChargingStation,
-                                                        Timestamped<ChargingStationStatusType>  OldStatus,
-                                                        Timestamped<ChargingStationStatusType>  NewStatus)
+                                                        Timestamped<ChargingStationStatusTypes>  OldStatus,
+                                                        Timestamped<ChargingStationStatusTypes>  NewStatus)
         {
 
             var OnChargingStationStatusChangedLocal = OnChargingStationStatusChanged;

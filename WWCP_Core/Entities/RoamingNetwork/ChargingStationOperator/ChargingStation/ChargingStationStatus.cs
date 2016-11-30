@@ -43,7 +43,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The current status of the charging station.
         /// </summary>
-        public ChargingStationStatusType  Status      { get; }
+        public ChargingStationStatusTypes  Status      { get; }
 
         /// <summary>
         /// The timestamp of the current status of the charging station.
@@ -53,8 +53,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The timestamped status of the charging station.
         /// </summary>
-        public Timestamped<ChargingStationStatusType> Combined
-            => new Timestamped<ChargingStationStatusType>(Timestamp, Status);
+        public Timestamped<ChargingStationStatusTypes> Combined
+            => new Timestamped<ChargingStationStatusTypes>(Timestamp, Status);
 
         #endregion
 
@@ -67,7 +67,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Status">The current status of the charging station.</param>
         /// <param name="Timestamp">The timestamp of the current status of the charging station.</param>
         public ChargingStationStatus(ChargingStation_Id         Id,
-                                     ChargingStationStatusType  Status,
+                                     ChargingStationStatusTypes  Status,
                                      DateTime                   Timestamp)
 
         {

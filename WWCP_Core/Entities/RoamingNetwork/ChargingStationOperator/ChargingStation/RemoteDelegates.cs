@@ -32,8 +32,8 @@ namespace org.GraphDefined.WWCP
     public delegate void CSDisconnectedDelegate(IRemoteChargingStation ChargingStation);
 
     public delegate void CSStateChangedDelegate(IRemoteChargingStation ChargingStation,
-                                            ChargingStationStatusType OldState,
-                                            ChargingStationStatusType NewState);
+                                            ChargingStationStatusTypes OldState,
+                                            ChargingStationStatusTypes NewState);
 
 
 
@@ -56,7 +56,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargingStation">The charging station.</param>
     /// <param name="OldEVSEStatus">The old timestamped status of the charging station.</param>
     /// <param name="NewEVSEStatus">The new timestamped status of the charging station.</param>
-    public delegate void OnRemoteChargingStationStatusChangedDelegate(DateTime Timestamp, IRemoteChargingStation ChargingStation, Timestamped<ChargingStationStatusType> OldEVSEStatus, Timestamped<ChargingStationStatusType> NewEVSEStatus);
+    public delegate void OnRemoteChargingStationStatusChangedDelegate(DateTime Timestamp, IRemoteChargingStation ChargingStation, Timestamped<ChargingStationStatusTypes> OldEVSEStatus, Timestamped<ChargingStationStatusTypes> NewEVSEStatus);
 
 
     /// <summary>

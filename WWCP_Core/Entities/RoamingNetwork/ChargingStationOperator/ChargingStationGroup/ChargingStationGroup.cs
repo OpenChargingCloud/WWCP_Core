@@ -880,8 +880,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="NewStatus">The new charging station status.</param>
         internal void UpdateChargingStationStatus(DateTime                                Timestamp,
                                                   ChargingStation                         ChargingStation,
-                                                  Timestamped<ChargingStationStatusType>  OldStatus,
-                                                  Timestamped<ChargingStationStatusType>  NewStatus)
+                                                  Timestamped<ChargingStationStatusTypes>  OldStatus,
+                                                  Timestamped<ChargingStationStatusTypes>  NewStatus)
         {
 
             var OnChargingStationStatusChangedLocal = OnChargingStationStatusChanged;

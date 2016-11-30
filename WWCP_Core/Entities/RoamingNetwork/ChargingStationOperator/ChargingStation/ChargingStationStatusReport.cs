@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A charging station status report.
     /// </summary>
-    public class ChargingStationStatusReport : StatusReport<ChargingStation, ChargingStationStatusType>
+    public class ChargingStationStatusReport : StatusReport<ChargingStation, ChargingStationStatusTypes>
     {
 
         public ChargingStationStatusReport(IEnumerable<ChargingStation> ChargingStations)
