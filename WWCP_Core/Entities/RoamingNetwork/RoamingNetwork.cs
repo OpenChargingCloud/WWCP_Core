@@ -4371,9 +4371,6 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (EVSEId == null)
-                throw new ArgumentNullException(nameof(EVSEId),  "The given EVSE identification must not be null!");
-
             ChargingStationOperator _ChargingStationOperator  = null;
             RemoteStartEVSEResult   result                    = null;
 
