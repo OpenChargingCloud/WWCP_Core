@@ -473,29 +473,29 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CreateNewChargingStationOperator(ChargingStationOperatorId, Name = null, Description = null, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateChargingStationOperator(ChargingStationOperatorId, Name = null, Description = null, Configurator = null, OnSuccess = null, OnError = null)
 
         public ChargingStationOperator
 
             CreateChargingStationOperator(ChargingStationOperator_Id                          ChargingStationOperatorId,
-                                             I18NString                                          Name                                  = null,
-                                             I18NString                                          Description                           = null,
-                                             Action<ChargingStationOperator>                     Configurator                          = null,
-                                             RemoteChargingStationOperatorCreatorDelegate        RemoteChargingStationOperatorCreator  = null,
-                                             ChargingStationOperatorAdminStatusType              AdminStatus                           = ChargingStationOperatorAdminStatusType.Operational,
-                                             ChargingStationOperatorStatusType                   Status                                = ChargingStationOperatorStatusType.Available,
-                                             Action<ChargingStationOperator>                     OnSuccess                             = null,
-                                             Action<RoamingNetwork, ChargingStationOperator_Id>  OnError                               = null)
+                                          I18NString                                          Name                                  = null,
+                                          I18NString                                          Description                           = null,
+                                          Action<ChargingStationOperator>                     Configurator                          = null,
+                                          RemoteChargingStationOperatorCreatorDelegate        RemoteChargingStationOperatorCreator  = null,
+                                          ChargingStationOperatorAdminStatusType              AdminStatus                           = ChargingStationOperatorAdminStatusType.Operational,
+                                          ChargingStationOperatorStatusType                   Status                                = ChargingStationOperatorStatusType.Available,
+                                          Action<ChargingStationOperator>                     OnSuccess                             = null,
+                                          Action<RoamingNetwork, ChargingStationOperator_Id>  OnError                               = null)
 
-                => CreateNewChargingStationOperator(new ChargingStationOperator_Id[] { ChargingStationOperatorId },
-                                                    Name,
-                                                    Description,
-                                                    Configurator,
-                                                    RemoteChargingStationOperatorCreator,
-                                                    AdminStatus,
-                                                    Status,
-                                                    OnSuccess,
-                                                    OnError);
+                => CreateChargingStationOperator(new ChargingStationOperator_Id[] { ChargingStationOperatorId },
+                                                 Name,
+                                                 Description,
+                                                 Configurator,
+                                                 RemoteChargingStationOperatorCreator,
+                                                 AdminStatus,
+                                                 Status,
+                                                 OnSuccess,
+                                                 OnError);
 
 
         /// <summary>
@@ -510,15 +510,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station operator failed.</param>
         public ChargingStationOperator
 
-            CreateNewChargingStationOperator(IEnumerable<ChargingStationOperator_Id>             ChargingStationOperatorIds,
-                                             I18NString                                          Name                                  = null,
-                                             I18NString                                          Description                           = null,
-                                             Action<ChargingStationOperator>                     Configurator                          = null,
-                                             RemoteChargingStationOperatorCreatorDelegate        RemoteChargingStationOperatorCreator  = null,
-                                             ChargingStationOperatorAdminStatusType              AdminStatus                           = ChargingStationOperatorAdminStatusType.Operational,
-                                             ChargingStationOperatorStatusType                   Status                                = ChargingStationOperatorStatusType.Available,
-                                             Action<ChargingStationOperator>                     OnSuccess                             = null,
-                                             Action<RoamingNetwork, ChargingStationOperator_Id>  OnError                               = null)
+            CreateChargingStationOperator(IEnumerable<ChargingStationOperator_Id>             ChargingStationOperatorIds,
+                                          I18NString                                          Name                                  = null,
+                                          I18NString                                          Description                           = null,
+                                          Action<ChargingStationOperator>                     Configurator                          = null,
+                                          RemoteChargingStationOperatorCreatorDelegate        RemoteChargingStationOperatorCreator  = null,
+                                          ChargingStationOperatorAdminStatusType              AdminStatus                           = ChargingStationOperatorAdminStatusType.Operational,
+                                          ChargingStationOperatorStatusType                   Status                                = ChargingStationOperatorStatusType.Available,
+                                          Action<ChargingStationOperator>                     OnSuccess                             = null,
+                                          Action<RoamingNetwork, ChargingStationOperator_Id>  OnError                               = null)
 
         {
 
