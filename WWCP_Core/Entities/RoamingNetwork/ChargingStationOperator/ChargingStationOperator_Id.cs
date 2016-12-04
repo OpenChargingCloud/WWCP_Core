@@ -67,13 +67,13 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public static readonly Regex  CountryAndOperatorId_RegEx  = new Regex(@"^([A-Z]{2})(\*?)([A-Z0-9]{3})$ | "     +
                                                                               @"^\+?([0-9]{1,5})\*([0-9]{3,6})$ | " +
-                                                                              @"^([0-9]{3})$",
+                                                                              @"^([0-9]{1,5})$",
                                                                               RegexOptions.IgnorePatternWhitespace);
 
         /// <summary>
         /// The regular expression for parsing a charging station operator identification.
         /// </summary>
-        public static readonly Regex  OperatorId_RegEx            = new Regex(@"^[A-Z0-9]{3}$",
+        public static readonly Regex  OperatorId_RegEx            = new Regex(@"^[A-Z0-9]{1,5}$",
                                                                               RegexOptions.IgnorePatternWhitespace);
 
         #endregion
@@ -187,8 +187,12 @@ namespace org.GraphDefined.WWCP
                                                       MatchCollection[0].Groups[5].Value,
                                                       OperatorIdFormats.DIN);
 
-            throw new ArgumentException("Unknown country code in the given text representation of a charging station operator identification: '" + Text + "'!",
-                                        nameof(Text));
+            // Just e.g. "822"...
+            return Parse(Country.Germany,
+                         MatchCollection[0].Groups[6].Value).ChangeFormat(OperatorIdFormats.DIN);
+
+            //throw new ArgumentException("Unknown country code in the given text representation of a charging station operator identification: '" + Text + "'!",
+            //                            nameof(Text));
 
         }
 
@@ -290,7 +294,7 @@ namespace org.GraphDefined.WWCP
 
                 // Just e.g. "822"...
                 ChargingStationOperatorId = Parse(Country.Germany,
-                                                  MatchCollection[0].Groups[5].Value).ChangeFormat(OperatorIdFormats.DIN);
+                                                  MatchCollection[0].Groups[6].Value).ChangeFormat(OperatorIdFormats.DIN);
 
                 return true;
 

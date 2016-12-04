@@ -1043,8 +1043,8 @@ namespace org.GraphDefined.WWCP
                                  ChargingPool                          ChargingPool,
                                  Action<ChargingStation>               Configurator                  = null,
                                  RemoteChargingStationCreatorDelegate  RemoteChargingStationCreator  = null,
-                                 ChargingStationAdminStatusTypes        AdminStatus                   = ChargingStationAdminStatusTypes.Operational,
-                                 ChargingStationStatusTypes             Status                        = ChargingStationStatusTypes.Available,
+                                 ChargingStationAdminStatusTypes       AdminStatus                   = ChargingStationAdminStatusTypes.Operational,
+                                 ChargingStationStatusTypes            Status                        = ChargingStationStatusTypes.Available,
                                  UInt16                                MaxAdminStatusListSize        = DefaultMaxAdminStatusListSize,
                                  UInt16                                MaxStatusListSize             = DefaultMaxStatusListSize)
 
@@ -3359,6 +3359,164 @@ namespace org.GraphDefined.WWCP
             => Id.ToString();
 
         #endregion
+
+
+        public class Builder
+        {
+
+            #region Properties
+
+            /// <summary>
+            /// The internal service identification of the charging station maintained by the Charging Station Operator.
+            /// </summary>
+            [Optional]
+            public String ServiceIdentification { get; set; }
+
+            [Optional]
+            public String HubjectStationId { get; set; }
+
+            /// <summary>
+            /// The offical (multi-language) name of this charging station.
+            /// </summary>
+            [Mandatory]
+            public I18NString Name { get; set; }
+
+            /// <summary>
+            /// An optional (multi-language) description of this charging station.
+            /// </summary>
+            [Optional]
+            public I18NString Description { get; set; }
+
+            /// <summary>
+            /// A brand for this charging station
+            /// is this is different from the Charging Station Operator.
+            /// </summary>
+            [Optional]
+            public Brand Brand { get; set; }
+
+            /// <summary>
+            /// The address of this charging station.
+            /// </summary>
+            [Optional]
+            public Address Address { get; set; }
+
+            /// <summary>
+            /// OSM Node Id.
+            /// </summary>
+            [Optional]
+            public String OSM_NodeId { get; set; }
+
+            /// <summary>
+            /// The geographical location of this charging station.
+            /// </summary>
+            [Optional]
+            public GeoCoordinate GeoLocation { get; set; }
+
+            /// <summary>
+            /// The address of the entrance to this charging station.
+            /// (If different from 'Address').
+            /// </summary>
+            [Optional]
+            public Address EntranceAddress { get; set; }
+
+            /// <summary>
+            /// The geographical location of the entrance to this charging station.
+            /// (If different from 'GeoLocation').
+            /// </summary>
+            [Optional]
+            public GeoCoordinate EntranceLocation { get; set; }
+
+            /// <summary>
+            /// The address of the exit of this charging station.
+            /// (If different from 'Address').
+            /// </summary>
+            [Optional]
+            public Address ExitAddress { get; set; }
+
+            /// <summary>
+            /// The geographical location of the exit of this charging station.
+            /// (If different from 'GeoLocation').
+            /// </summary>
+            [Optional]
+            public GeoCoordinate ExitLocation { get; set; }
+
+            /// <summary>
+            /// parking spaces reachable from this charging station.
+            /// </summary>
+            [Optional]
+            public HashSet<ParkingSpace> ParkingSpaces { get; set; }
+
+            /// <summary>
+            /// The opening times of this charging station.
+            /// </summary>
+            public OpeningTimes OpeningTimes { get; set; }
+
+            public HashSet<AuthenticationModes> AuthenticationModes { get; set; }
+
+            [Mandatory]
+            public HashSet<PaymentOptions> PaymentOptions { get; set; }
+
+            [Optional]
+            public AccessibilityTypes Accessibility { get; set; }
+
+            /// <summary>
+            /// The telephone number of the Charging Station Operator hotline.
+            /// </summary>
+            [Optional]
+            public String HotlinePhoneNumber { get; set; }
+
+            [Optional]
+            public Boolean IsHubjectCompatible { get; set; }
+
+            [Optional]
+            public Boolean DynamicInfoAvailable { get; set; }
+
+            /// <summary>
+            /// A comment from the users.
+            /// </summary>
+            [Optional]
+            public I18NString UserComment { get; set; }
+
+            /// <summary>
+            /// A comment from the service provider.
+            /// </summary>
+            [Optional]
+            public I18NString ServiceProviderComment { get; set; }
+
+            /// <summary>
+            /// The grid connection of the charging station.
+            /// </summary>
+            [Optional]
+            public GridConnection GridConnection { get; set; }
+
+            /// <summary>
+            /// The features of the charging station.
+            /// </summary>
+            [Optional]
+            public ChargingStationUIFeatures UIFeatures { get; set; }
+
+            /// <summary>
+            /// URIs of photos of this charging station.
+            /// </summary>
+            [Optional]
+            public HashSet<String> PhotoURIs { get; set; }
+
+            /// <summary>
+            /// A delegate called to aggregate the dynamic status of all subordinated EVSEs.
+            /// </summary>
+            public Func<EVSEStatusReport, ChargingStationStatusTypes> StatusAggregationDelegate { get; set; }
+
+            /// <summary>
+            /// The charging station admin status schedule.
+            /// </summary>
+            public IEnumerable<Timestamped<ChargingStationAdminStatusTypes>> AdminStatusSchedule { get; set; }
+
+            #endregion
+
+            public Builder(ChargingStation_Id Id)
+            { }
+
+        }
 
     }
 
