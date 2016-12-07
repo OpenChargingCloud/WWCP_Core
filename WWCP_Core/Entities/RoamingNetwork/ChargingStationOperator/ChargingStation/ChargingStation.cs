@@ -283,7 +283,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return _GeoLocation.Value.IsValid()
+                return _GeoLocation.HasValue
                     ? _GeoLocation
                     : ChargingPool.GeoLocation;
 
@@ -367,7 +367,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return _EntranceLocation.Value.IsValid()
+                return _EntranceLocation.HasValue
                     ? _EntranceLocation
                     : ChargingPool.EntranceLocation;
 
@@ -451,7 +451,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return _ExitLocation.Value.IsValid()
+                return _ExitLocation.HasValue
                     ? _ExitLocation
                     : ChargingPool.ExitLocation;
 
