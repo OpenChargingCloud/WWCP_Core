@@ -92,11 +92,14 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Contains(...)
+        #region ContainsId(...)
 
-        public Boolean Contains(TId Id)
+        public Boolean ContainsId(TId Id)
             => _MultiIdLookup.ContainsKey(Id);
 
+        #endregion
+
+        #region Contains(...)
 
         public Boolean Contains(T Entity)
             => _Lookup.ContainsValue(Entity);
@@ -201,7 +204,7 @@ namespace org.GraphDefined.WWCP
 
         #region Get(Id)
 
-        public T Get(TId Id)
+        public T GetById(TId Id)
         {
 
             lock (_Lookup)

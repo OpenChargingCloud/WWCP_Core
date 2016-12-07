@@ -125,37 +125,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ArrivalInstructions
-
-        private I18NString _ArrivalInstructions;
-
-        /// <summary>
-        /// An optional (multi-language) description of hot to find the charging pool.
-        /// </summary>
-        [Optional]
-        public I18NString ArrivalInstructions
-        {
-
-            get
-            {
-                return _ArrivalInstructions;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = new I18NString();
-
-                if (_ArrivalInstructions != value)
-                    SetProperty(ref _ArrivalInstructions, value);
-
-            }
-
-        }
-
-        #endregion
-
         #region BrandName
 
         private I18NString _BrandName;
@@ -164,7 +133,7 @@ namespace org.GraphDefined.WWCP
         /// A (multi-language) brand name for this charging pool
         /// is this is different from the Charging Station Operator.
         /// </summary>
-        [Mandatory]
+        [Optional]
         public I18NString BrandName
         {
 
@@ -177,7 +146,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (_BrandName != value)
-                    SetProperty<I18NString>(ref _BrandName, value);
+                    SetProperty(ref _BrandName, value);
 
             }
 
@@ -223,6 +192,44 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region HotlinePhoneNumber
+
+        private String _HotlinePhoneNumber;
+
+        /// <summary>
+        /// The telephone number of the Charging Station Operator hotline.
+        /// </summary>
+        [Optional]
+        public String HotlinePhoneNumber
+        {
+
+            get
+            {
+                return _HotlinePhoneNumber;
+            }
+
+            set
+            {
+
+                if (value == null)
+                    value = "";
+
+                if (_HotlinePhoneNumber != value)
+                {
+
+                    SetProperty(ref _HotlinePhoneNumber, value);
+
+                    _ChargingStations.ForEach(station => station._HotlinePhoneNumber = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+
         #region Address
 
         private Address _Address;
@@ -262,13 +269,13 @@ namespace org.GraphDefined.WWCP
 
         #region GeoLocation
 
-        private GeoCoordinate _GeoLocation;
+        private GeoCoordinate? _GeoLocation;
 
         /// <summary>
         /// The geographical location of this charging pool.
         /// </summary>
         [Optional]
-        public GeoCoordinate GeoLocation
+        public GeoCoordinate? GeoLocation
         {
 
             get
@@ -278,9 +285,6 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-
-                if (value == null)
-                    value = new GeoCoordinate(new Latitude(0), new Longitude(0));
 
                 if (_GeoLocation != value)
                 {
@@ -337,14 +341,14 @@ namespace org.GraphDefined.WWCP
 
         #region EntranceLocation
 
-        private GeoCoordinate _EntranceLocation;
+        private GeoCoordinate? _EntranceLocation;
 
         /// <summary>
         /// The geographical location of the entrance to this charging pool.
         /// (If different from 'GeoLocation').
         /// </summary>
         [Optional]
-        public GeoCoordinate EntranceLocation
+        public GeoCoordinate? EntranceLocation
         {
 
             get
@@ -355,15 +359,80 @@ namespace org.GraphDefined.WWCP
             set
             {
 
-                if (value == null)
-                    value = new GeoCoordinate(new Latitude(0), new Longitude(0));
-
                 if (_EntranceLocation != value)
                 {
 
                     SetProperty(ref _EntranceLocation, value);
 
                     _ChargingStations.ForEach(station => station._EntranceLocation = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region ArrivalInstructions
+
+        private I18NString _ArrivalInstructions;
+
+        /// <summary>
+        /// An optional (multi-language) description of hot to find the charging pool.
+        /// </summary>
+        [Optional]
+        public I18NString ArrivalInstructions
+        {
+
+            get
+            {
+                return _ArrivalInstructions;
+            }
+
+            set
+            {
+
+                if (value == null)
+                    value = new I18NString();
+
+                if (_ArrivalInstructions != value)
+                    SetProperty(ref _ArrivalInstructions, value);
+
+            }
+
+        }
+
+        #endregion
+
+        #region OpeningTimes
+
+        private OpeningTimes _OpeningTimes;
+
+        /// <summary>
+        /// The opening times of this charging pool.
+        /// </summary>
+        [Optional]
+        public OpeningTimes OpeningTimes
+        {
+
+            get
+            {
+                return _OpeningTimes;
+            }
+
+            set
+            {
+
+                if (value == null)
+                    value = OpeningTimes.Open24Hours;
+
+                if (_OpeningTimes != value)
+                {
+
+                    SetProperty(ref _OpeningTimes, value);
+
+                    _ChargingStations.ForEach(station => station._OpeningTimes = null);
 
                 }
 
@@ -413,14 +482,14 @@ namespace org.GraphDefined.WWCP
 
         #region ExitLocation
 
-        private GeoCoordinate _ExitLocation;
+        private GeoCoordinate? _ExitLocation;
 
         /// <summary>
         /// The geographical location of the exit of this charging pool.
         /// (If different from 'GeoLocation').
         /// </summary>
         [Optional]
-        public GeoCoordinate ExitLocation
+        public GeoCoordinate? ExitLocation
         {
 
             get
@@ -430,9 +499,6 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-
-                if (value == null)
-                    value = new GeoCoordinate(new Latitude(0), new Longitude(0));
 
                 if (_ExitLocation != value)
                 {
@@ -449,42 +515,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region OpeningTimes
-
-        private OpeningTimes _OpeningTimes;
-
-        /// <summary>
-        /// The opening times of this charging pool.
-        /// </summary>
-        [Optional]
-        public OpeningTimes OpeningTimes
-        {
-
-            get
-            {
-                return _OpeningTimes;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = OpeningTimes.Open24Hours;
-
-                if (_OpeningTimes != value)
-                {
-
-                    SetProperty(ref _OpeningTimes, value);
-
-                    _ChargingStations.ForEach(station => station._OpeningTimes = null);
-
-                }
-
-            }
-
-        }
-
-        #endregion
 
         #region AuthenticationModes
 
@@ -575,43 +605,6 @@ namespace org.GraphDefined.WWCP
                     SetProperty(ref _Accessibility, value);
 
                     _ChargingStations.ForEach(station => station._Accessibility = value);
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
-        #region HotlinePhoneNumber
-
-        private String _HotlinePhoneNumber;
-
-        /// <summary>
-        /// The telephone number of the Charging Station Operator hotline.
-        /// </summary>
-        [Optional]
-        public String HotlinePhoneNumber
-        {
-
-            get
-            {
-                return _HotlinePhoneNumber;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = "";
-
-                if (_HotlinePhoneNumber != value)
-                {
-
-                    SetProperty(ref _HotlinePhoneNumber, value);
-
-                    _ChargingStations.ForEach(station => station._HotlinePhoneNumber = null);
 
                 }
 
@@ -1184,7 +1177,7 @@ namespace org.GraphDefined.WWCP
             if (ChargingStationId == null)
                 throw new ArgumentNullException(nameof(ChargingStationId), "The given charging station identification must not be null!");
 
-            if (_ChargingStations.Contains(ChargingStationId))
+            if (_ChargingStations.ContainsId(ChargingStationId))
             {
                 if (OnError == null)
                     throw new ChargingStationAlreadyExistsInPool(this, ChargingStationId);
@@ -1288,7 +1281,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStation">A charging station.</param>
         public Boolean ContainsChargingStationId(ChargingStation ChargingStation)
 
-            => _ChargingStations.Contains(ChargingStation.Id);
+            => _ChargingStations.ContainsId(ChargingStation.Id);
 
         #endregion
 
@@ -1300,7 +1293,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationId">The unique identification of the charging station.</param>
         public Boolean ContainsChargingStation(ChargingStation_Id ChargingStationId)
 
-            => _ChargingStations.Contains(ChargingStationId);
+            => _ChargingStations.ContainsId(ChargingStationId);
 
         #endregion
 
@@ -1308,7 +1301,7 @@ namespace org.GraphDefined.WWCP
 
         public ChargingStation GetChargingStationById(ChargingStation_Id ChargingStationId)
 
-            => _ChargingStations.Get(ChargingStationId);
+            => _ChargingStations.GetById(ChargingStationId);
 
         #endregion
 
@@ -3275,6 +3268,37 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        public ChargingPool MergeWith(ChargingPool NewChargingPool)
+        {
+
+            Name                 = NewChargingPool.Name;
+            Description          = NewChargingPool.Description;
+            BrandName            = NewChargingPool.BrandName;
+            LocationLanguage     = NewChargingPool.LocationLanguage;
+            HotlinePhoneNumber   = NewChargingPool.HotlinePhoneNumber;
+
+            Address              = NewChargingPool.Address;
+            GeoLocation          = NewChargingPool.GeoLocation;
+            EntranceAddress      = NewChargingPool.EntranceAddress;
+            EntranceLocation     = NewChargingPool.EntranceLocation;
+            ArrivalInstructions  = NewChargingPool.ArrivalInstructions;
+            OpeningTimes         = NewChargingPool.OpeningTimes;
+            ExitAddress          = NewChargingPool.ExitAddress;
+            ExitLocation         = NewChargingPool.ExitLocation;
+
+            AuthenticationModes  = NewChargingPool.AuthenticationModes;
+            PaymentOptions       = NewChargingPool.PaymentOptions;
+            Accessibility        = NewChargingPool.Accessibility;
+
+            PoolOwner            = NewChargingPool.PoolOwner;
+            LocationOwner        = NewChargingPool.LocationOwner;
+            PhotoURIs            = NewChargingPool.PhotoURIs;
+
+            return this;
+
+        }
+
+
         #region IComparable<ChargingPool> Members
 
         #region CompareTo(Object)
@@ -3287,12 +3311,11 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            // Check if the given object is a charging pool.
             var ChargingPool = Object as ChargingPool;
             if ((Object) ChargingPool == null)
-                throw new ArgumentException("The given object is not a charging pool!");
+                throw new ArgumentException("The given object is not a charging pool!", nameof(Object));
 
             return CompareTo(ChargingPool);
 
@@ -3310,7 +3333,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) ChargingPool == null)
-                throw new ArgumentNullException("The given charging pool must not be null!");
+                throw new ArgumentNullException(nameof(Object), "The given charging pool must not be null!");
 
             return Id.CompareTo(ChargingPool.Id);
 
@@ -3335,12 +3358,11 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is a charging pool.
             var ChargingPool = Object as ChargingPool;
             if ((Object) ChargingPool == null)
                 return false;
 
-            return this.Equals(ChargingPool);
+            return Equals(ChargingPool);
 
         }
 

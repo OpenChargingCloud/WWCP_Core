@@ -271,19 +271,19 @@ namespace org.GraphDefined.WWCP
 
         #region GeoLocation
 
-        internal GeoCoordinate _GeoLocation;
+        internal GeoCoordinate? _GeoLocation;
 
         /// <summary>
         /// The geographical location of this charging station.
         /// </summary>
         [Optional]
-        public GeoCoordinate GeoLocation
+        public GeoCoordinate? GeoLocation
         {
 
             get
             {
 
-                return _GeoLocation.IsValid()
+                return _GeoLocation.Value.IsValid()
                     ? _GeoLocation
                     : ChargingPool.GeoLocation;
 
@@ -354,20 +354,20 @@ namespace org.GraphDefined.WWCP
 
         #region EntranceLocation
 
-        internal GeoCoordinate _EntranceLocation;
+        internal GeoCoordinate? _EntranceLocation;
 
         /// <summary>
         /// The geographical location of the entrance to this charging station.
         /// (If different from 'GeoLocation').
         /// </summary>
         [Optional]
-        public GeoCoordinate EntranceLocation
+        public GeoCoordinate? EntranceLocation
         {
 
             get
             {
 
-                return _EntranceLocation.IsValid()
+                return _EntranceLocation.Value.IsValid()
                     ? _EntranceLocation
                     : ChargingPool.EntranceLocation;
 
@@ -438,20 +438,20 @@ namespace org.GraphDefined.WWCP
 
         #region ExitLocation
 
-        internal GeoCoordinate _ExitLocation;
+        internal GeoCoordinate? _ExitLocation;
 
         /// <summary>
         /// The geographical location of the exit of this charging station.
         /// (If different from 'GeoLocation').
         /// </summary>
         [Optional]
-        public GeoCoordinate ExitLocation
+        public GeoCoordinate? ExitLocation
         {
 
             get
             {
 
-                return _ExitLocation.IsValid()
+                return _ExitLocation.Value.IsValid()
                     ? _ExitLocation
                     : ChargingPool.ExitLocation;
 
@@ -1496,7 +1496,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         public Boolean ContainsEVSE(EVSE_Id EVSEId)
 
-            => _EVSEs.Contains(EVSEId);
+            => _EVSEs.ContainsId(EVSEId);
 
         #endregion
 
@@ -1504,7 +1504,7 @@ namespace org.GraphDefined.WWCP
 
         public EVSE GetEVSEbyId(EVSE_Id EVSEId)
 
-            => _EVSEs.Get(EVSEId);
+            => _EVSEs.GetById(EVSEId);
 
         #endregion
 

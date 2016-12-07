@@ -800,7 +800,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMobilityStationId">The unique identification of the eMobilityStation.</param>
         public Boolean ContainseMobilityStation(eMobilityStation_Id eMobilityStationId)
 
-            => _eMobilityStations.Contains(eMobilityStationId);
+            => _eMobilityStations.ContainsId(eMobilityStationId);
 
         #endregion
 
@@ -808,7 +808,7 @@ namespace org.GraphDefined.WWCP
 
         public eMobilityStation GeteMobilityStationById(eMobilityStation_Id eMobilityStationId)
 
-            => _eMobilityStations.Get(eMobilityStationId);
+            => _eMobilityStations.GetById(eMobilityStationId);
 
         #endregion
 
@@ -1172,7 +1172,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="eVehicleId">The unique identification of the eVehicle.</param>
         public Boolean ContainseVehicle(eVehicle_Id eVehicleId)
 
-            => _eVehicles.Contains(eVehicleId);
+            => _eVehicles.ContainsId(eVehicleId);
 
         #endregion
 
@@ -1180,7 +1180,7 @@ namespace org.GraphDefined.WWCP
 
         public eVehicle GetEVehicleById(eVehicle_Id eVehicleId)
 
-            => _eVehicles.Get(eVehicleId);
+            => _eVehicles.GetById(eVehicleId);
 
         #endregion
 

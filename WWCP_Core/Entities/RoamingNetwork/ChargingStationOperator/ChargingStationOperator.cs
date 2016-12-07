@@ -826,7 +826,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public ChargingPool CreateChargingPool(ChargingPool_Id                                   ChargingPoolId             = null,
+        public ChargingPool CreateChargingPool(ChargingPool_Id?                                  ChargingPoolId             = null,
                                                Action<ChargingPool>                              Configurator               = null,
                                                RemoteChargingPoolCreatorDelegate                 RemoteChargingPoolCreator  = null,
                                                ChargingPoolAdminStatusType                       AdminStatus                = ChargingPoolAdminStatusType.Operational,
@@ -838,26 +838,28 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (ChargingPoolId == null)
-                ChargingPoolId = ChargingPool_Id.Random(this.Id);
+            if (!ChargingPoolId.HasValue)
+                ChargingPoolId = ChargingPool_Id.Random(Id);
 
             // Do not throw an exception when an OnError delegate was given!
-            if (_ChargingPools.Any(pool => pool.Id == ChargingPoolId))
+            if (_ChargingPools.ContainsId(ChargingPoolId.Value))
             {
+
                 if (OnError == null)
-                    throw new ChargingPoolAlreadyExists(this, ChargingPoolId);
-                else
-                    OnError?.Invoke(this, ChargingPoolId);
+                    throw new ChargingPoolAlreadyExists(this, ChargingPoolId.Value);
+
+                    OnError?.Invoke(this, ChargingPoolId.Value);
+
             }
 
-            if (!this.Ids.Contains(ChargingPoolId.OperatorId))
+            if (!Ids.Contains(ChargingPoolId.Value.OperatorId))
                 throw new InvalidChargingPoolOperatorId(this,
-                                                        ChargingPoolId.OperatorId,
-                                                        this.Ids);
+                                                        ChargingPoolId.Value.OperatorId,
+                                                        Ids);
 
             #endregion
 
-            var _ChargingPool = new ChargingPool(ChargingPoolId,
+            var _ChargingPool = new ChargingPool(ChargingPoolId.Value,
                                                  this,
                                                  Configurator,
                                                  RemoteChargingPoolCreator,
@@ -900,6 +902,67 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region CreateOrUpdateChargingPool(ChargingPoolId = null, Configurator = null, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create and register or udpate a new charging pool having the given
+        /// unique charging pool identification.
+        /// </summary>
+        /// <param name="ChargingPoolId">The unique identification of the new charging pool.</param>
+        /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
+        public ChargingPool CreateOrUpdateChargingPool(ChargingPool_Id?                                  ChargingPoolId             = null,
+                                                       Action<ChargingPool>                              Configurator               = null,
+                                                       RemoteChargingPoolCreatorDelegate                 RemoteChargingPoolCreator  = null,
+                                                       ChargingPoolAdminStatusType                       AdminStatus                = ChargingPoolAdminStatusType.Operational,
+                                                       ChargingPoolStatusType                            Status                     = ChargingPoolStatusType.Available,
+                                                       Action<ChargingPool>                              OnSuccess                  = null,
+                                                       Action<ChargingStationOperator, ChargingPool_Id>  OnError                    = null)
+
+        {
+
+            #region Initial checks
+
+            if (!ChargingPoolId.HasValue)
+                ChargingPoolId = ChargingPool_Id.Random(Id);
+
+            if (!Ids.Contains(ChargingPoolId.Value.OperatorId))
+                throw new InvalidChargingPoolOperatorId(this,
+                                                        ChargingPoolId.Value.OperatorId,
+                                                        Ids);
+
+            #endregion
+
+            #region If the charging pool identification is new/unknown: Call CreateChargingPool(...)
+
+            if (!_ChargingPools.ContainsId(ChargingPoolId.Value))
+                return CreateChargingPool(ChargingPoolId,
+                                          Configurator,
+                                          RemoteChargingPoolCreator,
+                                          AdminStatus,
+                                          Status,
+                                          OnSuccess,
+                                          OnError);
+
+            #endregion
+
+
+            // Merge existing charging pool with new pool data...
+
+            return _ChargingPools.
+                       GetById(ChargingPoolId.Value).
+                       MergeWith(new ChargingPool(ChargingPoolId.Value,
+                                                  this,
+                                                  Configurator,
+                                                  RemoteChargingPoolCreator,
+                                                  AdminStatus,
+                                                  Status));
+
+        }
+
+        #endregion
+
 
         #region ContainsChargingPool(ChargingPool)
 
@@ -921,7 +984,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingPoolId">The unique identification of the charging pool.</param>
         public Boolean ContainsChargingPool(ChargingPool_Id ChargingPoolId)
 
-            => _ChargingPools.Contains(ChargingPoolId);
+            => _ChargingPools.ContainsId(ChargingPoolId);
 
         #endregion
 
@@ -929,7 +992,7 @@ namespace org.GraphDefined.WWCP
 
         public ChargingPool GetChargingPoolbyId(ChargingPool_Id ChargingPoolId)
 
-            => _ChargingPools.Get(ChargingPoolId);
+            => _ChargingPools.GetById(ChargingPoolId);
 
         #endregion
 
@@ -1572,7 +1635,7 @@ namespace org.GraphDefined.WWCP
                 ChargingStationGroupId = ChargingStationGroup_Id.Random(this.Id);
 
             // Do not throw an exception when an OnError delegate was given!
-            if (_ChargingStationGroups.Contains(ChargingStationGroupId))
+            if (_ChargingStationGroups.ContainsId(ChargingStationGroupId))
             {
                 if (OnError == null)
                     throw new ChargingStationGroupAlreadyExists(this, ChargingStationGroupId);

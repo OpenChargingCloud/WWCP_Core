@@ -903,7 +903,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingPoolId">The unique identification of the charging pool.</param>
         public Boolean ContainsChargingPool(ChargingPool_Id ChargingPoolId)
 
-            => _ChargingPools.Contains(ChargingPoolId);
+            => _ChargingPools.ContainsId(ChargingPoolId);
 
         #endregion
 
@@ -911,7 +911,7 @@ namespace org.GraphDefined.WWCP
 
         public ChargingPool GetChargingPoolbyId(ChargingPool_Id ChargingPoolId)
 
-            => _ChargingPools.Get(ChargingPoolId);
+            => _ChargingPools.GetById(ChargingPoolId);
 
         #endregion
 

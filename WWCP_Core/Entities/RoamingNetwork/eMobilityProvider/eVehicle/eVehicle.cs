@@ -181,13 +181,13 @@ namespace org.GraphDefined.WWCP
 
         #region GeoLocation
 
-        internal GeoCoordinate _GeoLocation;
+        internal GeoCoordinate? _GeoLocation;
 
         /// <summary>
         /// The geographical location of this e-vehicle.
         /// </summary>
         [Optional]
-        public GeoCoordinate GeoLocation
+        public GeoCoordinate? GeoLocation
         {
 
             get

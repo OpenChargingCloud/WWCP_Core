@@ -233,7 +233,7 @@ namespace org.GraphDefined.WWCP
 
             this._ChargingStationOperators                          = new EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator>(this);
             this._ParkingOperators                                  = new EntityHashSet<RoamingNetwork, ParkingOperator_Id,         ParkingOperator>        (this);
-            this._EMobilityProviders                                = new EntityHashSet<RoamingNetwork, eMobilityProvider_Id,       eMobilityProviderStub>      (this);
+            this._eMobilityProviders                                = new EntityHashSet<RoamingNetwork, eMobilityProvider_Id,       eMobilityProviderStub>      (this);
             this._SmartCities                                       = new EntityHashSet<RoamingNetwork, SmartCity_Id,               SmartCityStub>              (this);
             this._NavigationProviders                               = new EntityHashSet<RoamingNetwork, NavigationProvider_Id,      NavigationProvider>     (this);
             this._GridOperators                                     = new EntityHashSet<RoamingNetwork, GridOperator_Id,            GridOperator>           (this);
@@ -535,7 +535,7 @@ namespace org.GraphDefined.WWCP
                 foreach (var ChargingStationOperatorId in ChargingStationOperatorIds)
                 {
 
-                    if (_ChargingStationOperators.Contains(ChargingStationOperatorId))
+                    if (_ChargingStationOperators.ContainsId(ChargingStationOperatorId))
                         throw new ChargingStationOperatorAlreadyExists(this, ChargingStationOperatorId, Name);
 
                 }
@@ -601,7 +601,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationOperator">An Charging Station Operator.</param>
         public Boolean ContainsChargingStationOperator(ChargingStationOperator ChargingStationOperator)
 
-            => _ChargingStationOperators.Contains(ChargingStationOperator.Id);
+            => _ChargingStationOperators.ContainsId(ChargingStationOperator.Id);
 
         #endregion
 
@@ -613,7 +613,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationOperatorId">The unique identification of the Charging Station Operator.</param>
         public Boolean ContainsChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId)
 
-            => _ChargingStationOperators.Contains(ChargingStationOperatorId);
+            => _ChargingStationOperators.ContainsId(ChargingStationOperatorId);
 
         #endregion
 
@@ -621,7 +621,7 @@ namespace org.GraphDefined.WWCP
 
         public ChargingStationOperator GetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId)
 
-             => _ChargingStationOperators.Get(ChargingStationOperatorId);
+             => _ChargingStationOperators.GetById(ChargingStationOperatorId);
 
         #endregion
 
@@ -951,7 +951,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ParkingOperator">An parking Operator.</param>
         public Boolean ContainsParkingOperator(ParkingOperator ParkingOperator)
 
-            => _ParkingOperators.Contains(ParkingOperator.Id);
+            => _ParkingOperators.ContainsId(ParkingOperator.Id);
 
         #endregion
 
@@ -963,7 +963,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ParkingOperatorId">The unique identification of the parking Operator.</param>
         public Boolean ContainsParkingOperator(ParkingOperator_Id ParkingOperatorId)
 
-            => _ParkingOperators.Contains(ParkingOperatorId);
+            => _ParkingOperators.ContainsId(ParkingOperatorId);
 
         #endregion
 
@@ -971,7 +971,7 @@ namespace org.GraphDefined.WWCP
 
         public ParkingOperator GetParkingOperatorById(ParkingOperator_Id ParkingOperatorId)
 
-            => _ParkingOperators.Get(ParkingOperatorId);
+            => _ParkingOperators.GetById(ParkingOperatorId);
 
         #endregion
 
@@ -1148,18 +1148,18 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region E-Mobility Providers...
+        #region e-Mobility Providers...
 
-        #region EMobilityProviders
+        #region eMobilityProviders
 
-        private readonly EntityHashSet<RoamingNetwork, eMobilityProvider_Id, eMobilityProviderStub> _EMobilityProviders;
+        private readonly EntityHashSet<RoamingNetwork, eMobilityProvider_Id, eMobilityProviderStub> _eMobilityProviders;
 
         /// <summary>
         /// Return all e-mobility providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<eMobilityProviderStub> EMobilityProviders
+        public IEnumerable<eMobilityProviderStub> eMobilityProviders
 
-            => _EMobilityProviders;
+            => _eMobilityProviders;
 
         #endregion
 
@@ -1170,7 +1170,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusType>>>> EMobilityProviderAdminStatus
 
-            => _EMobilityProviders.
+            => _eMobilityProviders.
                    Select(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusType>>>(emp.Id, emp.AdminStatusSchedule));
 
         #endregion
@@ -1182,7 +1182,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusType>>>> EMobilityProviderStatus
 
-            => _EMobilityProviders.
+            => _eMobilityProviders.
                    Select(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusType>>>(emp.Id, emp.StatusSchedule));
 
         #endregion
@@ -1194,7 +1194,7 @@ namespace org.GraphDefined.WWCP
         /// Called whenever an e-mobility provider will be or was added.
         /// </summary>
         public IVotingSender<DateTime, RoamingNetwork, eMobilityProviderStub, Boolean> OnEMobilityProviderAddition
-            => _EMobilityProviders.OnAddition;
+            => _eMobilityProviders.OnAddition;
 
         #endregion
 
@@ -1204,7 +1204,7 @@ namespace org.GraphDefined.WWCP
         /// Called whenever an e-mobility provider will be or was removed.
         /// </summary>
         public IVotingSender<DateTime, RoamingNetwork, eMobilityProviderStub, Boolean> OnEMobilityProviderRemoval
-            => _EMobilityProviders.OnRemoval;
+            => _eMobilityProviders.OnRemoval;
 
         #endregion
 
@@ -1251,7 +1251,7 @@ namespace org.GraphDefined.WWCP
                                                                Status);
 
 
-            if (_EMobilityProviders.TryAdd(_EMobilityProvider, OnSuccess))
+            if (_eMobilityProviders.TryAdd(_EMobilityProvider, OnSuccess))
             {
 
                 //AddIRemotePushData              (_EMobilityProvider);
@@ -1306,7 +1306,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EMobilityProvider">An Charging Station Operator.</param>
         public Boolean ContainsEMobilityProvider(eMobilityProviderStub EMobilityProvider)
 
-            => _EMobilityProviders.Contains(EMobilityProvider.Id);
+            => _eMobilityProviders.ContainsId(EMobilityProvider.Id);
 
         #endregion
 
@@ -1318,7 +1318,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EMobilityProviderId">The unique identification of the Charging Station Operator.</param>
         public Boolean ContainsEMobilityProvider(eMobilityProvider_Id EMobilityProviderId)
 
-            => _EMobilityProviders.Contains(EMobilityProviderId);
+            => _eMobilityProviders.ContainsId(EMobilityProviderId);
 
         #endregion
 
@@ -1326,7 +1326,7 @@ namespace org.GraphDefined.WWCP
 
         public eMobilityProviderStub GetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId)
 
-            => _EMobilityProviders.Get(EMobilityProviderId);
+            => _eMobilityProviders.GetById(EMobilityProviderId);
 
         #endregion
 
@@ -1334,7 +1334,7 @@ namespace org.GraphDefined.WWCP
 
         public Boolean TryGetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId, out eMobilityProviderStub EMobilityProvider)
 
-            => _EMobilityProviders.TryGet(EMobilityProviderId, out EMobilityProvider);
+            => _eMobilityProviders.TryGet(EMobilityProviderId, out EMobilityProvider);
 
         #endregion
 
@@ -1345,7 +1345,7 @@ namespace org.GraphDefined.WWCP
 
             eMobilityProviderStub _EMobilityProvider = null;
 
-            if (_EMobilityProviders.TryRemove(EMobilityProviderId, out _EMobilityProvider))
+            if (_eMobilityProviders.TryRemove(EMobilityProviderId, out _EMobilityProvider))
                 return _EMobilityProvider;
 
             return null;
@@ -1358,7 +1358,7 @@ namespace org.GraphDefined.WWCP
 
         public Boolean TryRemoveEMobilityProvider(eMobilityProvider_Id EMobilityProviderId, out eMobilityProviderStub EMobilityProvider)
 
-            => _EMobilityProviders.TryRemove(EMobilityProviderId, out EMobilityProvider);
+            => _eMobilityProviders.TryRemove(EMobilityProviderId, out EMobilityProvider);
 
         #endregion
 
@@ -1367,7 +1367,7 @@ namespace org.GraphDefined.WWCP
 
         public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens
 
-            => _EMobilityProviders.SelectMany(provider => provider.AllTokens);
+            => _eMobilityProviders.SelectMany(provider => provider.AllTokens);
 
         #endregion
 
@@ -1375,7 +1375,7 @@ namespace org.GraphDefined.WWCP
 
         public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens
 
-            => _EMobilityProviders.SelectMany(provider => provider.AuthorizedTokens);
+            => _eMobilityProviders.SelectMany(provider => provider.AuthorizedTokens);
 
         #endregion
 
@@ -1383,7 +1383,7 @@ namespace org.GraphDefined.WWCP
 
         public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens
 
-            => _EMobilityProviders.SelectMany(provider => provider.NotAuthorizedTokens);
+            => _eMobilityProviders.SelectMany(provider => provider.NotAuthorizedTokens);
 
         #endregion
 
@@ -1391,7 +1391,7 @@ namespace org.GraphDefined.WWCP
 
         public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens
 
-            => _EMobilityProviders.SelectMany(provider => provider.BlockedTokens);
+            => _eMobilityProviders.SelectMany(provider => provider.BlockedTokens);
 
         #endregion
 
@@ -1523,7 +1523,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="SmartCity">An Charging Station Operator.</param>
         public Boolean ContainsSmartCity(SmartCityStub SmartCity)
 
-            => _SmartCities.Contains(SmartCity.Id);
+            => _SmartCities.ContainsId(SmartCity.Id);
 
         #endregion
 
@@ -1535,7 +1535,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="SmartCityId">The unique identification of the Charging Station Operator.</param>
         public Boolean ContainsSmartCity(SmartCity_Id SmartCityId)
 
-            => _SmartCities.Contains(SmartCityId);
+            => _SmartCities.ContainsId(SmartCityId);
 
         #endregion
 
@@ -1543,7 +1543,7 @@ namespace org.GraphDefined.WWCP
 
         public SmartCityStub GetSmartCityById(SmartCity_Id SmartCityId)
 
-            => _SmartCities.Get(SmartCityId);
+            => _SmartCities.GetById(SmartCityId);
 
         #endregion
 
@@ -1740,7 +1740,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="NavigationProvider">An Charging Station Operator.</param>
         public Boolean ContainsNavigationProvider(NavigationProvider NavigationProvider)
 
-            => _NavigationProviders.Contains(NavigationProvider.Id);
+            => _NavigationProviders.ContainsId(NavigationProvider.Id);
 
         #endregion
 
@@ -1752,7 +1752,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="NavigationProviderId">The unique identification of the Charging Station Operator.</param>
         public Boolean ContainsNavigationProvider(NavigationProvider_Id NavigationProviderId)
 
-            => _NavigationProviders.Contains(NavigationProviderId);
+            => _NavigationProviders.ContainsId(NavigationProviderId);
 
         #endregion
 
@@ -1760,7 +1760,7 @@ namespace org.GraphDefined.WWCP
 
         public NavigationProvider GetNavigationProviderById(NavigationProvider_Id NavigationProviderId)
 
-            => _NavigationProviders.Get(NavigationProviderId);
+            => _NavigationProviders.GetById(NavigationProviderId);
 
         #endregion
 
@@ -1924,7 +1924,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="GridOperator">An Charging Station Operator.</param>
         public Boolean ContainsGridOperator(GridOperator GridOperator)
 
-            => _GridOperators.Contains(GridOperator.Id);
+            => _GridOperators.ContainsId(GridOperator.Id);
 
         #endregion
 
@@ -1936,7 +1936,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="GridOperatorId">The unique identification of the Charging Station Operator.</param>
         public Boolean ContainsGridOperator(GridOperator_Id GridOperatorId)
 
-            => _GridOperators.Contains(GridOperatorId);
+            => _GridOperators.ContainsId(GridOperatorId);
 
         #endregion
 
@@ -1944,7 +1944,7 @@ namespace org.GraphDefined.WWCP
 
         public GridOperator GetGridOperatorById(GridOperator_Id GridOperatorId)
 
-            => _GridOperators.Get(GridOperatorId);
+            => _GridOperators.GetById(GridOperatorId);
 
         #endregion
 

@@ -48,7 +48,7 @@ namespace org.GraphDefined.WWCP.Importer
 
         public Address              StationAddress          { get; set; }
 
-        public GeoCoordinate        StationGeoCoordinate    { get; set; }
+        public GeoCoordinate?       StationGeoCoordinate    { get; set; }
 
         public String               PhoneNumber             { get; set; }
 
@@ -173,10 +173,10 @@ namespace org.GraphDefined.WWCP.Importer
                                       String                                                                            StationName               = "",
                                       String                                                                            StationServiceTag         = "",
                                       Address                                                                           StationAddress            = null,
-                                      GeoCoordinate                                                                     StationGeoCoordinate      = null,
+                                      GeoCoordinate?                                                                    StationGeoCoordinate      = null,
                                       IEnumerable<EVSE_Id>                                                              EVSEIds                   = null,
                                       String                                                                            PhoneNumber               = null,
-                                      Timestamped<ChargingStationAdminStatusTypes>?                                      AdminStatus               = null,
+                                      Timestamped<ChargingStationAdminStatusTypes>?                                     AdminStatus               = null,
                                       DateTime?                                                                         Created                   = null,
                                       Boolean                                                                           OutOfService              = false,
                                       ChargingStationOperator                                                           ForwardedToEVSEOperator   = null)
@@ -184,15 +184,15 @@ namespace org.GraphDefined.WWCP.Importer
 
             this._OnForwardingChanged        = OnChangedCallback;
             this.EVSEOperators               = EVSEOperators;
-            this._EVSEIds                    = EVSEIds              != null ? new HashSet<EVSE_Id>(EVSEIds) : new HashSet<EVSE_Id>();
-            this.StationId                   = StationId            != null ? StationId                     : ChargingStation_Id.Create(EVSEIds);
+            this._EVSEIds                    = EVSEIds               != null ? new HashSet<EVSE_Id>(EVSEIds) : new HashSet<EVSE_Id>();
+            this.StationId                   = StationId             != null ? StationId                     : ChargingStation_Id.Create(EVSEIds);
             this.StationName                 = StationName;
             this.StationServiceTag           = StationServiceTag;
             this.StationAddress              = StationAddress;
-            this.StationGeoCoordinate        = StationGeoCoordinate != null ? StationGeoCoordinate          : new GeoCoordinate(new Latitude(0), new Longitude(0));
-            this._AdminStatus                = AdminStatus          != null ? AdminStatus.Value             : new Timestamped<ChargingStationAdminStatusTypes>(ChargingStationAdminStatusTypes.Operational);
+            this.StationGeoCoordinate        = StationGeoCoordinate;
+            this._AdminStatus                = AdminStatus           != null ? AdminStatus.Value             : new Timestamped<ChargingStationAdminStatusTypes>(ChargingStationAdminStatusTypes.Operational);
             this.PhoneNumber                 = PhoneNumber;
-            this.Created                     = Created              != null ? Created.Value                 : DateTime.Now;
+            this.Created                     = Created               != null ? Created.Value                 : DateTime.Now;
             this.OutOfService                = OutOfService;
             this.LastTimeSeen                = this.Created;
             this._ForwardedToEVSEOperator    = ForwardedToEVSEOperator;

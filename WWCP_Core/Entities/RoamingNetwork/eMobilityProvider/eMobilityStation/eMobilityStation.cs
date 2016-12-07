@@ -967,7 +967,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="eVehicleId">The unique identification of the eVehicle.</param>
         public Boolean ContainseVehicle(eVehicle_Id eVehicleId)
 
-            => _eVehicles.Contains(eVehicleId);
+            => _eVehicles.ContainsId(eVehicleId);
 
         #endregion
 
@@ -975,7 +975,7 @@ namespace org.GraphDefined.WWCP
 
         public eVehicle GetEVehicleById(eVehicle_Id eVehicleId)
 
-            => _eVehicles.Get(eVehicleId);
+            => _eVehicles.GetById(eVehicleId);
 
         #endregion
 
