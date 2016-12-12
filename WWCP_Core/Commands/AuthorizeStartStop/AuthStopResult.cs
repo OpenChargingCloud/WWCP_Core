@@ -27,261 +27,245 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The result of a authorize stop operation.
     /// </summary>
-    public class AuthStopResult
+    public class AuthStopResult : AAuthStopResult<AuthStopResultType>
     {
 
-        #region Properties
-
-        /// <summary>
-        /// The identification of the authorizing entity.
-        /// </summary>
-        public IId                    AuthorizatorId        { get; }
-
-        /// <summary>
-        /// The result of the authorize stop operation.
-        /// </summary>
-        public AuthStopResultType     AuthorizationResult   { get; }
-
-        /// <summary>
-        /// The unique identification of the ev service provider.
-        /// </summary>
-        public eMobilityProvider_Id?  ProviderId            { get; }
-
-        /// <summary>
-        /// A optional description of the authorize stop result.
-        /// </summary>
-        public String                 Description           { get; }
-
-        /// <summary>
-        /// An optional additional message.
-        /// </summary>
-        public String                 AdditionalInfo        { get; }
-
-        #endregion
-
         #region Constructor(s)
-
-        #region (private) AuthStopResult(AuthorizatorId, Result, ProviderId = null, Description = null, AdditionalInfo = null)
 
         /// <summary>
         /// Create a new authorize stop result.
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
         /// <param name="Result">The authorize stop result type.</param>
-        /// <param name="ProviderId">An optional identification of the ev service provider.</param>
-        /// <param name="Description">An optional description of the auth stop result.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// 
+        /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         private AuthStopResult(IId                    AuthorizatorId,
                                AuthStopResultType     Result,
-                               eMobilityProvider_Id?  ProviderId      = null,
-                               String                 Description     = null,
-                               String                 AdditionalInfo  = null)
-        {
+                               ChargingSession_Id?    SessionId        = null,
 
-            #region Initial checks
+                               eMobilityProvider_Id?  ProviderId       = null,
+                               String                 Description      = null,
+                               String                 AdditionalInfo   = null,
+                               TimeSpan?              Runtime          = null)
 
-            if (AuthorizatorId == null)
-                throw new ArgumentNullException(nameof(AuthorizatorId), "The given parameter must not be null!");
+            : base(AuthorizatorId,
+                   Result,
+                   SessionId,
+                   ProviderId,
+                   Description,
+                   AdditionalInfo,
+                   Runtime)
 
-            #endregion
-
-            this.AuthorizatorId       = AuthorizatorId;
-            this.AuthorizationResult  = Result;
-            this.ProviderId           = ProviderId     ?? new eMobilityProvider_Id?();
-            this.Description          = Description    ?? "";
-            this.AdditionalInfo       = AdditionalInfo ?? "";
-
-        }
-
-        #endregion
-
-        #region (private) AuthStopResult(AuthorizatorId, ErrorMessage = null)
-
-        /// <summary>
-        /// Create a new authorize stop result.
-        /// </summary>
-        /// <param name="AuthorizatorId">An authorizator identification.</param>
-        /// <param name="ErrorMessage">An error message.</param>
-        private AuthStopResult(IId     AuthorizatorId,
-                               String  ErrorMessage  = null)
-        {
-
-            #region Initial checks
-
-            if (AuthorizatorId == null)
-                throw new ArgumentNullException(nameof(AuthorizatorId), "The given parameter must not be null!");
-
-            #endregion
-
-            this.AuthorizationResult  = AuthStopResultType.Error;
-            this.AuthorizatorId       = AuthorizatorId;
-            this.Description          = ErrorMessage;
-
-        }
-
-        #endregion
+        { }
 
         #endregion
 
 
-        #region (static) Unspecified(AuthorizatorId)
+        #region (static) Unspecified         (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The result is unknown and/or should be ignored.
         /// </summary>
-        public static AuthStopResult Unspecified(IId AuthorizatorId)
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopResult Unspecified(IId                  AuthorizatorId,
+                                                 ChargingSession_Id?  SessionId  = null,
+                                                 TimeSpan?            Runtime    = null)
 
             => new AuthStopResult(AuthorizatorId,
-                                  AuthStopResultType.Unspecified);
+                                  AuthStopResultType.Unspecified,
+                                  SessionId,
+                                  Runtime: Runtime);
 
         #endregion
 
-        #region (static) InvalidSessionId(AuthorizatorId)
+        #region (static) InvalidSessionId    (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The given charging session identification is unknown or invalid.
         /// </summary>
-        public static AuthStopResult InvalidSessionId(IId AuthorizatorId)
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopResult InvalidSessionId(IId                  AuthorizatorId,
+                                                      ChargingSession_Id?  SessionId  = null,
+                                                      TimeSpan?            Runtime    = null)
 
             => new AuthStopResult(AuthorizatorId,
-                                  AuthStopResultType.InvalidSessionId);
+                                  AuthStopResultType.InvalidSessionId,
+                                  SessionId,
+                                  Runtime: Runtime);
 
         #endregion
 
-        #region (static) OutOfService (AuthorizatorId)
+        #region (static) OutOfService        (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The EVSE or charging station is out of service.
         /// </summary>
-        public static AuthStopResult OutOfService(IId AuthorizatorId)
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopResult OutOfService(IId                  AuthorizatorId,
+                                                  ChargingSession_Id?  SessionId  = null,
+                                                  TimeSpan?            Runtime    = null)
 
             => new AuthStopResult(AuthorizatorId,
-                                  AuthStopResultType.OutOfService);
+                                  AuthStopResultType.OutOfService,
+                                  SessionId,
+                                  Runtime: Runtime);
 
         #endregion
 
-        #region (static) Authorized   (AuthorizatorId, ProviderId = null, Description = null, AdditionalInfo = null)
+        #region (static) Authorized          (AuthorizatorId, SessionId = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The authorize stop was successful.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
-        /// <param name="ProviderId">The unique identification of the ev service provider.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStopResult Authorized(IId                    AuthorizatorId,
-                                                eMobilityProvider_Id?  ProviderId      = null,
-                                                String                 Description     = null,
-                                                String                 AdditionalInfo  = null)
+                                                ChargingSession_Id?    SessionId        = null,
+                                                eMobilityProvider_Id?  ProviderId       = null,
+                                                String                 Description      = null,
+                                                String                 AdditionalInfo   = null,
+                                                TimeSpan?              Runtime          = null)
 
             => new AuthStopResult(AuthorizatorId,
                                   AuthStopResultType.Authorized,
+                                  SessionId,
                                   ProviderId,
                                   Description,
-                                  AdditionalInfo);
+                                  AdditionalInfo,
+                                  Runtime: Runtime);
 
         #endregion
 
-        #region (static) NotAuthorized(AuthorizatorId, ProviderId = null, Description = null, AdditionalInfo = null)
+        #region (static) NotAuthorized       (AuthorizatorId, SessionId = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The authorize stop was not successful (e.g. ev customer is unkown).
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
-        /// <param name="ProviderId">The unique identification of the ev service provider.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
-        public static AuthStopResult NotAuthorized(IId        AuthorizatorId,
-                                                   eMobilityProvider_Id?  ProviderId      = null,
-                                                   String                 Description     = null,
-                                                   String                 AdditionalInfo  = null)
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopResult NotAuthorized(IId                    AuthorizatorId,
+                                                   ChargingSession_Id?    SessionId        = null,
+                                                   eMobilityProvider_Id?  ProviderId       = null,
+                                                   String                 Description      = null,
+                                                   String                 AdditionalInfo   = null,
+                                                   TimeSpan?              Runtime          = null)
 
             => new AuthStopResult(AuthorizatorId,
                                   AuthStopResultType.NotAuthorized,
+                                  SessionId,
                                   ProviderId,
                                   Description,
-                                  AdditionalInfo);
+                                  AdditionalInfo,
+                                  Runtime: Runtime);
 
         #endregion
 
-        #region (static) Blocked      (AuthorizatorId, ProviderId = null, Description = null, AdditionalInfo = null)
+        #region (static) Blocked             (AuthorizatorId, SessionId = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The authorize start operation is not allowed (ev customer is blocked).
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
-        /// <param name="ProviderId">The unique identification of the ev service provider.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
-        public static AuthStopResult Blocked(IId        AuthorizatorId,
-                                             eMobilityProvider_Id?  ProviderId      = null,
-                                             String                 Description     = null,
-                                             String                 AdditionalInfo  = null)
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopResult Blocked(IId                    AuthorizatorId,
+                                             ChargingSession_Id?    SessionId        = null,
+                                             eMobilityProvider_Id?  ProviderId       = null,
+                                             String                 Description      = null,
+                                             String                 AdditionalInfo   = null,
+                                             TimeSpan?              Runtime          = null)
 
             => new AuthStopResult(AuthorizatorId,
                                   AuthStopResultType.Blocked,
+                                  SessionId,
                                   ProviderId,
                                   Description,
-                                  AdditionalInfo);
+                                  AdditionalInfo,
+                                  Runtime: Runtime);
 
         #endregion
 
-        #region (static) CommunicationTimeout(AuthorizatorId)
+        #region (static) CommunicationTimeout(AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The authorize stop ran into a timeout between evse operator backend and charging station.
         /// </summary>
-        public static AuthStopResult CommunicationTimeout(IId AuthorizatorId)
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopResult CommunicationTimeout(IId                  AuthorizatorId,
+                                                          ChargingSession_Id?  SessionId  = null,
+                                                          TimeSpan?            Runtime    = null)
 
             => new AuthStopResult(AuthorizatorId,
-                                  AuthStopResultType.CommunicationTimeout);
+                                  AuthStopResultType.CommunicationTimeout,
+                                  SessionId,
+                                  Runtime: Runtime);
 
         #endregion
 
-        #region (static) StartChargingTimeout(AuthorizatorId)
+        #region (static) StartChargingTimeout(AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The authorize stop ran into a timeout between charging station and ev.
         /// </summary>
-        public static AuthStopResult StartChargingTimeout(IId AuthorizatorId)
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopResult StartChargingTimeout(IId                  AuthorizatorId,
+                                                          ChargingSession_Id?  SessionId  = null,
+                                                          TimeSpan?            Runtime    = null)
 
             => new AuthStopResult(AuthorizatorId,
-                                  AuthStopResultType.StopChargingTimeout);
+                                  AuthStopResultType.StopChargingTimeout,
+                                  SessionId,
+                                  Runtime: Runtime);
 
         #endregion
 
-        #region (static) Error(AuthorizatorId, ErrorMessage = null)
+        #region (static) Error               (AuthorizatorId, SessionId = null, ErrorMessage = null, Runtime = null)
 
         /// <summary>
         /// The authorize stop operation led to an error.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="ErrorMessage">An error message.</param>
-        public static AuthStopResult Error(IId  AuthorizatorId,
-                                           String           ErrorMessage = null)
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopResult Error(IId                  AuthorizatorId,
+                                           ChargingSession_Id?  SessionId     = null,
+                                           String               ErrorMessage  = null,
+                                           TimeSpan?            Runtime       = null)
 
             => new AuthStopResult(AuthorizatorId,
-                                  ErrorMessage);
+                                  AuthStopResultType.Error,
+                                  SessionId,
+                                  Description: ErrorMessage,
+                                  Runtime:     Runtime);
 
         #endregion
 
-
-        #region (override) ToString()
-
-        /// <summary>
-        /// Return a string representation of this object.
-        /// </summary>
-        public override String ToString()
-        {
-
-            if (ProviderId != null)
-                return String.Concat(AuthorizationResult.ToString(), ", ", ProviderId);
-
-            return String.Concat(AuthorizationResult.ToString());
-
-        }
-
-        #endregion
 
     }
 

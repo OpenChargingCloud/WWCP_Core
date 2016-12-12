@@ -148,8 +148,8 @@ namespace org.GraphDefined.WWCP
                                                                          Auth_Token                    AuthToken,
                                                                          TimeSpan?                     RequestTimeout);
 
-    // ----------------------------------------------------------------------------------------------------------
 
+    // ----------------------------------------------------------------------------------------------------------
 
 
     /// <summary>
@@ -200,5 +200,58 @@ namespace org.GraphDefined.WWCP
                                                                         TimeSpan?                       RequestTimeout,
                                                                         AuthStopChargingStationResult   Result,
                                                                         TimeSpan                        Runtime);
+
+
+    // ----------------------------------------------------------------------------------------------------------
+
+
+    /// <summary>
+    /// An event fired whenever an authentication token will be verified to stop a charging process at the given charging pool.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
+    /// <param name="OperatorId">An Charging Station Operator identification.</param>
+    /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
+    /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="AuthToken">A (RFID) user identification.</param>
+    /// <param name="RequestTimeout">An optional timeout for this request.</param>
+    public delegate void OnAuthorizeChargingPoolStopRequestDelegate (DateTime                      LogTimestamp,
+                                                                     DateTime                      RequestTimestamp,
+                                                                     Object                        Sender,
+                                                                     EventTracking_Id              EventTrackingId,
+                                                                     RoamingNetwork_Id             RoamingNetworkId,
+                                                                     ChargingStationOperator_Id?   OperatorId,
+                                                                     ChargingPool_Id               ChargingPoolId,
+                                                                     ChargingSession_Id            SessionId,
+                                                                     Auth_Token                    AuthToken,
+                                                                     TimeSpan?                     RequestTimeout);
+
+    /// <summary>
+    /// An event fired whenever an authentication token had been verified to stop a charging process at the given charging pool.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp of the request.</param>
+    /// <param name="Sender">The sender of the request.</param>
+    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+    /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
+    /// <param name="OperatorId">An Charging Station Operator identification.</param>
+    /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
+    /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="AuthToken">A (RFID) user identification.</param>
+    /// <param name="RequestTimeout">An optional timeout for this request.</param>
+    /// <param name="Result">The authorize stop result.</param>
+    public delegate void OnAuthorizeChargingPoolStopResponseDelegate(DateTime                      LogTimestamp,
+                                                                     DateTime                      RequestTimestamp,
+                                                                     Object                        Sender,
+                                                                     EventTracking_Id              EventTrackingId,
+                                                                     RoamingNetwork_Id             RoamingNetworkId,
+                                                                     ChargingStationOperator_Id?   OperatorId,
+                                                                     ChargingPool_Id               ChargingPoolId,
+                                                                     ChargingSession_Id            SessionId,
+                                                                     Auth_Token                    AuthToken,
+                                                                     TimeSpan?                     RequestTimeout,
+                                                                     AuthStopChargingPoolResult    Result,
+                                                                     TimeSpan                      Runtime);
 
 }

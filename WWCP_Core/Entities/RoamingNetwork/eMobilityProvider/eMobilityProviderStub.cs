@@ -393,6 +393,9 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        public TimeSpan? RequestTimeout { get; }
+
+
         public eMobilityProviderPriority Priority { get; set; }
 
 
@@ -490,6 +493,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public event OnAuthorizeStartResponseDelegate                 OnAuthorizeStartResponse;
 
+
         /// <summary>
         /// An event fired whenever an authentication token will be verified for charging at the given EVSE.
         /// </summary>
@@ -500,6 +504,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public event OnAuthorizeEVSEStartResponseDelegate             OnAuthorizeEVSEStartResponse;
 
+
         /// <summary>
         /// An event fired whenever an authentication token will be verified for charging at the given charging station.
         /// </summary>
@@ -509,6 +514,17 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever an authentication token had been verified for charging at the given charging station.
         /// </summary>
         public event OnAuthorizeChargingStationStartResponseDelegate  OnAuthorizeChargingStationStartResponse;
+
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified for charging at the given charging pool.
+        /// </summary>
+        public event OnAuthorizeChargingPoolStartRequestDelegate      OnAuthorizeChargingPoolStartRequest;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified for charging at the given charging pool.
+        /// </summary>
+        public event OnAuthorizeChargingPoolStartResponseDelegate     OnAuthorizeChargingPoolStartResponse;
 
         #endregion
 
@@ -524,6 +540,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public event OnAuthorizeStopResponseDelegate                 OnAuthorizeStopResponse;
 
+
         /// <summary>
         /// An event fired whenever an authentication token will be verified to stop a charging process at the given EVSE.
         /// </summary>
@@ -534,6 +551,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public event OnAuthorizeEVSEStopResponseDelegate             OnAuthorizeEVSEStopResponse;
 
+
         /// <summary>
         /// An event fired whenever an authentication token will be verified to stop a charging process at the given charging station.
         /// </summary>
@@ -543,6 +561,17 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever an authentication token had been verified to stop a charging process at the given charging station.
         /// </summary>
         public event OnAuthorizeChargingStationStopResponseDelegate  OnAuthorizeChargingStationStopResponse;
+
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified to stop a charging process at the given charging pool.
+        /// </summary>
+        public event OnAuthorizeChargingPoolStopRequestDelegate      OnAuthorizeChargingPoolStopRequest;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified to stop a charging process at the given charging pool.
+        /// </summary>
+        public event OnAuthorizeChargingPoolStopResponseDelegate     OnAuthorizeChargingPoolStopResponse;
 
         #endregion
 
@@ -2175,32 +2204,103 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<AuthStartResult>
+        public async Task<AuthStartResult>
 
-            IRemoteAuthorizeStartStop.AuthorizeStart(Auth_Token                   AuthToken,
-                                                     ChargingProduct_Id?          ChargingProductId,  // = null
-                                                     ChargingSession_Id?          SessionId,          // = null
-                                                     ChargingStationOperator_Id?  OperatorId,         // = null
+            AuthorizeStart(Auth_Token                   AuthToken,
+                           ChargingProduct_Id?          ChargingProductId   = null,
+                           ChargingSession_Id?          SessionId           = null,
+                           ChargingStationOperator_Id?  OperatorId          = null,
 
-                                                     DateTime?                    Timestamp,
-                                                     CancellationToken?           CancellationToken,
-                                                     EventTracking_Id             EventTrackingId,
-                                                     TimeSpan?                    RequestTimeout)
-
+                           DateTime?                    Timestamp           = null,
+                           CancellationToken?           CancellationToken   = null,
+                           EventTracking_Id             EventTrackingId     = null,
+                           TimeSpan?                    RequestTimeout      = null)
         {
 
-           // if (RemoteEMobilityProvider != null)
-           //     return await RemoteEMobilityProvider.AuthorizeStart(ChargingStationOperatorId,
-           //                                                         AuthToken,
-           //                                                         ChargingProductId,
-           //                                                         SessionId,
-           //
-           //                                                         Timestamp,
-           //                                                         CancellationToken,
-           //                                                         EventTrackingId,
-           //                                                         RequestTimeout);
+            #region Initial checks
 
-            return AuthStartResult.OutOfService(Id);
+            if (AuthToken == null)
+                throw new ArgumentNullException(nameof(AuthToken),   "The given authentication token must not be null!");
+
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            if (!RequestTimeout.HasValue)
+                RequestTimeout = this.RequestTimeout;
+
+            #endregion
+
+            #region Send OnAuthorizeStartRequest event
+
+            var StartTime = DateTime.Now;
+
+            try
+            {
+
+                OnAuthorizeStartRequest?.Invoke(StartTime,
+                                                Timestamp.Value,
+                                                this,
+                                                EventTrackingId,
+                                                RoamingNetwork.Id,
+                                                OperatorId,
+                                                AuthToken,
+                                                ChargingProductId,
+                                                SessionId,
+                                                RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProviderStub) + "." + nameof(OnAuthorizeStartRequest));
+            }
+
+            #endregion
+
+
+            var result   = AuthStartResult.OutOfService(
+                               Id,
+                               SessionId,
+                               TimeSpan.FromSeconds(0)
+                           );
+
+            var Endtime  = DateTime.Now;
+            var Runtime  = Endtime - StartTime;
+
+
+            #region Send OnAuthorizeStartResponse event
+
+            try
+            {
+
+                OnAuthorizeStartResponse?.Invoke(Endtime,
+                                                 Timestamp.Value,
+                                                 this,
+                                                 EventTrackingId,
+                                                 RoamingNetwork.Id,
+                                                 OperatorId,
+                                                 AuthToken,
+                                                 ChargingProductId,
+                                                 SessionId,
+                                                 RequestTimeout,
+                                                 result,
+                                                 Runtime);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProviderStub) + "." + nameof(OnAuthorizeStartResponse));
+            }
+
+            #endregion
+
+            return result;
 
         }
 
@@ -2221,34 +2321,107 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<AuthStartEVSEResult>
+        public async Task<AuthStartEVSEResult>
 
-            IRemoteAuthorizeStartStop.AuthorizeStart(Auth_Token                   AuthToken,
-                                                     EVSE_Id                      EVSEId,
-                                                     ChargingProduct_Id?          ChargingProductId,  // = null,
-                                                     ChargingSession_Id?          SessionId,          // = null,
-                                                     ChargingStationOperator_Id?  OperatorId,         // = null,
+            AuthorizeStart(Auth_Token                   AuthToken,
+                           WWCP.EVSE_Id                 EVSEId,
+                           ChargingProduct_Id?          ChargingProductId   = null,   // [maxlength: 100]
+                           ChargingSession_Id?          SessionId           = null,
+                           ChargingStationOperator_Id?  OperatorId          = null,
 
-                                                     DateTime?                    Timestamp,
-                                                     CancellationToken?           CancellationToken,
-                                                     EventTracking_Id             EventTrackingId,
-                                                     TimeSpan?                    RequestTimeout)
+                           DateTime?                    Timestamp           = null,
+                           CancellationToken?           CancellationToken   = null,
+                           EventTracking_Id             EventTrackingId     = null,
+                           TimeSpan?                    RequestTimeout      = null)
 
         {
 
-            //if (RemoteEMobilityProvider != null)
-            //    return await RemoteEMobilityProvider.AuthorizeStart(ChargingStationOperatorId,
-            //                                                        AuthToken,
-            //                                                        EVSEId,
-            //                                                        ChargingProductId,
-            //                                                        SessionId,
-            //
-            //                                                        Timestamp,
-            //                                                        CancellationToken,
-            //                                                        EventTrackingId,
-            //                                                        RequestTimeout);
+            #region Initial checks
 
-            return AuthStartEVSEResult.OutOfService(Id);
+            if (AuthToken == null)
+                throw new ArgumentNullException(nameof(AuthToken),  "The given authentication token must not be null!");
+
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            if (!RequestTimeout.HasValue)
+                RequestTimeout = this.RequestTimeout;
+
+            #endregion
+
+            #region Send OnAuthorizeEVSEStartRequest event
+
+            var StartTime = DateTime.Now;
+
+            try
+            {
+
+                OnAuthorizeEVSEStartRequest?.Invoke(StartTime,
+                                                    Timestamp.Value,
+                                                    this,
+                                                    EventTrackingId,
+                                                    RoamingNetwork.Id,
+                                                    OperatorId,
+                                                    AuthToken,
+                                                    EVSEId,
+                                                    ChargingProductId,
+                                                    SessionId,
+                                                    RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProviderStub) + "." + nameof(OnAuthorizeEVSEStartRequest));
+            }
+
+            #endregion
+
+
+            var result   = AuthStartEVSEResult.OutOfService(
+                               Id,
+                               SessionId,
+                               TimeSpan.FromSeconds(0)
+                           );
+
+            var Endtime  = DateTime.Now;
+            var Runtime  = Endtime - StartTime;
+
+
+            #region Send OnAuthorizeEVSEStartResponse event
+
+            try
+            {
+
+                OnAuthorizeEVSEStartResponse?.Invoke(Endtime,
+                                                     Timestamp.Value,
+                                                     this,
+                                                     EventTrackingId,
+                                                     RoamingNetwork.Id,
+                                                     OperatorId,
+                                                     AuthToken,
+                                                     EVSEId,
+                                                     ChargingProductId,
+                                                     SessionId,
+                                                     RequestTimeout,
+                                                     result,
+                                                     Runtime);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProviderStub) + "." + nameof(OnAuthorizeEVSEStartResponse));
+            }
+
+            #endregion
+
+            return result;
 
         }
 
@@ -2269,39 +2442,237 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<AuthStartChargingStationResult>
+        public async Task<AuthStartChargingStationResult>
 
-            IRemoteAuthorizeStartStop.AuthorizeStart(Auth_Token                   AuthToken,
-                                                     ChargingStation_Id           ChargingStationId,
-                                                     ChargingProduct_Id?          ChargingProductId,  // = null,
-                                                     ChargingSession_Id?          SessionId,          // = null,
-                                                     ChargingStationOperator_Id?  OperatorId,         // = null,
+            AuthorizeStart(Auth_Token                   AuthToken,
+                           ChargingStation_Id           ChargingStationId,
+                           ChargingProduct_Id?          ChargingProductId   = null,   // [maxlength: 100]
+                           ChargingSession_Id?          SessionId           = null,
+                           ChargingStationOperator_Id?  OperatorId          = null,
 
-                                                     DateTime?                    Timestamp,
-                                                     CancellationToken?           CancellationToken,
-                                                     EventTracking_Id             EventTrackingId,
-                                                     TimeSpan?                    RequestTimeout)
+                           DateTime?                    Timestamp           = null,
+                           CancellationToken?           CancellationToken   = null,
+                           EventTracking_Id             EventTrackingId     = null,
+                           TimeSpan?                    RequestTimeout      = null)
 
         {
 
-            //if (RemoteEMobilityProvider != null)
-            //    return await RemoteEMobilityProvider.AuthorizeStart(ChargingStationOperatorId,
-            //                                                        AuthToken,
-            //                                                        ChargingStationId,
-            //                                                        ChargingProductId,
-            //                                                        SessionId,
-            //
-            //                                                        Timestamp,
-            //                                                        CancellationToken,
-            //                                                        EventTrackingId,
-            //                                                        RequestTimeout);
+            #region Initial checks
 
-            return AuthStartChargingStationResult.OutOfService(Id);
+            if (AuthToken == null)
+                throw new ArgumentNullException(nameof(AuthToken), "The given authentication token must not be null!");
+
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            if (!RequestTimeout.HasValue)
+                RequestTimeout = this.RequestTimeout;
+
+            #endregion
+
+            #region Send OnAuthorizeChargingStationStartRequest event
+
+            var StartTime = DateTime.Now;
+
+            try
+            {
+
+                OnAuthorizeChargingStationStartRequest?.Invoke(StartTime,
+                                                               Timestamp.Value,
+                                                               this,
+                                                               EventTrackingId,
+                                                               RoamingNetwork.Id,
+                                                               OperatorId,
+                                                               AuthToken,
+                                                               ChargingStationId,
+                                                               ChargingProductId,
+                                                               SessionId,
+                                                               RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProviderStub) + "." + nameof(OnAuthorizeChargingStationStartRequest));
+            }
+
+            #endregion
+
+
+            var result   = AuthStartChargingStationResult.OutOfService(
+                               Id,
+                               SessionId,
+                               TimeSpan.FromSeconds(0)
+                           );
+
+            var Endtime  = DateTime.Now;
+            var Runtime  = Endtime - StartTime;
+
+
+            #region Send OnAuthorizeChargingStationStartResponse event
+
+            try
+            {
+
+                OnAuthorizeChargingStationStartResponse?.Invoke(Endtime,
+                                                                Timestamp.Value,
+                                                                this,
+                                                                EventTrackingId,
+                                                                RoamingNetwork.Id,
+                                                                OperatorId,
+                                                                AuthToken,
+                                                                ChargingStationId,
+                                                                ChargingProductId,
+                                                                SessionId,
+                                                                RequestTimeout,
+                                                                result,
+                                                                Runtime);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProviderStub) + "." + nameof(OnAuthorizeChargingStationStartResponse));
+            }
+
+            #endregion
+
+            return result;
 
         }
 
         #endregion
 
+        #region AuthorizeStart(AuthToken, ChargingPoolId,    ChargingProductId = null, SessionId = null, OperatorId = null, ...)
+
+        /// <summary>
+        /// Create an authorize start request at the given charging pool.
+        /// </summary>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="ChargingPoolId">The unique identification charging pool.</param>
+        /// <param name="ChargingProductId">An optional charging product identification.</param>
+        /// <param name="SessionId">An optional session identification.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<AuthStartChargingPoolResult>
+
+            AuthorizeStart(Auth_Token                   AuthToken,
+                           ChargingPool_Id              ChargingPoolId,
+                           ChargingProduct_Id?          ChargingProductId   = null,   // [maxlength: 100]
+                           ChargingSession_Id?          SessionId           = null,
+                           ChargingStationOperator_Id?  OperatorId          = null,
+
+                           DateTime?                    Timestamp           = null,
+                           CancellationToken?           CancellationToken   = null,
+                           EventTracking_Id             EventTrackingId     = null,
+                           TimeSpan?                    RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (AuthToken == null)
+                throw new ArgumentNullException(nameof(AuthToken), "The given authentication token must not be null!");
+
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            if (!RequestTimeout.HasValue)
+                RequestTimeout = this.RequestTimeout;
+
+            #endregion
+
+            #region Send OnAuthorizeChargingPoolStartRequest event
+
+            var StartTime = DateTime.Now;
+
+            try
+            {
+
+                OnAuthorizeChargingPoolStartRequest?.Invoke(StartTime,
+                                                            Timestamp.Value,
+                                                            this,
+                                                            EventTrackingId,
+                                                            RoamingNetwork.Id,
+                                                            OperatorId,
+                                                            AuthToken,
+                                                            ChargingPoolId,
+                                                            ChargingProductId,
+                                                            SessionId,
+                                                            RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProviderStub) + "." + nameof(OnAuthorizeChargingPoolStartRequest));
+            }
+
+            #endregion
+
+
+            var result   = AuthStartChargingPoolResult.OutOfService(
+                               Id,
+                               SessionId,
+                               TimeSpan.FromSeconds(0)
+                           );
+
+            var Endtime  = DateTime.Now;
+            var Runtime  = Endtime - StartTime;
+
+
+            #region Send OnAuthorizeChargingPoolStartResponse event
+
+            try
+            {
+
+                OnAuthorizeChargingPoolStartResponse?.Invoke(Endtime,
+                                                             Timestamp.Value,
+                                                             this,
+                                                             EventTrackingId,
+                                                             RoamingNetwork.Id,
+                                                             OperatorId,
+                                                             AuthToken,
+                                                             ChargingPoolId,
+                                                             ChargingProductId,
+                                                             SessionId,
+                                                             RequestTimeout,
+                                                             result,
+                                                             Runtime);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProviderStub) + "." + nameof(OnAuthorizeChargingPoolStartResponse));
+            }
+
+            #endregion
+
+            return result;
+
+        }
+
+        #endregion
+
+
+        // UID => Not everybody can stop any session, but maybe another
+        //        UID than the UID which started the session!
+        //        (e.g. car sharing)
 
         #region AuthorizeStop(SessionId, AuthToken,                    OperatorId = null, ...)
 
@@ -2316,30 +2687,100 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<AuthStopResult>
+        public async Task<AuthStopResult>
 
-            IRemoteAuthorizeStartStop.AuthorizeStop(ChargingSession_Id           SessionId,
-                                                    Auth_Token                   AuthToken,
-                                                    ChargingStationOperator_Id?  OperatorId,  // = null,
+            AuthorizeStop(ChargingSession_Id           SessionId,
+                          Auth_Token                   AuthToken,
+                          ChargingStationOperator_Id?  OperatorId          = null,
 
-                                                    DateTime?                    Timestamp,
-                                                    CancellationToken?           CancellationToken,
-                                                    EventTracking_Id             EventTrackingId,
-                                                    TimeSpan?                    RequestTimeout)
-
+                          DateTime?                    Timestamp           = null,
+                          CancellationToken?           CancellationToken   = null,
+                          EventTracking_Id             EventTrackingId     = null,
+                          TimeSpan?                    RequestTimeout      = null)
         {
 
-            //if (RemoteEMobilityProvider != null)
-            //    return await RemoteEMobilityProvider.AuthorizeStop(ChargingStationOperatorId,
-            //                                                       SessionId,
-            //                                                       AuthToken,
-            //
-            //                                                       Timestamp,
-            //                                                       CancellationToken,
-            //                                                       EventTrackingId,
-            //                                                       RequestTimeout);
+            #region Initial checks
 
-            return AuthStopResult.OutOfService(Id);
+            if (AuthToken == null)
+                throw new ArgumentNullException(nameof(AuthToken),  "The given authentication token must not be null!");
+
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            if (!RequestTimeout.HasValue)
+                RequestTimeout = this.RequestTimeout;
+
+            #endregion
+
+            #region Send OnAuthorizeStopRequest event
+
+            var StartTime = DateTime.Now;
+
+            try
+            {
+
+                OnAuthorizeStopRequest?.Invoke(StartTime,
+                                               Timestamp.Value,
+                                               this,
+                                               EventTrackingId,
+                                               RoamingNetwork.Id,
+                                               OperatorId,
+                                               SessionId,
+                                               AuthToken,
+                                               RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProviderStub) + "." + nameof(OnAuthorizeStopRequest));
+            }
+
+            #endregion
+
+
+            var result   = AuthStopResult.OutOfService(
+                               Id,
+                               SessionId,
+                               TimeSpan.FromSeconds(0)
+                           );
+
+            var Endtime  = DateTime.Now;
+            var Runtime  = Endtime - StartTime;
+
+
+            #region Send OnAuthorizeStopResponse event
+
+            try
+            {
+
+                OnAuthorizeStopResponse?.Invoke(Endtime,
+                                                Timestamp.Value,
+                                                this,
+                                                EventTrackingId,
+                                                RoamingNetwork.Id,
+                                                OperatorId,
+                                                SessionId,
+                                                AuthToken,
+                                                RequestTimeout,
+                                                result,
+                                                Runtime);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProviderStub) + "." + nameof(OnAuthorizeStopResponse));
+            }
+
+            #endregion
+
+            return result;
 
         }
 
@@ -2359,32 +2800,103 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<AuthStopEVSEResult>
+        public async Task<AuthStopEVSEResult>
 
-            IRemoteAuthorizeStartStop.AuthorizeStop(ChargingSession_Id           SessionId,
-                                                    Auth_Token                   AuthToken,
-                                                    EVSE_Id                      EVSEId,
-                                                    ChargingStationOperator_Id?  OperatorId,  // = null,
+            AuthorizeStop(ChargingSession_Id           SessionId,
+                          Auth_Token                   AuthToken,
+                          WWCP.EVSE_Id                 EVSEId,
+                          ChargingStationOperator_Id?  OperatorId          = null,
 
-                                                    DateTime?                    Timestamp,
-                                                    CancellationToken?           CancellationToken,
-                                                    EventTracking_Id             EventTrackingId,
-                                                    TimeSpan?                    RequestTimeout)
-
+                          DateTime?                    Timestamp           = null,
+                          CancellationToken?           CancellationToken   = null,
+                          EventTracking_Id             EventTrackingId     = null,
+                          TimeSpan?                    RequestTimeout      = null)
         {
 
-            //if (RemoteEMobilityProvider != null)
-            //    return await RemoteEMobilityProvider.AuthorizeStop(ChargingStationOperatorId,
-            //                                                       EVSEId,
-            //                                                       SessionId,
-            //                                                       AuthToken,
-            //
-            //                                                       Timestamp,
-            //                                                       CancellationToken,
-            //                                                       EventTrackingId,
-            //                                                       RequestTimeout);
+            #region Initial checks
 
-            return AuthStopEVSEResult.OutOfService(Id);
+            if (AuthToken  == null)
+                throw new ArgumentNullException(nameof(AuthToken), "The given authentication token must not be null!");
+
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            if (!RequestTimeout.HasValue)
+                RequestTimeout = this.RequestTimeout;
+
+            #endregion
+
+            #region Send OnAuthorizeEVSEStopRequest event
+
+            var StartTime = DateTime.Now;
+
+            try
+            {
+
+                OnAuthorizeEVSEStopRequest?.Invoke(StartTime,
+                                                   Timestamp.Value,
+                                                   this,
+                                                   EventTrackingId,
+                                                   RoamingNetwork.Id,
+                                                   OperatorId,
+                                                   EVSEId,
+                                                   SessionId,
+                                                   AuthToken,
+                                                   RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProviderStub) + "." + nameof(OnAuthorizeEVSEStopRequest));
+            }
+
+            #endregion
+
+
+            var result   = AuthStopEVSEResult.OutOfService(
+                               Id,
+                               SessionId,
+                               TimeSpan.FromSeconds(0)
+                           );
+
+            var Endtime  = DateTime.Now;
+            var Runtime  = Endtime - StartTime;
+
+
+            #region Send OnAuthorizeEVSEStopResponse event
+
+            try
+            {
+
+                OnAuthorizeEVSEStopResponse?.Invoke(Endtime,
+                                                    Timestamp.Value,
+                                                    this,
+                                                    EventTrackingId,
+                                                    RoamingNetwork.Id,
+                                                    OperatorId,
+                                                    EVSEId,
+                                                    SessionId,
+                                                    AuthToken,
+                                                    RequestTimeout,
+                                                    result,
+                                                    Runtime);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProviderStub) + "." + nameof(OnAuthorizeEVSEStopResponse));
+            }
+
+            #endregion
+
+            return result;
 
         }
 
@@ -2404,32 +2916,221 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<AuthStopChargingStationResult>
+        public async Task<AuthStopChargingStationResult>
 
-            IRemoteAuthorizeStartStop.AuthorizeStop(ChargingSession_Id           SessionId,
-                                                    Auth_Token                   AuthToken,
-                                                    ChargingStation_Id           ChargingStationId,
-                                                    ChargingStationOperator_Id?  OperatorId,  // = null,
+            AuthorizeStop(ChargingSession_Id           SessionId,
+                          Auth_Token                   AuthToken,
+                          ChargingStation_Id           ChargingStationId,
+                          ChargingStationOperator_Id?  OperatorId          = null,
 
-                                                    DateTime?                    Timestamp,
-                                                    CancellationToken?           CancellationToken,
-                                                    EventTracking_Id             EventTrackingId,
-                                                    TimeSpan?                    RequestTimeout)
+                          DateTime?                    Timestamp           = null,
+                          CancellationToken?           CancellationToken   = null,
+                          EventTracking_Id             EventTrackingId     = null,
+                          TimeSpan?                    RequestTimeout      = null)
 
         {
 
-            //if (RemoteEMobilityProvider != null)
-            //    return await RemoteEMobilityProvider.AuthorizeStop(ChargingStationOperatorId,
-            //                                                       ChargingStationId,
-            //                                                       SessionId,
-            //                                                       AuthToken,
-            //
-            //                                                       Timestamp,
-            //                                                       CancellationToken,
-            //                                                       EventTrackingId,
-            //                                                       RequestTimeout);
+            #region Initial checks
 
-            return AuthStopChargingStationResult.OutOfService(Id);
+            if (AuthToken == null)
+                throw new ArgumentNullException(nameof(AuthToken), "The given authentication token must not be null!");
+
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            if (!RequestTimeout.HasValue)
+                RequestTimeout = this.RequestTimeout;
+
+            #endregion
+
+            #region Send OnAuthorizeChargingStationStopRequest event
+
+            var StartTime = DateTime.Now;
+
+            try
+            {
+
+                OnAuthorizeChargingStationStopRequest?.Invoke(StartTime,
+                                                              Timestamp.Value,
+                                                              this,
+                                                              EventTrackingId,
+                                                              RoamingNetwork.Id,
+                                                              OperatorId,
+                                                              ChargingStationId,
+                                                              SessionId,
+                                                              AuthToken,
+                                                              RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProviderStub) + "." + nameof(OnAuthorizeChargingStationStopRequest));
+            }
+
+            #endregion
+
+
+            var result   = AuthStopChargingStationResult.OutOfService(
+                               Id,
+                               SessionId,
+                               TimeSpan.FromSeconds(0)
+                           );
+
+            var Endtime  = DateTime.Now;
+            var Runtime  = Endtime - StartTime;
+
+
+            #region Send OnAuthorizeChargingStationStopResponse event
+
+            try
+            {
+
+                OnAuthorizeChargingStationStopResponse?.Invoke(Endtime,
+                                                               Timestamp.Value,
+                                                               this,
+                                                               EventTrackingId,
+                                                               RoamingNetwork.Id,
+                                                               OperatorId,
+                                                               ChargingStationId,
+                                                               SessionId,
+                                                               AuthToken,
+                                                               RequestTimeout,
+                                                               result,
+                                                               Runtime);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProviderStub) + "." + nameof(OnAuthorizeChargingStationStopResponse));
+            }
+
+            #endregion
+
+            return result;
+
+        }
+
+        #endregion
+
+        #region AuthorizeStop(SessionId, AuthToken, ChargingPoolId,    OperatorId = null, ...)
+
+        /// <summary>
+        /// Create an authorize stop request at the given charging pool.
+        /// </summary>
+        /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<AuthStopChargingPoolResult>
+
+            AuthorizeStop(ChargingSession_Id           SessionId,
+                          Auth_Token                   AuthToken,
+                          ChargingPool_Id              ChargingPoolId,
+                          ChargingStationOperator_Id?  OperatorId          = null,
+
+                          DateTime?                    Timestamp           = null,
+                          CancellationToken?           CancellationToken   = null,
+                          EventTracking_Id             EventTrackingId     = null,
+                          TimeSpan?                    RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (AuthToken == null)
+                throw new ArgumentNullException(nameof(AuthToken), "The given authentication token must not be null!");
+
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+            if (!RequestTimeout.HasValue)
+                RequestTimeout = this.RequestTimeout;
+
+            #endregion
+
+            #region Send OnAuthorizeChargingPoolStopRequest event
+
+            var StartTime = DateTime.Now;
+
+            try
+            {
+
+                OnAuthorizeChargingPoolStopRequest?.Invoke(StartTime,
+                                                           Timestamp.Value,
+                                                           this,
+                                                           EventTrackingId,
+                                                           RoamingNetwork.Id,
+                                                           OperatorId,
+                                                           ChargingPoolId,
+                                                           SessionId,
+                                                           AuthToken,
+                                                           RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProviderStub) + "." + nameof(OnAuthorizeChargingPoolStopRequest));
+            }
+
+            #endregion
+
+
+            var result   = AuthStopChargingPoolResult.OutOfService(
+                               Id,
+                               SessionId,
+                               TimeSpan.FromSeconds(0)
+                           );
+
+            var Endtime  = DateTime.Now;
+            var Runtime  = Endtime - StartTime;
+
+
+            #region Send OnAuthorizeChargingPoolStopResponse event
+
+            try
+            {
+
+                OnAuthorizeChargingPoolStopResponse?.Invoke(Endtime,
+                                                            Timestamp.Value,
+                                                            this,
+                                                            EventTrackingId,
+                                                            RoamingNetwork.Id,
+                                                            OperatorId,
+                                                            ChargingPoolId,
+                                                            SessionId,
+                                                            AuthToken,
+                                                            RequestTimeout,
+                                                            result,
+                                                            Runtime);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(eMobilityProviderStub) + "." + nameof(OnAuthorizeChargingPoolStopResponse));
+            }
+
+            #endregion
+
+            return result;
 
         }
 

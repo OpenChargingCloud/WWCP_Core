@@ -38,6 +38,9 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
+        //ToDo: Replace with better randomness!
+        private static readonly Random _Random = new Random(DateTime.Now.Millisecond);
+
         /// <summary>
         /// The regular expression for parsing an EVSE identification.
         /// </summary>                                            // new format:
@@ -68,7 +71,7 @@ namespace org.GraphDefined.WWCP
         #region Properties
 
         /// <summary>
-        /// The internal identification.
+        /// The charging station operator identification.
         /// </summary>
         public ChargingStationOperator_Id  OperatorId   { get; }
 
@@ -84,7 +87,7 @@ namespace org.GraphDefined.WWCP
             => OperatorId.Format;
 
         /// <summary>
-        /// Returns the length of the identificator.
+        /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
         {
@@ -136,6 +139,22 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region Random(OperatorId, Mapper = null)
+
+        /// <summary>
+        /// Generate a new unique identification of an EVSE.
+        /// </summary>
+        /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="Mapper">A delegate to modify the newly generated EVSE identification.</param>
+        public static EVSE_Id Random(ChargingStationOperator_Id  OperatorId,
+                                     Func<String, String>        Mapper  = null)
+
+
+            => new EVSE_Id(OperatorId,
+                           Mapper != null ? Mapper(_Random.RandomString(12)) : _Random.RandomString(12));
+
+        #endregion
 
         #region Parse(Text)
 
@@ -460,7 +479,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
             if (!(Object is EVSE_Id))
-                throw new ArgumentException("The given object is not a EVSE identification!");
+                throw new ArgumentException("The given object is not an EVSE identification!");
 
             return CompareTo((EVSE_Id) Object);
 
@@ -480,14 +499,14 @@ namespace org.GraphDefined.WWCP
             if ((Object) EVSEId == null)
                 throw new ArgumentNullException(nameof(EVSEId),  "The given EVSE identification must not be null!");
 
-            // Compare the length of the EVSEIds
+            // Compare the length of the identifications
             var _Result = this.Length.CompareTo(EVSEId.Length);
 
-            // If equal: Compare OperatorIds
+            // If equal: Compare charging operator identifications
             if (_Result == 0)
                 _Result = OperatorId.CompareTo(EVSEId.OperatorId);
 
-            // If equal: Compare EVSEId suffix
+            // If equal: Compare suffix
             if (_Result == 0)
                 _Result = String.Compare(Suffix, EVSEId.Suffix, StringComparison.Ordinal);
 
@@ -517,7 +536,7 @@ namespace org.GraphDefined.WWCP
             if (!(Object is EVSE_Id))
                 return false;
 
-            return this.Equals((EVSE_Id) Object);
+            return Equals((EVSE_Id) Object);
 
         }
 

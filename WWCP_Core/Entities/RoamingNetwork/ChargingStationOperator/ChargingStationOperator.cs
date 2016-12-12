@@ -816,7 +816,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CreateChargingPool(ChargingPoolId = null, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateChargingPool        (ChargingPoolId = null, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging pool having the given
@@ -902,7 +902,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CreateOrUpdateChargingPool(ChargingPoolId = null, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateOrUpdateChargingPool(ChargingPoolId,        Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register or udpate a new charging pool having the given
@@ -912,7 +912,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public ChargingPool CreateOrUpdateChargingPool(ChargingPool_Id?                                  ChargingPoolId             = null,
+        public ChargingPool CreateOrUpdateChargingPool(ChargingPool_Id                                   ChargingPoolId,
                                                        Action<ChargingPool>                              Configurator               = null,
                                                        RemoteChargingPoolCreatorDelegate                 RemoteChargingPoolCreator  = null,
                                                        ChargingPoolAdminStatusType                       AdminStatus                = ChargingPoolAdminStatusType.Operational,
@@ -924,19 +924,16 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (!ChargingPoolId.HasValue)
-                ChargingPoolId = ChargingPool_Id.Random(Id);
-
-            if (!Ids.Contains(ChargingPoolId.Value.OperatorId))
+            if (!Ids.Contains(ChargingPoolId.OperatorId))
                 throw new InvalidChargingPoolOperatorId(this,
-                                                        ChargingPoolId.Value.OperatorId,
+                                                        ChargingPoolId.OperatorId,
                                                         Ids);
 
             #endregion
 
             #region If the charging pool identification is new/unknown: Call CreateChargingPool(...)
 
-            if (!_ChargingPools.ContainsId(ChargingPoolId.Value))
+            if (!_ChargingPools.ContainsId(ChargingPoolId))
                 return CreateChargingPool(ChargingPoolId,
                                           Configurator,
                                           RemoteChargingPoolCreator,
@@ -951,8 +948,8 @@ namespace org.GraphDefined.WWCP
             // Merge existing charging pool with new pool data...
 
             return _ChargingPools.
-                       GetById(ChargingPoolId.Value).
-                       MergeWith(new ChargingPool(ChargingPoolId.Value,
+                       GetById(ChargingPoolId).
+                       MergeWith(new ChargingPool(ChargingPoolId,
                                                   this,
                                                   Configurator,
                                                   RemoteChargingPoolCreator,
@@ -1613,42 +1610,71 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CreateNewChargingStationGroup(ChargingStationGroupId = null, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateChargingStationGroup     (Id,       Name, Description = null, ..., OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging group having the given
         /// unique charging group identification.
         /// </summary>
-        /// <param name="ChargingStationGroupId">The unique identification of the new charging group.</param>
-        /// <param name="Configurator">An optional delegate to configure the new charging group before its successful creation.</param>
+        /// <param name="Id">The unique identification of the charing station group.</param>
+        /// <param name="Name">The offical (multi-language) name of this charging station group.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging station group.</param>
+        /// 
+        /// <param name="Members">An enumeration of charging stations member building this charging station group.</param>
+        /// <param name="MemberIds">An enumeration of charging station identifications which are building this charging station group.</param>
+        /// <param name="AutoIncludeStations">A delegate deciding whether to include new charging stations automatically into this group.</param>
+        /// 
+        /// <param name="StatusAggregationDelegate">A delegate called to aggregate the dynamic status of all subordinated charging stations.</param>
+        /// <param name="MaxGroupStatusListSize">The default size of the charging station group status list.</param>
+        /// <param name="MaxGroupAdminStatusListSize">The default size of the charging station group admin status list.</param>
+        /// 
         /// <param name="OnSuccess">An optional delegate to configure the new charging group after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging group failed.</param>
-        public ChargingStationGroup CreateNewChargingStationGroup(ChargingStationGroup_Id                                   ChargingStationGroupId  = null,
-                                                                  Action<ChargingStationGroup>                              Configurator            = null,
-                                                                  Action<ChargingStationGroup>                              OnSuccess               = null,
-                                                                  Action<ChargingStationOperator, ChargingStationGroup_Id>  OnError                 = null)
+        public ChargingStationGroup CreateChargingStationGroup(ChargingStationGroup_Id                                            Id,
+                                                               I18NString                                                         Name,
+                                                               I18NString                                                         Description                   = null,
+
+                                                               IEnumerable<ChargingStation>                                       Members                       = null,
+                                                               IEnumerable<ChargingStation_Id>                                    MemberIds                     = null,
+                                                               Func<ChargingStation, Boolean>                                     AutoIncludeStations           = null,
+
+                                                               Func<ChargingStationStatusReport, ChargingStationGroupStatusType>  StatusAggregationDelegate     = null,
+                                                               UInt16                                                             MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
+                                                               UInt16                                                             MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
+
+                                                               Action<ChargingStationGroup>                                       OnSuccess                     = null,
+                                                               Action<ChargingStationOperator, ChargingStationGroup_Id>           OnError                       = null)
+
         {
 
             #region Initial checks
 
-            if (ChargingStationGroupId == null)
-                ChargingStationGroupId = ChargingStationGroup_Id.Random(this.Id);
+            if (Name.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Name), "The name of the charging station group must not be null or empty!");
 
-            // Do not throw an exception when an OnError delegate was given!
-            if (_ChargingStationGroups.ContainsId(ChargingStationGroupId))
+            if (_ChargingStationGroups.ContainsId(Id))
             {
-                if (OnError == null)
-                    throw new ChargingStationGroupAlreadyExists(this, ChargingStationGroupId);
-                else
-                    OnError?.Invoke(this, ChargingStationGroupId);
+
+                if (OnError != null)
+                    OnError?.Invoke(this, Id);
+
+                throw new ChargingStationGroupAlreadyExists(this, Id);
+
             }
 
             #endregion
 
-            var _ChargingStationGroup = new ChargingStationGroup(ChargingStationGroupId, this);
+            var _ChargingStationGroup = new ChargingStationGroup(Id,
+                                                                 this,
+                                                                 Name,
+                                                                 Description,
+                                                                 Members,
+                                                                 MemberIds,
+                                                                 AutoIncludeStations,
+                                                                 StatusAggregationDelegate,
+                                                                 MaxGroupAdminStatusListSize,
+                                                                 MaxGroupStatusListSize);
 
-            if (Configurator != null)
-                Configurator(_ChargingStationGroup);
 
             if (ChargingStationGroupAddition.SendVoting(DateTime.Now, this, _ChargingStationGroup))
             {
@@ -1679,34 +1705,203 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region GetOrCreateChargingStationGroup(...)
+        #region CreateChargingStationGroup     (IdSuffix, Name, Description = null, ..., OnSuccess = null, OnError = null)
 
-        public ChargingStationGroup GetOrCreateChargingStationGroup(ChargingStationGroup_Id                        ChargingStationGroupId,
-                                                                    Action<ChargingStationGroup>                   Configurator            = null,
-                                                                    Action<ChargingStationGroup>                   OnSuccess               = null,
-                                                                    Action<ChargingStationOperator, ChargingStationGroup_Id>  OnError                 = null)
+        /// <summary>
+        /// Create and register a new charging group having the given
+        /// unique charging group identification.
+        /// </summary>
+        /// <param name="IdSuffix">The suffix of the unique identification of the new charging group.</param>
+        /// <param name="Name">The offical (multi-language) name of this charging station group.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging station group.</param>
+        /// 
+        /// <param name="Members">An enumeration of charging stations member building this charging station group.</param>
+        /// <param name="MemberIds">An enumeration of charging station identifications which are building this charging station group.</param>
+        /// <param name="AutoIncludeStations">A delegate deciding whether to include new charging stations automatically into this group.</param>
+        /// 
+        /// <param name="StatusAggregationDelegate">A delegate called to aggregate the dynamic status of all subordinated charging stations.</param>
+        /// <param name="MaxGroupStatusListSize">The default size of the charging station group status list.</param>
+        /// <param name="MaxGroupAdminStatusListSize">The default size of the charging station group admin status list.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to configure the new charging group after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging group failed.</param>
+        public ChargingStationGroup CreateChargingStationGroup(String                                                             IdSuffix,
+                                                               I18NString                                                         Name,
+                                                               I18NString                                                         Description                   = null,
+
+                                                               IEnumerable<ChargingStation>                                       Members                       = null,
+                                                               IEnumerable<ChargingStation_Id>                                    MemberIds                     = null,
+                                                               Func<ChargingStation, Boolean>                                     AutoIncludeStations           = null,
+
+                                                               Func<ChargingStationStatusReport, ChargingStationGroupStatusType>  StatusAggregationDelegate     = null,
+                                                               UInt16                                                             MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
+                                                               UInt16                                                             MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
+
+                                                               Action<ChargingStationGroup>                                       OnSuccess                     = null,
+                                                               Action<ChargingStationOperator, ChargingStationGroup_Id>           OnError                       = null)
+
         {
 
-            ChargingStationGroup _ChargingStationGroup = null;
+            #region Initial checks
 
-            if (_ChargingStationGroups.TryGet(ChargingStationGroupId, out _ChargingStationGroup))
-                return _ChargingStationGroup;
+            if (IdSuffix.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(IdSuffix), "The given suffix of the unique identification of the new charging group must not be null or empty!");
 
-            return CreateNewChargingStationGroup(ChargingStationGroupId,
-                                                 Configurator,
-                                                 OnSuccess,
-                                                 OnError);
+            #endregion
+
+            return CreateChargingStationGroup(ChargingStationGroup_Id.Parse(Id, IdSuffix.Trim().ToUpper()),
+                                              Name,
+                                              Description,
+                                              Members,
+                                              MemberIds,
+                                              AutoIncludeStations,
+                                              StatusAggregationDelegate,
+                                              MaxGroupAdminStatusListSize,
+                                              MaxGroupStatusListSize,
+                                              OnSuccess,
+                                              OnError);
 
         }
 
         #endregion
 
-        #region TryGetChargingStationGroup
+        #region GetOrCreateChargingStationGroup(Id,       Name, Description = null, ..., OnSuccess = null, OnError = null)
 
-        public Boolean TryGetChargingStationGroup(ChargingStationGroup_Id   ChargingStationGroupId,
+        /// <summary>
+        /// Get or create and register a new charging group having the given
+        /// unique charging group identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charing station group.</param>
+        /// <param name="Name">The offical (multi-language) name of this charging station group.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging station group.</param>
+        /// 
+        /// <param name="Members">An enumeration of charging stations member building this charging station group.</param>
+        /// <param name="MemberIds">An enumeration of charging station identifications which are building this charging station group.</param>
+        /// <param name="AutoIncludeStations">A delegate deciding whether to include new charging stations automatically into this group.</param>
+        /// 
+        /// <param name="StatusAggregationDelegate">A delegate called to aggregate the dynamic status of all subordinated charging stations.</param>
+        /// <param name="MaxGroupStatusListSize">The default size of the charging station group status list.</param>
+        /// <param name="MaxGroupAdminStatusListSize">The default size of the charging station group admin status list.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to configure the new charging group after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging group failed.</param>
+        public ChargingStationGroup GetOrCreateChargingStationGroup(ChargingStationGroup_Id                                            Id,
+                                                                    I18NString                                                         Name,
+                                                                    I18NString                                                         Description                   = null,
+
+                                                                    IEnumerable<ChargingStation>                                       Members                       = null,
+                                                                    IEnumerable<ChargingStation_Id>                                    MemberIds                     = null,
+                                                                    Func<ChargingStation, Boolean>                                     AutoIncludeStations           = null,
+
+                                                                    Func<ChargingStationStatusReport, ChargingStationGroupStatusType>  StatusAggregationDelegate     = null,
+                                                                    UInt16                                                             MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
+                                                                    UInt16                                                             MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
+
+                                                                    Action<ChargingStationGroup>                                       OnSuccess                     = null,
+                                                                    Action<ChargingStationOperator, ChargingStationGroup_Id>           OnError                       = null)
+
+        {
+
+            #region Initial checks
+
+            if (Name.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Name), "The name of the charging station group must not be null or empty!");
+
+            #endregion
+
+            ChargingStationGroup _ChargingStationGroup = null;
+
+            if (_ChargingStationGroups.TryGet(Id, out _ChargingStationGroup))
+                return _ChargingStationGroup;
+
+            return CreateChargingStationGroup(Id,
+                                              Name,
+                                              Description,
+                                              Members,
+                                              MemberIds,
+                                              AutoIncludeStations,
+                                              StatusAggregationDelegate,
+                                              MaxGroupAdminStatusListSize,
+                                              MaxGroupStatusListSize,
+                                              OnSuccess,
+                                              OnError);
+
+        }
+
+        #endregion
+
+        #region GetOrCreateChargingStationGroup(IdSuffix, Name, Description = null, ..., OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Get or create and register a new charging group having the given
+        /// unique charging group identification.
+        /// </summary>
+        /// <param name="IdSuffix">The suffix of the unique identification of the new charging group.</param>
+        /// <param name="Name">The offical (multi-language) name of this charging station group.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging station group.</param>
+        /// 
+        /// <param name="Members">An enumeration of charging stations member building this charging station group.</param>
+        /// <param name="MemberIds">An enumeration of charging station identifications which are building this charging station group.</param>
+        /// <param name="AutoIncludeStations">A delegate deciding whether to include new charging stations automatically into this group.</param>
+        /// 
+        /// <param name="StatusAggregationDelegate">A delegate called to aggregate the dynamic status of all subordinated charging stations.</param>
+        /// <param name="MaxGroupStatusListSize">The default size of the charging station group status list.</param>
+        /// <param name="MaxGroupAdminStatusListSize">The default size of the charging station group admin status list.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to configure the new charging group after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging group failed.</param>
+        public ChargingStationGroup GetOrCreateChargingStationGroup(String                                                             IdSuffix,
+                                                                    I18NString                                                         Name,
+                                                                    I18NString                                                         Description                   = null,
+
+                                                                    IEnumerable<ChargingStation>                                       Members                       = null,
+                                                                    IEnumerable<ChargingStation_Id>                                    MemberIds                     = null,
+                                                                    Func<ChargingStation, Boolean>                                     AutoIncludeStations           = null,
+
+                                                                    Func<ChargingStationStatusReport, ChargingStationGroupStatusType>  StatusAggregationDelegate     = null,
+                                                                    UInt16                                                             MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
+                                                                    UInt16                                                             MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
+
+                                                                    Action<ChargingStationGroup>                                       OnSuccess                     = null,
+                                                                    Action<ChargingStationOperator, ChargingStationGroup_Id>           OnError                       = null)
+
+
+        {
+
+            #region Initial checks
+
+            if (IdSuffix.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(IdSuffix), "The given suffix of the unique identification of the new charging group must not be null or empty!");
+
+            #endregion
+
+            return GetOrCreateChargingStationGroup(ChargingStationGroup_Id.Parse(Id, IdSuffix.Trim().ToUpper()),
+                                                   Name,
+                                                   Description,
+                                                   Members,
+                                                   MemberIds,
+                                                   AutoIncludeStations,
+                                                   StatusAggregationDelegate,
+                                                   MaxGroupAdminStatusListSize,
+                                                   MaxGroupStatusListSize,
+                                                   OnSuccess,
+                                                   OnError);
+
+        }
+
+        #endregion
+
+        #region TryGetChargingStationGroup(Id, out ChargingStationGroup)
+
+        /// <summary>
+        /// Try to return to charging station group for the given charging station group identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charing station group.</param>
+        /// <param name="ChargingStationGroup">The charing station group.</param>
+        public Boolean TryGetChargingStationGroup(ChargingStationGroup_Id   Id,
                                                   out ChargingStationGroup  ChargingStationGroup)
 
-            => _ChargingStationGroups.TryGet(ChargingStationGroupId, out ChargingStationGroup);
+            => _ChargingStationGroups.TryGet(Id, out ChargingStationGroup);
 
         #endregion
 

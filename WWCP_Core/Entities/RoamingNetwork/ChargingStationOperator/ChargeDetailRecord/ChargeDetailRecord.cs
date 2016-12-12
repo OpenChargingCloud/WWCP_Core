@@ -44,13 +44,22 @@ namespace org.GraphDefined.WWCP
         /// The unique charging session identification.
         /// </summary>
         [Mandatory]
-        public ChargingSession_Id  SessionId    { get; }
+        public ChargingSession_Id  SessionId     { get; }
 
         /// <summary>
         /// The timestamps when the charging session started and ended.
         /// </summary>
         [Mandatory]
-        public StartEndDateTime?   SessionTime  { get; }
+        public StartEndDateTime?   SessionTime   { get; }
+
+
+        /// <summary>
+        /// The duration of the charging session, whenever it is more
+        /// than the time span between its start- and endtime, e.g.
+        /// caused by a tariff granularity of 15 minutes.
+        /// </summary>
+        [Optional]
+        public TimeSpan?           Duration      { get; }
 
         #endregion
 
@@ -215,6 +224,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="SessionId">The unique charging session identification.</param>
         /// <param name="SessionTime">The timestamps when the charging session started and ended.</param>
+        /// <param name="Duration">The duration of the charging session, whenever it is more than the time span between its start- and endtime, e.g. caused by a tariff granularity of 15 minutes.</param>
         /// 
         /// <param name="EVSE">The EVSE used for charging.</param>
         /// <param name="EVSEId">The identification of the EVSE used for charging.</param>
@@ -242,6 +252,7 @@ namespace org.GraphDefined.WWCP
         /// 
         public ChargeDetailRecord(ChargingSession_Id                SessionId,
                                   StartEndDateTime?                 SessionTime,
+                                  TimeSpan?                         Duration                 = null,
 
                                   EVSE                              EVSE                     = null,
                                   EVSE_Id?                          EVSEId                   = null,
@@ -269,15 +280,9 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            #region Initial checks
-
-            if (SessionId == null)
-                throw new ArgumentNullException(nameof(SessionId),  "The charging session identification must not be null!");
-
-            #endregion
-
             this.SessionId                = SessionId;
             this.SessionTime              = SessionTime;
+            this.Duration                 = Duration;
 
             this.EVSE                     = EVSE;
             this.EVSEId                   = EVSE != null ? EVSE.Id : EVSEId;

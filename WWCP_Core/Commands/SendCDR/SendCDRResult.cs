@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 #endregion
 
@@ -29,26 +30,30 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        public IId                AuthorizatorId   { get; }
+        public IId                              AuthorizatorId                { get; }
 
-        public SendCDRResultType  Status           { get; }
+        public SendCDRResultType                Status                        { get; }
 
-        public String             Description      { get; }
+        public IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords   { get; }
 
-        public String             AdditionalInfo   { get; }
+        public String                           Description                   { get; }
+
+        public String                           AdditionalInfo                { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        private SendCDRResult(SendCDRResultType  Result,
-                              IId                AuthorizatorId,
-                              String             Description = null)
+        private SendCDRResult(SendCDRResultType                Status,
+                              IId                              AuthorizatorId,
+                              IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords  = null,
+                              String                           Description                  = null)
         {
 
-            this.AuthorizatorId  = AuthorizatorId;
-            this.Status          = Result;
-            this.Description     = Description;
+            this.Status                       = Status;
+            this.AuthorizatorId               = AuthorizatorId;
+            this.RejectedChargeDetailRecords  = RejectedChargeDetailRecords;
+            this.Description                  = Description;
 
         }
 
@@ -62,7 +67,7 @@ namespace org.GraphDefined.WWCP
 
             => new SendCDRResult(SendCDRResultType.NotForwared,
                                  AuthorizatorId,
-                                 Description);
+                                 Description: Description);
 
         #endregion
 
@@ -73,7 +78,7 @@ namespace org.GraphDefined.WWCP
 
             => new SendCDRResult(SendCDRResultType.Enqueued,
                                  AuthorizatorId,
-                                 Description);
+                                 Description: Description);
 
         #endregion
 
@@ -87,42 +92,42 @@ namespace org.GraphDefined.WWCP
 
         #region (static) InvalidSessionId(AuthorizatorId, Description = null)
 
-        public static SendCDRResult InvalidSessionId(IId  AuthorizatorId,
-                                                     String           Description = null)
+        public static SendCDRResult InvalidSessionId(IId     AuthorizatorId,
+                                                     String  Description = null)
 
             => new SendCDRResult(SendCDRResultType.InvalidSessionId,
                                  AuthorizatorId,
-                                 Description != null ? Description : "Invalid session identification!");
+                                 Description: Description ?? "Invalid session identification!");
 
         #endregion
 
         #region (static) UnknownEVSE(AuthorizatorId, Description = null)
 
-        public static SendCDRResult UnknownEVSE(IId  AuthorizatorId,
-                                                String           Description = null)
+        public static SendCDRResult UnknownEVSE(IId     AuthorizatorId,
+                                                String  Description = null)
             => new SendCDRResult(SendCDRResultType.UnknownEVSE,
                                  AuthorizatorId,
-                                 Description);
+                                 Description: Description);
 
         #endregion
 
         #region (static) OutOfService(AuthorizatorId, Description = null)
 
-        public static SendCDRResult OutOfService(IId  AuthorizatorId,
-                                                 String           Description = null)
+        public static SendCDRResult OutOfService(IId     AuthorizatorId,
+                                                 String  Description = null)
             => new SendCDRResult(SendCDRResultType.OutOfService,
                                  AuthorizatorId,
-                                 Description);
+                                 Description: Description);
 
         #endregion
 
         #region (static) Error(AuthorizatorId, Description = null)
 
-        public static SendCDRResult Error(IId  AuthorizatorId,
-                                          String           Description = null)
+        public static SendCDRResult Error(IId     AuthorizatorId,
+                                          String  Description = null)
             => new SendCDRResult(SendCDRResultType.Error,
                                  AuthorizatorId,
-                                 Description);
+                                 Description: Description);
 
         #endregion
 

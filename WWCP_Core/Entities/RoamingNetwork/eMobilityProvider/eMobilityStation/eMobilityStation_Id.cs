@@ -68,7 +68,7 @@ namespace org.GraphDefined.WWCP
         public String                Suffix      { get; }
 
         /// <summary>
-        /// Returns the length of the identificator.
+        /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
             => ProviderId.Length + 2 + (UInt64) Suffix.Length;
@@ -525,7 +525,7 @@ namespace org.GraphDefined.WWCP
             // Compare the length of the eMobilityStationIds
             var _Result = this.Length.CompareTo(eMobilityStationId.Length);
 
-            // If equal: Compare OperatorIds
+            // If equal: Compare charging operator identifications
             if (_Result == 0)
                 _Result = ProviderId.CompareTo(eMobilityStationId.ProviderId);
 

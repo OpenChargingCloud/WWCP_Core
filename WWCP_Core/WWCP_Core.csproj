@@ -50,9 +50,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\AuthenticationData\OnPushAuthenticationData.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\AuthStartChargingPoolResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStartChargingStationResult.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\AAuthStartResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStartResult.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\AuthStopChargingPoolResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStopChargingStationResult.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\AAuthStopResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStopResult.cs" />
     <Compile Include="Commands\ISendChargeDetailRecord.cs" />
     <Compile Include="Commands\IAuthorizeStartStop.cs" />
@@ -72,6 +76,14 @@
     <Compile Include="CommonTypes\Signature.cs" />
     <Compile Include="Entities\ABaseEMobilityEntity.cs" />
     <Compile Include="Entities\ACryptoEMobilityEntity.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPoolGroup\ChargingPoolGroupAdminStatusType.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPoolGroup\ChargingPoolGroup_Id.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationGroup\ChargingStationGroupStatusType.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationGroup\ChargingStationGroup_Id.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingTariff.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingTariff_Id.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSEGroup\EVSEGroupAdminStatusType.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSEGroup\EVSEGroup_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkAdminStatus.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkAdminStatusUpdate.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkStatus.cs" />
@@ -285,7 +297,6 @@
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationGroup\ChargingGroupExceptions.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\ChargingStationExceptions.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationGroup\ChargingStationGroup.cs" />
-    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationGroup\ChargingStationGroup_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\EVSEExceptions.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPool\ChargingPoolExceptions.cs" />
     <Compile Include="CommonTypes\OpeningTimes.cs" />
@@ -364,7 +375,6 @@
     <Folder Include="Entities\GeoInformations\SmartCities\ConstructionSite\" />
     <Folder Include="Entities\GeoInformations\SmartCities\Street\" />
     <Folder Include="Entities\GeoInformations\SmartCities\WLAN\" />
-    <Folder Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPoolGroup\" />
     <Folder Include="IO\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

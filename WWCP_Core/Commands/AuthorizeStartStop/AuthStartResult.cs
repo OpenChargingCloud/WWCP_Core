@@ -26,396 +26,303 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The result of a authorize start operation.
+    /// The result of an authorize start operation.
     /// </summary>
-    public class AuthStartResult
+    public class AuthStartResult : AAuthStartResult<AuthStartResultType>
     {
 
-        #region Properties
-
-        /// <summary>
-        /// The identification of the authorizing entity.
-        /// </summary>
-        public IId                      AuthorizatorId          { get; }
-
-        /// <summary>
-        /// The result of the authorize start operation.
-        /// </summary>
-        public AuthStartResultType      Result                  { get; }
-
-        /// <summary>
-        /// The charging session identification for a successful authorize start operation.
-        /// </summary>
-        public ChargingSession_Id       SessionId               { get; }
-
-        /// <summary>
-        /// The unique identification of the ev service provider.
-        /// </summary>
-        public eMobilityProvider_Id?    ProviderId              { get; }
-
-        /// <summary>
-        /// A optional description of the authorize start result.
-        /// </summary>
-        public String                   Description             { get; }
-
-        /// <summary>
-        /// An optional additional message.
-        /// </summary>
-        public String                   AdditionalInfo          { get; }
-
-        /// <summary>
-        /// An optional list of authorize stop tokens.
-        /// </summary>
-        public IEnumerable<Auth_Token>  ListOfAuthStopTokens    { get; }
-
-        /// <summary>
-        /// An optional list of authorize stop PINs.
-        /// </summary>
-        public IEnumerable<UInt32>      ListOfAuthStopPINs      { get; }
-
-        /// <summary>
-        /// The run time of the request.
-        /// </summary>
-        public TimeSpan?                Runtime                 { get; }
-
-        #endregion
-
         #region Constructor(s)
-
-        #region (private) AuthStartResult(AuthorizatorId, Result, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// Create a new authorize start result.
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
         /// <param name="Result">The authorize start result type.</param>
-        /// <param name="ProviderId">An optional identification of the ev service provider.</param>
-        /// <param name="Description">An optional description of the auth start result.</param>
-        /// <param name="AdditionalInfo">An optional additional message.</param>
-        /// <param name="Runtime">The run time of the request.</param>
-        private AuthStartResult(IId                    AuthorizatorId,
-                                AuthStartResultType    Result,
-                                eMobilityProvider_Id?  ProviderId       = null,
-                                String                 Description      = null,
-                                String                 AdditionalInfo   = null,
-                                TimeSpan?              Runtime          = null)
-        {
-
-            #region Initial checks
-
-            if (AuthorizatorId == null)
-                throw new ArgumentNullException(nameof(AuthorizatorId),  "The given identification of the authorizator must not be null!");
-
-            #endregion
-
-            this.AuthorizatorId        = AuthorizatorId;
-            this.Result                = Result;
-            this.ProviderId            = ProviderId     ?? new eMobilityProvider_Id?();
-            this.Description           = Description;
-            this.AdditionalInfo        = AdditionalInfo;
-            this.Runtime               = Runtime        ?? TimeSpan.FromSeconds(0);
-            this.ListOfAuthStopTokens  = new Auth_Token[0];
-            this.ListOfAuthStopPINs    = new UInt32[0];
-
-        }
-
-        #endregion
-
-        #region (private) AuthStartResult(AuthorizatorId, SessionId, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null, ListOfAuthStopTokens = null, ListOfAuthStopPINs = null)
-
-        /// <summary>
-        /// Create a new successful authorize start result.
-        /// </summary>
-        /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
-        /// <param name="SessionId">The charging session identification for the authorize start operation.</param>
-        /// <param name="ProviderId">The unique identification of the ev service provider.</param>
-        /// <param name="Description">An optional description of the auth start result.</param>
-        /// <param name="AdditionalInfo">An optional additional message.</param>
-        /// <param name="Runtime">The run time of the request.</param>
+        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="MaxkW">The optional maximum allowed charging current.</param>
+        /// <param name="MaxkWh">The optional maximum allowed charging energy.</param>
+        /// <param name="MaxDuration">The optional maximum allowed charging duration.</param>
+        /// <param name="ChargingTariffs">Optional charging tariff information.</param>
         /// <param name="ListOfAuthStopTokens">An optional enumeration of authorize stop tokens.</param>
         /// <param name="ListOfAuthStopPINs">An optional enumeration of authorize stop PINs.</param>
-        private AuthStartResult(IId                      AuthorizatorId,
-                                ChargingSession_Id       SessionId,
-                                eMobilityProvider_Id?    ProviderId             = null,
-                                String                   Description            = null,
-                                String                   AdditionalInfo         = null,
-                                TimeSpan?                Runtime                = null,
-                                IEnumerable<Auth_Token>  ListOfAuthStopTokens   = null,
-                                IEnumerable<UInt32>      ListOfAuthStopPINs     = null)
-        {
+        /// 
+        /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        private AuthStartResult(IId                          AuthorizatorId,
+                                AuthStartResultType          Result,
+                                ChargingSession_Id?          SessionId              = null,
+                                Single?                      MaxkW                  = null,
+                                Single?                      MaxkWh                 = null,
+                                TimeSpan?                    MaxDuration            = null,
+                                IEnumerable<ChargingTariff>  ChargingTariffs        = null,
+                                IEnumerable<Auth_Token>      ListOfAuthStopTokens   = null,
+                                IEnumerable<UInt32>          ListOfAuthStopPINs     = null,
 
-            #region Initial checks
+                                eMobilityProvider_Id?        ProviderId             = null,
+                                String                       Description            = null,
+                                String                       AdditionalInfo         = null,
+                                TimeSpan?                    Runtime                = null)
 
-            if (AuthorizatorId == null)
-                throw new ArgumentNullException(nameof(AuthorizatorId),  "The given identification of the authorizator must not be null!");
+            : base(AuthorizatorId,
+                   Result,
+                   SessionId,
+                   MaxkW,
+                   MaxkWh,
+                   MaxDuration,
+                   ChargingTariffs,
+                   ListOfAuthStopTokens,
+                   ListOfAuthStopPINs,
 
-            if (SessionId == null)
-                throw new ArgumentNullException(nameof(SessionId),       "The given charging session identification must not be null!");
+                   ProviderId,
+                   Description,
+                   AdditionalInfo,
+                   Runtime)
 
-            if (ProviderId == null)
-                throw new ArgumentNullException(nameof(ProviderId),      "The given e-mobility provider identification must not be null!");
-
-            #endregion
-
-            this.Result                = AuthStartResultType.Authorized;
-            this.AuthorizatorId        = AuthorizatorId;
-            this.SessionId             = SessionId;
-            this.ProviderId            = ProviderId           ?? new eMobilityProvider_Id?();
-            this.Description           = Description;
-            this.AdditionalInfo        = AdditionalInfo;
-            this.Runtime               = Runtime              ?? TimeSpan.FromSeconds(0);
-            this.ListOfAuthStopTokens  = ListOfAuthStopTokens ?? new Auth_Token[0];
-            this.ListOfAuthStopPINs    = ListOfAuthStopPINs   ?? new UInt32[0];
-
-        }
-
-        #endregion
-
-        #region (private) AuthStartResult(AuthorizatorId, ErrorMessage = null, Runtime = null)
-
-        /// <summary>
-        /// Create a new remote start result.
-        /// </summary>
-        /// <param name="AuthorizatorId">An authorizator identification.</param>
-        /// <param name="ErrorMessage">An error message.</param>
-        /// <param name="Runtime">The run time of the request.</param>
-        private AuthStartResult(IId        AuthorizatorId,
-                                String     ErrorMessage  = null,
-                                TimeSpan?  Runtime       = null)
-        {
-
-            #region Initial checks
-
-            if (AuthorizatorId == null)
-                throw new ArgumentNullException(nameof(AuthorizatorId),  "The given identification of the authorizator must not be null!");
-
-            #endregion
-
-            this.Result                = AuthStartResultType.Error;
-            this.AuthorizatorId        = AuthorizatorId;
-            this.Runtime               = Runtime;
-            this.Description           = ErrorMessage;
-            this.ListOfAuthStopTokens  = new Auth_Token[0];
-            this.ListOfAuthStopPINs    = new UInt32[0];
-
-        }
-
-        #endregion
+        { }
 
         #endregion
 
 
-        #region (static) Unspecified(AuthorizatorId)
+        #region (static) Unspecified         (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The result is unknown and/or should be ignored.
         /// </summary>
-
-        public static AuthStartResult Unspecified(IId AuthorizatorId)
+        public static AuthStartResult Unspecified(IId                  AuthorizatorId,
+                                                  ChargingSession_Id?  SessionId  = null,
+                                                  TimeSpan?            Runtime    = null)
 
             => new AuthStartResult(AuthorizatorId,
-                                   AuthStartResultType.Unspecified);
+                                   AuthStartResultType.Unspecified,
+                                   SessionId,
+                                   Runtime: Runtime);
 
         #endregion
 
-        #region (static) InvalidSessionId(AuthorizatorId)
+        #region (static) InvalidSessionId    (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The given charging session identification is unknown or invalid.
         /// </summary>
-
-        public static AuthStartResult InvalidSessionId(IId AuthorizatorId)
+        public static AuthStartResult InvalidSessionId(IId                  AuthorizatorId,
+                                                       ChargingSession_Id?  SessionId  = null,
+                                                       TimeSpan?            Runtime    = null)
 
             => new AuthStartResult(AuthorizatorId,
-                                   AuthStartResultType.InvalidSessionId);
+                                   AuthStartResultType.InvalidSessionId,
+                                   SessionId,
+                                   Runtime: Runtime);
 
         #endregion
 
-        #region (static) Reserved(AuthorizatorId)
+        #region (static) Reserved            (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The EVSE is reserved.
         /// </summary>
-
-        public static AuthStartResult Reserved(IId AuthorizatorId)
+        public static AuthStartResult Reserved(IId                  AuthorizatorId,
+                                               ChargingSession_Id?  SessionId  = null,
+                                               TimeSpan?            Runtime    = null)
 
             => new AuthStartResult(AuthorizatorId,
-                                   AuthStartResultType.Reserved);
+                                   AuthStartResultType.Reserved,
+                                   SessionId,
+                                   Runtime: Runtime);
 
         #endregion
 
-        #region (static) OutOfService(AuthorizatorId)
+        #region (static) OutOfService        (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The EVSE or charging station is out of service.
         /// </summary>
-
-        public static AuthStartResult OutOfService(IId AuthorizatorId)
+        public static AuthStartResult OutOfService(IId                  AuthorizatorId,
+                                                   ChargingSession_Id?  SessionId  = null,
+                                                   TimeSpan?            Runtime    = null)
 
             => new AuthStartResult(AuthorizatorId,
-                                   AuthStartResultType.OutOfService);
+                                   AuthStartResultType.OutOfService,
+                                   SessionId,
+                                   Runtime: Runtime);
 
         #endregion
 
-        #region (static) Authorized   (AuthorizatorId, SessionId, ProviderId, Description = null, AdditionalInfo = null, Runtime = null, ListOfAuthStopTokens = null, ListOfAuthStopPINs = null)
+        #region (static) Authorized          (AuthorizatorId, SessionId = null, ListOfAuthStopTokens = null, ListOfAuthStopPINs = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The authorize start was successful.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
-        /// <param name="SessionId">The charging session identification for the authorize start operation.</param>
-        /// <param name="ProviderId">The unique identification of the ev service provider.</param>
-        /// <param name="Description">An optional description of the auth start result.</param>
-        /// <param name="AdditionalInfo">An optional additional message.</param>
-        /// <param name="Runtime">The run time of the request.</param>
+        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="MaxkW">The optional maximum allowed charging current.</param>
+        /// <param name="MaxkWh">The optional maximum allowed charging energy.</param>
+        /// <param name="MaxDuration">The optional maximum allowed charging duration.</param>
+        /// <param name="ChargingTariffs">Optional charging tariff information.</param>
         /// <param name="ListOfAuthStopTokens">An optional enumeration of authorize stop tokens.</param>
         /// <param name="ListOfAuthStopPINs">An optional enumeration of authorize stop PINs.</param>
+        /// 
+        /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
-            Authorized(IId                      AuthorizatorId,
-                       ChargingSession_Id       SessionId,
-                       eMobilityProvider_Id?    ProviderId            = null,
-                       String                   Description           = null,
-                       String                   AdditionalInfo        = null,
-                       TimeSpan?                Runtime               = null,
-                       IEnumerable<Auth_Token>  ListOfAuthStopTokens  = null,
-                       IEnumerable<UInt32>      ListOfAuthStopPINs    = null)
+            Authorized(IId                          AuthorizatorId,
+                       ChargingSession_Id?          SessionId              = null,
+                       Single?                      MaxkW                  = null,
+                       Single?                      MaxkWh                 = null,
+                       TimeSpan?                    MaxDuration            = null,
+                       IEnumerable<ChargingTariff>  ChargingTariffs        = null,
+                       IEnumerable<Auth_Token>      ListOfAuthStopTokens   = null,
+                       IEnumerable<UInt32>          ListOfAuthStopPINs     = null,
+
+                       eMobilityProvider_Id?        ProviderId             = null,
+                       String                       Description            = null,
+                       String                       AdditionalInfo         = null,
+                       TimeSpan?                    Runtime                = null)
 
 
-            => new AuthStartResult(AuthorizatorId,
-                                   SessionId,
-                                   ProviderId,
-                                   Description,
-                                   AdditionalInfo,
-                                   Runtime,
-                                   ListOfAuthStopTokens,
-                                   ListOfAuthStopPINs);
+                => new AuthStartResult(AuthorizatorId,
+                                       AuthStartResultType.Authorized,
+                                       SessionId,
+                                       MaxkW,
+                                       MaxkWh,
+                                       MaxDuration,
+                                       ChargingTariffs,
+                                       ListOfAuthStopTokens,
+                                       ListOfAuthStopPINs,
+
+                                       ProviderId,
+                                       Description,
+                                       AdditionalInfo,
+                                       Runtime);
 
         #endregion
 
-        #region (static) NotAuthorized(AuthorizatorId, ProviderId, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) NotAuthorized       (AuthorizatorId, SessionId = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The authorize start was not successful (e.g. ev customer is unkown).
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
-        /// <param name="ProviderId">The unique identification of the ev service provider.</param>
+        /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
-        /// <param name="Runtime">The run time of the request.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             NotAuthorized(IId                    AuthorizatorId,
-                          eMobilityProvider_Id?  ProviderId,
-                          String                 Description     = null,
-                          String                 AdditionalInfo  = null,
-                          TimeSpan?              Runtime         = null)
+                          ChargingSession_Id?    SessionId        = null,
+                          eMobilityProvider_Id?  ProviderId       = null,
+                          String                 Description      = null,
+                          String                 AdditionalInfo   = null,
+                          TimeSpan?              Runtime          = null)
 
 
-            => new AuthStartResult(AuthorizatorId,
-                                   AuthStartResultType.NotAuthorized,
-                                   ProviderId,
-                                   Description,
-                                   AdditionalInfo,
-                                   Runtime);
+                => new AuthStartResult(AuthorizatorId,
+                                       AuthStartResultType.NotAuthorized,
+                                       SessionId,
+                                       ProviderId:      ProviderId,
+                                       Description:     Description,
+                                       AdditionalInfo:  AdditionalInfo,
+                                       Runtime:         Runtime);
 
         #endregion
 
-        #region (static) Blocked      (AuthorizatorId, ProviderId, Description = null, AdditionalInfo = null, Runtime = null)
+        #region (static) Blocked             (AuthorizatorId, SessionId = null, ProviderId = null, Description = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The authorize start operation is not allowed (ev customer is blocked).
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
-        /// <param name="ProviderId">The unique identification of the ev service provider.</param>
+        /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
-        /// <param name="Runtime">The run time of the request.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
             Blocked(IId                    AuthorizatorId,
-                    eMobilityProvider_Id?  ProviderId,
-                    String                 Description     = null,
-                    String                 AdditionalInfo  = null,
-                    TimeSpan?              Runtime         = null)
+                    ChargingSession_Id?    SessionId        = null,
+                    eMobilityProvider_Id?  ProviderId       = null,
+                    String                 Description      = null,
+                    String                 AdditionalInfo   = null,
+                    TimeSpan?              Runtime          = null)
 
 
-            => new AuthStartResult(AuthorizatorId,
-                                   AuthStartResultType.Blocked,
-                                   ProviderId,
-                                   Description,
-                                   AdditionalInfo,
-                                   Runtime);
+                => new AuthStartResult(AuthorizatorId,
+                                       AuthStartResultType.Blocked,
+                                       SessionId,
+                                       ProviderId:      ProviderId,
+                                       Description:     Description,
+                                       AdditionalInfo:  AdditionalInfo,
+                                       Runtime:         Runtime);
 
         #endregion
 
-        #region (static) CommunicationTimeout(AuthorizatorId, Runtime)
+        #region (static) CommunicationTimeout(AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The authorize stop ran into a timeout between evse operator backend and charging station.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
-        /// <param name="Runtime">The run time of the request.</param>
-        public static AuthStartResult CommunicationTimeout(IId       AuthorizatorId,
-                                                           TimeSpan  Runtime)
+        /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStartResult CommunicationTimeout(IId                  AuthorizatorId,
+                                                           ChargingSession_Id?  SessionId  = null,
+                                                           TimeSpan?            Runtime    = null)
 
             => new AuthStartResult(AuthorizatorId,
                                    AuthStartResultType.CommunicationTimeout,
+                                   SessionId,
                                    Runtime: Runtime);
 
         #endregion
 
-        #region (static) StartChargingTimeout(AuthorizatorId, Runtime)
+        #region (static) StartChargingTimeout(AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
         /// The authorize stop ran into a timeout between charging station and ev.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
-        /// <param name="Runtime">The run time of the request.</param>
-        public static AuthStartResult StartChargingTimeout(IId       AuthorizatorId,
-                                                           TimeSpan  Runtime)
+        /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStartResult StartChargingTimeout(IId                  AuthorizatorId,
+                                                           ChargingSession_Id?  SessionId  = null,
+                                                           TimeSpan?            Runtime    = null)
 
             => new AuthStartResult(AuthorizatorId,
                                    AuthStartResultType.StartChargingTimeout,
+                                   SessionId,
                                    Runtime: Runtime);
 
         #endregion
 
-        #region (static) Error(AuthorizatorId, ErrorMessage = null, Runtime = null)
+        #region (static) Error               (AuthorizatorId, SessionId = null, ErrorMessage = null, Runtime = null)
 
         /// <summary>
         /// The authorize start operation led to an error.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
         /// <param name="ErrorMessage">An error message.</param>
-        /// <param name="Runtime">The run time of the request.</param>
-        public static AuthStartResult Error(IId        AuthorizatorId,
-                                            String     ErrorMessage  = null,
-                                            TimeSpan?  Runtime       = null)
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStartResult Error(IId                  AuthorizatorId,
+                                            ChargingSession_Id?  SessionId     = null,
+                                            String               ErrorMessage  = null,
+                                            TimeSpan?            Runtime       = null)
 
             => new AuthStartResult(AuthorizatorId,
-                                   ErrorMessage,
-                                   Runtime);
+                                   AuthStartResultType.Error,
+                                   SessionId,
+                                   Description:  ErrorMessage,
+                                   Runtime:      Runtime);
 
         #endregion
 
-
-        #region (override) ToString()
-
-        /// <summary>
-        /// Return a string representation of this object.
-        /// </summary>
-        public override String ToString()
-        {
-
-            if (ProviderId != null)
-                return String.Concat(Result.ToString(), ", ", ProviderId);
-
-            return String.Concat(Result.ToString());
-
-        }
-
-        #endregion
 
     }
 

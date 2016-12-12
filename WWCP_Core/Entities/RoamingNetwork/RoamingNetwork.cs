@@ -5308,6 +5308,7 @@ namespace org.GraphDefined.WWCP
 
             if (result == null)
                 result =  AuthStartResult.Error(Id,
+                                                SessionId,
                                                 "No authorization service returned a positiv result!");
 
             #endregion
@@ -5450,15 +5451,17 @@ namespace org.GraphDefined.WWCP
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the CDRecord was sent!
-                    RegisterExternalChargingSession(DateTime.Now,
-                                                    this,
-                                                    new ChargingSession(result.SessionId) {
-                                                        AuthService        = iRemoteAuthorizeStartStop,
-                                                        OperatorId         = OperatorId,
-                                                        EVSEId             = EVSEId,
-                                                        AuthTokenStart     = AuthToken,
-                                                        ChargingProductId  = ChargingProductId
-                                                    });
+
+                    if (result.SessionId.HasValue)
+                        RegisterExternalChargingSession(DateTime.Now,
+                                                        this,
+                                                        new ChargingSession(result.SessionId.Value) {
+                                                            AuthService        = iRemoteAuthorizeStartStop,
+                                                            OperatorId         = OperatorId,
+                                                            EVSEId             = EVSEId,
+                                                            AuthTokenStart     = AuthToken,
+                                                            ChargingProductId  = ChargingProductId
+                                                        });
 
                     break;
 
@@ -5478,8 +5481,11 @@ namespace org.GraphDefined.WWCP
             #region ...or fail!
 
             if (result == null)
-                result =  AuthStartEVSEResult.Error(Id,
-                                                    "No authorization service returned a positiv result!");
+                result =  AuthStartEVSEResult.Error(
+                              Id,
+                              SessionId,
+                              "No authorization service returned a positiv result!"
+                          );
 
             #endregion
 
@@ -5526,7 +5532,7 @@ namespace org.GraphDefined.WWCP
         /// Create an authorize start request at the given charging station.
         /// </summary>
         /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="ChargingStationId">The unique identification charging station.</param>
+        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
         /// <param name="ChargingProductId">An optional charging product identification.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
@@ -5649,8 +5655,11 @@ namespace org.GraphDefined.WWCP
             #region ...or fail!
 
             if (result == null)
-                result = AuthStartChargingStationResult.Error(Id,
-                                                              "No authorization service returned a positiv result!");
+                result = AuthStartChargingStationResult.Error(
+                             Id,
+                             SessionId,
+                             "No authorization service returned a positiv result!"
+                         );
 
             #endregion
 
@@ -5690,6 +5699,184 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+        #region AuthorizeStart(AuthToken, ChargingPoolId,    ChargingProductId = null, SessionId = null, OperatorId = null, ...)
+
+        /// <summary>
+        /// Create an authorize start request at the given charging station.
+        /// </summary>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
+        /// <param name="ChargingProductId">An optional charging product identification.</param>
+        /// <param name="SessionId">An optional session identification.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<AuthStartChargingPoolResult>
+
+            AuthorizeStart(Auth_Token                   AuthToken,
+                           ChargingPool_Id              ChargingPoolId,
+                           ChargingProduct_Id?          ChargingProductId   = null,
+                           ChargingSession_Id?          SessionId           = null,
+                           ChargingStationOperator_Id?  OperatorId          = null,
+
+                           DateTime?                    Timestamp           = null,
+                           CancellationToken?           CancellationToken   = null,
+                           EventTracking_Id             EventTrackingId     = null,
+                           TimeSpan?                    RequestTimeout      = null)
+
+        {
+
+            #region Initial checks
+
+            if (AuthToken == null)
+                throw new ArgumentNullException(nameof(AuthToken), "The given authentication token must not be null!");
+
+
+            if (!Timestamp.HasValue)
+                Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
+            if (EventTrackingId == null)
+                EventTrackingId = EventTracking_Id.New;
+
+
+            AuthStartChargingPoolResult result = null;
+
+            #endregion
+
+            #region Send OnAuthorizeChargingPoolStartRequest event
+
+            var StartTime = DateTime.Now;
+
+            try
+            {
+
+                OnAuthorizeChargingPoolStartRequest?.Invoke(DateTime.Now,
+                                                            Timestamp.Value,
+                                                            this,
+                                                            EventTrackingId,
+                                                            Id,
+                                                            OperatorId,
+                                                            AuthToken,
+                                                            ChargingPoolId,
+                                                            ChargingProductId,
+                                                            SessionId,
+                                                            RequestTimeout);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeChargingPoolStartRequest));
+            }
+
+            #endregion
+
+
+            foreach (var iRemoteAuthorizeStartStop in _IRemoteAuthorizeStartStop.
+                                                          OrderBy(kvp => kvp.Key).
+                                                          Select(kvp => kvp.Value))
+            {
+
+                result = await iRemoteAuthorizeStartStop.AuthorizeStart(AuthToken,
+                                                                        ChargingPoolId,
+                                                                        ChargingProductId,
+                                                                        SessionId,
+                                                                        OperatorId,
+
+                                                                        Timestamp,
+                                                                        CancellationToken,
+                                                                        EventTrackingId,
+                                                                        RequestTimeout);
+
+
+                #region Authorized
+
+                if (result.Result == AuthStartChargingPoolResultType.Authorized)
+                {
+
+                    // Store the upstream session id in order to contact the right authenticator at later requests!
+                    // Will be deleted when the CDRecord was sent!
+                    //_ChargingSessions.TryAdd(result.SessionId,
+                    //                         new ChargingSession(result.SessionId) {
+                    //                             OperatorRoamingService  = OperatorRoamingService,
+                    //                             csoId          = OperatorId,
+                    //                             ChargingStationId       = ChargingStationId,
+                    //                             AuthToken               = AuthToken,
+                    //                             ChargingProductId       = ChargingProductId
+                    //                         });
+
+                    break;
+
+                }
+
+                #endregion
+
+                #region Blocked
+
+                else if (result.Result == AuthStartChargingPoolResultType.Blocked)
+                    break;
+
+                #endregion
+
+            }
+
+            #region ...or fail!
+
+            if (result == null)
+                result = AuthStartChargingPoolResult.Error(
+                             Id,
+                             SessionId,
+                             "No authorization service returned a positiv result!"
+                         );
+
+            #endregion
+
+
+            var Endtime = DateTime.Now;
+            var Runtime = Endtime - StartTime;
+
+            #region Send OnAuthorizeChargingPoolStartResponse event
+
+            try
+            {
+
+                OnAuthorizeChargingPoolStartResponse?.Invoke(DateTime.Now,
+                                                             Timestamp.Value,
+                                                             this,
+                                                             EventTrackingId,
+                                                             Id,
+                                                             OperatorId,
+                                                             AuthToken,
+                                                             ChargingPoolId,
+                                                             ChargingProductId,
+                                                             SessionId,
+                                                             RequestTimeout,
+                                                             result,
+                                                             Runtime);
+
+            }
+            catch (Exception e)
+            {
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnAuthorizeChargingPoolStartResponse));
+            }
+
+            #endregion
+
+            return result;
+
+        }
+
+        #endregion
+
+        // AuthorizeStart(AuthToken, EVSEGroupId,            ...
+        // AuthorizeStart(AuthToken, ChargingStationGroupId, ...
+        // AuthorizeStart(AuthToken, ChargingPoolGroupId,    ...
 
 
         #region OnAuthorizeStartRequest/-Response
@@ -5731,6 +5918,20 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever an authorize start charging station command completed.
         /// </summary>
         public event OnAuthorizeChargingStationStartResponseDelegate  OnAuthorizeChargingStationStartResponse;
+
+        #endregion
+
+        #region OnAuthorizeChargingPoolStartRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever an authorize start charging pool command was received.
+        /// </summary>
+        public event OnAuthorizeChargingPoolStartRequestDelegate OnAuthorizeChargingPoolStartRequest;
+
+        /// <summary>
+        /// An event fired whenever an authorize start charging pool command completed.
+        /// </summary>
+        public event OnAuthorizeChargingPoolStartResponseDelegate OnAuthorizeChargingPoolStartResponse;
 
         #endregion
 
@@ -5830,7 +6031,7 @@ namespace org.GraphDefined.WWCP
 
             #region Try to find anyone who might kown anything about the given SessionId!
 
-            if (result == null || result.AuthorizationResult != AuthStopResultType.Authorized)
+            if (result == null || result.Result != AuthStopResultType.Authorized)
                 foreach (var iRemoteAuthorizeStartStop in _IRemoteAuthorizeStartStop.
                                                           OrderBy(kvp => kvp.Key).
                                                           Select(kvp => kvp.Value))
@@ -5845,7 +6046,7 @@ namespace org.GraphDefined.WWCP
                                                                            EventTrackingId,
                                                                            RequestTimeout);
 
-                    if (result.AuthorizationResult == AuthStopResultType.Authorized)
+                    if (result.Result == AuthStopResultType.Authorized)
                         break;
 
                 }
@@ -5855,8 +6056,11 @@ namespace org.GraphDefined.WWCP
             #region ...or fail!
 
             if (result == null)
-                result = AuthStopResult.Error(Id,
-                                              "No authorization service returned a positiv result!");
+                result = AuthStopResult.Error(
+                             Id,
+                             SessionId,
+                             "No authorization service returned a positiv result!"
+                         );
 
             #endregion
 
@@ -6029,8 +6233,11 @@ namespace org.GraphDefined.WWCP
             #region ...or fail!
 
             if (result == null)
-                result = AuthStopEVSEResult.Error(Id,
-                                                  "No authorization service returned a positiv result!");
+                result = AuthStopEVSEResult.Error(
+                             Id,
+                             SessionId,
+                             "No authorization service returned a positiv result!"
+                         );
 
             #endregion
 
@@ -6181,7 +6388,7 @@ namespace org.GraphDefined.WWCP
 
             #region Try to find anyone who might kown anything about the given SessionId!
 
-            if (result == null || result.AuthorizationResult != AuthStopChargingStationResultType.Authorized)
+            if (result == null || result.Result != AuthStopChargingStationResultType.Authorized)
                 foreach (var iRemoteAuthorizeStartStop in _IRemoteAuthorizeStartStop.
                                                           OrderBy(kvp => kvp.Key).
                                                           Select (kvp => kvp.Value))
@@ -6197,7 +6404,7 @@ namespace org.GraphDefined.WWCP
                                                                            EventTrackingId,
                                                                            RequestTimeout);
 
-                    if (result.AuthorizationResult == AuthStopChargingStationResultType.Authorized)
+                    if (result.Result == AuthStopChargingStationResultType.Authorized)
                         break;
 
                 }
@@ -6207,8 +6414,11 @@ namespace org.GraphDefined.WWCP
             #region ...or fail!
 
             if (result == null)
-                result = AuthStopChargingStationResult.Error(Id,
-                                                             "No authorization service returned a positiv result!");
+                result = AuthStopChargingStationResult.Error(
+                             Id,
+                             SessionId,
+                             "No authorization service returned a positiv result!"
+                         );
 
             #endregion
 

@@ -70,7 +70,7 @@ namespace org.GraphDefined.WWCP
             => ToFormat(Format);
 
         /// <summary>
-        /// Returns the length of the identificator.
+        /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
             => (UInt64) (CountryCode.Alpha2Code.Length + OperatorId.Length);
@@ -507,7 +507,7 @@ namespace org.GraphDefined.WWCP
             if (_Result == 0)
                 _Result = CountryCode.CompareTo(EVSEOperator_Id.CountryCode);
 
-            // If equal: Compare OperatorIds
+            // If equal: Compare charging operator identifications
             if (_Result == 0)
                 _Result = OperatorId.CompareTo(EVSEOperator_Id.OperatorId);
 

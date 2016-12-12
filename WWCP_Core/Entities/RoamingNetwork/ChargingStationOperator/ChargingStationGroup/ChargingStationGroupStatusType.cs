@@ -19,38 +19,39 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The current status of a charging station.
+    /// The status of a charging station group.
     /// </summary>
-    public enum ChargingStationStatusTypes
+    public enum ChargingStationGroupStatusType
     {
 
         /// <summary>
-        /// Unclear or unknown status of the charging station.
+        /// Unclear or unknown status of the charging station group.
         /// </summary>
         Unknown             = 0,
 
+
         /// <summary>
-        /// The charging station is planned for the future.
+        /// The charging station group is planned for the future.
         /// </summary>
         Planned             = 1,
 
         /// <summary>
-        /// The charging station is currently in deployment, but not fully operational yet.
+        /// The charging station group is currently in deployment, but not fully operational yet.
         /// </summary>
         InDeployment        = 2,
 
         /// <summary>
-        /// The charging station is not ready for charging because it is under maintenance.
+        /// The charging station group is not ready for charging because it is under maintenance.
         /// </summary>
         OutOfService        = 3,
 
         /// <summary>
-        /// Currently no communication with the charging station possible, but charging in offline mode might be available.
+        /// Currently no communication with the charging station group possible, but charging in offline mode might be available.
         /// </summary>
         Offline             = 4,
 
         /// <summary>
-        /// The entire charging station is ready to charge.
+        /// The entire charging station group is ready to charge.
         /// </summary>
         Available           = 5,
 
@@ -60,17 +61,17 @@ namespace org.GraphDefined.WWCP
         PartialAvailable    = 6,
 
         /// <summary>
-        /// The entire charging station was reserved by an ev customer.
+        /// The entire charging station group was reserved by an ev customer.
         /// </summary>
         Reserved            = 7,
 
         /// <summary>
-        /// The entire charging station is charging. Currently no additional charging sessions are possible.
+        /// The entire charging station group is charging. Currently no additional charging sessions are possible.
         /// </summary>
         Charging            = 8,
 
         /// <summary>
-        /// An error has occured in the charging station.
+        /// An error has occured in the charging station group.
         /// </summary>
         Faulted             = 9,
 
@@ -79,11 +80,12 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         Other               = 10,
 
+
         /// <summary>
-        /// The charging station was not found!
+        /// The charging station group was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownStation      = 11
+        UnknownGroup        = 11
 
     }
 

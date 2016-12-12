@@ -280,7 +280,7 @@ namespace org.GraphDefined.WWCP
             // Compare CountryIds
             var _Result = Hour.CompareTo(HourMin.Hour);
 
-            // If equal: Compare OperatorIds
+            // If equal: Compare charging operator identifications
             if (_Result == 0)
                 _Result = Minute.CompareTo(HourMin.Minute);
 

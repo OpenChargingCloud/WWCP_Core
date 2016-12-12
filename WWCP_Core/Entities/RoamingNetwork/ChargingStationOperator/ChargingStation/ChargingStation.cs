@@ -197,7 +197,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (_Brand != value)
-                    SetProperty<Brand>(ref _Brand, value);
+                    SetProperty(ref _Brand, value);
 
             }
 
@@ -3246,6 +3246,46 @@ namespace org.GraphDefined.WWCP
                 _ParkingSpaces.AddRange(ParkingSpaces);
 
         }
+
+
+
+        #region MergeWith(OtherChargingStation)
+
+        /// <summary>
+        /// Merge this charging pool with the data of the other charging station.
+        /// </summary>
+        /// <param name="OtherChargingStation">Another charging station.</param>
+        public ChargingStation MergeWith(ChargingStation OtherChargingStation)
+        {
+
+            Name                 = OtherChargingStation.Name;
+            Description          = OtherChargingStation.Description;
+            Brand                = OtherChargingStation.Brand;
+            HotlinePhoneNumber   = OtherChargingStation.HotlinePhoneNumber;
+
+            Address              = OtherChargingStation.Address;
+            GeoLocation          = OtherChargingStation.GeoLocation;
+            EntranceAddress      = OtherChargingStation.EntranceAddress;
+            EntranceLocation     = OtherChargingStation.EntranceLocation;
+//            ArrivalInstructions  = OtherChargingStation.ArrivalInstructions;
+            OpeningTimes         = OtherChargingStation.OpeningTimes;
+            ExitAddress          = OtherChargingStation.ExitAddress;
+            ExitLocation         = OtherChargingStation.ExitLocation;
+
+            AuthenticationModes  = OtherChargingStation.AuthenticationModes;
+            PaymentOptions       = OtherChargingStation.PaymentOptions;
+            Accessibility        = OtherChargingStation.Accessibility;
+
+//            PoolOwner            = OtherChargingStation.PoolOwner;
+//            LocationOwner        = OtherChargingStation.LocationOwner;
+            PhotoURIs            = OtherChargingStation.PhotoURIs;
+
+            return this;
+
+        }
+
+        #endregion
+
 
 
         #region IComparable<ChargingStation> Members

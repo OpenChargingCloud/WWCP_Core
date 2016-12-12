@@ -58,7 +58,7 @@ namespace org.GraphDefined.WWCP
         public String  Suffix       { get; }
 
         /// <summary>
-        /// Returns the length of the identificator.
+        /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
             => 2 + 2 + (UInt64) Suffix.Length;

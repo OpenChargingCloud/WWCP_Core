@@ -184,7 +184,7 @@ namespace org.GraphDefined.WWCP
         public ChargingPool_Id?       ChargingPoolId      { get; }
 
         [Optional]
-        public ChargingStation_Id     ChargingStationId   { get; }
+        public ChargingStation_Id?    ChargingStationId   { get; }
 
         [Optional]
         public EVSE_Id?               EVSEId              { get; }
@@ -281,7 +281,7 @@ namespace org.GraphDefined.WWCP
 
                                    RoamingNetwork                    RoamingNetwork      = null,
                                    ChargingPool_Id?                  ChargingPoolId      = null,
-                                   ChargingStation_Id                ChargingStationId   = null,
+                                   ChargingStation_Id?               ChargingStationId   = null,
                                    EVSE_Id?                          EVSEId              = null,
                                    ChargingProduct_Id?               ChargingProductId   = null,
 

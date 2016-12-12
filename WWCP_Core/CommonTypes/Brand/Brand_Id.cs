@@ -47,7 +47,7 @@ namespace org.GraphDefined.WWCP
         #region Length
 
         /// <summary>
-        /// Returns the length of the identificator.
+        /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
         {

@@ -97,7 +97,7 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this._Name              = new I18NString(Languages.en, Id.ToString());
+            this._Name              = new I18NString(Languages.eng, Id.ToString());
 
             #endregion
 

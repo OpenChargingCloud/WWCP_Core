@@ -125,28 +125,28 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region BrandName
+        #region Brand
 
-        private I18NString _BrandName;
+        private Brand _Brand;
 
         /// <summary>
         /// A (multi-language) brand name for this charging pool
         /// is this is different from the Charging Station Operator.
         /// </summary>
         [Optional]
-        public I18NString BrandName
+        public Brand Brand
         {
 
             get
             {
-                return _BrandName;
+                return _Brand;
             }
 
             set
             {
 
-                if (_BrandName != value)
-                    SetProperty(ref _BrandName, value);
+                if (_Brand != value)
+                    SetProperty(ref _Brand, value);
 
             }
 
@@ -838,7 +838,6 @@ namespace org.GraphDefined.WWCP
 
             this._LocationLanguage           = Languages.unknown;
             this._Name                       = new I18NString();
-            this._BrandName                  = new I18NString();
             this._Description                = new I18NString();
             this._Address                    = new Address();
             this._EntranceAddress            = new Address();
@@ -1153,7 +1152,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CreateChargingStation(ChargingStationId = null, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateChargingStation        (ChargingStationId = null, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging station having the given
@@ -1163,11 +1162,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
-        public ChargingStation CreateChargingStation(ChargingStation_Id                        ChargingStationId             = null,
+        public ChargingStation CreateChargingStation(ChargingStation_Id?                       ChargingStationId             = null,
                                                      Action<ChargingStation>                   Configurator                  = null,
                                                      RemoteChargingStationCreatorDelegate      RemoteChargingStationCreator  = null,
-                                                     ChargingStationAdminStatusTypes            AdminStatus                   = ChargingStationAdminStatusTypes.Operational,
-                                                     ChargingStationStatusTypes                 Status                        = ChargingStationStatusTypes.Available,
+                                                     ChargingStationAdminStatusTypes           AdminStatus                   = ChargingStationAdminStatusTypes.Operational,
+                                                     ChargingStationStatusTypes                Status                        = ChargingStationStatusTypes.Available,
                                                      Action<ChargingStation>                   OnSuccess                     = null,
                                                      Action<ChargingPool, ChargingStation_Id>  OnError                       = null)
         {
@@ -1177,22 +1176,22 @@ namespace org.GraphDefined.WWCP
             if (ChargingStationId == null)
                 throw new ArgumentNullException(nameof(ChargingStationId), "The given charging station identification must not be null!");
 
-            if (_ChargingStations.ContainsId(ChargingStationId))
+            if (_ChargingStations.ContainsId(ChargingStationId.Value))
             {
                 if (OnError == null)
-                    throw new ChargingStationAlreadyExistsInPool(this, ChargingStationId);
+                    throw new ChargingStationAlreadyExistsInPool(this, ChargingStationId.Value);
                 else
-                    OnError?.Invoke(this, ChargingStationId);
+                    OnError?.Invoke(this, ChargingStationId.Value);
             }
 
-            if (!this.Operator.Ids.Contains(ChargingStationId.OperatorId))
+            if (!Operator.Ids.Contains(ChargingStationId.Value.OperatorId))
                 throw new InvalidChargingStationOperatorId(this,
-                                                           ChargingStationId.OperatorId,
+                                                           ChargingStationId.Value.OperatorId,
                                                            this.Operator.Ids);
 
             #endregion
 
-            var _ChargingStation = new ChargingStation(ChargingStationId,
+            var _ChargingStation = new ChargingStation(ChargingStationId.Value,
                                                        this,
                                                        Configurator,
                                                        RemoteChargingStationCreator,
@@ -1263,10 +1262,67 @@ namespace org.GraphDefined.WWCP
             Debug.WriteLine("ChargingStation '" + ChargingStationId + "' could not be created!");
 
             if (OnError == null)
-                throw new ChargingStationCouldNotBeCreated(this, ChargingStationId);
+                throw new ChargingStationCouldNotBeCreated(this, ChargingStationId.Value);
 
-            OnError?.Invoke(this, ChargingStationId);
+            OnError?.Invoke(this, ChargingStationId.Value);
             return null;
+
+        }
+
+        #endregion
+
+        #region CreateOrUpdateChargingStation(ChargingStationId,        Configurator = null, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create and register a new charging station having the given
+        /// unique charging station identification.
+        /// </summary>
+        /// <param name="ChargingStationId">The unique identification of the new charging station.</param>
+        /// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
+        public ChargingStation CreateOrUpdateChargingStation(ChargingStation_Id                        ChargingStationId,
+                                                             Action<ChargingStation>                   Configurator                  = null,
+                                                             RemoteChargingStationCreatorDelegate      RemoteChargingStationCreator  = null,
+                                                             ChargingStationAdminStatusTypes           AdminStatus                   = ChargingStationAdminStatusTypes.Operational,
+                                                             ChargingStationStatusTypes                Status                        = ChargingStationStatusTypes.Available,
+                                                             Action<ChargingStation>                   OnSuccess                     = null,
+                                                             Action<ChargingPool, ChargingStation_Id>  OnError                       = null)
+        {
+
+            #region Initial checks
+
+            if (!Operator.Ids.Contains(ChargingStationId.OperatorId))
+                throw new InvalidChargingStationOperatorId(this,
+                                                           ChargingStationId.OperatorId,
+                                                           Operator.Ids);
+
+            #endregion
+
+            #region If the charging pool identification is new/unknown: Call CreateChargingPool(...)
+
+            if (!_ChargingStations.ContainsId(ChargingStationId))
+                return CreateChargingStation(ChargingStationId,
+                                             Configurator,
+                                             RemoteChargingStationCreator,
+                                             AdminStatus,
+                                             Status,
+                                             OnSuccess,
+                                             OnError);
+
+            #endregion
+
+
+            // Merge existing charging pool with new pool data...
+
+            return _ChargingStations.
+                       GetById(ChargingStationId).
+                       MergeWith(new ChargingStation(ChargingStationId,
+                                                     this,
+                                                     Configurator,
+                                                     RemoteChargingStationCreator,
+                                                     AdminStatus,
+                                                     Status));
 
         }
 
@@ -3268,35 +3324,43 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        public ChargingPool MergeWith(ChargingPool NewChargingPool)
+        #region MergeWith(OtherChargingPool)
+
+        /// <summary>
+        /// Merge this charging pool with the data of the other charging pool.
+        /// </summary>
+        /// <param name="OtherChargingPool">Another charging pool.</param>
+        public ChargingPool MergeWith(ChargingPool OtherChargingPool)
         {
 
-            Name                 = NewChargingPool.Name;
-            Description          = NewChargingPool.Description;
-            BrandName            = NewChargingPool.BrandName;
-            LocationLanguage     = NewChargingPool.LocationLanguage;
-            HotlinePhoneNumber   = NewChargingPool.HotlinePhoneNumber;
+            Name                 = OtherChargingPool.Name;
+            Description          = OtherChargingPool.Description;
+            Brand                = OtherChargingPool.Brand;
+            LocationLanguage     = OtherChargingPool.LocationLanguage;
+            HotlinePhoneNumber   = OtherChargingPool.HotlinePhoneNumber;
 
-            Address              = NewChargingPool.Address;
-            GeoLocation          = NewChargingPool.GeoLocation;
-            EntranceAddress      = NewChargingPool.EntranceAddress;
-            EntranceLocation     = NewChargingPool.EntranceLocation;
-            ArrivalInstructions  = NewChargingPool.ArrivalInstructions;
-            OpeningTimes         = NewChargingPool.OpeningTimes;
-            ExitAddress          = NewChargingPool.ExitAddress;
-            ExitLocation         = NewChargingPool.ExitLocation;
+            Address              = OtherChargingPool.Address;
+            GeoLocation          = OtherChargingPool.GeoLocation;
+            EntranceAddress      = OtherChargingPool.EntranceAddress;
+            EntranceLocation     = OtherChargingPool.EntranceLocation;
+            ArrivalInstructions  = OtherChargingPool.ArrivalInstructions;
+            OpeningTimes         = OtherChargingPool.OpeningTimes;
+            ExitAddress          = OtherChargingPool.ExitAddress;
+            ExitLocation         = OtherChargingPool.ExitLocation;
 
-            AuthenticationModes  = NewChargingPool.AuthenticationModes;
-            PaymentOptions       = NewChargingPool.PaymentOptions;
-            Accessibility        = NewChargingPool.Accessibility;
+            AuthenticationModes  = OtherChargingPool.AuthenticationModes;
+            PaymentOptions       = OtherChargingPool.PaymentOptions;
+            Accessibility        = OtherChargingPool.Accessibility;
 
-            PoolOwner            = NewChargingPool.PoolOwner;
-            LocationOwner        = NewChargingPool.LocationOwner;
-            PhotoURIs            = NewChargingPool.PhotoURIs;
+            PoolOwner            = OtherChargingPool.PoolOwner;
+            LocationOwner        = OtherChargingPool.LocationOwner;
+            PhotoURIs            = OtherChargingPool.PhotoURIs;
 
             return this;
 
         }
+
+        #endregion
 
 
         #region IComparable<ChargingPool> Members

@@ -360,7 +360,7 @@ namespace org.GraphDefined.WWCP.Importer
                                                 OrderBy(KVP => KVP.Key).
                                                 ForEach(StationConfig => {
 
-                                                    ChargingStation_Id ChargingStationId = null;
+                                                    ChargingStation_Id ChargingStationId;
 
                                                     if (ChargingStation_Id.TryParse(StationConfig.Key, out ChargingStationId))
                                                     {
@@ -408,7 +408,8 @@ namespace org.GraphDefined.WWCP.Importer
                                                                 foreach (var GroupId in GroupList)
                                                                 {
                                                                     CurrentEVSEOperator.
-                                                                        GetOrCreateChargingStationGroup(ChargingStationGroup_Id.Parse(CurrentEVSEOperator.Id, GroupId)).
+                                                                        GetOrCreateChargingStationGroup(GroupId,
+                                                                                                        I18NString.Create(Languages.deu, GroupId)).
                                                                         Add(ChargingStationId);
                                                                 }
                                                             }

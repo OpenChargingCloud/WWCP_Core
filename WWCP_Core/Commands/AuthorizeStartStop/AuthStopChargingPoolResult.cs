@@ -25,9 +25,9 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The result of a authorize stop operation at a charging station.
+    /// The result of a authorize stop operation at a charging pool.
     /// </summary>
-    public class AuthStopChargingStationResult : AAuthStopResult<AuthStopChargingStationResultType>
+    public class AuthStopChargingPoolResult : AAuthStopResult<AuthStopChargingPoolResultType>
     {
 
         #region Constructor(s)
@@ -43,8 +43,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private AuthStopChargingStationResult(IId                                AuthorizatorId,
-                                              AuthStopChargingStationResultType  Result,
+        private AuthStopChargingPoolResult(IId                                AuthorizatorId,
+                                              AuthStopChargingPoolResultType  Result,
                                               ChargingSession_Id?                SessionId        = null,
 
                                               eMobilityProvider_Id?              ProviderId       = null,
@@ -73,14 +73,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult Unspecified(IId                  AuthorizatorId,
-                                                                ChargingSession_Id?  SessionId  = null,
-                                                                TimeSpan?            Runtime    = null)
+        public static AuthStopChargingPoolResult Unspecified(IId                  AuthorizatorId,
+                                                             ChargingSession_Id?  SessionId  = null,
+                                                             TimeSpan?            Runtime    = null)
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.Unspecified,
-                                                 SessionId,
-                                                 Runtime: Runtime);
+            => new AuthStopChargingPoolResult(AuthorizatorId,
+                                              AuthStopChargingPoolResultType.Unspecified,
+                                              SessionId,
+                                              Runtime: Runtime);
 
         #endregion
 
@@ -92,14 +92,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult InvalidSessionId(IId                  AuthorizatorId,
-                                                                     ChargingSession_Id?  SessionId  = null,
-                                                                     TimeSpan?            Runtime    = null)
+        public static AuthStopChargingPoolResult InvalidSessionId(IId                  AuthorizatorId,
+                                                                  ChargingSession_Id?  SessionId  = null,
+                                                                  TimeSpan?            Runtime    = null)
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.InvalidSessionId,
-                                                 SessionId,
-                                                 Runtime: Runtime);
+            => new AuthStopChargingPoolResult(AuthorizatorId,
+                                              AuthStopChargingPoolResultType.InvalidSessionId,
+                                              SessionId,
+                                              Runtime: Runtime);
 
         #endregion
 
@@ -111,14 +111,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult OutOfService(IId                  AuthorizatorId,
-                                                                 ChargingSession_Id?  SessionId  = null,
-                                                                 TimeSpan?            Runtime    = null)
+        public static AuthStopChargingPoolResult OutOfService(IId                  AuthorizatorId,
+                                                              ChargingSession_Id?  SessionId  = null,
+                                                              TimeSpan?            Runtime    = null)
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.OutOfService,
-                                                 SessionId,
-                                                 Runtime: Runtime);
+            => new AuthStopChargingPoolResult(AuthorizatorId,
+                                              AuthStopChargingPoolResultType.OutOfService,
+                                              SessionId,
+                                              Runtime: Runtime);
 
         #endregion
 
@@ -133,20 +133,20 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult Authorized(IId                    AuthorizatorId,
-                                                               ChargingSession_Id?    SessionId        = null,
-                                                               eMobilityProvider_Id?  ProviderId       = null,
-                                                               String                 Description      = null,
-                                                               String                 AdditionalInfo   = null,
-                                                               TimeSpan?              Runtime          = null)
+        public static AuthStopChargingPoolResult Authorized(IId                    AuthorizatorId,
+                                                            ChargingSession_Id?    SessionId        = null,
+                                                            eMobilityProvider_Id?  ProviderId       = null,
+                                                            String                 Description      = null,
+                                                            String                 AdditionalInfo   = null,
+                                                            TimeSpan?              Runtime          = null)
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.Authorized,
-                                                 SessionId,
-                                                 ProviderId,
-                                                 Description,
-                                                 AdditionalInfo,
-                                                 Runtime: Runtime);
+            => new AuthStopChargingPoolResult(AuthorizatorId,
+                                              AuthStopChargingPoolResultType.Authorized,
+                                              SessionId,
+                                              ProviderId,
+                                              Description,
+                                              AdditionalInfo,
+                                              Runtime: Runtime);
 
         #endregion
 
@@ -161,20 +161,20 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult NotAuthorized(IId                    AuthorizatorId,
-                                                                  ChargingSession_Id?    SessionId        = null,
-                                                                  eMobilityProvider_Id?  ProviderId       = null,
-                                                                  String                 Description      = null,
-                                                                  String                 AdditionalInfo   = null,
-                                                                  TimeSpan?              Runtime          = null)
+        public static AuthStopChargingPoolResult NotAuthorized(IId                    AuthorizatorId,
+                                                               ChargingSession_Id?    SessionId        = null,
+                                                               eMobilityProvider_Id?  ProviderId       = null,
+                                                               String                 Description      = null,
+                                                               String                 AdditionalInfo   = null,
+                                                               TimeSpan?              Runtime          = null)
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.NotAuthorized,
-                                                 SessionId,
-                                                 ProviderId,
-                                                 Description,
-                                                 AdditionalInfo,
-                                                 Runtime: Runtime);
+            => new AuthStopChargingPoolResult(AuthorizatorId,
+                                              AuthStopChargingPoolResultType.NotAuthorized,
+                                              SessionId,
+                                              ProviderId,
+                                              Description,
+                                              AdditionalInfo,
+                                              Runtime: Runtime);
 
         #endregion
 
@@ -189,20 +189,20 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult Blocked(IId                    AuthorizatorId,
-                                                            ChargingSession_Id?    SessionId        = null,
-                                                            eMobilityProvider_Id?  ProviderId       = null,
-                                                            String                 Description      = null,
-                                                            String                 AdditionalInfo   = null,
-                                                            TimeSpan?              Runtime          = null)
+        public static AuthStopChargingPoolResult Blocked(IId                    AuthorizatorId,
+                                                         ChargingSession_Id?    SessionId        = null,
+                                                         eMobilityProvider_Id?  ProviderId       = null,
+                                                         String                 Description      = null,
+                                                         String                 AdditionalInfo   = null,
+                                                         TimeSpan?              Runtime          = null)
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.Blocked,
-                                                 SessionId,
-                                                 ProviderId,
-                                                 Description,
-                                                 AdditionalInfo,
-                                                 Runtime: Runtime);
+            => new AuthStopChargingPoolResult(AuthorizatorId,
+                                              AuthStopChargingPoolResultType.Blocked,
+                                              SessionId,
+                                              ProviderId,
+                                              Description,
+                                              AdditionalInfo,
+                                              Runtime: Runtime);
 
         #endregion
 
@@ -214,14 +214,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult CommunicationTimeout(IId                  AuthorizatorId,
-                                                                         ChargingSession_Id?  SessionId  = null,
-                                                                         TimeSpan?            Runtime    = null)
+        public static AuthStopChargingPoolResult CommunicationTimeout(IId                  AuthorizatorId,
+                                                                      ChargingSession_Id?  SessionId  = null,
+                                                                      TimeSpan?            Runtime    = null)
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.CommunicationTimeout,
-                                                 SessionId,
-                                                 Runtime: Runtime);
+            => new AuthStopChargingPoolResult(AuthorizatorId,
+                                              AuthStopChargingPoolResultType.CommunicationTimeout,
+                                              SessionId,
+                                              Runtime: Runtime);
 
         #endregion
 
@@ -233,14 +233,14 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult StartChargingTimeout(IId                  AuthorizatorId,
-                                                                         ChargingSession_Id?  SessionId  = null,
-                                                                         TimeSpan?            Runtime    = null)
+        public static AuthStopChargingPoolResult StartChargingTimeout(IId                  AuthorizatorId,
+                                                                      ChargingSession_Id?  SessionId  = null,
+                                                                      TimeSpan?            Runtime    = null)
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.StopChargingTimeout,
-                                                 SessionId,
-                                                 Runtime: Runtime);
+            => new AuthStopChargingPoolResult(AuthorizatorId,
+                                              AuthStopChargingPoolResultType.StopChargingTimeout,
+                                              SessionId,
+                                              Runtime: Runtime);
 
         #endregion
 
@@ -253,16 +253,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="ErrorMessage">An error message.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult Error(IId                  AuthorizatorId,
-                                                          ChargingSession_Id?  SessionId     = null,
-                                                          String               ErrorMessage  = null,
-                                                          TimeSpan?            Runtime       = null)
+        public static AuthStopChargingPoolResult Error(IId                  AuthorizatorId,
+                                                       ChargingSession_Id?  SessionId     = null,
+                                                       String               ErrorMessage  = null,
+                                                       TimeSpan?            Runtime       = null)
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.Error,
-                                                 SessionId,
-                                                 Description: ErrorMessage,
-                                                 Runtime:     Runtime);
+            => new AuthStopChargingPoolResult(AuthorizatorId,
+                                              AuthStopChargingPoolResultType.Error,
+                                              SessionId,
+                                              Description: ErrorMessage,
+                                              Runtime:     Runtime);
 
         #endregion
 
@@ -270,9 +270,9 @@ namespace org.GraphDefined.WWCP
     }
 
     /// <summary>
-    /// The result of a authorize stop operation at a charging station.
+    /// The result of a authorize stop operation at a charging pool.
     /// </summary>
-    public enum AuthStopChargingStationResultType
+    public enum AuthStopChargingPoolResultType
     {
 
         /// <summary>

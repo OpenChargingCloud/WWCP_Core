@@ -20,9 +20,9 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Text.RegularExpressions;
 
 #endregion
 
@@ -30,142 +30,66 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The unique identification of an Electric Vehicle Charging Station (EVCS Id).
+    /// The unique identification of an electric vehicle charging station (EVCS).
     /// </summary>
-    public class ChargingStation_Id : IId,
-                                      IEquatable<ChargingStation_Id>,
-                                      IComparable<ChargingStation_Id>
+    public struct ChargingStation_Id : IId,
+                                       IEquatable<ChargingStation_Id>,
+                                       IComparable<ChargingStation_Id>
 
     {
 
         #region Data
 
         //ToDo: Replace with better randomness!
-        private static readonly Random _Random = new Random(DateTime.Now.Millisecond);
+        private static readonly Random _Random                  = new Random(DateTime.Now.Millisecond);
 
         /// <summary>
         /// The regular expression for parsing a charging station identification.
         /// </summary>
-        public    const    String  ChargingStationId_RegEx  = @"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?S([A-Z0-9][A-Z0-9\*]{0,30})$ | ^(\+?[0-9]{1,3}\*?[0-9]{3})\*?S([A-Z0-9][A-Z0-9\*]{0,30}) | " +
-                                                              @"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?([A-Z0-9][A-Z0-9\*]{0,30})$ | ^(\+?[0-9]{1,3}\*?[0-9]{3})\*?([A-Z0-9][A-Z0-9\*]{0,30})$";
-
-        /// <summary>
-        /// The regular expression for parsing a charging station identification.
-        /// </summary>
-        public    const    String  IdSuffix_RegEx           = @"^[A-Z0-9][A-Z0-9\*]{0,30}$";
+        public  static readonly Regex  ChargingStationId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?S([A-Z0-9][A-Z0-9\*]{0,30})$",
+                                                                            RegexOptions.IgnorePatternWhitespace);
 
         #endregion
 
         #region Properties
 
-        #region OperatorId
-
-        private readonly ChargingStationOperator_Id _OperatorId;
-
         /// <summary>
-        /// The internal identification.
+        /// The charging station operator identification.
         /// </summary>
-        public ChargingStationOperator_Id OperatorId
-        {
-            get
-            {
-                return _OperatorId;
-            }
-        }
-
-        #endregion
-
-        #region Suffix
-
-        private readonly String _Suffix;
+        public ChargingStationOperator_Id  OperatorId   { get; }
 
         /// <summary>
         /// The suffix of the identification.
         /// </summary>
-        public String Suffix
-        {
-            get
-            {
-                return _Suffix;
-            }
-        }
-
-        #endregion
-
-        #region Length
+        public String                      Suffix       { get; }
 
         /// <summary>
-        /// Returns the length of the identificator.
+        /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
-        {
-            get
-            {
-                return _OperatorId.Length + 2 + (UInt64) _Suffix.Length;
-            }
-        }
-
-        #endregion
-
-        #region Format
-
-        private readonly OperatorIdFormats _Format;
-
-        public OperatorIdFormats Format
-        {
-            get
-            {
-                return _Format;
-            }
-        }
-
-        #endregion
-
-        #region OriginId
-
-        public String OriginId
-        {
-            get
-            {
-                return ToFormat(_Format);
-            }
-        }
-
-        #endregion
+            => (UInt64) (OperatorId.ToFormat(OperatorIdFormats.ISO_STAR).Length + 2 + Suffix.Length);
 
         #endregion
 
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new Electric Vehicle charging station identification (EVCS Id)
-        /// based on the given string.
+        /// Generate a new charging station identification
+        /// based on the given charging station operator and identification suffix.
         /// </summary>
-        private ChargingStation_Id(ChargingStationOperator_Id   OperatorId,
-                                   String            Suffix,
-                                   OperatorIdFormats      Format = OperatorIdFormats.ISO)
+        private ChargingStation_Id(ChargingStationOperator_Id  OperatorId,
+                                   String                      Suffix)
         {
 
             #region Initial checks
 
-            if (OperatorId == null)
-                throw new ArgumentNullException("OperatorId", "The parameter must not be null!");
-
             if (Suffix.IsNullOrEmpty())
-                throw new ArgumentNullException("IdSuffix", "The parameter must not be null or empty!");
+                throw new ArgumentNullException(nameof(Suffix), "The charging station identification suffix must not be null or empty!");
 
             #endregion
 
-            var _MatchCollection = Regex.Matches(Suffix.Trim().ToUpper(),
-                                                 IdSuffix_RegEx,
-                                                 RegexOptions.IgnorePatternWhitespace);
-
-            if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal charging station identification suffix '" + Suffix + "'!", "IdSuffix");
-
-            this._OperatorId  = OperatorId;
-            this._Suffix      = _MatchCollection[0].Value;
-            this._Format      = Format;
+            this.OperatorId  = OperatorId;
+            this.Suffix      = Suffix;
 
         }
 
@@ -180,14 +104,6 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEId">An EVSEId.</param>
         public static ChargingStation_Id Create(EVSE_Id  EVSEId)
         {
-
-            #region Initial checks
-
-            if (EVSEId == null)
-                throw new ArgumentException("The parameter must not be null or empty!", "EVSEId");
-
-            #endregion
-
 
             var _Array = EVSEId.ToString().Split('*', '-');
 
@@ -208,17 +124,17 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (EVSEId.ToString().Contains('-'))
-                    return ChargingStation_Id.Parse(_Array.AggregateWith("-"));
+                    return Parse(_Array.AggregateWith("-"));
 
-                return ChargingStation_Id.Parse(_Array.AggregateWith("*"));
+                return Parse(_Array.AggregateWith("*"));
 
             }
 
             // e.g. "DE*822*E123456*1" => "DE*822*S123456"
             if (EVSEId.ToString().Contains('-'))
-                return ChargingStation_Id.Parse(_Array.Take(_Array.Length - 1).AggregateWith("-"));
+                return Parse(_Array.Take(_Array.Length - 1).AggregateWith("-"));
 
-            return ChargingStation_Id.Parse(_Array.Take(_Array.Length - 1).AggregateWith("*"));
+            return Parse(_Array.Take(_Array.Length - 1).AggregateWith("*"));
 
         }
 
@@ -230,7 +146,7 @@ namespace org.GraphDefined.WWCP
         /// Create a ChargingStationId based on the given EVSEIds.
         /// </summary>
         /// <param name="EVSEIds">An enumeration of EVSEIds.</param>
-        public static ChargingStation_Id Create(IEnumerable<EVSE_Id> EVSEIds)
+        public static ChargingStation_Id? Create(IEnumerable<EVSE_Id> EVSEIds)
         {
 
             #region Initial checks
@@ -335,7 +251,7 @@ namespace org.GraphDefined.WWCP
 
                 var IdElements = Id.Split(new String[] { "*" }, StringSplitOptions.None);
 
-                return ChargingStation_Id.Parse(IdElements[0] + "*" + IdElements[1] + "*" + IdElements.Skip(2).Aggregate("*"));
+                return Parse(IdElements[0] + "*" + IdElements[1] + "*" + IdElements.Skip(2).Aggregate("*"));
 
             }
 
@@ -347,38 +263,26 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Random(OperatorId, Mapper = null, IdFormat = IdFormatType.NEW)
+        #region Random(OperatorId, Mapper = null)
 
         /// <summary>
-        /// Generate a new unique identification of an Electric Vehicle Charging Station (EVCS Id).
+        /// Generate a new unique identification of a charging station identification.
         /// </summary>
-        /// <param name="OperatorId">The unique identification of an Charging Station Operator.</param>
+        /// <param name="OperatorId">The unique identification of a charging station operator.</param>
         /// <param name="Mapper">A delegate to modify the newly generated charging station identification.</param>
-        /// <param name="IdFormat">The (EVSE-)format of the charging station identification [old|new].</param>
-        public static ChargingStation_Id Random(ChargingStationOperator_Id       OperatorId,
-                                                Func<String, String>  Mapper    = null,
-                                                OperatorIdFormats          IdFormat  = OperatorIdFormats.ISO)
-        {
+        public static ChargingStation_Id Random(ChargingStationOperator_Id  OperatorId,
+                                                Func<String, String>        Mapper  = null)
 
-            #region Initial checks
 
-            if (OperatorId == null)
-                throw new ArgumentException("The parameter must not be null!", "OperatorId");
-
-            #endregion
-
-            return new ChargingStation_Id(OperatorId,
-                                          Mapper != null ? Mapper(_Random.RandomString(12)) : _Random.RandomString(12),
-                                          IdFormat);
-
-        }
+            => new ChargingStation_Id(OperatorId,
+                                      Mapper != null ? Mapper(_Random.RandomString(30)) : _Random.RandomString(30));
 
         #endregion
 
         #region Parse(Text)
 
         /// <summary>
-        /// Parse the given string as a charging station identification (EVCS Id).
+        /// Parse the given string as a charging station identification.
         /// </summary>
         /// <param name="Text">A text representation of a charging station identification.</param>
         public static ChargingStation_Id Parse(String Text)
@@ -387,40 +291,24 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (Text.IsNullOrEmpty())
-                throw new ArgumentException("The parameter must not be null or empty!", "Text");
+                throw new ArgumentNullException(nameof(Text), "The given text representation of a charging station identification must not be null or empty!");
 
             #endregion
 
-            var _MatchCollection = Regex.Matches(Text.Trim().ToUpper(),
-                                                 ChargingStationId_RegEx,
-                                                 RegexOptions.IgnorePatternWhitespace);
+            var MatchCollection = ChargingStationId_RegEx.Matches(Text);
 
-            if (_MatchCollection.Count != 1)
-                throw new ArgumentException("Illegal charging station identification '" + Text + "'!", "Text");
+            if (MatchCollection.Count != 1)
+                throw new ArgumentException("Illegal text representation of a charging station identification: '" + Text + "'!",
+                                            nameof(Text));
 
-            ChargingStationOperator_Id __EVSEOperatorId;
+            ChargingStationOperator_Id _OperatorId;
 
-            if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
-                return new ChargingStation_Id(__EVSEOperatorId,
-                                              _MatchCollection[0].Groups[2].Value,
-                                              OperatorIdFormats.ISO);
+            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out _OperatorId))
+                return new ChargingStation_Id(_OperatorId,
+                                              MatchCollection[0].Groups[2].Value);
 
-            if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
-                return new ChargingStation_Id(__EVSEOperatorId,
-                                              _MatchCollection[0].Groups[4].Value,
-                                              OperatorIdFormats.DIN);
-
-            if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[5].Value, out __EVSEOperatorId))
-                return new ChargingStation_Id(__EVSEOperatorId,
-                                              _MatchCollection[0].Groups[6].Value,
-                                              OperatorIdFormats.DIN);
-
-            if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[7].Value, out __EVSEOperatorId))
-                return new ChargingStation_Id(__EVSEOperatorId,
-                                              _MatchCollection[0].Groups[8].Value,
-                                              OperatorIdFormats.DIN);
-
-            throw new ArgumentException("Illegal charging station identification '" + Text + "'!", "Text");
+            throw new ArgumentException("Illegal charging station identification '" + Text + "'!",
+                                        nameof(Text));
 
         }
 
@@ -431,39 +319,20 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Parse the given string as a charging station identification.
         /// </summary>
-        /// <param name="OperatorId">The unique identification of an Charging Station Operator.</param>
-        /// <param name="Suffix">A text representation of a charging station identification.</param>
-        public static ChargingStation_Id Parse(ChargingStationOperator_Id OperatorId, String Suffix)
-        {
+        /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="Suffix">The suffix of the charging station identification.</param>
+        public static ChargingStation_Id Parse(ChargingStationOperator_Id  OperatorId,
+                                               String                      Suffix)
 
-            #region Initial checks
-
-            if (OperatorId == null)
-                throw new ArgumentException("The parameter must not be null!", "OperatorId");
-
-            if (Suffix.IsNullOrEmpty())
-                throw new ArgumentException("The parameter must not be null or empty!", "IdSuffix");
-
-            #endregion
-
-            ChargingStation_Id _ChargingStationId = null;
-
-            if (ChargingStation_Id.TryParse(OperatorId, Suffix, out _ChargingStationId))
-                return _ChargingStationId;
-
-            return null;
-
-        }
+            => Parse(OperatorId.ToFormat(OperatorIdFormats.ISO_STAR) + "*S" + Suffix);
 
         #endregion
 
-        #region TryParse(Text, out ChargingStationId)
+        #region TryParse(Text, out EVSEGroupId)
 
         /// <summary>
-        /// Parse the given string as a charging station identification (EVCS Id).
+        /// Parse the given string as a charging station identification.
         /// </summary>
-        /// <param name="Text">A text representation of a charging station identification.</param>
-        /// <param name="ChargingStationId">The parsed charging station identification.</param>
         public static Boolean TryParse(String Text, out ChargingStation_Id ChargingStationId)
         {
 
@@ -471,7 +340,7 @@ namespace org.GraphDefined.WWCP
 
             if (Text.IsNullOrEmpty())
             {
-                ChargingStationId = null;
+                ChargingStationId = default(ChargingStation_Id);
                 return false;
             }
 
@@ -480,122 +349,34 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                ChargingStationId = null;
+                ChargingStationId = default(ChargingStation_Id);
 
-                var _MatchCollection = Regex.Matches(Text.Trim().ToUpper(),
-                                                     ChargingStationId_RegEx,
-                                                     RegexOptions.IgnorePatternWhitespace);
+                var _MatchCollection = ChargingStationId_RegEx.Matches(Text);
 
                 if (_MatchCollection.Count != 1)
                     return false;
 
-                ChargingStationOperator_Id __EVSEOperatorId;
+                ChargingStationOperator_Id _OperatorId;
 
-                // New format...
-                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out __EVSEOperatorId))
+                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _OperatorId))
                 {
 
-                    ChargingStationId = new ChargingStation_Id(__EVSEOperatorId,
-                                                               _MatchCollection[0].Groups[2].Value,
-                                                               OperatorIdFormats.ISO);
-
-                    return true;
-
-                }
-
-                // Old format...
-                else if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[3].Value, out __EVSEOperatorId))
-                {
-
-                    ChargingStationId = new ChargingStation_Id(__EVSEOperatorId,
-                                                               _MatchCollection[0].Groups[4].Value,
-                                                               OperatorIdFormats.DIN);
-
-                    return true;
-
-                }
-
-                // New format without the 'S'...
-                else if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[5].Value, out __EVSEOperatorId))
-                {
-
-                    ChargingStationId = new ChargingStation_Id(__EVSEOperatorId,
-                                                               _MatchCollection[0].Groups[6].Value,
-                                                               OperatorIdFormats.ISO);
-
-                    return true;
-
-                }
-
-                // Old format without the 'S'...
-                else if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[7].Value, out __EVSEOperatorId))
-                {
-
-                    ChargingStationId = new ChargingStation_Id(__EVSEOperatorId,
-                                                               _MatchCollection[0].Groups[8].Value,
-                                                               OperatorIdFormats.DIN);
+                    ChargingStationId = new ChargingStation_Id(_OperatorId,
+                                                               _MatchCollection[0].Groups[2].Value);
 
                     return true;
 
                 }
 
             }
+#pragma warning disable RCS1075  // Avoid empty catch clause that catches System.Exception.
+#pragma warning disable RECS0022 // A catch clause that catches System.Exception and has an empty body
             catch (Exception e)
+#pragma warning restore RECS0022 // A catch clause that catches System.Exception and has an empty body
+#pragma warning restore RCS1075  // Avoid empty catch clause that catches System.Exception.
             { }
 
-            ChargingStationId = null;
-            return false;
-
-        }
-
-        #endregion
-
-        #region TryParse(OperatorId, Suffix, out ChargingStationId)
-
-        /// <summary>
-        /// Parse the given string as a charging station identification (EVCS Id).
-        /// </summary>
-        /// <param name="OperatorId">The unique identification of an Charging Station Operator.</param>
-        /// <param name="Suffix">A text representation of a charging station identification.</param>
-        /// <param name="ChargingStationId">The parsed charging station identification.</param>
-        public static Boolean TryParse(ChargingStationOperator_Id         OperatorId,
-                                       String                  Suffix,
-                                       out ChargingStation_Id  ChargingStationId)
-        {
-
-            #region Initial checks
-
-            if (OperatorId == null || Suffix.IsNullOrEmpty())
-            {
-                ChargingStationId = null;
-                return false;
-            }
-
-            #endregion
-
-            try
-            {
-
-                ChargingStationId = null;
-
-                var _MatchCollection = Regex.Matches(Suffix.Trim().ToUpper(),
-                                                     IdSuffix_RegEx,
-                                                     RegexOptions.IgnorePatternWhitespace);
-
-                if (_MatchCollection.Count != 1)
-                    return false;
-
-                ChargingStationId = new ChargingStation_Id(OperatorId,
-                                                           _MatchCollection[0].Groups[0].Value,
-                                                           OperatorId.Format);
-
-                return true;
-
-            }
-            catch (Exception e)
-            { }
-
-            ChargingStationId = null;
+            ChargingStationId = default(ChargingStation_Id);
             return false;
 
         }
@@ -605,32 +386,12 @@ namespace org.GraphDefined.WWCP
         #region Clone
 
         /// <summary>
-        /// Clone this Electric Vehicle Charging Station identification.
+        /// Clone this charging station identification.
         /// </summary>
         public ChargingStation_Id Clone
-        {
-            get
-            {
-                return new ChargingStation_Id(OperatorId.Clone,
-                                              new String(_Suffix.ToCharArray()),
-                                              Format);
-            }
-        }
 
-        #endregion
-
-
-        #region ToFormat(IdFormat)
-
-        /// <summary>
-        /// Return the identification in the given format.
-        /// </summary>
-        /// <param name="IdFormat">The format.</param>
-        public String ToFormat(OperatorIdFormats IdFormat)
-
-            => IdFormat == OperatorIdFormats.ISO
-                   ? String.Concat(_OperatorId.ToFormat(IdFormat), "*S", _Suffix)
-                   : String.Concat(_OperatorId.ToFormat(IdFormat),  "*", _Suffix);
+            => new ChargingStation_Id(OperatorId.Clone,
+                                      new String(Suffix.ToCharArray()));
 
         #endregion
 
@@ -642,8 +403,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationId1">A ChargingStation_Id.</param>
-        /// <param name="ChargingStationId2">Another ChargingStation_Id.</param>
+        /// <param name="ChargingStationId1">A charging station identification.</param>
+        /// <param name="ChargingStationId2">Another charging station identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (ChargingStation_Id ChargingStationId1, ChargingStation_Id ChargingStationId2)
         {
@@ -667,13 +428,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationId1">A ChargingStation_Id.</param>
-        /// <param name="ChargingStationId2">Another ChargingStation_Id.</param>
+        /// <param name="ChargingStationId1">A charging station identification.</param>
+        /// <param name="ChargingStationId2">Another charging station identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (ChargingStation_Id ChargingStationId1, ChargingStation_Id ChargingStationId2)
-        {
-            return !(ChargingStationId1 == ChargingStationId2);
-        }
+            => !(ChargingStationId1 == ChargingStationId2);
 
         #endregion
 
@@ -682,14 +441,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationId1">A ChargingStation_Id.</param>
-        /// <param name="ChargingStationId2">Another ChargingStation_Id.</param>
+        /// <param name="ChargingStationId1">A charging station identification.</param>
+        /// <param name="ChargingStationId2">Another charging station identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (ChargingStation_Id ChargingStationId1, ChargingStation_Id ChargingStationId2)
         {
 
             if ((Object) ChargingStationId1 == null)
-                throw new ArgumentNullException("The given ChargingStationId1 must not be null!");
+                throw new ArgumentNullException(nameof(ChargingStationId1), "The given ChargingStationId1 must not be null!");
 
             return ChargingStationId1.CompareTo(ChargingStationId2) < 0;
 
@@ -702,13 +461,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationId1">A ChargingStation_Id.</param>
-        /// <param name="ChargingStationId2">Another ChargingStation_Id.</param>
+        /// <param name="ChargingStationId1">A charging station identification.</param>
+        /// <param name="ChargingStationId2">Another charging station identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (ChargingStation_Id ChargingStationId1, ChargingStation_Id ChargingStationId2)
-        {
-            return !(ChargingStationId1 > ChargingStationId2);
-        }
+            => !(ChargingStationId1 > ChargingStationId2);
 
         #endregion
 
@@ -717,14 +474,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationId1">A ChargingStation_Id.</param>
-        /// <param name="ChargingStationId2">Another ChargingStation_Id.</param>
+        /// <param name="ChargingStationId1">A charging station identification.</param>
+        /// <param name="ChargingStationId2">Another charging station identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (ChargingStation_Id ChargingStationId1, ChargingStation_Id ChargingStationId2)
         {
 
             if ((Object) ChargingStationId1 == null)
-                throw new ArgumentNullException("The given ChargingStationId1 must not be null!");
+                throw new ArgumentNullException(nameof(ChargingStationId1), "The given ChargingStationId1 must not be null!");
 
             return ChargingStationId1.CompareTo(ChargingStationId2) > 0;
 
@@ -737,19 +494,17 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationId1">A ChargingStation_Id.</param>
-        /// <param name="ChargingStationId2">Another ChargingStation_Id.</param>
+        /// <param name="ChargingStationId1">A charging station identification.</param>
+        /// <param name="ChargingStationId2">Another charging station identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (ChargingStation_Id ChargingStationId1, ChargingStation_Id ChargingStationId2)
-        {
-            return !(ChargingStationId1 < ChargingStationId2);
-        }
+            => !(ChargingStationId1 < ChargingStationId2);
 
         #endregion
 
         #endregion
 
-        #region IComparable<ChargingStation_Id> Members
+        #region IComparable<ChargingStationId> Members
 
         #region CompareTo(Object)
 
@@ -761,14 +516,12 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            // Check if the given object is an ChargingStationId.
-            var ChargingStationId = Object as ChargingStation_Id;
-            if ((Object) ChargingStationId == null)
-                throw new ArgumentException("The given object is not a ChargingStationId!");
+            if (!(Object is ChargingStation_Id))
+                throw new ArgumentException("The given object is not a charging station identification!", nameof(Object));
 
-            return CompareTo(ChargingStationId);
+            return CompareTo((ChargingStation_Id) Object);
 
         }
 
@@ -784,18 +537,18 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) ChargingStationId == null)
-                throw new ArgumentNullException("The given ChargingStationId must not be null!");
+                throw new ArgumentNullException(nameof(ChargingStationId), "The given charging station identification must not be null!");
 
             // Compare the length of the ChargingStationIds
-            var _Result = this.Length.CompareTo(ChargingStationId.Length);
+            var _Result = Length.CompareTo(ChargingStationId.Length);
 
-            // If equal: Compare OperatorIds
+            // If equal: Compare charging operator identifications
             if (_Result == 0)
-                _Result = _OperatorId.CompareTo(ChargingStationId._OperatorId);
+                _Result = OperatorId.CompareTo(ChargingStationId.OperatorId);
 
             // If equal: Compare ChargingStationId suffix
             if (_Result == 0)
-                _Result = _Suffix.CompareTo(ChargingStationId._Suffix);
+                _Result = String.Compare(Suffix, ChargingStationId.Suffix, StringComparison.Ordinal);
 
             return _Result;
 
@@ -820,12 +573,10 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an ChargingStationId.
-            var ChargingStationId = Object as ChargingStation_Id;
-            if ((Object) ChargingStationId == null)
+            if (!(Object is ChargingStation_Id))
                 return false;
 
-            return this.Equals(ChargingStationId);
+            return Equals((ChargingStation_Id) Object);
 
         }
 
@@ -844,8 +595,8 @@ namespace org.GraphDefined.WWCP
             if ((Object) ChargingStationId == null)
                 return false;
 
-            return _OperatorId.Equals(ChargingStationId._OperatorId) &&
-                   _Suffix.  Equals(ChargingStationId._Suffix);
+            return OperatorId.Equals(ChargingStationId.OperatorId) &&
+                   Suffix.    Equals(ChargingStationId.Suffix);
 
         }
 
@@ -860,9 +611,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            return _OperatorId.GetHashCode() ^ _Suffix.GetHashCode();
-        }
+
+            => OperatorId.GetHashCode() ^
+               Suffix.    GetHashCode();
 
         #endregion
 
@@ -872,9 +623,7 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return String.Concat(_OperatorId, "*S", _Suffix);
-        }
+            => String.Concat(OperatorId, "*S", Suffix);
 
         #endregion
 

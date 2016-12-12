@@ -42,6 +42,34 @@ namespace org.GraphDefined.WWCP
     /// <param name="NewStatus">The new timestamped admin status of the charging pool.</param>
     public delegate void OnAdminStatusChangedDelegate(DateTime Timestamp, ChargingStationGroup ChargingStationGroup, Timestamped<ChargingStationGroupAdminStatusType> OldStatus, Timestamped<ChargingStationGroupAdminStatusType> NewStatus);
 
+    /// <summary>
+    /// A delegate called whenever the status changed.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="ChargingStationGroup">The updated charging pool.</param>
+    /// <param name="OldStatus">The old timestamped admin status of the charging pool.</param>
+    /// <param name="NewStatus">The new timestamped admin status of the charging pool.</param>
+    public delegate void OnStatusChangedDelegate(DateTime Timestamp, ChargingStationGroup ChargingStationGroup, Timestamped<ChargingStationGroupStatusType> OldStatus, Timestamped<ChargingStationGroupStatusType> NewStatus);
+
+
+    public class AutoIncludeMemberIds
+    {
+
+        private List<ChargingStation_Id> _AllowedMemberIds;
+
+        public AutoIncludeMemberIds(IEnumerable<ChargingStation_Id> AllowedMemberIds)
+        {
+
+            this._AllowedMemberIds = new List<ChargingStation_Id>(AllowedMemberIds);
+
+        }
+
+        public Boolean Allowed(ChargingStation_Id StationId)
+            => _AllowedMemberIds.Contains(StationId);
+
+
+    }
+
 
     /// <summary>
     /// A pool of electric vehicle charging stations.
@@ -57,120 +85,77 @@ namespace org.GraphDefined.WWCP
         #region Data
 
         /// <summary>
-        /// The default max size of the charging pool (aggregated charging station) status list.
+        /// The default max size of the charging station group status list.
         /// </summary>
-        public const UInt16 DefaultMaxPoolStatusListSize = 15;
+        public const UInt16 DefaultMaxGroupStatusListSize       = 15;
 
         /// <summary>
-        /// The default max size of the charging pool admin status list.
+        /// The default max size of the charging station group admin status list.
         /// </summary>
-        public const UInt16 DefaultMaxPoolAdminStatusListSize = 15;
-
-        /// <summary>
-        /// The maximum time span for a reservation.
-        /// </summary>
-        public static readonly TimeSpan MaxReservationDuration = TimeSpan.FromMinutes(30);
+        public const UInt16 DefaultMaxGroupAdminStatusListSize  = 15;
 
         #endregion
 
         #region Properties
 
-        #region Name
-
-        private I18NString _Name;
-
         /// <summary>
-        /// The offical (multi-language) name of this charging pool.
+        /// The Charging Station Operator of this charging pool.
         /// </summary>
         [Mandatory]
-        public I18NString Name
-        {
-
-            get
-            {
-                return _Name;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = new I18NString();
-
-                if (_Name != value)
-                    SetProperty<I18NString>(ref _Name, value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region Description
-
-        private I18NString _Description;
+        public ChargingStationOperator  Operator      { get; }
 
         /// <summary>
-        /// An optional (multi-language) description of this charging pool.
+        /// The offical (multi-language) name of this charging station group.
+        /// </summary>
+        [Mandatory]
+        public I18NString               Name          { get; }
+
+        /// <summary>
+        /// An optional (multi-language) description of this charging station group.
         /// </summary>
         [Optional]
-        public I18NString Description
-        {
+        public I18NString               Description   { get; }
 
-            get
-            {
-                return _Description;
-            }
 
-            set
-            {
+        private List<ChargingStation_Id> _AllowedMemberIds;
 
-                if (value == null)
-                    value = new I18NString();
+        public IEnumerable<ChargingStation_Id> AllowedMemberIds
+            => _AllowedMemberIds;
 
-                if (_Description != value)
-                    SetProperty<I18NString>(ref _Description, value);
+        public Func<ChargingStation, Boolean> AutoIncludeStations { get; }
 
-            }
 
-        }
 
-        #endregion
+        #region ChargingStations
 
-        #region OpeningTime
+        private readonly ConcurrentDictionary<ChargingStation_Id, ChargingStation> _ChargingStations;
 
-        //private OpeningTimes _OpeningTime;
+        /// <summary>
+        /// Return all charging stations registered within this charing station group.
+        /// </summary>
+        public IEnumerable<ChargingStation> ChargingStations
+            => _ChargingStations.Values;
 
-        ///// <summary>
-        ///// The opening time of this charging pool.
-        ///// </summary>
-        //[Optional]
-        //public OpeningTimes OpeningTime
-        //{
 
-        //    get
-        //    {
-        //        return _OpeningTime;
-        //    }
+        /// <summary>
+        /// Return all charging station identifications registered within this charing station group.
+        /// </summary>
+        public IEnumerable<ChargingStation_Id> ChargingStationIds
+            => ChargingStations.Select(station => station.Id);
 
-        //    set
-        //    {
+        /// <summary>
+        /// Return all EVSEs registered within this charing station group.
+        /// </summary>
+        public IEnumerable<EVSE> EVSEs
+            => ChargingStations.SelectMany(station => station.EVSEs);
 
-        //        if (value == null)
-        //            value = OpeningTimes.Open24Hours;
-
-        //        if (_OpeningTime != value)
-        //        {
-
-        //            SetProperty(ref _OpeningTime, value);
-
-        //            _ChargingStations.Values.ForEach(station => station._OpeningTimes = null);
-
-        //        }
-
-        //    }
-
-        //}
+        /// <summary>
+        /// Return all EVSE identifications registered within this charing station group.
+        /// </summary>
+        public IEnumerable<EVSE_Id> EVSEIds
+            => ChargingStations.
+                   SelectMany(station => station.EVSEs).
+                   Select    (evse    => evse.Id);
 
         #endregion
 
@@ -180,14 +165,9 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The current charging pool admin status.
         /// </summary>
-        [Optional]
+        [Dynamic]
         public Timestamped<ChargingStationGroupAdminStatusType> AdminStatus
-        {
-            get
-            {
-                return _AdminStatusSchedule.CurrentStatus;
-            }
-        }
+            => _AdminStatusSchedule.CurrentStatus;
 
         #endregion
 
@@ -198,117 +178,45 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The charging pool admin status schedule.
         /// </summary>
-        [Optional]
+        [Dynamic]
         public IEnumerable<Timestamped<ChargingStationGroupAdminStatusType>> AdminStatusSchedule
-        {
-            get
-            {
-                return _AdminStatusSchedule;
-            }
-        }
+            => _AdminStatusSchedule;
 
         #endregion
 
 
-        #region EVSEOperator
-
-        private ChargingStationOperator _EVSEOperator;
+        #region Status
 
         /// <summary>
-        /// The Charging Station Operator of this charging pool.
+        /// The current charging pool status.
         /// </summary>
-        [Optional]
-        public ChargingStationOperator Operator
-        {
-            get
-            {
-                return _EVSEOperator;
-            }
-        }
+        [Dynamic]
+        public Timestamped<ChargingStationGroupStatusType> Status
+            => _StatusSchedule.CurrentStatus;
 
         #endregion
 
-        #region ChargingStations
+        #region StatusSchedule
 
-     //   private readonly ConcurrentDictionary<ChargingStation_Id, ChargingStation> _ChargingStations;
+        private StatusSchedule<ChargingStationGroupStatusType> _StatusSchedule;
 
         /// <summary>
-        /// Return all charging stations registered within this charing pool.
+        /// The charging pool status schedule.
         /// </summary>
-        public IEnumerable<ChargingStation> ChargingStations
-        {
-            get
-            {
-                return _EVSEOperator.SelectMany(pool => pool.ChargingStations);
-            }
-        }
+        [Dynamic]
+        public IEnumerable<Timestamped<ChargingStationGroupStatusType>> StatusSchedule
+            => _StatusSchedule;
 
         #endregion
 
-        #region ChargingStationIds
+        #region StatusAggregationDelegate
 
         /// <summary>
-        /// Return all charging station Ids registered within this charing pool.
+        /// A delegate called to aggregate the dynamic status of all subordinated charging stations.
         /// </summary>
-        public IEnumerable<ChargingStation_Id> ChargingStationIds
-        {
-            get
-            {
-                return ChargingStations.Select(station => station.Id);
-            }
-        }
+        public Func<ChargingStationStatusReport, ChargingStationGroupStatusType>  StatusAggregationDelegate   { get; }
 
         #endregion
-
-        #region EVSEs
-
-        /// <summary>
-        /// All Electric Vehicle Supply Equipments (EVSE) present
-        /// within this charging pool.
-        /// </summary>
-        public IEnumerable<EVSE> EVSEs
-        {
-            get
-            {
-
-                return ChargingStations.
-                           SelectMany(station => station.EVSEs);
-
-            }
-        }
-
-        #endregion
-
-        #region EVSEIds
-
-        /// <summary>
-        /// The unique identifications of all Electric Vehicle Supply Equipment
-        /// (EVSEs) present within this charging pool.
-        /// </summary>
-        public IEnumerable<EVSE_Id> EVSEIds
-        {
-            get
-            {
-
-                return ChargingStations.
-                           SelectMany(station => station.EVSEs).
-                           Select    (evse    => evse.   Id);
-
-            }
-        }
-
-        #endregion
-
-
-        private readonly HashSet<ChargingStation_Id> _AllowedChargingStationIds;
-
-        public IEnumerable<ChargingStation_Id> AllowedChargingStationIds
-        {
-            get
-            {
-                return _AllowedChargingStationIds;
-            }
-        }
 
         #endregion
 
@@ -476,16 +384,32 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new group/pool of charging stations having the given identification.
+        /// Create a new charging station group.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing pool.</param>
-        /// <param name="ChargingStationOperator">The parent Charging Station Operator.</param>
-        /// <param name="MaxPoolStatusListSize">The default size of the charging pool (aggregated charging station) status list.</param>
-        /// <param name="MaxPoolAdminStatusListSize">The default size of the charging pool admin status list.</param>
-        internal ChargingStationGroup(ChargingStationGroup_Id  Id,
-                                      ChargingStationOperator  ChargingStationOperator,
-                                      UInt16                   MaxPoolStatusListSize       = DefaultMaxPoolStatusListSize,
-                                      UInt16                   MaxPoolAdminStatusListSize  = DefaultMaxPoolAdminStatusListSize)
+        /// <param name="Id">The unique identification of the charing station group.</param>
+        /// <param name="Operator">The charging station operator of this charging station group.</param>
+        /// <param name="Name">The offical (multi-language) name of this charging station group.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging station group.</param>
+        /// 
+        /// <param name="Members">An enumeration of charging stations member building this charging station group.</param>
+        /// <param name="MemberIds">An enumeration of charging station identifications which are building this charging station group.</param>
+        /// <param name="AutoIncludeStations">A delegate deciding whether to include new charging stations automatically into this group.</param>
+        /// 
+        /// <param name="StatusAggregationDelegate">A delegate called to aggregate the dynamic status of all subordinated charging stations.</param>
+        /// <param name="MaxGroupStatusListSize">The default size of the charging station group status list.</param>
+        /// <param name="MaxGroupAdminStatusListSize">The default size of the charging station group admin status list.</param>
+        internal ChargingStationGroup(ChargingStationGroup_Id                                            Id,
+                                      ChargingStationOperator                                            Operator,
+                                      I18NString                                                         Name,
+                                      I18NString                                                         Description                  = null,
+
+                                      IEnumerable<ChargingStation>                                       Members                      = null,
+                                      IEnumerable<ChargingStation_Id>                                    MemberIds                    = null,
+                                      Func<ChargingStation, Boolean>                                     AutoIncludeStations          = null,
+
+                                      Func<ChargingStationStatusReport, ChargingStationGroupStatusType>  StatusAggregationDelegate    = null,
+                                      UInt16                                                             MaxGroupStatusListSize       = DefaultMaxGroupStatusListSize,
+                                      UInt16                                                             MaxGroupAdminStatusListSize  = DefaultMaxGroupAdminStatusListSize)
 
             : base(Id)
 
@@ -493,24 +417,31 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (ChargingStationOperator == null)
-                throw new ArgumentNullException("EVSEOperator", "The Charging Station Operator must not be null!");
+            if (Operator == null)
+                throw new ArgumentNullException(nameof(Operator),  "The charging station operator must not be null!");
+
+            if (Name.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Name),      "The name of the charging station group must not be null or empty!");
 
             #endregion
 
             #region Init data and properties
 
-            this._EVSEOperator               = ChargingStationOperator;
+            this.Operator                    = Operator;
+            this.Name                        = Name;
+            this.Description                 = Description ?? new I18NString();
 
-            //this._ChargingStations           = new ConcurrentDictionary<ChargingStation_Id, ChargingStation>();
+            this._AllowedMemberIds           = MemberIds != null ? new List<ChargingStation_Id>(MemberIds) : new List<ChargingStation_Id>();
+            this.AutoIncludeStations         = AutoIncludeStations ?? (station => true);
+            this._ChargingStations           = new ConcurrentDictionary<ChargingStation_Id, ChargingStation>();
 
-            this.Name                        = new I18NString();
-            this.Description                 = new I18NString();
+            this.StatusAggregationDelegate   = StatusAggregationDelegate;
 
-            this._AdminStatusSchedule        = new StatusSchedule<ChargingStationGroupAdminStatusType>(MaxPoolAdminStatusListSize);
-            this._AdminStatusSchedule.Insert(ChargingStationGroupAdminStatusType.Unspecified);
+            this._AdminStatusSchedule        = new StatusSchedule<ChargingStationGroupAdminStatusType>(MaxGroupAdminStatusListSize);
+            this._AdminStatusSchedule.Insert(ChargingStationGroupAdminStatusType.Unknown);
 
-            this._AllowedChargingStationIds  = new HashSet<ChargingStation_Id>();
+            this._StatusSchedule             = new StatusSchedule<ChargingStationGroupStatusType>     (MaxGroupStatusListSize);
+            this._StatusSchedule.     Insert(ChargingStationGroupStatusType.Unknown);
 
             #endregion
 
@@ -543,93 +474,94 @@ namespace org.GraphDefined.WWCP
             //this.OnChargingStationRemoval. OnNotification += (timestamp, evseoperator, pool)       => EVSEOperator.ChargingStationRemoval. SendNotification(timestamp, evseoperator, pool);
 
             // ChargingStation events
-            this.OnEVSEAddition.           OnVoting       += (timestamp, station, evse, vote)      => ChargingStationOperator.EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
-            this.OnEVSEAddition.           OnNotification += (timestamp, station, evse)            => ChargingStationOperator.EVSEAddition.           SendNotification(timestamp, station, evse);
+            this.OnEVSEAddition.           OnVoting       += (timestamp, station, evse, vote)      => Operator.EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
+            this.OnEVSEAddition.           OnNotification += (timestamp, station, evse)            => Operator.EVSEAddition.           SendNotification(timestamp, station, evse);
 
-            this.OnEVSERemoval.            OnVoting       += (timestamp, station, evse, vote)      => ChargingStationOperator.EVSERemoval .           SendVoting      (timestamp, station, evse, vote);
-            this.OnEVSERemoval.            OnNotification += (timestamp, station, evse)            => ChargingStationOperator.EVSERemoval .           SendNotification(timestamp, station, evse);
+            this.OnEVSERemoval.            OnVoting       += (timestamp, station, evse, vote)      => Operator.EVSERemoval .           SendVoting      (timestamp, station, evse, vote);
+            this.OnEVSERemoval.            OnNotification += (timestamp, station, evse)            => Operator.EVSERemoval .           SendNotification(timestamp, station, evse);
 
             // EVSE events
-            this.SocketOutletAddition.     OnVoting       += (timestamp, evse, outlet, vote)       => ChargingStationOperator.SocketOutletAddition.   SendVoting      (timestamp, evse, outlet, vote);
-            this.SocketOutletAddition.     OnNotification += (timestamp, evse, outlet)             => ChargingStationOperator.SocketOutletAddition.   SendNotification(timestamp, evse, outlet);
+            this.SocketOutletAddition.     OnVoting       += (timestamp, evse, outlet, vote)       => Operator.SocketOutletAddition.   SendVoting      (timestamp, evse, outlet, vote);
+            this.SocketOutletAddition.     OnNotification += (timestamp, evse, outlet)             => Operator.SocketOutletAddition.   SendNotification(timestamp, evse, outlet);
 
-            this.SocketOutletRemoval.      OnVoting       += (timestamp, evse, outlet, vote)       => ChargingStationOperator.SocketOutletRemoval.    SendVoting      (timestamp, evse, outlet, vote);
-            this.SocketOutletRemoval.      OnNotification += (timestamp, evse, outlet)             => ChargingStationOperator.SocketOutletRemoval.    SendNotification(timestamp, evse, outlet);
+            this.SocketOutletRemoval.      OnVoting       += (timestamp, evse, outlet, vote)       => Operator.SocketOutletRemoval.    SendVoting      (timestamp, evse, outlet, vote);
+            this.SocketOutletRemoval.      OnNotification += (timestamp, evse, outlet)             => Operator.SocketOutletRemoval.    SendNotification(timestamp, evse, outlet);
 
             #endregion
 
+
+            if (Members != null && Members.Any())
+                Members.ForEach(station => Add(station));
+
         }
 
         #endregion
 
 
-        #region Add(ChargingStation)
-
-        public Boolean Add(ChargingStation ChargingStation)
+        public ChargingStationGroup Add(ChargingStation Station)
         {
 
-            return _AllowedChargingStationIds.Add(ChargingStation.Id);
+            if (_AllowedMemberIds.Contains(Station.Id) &&
+                AutoIncludeStations(Station))
+            {
+                _ChargingStations.TryAdd(Station.Id, Station);
+            }
+
+            return this;
 
         }
 
-        #endregion
-
-        #region Add(ChargingStationId)
-
-        public Boolean Add(ChargingStation_Id ChargingStationId)
+        public ChargingStationGroup Add(ChargingStation_Id StationId)
         {
 
-            return _AllowedChargingStationIds.Add(ChargingStationId);
+            _AllowedMemberIds.Add(StationId);
+
+            return this;
 
         }
 
-        #endregion
 
         #region Contains(ChargingStation)
 
         /// <summary>
-        /// Check if the given ChargingStation is already present within the charging pool.
+        /// Check if the given charging station is member of this charging station group.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
         public Boolean Contains(ChargingStation ChargingStation)
-        {
-            return _AllowedChargingStationIds.Contains(ChargingStation.Id);
-        }
+            => _ChargingStations.ContainsKey(ChargingStation.Id);
 
         #endregion
 
-        #region Contains(ChargingStationId)
+        #region ContainsId(ChargingStationId)
 
         /// <summary>
-        /// Check if the given ChargingStation identification is already present within the charging pool.
+        /// Check if the given charging station identification is member of this charging station group.
         /// </summary>
         /// <param name="ChargingStationId">The unique identification of the charging station.</param>
-        public Boolean Contains(ChargingStation_Id ChargingStationId)
-        {
-            return _AllowedChargingStationIds.Contains(ChargingStationId);
-        }
+        public Boolean ContainsId(ChargingStation_Id ChargingStationId)
+            => _ChargingStations.ContainsKey(ChargingStationId);
 
         #endregion
 
-        #region Remove(ChargingStation)
+        #region ContainsEVSE(EVSE)
 
-        public Boolean Remove(ChargingStation ChargingStation)
-        {
-
-            return _AllowedChargingStationIds.Remove(ChargingStation.Id);
-
-        }
+        /// <summary>
+        /// Check if the given EVSE is member of this charging station group.
+        /// </summary>
+        /// <param name="EVSE">An EVSE.</param>
+        public Boolean ContainsEVSE(EVSE EVSE)
+            => ChargingStations.Any(ChargingStation => ChargingStation.EVSEIds.Contains(EVSE.Id));
 
         #endregion
 
-        #region Remove(ChargingStationId)
+        #region ContainsEVSEId(EVSEId)
 
-        public Boolean Remove(ChargingStation_Id ChargingStationId)
-        {
-
-            return _AllowedChargingStationIds.Remove(ChargingStationId);
-
-        }
+        /// <summary>
+        /// Check if the given EVSE identification is member of this charging station group.
+        /// </summary>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        public Boolean ContainsEVSEId(EVSE_Id EVSEId)
+            => ChargingStations.Any(ChargingStation => ChargingStation.EVSEIds.Contains(EVSEId));
 
         #endregion
 
@@ -693,61 +625,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region ContainsEVSE(EVSE)
 
-        /// <summary>
-        /// Check if the given EVSE is already present within the Charging Station Operator.
-        /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
-        public Boolean ContainsEVSE(EVSE EVSE)
-        {
-            return ChargingStations.Any(ChargingStation => ChargingStation.EVSEIds.Contains(EVSE.Id));
-        }
-
-        #endregion
-
-        #region ContainsEVSE(EVSEId)
-
-        /// <summary>
-        /// Check if the given EVSE identification is already present within the Charging Station Operator.
-        /// </summary>
-        /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        public Boolean ContainsEVSE(EVSE_Id EVSEId)
-        {
-            return ChargingStations.Any(ChargingStation => ChargingStation.EVSEIds.Contains(EVSEId));
-        }
-
-        #endregion
-
-        #region GetEVSEbyId(EVSEId)
-
-        //public EVSE GetEVSEbyId(EVSE_Id EVSEId)
-        //{
-
-        //    return _ChargingStations.Values.
-        //               SelectMany(station => station.EVSEs).
-        //               Where     (EVSE    => EVSE.Id == EVSEId).
-        //               FirstOrDefault();
-
-        //}
-
-        #endregion
-
-        #region TryGetEVSEbyId(EVSEId, out EVSE)
-
-        //public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
-        //{
-
-        //    EVSE = _ChargingStations.Values.
-        //               SelectMany(station => station.EVSEs).
-        //               Where     (_EVSE   => _EVSE.Id == EVSEId).
-        //               FirstOrDefault();
-
-        //    return EVSE != null;
-
-        //}
-
-        #endregion
 
 
         #region (internal) UpdateAdminStatus(Timestamp, OldStatus, NewStatus)
@@ -935,6 +813,114 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region Operator overloading
+
+        #region Operator == (ChargingStationGroup1, ChargingStationGroup2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStationGroup1">A charging station group.</param>
+        /// <param name="ChargingStationGroup2">Another charging station group.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (ChargingStationGroup ChargingStationGroup1, ChargingStationGroup ChargingStationGroup2)
+        {
+
+            // If both are null, or both are same instance, return true.
+            if (Object.ReferenceEquals(ChargingStationGroup1, ChargingStationGroup2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (((Object) ChargingStationGroup1 == null) || ((Object) ChargingStationGroup2 == null))
+                return false;
+
+            return ChargingStationGroup1.Equals(ChargingStationGroup2);
+
+        }
+
+        #endregion
+
+        #region Operator != (ChargingStationGroup1, ChargingStationGroup2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStationGroup1">A charging station group.</param>
+        /// <param name="ChargingStationGroup2">Another charging station group.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (ChargingStationGroup ChargingStationGroup1, ChargingStationGroup ChargingStationGroup2)
+            => !(ChargingStationGroup1 == ChargingStationGroup2);
+
+        #endregion
+
+        #region Operator <  (ChargingStationGroup1, ChargingStationGroup2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStationGroup1">A charging station group.</param>
+        /// <param name="ChargingStationGroup2">Another charging station group.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (ChargingStationGroup ChargingStationGroup1, ChargingStationGroup ChargingStationGroup2)
+        {
+
+            if ((Object) ChargingStationGroup1 == null)
+                throw new ArgumentNullException(nameof(ChargingStationGroup1), "The given ChargingStationGroup1 must not be null!");
+
+            return ChargingStationGroup1.CompareTo(ChargingStationGroup2) < 0;
+
+        }
+
+        #endregion
+
+        #region Operator <= (ChargingStationGroup1, ChargingStationGroup2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStationGroup1">A charging station group.</param>
+        /// <param name="ChargingStationGroup2">Another charging station group.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (ChargingStationGroup ChargingStationGroup1, ChargingStationGroup ChargingStationGroup2)
+            => !(ChargingStationGroup1 > ChargingStationGroup2);
+
+        #endregion
+
+        #region Operator >  (ChargingStationGroup1, ChargingStationGroup2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStationGroup1">A charging station group.</param>
+        /// <param name="ChargingStationGroup2">Another charging station group.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (ChargingStationGroup ChargingStationGroup1, ChargingStationGroup ChargingStationGroup2)
+        {
+
+            if ((Object) ChargingStationGroup1 == null)
+                throw new ArgumentNullException(nameof(ChargingStationGroup1), "The given ChargingStationGroup1 must not be null!");
+
+            return ChargingStationGroup1.CompareTo(ChargingStationGroup2) > 0;
+
+        }
+
+        #endregion
+
+        #region Operator >= (ChargingStationGroup1, ChargingStationGroup2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStationGroup1">A charging station group.</param>
+        /// <param name="ChargingStationGroup2">Another charging station group.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (ChargingStationGroup ChargingStationGroup1, ChargingStationGroup ChargingStationGroup2)
+            => !(ChargingStationGroup1 < ChargingStationGroup2);
+
+        #endregion
+
+        #endregion
+
         #region IComparable<ChargingStationGroup> Members
 
         #region CompareTo(Object)
@@ -947,12 +933,11 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            // Check if the given object is a charging pool.
             var ChargingStationGroup = Object as ChargingStationGroup;
             if ((Object) ChargingStationGroup == null)
-                throw new ArgumentException("The given object is not a charging pool!");
+                throw new ArgumentException("The given object is not a charging pool!", nameof(Object));
 
             return CompareTo(ChargingStationGroup);
 
@@ -965,12 +950,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingStationGroup">A charging pool object to compare with.</param>
+        /// <param name="ChargingStationGroup">A charging station group object to compare with.</param>
         public Int32 CompareTo(ChargingStationGroup ChargingStationGroup)
         {
 
             if ((Object) ChargingStationGroup == null)
-                throw new ArgumentNullException("The given charging pool must not be null!");
+                throw new ArgumentNullException(nameof(ChargingStationGroup), "The given charging station group must not be null!");
 
             return Id.CompareTo(ChargingStationGroup.Id);
 
@@ -995,12 +980,11 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is a charging pool.
             var ChargingStationGroup = Object as ChargingStationGroup;
             if ((Object) ChargingStationGroup == null)
                 return false;
 
-            return this.Equals(ChargingStationGroup);
+            return Equals(ChargingStationGroup);
 
         }
 
@@ -1011,7 +995,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two charging pools for equality.
         /// </summary>
-        /// <param name="ChargingStationGroup">A charging pool to compare with.</param>
+        /// <param name="ChargingStationGroup">A charging station group to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(ChargingStationGroup ChargingStationGroup)
         {
@@ -1033,9 +1017,7 @@ namespace org.GraphDefined.WWCP
         /// Get the hashcode of this object.
         /// </summary>
         public override Int32 GetHashCode()
-        {
-            return Id.GetHashCode();
-        }
+            => Id.GetHashCode();
 
         #endregion
 
@@ -1045,9 +1027,7 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return Id.ToString();
-        }
+            => String.Concat(Id, ", ", Name.FirstText);
 
         #endregion
 
