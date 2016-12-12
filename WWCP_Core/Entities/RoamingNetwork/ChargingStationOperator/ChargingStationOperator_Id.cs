@@ -592,7 +592,7 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             return CountryCode.Equals(ChargingStationOperatorId.CountryCode) &&
-                   Suffix. Equals(ChargingStationOperatorId.Suffix);
+                   Suffix.     Equals(ChargingStationOperatorId.Suffix);
 
         }
 
