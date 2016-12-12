@@ -107,14 +107,14 @@ namespace org.GraphDefined.WWCP
 
             var _Array = EVSEId.ToString().Split('*', '-');
 
-            if (EVSEId.Format == OperatorIdFormats.ISO)
+            if (EVSEId.Format == OperatorIdFormats.ISO || EVSEId.Format == OperatorIdFormats.ISO_STAR)
             {
-                if (_Array[2].StartsWith("E"))
+                if (_Array[2].StartsWith("E", StringComparison.Ordinal))
                     _Array[2] = "S" + _Array[2].Substring(1);
             }
             else
             {
-                if (!_Array[2].StartsWith("S"))
+                if (!_Array[2].StartsWith("S", StringComparison.Ordinal))
                      _Array[2] = "S" + _Array[2];
             }
 
@@ -251,7 +251,11 @@ namespace org.GraphDefined.WWCP
 
                 var IdElements = Id.Split(new String[] { "*" }, StringSplitOptions.None);
 
-                return Parse(IdElements[0] + "*" + IdElements[1] + "*" + IdElements.Skip(2).Aggregate("*"));
+                return Parse(IdElements[0] +  "*" +
+                             IdElements[1] + "*S" +
+                             (EVSEIds.First().Format == OperatorIdFormats.DIN
+                                  ? IdElements.Skip(2).Aggregate("*")
+                                  : IdElements.Skip(2).Aggregate("*").Substring(1)));
 
             }
 
