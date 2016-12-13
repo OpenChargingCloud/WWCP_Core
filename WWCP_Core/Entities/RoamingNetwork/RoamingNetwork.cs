@@ -62,15 +62,12 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        //public Authorizator_Id AuthorizatorId { get; }
-
-
         #region Name
 
         private I18NString _Name;
 
         /// <summary>
-        /// An optional multi-language name of the roaming network.
+        /// The multi-language name of the roaming network.
         /// </summary>
         [Mandatory]
         public I18NString Name
@@ -203,6 +200,7 @@ namespace org.GraphDefined.WWCP
         /// Create a new roaming network having the given unique roaming network identification.
         /// </summary>
         /// <param name="Id">The unique identification of the roaming network.</param>
+        /// <param name="Name">The multi-language name of the roaming network.</param>
         /// <param name="Description">An optional multi-language description of the roaming network.</param>
         /// <param name="AdminStatus">The initial admin status of the roaming network.</param>
         /// <param name="Status">The initial status of the roaming network.</param>
@@ -6973,7 +6971,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CreateNewChargingPool(ParkingSpaceId = null, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateParkingSpace(ParkingSpaceId, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new parking space having the given
@@ -6983,10 +6981,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public ParkingSpace CreateNewParkingSpace(ParkingSpace_Id                          ParkingSpaceId  = null,
-                                                Action<ParkingSpace>                     Configurator   = null,
-                                                Action<ParkingSpace>                     OnSuccess      = null,
-                                                Action<ChargingStationOperator, ParkingSpace_Id>    OnError        = null)
+        public ParkingSpace CreateParkingSpace(ParkingSpace_Id                                   ParkingSpaceId,
+                                               Action<ParkingSpace>                              Configurator   = null,
+                                               Action<ParkingSpace>                              OnSuccess      = null,
+                                               Action<ChargingStationOperator, ParkingSpace_Id>  OnError        = null)
         {
 
             var _ParkingSpace = new ParkingSpace(ParkingSpaceId);

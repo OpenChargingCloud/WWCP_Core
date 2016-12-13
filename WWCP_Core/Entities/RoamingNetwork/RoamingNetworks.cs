@@ -114,7 +114,7 @@ namespace org.GraphDefined.WWCP
         /// unique roaming network identification.
         /// </summary>
         /// <param name="RoamingNetworkId">The unique identification of the new roaming network.</param>
-        /// <param name="AuthorizatorId">The unique identification for the Auth service.</param>
+        /// <param name="Name">The multi-language name of the roaming network.</param>
         /// <param name="Description">A multilanguage description of the roaming networks object.</param>
         /// <param name="Configurator">An optional delegate to configure the new roaming network after its creation.</param>
         /// <param name="AdminStatus">The initial admin status of the roaming network.</param>
@@ -126,7 +126,6 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationOperatorSignatureGenerator">A delegate to sign a charging station operator.</param>
         public RoamingNetwork CreateNewRoamingNetwork(RoamingNetwork_Id                         RoamingNetworkId,
                                                       I18NString                                Name,
-                                                      //String                                    AuthorizatorId                             = null,
                                                       I18NString                                Description                                = null,
                                                       Action<RoamingNetwork>                    Configurator                               = null,
                                                       RoamingNetworkAdminStatusType             AdminStatus                                = RoamingNetworkAdminStatusType.Operational,
@@ -152,7 +151,6 @@ namespace org.GraphDefined.WWCP
             var _RoamingNetwork = new RoamingNetwork(RoamingNetworkId,
                                                      Name,
                                                      Description,
-                                                     //AuthorizatorId,
                                                      AdminStatus,
                                                      Status,
                                                      MaxAdminStatusListSize,

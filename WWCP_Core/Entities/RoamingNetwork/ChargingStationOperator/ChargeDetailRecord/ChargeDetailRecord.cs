@@ -137,19 +137,19 @@ namespace org.GraphDefined.WWCP
         /// An optional charging reservation used before charging.
         /// </summary>
         [Optional]
-        public ChargingReservation     Reservation        { get; }
+        public ChargingReservation      Reservation        { get; }
 
         /// <summary>
         /// An optional charging reservation identification used before charging.
         /// </summary>
         [Optional]
-        public ChargingReservation_Id  ReservationId      { get; }
+        public ChargingReservation_Id?  ReservationId      { get; }
 
         /// <summary>
         /// Optional timestamps when the reservation started and ended.
         /// </summary>
         [Optional]
-        public StartEndDateTime?       ReservationTime    { get; }
+        public StartEndDateTime?        ReservationTime    { get; }
 
         #endregion
 
@@ -159,7 +159,7 @@ namespace org.GraphDefined.WWCP
         /// The optional identification of the parkging space.
         /// </summary>
         [Optional]
-        public ParkingSpace_Id    ParkingSpaceId    { get; }
+        public ParkingSpace_Id?   ParkingSpaceId    { get; }
 
         /// <summary>
         /// Optional timestamps when the parking started and ended.
@@ -171,7 +171,7 @@ namespace org.GraphDefined.WWCP
         /// The optional fee for parking.
         /// </summary>
         [Optional]
-        public Double?            ParkingFee        { get; }
+        public Decimal?           ParkingFee        { get; }
 
         #endregion
 
@@ -181,19 +181,19 @@ namespace org.GraphDefined.WWCP
         /// An optional unique identification of the energy meter.
         /// </summary>
         [Optional]
-        public EnergyMeter_Id                    EnergyMeterId          { get; }
+        public EnergyMeter_Id?                   EnergyMeterId          { get; }
 
         /// <summary>
         /// An optional enumeration of intermediate energy meter values.
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<Double>>  EnergyMeteringValues   { get; }
+        public IEnumerable<Timestamped<Single>>  EnergyMeteringValues   { get; }
 
         /// <summary>
         /// The optional sum of the consumed energy based on the meter values.
         /// </summary>
         [Optional]
-        public Double ConsumedEnergy
+        public Single ConsumedEnergy
         {
             get
             {
@@ -270,12 +270,12 @@ namespace org.GraphDefined.WWCP
                                   ChargingReservation_Id?           ReservationId            = null,
                                   StartEndDateTime?                 ReservationTime          = null,
 
-                                  ParkingSpace_Id                   ParkingSpaceId           = null,
+                                  ParkingSpace_Id?                  ParkingSpaceId           = null,
                                   StartEndDateTime?                 ParkingTime              = null,
-                                  Double?                           ParkingFee               = null,
+                                  Decimal?                          ParkingFee               = null,
 
-                                  EnergyMeter_Id                    EnergyMeterId            = null,
-                                  IEnumerable<Timestamped<Double>>  EnergyMeteringValues     = null,
+                                  EnergyMeter_Id?                   EnergyMeterId            = null,
+                                  IEnumerable<Timestamped<Single>>  EnergyMeteringValues     = null,
                                   String                            MeteringSignature        = null)
 
         {
@@ -305,7 +305,7 @@ namespace org.GraphDefined.WWCP
             this.ParkingFee               = ParkingFee;
 
             this.EnergyMeterId            = EnergyMeterId;
-            this.EnergyMeteringValues     = EnergyMeteringValues != null ? EnergyMeteringValues : new Timestamped<Double>[0];
+            this.EnergyMeteringValues     = EnergyMeteringValues != null ? EnergyMeteringValues : new Timestamped<Single>[0];
             this.MeteringSignature        = MeteringSignature;
 
         }

@@ -29,9 +29,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The unique identification of an energy meter.
     /// </summary>
-    public class EnergyMeter_Id : IId,
-                                  IEquatable<EnergyMeter_Id>,
-                                  IComparable<EnergyMeter_Id>
+    public struct EnergyMeter_Id : IId,
+                                   IEquatable <EnergyMeter_Id>,
+                                   IComparable<EnergyMeter_Id>
 
     {
 
@@ -40,11 +40,21 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The internal identification.
         /// </summary>
-        protected readonly String _Id;
+        private readonly String InternalId;
 
         #endregion
 
         #region Properties
+
+        #region New
+
+        /// <summary>
+        /// Returns a new energy meter identification.
+        /// </summary>
+        public static EnergyMeter_Id New
+            => EnergyMeter_Id.Parse(Guid.NewGuid().ToString());
+
+        #endregion
 
         #region Length
 
@@ -52,12 +62,8 @@ namespace org.GraphDefined.WWCP
         /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
-        {
-            get
-            {
-                return (UInt64) _Id.Length;
-            }
-        }
+
+            => (UInt64) InternalId.Length;
 
         #endregion
 
@@ -66,20 +72,12 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new energy meter identification based on the given string.
+        /// Create a new energy meter identification.
+        /// based on the given string.
         /// </summary>
         private EnergyMeter_Id(String Text)
         {
-
-            #region Initial checks
-
-            if (Text.IsNullOrEmpty())
-                throw new ArgumentException("The parameter must not be null or empty!", "Text");
-
-            #endregion
-
-            _Id = Text.Trim();
-
+            InternalId = Text;
         }
 
         #endregion
@@ -90,18 +88,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Parse the given string as an energy meter identification.
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Vehicle Roaming Network identification.</param>
+        /// <param name="Text">A text representation of an energy meter identification.</param>
         public static EnergyMeter_Id Parse(String Text)
-        {
 
-            EnergyMeter_Id _EnergyMeterId = null;
-
-            if (TryParse(Text, out _EnergyMeterId))
-                return _EnergyMeterId;
-
-            return null;
-
-        }
+            => new EnergyMeter_Id(Text);
 
         #endregion
 
@@ -114,10 +104,19 @@ namespace org.GraphDefined.WWCP
         /// <param name="EnergyMeterId">The parsed energy meter identification.</param>
         public static Boolean TryParse(String Text, out EnergyMeter_Id EnergyMeterId)
         {
+            try
+            {
 
-             EnergyMeterId = new EnergyMeter_Id(Text);
-             return true;
+                EnergyMeterId = new EnergyMeter_Id(Text);
 
+                return true;
+
+            }
+            catch (Exception)
+            {
+                EnergyMeterId = default(EnergyMeter_Id);
+                return false;
+            }
         }
 
         #endregion
@@ -128,12 +127,10 @@ namespace org.GraphDefined.WWCP
         /// Clone this energy meter identification.
         /// </summary>
         public EnergyMeter_Id Clone
-        {
-            get
-            {
-                return new EnergyMeter_Id(new String(_Id.ToCharArray()));
-            }
-        }
+
+            => new EnergyMeter_Id(
+                   new String(InternalId.ToCharArray())
+               );
 
         #endregion
 
@@ -145,7 +142,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EnergyMeterId1">A energy meter identification.</param>
+        /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (EnergyMeter_Id EnergyMeterId1, EnergyMeter_Id EnergyMeterId2)
@@ -170,13 +167,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EnergyMeterId1">A energy meter identification.</param>
+        /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EnergyMeter_Id EnergyMeterId1, EnergyMeter_Id EnergyMeterId2)
-        {
-            return !(EnergyMeterId1 == EnergyMeterId2);
-        }
+            => !(EnergyMeterId1 == EnergyMeterId2);
 
         #endregion
 
@@ -185,14 +180,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EnergyMeterId1">A energy meter identification.</param>
+        /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (EnergyMeter_Id EnergyMeterId1, EnergyMeter_Id EnergyMeterId2)
         {
 
             if ((Object) EnergyMeterId1 == null)
-                throw new ArgumentNullException("The given energy meter identification must not be null!");
+                throw new ArgumentNullException(nameof(EnergyMeterId1), "The given EnergyMeterId1 must not be null!");
 
             return EnergyMeterId1.CompareTo(EnergyMeterId2) < 0;
 
@@ -205,13 +200,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EnergyMeterId1">A energy meter identification.</param>
+        /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (EnergyMeter_Id EnergyMeterId1, EnergyMeter_Id EnergyMeterId2)
-        {
-            return !(EnergyMeterId1 > EnergyMeterId2);
-        }
+            => !(EnergyMeterId1 > EnergyMeterId2);
 
         #endregion
 
@@ -220,14 +213,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EnergyMeterId1">A energy meter identification.</param>
+        /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (EnergyMeter_Id EnergyMeterId1, EnergyMeter_Id EnergyMeterId2)
         {
 
             if ((Object) EnergyMeterId1 == null)
-                throw new ArgumentNullException("The given energy meter identification must not be null!");
+                throw new ArgumentNullException(nameof(EnergyMeterId1), "The given EnergyMeterId1 must not be null!");
 
             return EnergyMeterId1.CompareTo(EnergyMeterId2) > 0;
 
@@ -240,19 +233,17 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EnergyMeterId1">A energy meter identification.</param>
+        /// <param name="EnergyMeterId1">An energy meter identification.</param>
         /// <param name="EnergyMeterId2">Another energy meter identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (EnergyMeter_Id EnergyMeterId1, EnergyMeter_Id EnergyMeterId2)
-        {
-            return !(EnergyMeterId1 < EnergyMeterId2);
-        }
+            => !(EnergyMeterId1 < EnergyMeterId2);
 
         #endregion
 
         #endregion
 
-        #region IComparable<EnergyMeter_Id> Members
+        #region IComparable<EnergyMeterId> Members
 
         #region CompareTo(Object)
 
@@ -264,14 +255,13 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            // Check if the given object is an energy meter identification.
-            var EnergyMeterId = Object as EnergyMeter_Id;
-            if ((Object) EnergyMeterId == null)
-                throw new ArgumentException("The given object is not a energy meter identification!");
+            if (!(Object is EnergyMeter_Id))
+                throw new ArgumentException("The given object is not an energy meter identification!",
+                                            nameof(Object));
 
-            return CompareTo(EnergyMeterId);
+            return CompareTo((EnergyMeter_Id) Object);
 
         }
 
@@ -287,9 +277,15 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) EnergyMeterId == null)
-                throw new ArgumentNullException("The given energy meter identification must not be null!");
+                throw new ArgumentNullException(nameof(EnergyMeterId),  "The given energy meter identification must not be null!");
 
-            return _Id.CompareTo(EnergyMeterId._Id);
+            // Compare the length of the EnergyMeterIds
+            var _Result = this.Length.CompareTo(EnergyMeterId.Length);
+
+            if (_Result == 0)
+                _Result = String.Compare(InternalId, EnergyMeterId.InternalId, StringComparison.Ordinal);
+
+            return _Result;
 
         }
 
@@ -297,7 +293,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<EnergyMeter_Id> Members
+        #region IEquatable<EnergyMeterId> Members
 
         #region Equals(Object)
 
@@ -312,12 +308,10 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an energy meter identification.
-            var EnergyMeterId = Object as EnergyMeter_Id;
-            if ((Object) EnergyMeterId == null)
+            if (!(Object is EnergyMeter_Id))
                 return false;
 
-            return this.Equals(EnergyMeterId);
+            return Equals((EnergyMeter_Id) Object);
 
         }
 
@@ -326,9 +320,9 @@ namespace org.GraphDefined.WWCP
         #region Equals(EnergyMeterId)
 
         /// <summary>
-        /// Compares two energy meter identifications for equality.
+        /// Compares two EnergyMeterIds for equality.
         /// </summary>
-        /// <param name="EnergyMeterId">Another energy meter identification to compare with.</param>
+        /// <param name="EnergyMeterId">A EnergyMeterId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
         public Boolean Equals(EnergyMeter_Id EnergyMeterId)
         {
@@ -336,7 +330,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) EnergyMeterId == null)
                 return false;
 
-            return _Id.Equals(EnergyMeterId._Id);
+            return InternalId.Equals(EnergyMeterId.InternalId);
 
         }
 
@@ -351,9 +345,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            return _Id.GetHashCode();
-        }
+            => InternalId.GetHashCode();
 
         #endregion
 
@@ -363,9 +355,7 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return _Id.ToString();
-        }
+            => InternalId;
 
         #endregion
 

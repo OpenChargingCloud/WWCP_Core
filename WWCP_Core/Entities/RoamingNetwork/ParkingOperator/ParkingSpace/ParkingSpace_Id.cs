@@ -25,20 +25,20 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The unique identification of an Electric Vehicle parking space (EVPS Id).
+    /// The unique identification of a parking space.
     /// </summary>
-    public class ParkingSpace_Id : IId,
-                                   IEquatable<ParkingSpace_Id>,
-                                   IComparable<ParkingSpace_Id>
+    public struct ParkingSpace_Id : IId,
+                                    IEquatable <ParkingSpace_Id>,
+                                    IComparable<ParkingSpace_Id>
 
-    {
+{
 
         #region Data
 
         /// <summary>
         /// The internal identification.
         /// </summary>
-        protected readonly String _Id;
+        private readonly String InternalId;
 
         #endregion
 
@@ -47,15 +47,10 @@ namespace org.GraphDefined.WWCP
         #region New
 
         /// <summary>
-        /// Generate a new unique identification of an Electric Vehicle parking space (EVPS Id).
+        /// Returns a new parking space identification.
         /// </summary>
         public static ParkingSpace_Id New
-        {
-            get
-            {
-                return new ParkingSpace_Id(Guid.NewGuid().ToString());
-            }
-        }
+            => ParkingSpace_Id.Parse(Guid.NewGuid().ToString());
 
         #endregion
 
@@ -65,12 +60,8 @@ namespace org.GraphDefined.WWCP
         /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
-        {
-            get
-            {
-                return (UInt64) _Id.Length;
-            }
-        }
+
+            => (UInt64) InternalId.Length;
 
         #endregion
 
@@ -79,12 +70,12 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Generate a new Electric Vehicle parking space (EVPS Id)
+        /// Create a new parking space identification.
         /// based on the given string.
         /// </summary>
-        private ParkingSpace_Id(String String)
+        private ParkingSpace_Id(String Text)
         {
-            _Id = String.Trim();
+            InternalId = Text;
         }
 
         #endregion
@@ -93,33 +84,35 @@ namespace org.GraphDefined.WWCP
         #region Parse(Text)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle parking space identification (EVPS Id).
+        /// Parse the given string as a parking space identification.
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Vehicle parking space identification.</param>
+        /// <param name="Text">A text representation of a parking space identification.</param>
         public static ParkingSpace_Id Parse(String Text)
-        {
-            return new ParkingSpace_Id(Text);
-        }
+
+            => new ParkingSpace_Id(Text);
 
         #endregion
 
-        #region TryParse(Text, out ChargingPoolId)
+        #region TryParse(Text, out ParkingSpaceId)
 
         /// <summary>
-        /// Parse the given string as an Electric Vehicle parking space identification (EVPS Id).
+        /// Parse the given string as a parking space identification.
         /// </summary>
-        /// <param name="Text">A text representation of an Electric Vehicle parking space identification.</param>
-        /// <param name="ParkingSpaceId">The parsed Electric Vehicle parking space identification.</param>
+        /// <param name="Text">A text representation of a parking space identification.</param>
+        /// <param name="ParkingSpaceId">The parsed parking space identification.</param>
         public static Boolean TryParse(String Text, out ParkingSpace_Id ParkingSpaceId)
         {
             try
             {
+
                 ParkingSpaceId = new ParkingSpace_Id(Text);
+
                 return true;
+
             }
             catch (Exception)
             {
-                ParkingSpaceId = null;
+                ParkingSpaceId = default(ParkingSpace_Id);
                 return false;
             }
         }
@@ -129,134 +122,126 @@ namespace org.GraphDefined.WWCP
         #region Clone
 
         /// <summary>
-        /// Clone this Electric Vehicle parking space identification.
+        /// Clone this parking space identification.
         /// </summary>
         public ParkingSpace_Id Clone
-        {
-            get
-            {
-                return new ParkingSpace_Id(_Id);
-            }
-        }
+
+            => new ParkingSpace_Id(
+                   new String(InternalId.ToCharArray())
+               );
 
         #endregion
 
 
         #region Operator overloading
 
-        #region Operator == (EVPS_Id1, EVPS_Id2)
+        #region Operator == (ParkingSpaceId1, ParkingSpaceId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVPS_Id1">A EVPS_Id.</param>
-        /// <param name="EVPS_Id2">Another EVPS_Id.</param>
+        /// <param name="ParkingSpaceId1">A parking space identification.</param>
+        /// <param name="ParkingSpaceId2">Another parking space identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (ParkingSpace_Id EVPS_Id1, ParkingSpace_Id EVPS_Id2)
+        public static Boolean operator == (ParkingSpace_Id ParkingSpaceId1, ParkingSpace_Id ParkingSpaceId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(EVPS_Id1, EVPS_Id2))
+            if (Object.ReferenceEquals(ParkingSpaceId1, ParkingSpaceId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) EVPS_Id1 == null) || ((Object) EVPS_Id2 == null))
+            if (((Object) ParkingSpaceId1 == null) || ((Object) ParkingSpaceId2 == null))
                 return false;
 
-            return EVPS_Id1.Equals(EVPS_Id2);
+            return ParkingSpaceId1.Equals(ParkingSpaceId2);
 
         }
 
         #endregion
 
-        #region Operator != (EVPS_Id1, EVPS_Id2)
+        #region Operator != (ParkingSpaceId1, ParkingSpaceId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVPS_Id1">A EVPS_Id.</param>
-        /// <param name="EVPS_Id2">Another EVPS_Id.</param>
+        /// <param name="ParkingSpaceId1">A parking space identification.</param>
+        /// <param name="ParkingSpaceId2">Another parking space identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (ParkingSpace_Id EVPS_Id1, ParkingSpace_Id EVPS_Id2)
-        {
-            return !(EVPS_Id1 == EVPS_Id2);
-        }
+        public static Boolean operator != (ParkingSpace_Id ParkingSpaceId1, ParkingSpace_Id ParkingSpaceId2)
+            => !(ParkingSpaceId1 == ParkingSpaceId2);
 
         #endregion
 
-        #region Operator <  (EVPS_Id1, EVPS_Id2)
+        #region Operator <  (ParkingSpaceId1, ParkingSpaceId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVPS_Id1">A EVPS_Id.</param>
-        /// <param name="EVPS_Id2">Another EVPS_Id.</param>
+        /// <param name="ParkingSpaceId1">A parking space identification.</param>
+        /// <param name="ParkingSpaceId2">Another parking space identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (ParkingSpace_Id EVPS_Id1, ParkingSpace_Id EVPS_Id2)
+        public static Boolean operator < (ParkingSpace_Id ParkingSpaceId1, ParkingSpace_Id ParkingSpaceId2)
         {
 
-            if ((Object) EVPS_Id1 == null)
-                throw new ArgumentNullException("The given EVPS_Id1 must not be null!");
+            if ((Object) ParkingSpaceId1 == null)
+                throw new ArgumentNullException(nameof(ParkingSpaceId1), "The given ParkingSpaceId1 must not be null!");
 
-            return EVPS_Id1.CompareTo(EVPS_Id2) < 0;
+            return ParkingSpaceId1.CompareTo(ParkingSpaceId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (EVPS_Id1, EVPS_Id2)
+        #region Operator <= (ParkingSpaceId1, ParkingSpaceId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVPS_Id1">A EVPS_Id.</param>
-        /// <param name="EVPS_Id2">Another EVPS_Id.</param>
+        /// <param name="ParkingSpaceId1">A parking space identification.</param>
+        /// <param name="ParkingSpaceId2">Another parking space identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (ParkingSpace_Id EVPS_Id1, ParkingSpace_Id EVPS_Id2)
-        {
-            return !(EVPS_Id1 > EVPS_Id2);
-        }
+        public static Boolean operator <= (ParkingSpace_Id ParkingSpaceId1, ParkingSpace_Id ParkingSpaceId2)
+            => !(ParkingSpaceId1 > ParkingSpaceId2);
 
         #endregion
 
-        #region Operator >  (EVPS_Id1, EVPS_Id2)
+        #region Operator >  (ParkingSpaceId1, ParkingSpaceId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVPS_Id1">A EVPS_Id.</param>
-        /// <param name="EVPS_Id2">Another EVPS_Id.</param>
+        /// <param name="ParkingSpaceId1">A parking space identification.</param>
+        /// <param name="ParkingSpaceId2">Another parking space identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (ParkingSpace_Id EVPS_Id1, ParkingSpace_Id EVPS_Id2)
+        public static Boolean operator > (ParkingSpace_Id ParkingSpaceId1, ParkingSpace_Id ParkingSpaceId2)
         {
 
-            if ((Object) EVPS_Id1 == null)
-                throw new ArgumentNullException("The given EVPS_Id1 must not be null!");
+            if ((Object) ParkingSpaceId1 == null)
+                throw new ArgumentNullException(nameof(ParkingSpaceId1), "The given ParkingSpaceId1 must not be null!");
 
-            return EVPS_Id1.CompareTo(EVPS_Id2) > 0;
+            return ParkingSpaceId1.CompareTo(ParkingSpaceId2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (EVPS_Id1, EVPS_Id2)
+        #region Operator >= (ParkingSpaceId1, ParkingSpaceId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVPS_Id1">A EVPS_Id.</param>
-        /// <param name="EVPS_Id2">Another EVPS_Id.</param>
+        /// <param name="ParkingSpaceId1">A parking space identification.</param>
+        /// <param name="ParkingSpaceId2">Another parking space identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (ParkingSpace_Id EVPS_Id1, ParkingSpace_Id EVPS_Id2)
-        {
-            return !(EVPS_Id1 < EVPS_Id2);
-        }
+        public static Boolean operator >= (ParkingSpace_Id ParkingSpaceId1, ParkingSpace_Id ParkingSpaceId2)
+            => !(ParkingSpaceId1 < ParkingSpaceId2);
 
         #endregion
 
         #endregion
 
-        #region IComparable<EVPS_Id> Members
+        #region IComparable<ParkingSpaceId> Members
 
         #region CompareTo(Object)
 
@@ -268,37 +253,35 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            // Check if the given object is an EVPS_Id.
-            var EVPS_Id = Object as ParkingSpace_Id;
-            if ((Object) EVPS_Id == null)
-                throw new ArgumentException("The given object is not a EVPS_Id!");
+            if (!(Object is ParkingSpace_Id))
+                throw new ArgumentException("The given object is not a parking space identification!",
+                                            nameof(Object));
 
-            return CompareTo(EVPS_Id);
+            return CompareTo((ParkingSpace_Id) Object);
 
         }
 
         #endregion
 
-        #region CompareTo(EVPS_Id)
+        #region CompareTo(ParkingSpaceId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="EVPS_Id">An object to compare with.</param>
-        public Int32 CompareTo(ParkingSpace_Id EVPS_Id)
+        /// <param name="ParkingSpaceId">An object to compare with.</param>
+        public Int32 CompareTo(ParkingSpace_Id ParkingSpaceId)
         {
 
-            if ((Object) EVPS_Id == null)
-                throw new ArgumentNullException("The given EVPS_Id must not be null!");
+            if ((Object) ParkingSpaceId == null)
+                throw new ArgumentNullException(nameof(ParkingSpaceId),  "The given parking space identification must not be null!");
 
-            // Compare the length of the EVP_Ids
-            var _Result = this.Length.CompareTo(EVPS_Id.Length);
+            // Compare the length of the ParkingSpaceIds
+            var _Result = this.Length.CompareTo(ParkingSpaceId.Length);
 
-            // If equal: Compare Ids
             if (_Result == 0)
-                _Result = _Id.CompareTo(EVPS_Id._Id);
+                _Result = String.Compare(InternalId, ParkingSpaceId.InternalId, StringComparison.Ordinal);
 
             return _Result;
 
@@ -308,7 +291,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<EVPS_Id> Members
+        #region IEquatable<ParkingSpaceId> Members
 
         #region Equals(Object)
 
@@ -323,31 +306,29 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an EVPS_Id.
-            var EVPS_Id = Object as ParkingSpace_Id;
-            if ((Object) EVPS_Id == null)
+            if (!(Object is ParkingSpace_Id))
                 return false;
 
-            return this.Equals(EVPS_Id);
+            return Equals((ParkingSpace_Id) Object);
 
         }
 
         #endregion
 
-        #region Equals(EVPS_Id)
+        #region Equals(ParkingSpaceId)
 
         /// <summary>
-        /// Compares two electric vehicle charging service plan identifications for equality.
+        /// Compares two ParkingSpaceIds for equality.
         /// </summary>
-        /// <param name="EVPS_Id">An electric vehicle charging service plan identification to compare with.</param>
+        /// <param name="ParkingSpaceId">A ParkingSpaceId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ParkingSpace_Id EVPS_Id)
+        public Boolean Equals(ParkingSpace_Id ParkingSpaceId)
         {
 
-            if ((Object) EVPS_Id == null)
+            if ((Object) ParkingSpaceId == null)
                 return false;
 
-            return _Id.Equals(EVPS_Id._Id);
+            return InternalId.Equals(ParkingSpaceId.InternalId);
 
         }
 
@@ -362,9 +343,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
-        {
-            return _Id.GetHashCode();
-        }
+            => InternalId.GetHashCode();
 
         #endregion
 
@@ -374,9 +353,7 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return _Id.ToString();
-        }
+            => InternalId;
 
         #endregion
 

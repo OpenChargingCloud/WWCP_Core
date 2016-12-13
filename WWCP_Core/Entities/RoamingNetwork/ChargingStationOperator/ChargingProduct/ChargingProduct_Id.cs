@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP
     /// The unique identification of a charging product.
     /// </summary>
     public struct ChargingProduct_Id : IId,
-                                       IEquatable<ChargingProduct_Id>,
+                                       IEquatable <ChargingProduct_Id>,
                                        IComparable<ChargingProduct_Id>
 
     {
@@ -141,8 +141,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProductId1">A charging product identification</param>
-        /// <param name="ChargingProductId2">Another charging product identification</param>
+        /// <param name="ChargingProductId1">A charging product identification.</param>
+        /// <param name="ChargingProductId2">Another charging product identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator == (ChargingProduct_Id ChargingProductId1, ChargingProduct_Id ChargingProductId2)
         {
@@ -166,8 +166,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProductId1">A charging product identification</param>
-        /// <param name="ChargingProductId2">Another charging product identification</param>
+        /// <param name="ChargingProductId1">A charging product identification.</param>
+        /// <param name="ChargingProductId2">Another charging product identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (ChargingProduct_Id ChargingProductId1, ChargingProduct_Id ChargingProductId2)
             => !(ChargingProductId1 == ChargingProductId2);
@@ -179,8 +179,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProductId1">A charging product identification</param>
-        /// <param name="ChargingProductId2">Another charging product identification</param>
+        /// <param name="ChargingProductId1">A charging product identification.</param>
+        /// <param name="ChargingProductId2">Another charging product identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator < (ChargingProduct_Id ChargingProductId1, ChargingProduct_Id ChargingProductId2)
         {
@@ -199,8 +199,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProductId1">A charging product identification</param>
-        /// <param name="ChargingProductId2">Another charging product identification</param>
+        /// <param name="ChargingProductId1">A charging product identification.</param>
+        /// <param name="ChargingProductId2">Another charging product identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (ChargingProduct_Id ChargingProductId1, ChargingProduct_Id ChargingProductId2)
             => !(ChargingProductId1 > ChargingProductId2);
@@ -212,8 +212,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProductId1">A charging product identification</param>
-        /// <param name="ChargingProductId2">Another charging product identification</param>
+        /// <param name="ChargingProductId1">A charging product identification.</param>
+        /// <param name="ChargingProductId2">Another charging product identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator > (ChargingProduct_Id ChargingProductId1, ChargingProduct_Id ChargingProductId2)
         {
@@ -232,8 +232,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProductId1">A charging product identification</param>
-        /// <param name="ChargingProductId2">Another charging product identification</param>
+        /// <param name="ChargingProductId1">A charging product identification.</param>
+        /// <param name="ChargingProductId2">Another charging product identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (ChargingProduct_Id ChargingProductId1, ChargingProduct_Id ChargingProductId2)
             => !(ChargingProductId1 < ChargingProductId2);
@@ -357,7 +357,6 @@ namespace org.GraphDefined.WWCP
             => InternalId;
 
         #endregion
-
 
     }
 
