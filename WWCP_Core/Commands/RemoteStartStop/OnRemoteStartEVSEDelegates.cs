@@ -37,24 +37,28 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
+    /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
+    /// <param name="PlannedDuration">The optional planned duration of the charging.</param>
+    /// <param name="PlannedEnergy">The optional planned amount of energy to charge.</param>
     /// <param name="ReservationId">The unique identification for a charging reservation.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-    /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnRemoteStartEVSERequestDelegate(DateTime                 LogTimestamp,
-                                                          DateTime                 RequestTimestamp,
-                                                          Object                   Sender,
-                                                          EventTracking_Id         EventTrackingId,
-                                                          RoamingNetwork_Id        RoamingNetworkId,
-                                                          EVSE_Id                  EVSEId,
-                                                          ChargingProduct_Id?      ChargingProductId,
-                                                          ChargingReservation_Id?  ReservationId,
-                                                          ChargingSession_Id?      SessionId,
-                                                          eMobilityProvider_Id?    ProviderId,
-                                                          eMobilityAccount_Id?     eMAId,
-                                                          TimeSpan?                RequestTimeout);
+    public delegate void OnRemoteStartEVSERequestDelegate(DateTime                  LogTimestamp,
+                                                          DateTime                  RequestTimestamp,
+                                                          Object                    Sender,
+                                                          EventTracking_Id          EventTrackingId,
+                                                          RoamingNetwork_Id         RoamingNetworkId,
+                                                          EVSE_Id                   EVSEId,
+                                                          ChargingProduct_Id?       ChargingProductId,
+                                                          TimeSpan?                 PlannedDuration,
+                                                          Double?                   PlannedEnergy,
+                                                          ChargingReservation_Id?   ReservationId,
+                                                          ChargingSession_Id?       SessionId,
+                                                          eMobilityProvider_Id?     ProviderId,
+                                                          eMobilityAccount_Id?      eMAId,
+                                                          TimeSpan?                 RequestTimeout);
 
 
     /// <summary>
@@ -71,16 +75,16 @@ namespace org.GraphDefined.WWCP
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<RemoteStartEVSEResult> OnRemoteStartEVSEDelegate(DateTime                 Timestamp,
-                                                                          CancellationToken        CancellationToken,
-                                                                          EventTracking_Id         EventTrackingId,
-                                                                          EVSE_Id                  EVSEId,
-                                                                          ChargingProduct_Id?      ChargingProductId,
-                                                                          ChargingReservation_Id?  ReservationId,
-                                                                          ChargingSession_Id?      SessionId,
-                                                                          eMobilityProvider_Id?    ProviderId,
-                                                                          eMobilityAccount_Id?     eMAId,
-                                                                          TimeSpan?                RequestTimeout  = null);
+    public delegate Task<RemoteStartEVSEResult> OnRemoteStartEVSEDelegate(DateTime                  Timestamp,
+                                                                          CancellationToken         CancellationToken,
+                                                                          EventTracking_Id          EventTrackingId,
+                                                                          EVSE_Id                   EVSEId,
+                                                                          ChargingProduct_Id?       ChargingProductId,
+                                                                          ChargingReservation_Id?   ReservationId,
+                                                                          ChargingSession_Id?       SessionId,
+                                                                          eMobilityProvider_Id?     ProviderId,
+                                                                          eMobilityAccount_Id?      eMAId,
+                                                                          TimeSpan?                 RequestTimeout  = null);
 
 
     /// <summary>
@@ -92,27 +96,31 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
+    /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
+    /// <param name="PlannedDuration">The optional planned duration of the charging.</param>
+    /// <param name="PlannedEnergy">The optional planned amount of energy to charge.</param>
     /// <param name="ReservationId">The unique identification for a charging reservation.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-    /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote start result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate void OnRemoteStartEVSEResponseDelegate(DateTime                 LogTimestamp,
-                                                           DateTime                 RequestTimestamp,
-                                                           Object                   Sender,
-                                                           EventTracking_Id         EventTrackingId,
-                                                           RoamingNetwork_Id        RoamingNetworkId,
-                                                           EVSE_Id                  EVSEId,
-                                                           ChargingProduct_Id?      ChargingProductId,
-                                                           ChargingReservation_Id?  ReservationId,
-                                                           ChargingSession_Id?      SessionId,
-                                                           eMobilityProvider_Id?    ProviderId,
-                                                           eMobilityAccount_Id?     eMAId,
-                                                           TimeSpan?                RequestTimeout,
-                                                           RemoteStartEVSEResult    Result,
-                                                           TimeSpan                 Runtime);
+    public delegate void OnRemoteStartEVSEResponseDelegate(DateTime                  LogTimestamp,
+                                                           DateTime                  RequestTimestamp,
+                                                           Object                    Sender,
+                                                           EventTracking_Id          EventTrackingId,
+                                                           RoamingNetwork_Id         RoamingNetworkId,
+                                                           EVSE_Id                   EVSEId,
+                                                           ChargingProduct_Id?       ChargingProductId,
+                                                           TimeSpan?                 PlannedDuration,
+                                                           Double?                   PlannedEnergy,
+                                                           ChargingReservation_Id?   ReservationId,
+                                                           ChargingSession_Id?       SessionId,
+                                                           eMobilityProvider_Id?     ProviderId,
+                                                           eMobilityAccount_Id?      eMAId,
+                                                           TimeSpan?                 RequestTimeout,
+                                                           RemoteStartEVSEResult     Result,
+                                                           TimeSpan                  Runtime);
 
 }

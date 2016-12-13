@@ -41,13 +41,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The regular expression for parsing a charging reservation identification.
         /// </summary>
-        public static readonly Regex  ReservationId_RegEx  = new Regex(@"^([A-Za-z]{2}\*?[A-Za-z0-9]{3})\*?R([A-Za-z0-9][A-Za-z0-9\*]{0,30})$",
-                                                                       RegexOptions.IgnorePatternWhitespace);
-
-        /// <summary>
-        /// The regular expression for parsing a charging reservation identification suffix.
-        /// </summary>
-        public static readonly Regex  IdSuffixISO_RegEx    = new Regex(@"^([A-Za-z0-9\*]{1,30})$",
+        public static readonly Regex  ReservationId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?R([A-Za-z0-9][A-Za-z0-9\*\-]{0,50})$", // The GUID in OICP is atleast 36 characters long!
                                                                        RegexOptions.IgnorePatternWhitespace);
 
         #endregion
@@ -124,11 +118,6 @@ namespace org.GraphDefined.WWCP
                 return new ChargingReservation_Id(_OperatorId,
                                                   MatchCollection[0].Groups[2].Value);
 
-            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[3].Value, out _OperatorId))
-                return new ChargingReservation_Id(_OperatorId,
-                                                  MatchCollection[0].Groups[4].Value);
-
-
             throw new ArgumentException("Illegal charging reservation identification '" + Text + "'!",
                                         nameof(Text));
 
@@ -145,16 +134,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="Suffix">The suffix of the charging reservation identification.</param>
         public static ChargingReservation_Id Parse(ChargingStationOperator_Id  OperatorId,
                                                    String                      Suffix)
-        {
 
-            if (!IdSuffixISO_RegEx.IsMatch(Suffix))
-                    throw new ArgumentException("Illegal charging reservation identification suffix '" + Suffix + "'!",
-                                                nameof(Suffix));
-
-            return new ChargingReservation_Id(OperatorId,
-                                              Suffix);
-
-        }
+            => Parse(OperatorId.ToString() + "*R" + Suffix);
 
         #endregion
 
@@ -221,6 +202,19 @@ namespace org.GraphDefined.WWCP
             return false;
 
         }
+
+        #endregion
+
+        #region TryParse(OperatorId, Suffix, out ChargingReservation_Id)
+
+        /// <summary>
+        /// Parse the given string as a charging reservation identification.
+        /// </summary>
+        public static Boolean TryParse(ChargingStationOperator_Id  OperatorId,
+                                       String                      Suffix,
+                                       out ChargingReservation_Id  ReservationId)
+
+            => TryParse(OperatorId.ToString() + "*R"  + Suffix, out ReservationId);
 
         #endregion
 

@@ -1160,6 +1160,7 @@ namespace org.GraphDefined.WWCP
 
             CancelReservation(ChargingReservation_Id                 ReservationId,
                               ChargingReservationCancellationReason  Reason,
+                              eMobilityProvider_Id?                  ProviderId         = null,
 
                               DateTime?                              Timestamp          = null,
                               CancellationToken?                     CancellationToken  = null,
@@ -1188,25 +1189,36 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (_Reservation == null)
-                    result = CancelReservationResult.Success(ReservationId);
+                    result = CancelReservationResult.Success(ReservationId,
+                                                             Reason);
 
                 if (_Reservation.Id != ReservationId)
-                    result = CancelReservationResult.UnknownReservationId(ReservationId);
+                    result = CancelReservationResult.UnknownReservationId(ReservationId,
+                                                                          Reason);
 
 
                 var SavedReservation = _Reservation;
 
                 _Reservation = null;
 
+                result = CancelReservationResult.Success(ReservationId,
+                                                         Reason,
+                                                         SavedReservation,
+                                                         TimeSpan.FromMilliseconds(5));
+
                 SendOnReservationCancelled(DateTime.Now,
                                            Timestamp.Value,
                                            this,
                                            EventTrackingId,
+                                           new RoamingNetwork_Id?(),
+                                           ProviderId,
                                            SavedReservation.Id,
                                            SavedReservation,
-                                           Reason);
+                                           Reason,
+                                           result,
+                                           TimeSpan.FromMilliseconds(5),
+                                           RequestTimeout);
 
-                result = CancelReservationResult.Success(ReservationId);
 
             }
             else
@@ -1216,7 +1228,9 @@ namespace org.GraphDefined.WWCP
                 {
 
                     default:
-                        result = CancelReservationResult.OutOfService;
+                        result = CancelReservationResult.OutOfService(ReservationId,
+                                                                      Reason,
+                                                                      Runtime: TimeSpan.FromMilliseconds(5));
                         break;
 
                 }
@@ -1234,16 +1248,22 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a charging reservation was deleted.
         /// </summary>
-        public event OnReservationCancelledInternalDelegate OnReservationCancelled;
+        public event OnCancelReservationResponseDelegate OnReservationCancelled;
 
 
         internal void SendOnReservationCancelled(DateTime                               LogTimestamp,
                                                  DateTime                               RequestTimestamp,
                                                  Object                                 Sender,
                                                  EventTracking_Id                       EventTrackingId,
+
+                                                 RoamingNetwork_Id?                     RoamingNetworkId,
+                                                 eMobilityProvider_Id?                  ProviderId,
                                                  ChargingReservation_Id                 ReservationId,
                                                  ChargingReservation                    Reservation,
-                                                 ChargingReservationCancellationReason  Reason)
+                                                 ChargingReservationCancellationReason  Reason,
+                                                 CancelReservationResult                Result,
+                                                 TimeSpan                               Runtime,
+                                                 TimeSpan?                              RequestTimeout)
         {
 
             // Yes, this is really needed!
@@ -1253,9 +1273,14 @@ namespace org.GraphDefined.WWCP
                                            RequestTimestamp,
                                            Sender,
                                            EventTrackingId,
+                                           RoamingNetworkId,
+                                           ProviderId,
                                            ReservationId,
                                            Reservation,
-                                           Reason);
+                                           Reason,
+                                           Result,
+                                           Runtime,
+                                           RequestTimeout);
 
         }
 
@@ -1285,6 +1310,8 @@ namespace org.GraphDefined.WWCP
         /// Start a charging session.
         /// </summary>
         /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
+        /// <param name="PlannedDuration">An optional maximum time span to charge. When it is reached, the charging process will stop automatically.</param>
+        /// <param name="PlannedEnergy">An optional maximum amount of energy to charge. When it is reached, the charging process will stop automatically.</param>
         /// <param name="ReservationId">The unique identification for a charging reservation.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
@@ -1297,6 +1324,8 @@ namespace org.GraphDefined.WWCP
         public async Task<RemoteStartEVSEResult>
 
             RemoteStart(ChargingProduct_Id?      ChargingProductId   = null,
+                        TimeSpan?                PlannedDuration     = null,
+                        Single?                  PlannedEnergy       = null,
                         ChargingReservation_Id?  ReservationId       = null,
                         ChargingSession_Id?      SessionId           = null,
                         eMobilityProvider_Id?    ProviderId          = null,
@@ -1334,6 +1363,8 @@ namespace org.GraphDefined.WWCP
                                       _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
                                       Id,
                                       ChargingProductId,
+                                      PlannedDuration,
+                                      PlannedEnergy,
                                       ReservationId,
                                       SessionId,
                                       ProviderId,
@@ -1360,6 +1391,8 @@ namespace org.GraphDefined.WWCP
                                        ChargingStation.
                                        RemoteStart(Id,
                                                    ChargingProductId,
+                                                   PlannedDuration,
+                                                   PlannedEnergy,
                                                    ReservationId,
                                                    SessionId,
                                                    ProviderId,
@@ -1408,6 +1441,8 @@ namespace org.GraphDefined.WWCP
                                         _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
                                         Id,
                                         ChargingProductId,
+                                        PlannedDuration,
+                                        PlannedEnergy,
                                         ReservationId,
                                         SessionId,
                                         ProviderId,

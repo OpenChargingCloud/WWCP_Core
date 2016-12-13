@@ -3392,6 +3392,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSEId">The unique identification of the EVSE to be started.</param>
         /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
+        /// <param name="PlannedDuration">The optional planned duration of the charging.</param>
+        /// <param name="PlannedEnergy">The optional planned amount of energy to charge.</param>
         /// <param name="ReservationId">The unique identification for a charging reservation.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="eMAId">The unique identification of the e-mobility account.</param>
@@ -3404,6 +3406,8 @@ namespace org.GraphDefined.WWCP
 
             RemoteStart(EVSE_Id                  EVSEId,
                         ChargingProduct_Id?      ChargingProductId   = null,
+                        TimeSpan?                PlannedDuration     = null,
+                        Single?                  PlannedEnergy       = null,
                         ChargingReservation_Id?  ReservationId       = null,
                         ChargingSession_Id?      SessionId           = null,
                         eMobilityAccount_Id?     eMAId               = null,
@@ -3442,6 +3446,8 @@ namespace org.GraphDefined.WWCP
                                           RoamingNetwork.Id,
                                           EVSEId,
                                           ChargingProductId,
+                                          PlannedDuration,
+                                          PlannedEnergy,
                                           ReservationId,
                                           SessionId,
                                           Id,
@@ -3459,6 +3465,8 @@ namespace org.GraphDefined.WWCP
 
             var response = await RoamingNetwork.RemoteStart(EVSEId,
                                                             ChargingProductId,
+                                                            PlannedDuration,
+                                                            PlannedEnergy,
                                                             ReservationId,
                                                             SessionId,
                                                             Id,
@@ -3484,6 +3492,8 @@ namespace org.GraphDefined.WWCP
                                             RoamingNetwork.Id,
                                             EVSEId,
                                             ChargingProductId,
+                                            PlannedDuration,
+                                            PlannedEnergy,
                                             ReservationId,
                                             SessionId,
                                             Id,

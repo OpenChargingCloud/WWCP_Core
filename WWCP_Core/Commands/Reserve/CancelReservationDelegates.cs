@@ -44,8 +44,8 @@ namespace org.GraphDefined.WWCP
                                                             DateTime                               RequestTimestamp,
                                                             Object                                 Sender,
                                                             EventTracking_Id                       EventTrackingId,
-                                                            RoamingNetwork_Id                      RoamingNetworkId,
-                                                            eMobilityProvider_Id                   ProviderId,
+                                                            RoamingNetwork_Id?                     RoamingNetworkId,
+                                                            eMobilityProvider_Id?                  ProviderId,
                                                             ChargingReservation_Id                 ReservationId,
                                                             ChargingReservationCancellationReason  Reason,
                                                             TimeSpan?                              RequestTimeout);
@@ -68,22 +68,22 @@ namespace org.GraphDefined.WWCP
                                                               TimeSpan?                              RequestTimeout);
 
 
-    /// <summary>
-    /// An event send whenever a reservation was deleted.
-    /// </summary>
-    /// <param name="Sender">The sender of this event.</param>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this event with other events.</param>
-    /// <param name="ReservationId">The unique identification for this charging reservation.</param>
-    /// <param name="Reservation">The charging reservation (if known).</param>
-    /// <param name="Reason">The reason for the cancellation.</param>
-    public delegate void OnReservationCancelledInternalDelegate(DateTime                               LogTimestamp,
-                                                                DateTime                               RequestTimestamp,
-                                                                Object                                 Sender,
-                                                                EventTracking_Id                       EventTrackingId,
-                                                                ChargingReservation_Id                 ReservationId,
-                                                                ChargingReservation                    Reservation,
-                                                                ChargingReservationCancellationReason  Reason);
+    ///// <summary>
+    ///// An event send whenever a reservation was deleted.
+    ///// </summary>
+    ///// <param name="Sender">The sender of this event.</param>
+    ///// <param name="Timestamp">The timestamp of the request.</param>
+    ///// <param name="EventTrackingId">An unique event tracking identification for correlating this event with other events.</param>
+    ///// <param name="ReservationId">The unique identification for this charging reservation.</param>
+    ///// <param name="Reservation">The charging reservation (if known).</param>
+    ///// <param name="Reason">The reason for the cancellation.</param>
+    //public delegate void OnReservationCancelledInternalDelegate(DateTime                               LogTimestamp,
+    //                                                            DateTime                               RequestTimestamp,
+    //                                                            Object                                 Sender,
+    //                                                            EventTracking_Id                       EventTrackingId,
+    //                                                            ChargingReservation_Id                 ReservationId,
+                                                                
+    //                                                            ChargingReservationCancellationReason  Reason);
 
 
     /// <summary>
@@ -103,11 +103,12 @@ namespace org.GraphDefined.WWCP
                                                              DateTime                               RequestTimestamp,
                                                              Object                                 Sender,
                                                              EventTracking_Id                       EventTrackingId,
-                                                             RoamingNetwork_Id                      RoamingNetworkId,
-                                                             eMobilityProvider_Id                   ProviderId,
+                                                             RoamingNetwork_Id?                     RoamingNetworkId,
+                                                             eMobilityProvider_Id?                  ProviderId,
                                                              ChargingReservation_Id                 ReservationId,
+                                                             ChargingReservation                    Reservation,
                                                              ChargingReservationCancellationReason  Reason,
-                                                             Boolean                                Result,
+                                                             CancelReservationResult                Result,
                                                              TimeSpan                               Runtime,
                                                              TimeSpan?                              RequestTimeout);
 

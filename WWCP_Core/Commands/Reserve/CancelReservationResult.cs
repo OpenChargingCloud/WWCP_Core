@@ -33,205 +33,317 @@ namespace org.GraphDefined.WWCP
         #region Properties
 
         /// <summary>
-        /// The result of a cancel reservation operation.
-        /// </summary>
-        public CancelReservationResultType  Result            { get; }
-
-        /// <summary>
         /// The reservation identification.
         /// </summary>
-        public ChargingReservation_Id?      ReservationId     { get; }
+        public ChargingReservation_Id?                ReservationId     { get; }
+
+        /// <summary>
+        /// The reservation.
+        /// </summary>
+        public ChargingReservation                    Reservation       { get; }
+
+        /// <summary>
+        /// A reason for the charging reservation cancellation.
+        /// </summary>
+        public ChargingReservationCancellationReason  Reason            { get; }
+
+        /// <summary>
+        /// The result of a cancel reservation operation.
+        /// </summary>
+        public CancelReservationResults               Result            { get; }
+
 
         /// <summary>
         /// An optional (error) message.
         /// </summary>
-        public String                       Message           { get; }
+        public String                                 Message           { get; }
 
         /// <summary>
         /// An optional additional information on this error,
         /// e.g. the HTTP error response.
         /// </summary>
-        public Object                       AdditionalInfo    { get; }
+        public Object                                 AdditionalInfo    { get; }
+
+        /// <summary>
+        /// The runtime of this request.
+        /// </summary>
+        public TimeSpan?                              Runtime           { get; }
 
         #endregion
 
         #region Constructor(s)
-
-        #region CancelReservationResult(Result, ReservationId)
 
         /// <summary>
         /// Create a new cancel reservation result.
         /// </summary>
         /// <param name="Result">The result of a cancel reservation operation.</param>
         /// <param name="ReservationId">The charging reservation identification.</param>
-        private CancelReservationResult(CancelReservationResultType  Result,
-                                        ChargingReservation_Id       ReservationId)
-        {
-
-            this.Result         = Result;
-            this.ReservationId  = ReservationId;
-
-        }
-
-        #endregion
-
-        #region CancelReservationResult(Result, Message = null, AdditionalInfo = null)
-
-        /// <summary>
-        /// Create a new cancel reservation result.
-        /// </summary>
-        /// <param name="Result">The result of the cancel reservation operation.</param>
+        /// <param name="Reservation">The optional charging reservation.</param>
+        /// <param name="Reason">A reason for the charging reservation cancellation.</param>
         /// <param name="Message">An optional message.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
-        private CancelReservationResult(CancelReservationResultType  Result,
-                                        String                       Message         = null,
-                                        Object                       AdditionalInfo  = null)
+        /// <param name="Runtime">The optional runtime of this request.</param>
+        private CancelReservationResult(CancelReservationResults               Result,
+                                        ChargingReservation_Id                 ReservationId,
+                                        ChargingReservationCancellationReason  Reason,
+                                        ChargingReservation                    Reservation      = null,
+                                        String                                 Message          = null,
+                                        Object                                 AdditionalInfo   = null,
+                                        TimeSpan?                              Runtime          = null)
         {
 
             this.Result          = Result;
-            this.ReservationId   = default(ChargingReservation_Id);
+            this.ReservationId   = ReservationId;
+            this.Reason          = Reason;
+            this.Reservation     = Reservation;
             this.Message         = Message;
             this.AdditionalInfo  = AdditionalInfo;
+            this.Runtime         = Runtime;
 
         }
 
         #endregion
 
-        #endregion
 
-
-        #region (static) UnknownOperator
+        #region (static) UnknownOperator       (ReservationId, Reason, Runtime = null)
 
         /// <summary>
         /// The charging station operator is unknown.
         /// </summary>
-        public static CancelReservationResult UnknownOperator
+        /// <param name="ReservationId">A reservation identification.</param>
+        /// <param name="Reason">A reason for the charging reservation cancellation.</param>
+        /// <param name="Runtime">The optional runtime of the reequest.</param>
+        public static CancelReservationResult UnknownOperator(ChargingReservation_Id                 ReservationId,
+                                                              ChargingReservationCancellationReason  Reason,
+                                                              TimeSpan?                              Runtime = null)
 
-            => new CancelReservationResult(CancelReservationResultType.UnknownEVSE);
+            => new CancelReservationResult(CancelReservationResults.UnknownEVSE,
+                                           ReservationId,
+                                           Reason,
+                                           Runtime: Runtime);
 
         #endregion
 
-        #region (static) UnknownReservationId
+        #region (static) UnknownReservationId  (ReservationId, Reason, Runtime = null)
 
         /// <summary>
         /// The given reservation identification is unknown or invalid.
         /// </summary>
         /// <param name="ReservationId">A reservation identification.</param>
-        public static CancelReservationResult UnknownReservationId(ChargingReservation_Id ReservationId)
+        /// <param name="Reason">A reason for the charging reservation cancellation.</param>
+        /// <param name="Runtime">The optional runtime of the reequest.</param>
+        public static CancelReservationResult UnknownReservationId(ChargingReservation_Id                 ReservationId,
+                                                                   ChargingReservationCancellationReason  Reason,
+                                                                   TimeSpan?                              Runtime = null)
 
-            => new CancelReservationResult(CancelReservationResultType.UnknownReservationId,
-                                           ReservationId);
+            => new CancelReservationResult(CancelReservationResults.UnknownReservationId,
+                                           ReservationId,
+                                           Reason,
+                                           Runtime: Runtime);
 
         #endregion
 
-        #region (static) UnknownChargingPool
+        #region (static) UnknownChargingPool   (ReservationId, Reason, Runtime = null)
 
         /// <summary>
         /// The charging pool is unknown.
         /// </summary>
-        public static CancelReservationResult UnknownChargingPool
+        /// <param name="ReservationId">A reservation identification.</param>
+        /// <param name="Reason">A reason for the charging reservation cancellation.</param>
+        /// <param name="Runtime">The optional runtime of the reequest.</param>
+        public static CancelReservationResult UnknownChargingPool(ChargingReservation_Id                 ReservationId,
+                                                                  ChargingReservationCancellationReason  Reason,
+                                                                  TimeSpan?                              Runtime = null)
 
-            => new CancelReservationResult(CancelReservationResultType.UnknownChargingPool);
+            => new CancelReservationResult(CancelReservationResults.UnknownChargingPool,
+                                           ReservationId,
+                                           Reason,
+                                           Runtime: Runtime);
 
         #endregion
 
-        #region (static) UnknownChargingStation
+        #region (static) UnknownChargingStation(ReservationId, Reason, Runtime = null)
 
         /// <summary>
         /// The charging station is unknown.
         /// </summary>
-        public static CancelReservationResult UnknownChargingStation
+        /// <param name="ReservationId">A reservation identification.</param>
+        /// <param name="Reason">A reason for the charging reservation cancellation.</param>
+        /// <param name="Runtime">The optional runtime of the reequest.</param>
+        public static CancelReservationResult UnknownChargingStation(ChargingReservation_Id                 ReservationId,
+                                                                     ChargingReservationCancellationReason  Reason,
+                                                                     TimeSpan?                              Runtime = null)
 
-            => new CancelReservationResult(CancelReservationResultType.UnknownChargingStation);
+            => new CancelReservationResult(CancelReservationResults.UnknownChargingStation,
+                                           ReservationId,
+                                           Reason,
+                                           Runtime: Runtime);
 
         #endregion
 
-        #region (static) UnknownEVSE
+        #region (static) UnknownEVSE           (ReservationId, Reason, Runtime = null)
 
         /// <summary>
         /// The EVSE is unknown.
         /// </summary>
-        public static CancelReservationResult UnknownEVSE
+        /// <param name="ReservationId">A reservation identification.</param>
+        /// <param name="Reason">A reason for the charging reservation cancellation.</param>
+        /// <param name="Runtime">The optional runtime of the reequest.</param>
+        public static CancelReservationResult UnknownEVSE(ChargingReservation_Id                 ReservationId,
+                                                          ChargingReservationCancellationReason  Reason,
+                                                          TimeSpan?                              Runtime = null)
 
-            => new CancelReservationResult(CancelReservationResultType.UnknownEVSE);
+            => new CancelReservationResult(CancelReservationResults.UnknownEVSE,
+                                           ReservationId,
+                                           Reason,
+                                           Runtime: Runtime);
 
         #endregion
 
-        #region (static) OutOfService
+        #region (static) OutOfService          (ReservationId, Reason, Message = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The EVSE, charging station, charging pool or charging station operator is out-of-service.
         /// </summary>
-        public static CancelReservationResult OutOfService
+        /// <param name="ReservationId">A reservation identification.</param>
+        /// <param name="Reason">A reason for the charging reservation cancellation.</param>
+        /// <param name="Message">An optional (error-)message.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        /// <param name="Runtime">The optional runtime of the reequest.</param>
+        public static CancelReservationResult OutOfService(ChargingReservation_Id                 ReservationId,
+                                                           ChargingReservationCancellationReason  Reason,
+                                                           String                                 Message         = null,
+                                                           String                                 AdditionalInfo  = null,
+                                                           TimeSpan?                              Runtime         = null)
 
-            => new CancelReservationResult(CancelReservationResultType.OutOfService);
+            => new CancelReservationResult(CancelReservationResults.OutOfService,
+                                           ReservationId,
+                                           Reason,
+                                           Message:         Message,
+                                           AdditionalInfo:  AdditionalInfo,
+                                           Runtime:         Runtime);
 
         #endregion
 
-        #region (static) Offline
+        #region (static) Offline               (ReservationId, Reason, Message = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The EVSE, charging station, charging pool or charging station operator is offline.
         /// </summary>
-        public static CancelReservationResult Offline
+        /// <param name="ReservationId">A reservation identification.</param>
+        /// <param name="Reason">A reason for the charging reservation cancellation.</param>
+        /// <param name="Message">An optional (error-)message.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        /// <param name="Runtime">The optional runtime of the reequest.</param>
+        public static CancelReservationResult Offline(ChargingReservation_Id                 ReservationId,
+                                                      ChargingReservationCancellationReason  Reason,
+                                                      String                                 Message         = null,
+                                                      String                                 AdditionalInfo  = null,
+                                                      TimeSpan?                              Runtime         = null)
 
-            => new CancelReservationResult(CancelReservationResultType.Offline);
+            => new CancelReservationResult(CancelReservationResults.Offline,
+                                           ReservationId,
+                                           Reason,
+                                           Message:         Message,
+                                           AdditionalInfo:  AdditionalInfo,
+                                           Runtime:         Runtime);
 
         #endregion
 
-        #region (static) Success(ReservationId)
+        #region (static) Success               (ReservationId, Reason, Reservation = null, Runtime = null)
 
         /// <summary>
         /// The cancel reservation request was successful.
         /// </summary>
-        /// <param name="ReservationId">The reservation identification.</param>
-        public static CancelReservationResult Success(ChargingReservation_Id ReservationId)
+        /// <param name="ReservationId">A reservation identification.</param>
+        /// <param name="Reason">A reason for the charging reservation cancellation.</param>
+        /// <param name="Reservation">A charging reservation.</param>
+        /// <param name="Runtime">The optional runtime of the reequest.</param>
+        public static CancelReservationResult Success(ChargingReservation_Id                 ReservationId,
+                                                      ChargingReservationCancellationReason  Reason,
+                                                      ChargingReservation                    Reservation  = null,
+                                                      TimeSpan?                              Runtime      = null)
 
-            => new CancelReservationResult(CancelReservationResultType.Success,
-                                           ReservationId);
+            => new CancelReservationResult(CancelReservationResults.Success,
+                                           ReservationId,
+                                           Reason,
+                                           Reservation,
+                                           Runtime: Runtime);
 
         #endregion
 
-        #region (static) Timeout
+        #region (static) Timeout               (ReservationId, Reason, Message = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The cancel reservation request ran into a timeout.
         /// </summary>
-        public static CancelReservationResult Timeout
+        /// <param name="ReservationId">A reservation identification.</param>
+        /// <param name="Reason">A reason for the charging reservation cancellation.</param>
+        /// <param name="Message">An optional (error-)message.</param>
+        /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
+        /// <param name="Runtime">The optional runtime of the reequest.</param>
+        public static CancelReservationResult Timeout(ChargingReservation_Id                 ReservationId,
+                                                      ChargingReservationCancellationReason  Reason,
+                                                      String                                 Message         = null,
+                                                      String                                 AdditionalInfo  = null,
+                                                      TimeSpan?                              Runtime         = null)
 
-            => new CancelReservationResult(CancelReservationResultType.Timeout);
+            => new CancelReservationResult(CancelReservationResults.Timeout,
+                                           ReservationId,
+                                           Reason,
+                                           Message:         Message,
+                                           AdditionalInfo:  AdditionalInfo,
+                                           Runtime:         Runtime);
 
         #endregion
 
-        #region (static) CommunicationError(Message = "")
+        #region (static) CommunicationError    (ReservationId, Reason, Message = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// A communication error occured.
         /// </summary>
+        /// <param name="ReservationId">A reservation identification.</param>
+        /// <param name="Reason">A reason for the charging reservation cancellation.</param>
         /// <param name="Message">An optional (error-)message.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
-        public static CancelReservationResult CommunicationError(String Message         = null,
-                                                                 Object AdditionalInfo  = null)
+        /// <param name="Runtime">The optional runtime of the reequest.</param>
+        public static CancelReservationResult CommunicationError(ChargingReservation_Id                 ReservationId,
+                                                                 ChargingReservationCancellationReason  Reason,
+                                                                 String                                 Message         = null,
+                                                                 String                                 AdditionalInfo  = null,
+                                                                 TimeSpan?                              Runtime         = null)
 
-            => new CancelReservationResult(CancelReservationResultType.CommunicationError,
-                                           Message,
-                                           AdditionalInfo);
+            => new CancelReservationResult(CancelReservationResults.CommunicationError,
+                                           ReservationId,
+                                           Reason,
+                                           Message:         Message,
+                                           AdditionalInfo:  AdditionalInfo,
+                                           Runtime:         Runtime);
 
         #endregion
 
-        #region (static) Error(Message = null, AdditionalInfo = null)
+        #region (static) Error                 (ReservationId, Reason, Message = null, AdditionalInfo = null, Runtime = null)
 
         /// <summary>
         /// The remote stop request led to an error.
         /// </summary>
+        /// <param name="ReservationId">A reservation identification.</param>
+        /// <param name="Reason">A reason for the charging reservation cancellation.</param>
         /// <param name="Message">An optional (error-)message.</param>
         /// <param name="AdditionalInfo">An optional additional information on this error, e.g. the HTTP error response.</param>
-        public static CancelReservationResult Error(String Message         = null,
-                                                    Object AdditionalInfo  = null)
+        /// <param name="Runtime">The optional runtime of the reequest.</param>
+        public static CancelReservationResult Error(ChargingReservation_Id                 ReservationId,
+                                                    ChargingReservationCancellationReason  Reason,
+                                                    String                                 Message         = null,
+                                                    String                                 AdditionalInfo  = null,
+                                                    TimeSpan?                              Runtime         = null)
 
-            => new CancelReservationResult(CancelReservationResultType.Error,
-                                           Message,
-                                           AdditionalInfo);
+            => new CancelReservationResult(CancelReservationResults.Error,
+                                           ReservationId,
+                                           Reason,
+                                           Message:         Message,
+                                           AdditionalInfo:  AdditionalInfo,
+                                           Runtime:         Runtime);
 
         #endregion
 
@@ -241,7 +353,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The result types of a cancel reservation operation.
     /// </summary>
-    public enum CancelReservationResultType
+    public enum CancelReservationResults
     {
 
         /// <summary>

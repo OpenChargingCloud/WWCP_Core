@@ -125,7 +125,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a charging reservation was cancelled.
         /// </summary>
-        event OnReservationCancelledInternalDelegate  OnReservationCancelled;
+        event OnCancelReservationResponseDelegate OnReservationCancelled;
 
 
         /// <summary>
@@ -234,6 +234,8 @@ namespace org.GraphDefined.WWCP
         /// Start a charging session.
         /// </summary>
         /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
+        /// <param name="PlannedDuration">An optional maximum time span to charge. When it is reached, the charging process will stop automatically.</param>
+        /// <param name="PlannedEnergy">An optional maximum amount of energy to charge. When it is reached, the charging process will stop automatically.</param>
         /// <param name="ReservationId">The unique identification for a charging reservation.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
@@ -246,6 +248,8 @@ namespace org.GraphDefined.WWCP
         Task<RemoteStartEVSEResult>
 
             RemoteStart(ChargingProduct_Id?      ChargingProductId,
+                        TimeSpan?                PlannedDuration,
+                        Single?                  PlannedEnergy,
                         ChargingReservation_Id?  ReservationId,
                         ChargingSession_Id?      SessionId,
                         eMobilityProvider_Id?    ProviderId          = null,
@@ -288,7 +292,7 @@ namespace org.GraphDefined.WWCP
 
 
         IRemoteChargingStation ChargingStation { get; }
-        ChargingStationOperator Operator { get; }
+        ChargingStationOperator_Id OperatorId { get; }
 
         IEnumerator<SocketOutlet> GetEnumerator();
 

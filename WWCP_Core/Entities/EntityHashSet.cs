@@ -45,6 +45,8 @@ namespace org.GraphDefined.WWCP
 
         private readonly Dictionary<TId, T>  _MultiIdLookup;
 
+        private readonly Object              Lock = new Object();
+
         #endregion
 
         #region Events
@@ -68,7 +70,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Consturctor(s)
+        #region Constructor(s)
 
         public EntityHashSet(THost Host)
         {
@@ -111,7 +113,7 @@ namespace org.GraphDefined.WWCP
         public Boolean TryAdd(T Entity)
         {
 
-            lock (_Lookup)
+            lock (Lock)
             {
 
                 if (_Addition.SendVoting(DateTime.Now, _Host, Entity))
@@ -138,7 +140,7 @@ namespace org.GraphDefined.WWCP
                               Action<T>  OnSuccess)
         {
 
-            lock (_Lookup)
+            lock (Lock)
             {
 
                 if (TryAdd(Entity))
@@ -160,7 +162,7 @@ namespace org.GraphDefined.WWCP
                               Action<DateTime, T>  OnSuccess)
         {
 
-            lock (_Lookup)
+            lock (Lock)
             {
 
                 if (TryAdd(Entity))
@@ -182,7 +184,7 @@ namespace org.GraphDefined.WWCP
                               Action<DateTime, THost, T>  OnSuccess)
         {
 
-            lock (_Lookup)
+            lock (Lock)
             {
 
                 if (TryAdd(Entity))
@@ -207,7 +209,7 @@ namespace org.GraphDefined.WWCP
         public T GetById(TId Id)
         {
 
-            lock (_Lookup)
+            lock (Lock)
             {
 
                 T _Entity;
@@ -228,7 +230,7 @@ namespace org.GraphDefined.WWCP
         public Boolean TryGet(TId Id, out T Entity)
         {
 
-            lock (_Lookup)
+            lock (Lock)
             {
 
                 if (_MultiIdLookup.TryGetValue(Id, out Entity))
