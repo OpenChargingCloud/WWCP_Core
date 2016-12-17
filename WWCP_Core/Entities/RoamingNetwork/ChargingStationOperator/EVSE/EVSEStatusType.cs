@@ -74,7 +74,7 @@ namespace org.GraphDefined.WWCP
         WaitingForPlugin        =  8,
 
         /// <summary>
-        /// A cable is plugged into the socket or a vehicle is conencted
+        /// A cable is plugged into the socket or a vehicle is connected
         /// to the cable, but both without any further action.
         /// </summary>
         PluggedIn               =  9,
