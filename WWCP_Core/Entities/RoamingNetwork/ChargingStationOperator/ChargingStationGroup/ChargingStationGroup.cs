@@ -27,6 +27,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -463,7 +464,7 @@ namespace org.GraphDefined.WWCP
 
             #region Link events
 
-            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, StatusSchedule, OldStatus, NewStatus)
+            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateAdminStatus(Timestamp, OldStatus, NewStatus);
 
             // ChargingStationGroup events
@@ -675,47 +676,59 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (internal) UpdateEVSEStatus(Timestamp, EVSE, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update an EVSE status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EVSE">The updated EVSE.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
-        /// <param name="NewStatus">The new EVSE status.</param>
-        internal void UpdateEVSEStatus(DateTime                     Timestamp,
-                                       EVSE                         EVSE,
-                                       Timestamped<EVSEStatusType>  OldStatus,
-                                       Timestamped<EVSEStatusType>  NewStatus)
-        {
-
-            var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
-            if (OnEVSEStatusChangedLocal != null)
-                OnEVSEStatusChangedLocal(Timestamp, EVSE, OldStatus, NewStatus);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateEVSEAdminStatus(Timestamp, EVSE, OldStatus, NewStatus)
+        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
 
         /// <summary>
         /// Update an EVSE admin status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal void UpdateEVSEAdminStatus(DateTime                          Timestamp,
-                                            EVSE                              EVSE,
-                                            Timestamped<EVSEAdminStatusType>  OldStatus,
-                                            Timestamped<EVSEAdminStatusType>  NewStatus)
+        internal async Task UpdateEVSEAdminStatus(DateTime                          Timestamp,
+                                                  EventTracking_Id                  EventTrackingId,
+                                                  EVSE                              EVSE,
+                                                  Timestamped<EVSEAdminStatusType>  OldStatus,
+                                                  Timestamped<EVSEAdminStatusType>  NewStatus)
         {
 
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
             if (OnEVSEAdminStatusChangedLocal != null)
-                OnEVSEAdminStatusChangedLocal(Timestamp, EVSE, OldStatus, NewStatus);
+                await OnEVSEAdminStatusChangedLocal(Timestamp,
+                                                    EventTrackingId,
+                                                    EVSE,
+                                                    OldStatus,
+                                                    NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateEVSEStatus(Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update an EVSE status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="EVSE">The updated EVSE.</param>
+        /// <param name="OldStatus">The old EVSE status.</param>
+        /// <param name="NewStatus">The new EVSE status.</param>
+        internal async Task UpdateEVSEStatus(DateTime                     Timestamp,
+                                             EventTracking_Id             EventTrackingId,
+                                             EVSE                         EVSE,
+                                             Timestamped<EVSEStatusType>  OldStatus,
+                                             Timestamped<EVSEStatusType>  NewStatus)
+        {
+
+            var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
+            if (OnEVSEStatusChangedLocal != null)
+                await OnEVSEStatusChangedLocal(Timestamp,
+                                               EventTrackingId,
+                                               EVSE,
+                                               OldStatus,
+                                               NewStatus);
 
         }
 

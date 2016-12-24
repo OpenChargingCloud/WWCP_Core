@@ -592,10 +592,10 @@ namespace org.GraphDefined.WWCP
 
             #region Link events
 
-            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, StatusSchedule, OldStatus, NewStatus)
+            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateAdminStatus(Timestamp, OldStatus, NewStatus);
 
-            this._StatusSchedule.OnStatusChanged      += (Timestamp, StatusSchedule, OldStatus, NewStatus)
+            this._StatusSchedule.OnStatusChanged      += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateStatus(Timestamp, OldStatus, NewStatus);
 
             #endregion

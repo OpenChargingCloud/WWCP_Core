@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The abstract result of an authorize start operation.
     /// </summary>
-    public abstract class AAuthStartResult<T>
+    public abstract class AAuthStartResult<T> : IAAuthStartResult<T>
         where T : struct
     {
 

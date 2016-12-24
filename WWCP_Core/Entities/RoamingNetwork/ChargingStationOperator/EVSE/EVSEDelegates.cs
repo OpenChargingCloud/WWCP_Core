@@ -45,10 +45,12 @@ namespace org.GraphDefined.WWCP
     /// A delegate called whenever the dynamic status of the EVSE changed.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="EVSE">The EVSE.</param>
     /// <param name="OldEVSEStatus">The old timestamped status of the EVSE.</param>
     /// <param name="NewEVSEStatus">The new timestamped status of the EVSE.</param>
     public delegate Task OnEVSEStatusChangedDelegate(DateTime                     Timestamp,
+                                                     EventTracking_Id             EventTrackingId,
                                                      EVSE                         EVSE,
                                                      Timestamped<EVSEStatusType>  OldEVSEStatus,
                                                      Timestamped<EVSEStatusType>  NewEVSEStatus);
@@ -57,10 +59,12 @@ namespace org.GraphDefined.WWCP
     /// A delegate called whenever the admin status of the EVSE changed.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="EVSE">The EVSE.</param>
     /// <param name="OldEVSEStatus">The old timestamped status of the EVSE.</param>
     /// <param name="NewEVSEStatus">The new timestamped status of the EVSE.</param>
     public delegate Task OnEVSEAdminStatusChangedDelegate(DateTime                          Timestamp,
+                                                          EventTracking_Id                  EventTrackingId,
                                                           EVSE                              EVSE,
                                                           Timestamped<EVSEAdminStatusType>  OldEVSEStatus,
                                                           Timestamped<EVSEAdminStatusType>  NewEVSEStatus);

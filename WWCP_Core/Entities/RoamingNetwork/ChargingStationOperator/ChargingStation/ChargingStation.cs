@@ -1098,10 +1098,10 @@ namespace org.GraphDefined.WWCP
 
             #region Link events
 
-            this._StatusSchedule.     OnStatusChanged += (Timestamp, StatusSchedule, OldStatus, NewStatus)
+            this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateStatus(Timestamp, OldStatus, NewStatus);
 
-            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, StatusSchedule, OldStatus, NewStatus)
+            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
                                                           => UpdateAdminStatus(Timestamp, OldStatus, NewStatus);
 
             // ChargingStation events
@@ -1438,21 +1438,25 @@ namespace org.GraphDefined.WWCP
 
                 Configurator?.Invoke(_EVSE);
                 EVSEAddition.SendNotification(Now, this, _EVSE);
-                UpdateEVSEStatus(Now, _EVSE, new Timestamped<EVSEStatusType>(Now, EVSEStatusType.Unspecified), _EVSE.Status).Wait();
+                UpdateEVSEStatus(Now,
+                                 EventTracking_Id.New,
+                                 _EVSE,
+                                 new Timestamped<EVSEStatusType>(Now, EVSEStatusType.Unspecified),
+                                 _EVSE.Status).Wait();
 
                 if (RemoteChargingStation != null)
                 {
 
                     _EVSE.RemoteEVSE = RemoteChargingStation.CreateNewEVSE(EVSEId);
 
-                    _EVSE.OnStatusChanged                    += async (Timestamp, EVSE,   OldStatus, NewStatus) => _EVSE.RemoteEVSE.Status           = NewStatus;
-                    _EVSE.OnAdminStatusChanged               += async (Timestamp, EVSE,   OldStatus, NewStatus) => _EVSE.RemoteEVSE.AdminStatus      = NewStatus;
+                    _EVSE.OnStatusChanged                    += async (Timestamp, EventTrackingId, EVSE,   OldStatus, NewStatus) => _EVSE.RemoteEVSE.Status           = NewStatus;
+                    _EVSE.OnAdminStatusChanged               += async (Timestamp, EventTrackingId, EVSE,   OldStatus, NewStatus) => _EVSE.RemoteEVSE.AdminStatus      = NewStatus;
                     _EVSE.OnNewReservation                   += (Timestamp, Sender, Reservation)                => _EVSE.RemoteEVSE.Reservation      = Reservation;
                     //_EVSE.OnReservationCancelled             += (Timestamp, Sender, Reservation, ReservationCancellation) => _EVSE.RemoteEVSE.Send
                     _EVSE.OnNewChargingSession               += (Timestamp, Sender, ChargingSession)            => _EVSE.RemoteEVSE.ChargingSession  = ChargingSession;
 
-                    _EVSE.RemoteEVSE.OnStatusChanged         += (Timestamp, RemoteEVSE, OldStatus, NewStatus)   => _EVSE.Status                      = NewStatus;
-                    _EVSE.RemoteEVSE.OnAdminStatusChanged    += (Timestamp, RemoteEVSE, OldStatus, NewStatus)   => _EVSE.AdminStatus                 = NewStatus;
+                    _EVSE.RemoteEVSE.OnStatusChanged         += async (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)   => _EVSE.Status                      = NewStatus;
+                    _EVSE.RemoteEVSE.OnAdminStatusChanged    += async (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)   => _EVSE.AdminStatus                 = NewStatus;
                     _EVSE.RemoteEVSE.OnNewReservation        += (Timestamp, RemoteEVSE, Reservation)            => _EVSE.Reservation                 = Reservation;
                     _EVSE.RemoteEVSE.OnReservationCancelled  += _EVSE.SendOnReservationCancelled;
                     _EVSE.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession)        => _EVSE.ChargingSession             = ChargingSession;
@@ -1604,45 +1608,18 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (internal) UpdateEVSEStatus(Timestamp, EVSE, OldStatus, NewStatus)
+        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the current charging station status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EVSE">The updated EVSE.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
-        /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEStatus(DateTime                     Timestamp,
-                                             EVSE                         EVSE,
-                                             Timestamped<EVSEStatusType>  OldStatus,
-                                             Timestamped<EVSEStatusType>  NewStatus)
-        {
-
-            var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
-            if (OnEVSEStatusChangedLocal != null)
-                await OnEVSEStatusChangedLocal(Timestamp, EVSE, OldStatus, NewStatus);
-
-            if (StatusAggregationDelegate != null)
-            {
-                _StatusSchedule.Insert(StatusAggregationDelegate(new EVSEStatusReport(_EVSEs)),
-                                      Timestamp);
-            }
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateEVSEAdminStatus(Timestamp, EVSE, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update the current charging station status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
         internal async Task UpdateEVSEAdminStatus(DateTime                          Timestamp,
+                                                  EventTracking_Id                  EventTrackingId,
                                                   EVSE                              EVSE,
                                                   Timestamped<EVSEAdminStatusType>  OldStatus,
                                                   Timestamped<EVSEAdminStatusType>  NewStatus)
@@ -1650,7 +1627,46 @@ namespace org.GraphDefined.WWCP
 
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
             if (OnEVSEAdminStatusChangedLocal != null)
-                await OnEVSEAdminStatusChangedLocal(Timestamp, EVSE, OldStatus, NewStatus);
+                await OnEVSEAdminStatusChangedLocal(Timestamp,
+                                                    EventTrackingId,
+                                                    EVSE,
+                                                    OldStatus,
+                                                    NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the current charging station status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="EVSE">The updated EVSE.</param>
+        /// <param name="OldStatus">The old EVSE status.</param>
+        /// <param name="NewStatus">The new EVSE status.</param>
+        internal async Task UpdateEVSEStatus(DateTime                     Timestamp,
+                                             EventTracking_Id             EventTrackingId,
+                                             EVSE                         EVSE,
+                                             Timestamped<EVSEStatusType>  OldStatus,
+                                             Timestamped<EVSEStatusType>  NewStatus)
+        {
+
+            var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
+            if (OnEVSEStatusChangedLocal != null)
+                await OnEVSEStatusChangedLocal(Timestamp,
+                                               EventTrackingId,
+                                               EVSE,
+                                               OldStatus,
+                                               NewStatus);
+
+            if (StatusAggregationDelegate != null)
+            {
+                _StatusSchedule.Insert(StatusAggregationDelegate(new EVSEStatusReport(_EVSEs)),
+                                       Timestamp);
+            }
 
         }
 

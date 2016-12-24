@@ -123,10 +123,15 @@ namespace org.GraphDefined.WWCP
         /// A delegate called whenever the current status changed.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="StatusSchedule">The status schedule.</param>
         /// <param name="OldStatus">The old timestamped status.</param>
         /// <param name="NewStatus">The new timestamped status.</param>
-        public delegate void OnStatusChangedDelegate(DateTime Timestamp, StatusSchedule<T> StatusSchedule, Timestamped<T> OldStatus, Timestamped<T> NewStatus);
+        public delegate void OnStatusChangedDelegate(DateTime           Timestamp,
+                                                     EventTracking_Id   EventTrackingId,
+                                                     StatusSchedule<T>  StatusSchedule,
+                                                     Timestamped<T>     OldStatus,
+                                                     Timestamped<T>     NewStatus);
 
         /// <summary>
         /// An event fired whenever the current status changed.
@@ -296,7 +301,11 @@ namespace org.GraphDefined.WWCP
                                        : new Timestamped<T>?();
 
                 if (!EqualityComparer<T>.Default.Equals(_CurrentStatus.Value, _OldStatus.Value))
-                    OnStatusChanged?.Invoke(DateTime.Now, this, _OldStatus, _CurrentStatus);
+                    OnStatusChanged?.Invoke(DateTime.Now,
+                                            EventTracking_Id.New,
+                                            this,
+                                            _OldStatus,
+                                            _CurrentStatus);
 
             }
 

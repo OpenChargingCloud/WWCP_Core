@@ -668,11 +668,26 @@ namespace org.GraphDefined.WWCP
 
             #region Link events
 
-            this._StatusSchedule.     OnStatusChanged += (Timestamp, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateStatus(Timestamp, OldStatus, NewStatus);
+            _AdminStatusSchedule.OnStatusChanged += (Timestamp,
+                                                     EventTrackingId,
+                                                     StatusSchedule,
+                                                     OldStatus,
+                                                     NewStatus)
+                => UpdateAdminStatus(Timestamp,
+                                     EventTrackingId,
+                                     OldStatus,
+                                     NewStatus);
 
-            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateAdminStatus(Timestamp, OldStatus, NewStatus);
+            _StatusSchedule.     OnStatusChanged += (Timestamp,
+                                                     EventTrackingId,
+                                                     StatusSchedule,
+                                                     OldStatus,
+                                                     NewStatus)
+
+                => UpdateStatus(Timestamp,
+                                EventTrackingId,
+                                OldStatus,
+                                NewStatus);
 
 
             this.SocketOutletAddition.OnVoting        += (timestamp, evse, outlet, vote)
@@ -859,43 +874,55 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (internal) UpdateStatus(Timestamp, OldStatus, NewStatus)
+        #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the current status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
-        /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateStatus(DateTime                     Timestamp,
-                                         Timestamped<EVSEStatusType>  OldStatus,
-                                         Timestamped<EVSEStatusType>  NewStatus)
-        {
-
-            var OnStatusChangedLocal = OnStatusChanged;
-            if (OnStatusChangedLocal != null)
-                await OnStatusChangedLocal(Timestamp, this, OldStatus, NewStatus);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateAdminStatus(Timestamp, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update the current status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old EVSE admin status.</param>
         /// <param name="NewStatus">The new EVSE admin status.</param>
         internal async Task UpdateAdminStatus(DateTime                          Timestamp,
+                                              EventTracking_Id                  EventTrackingId,
                                               Timestamped<EVSEAdminStatusType>  OldStatus,
                                               Timestamped<EVSEAdminStatusType>  NewStatus)
         {
 
             var OnAdminStatusChangedLocal = OnAdminStatusChanged;
             if (OnAdminStatusChangedLocal != null)
-                await OnAdminStatusChangedLocal(Timestamp, this, OldStatus, NewStatus);
+                await OnAdminStatusChangedLocal(Timestamp,
+                                                EventTrackingId,
+                                                this,
+                                                OldStatus,
+                                                NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateStatus     (Timestamp, EventTrackingId, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the current status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="OldStatus">The old EVSE status.</param>
+        /// <param name="NewStatus">The new EVSE status.</param>
+        internal async Task UpdateStatus(DateTime                     Timestamp,
+                                         EventTracking_Id             EventTrackingId,
+                                         Timestamped<EVSEStatusType>  OldStatus,
+                                         Timestamped<EVSEStatusType>  NewStatus)
+        {
+
+            var OnStatusChangedLocal = OnStatusChanged;
+            if (OnStatusChangedLocal != null)
+                await OnStatusChangedLocal(Timestamp,
+                                           EventTrackingId,
+                                           this,
+                                           OldStatus,
+                                           NewStatus);
 
         }
 

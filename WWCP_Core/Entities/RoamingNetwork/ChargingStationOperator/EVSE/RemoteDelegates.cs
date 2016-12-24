@@ -19,6 +19,7 @@
 
 using org.GraphDefined.Vanaheimr.Illias;
 using System;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -33,26 +34,39 @@ namespace org.GraphDefined.WWCP
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
-    public delegate void OnRemoteEVSEDataChangedDelegate(DateTime Timestamp, IRemoteEVSE EVSE, String PropertyName, Object OldValue, Object NewValue);
-
-    /// <summary>
-    /// A delegate called whenever the dynamic status of any subordinated EVSE changed.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp when this change was detected.</param>
-    /// <param name="EVSE">The updated remote EVSE.</param>
-    /// <param name="OldStatus">The old timestamped status of the EVSE.</param>
-    /// <param name="NewStatus">The new timestamped status of the EVSE.</param>
-    public delegate void OnRemoteEVSEStatusChangedDelegate(DateTime Timestamp, IRemoteEVSE EVSE, Timestamped<EVSEStatusType> OldStatus, Timestamped<EVSEStatusType> NewStatus);
-
+    public delegate void OnRemoteEVSEDataChangedDelegate(DateTime     Timestamp,
+                                                         IRemoteEVSE  EVSE,
+                                                         String       PropertyName,
+                                                         Object       OldValue,
+                                                         Object       NewValue);
 
     /// <summary>
     /// A delegate called whenever the admin status of any subordinated EVSE changed.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
     /// <param name="EVSE">The updated remote EVSE.</param>
     /// <param name="OldStatus">The old timestamped admin status of the EVSE.</param>
     /// <param name="NewStatus">The new timestamped admin status of the EVSE.</param>
-    public delegate void OnRemoteEVSEAdminStatusChangedDelegate(DateTime Timestamp, IRemoteEVSE EVSE, Timestamped<EVSEAdminStatusType> OldStatus, Timestamped<EVSEAdminStatusType> NewStatus);
+    public delegate Task OnRemoteEVSEAdminStatusChangedDelegate(DateTime                          Timestamp,
+                                                                EventTracking_Id                  EventTrackingId,
+                                                                IRemoteEVSE                       EVSE,
+                                                                Timestamped<EVSEAdminStatusType>  OldStatus,
+                                                                Timestamped<EVSEAdminStatusType>  NewStatus);
+
+    /// <summary>
+    /// A delegate called whenever the dynamic status of any subordinated EVSE changed.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+    /// <param name="EVSE">The updated remote EVSE.</param>
+    /// <param name="OldStatus">The old timestamped status of the EVSE.</param>
+    /// <param name="NewStatus">The new timestamped status of the EVSE.</param>
+    public delegate Task OnRemoteEVSEStatusChangedDelegate(DateTime                     Timestamp,
+                                                           EventTracking_Id             EventTrackingId,
+                                                           IRemoteEVSE                  EVSE,
+                                                           Timestamped<EVSEStatusType>  OldStatus,
+                                                           Timestamped<EVSEStatusType>  NewStatus);
 
 
     /// <summary>
