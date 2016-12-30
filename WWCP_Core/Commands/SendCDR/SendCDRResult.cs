@@ -25,14 +25,14 @@ using System.Collections.Generic;
 namespace org.GraphDefined.WWCP
 {
 
-    public class SendCDRResult
+    public class SendCDRsResult
     {
 
         #region Properties
 
         public IId                              AuthorizatorId                { get; }
 
-        public SendCDRResultType                Status                        { get; }
+        public SendCDRsResultType               Status                        { get; }
 
         public IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords   { get; }
 
@@ -40,94 +40,124 @@ namespace org.GraphDefined.WWCP
 
         public String                           AdditionalInfo                { get; }
 
+        public TimeSpan?                        Runtime                       { get; }
+
         #endregion
 
         #region Constructor(s)
 
-        private SendCDRResult(SendCDRResultType                Status,
-                              IId                              AuthorizatorId,
-                              IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords  = null,
-                              String                           Description                  = null)
+        /// <summary>
+        /// Create a new send charge detail records result.
+        /// </summary>
+        /// <param name="Status">The status of the request.</param>
+        /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
+        /// <param name="RejectedChargeDetailRecords">An enumeration of rejected charge detail records.</param>
+        /// <param name="Description">An optional description of the send charge detail records result.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        private SendCDRsResult(SendCDRsResultType               Status,
+                               IId                              AuthorizatorId,
+                               IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords  = null,
+                               String                           Description                  = null,
+                               TimeSpan?                        Runtime                      = null)
         {
 
             this.Status                       = Status;
             this.AuthorizatorId               = AuthorizatorId;
             this.RejectedChargeDetailRecords  = RejectedChargeDetailRecords;
             this.Description                  = Description;
+            this.Runtime                      = Runtime;
 
         }
 
         #endregion
 
 
-        #region (static) NotForwared(AuthorizatorId, Description = null)
+        #region (static) NotForwared(AuthorizatorId, Description = null, Runtime = null)
 
-        public static SendCDRResult NotForwared(IId     AuthorizatorId,
-                                                String  Description = null)
+        public static SendCDRsResult NotForwared(IId        AuthorizatorId,
+                                                 String     Description  = null,
+                                                 TimeSpan?  Runtime      = null)
 
-            => new SendCDRResult(SendCDRResultType.NotForwared,
-                                 AuthorizatorId,
-                                 Description: Description);
-
-        #endregion
-
-        #region (static) Enqueued(AuthorizatorId, Description = null)
-
-        public static SendCDRResult Enqueued(IId     AuthorizatorId,
-                                             String  Description = null)
-
-            => new SendCDRResult(SendCDRResultType.Enqueued,
-                                 AuthorizatorId,
-                                 Description: Description);
+            => new SendCDRsResult(SendCDRsResultType.NotForwared,
+                                  AuthorizatorId,
+                                  Description: Description,
+                                  Runtime:     Runtime);
 
         #endregion
 
-        #region (static) Forwarded(AuthorizatorId)
+        #region (static) Enqueued(AuthorizatorId, Description = null, Runtime = null)
 
-        public static SendCDRResult Forwarded(IId AuthorizatorId)
+        public static SendCDRsResult Enqueued(IId        AuthorizatorId,
+                                              String     Description  = null,
+                                              TimeSpan?  Runtime      = null)
 
-            => new SendCDRResult(SendCDRResultType.Forwarded, AuthorizatorId);
-
-        #endregion
-
-        #region (static) InvalidSessionId(AuthorizatorId, Description = null)
-
-        public static SendCDRResult InvalidSessionId(IId     AuthorizatorId,
-                                                     String  Description = null)
-
-            => new SendCDRResult(SendCDRResultType.InvalidSessionId,
-                                 AuthorizatorId,
-                                 Description: Description ?? "Invalid session identification!");
+            => new SendCDRsResult(SendCDRsResultType.Enqueued,
+                                  AuthorizatorId,
+                                  Description: Description,
+                                  Runtime:     Runtime);
 
         #endregion
 
-        #region (static) UnknownEVSE(AuthorizatorId, Description = null)
+        #region (static) Forwarded(AuthorizatorId, Runtime = null)
 
-        public static SendCDRResult UnknownEVSE(IId     AuthorizatorId,
-                                                String  Description = null)
-            => new SendCDRResult(SendCDRResultType.UnknownEVSE,
-                                 AuthorizatorId,
-                                 Description: Description);
+        public static SendCDRsResult Forwarded(IId        AuthorizatorId,
+                                               TimeSpan?  Runtime  = null)
 
-        #endregion
-
-        #region (static) OutOfService(AuthorizatorId, Description = null)
-
-        public static SendCDRResult OutOfService(IId     AuthorizatorId,
-                                                 String  Description = null)
-            => new SendCDRResult(SendCDRResultType.OutOfService,
-                                 AuthorizatorId,
-                                 Description: Description);
+            => new SendCDRsResult(SendCDRsResultType.Forwarded,
+                                  AuthorizatorId,
+                                  Runtime: Runtime);
 
         #endregion
 
-        #region (static) Error(AuthorizatorId, Description = null)
+        #region (static) InvalidSessionId(AuthorizatorId, Description = null, Runtime = null)
 
-        public static SendCDRResult Error(IId     AuthorizatorId,
-                                          String  Description = null)
-            => new SendCDRResult(SendCDRResultType.Error,
-                                 AuthorizatorId,
-                                 Description: Description);
+        public static SendCDRsResult InvalidSessionId(IId        AuthorizatorId,
+                                                      String     Description  = null,
+                                                      TimeSpan?  Runtime      = null)
+
+            => new SendCDRsResult(SendCDRsResultType.InvalidSessionId,
+                                  AuthorizatorId,
+                                  Description: Description ?? "Invalid session identification!",
+                                  Runtime:     Runtime);
+
+        #endregion
+
+        #region (static) UnknownEVSE(AuthorizatorId, Description = null, Runtime = null)
+
+        public static SendCDRsResult UnknownEVSE(IId        AuthorizatorId,
+                                                 String     Description  = null,
+                                                 TimeSpan?  Runtime      = null)
+
+            => new SendCDRsResult(SendCDRsResultType.UnknownEVSE,
+                                  AuthorizatorId,
+                                  Description: Description,
+                                  Runtime:     Runtime);
+
+        #endregion
+
+        #region (static) OutOfService(AuthorizatorId, Description = null, Runtime = null)
+
+        public static SendCDRsResult OutOfService(IId        AuthorizatorId,
+                                                  String     Description  = null,
+                                                  TimeSpan?  Runtime      = null)
+
+            => new SendCDRsResult(SendCDRsResultType.OutOfService,
+                                  AuthorizatorId,
+                                  Description: Description,
+                                  Runtime:     Runtime);
+
+        #endregion
+
+        #region (static) Error(AuthorizatorId, Description = null, Runtime = null)
+
+        public static SendCDRsResult Error(IId        AuthorizatorId,
+                                           String     Description  = null,
+                                           TimeSpan?  Runtime      = null)
+
+            => new SendCDRsResult(SendCDRsResultType.Error,
+                                  AuthorizatorId,
+                                  Description: Description,
+                                  Runtime:     Runtime);
 
         #endregion
 
@@ -145,7 +175,7 @@ namespace org.GraphDefined.WWCP
     }
 
 
-    public enum SendCDRResultType
+    public enum SendCDRsResultType
     {
 
         NotForwared,

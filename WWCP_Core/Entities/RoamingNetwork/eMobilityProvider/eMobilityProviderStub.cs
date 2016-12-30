@@ -2190,6 +2190,16 @@ namespace org.GraphDefined.WWCP
 
         #region Receive incoming AuthStart/-Stop
 
+        #region DisableAuthentication
+
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        public Boolean  DisableAuthentication            { get; set; }
+
+        #endregion
+
+
         #region AuthorizeStart(AuthToken,                    ChargingProductId = null, SessionId = null, OperatorId = null, ...)
 
         /// <summary>

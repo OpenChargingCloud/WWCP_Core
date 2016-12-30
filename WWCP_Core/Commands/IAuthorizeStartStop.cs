@@ -196,6 +196,12 @@ namespace org.GraphDefined.WWCP
     public interface IRemoteAuthorizeStartStop
     {
 
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        Boolean  DisableAuthentication   { get; set; }
+
+
         #region OnAuthorizeStart/-Started
 
         /// <summary>

@@ -474,6 +474,12 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        Boolean  DisablePushData   { get; set; }
+
+
         // Push data directly...
 
         #region (Set/Add/Update/Delete) EVSE(s)...

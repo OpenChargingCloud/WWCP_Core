@@ -227,16 +227,15 @@ namespace org.GraphDefined.WWCP.Importer
 
         #endregion
 
+        #region OnImportFailed
 
-        #region ImportFailed
+        public delegate Task OnImportFailedDelegate(DateTime         Timestamp,
+                                                    WWCPImporter<T>  Importer,
+                                                    String           Category,
+                                                    String           Message,
+                                                    String           ExportTimestamp = null);
 
-        public delegate Task ImportFailedDelegate(DateTime         Timestamp,
-                                                  WWCPImporter<T>  Importer,
-                                                  String           Category,
-                                                  String           Message,
-                                                  String           ExportTimestamp = null);
-
-        public event ImportFailedDelegate  ImportFailed;
+        public event OnImportFailedDelegate  OnImportFailed;
 
         #endregion
 
@@ -340,10 +339,11 @@ namespace org.GraphDefined.WWCP.Importer
                                         String    ExportTimestamp = null)
         {
 
-            SendImportFailed(Timestamp,
-                             Category,
-                             Message,
-                             ExportTimestamp);
+            OnImportFailed?.Invoke(Timestamp,
+                                   this,
+                                   Category,
+                                   Message,
+                                   ExportTimestamp);
 
         }
 

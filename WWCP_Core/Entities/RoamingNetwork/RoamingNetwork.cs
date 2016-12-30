@@ -6762,7 +6762,7 @@ namespace org.GraphDefined.WWCP
 
         #region OnFilterCDRRecords
 
-        public delegate SendCDRResult OnFilterCDRRecordsDelegate(IId AuthorizatorId, AuthInfo AuthInfo);
+        public delegate SendCDRsResult OnFilterCDRRecordsDelegate(IId AuthorizatorId, AuthInfo AuthInfo);
 
         /// <summary>
         /// An event fired whenever a CDR needs to be filtered.
@@ -6782,7 +6782,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">A token to cancel this request.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<SendCDRResult>
+        public async Task<SendCDRsResult>
 
             SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
 
@@ -6828,7 +6828,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            SendCDRResult result = null;
+            SendCDRsResult result = null;
 
             #region Some CDR should perhaps be filtered...
 
@@ -6894,7 +6894,7 @@ namespace org.GraphDefined.WWCP
                 #region Try to find *Roaming Providers* who might kown anything about the given SessionId!
 
                 if (result == null ||
-                    result.Status == SendCDRResultType.InvalidSessionId)
+                    result.Status == SendCDRsResultType.InvalidSessionId)
                 {
 
                     foreach (var iRemoteSendChargeDetailRecord in _IRemoteSendChargeDetailRecord.
@@ -6923,10 +6923,10 @@ namespace org.GraphDefined.WWCP
                 #region ...else fail!
 
                 if (result == null ||
-                    result.Status == SendCDRResultType.InvalidSessionId)
+                    result.Status == SendCDRsResultType.InvalidSessionId)
                 {
 
-                    return SendCDRResult.NotForwared(Id, "No authorization service returned a positiv result!");
+                    return SendCDRsResult.NotForwared(Id, "No authorization service returned a positiv result!");
 
                 }
 

@@ -46,7 +46,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<SendCDRResult>
+        Task<SendCDRsResult>
 
             SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
 
@@ -66,6 +66,12 @@ namespace org.GraphDefined.WWCP
     {
 
         /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        Boolean  DisableSendChargeDetailRecords   { get; set; }
+
+
+        /// <summary>
         /// Send a charge detail record.
         /// </summary>
         /// <param name="ChargeDetailRecord">A charge detail record.</param>
@@ -75,7 +81,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<SendCDRResult>
+        Task<SendCDRsResult>
 
             SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
                                    TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,

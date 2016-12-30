@@ -348,6 +348,12 @@ namespace org.GraphDefined.WWCP
     public interface IRemotePushStatus
     {
 
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        Boolean  DisablePushStatus   { get; set; }
+
+
         #region OnEVSEStatusPush/-Pushed
 
         ///// <summary>

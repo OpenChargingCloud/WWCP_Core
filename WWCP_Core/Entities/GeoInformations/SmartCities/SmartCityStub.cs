@@ -582,6 +582,25 @@ namespace org.GraphDefined.WWCP
 
         #region PushEVSEData/-Status directly...
 
+        #region DisablePushData
+
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        public Boolean  DisablePushData                  { get; set; }
+
+        #endregion
+
+        #region DisablePushStatus
+
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        public Boolean  DisablePushStatus                { get; set; }
+
+        #endregion
+
+
         #region (Set/Add/Update/Delete) EVSE(s)...
 
         #region SetStaticData   (EVSE, TransmissionType = Enqueued, ...)

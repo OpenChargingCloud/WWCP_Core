@@ -36,7 +36,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
 
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<SendCDRResult> OnChargeDetailRecordDelegate(DateTime            Timestamp,
+    public delegate Task<SendCDRsResult> OnChargeDetailRecordDelegate(DateTime            Timestamp,
                                                                      CancellationToken   CancellationToken,
                                                                      EventTracking_Id    EventTrackingId,
                                                                      ChargeDetailRecord  ChargeDetailRecord,
@@ -78,7 +78,7 @@ namespace org.GraphDefined.WWCP
                                                    RoamingNetwork_Id   RoamingNetworkId,
                                                    ChargeDetailRecord  ChargeDetailRecord,
                                                    TimeSpan?           RequestTimeout,
-                                                   SendCDRResult       Result,
+                                                   SendCDRsResult       Result,
                                                    TimeSpan            Runtime);
 
 }
