@@ -28,6 +28,7 @@ namespace org.GraphDefined.WWCP
     {
 
         public const String DebugLog         = "/DebugLog";
+        public const String ImporterLog      = "/ImporterLog";
         public const String ForwardingInfos  = "/ForwardingInfos";
 
     }

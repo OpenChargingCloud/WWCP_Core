@@ -949,7 +949,7 @@ namespace org.GraphDefined.WWCP
 
             return _ChargingPools.
                        GetById(ChargingPoolId).
-                       MergeWith(new ChargingPool(ChargingPoolId,
+                       UpdateWith(new ChargingPool(ChargingPoolId,
                                                   this,
                                                   Configurator,
                                                   RemoteChargingPoolCreator,

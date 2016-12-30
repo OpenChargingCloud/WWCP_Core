@@ -3291,13 +3291,13 @@ namespace org.GraphDefined.WWCP
 
 
 
-        #region MergeWith(OtherChargingStation)
+        #region UpdateWith(OtherChargingStation)
 
         /// <summary>
-        /// Merge this charging pool with the data of the other charging station.
+        /// Update this charging station with the data of the other charging station.
         /// </summary>
         /// <param name="OtherChargingStation">Another charging station.</param>
-        public ChargingStation MergeWith(ChargingStation OtherChargingStation)
+        public ChargingStation UpdateWith(ChargingStation OtherChargingStation)
         {
 
             Name                 = OtherChargingStation.Name;

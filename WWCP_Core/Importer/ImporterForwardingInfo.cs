@@ -61,7 +61,7 @@ namespace org.GraphDefined.WWCP.Importer
 
         #endregion
 
-        public IEnumerable<ChargingStationOperator> EVSEOperators { get; }
+        public IEnumerable<ChargingStationOperator> ChargingStationOperators { get; }
 
         #region ForwardedToRoamingNetworkId
 
@@ -183,7 +183,7 @@ namespace org.GraphDefined.WWCP.Importer
         {
 
             this._OnForwardingChanged        = OnChangedCallback;
-            this.EVSEOperators               = EVSEOperators;
+            this.ChargingStationOperators               = EVSEOperators;
             this._EVSEIds                    = EVSEIds               != null ? new HashSet<EVSE_Id>(EVSEIds) : new HashSet<EVSE_Id>();
             this.StationId                   = StationId.HasValue            ? StationId.Value               : ChargingStation_Id.Create(EVSEIds).Value;
             this.StationName                 = StationName;

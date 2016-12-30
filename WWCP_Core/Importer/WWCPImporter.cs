@@ -37,11 +37,15 @@ using org.GraphDefined.Vanaheimr.Hermod.DNS;
 namespace org.GraphDefined.WWCP.Importer
 {
 
-    public delegate Task<HTTPResponse<T>> DownloadData<T>(DateTime LastRuntimestamp, String LastRunId, DNSClient DNSClient);
+    public delegate Task<T> GetDataDelegate<T>(DateTime         Timestamp,
+                                               WWCPImporter<T>  WWCPImporter,
+                                               DateTime         LastRuntimestamp,
+                                               UInt64           LastRunId,
+                                               DNSClient        DNSClient);
 
 
     public delegate IEnumerable<ImporterForwardingInfo> CreateForwardingTableDelegate<T>(WWCPImporter<T>                       Importer,
-                                                                                         HTTPResponse<T>                       Input,
+                                                                                         T                                     Input,
                                                                                          IEnumerable<ChargingStationOperator>  ChargingStationOperators,
                                                                                          ChargingStationOperator               DefaultChargingStationOperator);
 
@@ -54,66 +58,60 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region Data
 
-        private Boolean Started = false;
-        private readonly Object UpdateEVSEDataAndStatusLock;
-        private readonly Timer UpdateEVSEStatusTimer;
+        private                  Boolean                            Started;
+        private readonly         Object                             ImporterRunLock;
+        private readonly         Timer                              ImporterRunTimer;
 
-        private readonly DownloadData<T> DownloadData;
-        private readonly CreateForwardingTableDelegate<T> CreateForwardingTable;
-        private readonly Action<WWCPImporter<T>, Task<HTTPResponse<T>>> OnFirstRun;
-        private readonly Action<WWCPImporter<T>, Task<HTTPResponse<T>>> OnEveryRun;
+        /// <summary>
+        /// The default time span between importer runs.
+        /// </summary>
+        public  readonly static  TimeSpan                           DefaultImportEvery                = TimeSpan.FromMinutes(1);
 
-        private readonly static TimeSpan DefaultImportEvery = TimeSpan.FromMinutes(1);
+        private readonly         Action<WWCPImporter<T>, Task<T>>   OnStartup;
+        private readonly         GetDataDelegate<T>                 GetData;
+        private readonly         Action<WWCPImporter<T>, Task<T>>   OnEveryRun;
+        private readonly         CreateForwardingTableDelegate<T>   CreateForwardingTable;
 
-        public const UInt16 DefaultMaxNumberOfCachedXMLExports = 100;
+        /// <summary>
+        /// The default number of cached data imports.
+        /// </summary>
+        public  const            UInt32                             DefaultMaxNumberOfCachedImports   = 100;
+
+        private readonly         Action<WWCPImporter<T>, Task<T>>   OnShutdown;
 
         #endregion
 
         #region Properties
 
-        #region Id
+        /// <summary>
+        /// The unique identification of this WWCP importer.
+        /// </summary>
+        public String                                Id                               { get; }
 
-        private readonly String _Id;
+        /// <summary>
+        /// The prefix of the importer forwarding files.
+        /// </summary>
+        public String                                ForwardingFilenamePrefix         { get; }
 
-        public String Id
-        {
-            get
-            {
-                return _Id;
-            }
-        }
 
-        #endregion
+        public IEnumerable<ChargingStationOperator>  ChargingStationOperators         { get; }
 
-        #region ConfigFilenamePrefix
+        public ChargingStationOperator               DefaultChargingStationOperator   { get; }
 
-        private readonly String _ConfigFilenamePrefix;
-
-        public String ConfigFilenamePrefix
-        {
-            get
-            {
-                return _ConfigFilenamePrefix;
-            }
-        }
-
-        #endregion
-
-        #region DNSClient
-
-        public DNSClient DNSClient { get; }
-
-        #endregion
-
-        public IEnumerable<ChargingStationOperator>  ChargingStationOperators           { get; }
-
-        public ChargingStationOperator               DefaultChargingStationOperator     { get; }
-
-        #region RoamingNetworkIds
-
-        public IEnumerable<RoamingNetwork_Id> RoamingNetworkIds
-
+        public IEnumerable<RoamingNetwork_Id>        RoamingNetworkIds
             => ChargingStationOperators.Select(EVSEOperator => EVSEOperator.RoamingNetwork.Id);
+
+
+        /// <summary>
+        /// The time span between importer runs.
+        /// </summary>
+        public TimeSpan                              ImportEvery                      { get; }
+
+        #region LastRunId
+
+        private UInt64 _LastRunId;
+
+        public UInt64 RunId => _LastRunId + 1;
 
         #endregion
 
@@ -129,69 +127,57 @@ namespace org.GraphDefined.WWCP.Importer
 
         #endregion
 
-        #region XMLExports
+        #region ImportedData
 
         private List<Timestamped<T>> _ImportedData;
 
-        public IEnumerable<Timestamped<T>> XMLExports
+        public IEnumerable<Timestamped<T>> ImportedData
 
             => _ImportedData;
 
         #endregion
 
-        #region MaxNumberOfCachedXMLExports
+        /// <summary>
+        /// The number of cached data imports.
+        /// </summary>
+        public UInt32                                MaxNumberOfCachedDataImports     { get; }
 
-        private UInt16 _MaxNumberOfCachedDataImports;
-
-        public UInt16 MaxNumberOfCachedXMLExports
-
-            => _MaxNumberOfCachedDataImports;
-
-        #endregion
-
-        #region UpdateEvery
-
-        public TimeSpan UpdateEvery { get; }
-
-        #endregion
-
-        #region HTTPImportEvents
-
-        private HTTPEventSource _HTTPImportEvents;
-
-        public HTTPEventSource HTTPImportEvents
-        {
-
-            get
-            {
-                return _HTTPImportEvents;
-            }
-
-            set
-            {
-                if (value != null)
-                    _HTTPImportEvents = value;
-            }
-
-        }
-
-        #endregion
+        public DNSClient                             DNSClient                        { get; }
 
         #endregion
 
         #region Events
 
-        #region OnForwardingInformationAdded
+        #region OnNewForwardingInformation
 
         /// <summary>
         /// A delegate called whenever a new forwarding information was added.
         /// </summary>
-        public delegate void OnForwardingInformationAddedDelegate(DateTime Timestamp, WWCPImporter<T> Sender, ImporterForwardingInfo ForwardingInfo);
+        public delegate void OnNewForwardingInformationDelegate(DateTime                Timestamp,
+                                                                WWCPImporter<T>         Importer,
+                                                                ImporterForwardingInfo  ForwardingInfo);
 
         /// <summary>
         /// An event fired whenever a new forwarding information was added.
         /// </summary>
-        public event OnForwardingInformationAddedDelegate OnForwardingInformationAdded;
+        public event OnNewForwardingInformationDelegate OnNewForwardingInformation;
+
+        #endregion
+
+        #region OnForwardingInformationChanged
+
+        /// <summary>
+        /// A delegate called whenever a new forwarding information was added.
+        /// </summary>
+        public delegate void OnForwardingInformationChangedDelegate(DateTime                Timestamp,
+                                                                    WWCPImporter<T>         Importer,
+                                                                    ImporterForwardingInfo  OldForwardingInfo,
+                                                                    ImporterForwardingInfo  NewForwardingInfo);
+
+        /// <summary>
+        /// An event fired whenever a new forwarding information was added.
+        /// </summary>
+        public event OnForwardingInformationChangedDelegate OnForwardingInformationChanged;
 
         #endregion
 
@@ -209,6 +195,51 @@ namespace org.GraphDefined.WWCP.Importer
 
         #endregion
 
+
+        #region OnStarted
+
+        public delegate Task OnStartedDelegate(DateTime         Timestamp,
+                                               WWCPImporter<T>  Importer,
+                                               String           Message);
+
+        public event OnStartedDelegate OnStarted;
+
+        #endregion
+
+        #region OnLoadForwardingDataFromFileStarted
+
+        public delegate Task OnLoadForwardingDataFromFileStartedDelegate(DateTime         Timestamp,
+                                                                         WWCPImporter<T>  Importer,
+                                                                         String           FileName);
+
+        public event OnLoadForwardingDataFromFileStartedDelegate OnLoadForwardingDataFromFileStarted;
+
+        #endregion
+
+        #region OnLoadForwardingDataFromFileFinished
+
+        public delegate Task OnLoadForwardingDataFromFileFinishedDelegate(DateTime         Timestamp,
+                                                                          WWCPImporter<T>  Importer,
+                                                                          String           FileName,
+                                                                          UInt64           NumberOfForwardingInfosLoaded);
+
+        public event OnLoadForwardingDataFromFileFinishedDelegate OnLoadForwardingDataFromFileFinished;
+
+        #endregion
+
+
+        #region ImportFailed
+
+        public delegate Task ImportFailedDelegate(DateTime         Timestamp,
+                                                  WWCPImporter<T>  Importer,
+                                                  String           Category,
+                                                  String           Message,
+                                                  String           ExportTimestamp = null);
+
+        public event ImportFailedDelegate  ImportFailed;
+
+        #endregion
+
         #endregion
 
         #region Constructor(s)
@@ -216,57 +247,63 @@ namespace org.GraphDefined.WWCP.Importer
         /// <summary>
         /// Create a new WWCP importer.
         /// </summary>
-        public WWCPImporter(String                                          Id,
-                            String                                          ConfigFilenamePrefix,
-                            DNSClient                                       DNSClient                         = null,
-                            TimeSpan?                                       UpdateEvery                       = null,
+        public WWCPImporter(String                                Id,
+                            String                                ForwardingFilenamePrefix         = null,
 
-                            DownloadData<T>                                 DownloadData                      = null,
+                            IEnumerable<ChargingStationOperator>  ChargingStationOperators         = null,
+                            ChargingStationOperator               DefaultChargingStationOperator   = null,
+                            CreateForwardingTableDelegate<T>      CreateForwardingTable            = null,
 
-                            IEnumerable<ChargingStationOperator>        ChargingStationOperators          = null,
-                            ChargingStationOperator                     DefaultChargingStationOperator    = null,
-                            CreateForwardingTableDelegate<T>                CreateForwardingTable             = null,
+                            Action<WWCPImporter<T>, Task<T>>      OnStartup                        = null,
+                            TimeSpan?                             ImportEvery                      = null,
+                            GetDataDelegate<T>                    GetData                          = null,
+                            Action<WWCPImporter<T>, Task<T>>      OnEveryRun                       = null,
+                            UInt32                                MaxNumberOfCachedDataImports     = DefaultMaxNumberOfCachedImports,
+                            Action<WWCPImporter<T>, Task<T>>      OnShutdown                       = null,
 
-                            Action<WWCPImporter<T>, Task<HTTPResponse<T>>>  OnFirstRun                        = null,
-                            Action<WWCPImporter<T>, Task<HTTPResponse<T>>>  OnEveryRun                        = null,
-
-                            UInt16                                          MaxNumberOfCachedXMLExports       = DefaultMaxNumberOfCachedXMLExports)
+                            DNSClient                             DNSClient                        = null)
 
         {
 
             #region Initial checks
 
             if (Id.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Id),                    "The given config file name must not be null or empty!");
+                throw new ArgumentNullException(nameof(Id),                        "The given importer identification must not be null or empty!");
 
-            if (ConfigFilenamePrefix.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(ConfigFilenamePrefix),  "The given config file name must not be null or empty!");
+            if (ForwardingFilenamePrefix.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(ForwardingFilenamePrefix),  "The given importer config filename prefix must not be null or empty!");
 
-            if (DownloadData == null)
-                throw new ArgumentNullException(nameof(DownloadData),          "The given delegate must not be null or empty!");
-
-            if (OnFirstRun == null)
-                throw new ArgumentNullException(nameof(OnFirstRun),            "The given delegate must not be null or empty!");
+            if (GetData == null)
+                throw new ArgumentNullException(nameof(GetData),                   "The given GetData delegate must not be null!");
 
             if (OnEveryRun == null)
-                throw new ArgumentNullException(nameof(OnEveryRun),            "The given delegate must not be null or empty!");
+                throw new ArgumentNullException(nameof(OnEveryRun),                "The given OnEveryRun delegate must not be null!");
 
             #endregion
 
-            this._Id                             = Id;
-            this._ConfigFilenamePrefix           = ConfigFilenamePrefix;
-            this.DNSClient                       = DNSClient;
-            this.UpdateEvery                     = UpdateEvery != null ? UpdateEvery.Value : DefaultImportEvery;
+            this.Id                              = Id;
 
-            this.DownloadData                    = DownloadData;
-            this.CreateForwardingTable           = CreateForwardingTable;
-            this.OnFirstRun                      = OnFirstRun;
+            this.ForwardingFilenamePrefix        = ForwardingFilenamePrefix.IsNotNullOrEmpty()
+                                                       ? ForwardingFilenamePrefix
+                                                       : Id + "_forwardings_";
+
+            this.ImportEvery                     = ImportEvery.HasValue
+                                                       ? ImportEvery.Value
+                                                       : DefaultImportEvery;
+
+            this.OnStartup                       = OnStartup;
+            this.GetData                         = GetData;
             this.OnEveryRun                      = OnEveryRun;
+            this.CreateForwardingTable           = CreateForwardingTable;
+            this.MaxNumberOfCachedDataImports    = MaxNumberOfCachedDataImports;
+            this.OnShutdown                      = OnShutdown;
 
-            this._MaxNumberOfCachedDataImports   = MaxNumberOfCachedXMLExports;
 
             this.ChargingStationOperators        = ChargingStationOperators;
-            ChargingStationOperators.ForEach(EVSEOperator => EVSEOperator.OnChargingStationAdminStatusChanged += async (Timestamp, ChargingStation, OldStatus, NewStatus) => {
+            ChargingStationOperators.ForEach(EVSEOperator => EVSEOperator.OnChargingStationAdminStatusChanged += async (Timestamp,
+                                                                                                                        ChargingStation,
+                                                                                                                        OldStatus,
+                                                                                                                        NewStatus) => {
 
                 var fwd = AllForwardingInfos.FirstOrDefault(fwdinfo => fwdinfo.StationId == ChargingStation.Id);
                 if (fwd != null)
@@ -284,9 +321,45 @@ namespace org.GraphDefined.WWCP.Importer
             this._AllForwardingInfos             = new Dictionary<ChargingStation_Id, ImporterForwardingInfo>();
             this._ImportedData                   = new List<Timestamped<T>>();
 
-            // Start not now but veeeeery later!
-            UpdateEVSEDataAndStatusLock          = new Object();
-            UpdateEVSEStatusTimer                = new Timer(ImportEvery, null, TimeSpan.FromDays(30), this.UpdateEvery);
+            this.Started                         = false;
+            this.ImporterRunLock                 = new Object();
+            this.ImporterRunTimer                = new Timer(ImporterRun);
+
+            this.DNSClient                       = DNSClient;
+
+        }
+
+        #endregion
+
+
+        #region (protected) SendImportFailed(Timestamp, Category, Message, ExportTimestamp = null)
+
+        protected void SendImportFailed(DateTime  Timestamp,
+                                        String    Category,
+                                        String    Message,
+                                        String    ExportTimestamp = null)
+        {
+
+            SendImportFailed(Timestamp,
+                             Category,
+                             Message,
+                             ExportTimestamp);
+
+        }
+
+        #endregion
+
+        #region SendOnForwardingChanged(Timestamp, ForwardingInfo, OldRN, NewRN)
+
+        public void SendOnForwardingChanged(DateTime                Timestamp,
+                                            ImporterForwardingInfo  ForwardingInfo,
+                                            RoamingNetwork_Id?      OldRN,
+                                            RoamingNetwork_Id?      NewRN)
+        {
+
+            SaveForwardingDataToFile();
+
+            OnForwardingChanged?.Invoke(Timestamp, this, ForwardingInfo, OldRN, NewRN);
 
         }
 
@@ -298,17 +371,17 @@ namespace org.GraphDefined.WWCP.Importer
         public WWCPImporter<T> LoadForwardingDataFromFile()
         {
 
-            lock (ChargingStationOperators)
+            lock (ImporterRunLock)
             {
 
                 var CurrentDirectory  = Directory.GetCurrentDirectory();
                 var ConfigFilename    = Directory.EnumerateFiles(CurrentDirectory).
                                                   Select           (file => file.Remove(0, CurrentDirectory.Length + 1)).
-                                                  Where            (file => file.StartsWith(_ConfigFilenamePrefix, StringComparison.Ordinal)).
+                                                  Where            (file => file.StartsWith(ForwardingFilenamePrefix, StringComparison.Ordinal)).
                                                   OrderByDescending(file => file).
                                                   FirstOrDefault();
 
-                var InputFile         = ConfigFilename != null ? ConfigFilename : ConfigFilenamePrefix + ".json";
+                var InputFile         = ConfigFilename != null ? ConfigFilename : ForwardingFilenamePrefix + ".json";
 
                 if (File.Exists(InputFile))
                 {
@@ -465,7 +538,13 @@ namespace org.GraphDefined.WWCP.Importer
                 }
 
                 else
-                    throw new ApplicationException("Config file '" + _ConfigFilenamePrefix + "' does not exist!");
+                    throw new ApplicationException("Config file '" + ForwardingFilenamePrefix + "' does not exist!");
+
+
+                OnLoadForwardingDataFromFileFinished?.Invoke(DateTime.Now,
+                                                             this,
+                                                             InputFile,
+                                                             (UInt64) _AllForwardingInfos.Count);
 
             }
 
@@ -480,12 +559,12 @@ namespace org.GraphDefined.WWCP.Importer
         public WWCPImporter<T> SaveForwardingDataToFile()
         {
 
-            lock (ChargingStationOperators)
+            lock (ImporterRunLock)
             {
 
                 var Now             = DateTime.Now;
 
-                var _ConfigFilename = String.Concat(_ConfigFilenamePrefix,     "_",
+                var _ConfigFilename = String.Concat(ForwardingFilenamePrefix,     "_",
                                                     Now.Year,                  "-",
                                                     Now.Month. ToString("D2"), "-",
                                                     Now.Day.   ToString("D2"), "_",
@@ -587,6 +666,7 @@ namespace org.GraphDefined.WWCP.Importer
                     _AllForwardingInfos.Values.ForEach(FwdInfo => FwdInfo.OutOfService = true);
 
                 ImporterForwardingInfo ExistingForwardingInfo;
+                Boolean ForwardingInformationChanged = false;
 
                 foreach (var ForwardingInfo in ForwardingInfos)
                 {
@@ -596,22 +676,14 @@ namespace org.GraphDefined.WWCP.Importer
                     if (_AllForwardingInfos.TryGetValue(ForwardingInfo.StationId, out ExistingForwardingInfo))
                     {
 
+                        ForwardingInformationChanged = false;
+
                         #region StationNameChanged...
 
                         if (ExistingForwardingInfo.StationName != ForwardingInfo.StationName)
                         {
-
-                            _HTTPImportEvents.SubmitSubEvent("StationNameChanged",
-                                                             new JObject(
-                                                                 new JProperty("Timestamp",          DateTime.Now.ToIso8601()),
-                                                                 new JProperty("ChargingStationId",  ExistingForwardingInfo.StationId.ToString()),
-                                                                 new JProperty("OldValue",           ExistingForwardingInfo.StationName),
-                                                                 new JProperty("NewValue",           ForwardingInfo. StationName)
-                                                             ).ToString().
-                                                               Replace(Environment.NewLine, "")).Wait();
-
-                            ExistingForwardingInfo.StationName = ForwardingInfo.StationName;
-
+                            ExistingForwardingInfo.StationName  = ForwardingInfo.StationName;
+                            ForwardingInformationChanged        = true;
                         }
 
                         #endregion
@@ -620,18 +692,8 @@ namespace org.GraphDefined.WWCP.Importer
 
                         if (ExistingForwardingInfo.StationServiceTag != ForwardingInfo.StationServiceTag)
                         {
-
-                            _HTTPImportEvents.SubmitSubEvent("StationServiceTagChanged",
-                                                             new JObject(
-                                                                 new JProperty("Timestamp",          DateTime.Now.ToIso8601()),
-                                                                 new JProperty("ChargingStationId",  ExistingForwardingInfo.StationId.ToString()),
-                                                                 new JProperty("OldValue",           ExistingForwardingInfo.StationServiceTag),
-                                                                 new JProperty("NewValue",           ForwardingInfo. StationServiceTag)
-                                                             ).ToString().
-                                                               Replace(Environment.NewLine, "")).Wait();
-
-                            ExistingForwardingInfo.StationServiceTag = ForwardingInfo.StationServiceTag;
-
+                            ExistingForwardingInfo.StationServiceTag  = ForwardingInfo.StationServiceTag;
+                            ForwardingInformationChanged              = true;
                         }
 
                         #endregion
@@ -640,18 +702,8 @@ namespace org.GraphDefined.WWCP.Importer
 
                         if (ExistingForwardingInfo.StationAddress != ForwardingInfo.StationAddress)
                         {
-
-                            _HTTPImportEvents.SubmitSubEvent("StationAddressChanged",
-                                                             new JObject(
-                                                                 new JProperty("Timestamp",          DateTime.Now.ToIso8601()),
-                                                                 new JProperty("ChargingStationId",  ExistingForwardingInfo.StationId.ToString()),
-                                                                 new JProperty("OldValue",           ExistingForwardingInfo.StationAddress.ToString()),
-                                                                 new JProperty("NewValue",           ForwardingInfo. StationAddress.ToString())
-                                                             ).ToString().
-                                                               Replace(Environment.NewLine, "")).Wait();
-
-                            ExistingForwardingInfo.StationAddress = ForwardingInfo.StationAddress;
-
+                            ExistingForwardingInfo.StationAddress  = ForwardingInfo.StationAddress;
+                            ForwardingInformationChanged           = true;
                         }
 
                         #endregion
@@ -660,23 +712,19 @@ namespace org.GraphDefined.WWCP.Importer
 
                         if (ExistingForwardingInfo.StationGeoCoordinate != ForwardingInfo.StationGeoCoordinate)
                         {
-
-                            _HTTPImportEvents.SubmitSubEvent("StationGeoCoordinateChanged",
-                                                             new JObject(
-                                                                 new JProperty("Timestamp",          DateTime.Now.ToIso8601()),
-                                                                 new JProperty("ChargingStationId",  ExistingForwardingInfo.StationId.ToString()),
-                                                                 new JProperty("OldValue",           ExistingForwardingInfo.StationGeoCoordinate.ToString()),
-                                                                 new JProperty("NewValue",           ForwardingInfo. StationGeoCoordinate.ToString())
-                                                             ).ToString().
-                                                               Replace(Environment.NewLine, "")).Wait();
-
-                            ExistingForwardingInfo.StationGeoCoordinate = ForwardingInfo.StationGeoCoordinate;
-
+                            ExistingForwardingInfo.StationGeoCoordinate  = ForwardingInfo.StationGeoCoordinate;
+                            ForwardingInformationChanged                 = true;
                         }
 
                         #endregion
 
                         ExistingForwardingInfo.UpdateTimestamp();
+
+                        if (ForwardingInformationChanged)
+                            OnForwardingInformationChanged?.Invoke(DateTime.Now,
+                                                                   this,
+                                                                   ExistingForwardingInfo, //ToDo: Send a clone of the previous forwarding info!
+                                                                   ExistingForwardingInfo);
 
                     }
 
@@ -689,17 +737,9 @@ namespace org.GraphDefined.WWCP.Importer
 
                         _AllForwardingInfos.Add(ForwardingInfo.StationId, ForwardingInfo);
 
-                        //ToDo: Implement me!
-                        _HTTPImportEvents.SubmitSubEvent("NewForwardingInfos",
-                                                         new JObject(
-                                                             new JProperty("Timestamp",       DateTime.Now.ToIso8601()),
-                                                             new JProperty("ForwardingInfo",  ForwardingInfo.StationId.ToString())
-                                                         ).ToString().
-                                                           Replace(Environment.NewLine, "")).Wait();
-
-                        OnForwardingInformationAdded?.Invoke(DateTime.Now,
-                                                             this,
-                                                             ForwardingInfo);
+                        OnNewForwardingInformation?.Invoke(DateTime.Now,
+                                                           this,
+                                                           ForwardingInfo);
 
                     }
 
@@ -725,7 +765,7 @@ namespace org.GraphDefined.WWCP.Importer
 
             DebugX.Log("Starting WWCP importer '" + Id + "'!");
 
-            if (Monitor.TryEnter(UpdateEVSEDataAndStatusLock))
+            if (Monitor.TryEnter(ImporterRunLock))
             {
 
                 try
@@ -734,15 +774,31 @@ namespace org.GraphDefined.WWCP.Importer
                     if (!Started)
                     {
 
-                        var FirstData = DownloadData(DateTime.Now, "1", DNSClient);
+                        OnStarted?.Invoke(DateTime.Now,
+                                          this,
+                                          "Importer started");
 
-                        AddOrUpdateForwardingInfos(CreateForwardingTable(this, FirstData.Result, ChargingStationOperators, DefaultChargingStationOperator));
+                        _LastRunId = 0;
 
-                        OnFirstRun(this, FirstData);
+                        LoadForwardingDataFromFile();
 
+                        var FirstData = GetData(DateTime.Now,
+                                                this,
+                                                DateTime.Now,
+                                                _LastRunId,
+                                                DNSClient);
+
+                        AddOrUpdateForwardingInfos(CreateForwardingTable(this,
+                                                                         FirstData.Result,
+                                                                         ChargingStationOperators,
+                                                                         DefaultChargingStationOperator));
+
+                        OnStartup (this, FirstData);
+                        OnEveryRun(this, FirstData);
                         DebugX.Log("WWCP importer '" + Id + "' Initital import finished!");
 
-                        UpdateEVSEStatusTimer.Change(TimeSpan.FromSeconds(1), UpdateEvery);
+                        ImporterRunTimer.Change(TimeSpan.FromSeconds(1),
+                                                ImportEvery);
 
                         Started = true;
 
@@ -756,7 +812,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                 finally
                 {
-                    Monitor.Exit(UpdateEVSEDataAndStatusLock);
+                    Monitor.Exit(ImporterRunLock);
                 }
 
             }
@@ -769,31 +825,14 @@ namespace org.GraphDefined.WWCP.Importer
         #endregion
 
 
-        #region SendOnForwardingChanged(Timestamp, ForwardingInfo, OldRN, NewRN)
+        #region (private, Timer) ImporterRun(Status)
 
-        public void SendOnForwardingChanged(DateTime                Timestamp,
-                                            ImporterForwardingInfo  ForwardingInfo,
-                                            RoamingNetwork_Id?      OldRN,
-                                            RoamingNetwork_Id?      NewRN)
-        {
-
-            SaveForwardingDataToFile();
-
-            OnForwardingChanged?.Invoke(Timestamp, this, ForwardingInfo, OldRN, NewRN);
-
-        }
-
-        #endregion
-
-
-        #region (private, Timer) ImportEvery(Status)
-
-        private void ImportEvery(Object Status)
+        private void ImporterRun(Object Status)
         {
 
             Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
 
-            if (Monitor.TryEnter(UpdateEVSEDataAndStatusLock))
+            if (Monitor.TryEnter(ImporterRunLock))
             {
 
                 #region Debug info
@@ -825,7 +864,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                     #endregion
 
-                    DownloadData(DateTime.Now, "1", DNSClient).
+                    GetData(DateTime.Now, this, DateTime.Now, _LastRunId++, DNSClient).
 
                         ContinueWith(ImporterTask => {
 
@@ -838,9 +877,9 @@ namespace org.GraphDefined.WWCP.Importer
                         ContinueWith(ImporterTask => {
 
                             // Save the imported data for later review...
-                            _ImportedData.Add(new Timestamped<T>(ImporterTask.Result.Content));
+                            _ImportedData.Add(new Timestamped<T>(ImporterTask.Result));
 
-                            if (_ImportedData.Count > _MaxNumberOfCachedDataImports)
+                            if (_ImportedData.Count > MaxNumberOfCachedDataImports)
                                 _ImportedData.Remove(_ImportedData.First());
 
                             // Update ForwardingInfos
@@ -875,13 +914,13 @@ namespace org.GraphDefined.WWCP.Importer
 
                 finally
                 {
-                    Monitor.Exit(UpdateEVSEDataAndStatusLock);
+                    Monitor.Exit(ImporterRunLock);
                 }
 
             }
 
-          //  else
-          //      DebugX.LogT("WWCP importer '" + Id + "' skipped!");
+            else
+                DebugX.LogT("WWCP importer '" + Id + "' skipped!");
 
         }
 

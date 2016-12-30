@@ -1152,7 +1152,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CreateChargingStation        (ChargingStationId = null, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateChargingStation        (ChargingStationId, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging station having the given
@@ -1162,7 +1162,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging station before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging station after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station failed.</param>
-        public ChargingStation CreateChargingStation(ChargingStation_Id?                       ChargingStationId             = null,
+        public ChargingStation CreateChargingStation(ChargingStation_Id                        ChargingStationId,
                                                      Action<ChargingStation>                   Configurator                  = null,
                                                      RemoteChargingStationCreatorDelegate      RemoteChargingStationCreator  = null,
                                                      ChargingStationAdminStatusTypes           AdminStatus                   = ChargingStationAdminStatusTypes.Operational,
@@ -1173,25 +1173,22 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (ChargingStationId == null)
-                throw new ArgumentNullException(nameof(ChargingStationId), "The given charging station identification must not be null!");
-
-            if (_ChargingStations.ContainsId(ChargingStationId.Value))
+            if (_ChargingStations.ContainsId(ChargingStationId))
             {
                 if (OnError == null)
-                    throw new ChargingStationAlreadyExistsInPool(this, ChargingStationId.Value);
+                    throw new ChargingStationAlreadyExistsInPool(this, ChargingStationId);
                 else
-                    OnError?.Invoke(this, ChargingStationId.Value);
+                    OnError?.Invoke(this, ChargingStationId);
             }
 
-            if (!Operator.Ids.Contains(ChargingStationId.Value.OperatorId))
+            if (!Operator.Ids.Contains(ChargingStationId.OperatorId))
                 throw new InvalidChargingStationOperatorId(this,
-                                                           ChargingStationId.Value.OperatorId,
+                                                           ChargingStationId.OperatorId,
                                                            this.Operator.Ids);
 
             #endregion
 
-            var _ChargingStation = new ChargingStation(ChargingStationId.Value,
+            var _ChargingStation = new ChargingStation(ChargingStationId,
                                                        this,
                                                        Configurator,
                                                        RemoteChargingStationCreator,
@@ -1273,9 +1270,9 @@ namespace org.GraphDefined.WWCP
             Debug.WriteLine("ChargingStation '" + ChargingStationId + "' could not be created!");
 
             if (OnError == null)
-                throw new ChargingStationCouldNotBeCreated(this, ChargingStationId.Value);
+                throw new ChargingStationCouldNotBeCreated(this, ChargingStationId);
 
-            OnError?.Invoke(this, ChargingStationId.Value);
+            OnError?.Invoke(this, ChargingStationId);
             return null;
 
         }
@@ -1328,12 +1325,12 @@ namespace org.GraphDefined.WWCP
 
             return _ChargingStations.
                        GetById(ChargingStationId).
-                       MergeWith(new ChargingStation(ChargingStationId,
-                                                     this,
-                                                     Configurator,
-                                                     RemoteChargingStationCreator,
-                                                     AdminStatus,
-                                                     Status));
+                       UpdateWith(new ChargingStation(ChargingStationId,
+                                                      this,
+                                                      Configurator,
+                                                      RemoteChargingStationCreator,
+                                                      AdminStatus,
+                                                      Status));
 
         }
 
@@ -3368,13 +3365,13 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region MergeWith(OtherChargingPool)
+        #region UpdateWith(OtherChargingPool)
 
         /// <summary>
-        /// Merge this charging pool with the data of the other charging pool.
+        /// Update this charging pool with the data of the other charging pool.
         /// </summary>
         /// <param name="OtherChargingPool">Another charging pool.</param>
-        public ChargingPool MergeWith(ChargingPool OtherChargingPool)
+        public ChargingPool UpdateWith(ChargingPool OtherChargingPool)
         {
 
             Name                 = OtherChargingPool.Name;
