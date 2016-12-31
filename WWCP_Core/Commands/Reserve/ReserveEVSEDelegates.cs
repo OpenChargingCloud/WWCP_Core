@@ -42,7 +42,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Duration">The duration of the reservation.</param>
     /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
     /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-    /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
+    /// <param name="ChargingProduct">The charging product to be reserved.</param>
     /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
     /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
     /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
@@ -58,7 +58,7 @@ namespace org.GraphDefined.WWCP
                                                       TimeSpan?                         Duration,
                                                       eMobilityProvider_Id?             ProviderId,
                                                       eMobilityAccount_Id?              eMAId,
-                                                      ChargingProduct_Id?               ChargingProductId,
+                                                      ChargingProduct                   ChargingProduct,
                                                       IEnumerable<Auth_Token>           AuthTokens,
                                                       IEnumerable<eMobilityAccount_Id>  eMAIds,
                                                       IEnumerable<UInt32>               PINs,
@@ -78,7 +78,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Duration">The duration of the reservation.</param>
     /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
     /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-    /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
+    /// <param name="ChargingProduct">The charging product to be reserved.</param>
     /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
     /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
     /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
@@ -93,7 +93,7 @@ namespace org.GraphDefined.WWCP
                                                                   TimeSpan?                         Duration,
                                                                   eMobilityProvider_Id?             ProviderId,
                                                                   eMobilityAccount_Id?              eMAId,
-                                                                  ChargingProduct_Id                ChargingProductId,
+                                                                  ChargingProduct                   ChargingProduct,
                                                                   IEnumerable<Auth_Token>           AuthTokens,
                                                                   IEnumerable<eMobilityAccount_Id>  eMAIds,
                                                                   IEnumerable<UInt32>               PINs,
@@ -113,7 +113,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Duration">The duration of the reservation.</param>
     /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
     /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-    /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
+    /// <param name="ChargingProduct">The charging product to be reserved.</param>
     /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
     /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
     /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
@@ -131,7 +131,7 @@ namespace org.GraphDefined.WWCP
                                                        TimeSpan?                         Duration,
                                                        eMobilityProvider_Id?             ProviderId,
                                                        eMobilityAccount_Id?              eMAId,
-                                                       ChargingProduct_Id?               ChargingProductId,
+                                                       ChargingProduct                   ChargingProduct,
                                                        IEnumerable<Auth_Token>           AuthTokens,
                                                        IEnumerable<eMobilityAccount_Id>  eMAIds,
                                                        IEnumerable<UInt32>               PINs,

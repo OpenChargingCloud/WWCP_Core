@@ -96,10 +96,10 @@ namespace org.GraphDefined.WWCP
         public ChargingStationOperator  ChargingStationOperator     { get; }
 
         /// <summary>
-        /// The unqiue identification for the consumed charging product.
+        /// The consumed charging product.
         /// </summary>
         [Optional]
-        public ChargingProduct_Id?      ChargingProductId           { get; }
+        public ChargingProduct          ChargingProduct             { get; }
 
         #endregion
 
@@ -231,7 +231,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStation">The charging station of the charging station used for charging.</param>
         /// <param name="ChargingPool">The charging pool of the charging pool used for charging.</param>
         /// <param name="ChargingStationOperator">The charging station operator used for charging.</param>
-        /// <param name="ChargingProductId">The unqiue identification for the consumed charging product.</param>
+        /// <param name="ChargingProduct">The consumed charging product.</param>
         /// 
         /// <param name="IdentificationStart">The identification used for starting this charging process.</param>
         /// <param name="IdentificationStop">The identification used for stopping this charging process.</param>
@@ -259,7 +259,7 @@ namespace org.GraphDefined.WWCP
                                   ChargingStation                   ChargingStation          = null,
                                   ChargingPool                      ChargingPool             = null,
                                   ChargingStationOperator           ChargingStationOperator  = null,
-                                  ChargingProduct_Id?               ChargingProductId        = null,
+                                  ChargingProduct                   ChargingProduct          = null,
 
                                   AuthInfo                          IdentificationStart      = null,
                                   AuthInfo                          IdentificationStop       = null,
@@ -289,7 +289,7 @@ namespace org.GraphDefined.WWCP
             this.ChargingStation          = ChargingStation;
             this.ChargingPool             = ChargingPool;
             this.ChargingStationOperator  = ChargingStationOperator;
-            this.ChargingProductId        = ChargingProductId;
+            this.ChargingProduct          = ChargingProduct;
 
             this.IdentificationStart      = IdentificationStart;
             this.IdentificationStop       = IdentificationStop;

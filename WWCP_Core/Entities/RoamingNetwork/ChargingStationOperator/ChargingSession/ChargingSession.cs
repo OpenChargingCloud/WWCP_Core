@@ -161,12 +161,12 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingPoolId
 
-        private ChargingPool_Id _ChargingPoolId;
+        private ChargingPool_Id? _ChargingPoolId;
 
         /// <summary>
         /// The unqiue identification of the charging pool serving this session.
         /// </summary>
-        public ChargingPool_Id ChargingPoolId
+        public ChargingPool_Id? ChargingPoolId
         {
 
             get
@@ -232,12 +232,12 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingStationId
 
-        private ChargingStation_Id _ChargingStationId;
+        private ChargingStation_Id? _ChargingStationId;
 
         /// <summary>
         /// The unqiue identification of the charging station serving this session.
         /// </summary>
-        public ChargingStation_Id ChargingStationId
+        public ChargingStation_Id? ChargingStationId
         {
 
             get
@@ -426,13 +426,13 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region ChargingProductId
+        #region ChargingProduct
 
         /// <summary>
         /// The charging product selected for this charging session.
         /// </summary>
         [Optional]
-        public ChargingProduct_Id?  ChargingProductId   { get; set; }
+        public ChargingProduct  ChargingProduct   { get; set; }
 
         #endregion
 
@@ -486,7 +486,7 @@ namespace org.GraphDefined.WWCP
         /// An optional unique identification of the energy meter.
         /// </summary>
         [Optional]
-        public EnergyMeter_Id EnergyMeterId { get; set; }
+        public EnergyMeter_Id? EnergyMeterId { get; set; }
 
         #endregion
 

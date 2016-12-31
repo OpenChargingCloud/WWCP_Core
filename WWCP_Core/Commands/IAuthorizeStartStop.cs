@@ -214,6 +214,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         event OnAuthorizeStartResponseDelegate                 OnAuthorizeStartResponse;
 
+
         /// <summary>
         /// An event fired whenever an authentication token will be verified for charging at the given EVSE.
         /// </summary>
@@ -223,6 +224,7 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever an authentication token had been verified for charging at the given EVSE.
         /// </summary>
         event OnAuthorizeEVSEStartResponseDelegate             OnAuthorizeEVSEStartResponse;
+
 
         /// <summary>
         /// An event fired whenever an authentication token will be verified for charging at the given charging station.
@@ -242,7 +244,7 @@ namespace org.GraphDefined.WWCP
         /// Create an authorize start request.
         /// </summary>
         /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="ChargingProductId">An optional charging product identification.</param>
+        /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
@@ -253,7 +255,7 @@ namespace org.GraphDefined.WWCP
         Task<AuthStartResult>
 
             AuthorizeStart(Auth_Token                   AuthToken,
-                           ChargingProduct_Id?          ChargingProductId   = null,
+                           ChargingProduct              ChargingProduct     = null,
                            ChargingSession_Id?          SessionId           = null,
                            ChargingStationOperator_Id?  OperatorId          = null,
 
@@ -268,7 +270,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        /// <param name="ChargingProductId">An optional charging product identification.</param>
+        /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
@@ -280,7 +282,7 @@ namespace org.GraphDefined.WWCP
 
             AuthorizeStart(Auth_Token                   AuthToken,
                            EVSE_Id                      EVSEId,
-                           ChargingProduct_Id?          ChargingProductId   = null,
+                           ChargingProduct              ChargingProduct     = null,
                            ChargingSession_Id?          SessionId           = null,
                            ChargingStationOperator_Id?  OperatorId          = null,
 
@@ -295,7 +297,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="ChargingStationId">The unique identification of a charging station.</param>
-        /// <param name="ChargingProductId">An optional charging product identification.</param>
+        /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
@@ -307,7 +309,7 @@ namespace org.GraphDefined.WWCP
 
             AuthorizeStart(Auth_Token                   AuthToken,
                            ChargingStation_Id           ChargingStationId,
-                           ChargingProduct_Id?          ChargingProductId   = null,
+                           ChargingProduct              ChargingProduct     = null,
                            ChargingSession_Id?          SessionId           = null,
                            ChargingStationOperator_Id?  OperatorId          = null,
 
@@ -322,7 +324,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
-        /// <param name="ChargingProductId">An optional charging product identification.</param>
+        /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
@@ -334,7 +336,7 @@ namespace org.GraphDefined.WWCP
 
             AuthorizeStart(Auth_Token                   AuthToken,
                            ChargingPool_Id              ChargingPoolId,
-                           ChargingProduct_Id?          ChargingProductId   = null,
+                           ChargingProduct              ChargingProduct     = null,
                            ChargingSession_Id?          SessionId           = null,
                            ChargingStationOperator_Id?  OperatorId          = null,
 
@@ -358,6 +360,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         event OnAuthorizeStopResponseDelegate                 OnAuthorizeStopResponse;
 
+
         /// <summary>
         /// An event fired whenever an authentication token will be verified to stop a charging process at the given EVSE.
         /// </summary>
@@ -367,6 +370,7 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever an authentication token had been verified to stop a charging process at the given EVSE.
         /// </summary>
         event OnAuthorizeEVSEStopResponseDelegate             OnAuthorizeEVSEStopResponse;
+
 
         /// <summary>
         /// An event fired whenever an authentication token will be verified to stop a charging process at the given charging station.

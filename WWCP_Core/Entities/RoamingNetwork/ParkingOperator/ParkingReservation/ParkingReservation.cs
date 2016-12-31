@@ -1,6 +1,6 @@
 ﻿/*
- * Copyright (c) 2014-2016 GraphDefined GmbH <achim.friedland@graphdefined.com>
- * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
+ * Copyright (c) 2014-2016 GraphDefined GmbH <achim.friedland@graphdefined.com>ParkingReservation
+ * This file is part of WWCP Core <https://github.com/OpenParkingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,11 +28,11 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A charging reservation
+    /// A parking reservation
     /// </summary>
-    public class ChargingReservation : IEquatable <ChargingReservation>,
-                                       IComparable<ChargingReservation>,
-                                       IComparable
+    public class ParkingReservation : IEquatable <ParkingReservation>,
+                                      IComparable<ParkingReservation>,
+                                      IComparable
     {
 
         #region Properties
@@ -54,13 +54,13 @@ namespace org.GraphDefined.WWCP
 
         #region ReservationId
 
-        private readonly ChargingReservation_Id _ReservationId;
+        private readonly ParkingReservation_Id _ReservationId;
 
         /// <summary>
-        /// The charging reservation identification.
+        /// The parking reservation identification.
         /// </summary>
         [Mandatory]
-        public ChargingReservation_Id Id
+        public ParkingReservation_Id Id
         {
             get
             {
@@ -109,7 +109,7 @@ namespace org.GraphDefined.WWCP
 
                 var _TimeLeft = _EndTime - DateTime.Now.ToUniversalTime();// _StartTime + _Duration - DateTime.Now;
 
-                return _ChargingSession == null
+                return _ParkingSession == null
                            ? _TimeLeft.TotalSeconds > 0 ? _TimeLeft : TimeSpan.FromSeconds(0)
                            : TimeSpan.FromSeconds(0);
 
@@ -157,10 +157,10 @@ namespace org.GraphDefined.WWCP
 
         #region ReservationLevel
 
-        private readonly ChargingReservationLevel _ReservationLevel;
+        private readonly ParkingReservationLevel _ReservationLevel;
 
         [Mandatory]
-        public ChargingReservationLevel ReservationLevel
+        public ParkingReservationLevel ReservationLevel
         {
             get
             {
@@ -181,34 +181,34 @@ namespace org.GraphDefined.WWCP
         public RoamingNetwork         RoamingNetwork      { get; }
 
         [Optional]
-        public ChargingPool_Id?       ChargingPoolId      { get; }
+        public ChargingPool_Id?       ParkingPoolId      { get; }
 
         [Optional]
-        public ChargingStation_Id?    ChargingStationId   { get; }
+        public ChargingStation_Id?    ParkingStationId   { get; }
 
         [Optional]
         public EVSE_Id?               EVSEId              { get; }
 
         [Optional]
-        public ChargingProduct        ChargingProduct     { get; }
+        public ParkingProduct_Id?    ParkingProductId   { get; }
 
 
         #region ChargingSession
 
-        private ChargingSession _ChargingSession;
+        private ChargingSession _ParkingSession;
 
         [Mandatory]
-        public ChargingSession ChargingSession
+        public ChargingSession ParkingSession
         {
 
             get
             {
-                return _ChargingSession;
+                return _ParkingSession;
             }
 
             set
             {
-                _ChargingSession = value;
+                _ParkingSession = value;
             }
 
         }
@@ -266,30 +266,37 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a charging reservation.
+        /// Create a parking reservation.
         /// </summary>
-        public ChargingReservation(ChargingReservation_Id            ReservationId,
-                                   DateTime                          Timestamp,
-                                   DateTime                          StartTime,
-                                   TimeSpan                          Duration,
-                                   DateTime                          EndTime,
-                                   TimeSpan                          ConsumedReservationTime,
-                                   ChargingReservationLevel          ReservationLevel,
+        public ParkingReservation(ParkingReservation_Id             ReservationId,
+                                  DateTime                          Timestamp,
+                                  DateTime                          StartTime,
+                                  TimeSpan                          Duration,
+                                  DateTime                          EndTime,
+                                  TimeSpan                          ConsumedReservationTime,
+                                  ParkingReservationLevel           ReservationLevel,
 
-                                   eMobilityProvider_Id?             ProviderId          = null,
-                                   eMobilityAccount_Id?              eMAId               = null,
+                                  eMobilityProvider_Id?             ProviderId          = null,
+                                  eMobilityAccount_Id?              eMAId               = null,
 
-                                   RoamingNetwork                    RoamingNetwork      = null,
-                                   ChargingPool_Id?                  ChargingPoolId      = null,
-                                   ChargingStation_Id?               ChargingStationId   = null,
-                                   EVSE_Id?                          EVSEId              = null,
-                                   ChargingProduct                   ChargingProduct     = null,
+                                  RoamingNetwork                    RoamingNetwork      = null,
+                                  ChargingPool_Id?                  ParkingPoolId      = null,
+                                  ChargingStation_Id?               ParkingStationId   = null,
+                                  EVSE_Id?                          EVSEId              = null,
+                                  ParkingProduct_Id?                ParkingProductId   = null,
 
-                                   IEnumerable<Auth_Token>           AuthTokens          = null,
-                                   IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
-                                   IEnumerable<UInt32>               PINs                = null)
+                                  IEnumerable<Auth_Token>           AuthTokens          = null,
+                                  IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
+                                  IEnumerable<UInt32>               PINs                = null)
 
         {
+
+            #region Initial checks
+
+            if (ReservationId == null)
+                throw new ArgumentNullException(nameof(ReservationId), "The given parking reservation identification must not be null!");
+
+            #endregion
 
             this._ReservationId            = ReservationId;
             this._Timestamp                = Timestamp.ToUniversalTime();
@@ -303,10 +310,10 @@ namespace org.GraphDefined.WWCP
             this.eMAId                     = eMAId;
 
             this.RoamingNetwork            = RoamingNetwork;
-            this.ChargingPoolId            = ChargingPoolId;
-            this.ChargingStationId         = ChargingStationId;
+            this.ParkingPoolId            = ParkingPoolId;
+            this.ParkingStationId         = ParkingStationId;
             this.EVSEId                    = EVSEId;
-            this.ChargingProduct           = ChargingProduct;
+            this.ParkingProductId         = ParkingProductId;
 
             this._AuthTokens               = AuthTokens != null ? new HashSet<Auth_Token>(AuthTokens) : new HashSet<Auth_Token>();
             this._eMAIds                   = eMAIds     != null ? new HashSet<eMobilityAccount_Id>    (eMAIds)     : new HashSet<eMobilityAccount_Id>();
@@ -325,7 +332,7 @@ namespace org.GraphDefined.WWCP
         public Boolean IsExpired()
         {
 
-            return _ChargingSession == null
+            return _ParkingSession == null
                        ? DateTime.Now.ToUniversalTime() > _EndTime
                        : false;
 
@@ -356,7 +363,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region IComparable<ChargingReservation> Members
+        #region IComparable<ParkingReservation> Members
 
         #region CompareTo(Object)
 
@@ -370,30 +377,30 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is a charging reservation.
-            var ChargingReservation = Object as ChargingReservation;
-            if ((Object) ChargingReservation == null)
-                throw new ArgumentException("The given object is not a charging reservation!");
+            // Check if the given object is a parking reservation.
+            var ParkingReservation = Object as ParkingReservation;
+            if ((Object) ParkingReservation == null)
+                throw new ArgumentException("The given object is not a parking reservation!");
 
-            return CompareTo(ChargingReservation);
+            return CompareTo(ParkingReservation);
 
         }
 
         #endregion
 
-        #region CompareTo(ChargingReservation)
+        #region CompareTo(ParkingReservation)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingReservation">A charging reservation object to compare with.</param>
-        public Int32 CompareTo(ChargingReservation ChargingReservation)
+        /// <param name="ParkingReservation">A parking reservation object to compare with.</param>
+        public Int32 CompareTo(ParkingReservation ParkingReservation)
         {
 
-            if ((Object) ChargingReservation == null)
-                throw new ArgumentNullException("The given charging reservation must not be null!");
+            if ((Object) ParkingReservation == null)
+                throw new ArgumentNullException("The given parking reservation must not be null!");
 
-            return _ReservationId.CompareTo(ChargingReservation._ReservationId);
+            return _ReservationId.CompareTo(ParkingReservation._ReservationId);
 
         }
 
@@ -401,7 +408,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<ChargingReservation> Members
+        #region IEquatable<ParkingReservation> Members
 
         #region Equals(Object)
 
@@ -416,31 +423,31 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is a charging reservation.
-            var ChargingReservation = Object as ChargingReservation;
-            if ((Object) ChargingReservation == null)
+            // Check if the given object is a parking reservation.
+            var ParkingReservation = Object as ParkingReservation;
+            if ((Object) ParkingReservation == null)
                 return false;
 
-            return this.Equals(ChargingReservation);
+            return this.Equals(ParkingReservation);
 
         }
 
         #endregion
 
-        #region Equals(ChargingReservation)
+        #region Equals(ParkingReservation)
 
         /// <summary>
-        /// Compares two charging reservations for equality.
+        /// Compares two parking reservations for equality.
         /// </summary>
-        /// <param name="ChargingReservation">A charging reservation to compare with.</param>
+        /// <param name="ParkingReservation">A parking reservation to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(ChargingReservation ChargingReservation)
+        public Boolean Equals(ParkingReservation ParkingReservation)
         {
 
-            if ((Object) ChargingReservation == null)
+            if ((Object) ParkingReservation == null)
                 return false;
 
-            return _ReservationId.Equals(ChargingReservation._ReservationId);
+            return _ReservationId.Equals(ParkingReservation._ReservationId);
 
         }
 

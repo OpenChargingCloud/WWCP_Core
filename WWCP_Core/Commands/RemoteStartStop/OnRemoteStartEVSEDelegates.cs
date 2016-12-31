@@ -37,9 +37,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
-    /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
-    /// <param name="PlannedDuration">The optional planned duration of the charging.</param>
-    /// <param name="PlannedEnergy">The optional planned amount of energy to charge.</param>
+    /// <param name="ChargingProduct">The choosen charging product.</param>
     /// <param name="ReservationId">The unique identification for a charging reservation.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
@@ -51,9 +49,7 @@ namespace org.GraphDefined.WWCP
                                                           EventTracking_Id          EventTrackingId,
                                                           RoamingNetwork_Id         RoamingNetworkId,
                                                           EVSE_Id                   EVSEId,
-                                                          ChargingProduct_Id?       ChargingProductId,
-                                                          TimeSpan?                 PlannedDuration,
-                                                          Double?                   PlannedEnergy,
+                                                          ChargingProduct           ChargingProduct,
                                                           ChargingReservation_Id?   ReservationId,
                                                           ChargingSession_Id?       SessionId,
                                                           eMobilityProvider_Id?     ProviderId,
@@ -69,17 +65,17 @@ namespace org.GraphDefined.WWCP
     /// <param name="CancellationToken">A token to cancel this request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
+    /// <param name="ChargingProduct">The choosen charging product.</param>
     /// <param name="ReservationId">The unique identification for a charging reservation.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-    /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task<RemoteStartEVSEResult> OnRemoteStartEVSEDelegate(DateTime                  Timestamp,
                                                                           CancellationToken         CancellationToken,
                                                                           EventTracking_Id          EventTrackingId,
                                                                           EVSE_Id                   EVSEId,
-                                                                          ChargingProduct_Id?       ChargingProductId,
+                                                                          ChargingProduct           ChargingProduct,
                                                                           ChargingReservation_Id?   ReservationId,
                                                                           ChargingSession_Id?       SessionId,
                                                                           eMobilityProvider_Id?     ProviderId,
@@ -96,9 +92,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
-    /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
-    /// <param name="PlannedDuration">The optional planned duration of the charging.</param>
-    /// <param name="PlannedEnergy">The optional planned amount of energy to charge.</param>
+    /// <param name="ChargingProduct">The choosen charging product.</param>
     /// <param name="ReservationId">The unique identification for a charging reservation.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
@@ -112,9 +106,7 @@ namespace org.GraphDefined.WWCP
                                                            EventTracking_Id          EventTrackingId,
                                                            RoamingNetwork_Id         RoamingNetworkId,
                                                            EVSE_Id                   EVSEId,
-                                                           ChargingProduct_Id?       ChargingProductId,
-                                                           TimeSpan?                 PlannedDuration,
-                                                           Double?                   PlannedEnergy,
+                                                           ChargingProduct           ChargingProduct,
                                                            ChargingReservation_Id?   ReservationId,
                                                            ChargingSession_Id?       SessionId,
                                                            eMobilityProvider_Id?     ProviderId,

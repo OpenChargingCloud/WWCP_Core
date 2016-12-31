@@ -42,27 +42,27 @@ namespace org.GraphDefined.WWCP
     /// <param name="Duration">The duration of the reservation.</param>
     /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
     /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-    /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
+    /// <param name="ChargingProduct">The charging product to be reserved.</param>
     /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
     /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
     /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnChargingStationReserveDelegate(DateTime                          LogTimestamp,
-                                                          DateTime                          RequestTimestamp,
-                                                          Object                            Sender,
-                                                          EventTracking_Id                  EventTrackingId,
-                                                          RoamingNetwork_Id                 RoamingNetworkId,
-                                                          ChargingStation_Id                ChargingStationId,
-                                                          DateTime?                         StartTime,
-                                                          TimeSpan?                         Duration,
-                                                          ChargingReservation_Id?           ReservationId,
-                                                          eMobilityProvider_Id?             ProviderId,
-                                                          eMobilityAccount_Id?              eMAId,
-                                                          ChargingProduct_Id?               ChargingProductId,
-                                                          IEnumerable<Auth_Token>           AuthTokens,
-                                                          IEnumerable<eMobilityAccount_Id>  eMAIds,
-                                                          IEnumerable<UInt32>               PINs,
-                                                          TimeSpan?                         RequestTimeout);
+    public delegate void OnReserveChargingStationRequestDelegate(DateTime                          LogTimestamp,
+                                                                 DateTime                          RequestTimestamp,
+                                                                 Object                            Sender,
+                                                                 EventTracking_Id                  EventTrackingId,
+                                                                 RoamingNetwork_Id                 RoamingNetworkId,
+                                                                 ChargingStation_Id                ChargingStationId,
+                                                                 DateTime?                         StartTime,
+                                                                 TimeSpan?                         Duration,
+                                                                 ChargingReservation_Id?           ReservationId,
+                                                                 eMobilityProvider_Id?             ProviderId,
+                                                                 eMobilityAccount_Id?              eMAId,
+                                                                 ChargingProduct                   ChargingProduct,
+                                                                 IEnumerable<Auth_Token>           AuthTokens,
+                                                                 IEnumerable<eMobilityAccount_Id>  eMAIds,
+                                                                 IEnumerable<UInt32>               PINs,
+                                                                 TimeSpan?                         RequestTimeout);
 
 
     /// <summary>
@@ -78,7 +78,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Duration">The duration of the reservation.</param>
     /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
     /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-    /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
+    /// <param name="ChargingProduct">The charging product to be reserved.</param>
     /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
     /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
     /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
@@ -93,7 +93,7 @@ namespace org.GraphDefined.WWCP
                                                                              TimeSpan?                         Duration,
                                                                              eMobilityProvider_Id?             ProviderId,
                                                                              eMobilityAccount_Id?              eMAId,
-                                                                             ChargingProduct_Id?               ChargingProductId,
+                                                                             ChargingProduct                   ChargingProduct,
                                                                              IEnumerable<Auth_Token>           AuthTokens,
                                                                              IEnumerable<eMobilityAccount_Id>  eMAIds,
                                                                              IEnumerable<UInt32>               PINs,
@@ -113,30 +113,30 @@ namespace org.GraphDefined.WWCP
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
     /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
     /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-    /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
+    /// <param name="ChargingProduct">The charging product to be reserved.</param>
     /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
     /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
     /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
     /// <param name="Result">The result of the reservation.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnChargingStationReservedDelegate(DateTime                          LogTimestamp,
-                                                           DateTime                          RequestTimestamp,
-                                                           Object                            Sender,
-                                                           EventTracking_Id                  EventTrackingId,
-                                                           RoamingNetwork_Id                 RoamingNetworkId,
-                                                           ChargingStation_Id                ChargingStationId,
-                                                           DateTime?                         StartTime,
-                                                           TimeSpan?                         Duration,
-                                                           ChargingReservation_Id?           ReservationId,
-                                                           eMobilityProvider_Id?             ProviderId,
-                                                           eMobilityAccount_Id?              eMAId,
-                                                           ChargingProduct_Id?               ChargingProductId,
-                                                           IEnumerable<Auth_Token>           AuthTokens,
-                                                           IEnumerable<eMobilityAccount_Id>  eMAIds,
-                                                           IEnumerable<UInt32>               PINs,
-                                                           ReservationResult                 Result,
-                                                           TimeSpan                          Runtime,
-                                                           TimeSpan?                         RequestTimeout);
+    public delegate void OnReserveChargingStationResponseDelegate(DateTime                          LogTimestamp,
+                                                                  DateTime                          RequestTimestamp,
+                                                                  Object                            Sender,
+                                                                  EventTracking_Id                  EventTrackingId,
+                                                                  RoamingNetwork_Id                 RoamingNetworkId,
+                                                                  ChargingStation_Id                ChargingStationId,
+                                                                  DateTime?                         StartTime,
+                                                                  TimeSpan?                         Duration,
+                                                                  ChargingReservation_Id?           ReservationId,
+                                                                  eMobilityProvider_Id?             ProviderId,
+                                                                  eMobilityAccount_Id?              eMAId,
+                                                                  ChargingProduct                   ChargingProduct,
+                                                                  IEnumerable<Auth_Token>           AuthTokens,
+                                                                  IEnumerable<eMobilityAccount_Id>  eMAIds,
+                                                                  IEnumerable<UInt32>               PINs,
+                                                                  ReservationResult                 Result,
+                                                                  TimeSpan                          Runtime,
+                                                                  TimeSpan?                         RequestTimeout);
 
 }

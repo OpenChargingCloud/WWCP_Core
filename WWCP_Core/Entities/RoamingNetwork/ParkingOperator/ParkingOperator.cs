@@ -41,7 +41,7 @@ namespace org.GraphDefined.WWCP
     /// </summary>
     public class ParkingOperator : ABaseEMobilityEntity<ParkingOperator_Id>,
                                    IEquatable<ParkingOperator>, IComparable<ParkingOperator>, IComparable,
-                                   IEnumerable<ChargingPool>,
+                                   IEnumerable<ParkingGarage>,
                                    IStatus<ParkingOperatorStatusType>
     {
 
@@ -66,7 +66,7 @@ namespace org.GraphDefined.WWCP
         private I18NString _Name;
 
         /// <summary>
-        /// The offical (multi-language) name of the EVSE Operator.
+        /// The offical (multi-language) name of the ParkingSpace Operator.
         /// </summary>
         [Mandatory]
         public I18NString Name
@@ -97,7 +97,7 @@ namespace org.GraphDefined.WWCP
         private I18NString _Description;
 
         /// <summary>
-        /// An optional (multi-language) description of the EVSE Operator.
+        /// An optional (multi-language) description of the ParkingSpace Operator.
         /// </summary>
         [Optional]
         public I18NString Description
@@ -397,33 +397,33 @@ namespace org.GraphDefined.WWCP
 
         #region Events
 
-        #region OnInvalidEVSEIdAdded
+        #region OnInvalidParkingSpaceIdAdded
 
         /// <summary>
-        /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// A delegate called whenever the aggregated dynamic status of all subordinated ParkingSpaces changed.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public delegate void OnInvalidEVSEIdAddedDelegate(DateTime Timestamp, ParkingOperator ParkingOperator, EVSE_Id EVSEId);
+        public delegate void OnInvalidParkingSpaceIdAddedDelegate(DateTime Timestamp, ParkingOperator ParkingOperator, ParkingSpace_Id ParkingSpaceId);
 
         /// <summary>
-        /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// An event fired whenever the aggregated dynamic status of all subordinated ParkingSpaces changed.
         /// </summary>
-        public event OnInvalidEVSEIdAddedDelegate OnInvalidEVSEIdAdded;
+        public event OnInvalidParkingSpaceIdAddedDelegate OnInvalidParkingSpaceIdAdded;
 
         #endregion
 
-        #region OnInvalidEVSEIdRemoved
+        #region OnInvalidParkingSpaceIdRemoved
 
         /// <summary>
-        /// A delegate called whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// A delegate called whenever the aggregated dynamic status of all subordinated ParkingSpaces changed.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public delegate void OnInvalidEVSEIdRemovedDelegate(DateTime Timestamp, ParkingOperator ParkingOperator, EVSE_Id EVSEId);
+        public delegate void OnInvalidParkingSpaceIdRemovedDelegate(DateTime Timestamp, ParkingOperator ParkingOperator, ParkingSpace_Id ParkingSpaceId);
 
         /// <summary>
-        /// An event fired whenever the aggregated dynamic status of all subordinated EVSEs changed.
+        /// An event fired whenever the aggregated dynamic status of all subordinated ParkingSpaces changed.
         /// </summary>
-        public event OnInvalidEVSEIdRemovedDelegate OnInvalidEVSEIdRemoved;
+        public event OnInvalidParkingSpaceIdRemovedDelegate OnInvalidParkingSpaceIdRemoved;
 
         #endregion
 
@@ -436,8 +436,8 @@ namespace org.GraphDefined.WWCP
         /// charging station operator identification (CSO Id).
         /// </summary>
         /// <param name="Id">The unique identification of the Charging Station Operator.</param>
-        /// <param name="Name">The offical (multi-language) name of the EVSE Operator.</param>
-        /// <param name="Description">An optional (multi-language) description of the EVSE Operator.</param>
+        /// <param name="Name">The offical (multi-language) name of the ParkingSpace Operator.</param>
+        /// <param name="Description">An optional (multi-language) description of the ParkingSpace Operator.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         internal ParkingOperator(ParkingOperator_Id                     Id,
                                  RoamingNetwork                         RoamingNetwork,
@@ -468,28 +468,28 @@ namespace org.GraphDefined.WWCP
             this._Description                 = Description ?? new I18NString();
             this._DataLicenses                = new List<DataLicense>();
 
-            #region InvalidEVSEIds
+            #region InvalidParkingSpaceIds
 
-            this.InvalidEVSEIds            = new ReactiveSet<EVSE_Id>();
+            this.InvalidParkingSpaceIds            = new ReactiveSet<ParkingSpace_Id>();
 
-            InvalidEVSEIds.OnItemAdded += (Timestamp, Set, EVSEId) =>
+            InvalidParkingSpaceIds.OnItemAdded += (Timestamp, Set, ParkingSpaceId) =>
             {
-                var OnInvalidEVSEIdAddedLocal = OnInvalidEVSEIdAdded;
-                if (OnInvalidEVSEIdAddedLocal != null)
-                    OnInvalidEVSEIdAddedLocal(Timestamp, this, EVSEId);
+                var OnInvalidParkingSpaceIdAddedLocal = OnInvalidParkingSpaceIdAdded;
+                if (OnInvalidParkingSpaceIdAddedLocal != null)
+                    OnInvalidParkingSpaceIdAddedLocal(Timestamp, this, ParkingSpaceId);
             };
 
-            InvalidEVSEIds.OnItemRemoved += (Timestamp, Set, EVSEId) =>
+            InvalidParkingSpaceIds.OnItemRemoved += (Timestamp, Set, ParkingSpaceId) =>
             {
-                var OnInvalidEVSEIdRemovedLocal = OnInvalidEVSEIdRemoved;
-                if (OnInvalidEVSEIdRemovedLocal != null)
-                    OnInvalidEVSEIdRemovedLocal(Timestamp, this, EVSEId);
+                var OnInvalidParkingSpaceIdRemovedLocal = OnInvalidParkingSpaceIdRemoved;
+                if (OnInvalidParkingSpaceIdRemovedLocal != null)
+                    OnInvalidParkingSpaceIdRemovedLocal(Timestamp, this, ParkingSpaceId);
             };
 
             #endregion
 
-            this._ChargingPools               = new EntityHashSet<ParkingOperator, ChargingPool_Id,         ChargingPool>(this);
-            this._ChargingStationGroups       = new EntityHashSet<ParkingOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
+            this._ParkingGarages               = new EntityHashSet<ParkingOperator, ParkingGarage_Id,         ParkingGarage>(this);
+            //this._ParkingGarageGroups         = new EntityHashSet<ParkingOperator, ParkingGarageGroup_Id, ParkingGarageGroup>(this);
 
             this._AdminStatusSchedule         = new StatusSchedule<ParkingOperatorAdminStatusType>();
             this._AdminStatusSchedule.Insert(AdminStatus);
@@ -497,68 +497,60 @@ namespace org.GraphDefined.WWCP
             this._StatusSchedule              = new StatusSchedule<ParkingOperatorStatusType>();
             this._StatusSchedule.Insert(Status);
 
-            this._ChargingReservations        = new ConcurrentDictionary<ChargingReservation_Id, ChargingPool>();
-            this._ChargingSessions            = new ConcurrentDictionary<ChargingSession_Id,     ChargingPool>();
+            this._ParkingReservations        = new ConcurrentDictionary<ChargingReservation_Id, ParkingGarage>();
+            //this._ChargingSessions            = new ConcurrentDictionary<ChargingSession_Id,     ParkingGarage>();
 
             #endregion
 
             #region Init events
 
-            // Charging Station Operator events
-            this.ChargingPoolAddition          = new VotingNotificator<DateTime, ParkingOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
-            this.ChargingPoolRemoval           = new VotingNotificator<DateTime, ParkingOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
+            // Parking garage events
+            this.ParkingGarageAddition         = new VotingNotificator<DateTime, ParkingOperator, ParkingGarage, Boolean>(() => new VetoVote(), true);
+            this.ParkingGarageRemoval          = new VotingNotificator<DateTime, ParkingOperator, ParkingGarage, Boolean>(() => new VetoVote(), true);
 
-            // Charging station group events
-            this.ChargingStationGroupAddition  = new VotingNotificator<DateTime, ParkingOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
-            this.ChargingStationGroupRemoval   = new VotingNotificator<DateTime, ParkingOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
+            // Parking space events
+            this.ParkingSpaceAddition          = new VotingNotificator<DateTime, ParkingGarage,   ParkingSpace,  Boolean>(() => new VetoVote(), true);
+            this.ParkingSpaceRemoval           = new VotingNotificator<DateTime, ParkingGarage,   ParkingSpace,  Boolean>(() => new VetoVote(), true);
 
-            // Charging pool events
-            this.ChargingStationAddition       = new VotingNotificator<DateTime, ChargingPool,    ChargingStation,      Boolean>(() => new VetoVote(), true);
-            this.ChargingStationRemoval        = new VotingNotificator<DateTime, ChargingPool,    ChargingStation,      Boolean>(() => new VetoVote(), true);
-
-            // Charging station events
-            this.EVSEAddition                  = new VotingNotificator<DateTime, ChargingStation, EVSE,                 Boolean>(() => new VetoVote(), true);
-            this.EVSERemoval                   = new VotingNotificator<DateTime, ChargingStation, EVSE,                 Boolean>(() => new VetoVote(), true);
-
-            // EVSE events
-            this.SocketOutletAddition          = new VotingNotificator<DateTime, EVSE,            SocketOutlet,         Boolean>(() => new VetoVote(), true);
-            this.SocketOutletRemoval           = new VotingNotificator<DateTime, EVSE,            SocketOutlet,         Boolean>(() => new VetoVote(), true);
+            // Parking sensor events
+            this.ParkingSensorAddition         = new VotingNotificator<DateTime, ParkingSpace,    ParkingSensor, Boolean>(() => new VetoVote(), true);
+            this.ParkingSensorRemoval          = new VotingNotificator<DateTime, ParkingSpace,    ParkingSensor, Boolean>(() => new VetoVote(), true);
 
             #endregion
 
             #region Link events
 
             // ParkingOperator events
-            //this.OnChargingPoolAddition.   OnVoting       += (timestamp, ParkingOperator, pool, vote) => RoamingNetwork.ChargingPoolAddition.   SendVoting      (timestamp, ParkingOperator, pool, vote);
-            //this.OnChargingPoolAddition.   OnNotification += (timestamp, ParkingOperator, pool)       => RoamingNetwork.ChargingPoolAddition.   SendNotification(timestamp, ParkingOperator, pool);
+            //this.OnParkingGarageAddition.   OnVoting       += (timestamp, ParkingOperator, pool, vote) => RoamingNetwork.ParkingGarageAddition.   SendVoting      (timestamp, ParkingOperator, pool, vote);
+            //this.OnParkingGarageAddition.   OnNotification += (timestamp, ParkingOperator, pool)       => RoamingNetwork.ParkingGarageAddition.   SendNotification(timestamp, ParkingOperator, pool);
 
-            //this.OnChargingPoolRemoval.    OnVoting       += (timestamp, ParkingOperator, pool, vote) => RoamingNetwork.ChargingPoolRemoval.    SendVoting      (timestamp, ParkingOperator, pool, vote);
-            //this.OnChargingPoolRemoval.    OnNotification += (timestamp, ParkingOperator, pool)       => RoamingNetwork.ChargingPoolRemoval.    SendNotification(timestamp, ParkingOperator, pool);
+            //this.OnParkingGarageRemoval.    OnVoting       += (timestamp, ParkingOperator, pool, vote) => RoamingNetwork.ParkingGarageRemoval.    SendVoting      (timestamp, ParkingOperator, pool, vote);
+            //this.OnParkingGarageRemoval.    OnNotification += (timestamp, ParkingOperator, pool)       => RoamingNetwork.ParkingGarageRemoval.    SendNotification(timestamp, ParkingOperator, pool);
 
-            // ChargingPool events
-            this.OnChargingStationAddition.OnVoting       += (timestamp, pool, station, vote)      => RoamingNetwork.ChargingStationAddition.SendVoting      (timestamp, pool, station, vote);
-            this.OnChargingStationAddition.OnNotification += (timestamp, pool, station)            => RoamingNetwork.ChargingStationAddition.SendNotification(timestamp, pool, station);
+            //// ParkingGarage events
+            //this.OnParkingGarageAddition.OnVoting       += (timestamp, pool, station, vote)      => RoamingNetwork.ParkingGarageAddition.SendVoting      (timestamp, pool, station, vote);
+            //this.OnParkingGarageAddition.OnNotification += (timestamp, pool, station)            => RoamingNetwork.ParkingGarageAddition.SendNotification(timestamp, pool, station);
 
-            //this.OnChargingStationRemoval. OnVoting       += (timestamp, pool, station, vote)      => RoamingNetwork.ChargingStationRemoval. SendVoting      (timestamp, pool, station, vote);
-            this.OnChargingStationRemoval. OnNotification += (timestamp, pool, station)            => RoamingNetwork.ChargingStationRemoval. SendNotification(timestamp,       station);
+            ////this.OnParkingGarageRemoval. OnVoting       += (timestamp, pool, station, vote)      => RoamingNetwork.ParkingGarageRemoval. SendVoting      (timestamp, pool, station, vote);
+            //this.OnParkingGarageRemoval. OnNotification += (timestamp, pool, station)            => RoamingNetwork.ParkingGarageRemoval. SendNotification(timestamp,       station);
 
-            // ChargingStation events
-            this.OnEVSEAddition.           OnVoting       += (timestamp, station, evse, vote)      => RoamingNetwork.EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
-            this.OnEVSEAddition.           OnNotification += (timestamp, station, evse)            => RoamingNetwork.EVSEAddition.           SendNotification(timestamp, station, evse);
+            //// ParkingGarage events
+            //this.OnParkingSpaceAddition.           OnVoting       += (timestamp, station, evse, vote)      => RoamingNetwork.ParkingSpaceAddition.           SendVoting      (timestamp, station, evse, vote);
+            //this.OnParkingSpaceAddition.           OnNotification += (timestamp, station, evse)            => RoamingNetwork.ParkingSpaceAddition.           SendNotification(timestamp, station, evse);
 
-            this.OnEVSERemoval.            OnVoting       += (timestamp, station, evse, vote)      => RoamingNetwork.EVSERemoval.            SendVoting      (timestamp, station, evse, vote);
-            this.OnEVSERemoval.            OnNotification += (timestamp, station, evse)            => RoamingNetwork.EVSERemoval.            SendNotification(timestamp, station, evse);
+            //this.OnParkingSpaceRemoval.            OnVoting       += (timestamp, station, evse, vote)      => RoamingNetwork.ParkingSpaceRemoval.            SendVoting      (timestamp, station, evse, vote);
+            //this.OnParkingSpaceRemoval.            OnNotification += (timestamp, station, evse)            => RoamingNetwork.ParkingSpaceRemoval.            SendNotification(timestamp, station, evse);
 
-            // EVSE events
-            this.SocketOutletAddition.     OnVoting       += (timestamp, evse, outlet, vote)       => RoamingNetwork.SocketOutletAddition.   SendVoting      (timestamp, evse, outlet, vote);
-            this.SocketOutletAddition.     OnNotification += (timestamp, evse, outlet)             => RoamingNetwork.SocketOutletAddition.   SendNotification(timestamp, evse, outlet);
+            //// ParkingSpace events
+            //this.ParkingSensorAddition.     OnVoting       += (timestamp, evse, outlet, vote)       => RoamingNetwork.ParkingSensorAddition.   SendVoting      (timestamp, evse, outlet, vote);
+            //this.ParkingSensorAddition.     OnNotification += (timestamp, evse, outlet)             => RoamingNetwork.ParkingSensorAddition.   SendNotification(timestamp, evse, outlet);
 
-            this.SocketOutletRemoval.      OnVoting       += (timestamp, evse, outlet, vote)       => RoamingNetwork.SocketOutletRemoval.    SendVoting      (timestamp, evse, outlet, vote);
-            this.SocketOutletRemoval.      OnNotification += (timestamp, evse, outlet)             => RoamingNetwork.SocketOutletRemoval.    SendNotification(timestamp, evse, outlet);
+            //this.ParkingSensorRemoval.      OnVoting       += (timestamp, evse, outlet, vote)       => RoamingNetwork.ParkingSensorRemoval.    SendVoting      (timestamp, evse, outlet, vote);
+            //this.ParkingSensorRemoval.      OnNotification += (timestamp, evse, outlet)             => RoamingNetwork.ParkingSensorRemoval.    SendNotification(timestamp, evse, outlet);
 
             #endregion
 
-            LocalEVSEIds = new ReactiveSet<EVSE_Id>();
+            LocalParkingSpaceIds = new ReactiveSet<ParkingSpace_Id>();
 
             Configurator?.Invoke(this);
 
@@ -687,8 +679,8 @@ namespace org.GraphDefined.WWCP
         /// Update the current status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
-        /// <param name="NewStatus">The new EVSE status.</param>
+        /// <param name="OldStatus">The old ParkingSpace status.</param>
+        /// <param name="NewStatus">The new ParkingSpace status.</param>
         internal async Task UpdateStatus(DateTime                             Timestamp,
                                          Timestamped<ParkingOperatorStatusType>  OldStatus,
                                          Timestamped<ParkingOperatorStatusType>  NewStatus)
@@ -744,134 +736,134 @@ namespace org.GraphDefined.WWCP
 
         #region Charging pools
 
-        #region ChargingPoolAddition
+        #region ParkingGarageAddition
 
-        internal readonly IVotingNotificator<DateTime, ParkingOperator, ChargingPool, Boolean> ChargingPoolAddition;
+        internal readonly IVotingNotificator<DateTime, ParkingOperator, ParkingGarage, Boolean> ParkingGarageAddition;
 
         /// <summary>
         /// Called whenever an charging pool will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ParkingOperator, ChargingPool, Boolean> OnChargingPoolAddition
+        public IVotingSender<DateTime, ParkingOperator, ParkingGarage, Boolean> OnParkingGarageAddition
 
-            => ChargingPoolAddition;
-
-        #endregion
-
-        #region ChargingPoolRemoval
-
-        internal readonly IVotingNotificator<DateTime, ParkingOperator, ChargingPool, Boolean> ChargingPoolRemoval;
-
-        /// <summary>
-        /// Called whenever an charging pool will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ParkingOperator, ChargingPool, Boolean> OnChargingPoolRemoval
-
-            => ChargingPoolRemoval;
+            => ParkingGarageAddition;
 
         #endregion
 
+        #region ParkingGarageRemoval
 
-        #region ChargingPools
+        //internal readonly IVotingNotificator<DateTime, ParkingOperator, ParkingGarage, Boolean> ParkingGarageRemoval;
 
-        private EntityHashSet<ParkingOperator, ChargingPool_Id, ChargingPool> _ChargingPools;
+        ///// <summary>
+        ///// Called whenever an charging pool will be or was removed.
+        ///// </summary>
+        //public IVotingSender<DateTime, ParkingOperator, ParkingGarage, Boolean> OnParkingGarageRemoval
 
-        public IEnumerable<ChargingPool> ChargingPools
-
-            => _ChargingPools;
-
-        #endregion
-
-        #region ChargingPoolIds
-
-        public IEnumerable<ChargingPool_Id> ChargingPoolIds
-
-            => _ChargingPools.Ids;
-
-        #endregion
-
-        #region ChargingPoolAdminStatus(IncludePool = null)
-
-        public IEnumerable<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>> ChargingPoolAdminStatus(Func<ChargingPool, Boolean> IncludePool = null)
-
-            => _ChargingPools.
-                   Where  (pool => IncludePool == null || IncludePool(pool)).
-                   OrderBy(pool => pool.Id).
-                   Select (pool => new KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>(pool.Id, pool.AdminStatus.Value));
+        //    => ParkingGarageRemoval;
 
         #endregion
 
 
-        #region CreateNewChargingPool(ChargingPoolId = null, Configurator = null, OnSuccess = null, OnError = null)
+        #region ParkingGarages
+
+        private EntityHashSet<ParkingOperator, ParkingGarage_Id, ParkingGarage> _ParkingGarages;
+
+        public IEnumerable<ParkingGarage> ParkingGarages
+
+            => _ParkingGarages;
+
+        #endregion
+
+        #region ParkingGarageIds
+
+        public IEnumerable<ParkingGarage_Id> ParkingGarageIds
+
+            => _ParkingGarages.Ids;
+
+        #endregion
+
+        #region ParkingGarageAdminStatus(IncludePool = null)
+
+        //public IEnumerable<KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusType>> ParkingGarageAdminStatus(Func<ParkingGarage, Boolean> IncludePool = null)
+
+        //    => _ParkingGarages.
+        //           Where  (pool => IncludePool == null || IncludePool(pool)).
+        //           OrderBy(pool => pool.Id).
+        //           Select (pool => new KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusType>(pool.Id, pool.AdminStatus.Value));
+
+        #endregion
+
+
+        #region CreateNewParkingGarage(ParkingGarageId = null, Configurator = null, OnSuccess = null, OnError = null)
 
         ///// <summary>
         ///// Create and register a new charging pool having the given
         ///// unique charging pool identification.
         ///// </summary>
-        ///// <param name="ChargingPoolId">The unique identification of the new charging pool.</param>
+        ///// <param name="ParkingGarageId">The unique identification of the new charging pool.</param>
         ///// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
         ///// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         ///// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        //public ChargingPool CreateNewChargingPool(ChargingPool_Id                                   ChargingPoolId             = null,
-        //                                          Action<ChargingPool>                              Configurator               = null,
-        //                                          RemoteChargingPoolCreatorDelegate                 RemoteChargingPoolCreator  = null,
-        //                                          ChargingPoolAdminStatusType                       AdminStatus                = ChargingPoolAdminStatusType.Operational,
-        //                                          ChargingPoolStatusType                            Status                     = ChargingPoolStatusType.Available,
-        //                                          Action<ChargingPool>                              OnSuccess                  = null,
-        //                                          Action<ParkingOperator, ChargingPool_Id>  OnError                    = null)
+        //public ParkingGarage CreateNewParkingGarage(ParkingGarage_Id                                   ParkingGarageId             = null,
+        //                                          Action<ParkingGarage>                              Configurator               = null,
+        //                                          RemoteParkingGarageCreatorDelegate                 RemoteParkingGarageCreator  = null,
+        //                                          ParkingGarageAdminStatusType                       AdminStatus                = ParkingGarageAdminStatusType.Operational,
+        //                                          ParkingGarageStatusType                            Status                     = ParkingGarageStatusType.Available,
+        //                                          Action<ParkingGarage>                              OnSuccess                  = null,
+        //                                          Action<ParkingOperator, ParkingGarage_Id>  OnError                    = null)
 
         //{
 
         //    #region Initial checks
 
-        //    if (ChargingPoolId == null)
-        //        ChargingPoolId = ChargingPool_Id.Random(this.Id);
+        //    if (ParkingGarageId == null)
+        //        ParkingGarageId = ParkingGarage_Id.Random(this.Id);
 
         //    // Do not throw an exception when an OnError delegate was given!
-        //    if (_ChargingPools.Any(pool => pool.Id == ChargingPoolId))
+        //    if (_ParkingGarages.Any(pool => pool.Id == ParkingGarageId))
         //    {
         //        if (OnError == null)
-        //            throw new ChargingPoolAlreadyExists(ChargingPoolId, this.Id);
+        //            throw new ParkingGarageAlreadyExists(ParkingGarageId, this.Id);
         //        else
-        //            OnError?.Invoke(this, ChargingPoolId);
+        //            OnError?.Invoke(this, ParkingGarageId);
         //    }
 
         //    #endregion
 
-        //    var _ChargingPool = new ChargingPool(ChargingPoolId,
+        //    var _ParkingGarage = new ParkingGarage(ParkingGarageId,
         //                                         this,
         //                                         Configurator,
-        //                                         RemoteChargingPoolCreator,
+        //                                         RemoteParkingGarageCreator,
         //                                         AdminStatus,
         //                                         Status);
 
 
-        //    if (ChargingPoolAddition.SendVoting(DateTime.Now, this, _ChargingPool))
+        //    if (ParkingGarageAddition.SendVoting(DateTime.Now, this, _ParkingGarage))
         //    {
-        //        if (_ChargingPools.TryAdd(_ChargingPool))
+        //        if (_ParkingGarages.TryAdd(_ParkingGarage))
         //        {
 
-        //            _ChargingPool.OnEVSEDataChanged                    += UpdateEVSEData;
-        //            _ChargingPool.OnEVSEStatusChanged                  += UpdateEVSEStatus;
-        //            _ChargingPool.OnEVSEAdminStatusChanged             += UpdateEVSEAdminStatus;
+        //            _ParkingGarage.OnParkingSpaceDataChanged                    += UpdateParkingSpaceData;
+        //            _ParkingGarage.OnParkingSpaceStatusChanged                  += UpdateParkingSpaceStatus;
+        //            _ParkingGarage.OnParkingSpaceAdminStatusChanged             += UpdateParkingSpaceAdminStatus;
 
-        //            _ChargingPool.OnChargingStationDataChanged         += UpdateChargingStationData;
-        //            _ChargingPool.OnChargingStationStatusChanged       += UpdateChargingStationStatus;
-        //            _ChargingPool.OnChargingStationAdminStatusChanged  += UpdateChargingStationAdminStatus;
+        //            _ParkingGarage.OnParkingGarageDataChanged         += UpdateParkingGarageData;
+        //            _ParkingGarage.OnParkingGarageStatusChanged       += UpdateParkingGarageStatus;
+        //            _ParkingGarage.OnParkingGarageAdminStatusChanged  += UpdateParkingGarageAdminStatus;
 
-        //            _ChargingPool.OnDataChanged                        += UpdateChargingPoolData;
-        //            _ChargingPool.OnStatusChanged                      += UpdateChargingPoolStatus;
-        //            _ChargingPool.OnAdminStatusChanged                 += UpdateChargingPoolAdminStatus;
+        //            _ParkingGarage.OnDataChanged                        += UpdateParkingGarageData;
+        //            _ParkingGarage.OnStatusChanged                      += UpdateParkingGarageStatus;
+        //            _ParkingGarage.OnAdminStatusChanged                 += UpdateParkingGarageAdminStatus;
 
-        //            _ChargingPool.OnNewReservation                     += SendNewReservation;
-        //            _ChargingPool.OnReservationCancelled               += SendOnReservationCancelled;
-        //            _ChargingPool.OnNewChargingSession                 += SendNewChargingSession;
-        //            _ChargingPool.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
+        //            _ParkingGarage.OnNewReservation                     += SendNewReservation;
+        //            _ParkingGarage.OnReservationCancelled               += SendOnReservationCancelled;
+        //            _ParkingGarage.OnNewChargingSession                 += SendNewChargingSession;
+        //            _ParkingGarage.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
 
 
-        //            OnSuccess?.Invoke(_ChargingPool);
-        //            ChargingPoolAddition.SendNotification(DateTime.Now, this, _ChargingPool);
+        //            OnSuccess?.Invoke(_ParkingGarage);
+        //            ParkingGarageAddition.SendNotification(DateTime.Now, this, _ParkingGarage);
 
-        //            return _ChargingPool;
+        //            return _ParkingGarage;
 
         //        }
         //    }
@@ -883,93 +875,93 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region ContainsChargingPool(ChargingPool)
+        #region ContainsParkingGarage(ParkingGarage)
 
         /// <summary>
-        /// Check if the given ChargingPool is already present within the Charging Station Operator.
+        /// Check if the given ParkingGarage is already present within the Charging Station Operator.
         /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        public Boolean ContainsChargingPool(ChargingPool ChargingPool)
+        /// <param name="ParkingGarage">A charging pool.</param>
+        public Boolean ContainsParkingGarage(ParkingGarage ParkingGarage)
 
-            => _ChargingPools.Contains(ChargingPool);
+            => _ParkingGarages.Contains(ParkingGarage);
 
         #endregion
 
-        #region ContainsChargingPool(ChargingPoolId)
+        #region ContainsParkingGarage(ParkingGarageId)
 
         /// <summary>
-        /// Check if the given ChargingPool identification is already present within the Charging Station Operator.
+        /// Check if the given ParkingGarage identification is already present within the Charging Station Operator.
         /// </summary>
-        /// <param name="ChargingPoolId">The unique identification of the charging pool.</param>
-        public Boolean ContainsChargingPool(ChargingPool_Id ChargingPoolId)
+        /// <param name="ParkingGarageId">The unique identification of the charging pool.</param>
+        public Boolean ContainsParkingGarage(ParkingGarage_Id ParkingGarageId)
 
-            => _ChargingPools.ContainsId(ChargingPoolId);
-
-        #endregion
-
-        #region GetChargingPoolbyId(ChargingPoolId)
-
-        public ChargingPool GetChargingPoolbyId(ChargingPool_Id ChargingPoolId)
-
-            => _ChargingPools.GetById(ChargingPoolId);
+            => _ParkingGarages.ContainsId(ParkingGarageId);
 
         #endregion
 
-        #region TryGetChargingPoolbyId(ChargingPoolId, out ChargingPool)
+        #region GetParkingGaragebyId(ParkingGarageId)
 
-        public Boolean TryGetChargingPoolbyId(ChargingPool_Id ChargingPoolId, out ChargingPool ChargingPool)
+        public ParkingGarage GetParkingGaragebyId(ParkingGarage_Id ParkingGarageId)
 
-            => _ChargingPools.TryGet(ChargingPoolId, out ChargingPool);
+            => _ParkingGarages.GetById(ParkingGarageId);
 
         #endregion
 
-        #region RemoveChargingPool(ChargingPoolId)
+        #region TryGetParkingGaragebyId(ParkingGarageId, out ParkingGarage)
 
-        public ChargingPool RemoveChargingPool(ChargingPool_Id ChargingPoolId)
+        public Boolean TryGetParkingGaragebyId(ParkingGarage_Id ParkingGarageId, out ParkingGarage ParkingGarage)
+
+            => _ParkingGarages.TryGet(ParkingGarageId, out ParkingGarage);
+
+        #endregion
+
+        #region RemoveParkingGarage(ParkingGarageId)
+
+        //public ParkingGarage RemoveParkingGarage(ParkingGarage_Id ParkingGarageId)
+        //{
+
+        //    ParkingGarage _ParkingGarage = null;
+
+        //    if (TryGetParkingGaragebyId(ParkingGarageId, out _ParkingGarage))
+        //    {
+
+        //        if (ParkingGarageRemoval.SendVoting(DateTime.Now, this, _ParkingGarage))
+        //        {
+
+        //            if (_ParkingGarages.TryRemove(ParkingGarageId, out _ParkingGarage))
+        //            {
+
+        //                ParkingGarageRemoval.SendNotification(DateTime.Now, this, _ParkingGarage);
+
+        //                return _ParkingGarage;
+
+        //            }
+
+        //        }
+
+        //    }
+
+        //    return null;
+
+        //}
+
+        #endregion
+
+        #region TryRemoveParkingGarage(ParkingGarageId, out ParkingGarage)
+
+        public Boolean TryRemoveParkingGarage(ParkingGarage_Id ParkingGarageId, out ParkingGarage ParkingGarage)
         {
 
-            ChargingPool _ChargingPool = null;
-
-            if (TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
+            if (TryGetParkingGaragebyId(ParkingGarageId, out ParkingGarage))
             {
 
-                if (ChargingPoolRemoval.SendVoting(DateTime.Now, this, _ChargingPool))
+                if (ParkingGarageRemoval.SendVoting(DateTime.Now, this, ParkingGarage))
                 {
 
-                    if (_ChargingPools.TryRemove(ChargingPoolId, out _ChargingPool))
+                    if (_ParkingGarages.TryRemove(ParkingGarageId, out ParkingGarage))
                     {
 
-                        ChargingPoolRemoval.SendNotification(DateTime.Now, this, _ChargingPool);
-
-                        return _ChargingPool;
-
-                    }
-
-                }
-
-            }
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region TryRemoveChargingPool(ChargingPoolId, out ChargingPool)
-
-        public Boolean TryRemoveChargingPool(ChargingPool_Id ChargingPoolId, out ChargingPool ChargingPool)
-        {
-
-            if (TryGetChargingPoolbyId(ChargingPoolId, out ChargingPool))
-            {
-
-                if (ChargingPoolRemoval.SendVoting(DateTime.Now, this, ChargingPool))
-                {
-
-                    if (_ChargingPools.TryRemove(ChargingPoolId, out ChargingPool))
-                    {
-
-                        ChargingPoolRemoval.SendNotification(DateTime.Now, this, ChargingPool);
+                        ParkingGarageRemoval.SendNotification(DateTime.Now, this, ParkingGarage);
 
                         return true;
 
@@ -987,198 +979,198 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SetChargingPoolAdminStatus(ChargingPoolId, NewStatus)
+        #region SetParkingGarageAdminStatus(ParkingGarageId, NewStatus)
 
-        public void SetChargingPoolAdminStatus(ChargingPool_Id                           ChargingPoolId,
-                                               Timestamped<ChargingPoolAdminStatusType>  NewStatus,
-                                               Boolean                                   SendUpstream = false)
-        {
+        //public void SetParkingGarageAdminStatus(ParkingGarage_Id                           ParkingGarageId,
+        //                                       Timestamped<ParkingGarageAdminStatusType>  NewStatus,
+        //                                       Boolean                                   SendUpstream = false)
+        //{
 
-            ChargingPool _ChargingPool = null;
-            if (TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
-                _ChargingPool.SetAdminStatus(NewStatus);
+        //    ParkingGarage _ParkingGarage = null;
+        //    if (TryGetParkingGaragebyId(ParkingGarageId, out _ParkingGarage))
+        //        _ParkingGarage.SetAdminStatus(NewStatus);
 
-        }
-
-        #endregion
-
-        #region SetChargingPoolAdminStatus(ChargingPoolId, NewStatus, Timestamp)
-
-        public void SetChargingPoolAdminStatus(ChargingPool_Id              ChargingPoolId,
-                                               ChargingPoolAdminStatusType  NewStatus,
-                                               DateTime                     Timestamp)
-        {
-
-            ChargingPool _ChargingPool  = null;
-            if (TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
-                _ChargingPool.SetAdminStatus(NewStatus, Timestamp);
-
-        }
+        //}
 
         #endregion
 
-        #region SetChargingPoolAdminStatus(ChargingPoolId, StatusList, ChangeMethod = ChangeMethods.Replace)
+        #region SetParkingGarageAdminStatus(ParkingGarageId, NewStatus, Timestamp)
 
-        public void SetChargingPoolAdminStatus(ChargingPool_Id                                        ChargingPoolId,
-                                               IEnumerable<Timestamped<ChargingPoolAdminStatusType>>  StatusList,
-                                               ChangeMethods                                          ChangeMethod  = ChangeMethods.Replace)
-        {
+        //public void SetParkingGarageAdminStatus(ParkingGarage_Id              ParkingGarageId,
+        //                                       ParkingGarageAdminStatusType  NewStatus,
+        //                                       DateTime                     Timestamp)
+        //{
 
-            ChargingPool _ChargingPool  = null;
-            if (TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
-                _ChargingPool.SetAdminStatus(StatusList, ChangeMethod);
+        //    ParkingGarage _ParkingGarage  = null;
+        //    if (TryGetParkingGaragebyId(ParkingGarageId, out _ParkingGarage))
+        //        _ParkingGarage.SetAdminStatus(NewStatus, Timestamp);
 
-            //if (SendUpstream)
-            //{
-            //
-            //    RoamingNetwork.
-            //        SendChargingPoolAdminStatusDiff(new ChargingPoolAdminStatusDiff(DateTime.Now,
-            //                                               ParkingOperatorId:    Id,
-            //                                               ParkingOperatorName:  Name,
-            //                                               NewStatus:         new List<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>(),
-            //                                               ChangedStatus:     new List<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>() {
-            //                                                                          new KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>(ChargingPoolId, NewStatus.Value)
-            //                                                                      },
-            //                                               RemovedIds:        new List<ChargingPool_Id>()));
-            //
-            //}
+        //}
 
-        }
+        #endregion
+
+        #region SetParkingGarageAdminStatus(ParkingGarageId, StatusList, ChangeMethod = ChangeMethods.Replace)
+
+        //public void SetParkingGarageAdminStatus(ParkingGarage_Id                                        ParkingGarageId,
+        //                                       IEnumerable<Timestamped<ParkingGarageAdminStatusType>>  StatusList,
+        //                                       ChangeMethods                                          ChangeMethod  = ChangeMethods.Replace)
+        //{
+
+        //    ParkingGarage _ParkingGarage  = null;
+        //    if (TryGetParkingGaragebyId(ParkingGarageId, out _ParkingGarage))
+        //        _ParkingGarage.SetAdminStatus(StatusList, ChangeMethod);
+
+        //    //if (SendUpstream)
+        //    //{
+        //    //
+        //    //    RoamingNetwork.
+        //    //        SendParkingGarageAdminStatusDiff(new ParkingGarageAdminStatusDiff(DateTime.Now,
+        //    //                                               ParkingOperatorId:    Id,
+        //    //                                               ParkingOperatorName:  Name,
+        //    //                                               NewStatus:         new List<KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusType>>(),
+        //    //                                               ChangedStatus:     new List<KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusType>>() {
+        //    //                                                                          new KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusType>(ParkingGarageId, NewStatus.Value)
+        //    //                                                                      },
+        //    //                                               RemovedIds:        new List<ParkingGarage_Id>()));
+        //    //
+        //    //}
+
+        //}
 
         #endregion
 
 
-        #region OnChargingPoolData/(Admin)StatusChanged
+        #region OnParkingGarageData/(Admin)StatusChanged
 
-        /// <summary>
-        /// An event fired whenever the static data of any subordinated charging pool changed.
-        /// </summary>
-        public event OnChargingPoolDataChangedDelegate         OnChargingPoolDataChanged;
+        ///// <summary>
+        ///// An event fired whenever the static data of any subordinated charging pool changed.
+        ///// </summary>
+        //public event OnParkingGarageDataChangedDelegate         OnParkingGarageDataChanged;
 
-        /// <summary>
-        /// An event fired whenever the aggregated dynamic status of any subordinated charging pool changed.
-        /// </summary>
-        public event OnChargingPoolStatusChangedDelegate       OnChargingPoolStatusChanged;
+        ///// <summary>
+        ///// An event fired whenever the aggregated dynamic status of any subordinated charging pool changed.
+        ///// </summary>
+        //public event OnParkingGarageStatusChangedDelegate       OnParkingGarageStatusChanged;
 
-        /// <summary>
-        /// An event fired whenever the aggregated dynamic status of any subordinated charging pool changed.
-        /// </summary>
-        public event OnChargingPoolAdminStatusChangedDelegate  OnChargingPoolAdminStatusChanged;
-
-        #endregion
-
-        #region ChargingStationAddition
-
-        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
-
-        /// <summary>
-        /// Called whenever a charging station will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
-
-            => ChargingStationAddition;
+        ///// <summary>
+        ///// An event fired whenever the aggregated dynamic status of any subordinated charging pool changed.
+        ///// </summary>
+        //public event OnParkingGarageAdminStatusChangedDelegate  OnParkingGarageAdminStatusChanged;
 
         #endregion
 
-        #region ChargingStationRemoval
+        #region ParkingGarageAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationRemoval;
+        //internal readonly IVotingNotificator<DateTime, ParkingGarage, ParkingGarage, Boolean> ParkingGarageAddition;
+
+        ///// <summary>
+        ///// Called whenever a charging station will be or was added.
+        ///// </summary>
+        //public IVotingSender<DateTime, ParkingOperator, ParkingGarage, Boolean> OnParkingGarageAddition
+
+        //    => ParkingGarageAddition;
+
+        #endregion
+
+        #region ParkingGarageRemoval
+
+        internal readonly IVotingNotificator<DateTime, ParkingOperator, ParkingGarage, Boolean> ParkingGarageRemoval;
 
         /// <summary>
         /// Called whenever a charging station will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationRemoval
+        public IVotingSender<DateTime, ParkingOperator, ParkingGarage, Boolean> OnParkingGarageRemoval
 
-            => ChargingStationRemoval;
-
-        #endregion
-
-
-        #region (internal) UpdateChargingPoolData(Timestamp, ChargingPool, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update the data of an charging pool.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="ChargingPool">The changed charging pool.</param>
-        /// <param name="PropertyName">The name of the changed property.</param>
-        /// <param name="OldValue">The old value of the changed property.</param>
-        /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateChargingPoolData(DateTime      Timestamp,
-                                                   ChargingPool  ChargingPool,
-                                                   String        PropertyName,
-                                                   Object        OldValue,
-                                                   Object        NewValue)
-        {
-
-            var OnChargingPoolDataChangedLocal = OnChargingPoolDataChanged;
-            if (OnChargingPoolDataChangedLocal != null)
-                await OnChargingPoolDataChangedLocal(Timestamp, ChargingPool, PropertyName, OldValue, NewValue);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateChargingPoolStatus(Timestamp, ChargingPool, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update the current charging pool status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="ChargingPool">The updated charging pool.</param>
-        /// <param name="OldStatus">The old aggreagted charging station status.</param>
-        /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateChargingPoolStatus(DateTime                             Timestamp,
-                                                     ChargingPool                         ChargingPool,
-                                                     Timestamped<ChargingPoolStatusType>  OldStatus,
-                                                     Timestamped<ChargingPoolStatusType>  NewStatus)
-        {
-
-            var OnChargingPoolStatusChangedLocal = OnChargingPoolStatusChanged;
-            if (OnChargingPoolStatusChangedLocal != null)
-                await OnChargingPoolStatusChangedLocal(Timestamp, ChargingPool, OldStatus, NewStatus);
-
-            //if (StatusAggregationDelegate != null)
-            //    _StatusSchedule.Insert(StatusAggregationDelegate(new ChargingPoolStatusReport(_ChargingPools.Values)),
-            //                           Timestamp);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateChargingPoolAdminStatus(Timestamp, ChargingPool, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update the current charging pool admin status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="ChargingPool">The updated charging pool.</param>
-        /// <param name="OldStatus">The old aggreagted charging station status.</param>
-        /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateChargingPoolAdminStatus(DateTime                                  Timestamp,
-                                                          ChargingPool                              ChargingPool,
-                                                          Timestamped<ChargingPoolAdminStatusType>  OldStatus,
-                                                          Timestamped<ChargingPoolAdminStatusType>  NewStatus)
-        {
-
-            var OnChargingPoolAdminStatusChangedLocal = OnChargingPoolAdminStatusChanged;
-            if (OnChargingPoolAdminStatusChangedLocal != null)
-                await OnChargingPoolAdminStatusChangedLocal(Timestamp, ChargingPool, OldStatus, NewStatus);
-
-        }
+            => ParkingGarageRemoval;
 
         #endregion
 
 
-        #region IEnumerable<ChargingPool> Members
+        #region (internal) UpdateParkingGarageData(Timestamp, ParkingGarage, OldStatus, NewStatus)
+
+        ///// <summary>
+        ///// Update the data of an charging pool.
+        ///// </summary>
+        ///// <param name="Timestamp">The timestamp when this change was detected.</param>
+        ///// <param name="ParkingGarage">The changed charging pool.</param>
+        ///// <param name="PropertyName">The name of the changed property.</param>
+        ///// <param name="OldValue">The old value of the changed property.</param>
+        ///// <param name="NewValue">The new value of the changed property.</param>
+        //internal async Task UpdateParkingGarageData(DateTime      Timestamp,
+        //                                           ParkingGarage  ParkingGarage,
+        //                                           String        PropertyName,
+        //                                           Object        OldValue,
+        //                                           Object        NewValue)
+        //{
+
+        //    var OnParkingGarageDataChangedLocal = OnParkingGarageDataChanged;
+        //    if (OnParkingGarageDataChangedLocal != null)
+        //        await OnParkingGarageDataChangedLocal(Timestamp, ParkingGarage, PropertyName, OldValue, NewValue);
+
+        //}
+
+        #endregion
+
+        #region (internal) UpdateParkingGarageStatus(Timestamp, ParkingGarage, OldStatus, NewStatus)
+
+        ///// <summary>
+        ///// Update the current charging pool status.
+        ///// </summary>
+        ///// <param name="Timestamp">The timestamp when this change was detected.</param>
+        ///// <param name="ParkingGarage">The updated charging pool.</param>
+        ///// <param name="OldStatus">The old aggreagted charging station status.</param>
+        ///// <param name="NewStatus">The new aggreagted charging station status.</param>
+        //internal async Task UpdateParkingGarageStatus(DateTime                             Timestamp,
+        //                                             ParkingGarage                         ParkingGarage,
+        //                                             Timestamped<ParkingGarageStatusType>  OldStatus,
+        //                                             Timestamped<ParkingGarageStatusType>  NewStatus)
+        //{
+
+        //    var OnParkingGarageStatusChangedLocal = OnParkingGarageStatusChanged;
+        //    if (OnParkingGarageStatusChangedLocal != null)
+        //        await OnParkingGarageStatusChangedLocal(Timestamp, ParkingGarage, OldStatus, NewStatus);
+
+        //    //if (StatusAggregationDelegate != null)
+        //    //    _StatusSchedule.Insert(StatusAggregationDelegate(new ParkingGarageStatusReport(_ParkingGarages.Values)),
+        //    //                           Timestamp);
+
+        //}
+
+        #endregion
+
+        #region (internal) UpdateParkingGarageAdminStatus(Timestamp, ParkingGarage, OldStatus, NewStatus)
+
+        ///// <summary>
+        ///// Update the current charging pool admin status.
+        ///// </summary>
+        ///// <param name="Timestamp">The timestamp when this change was detected.</param>
+        ///// <param name="ParkingGarage">The updated charging pool.</param>
+        ///// <param name="OldStatus">The old aggreagted charging station status.</param>
+        ///// <param name="NewStatus">The new aggreagted charging station status.</param>
+        //internal async Task UpdateParkingGarageAdminStatus(DateTime                                  Timestamp,
+        //                                                  ParkingGarage                              ParkingGarage,
+        //                                                  Timestamped<ParkingGarageAdminStatusType>  OldStatus,
+        //                                                  Timestamped<ParkingGarageAdminStatusType>  NewStatus)
+        //{
+
+        //    var OnParkingGarageAdminStatusChangedLocal = OnParkingGarageAdminStatusChanged;
+        //    if (OnParkingGarageAdminStatusChangedLocal != null)
+        //        await OnParkingGarageAdminStatusChangedLocal(Timestamp, ParkingGarage, OldStatus, NewStatus);
+
+        //}
+
+        #endregion
+
+
+        #region IEnumerable<ParkingGarage> Members
 
         IEnumerator IEnumerable.GetEnumerator()
 
-            => _ChargingPools.GetEnumerator();
+            => _ParkingGarages.GetEnumerator();
 
-        public IEnumerator<ChargingPool> GetEnumerator()
+        public IEnumerator<ParkingGarage> GetEnumerator()
 
-            => _ChargingPools.GetEnumerator();
+            => _ParkingGarages.GetEnumerator();
 
         #endregion
 
@@ -1186,305 +1178,305 @@ namespace org.GraphDefined.WWCP
 
         #region Charging stations
 
-        #region ChargingStations
+        #region ParkingGarages
 
-        public IEnumerable<ChargingStation> ChargingStations
+        //public IEnumerable<ParkingGarage> ParkingGarages
 
-            => _ChargingPools.
-                   SelectMany(pool => pool.ChargingStations);
-
-        #endregion
-
-        #region ChargingStationIds
-
-        public IEnumerable<ChargingStation_Id> ChargingStationIds
-
-            => _ChargingPools.
-                   SelectMany(pool    => pool.   ChargingStations).
-                   Select    (station => station.Id);
+        //    => _ParkingGarages.
+        //           SelectMany(pool => pool.ParkingGarages);
 
         #endregion
 
-        #region ChargingStationAdminStatus(IncludeStation = null)
+        #region ParkingGarageIds
 
-        public IEnumerable<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusTypes>> ChargingStationAdminStatus(Func<ChargingStation, Boolean> IncludeStation = null)
+        //public IEnumerable<ParkingGarage_Id> ParkingGarageIds
 
-            => _ChargingPools.
-                   SelectMany(pool    => pool.ChargingStations).
-                   Where     (station => IncludeStation == null || IncludeStation(station)).
-                   OrderBy   (station => station.Id).
-                   Select    (station => new KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusTypes>(station.Id, station.AdminStatus.Value));
+        //    => _ParkingGarages.
+        //           SelectMany(pool    => pool.   ParkingGarages).
+        //           Select    (station => station.Id);
+
+        #endregion
+
+        #region ParkingGarageAdminStatus(IncludeStation = null)
+
+        //public IEnumerable<KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusTypes>> ParkingGarageAdminStatus(Func<ParkingGarage, Boolean> IncludeStation = null)
+
+        //    => _ParkingGarages.
+        //           SelectMany(pool    => pool.ParkingGarages).
+        //           Where     (station => IncludeStation == null || IncludeStation(station)).
+        //           OrderBy   (station => station.Id).
+        //           Select    (station => new KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusTypes>(station.Id, station.AdminStatus.Value));
 
         #endregion
 
 
-        #region ContainsChargingStation(ChargingStation)
+        #region ContainsParkingGarage(ParkingGarage)
+
+        ///// <summary>
+        ///// Check if the given ParkingGarage is already present within the Charging Station Operator.
+        ///// </summary>
+        ///// <param name="ParkingGarage">A charging station.</param>
+        //public Boolean ContainsParkingGarage(ParkingGarage ParkingGarage)
+
+        //    => _ParkingGarages.Any(pool => pool.ContainsParkingGarage(ParkingGarage.Id));
+
+        #endregion
+
+        #region ContainsParkingGarage(ParkingGarageId)
+
+        ///// <summary>
+        ///// Check if the given ParkingGarage identification is already present within the Charging Station Operator.
+        ///// </summary>
+        ///// <param name="ParkingGarageId">The unique identification of the charging station.</param>
+        //public Boolean ContainsParkingGarage(ParkingGarage_Id ParkingGarageId)
+
+        //    => _ParkingGarages.Any(pool => pool.ContainsParkingGarage(ParkingGarageId));
+
+        #endregion
+
+        #region GetParkingGaragebyId(ParkingGarageId)
+
+        //public ParkingGarage GetParkingGaragebyId(ParkingGarage_Id ParkingGarageId)
+
+        //    => _ParkingGarages.
+        //           SelectMany    (pool    => pool.ParkingGarages).
+        //           FirstOrDefault(station => station.Id == ParkingGarageId);
+
+        #endregion
+
+        #region TryGetParkingGaragebyId(ParkingGarageId, out ParkingGarage ParkingGarage)
+
+        //public Boolean TryGetParkingGaragebyId(ParkingGarage_Id ParkingGarageId, out ParkingGarage ParkingGarage)
+        //{
+
+        //    ParkingGarage = _ParkingGarages.
+        //                          SelectMany    (pool    => pool.ParkingGarages).
+        //                          FirstOrDefault(station => station.Id == ParkingGarageId);
+
+        //    return ParkingGarage != null;
+
+        //}
+
+        #endregion
+
+
+        #region SetParkingGarageStatus(ParkingGarageId, NewStatus)
+
+        //public void SetParkingGarageStatus(ParkingGarage_Id         ParkingGarageId,
+        //                                     ParkingGarageStatusTypes  NewStatus)
+        //{
+
+        //    ParkingGarage _ParkingGarage  = null;
+        //    if (TryGetParkingGaragebyId(ParkingGarageId, out _ParkingGarage))
+        //        _ParkingGarage.SetStatus(NewStatus);
+
+        //}
+
+        #endregion
+
+        #region SetParkingGarageStatus(ParkingGarageId, NewTimestampedStatus)
+
+        //public void SetParkingGarageStatus(ParkingGarage_Id                      ParkingGarageId,
+        //                                     Timestamped<ParkingGarageStatusTypes>  NewTimestampedStatus)
+        //{
+
+        //    ParkingGarage _ParkingGarage = null;
+        //    if (TryGetParkingGaragebyId(ParkingGarageId, out _ParkingGarage))
+        //        _ParkingGarage.SetStatus(NewTimestampedStatus);
+
+        //}
+
+        #endregion
+
+
+        #region SetParkingGarageAdminStatus(ParkingGarageId, NewStatus)
+
+        //public void SetParkingGarageAdminStatus(ParkingGarage_Id              ParkingGarageId,
+        //                                          ParkingGarageAdminStatusTypes  NewStatus)
+        //{
+
+        //    ParkingGarage _ParkingGarage  = null;
+        //    if (TryGetParkingGaragebyId(ParkingGarageId, out _ParkingGarage))
+        //        _ParkingGarage.SetAdminStatus(NewStatus);
+
+        //}
+
+        #endregion
+
+        #region SetParkingGarageAdminStatus(ParkingGarageId, NewTimestampedStatus)
+
+        //public void SetParkingGarageAdminStatus(ParkingGarage_Id                           ParkingGarageId,
+        //                                          Timestamped<ParkingGarageAdminStatusTypes>  NewTimestampedStatus)
+        //{
+
+        //    ParkingGarage _ParkingGarage = null;
+        //    if (TryGetParkingGaragebyId(ParkingGarageId, out _ParkingGarage))
+        //        _ParkingGarage.SetAdminStatus(NewTimestampedStatus);
+
+        //}
+
+        #endregion
+
+        #region SetParkingGarageAdminStatus(ParkingGarageId, NewStatus, Timestamp)
+
+        //public void SetParkingGarageAdminStatus(ParkingGarage_Id              ParkingGarageId,
+        //                                          ParkingGarageAdminStatusTypes  NewStatus,
+        //                                          DateTime                        Timestamp)
+        //{
+
+        //    ParkingGarage _ParkingGarage  = null;
+        //    if (TryGetParkingGaragebyId(ParkingGarageId, out _ParkingGarage))
+        //        _ParkingGarage.SetAdminStatus(NewStatus, Timestamp);
+
+        //}
+
+        #endregion
+
+        #region SetParkingGarageAdminStatus(ParkingGarageId, StatusList, ChangeMethod = ChangeMethods.Replace)
+
+        //public void SetParkingGarageAdminStatus(ParkingGarage_Id                                        ParkingGarageId,
+        //                                          IEnumerable<Timestamped<ParkingGarageAdminStatusTypes>>  StatusList,
+        //                                          ChangeMethods                                             ChangeMethod  = ChangeMethods.Replace)
+        //{
+
+        //    ParkingGarage _ParkingGarage  = null;
+        //    if (TryGetParkingGaragebyId(ParkingGarageId, out _ParkingGarage))
+        //        _ParkingGarage.SetAdminStatus(StatusList, ChangeMethod);
+
+        //    //if (SendUpstream)
+        //    //{
+        //    //
+        //    //    RoamingNetwork.
+        //    //        SendParkingGarageAdminStatusDiff(new ParkingGarageAdminStatusDiff(DateTime.Now,
+        //    //                                               ParkingOperatorId:    Id,
+        //    //                                               ParkingOperatorName:  Name,
+        //    //                                               NewStatus:         new List<KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusType>>(),
+        //    //                                               ChangedStatus:     new List<KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusType>>() {
+        //    //                                                                          new KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusType>(ParkingGarageId, NewStatus.Value)
+        //    //                                                                      },
+        //    //                                               RemovedIds:        new List<ParkingGarage_Id>()));
+        //    //
+        //    //}
+
+        //}
+
+        #endregion
+
+
+        #region OnParkingGarageData/(Admin)StatusChanged
+
+        ///// <summary>
+        ///// An event fired whenever the static data of any subordinated charging station changed.
+        ///// </summary>
+        //public event OnParkingGarageDataChangedDelegate         OnParkingGarageDataChanged;
+
+        ///// <summary>
+        ///// An event fired whenever the aggregated dynamic status of any subordinated charging station changed.
+        ///// </summary>
+        //public event OnParkingGarageStatusChangedDelegate       OnParkingGarageStatusChanged;
+
+        ///// <summary>
+        ///// An event fired whenever the aggregated admin status of any subordinated charging station changed.
+        ///// </summary>
+        //public event OnParkingGarageAdminStatusChangedDelegate  OnParkingGarageAdminStatusChanged;
+
+        #endregion
+
+        #region ParkingSpaceAddition
+
+        internal readonly IVotingNotificator<DateTime, ParkingGarage, ParkingSpace, Boolean> ParkingSpaceAddition;
 
         /// <summary>
-        /// Check if the given ChargingStation is already present within the Charging Station Operator.
+        /// Called whenever an ParkingSpace will be or was added.
         /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
-        public Boolean ContainsChargingStation(ChargingStation ChargingStation)
+        public IVotingSender<DateTime, ParkingGarage, ParkingSpace, Boolean> OnParkingSpaceAddition
 
-            => _ChargingPools.Any(pool => pool.ContainsChargingStation(ChargingStation.Id));
+            => ParkingSpaceAddition;
 
         #endregion
 
-        #region ContainsChargingStation(ChargingStationId)
+        #region ParkingSpaceRemoval
+
+        internal readonly IVotingNotificator<DateTime, ParkingGarage, ParkingSpace, Boolean> ParkingSpaceRemoval;
 
         /// <summary>
-        /// Check if the given ChargingStation identification is already present within the Charging Station Operator.
+        /// Called whenever an ParkingSpace will be or was removed.
         /// </summary>
-        /// <param name="ChargingStationId">The unique identification of the charging station.</param>
-        public Boolean ContainsChargingStation(ChargingStation_Id ChargingStationId)
+        public IVotingSender<DateTime, ParkingGarage, ParkingSpace, Boolean> OnParkingSpaceRemoval
 
-            => _ChargingPools.Any(pool => pool.ContainsChargingStation(ChargingStationId));
-
-        #endregion
-
-        #region GetChargingStationbyId(ChargingStationId)
-
-        public ChargingStation GetChargingStationbyId(ChargingStation_Id ChargingStationId)
-
-            => _ChargingPools.
-                   SelectMany    (pool    => pool.ChargingStations).
-                   FirstOrDefault(station => station.Id == ChargingStationId);
-
-        #endregion
-
-        #region TryGetChargingStationbyId(ChargingStationId, out ChargingStation ChargingStation)
-
-        public Boolean TryGetChargingStationbyId(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
-        {
-
-            ChargingStation = _ChargingPools.
-                                  SelectMany    (pool    => pool.ChargingStations).
-                                  FirstOrDefault(station => station.Id == ChargingStationId);
-
-            return ChargingStation != null;
-
-        }
+            => ParkingSpaceRemoval;
 
         #endregion
 
 
-        #region SetChargingStationStatus(ChargingStationId, NewStatus)
+        #region (internal) UpdateParkingGarageData(Timestamp, ParkingGarage, OldStatus, NewStatus)
 
-        public void SetChargingStationStatus(ChargingStation_Id         ChargingStationId,
-                                             ChargingStationStatusTypes  NewStatus)
-        {
+        ///// <summary>
+        ///// Update the data of a charging station.
+        ///// </summary>
+        ///// <param name="Timestamp">The timestamp when this change was detected.</param>
+        ///// <param name="ParkingGarage">The changed charging station.</param>
+        ///// <param name="PropertyName">The name of the changed property.</param>
+        ///// <param name="OldValue">The old value of the changed property.</param>
+        ///// <param name="NewValue">The new value of the changed property.</param>
+        //internal async Task UpdateParkingGarageData(DateTime         Timestamp,
+        //                                              ParkingGarage  ParkingGarage,
+        //                                              String           PropertyName,
+        //                                              Object           OldValue,
+        //                                              Object           NewValue)
+        //{
 
-            ChargingStation _ChargingStation  = null;
-            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
-                _ChargingStation.SetStatus(NewStatus);
+        //    var OnParkingGarageDataChangedLocal = OnParkingGarageDataChanged;
+        //    if (OnParkingGarageDataChangedLocal != null)
+        //        await OnParkingGarageDataChangedLocal(Timestamp, ParkingGarage, PropertyName, OldValue, NewValue);
 
-        }
-
-        #endregion
-
-        #region SetChargingStationStatus(ChargingStationId, NewTimestampedStatus)
-
-        public void SetChargingStationStatus(ChargingStation_Id                      ChargingStationId,
-                                             Timestamped<ChargingStationStatusTypes>  NewTimestampedStatus)
-        {
-
-            ChargingStation _ChargingStation = null;
-            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
-                _ChargingStation.SetStatus(NewTimestampedStatus);
-
-        }
+        //}
 
         #endregion
 
+        #region (internal) UpdateParkingGarageStatus(Timestamp, ParkingGarage, OldStatus, NewStatus)
 
-        #region SetChargingStationAdminStatus(ChargingStationId, NewStatus)
+        ///// <summary>
+        ///// Update the current aggregated charging station status.
+        ///// </summary>
+        ///// <param name="Timestamp">The timestamp when this change was detected.</param>
+        ///// <param name="ParkingGarage">The updated charging station.</param>
+        ///// <param name="OldStatus">The old aggreagted charging station status.</param>
+        ///// <param name="NewStatus">The new aggreagted charging station status.</param>
+        //internal async Task UpdateParkingGarageStatus(DateTime                                Timestamp,
+        //                                                ParkingGarage                         ParkingGarage,
+        //                                                Timestamped<ParkingGarageStatusTypes>  OldStatus,
+        //                                                Timestamped<ParkingGarageStatusTypes>  NewStatus)
+        //{
 
-        public void SetChargingStationAdminStatus(ChargingStation_Id              ChargingStationId,
-                                                  ChargingStationAdminStatusTypes  NewStatus)
-        {
+        //    var OnParkingGarageStatusChangedLocal = OnParkingGarageStatusChanged;
+        //    if (OnParkingGarageStatusChangedLocal != null)
+        //        await OnParkingGarageStatusChangedLocal(Timestamp, ParkingGarage, OldStatus, NewStatus);
 
-            ChargingStation _ChargingStation  = null;
-            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
-                _ChargingStation.SetAdminStatus(NewStatus);
-
-        }
-
-        #endregion
-
-        #region SetChargingStationAdminStatus(ChargingStationId, NewTimestampedStatus)
-
-        public void SetChargingStationAdminStatus(ChargingStation_Id                           ChargingStationId,
-                                                  Timestamped<ChargingStationAdminStatusTypes>  NewTimestampedStatus)
-        {
-
-            ChargingStation _ChargingStation = null;
-            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
-                _ChargingStation.SetAdminStatus(NewTimestampedStatus);
-
-        }
+        //}
 
         #endregion
 
-        #region SetChargingStationAdminStatus(ChargingStationId, NewStatus, Timestamp)
+        #region (internal) UpdateParkingGarageAdminStatus(Timestamp, ParkingGarage, OldStatus, NewStatus)
 
-        public void SetChargingStationAdminStatus(ChargingStation_Id              ChargingStationId,
-                                                  ChargingStationAdminStatusTypes  NewStatus,
-                                                  DateTime                        Timestamp)
-        {
+        ///// <summary>
+        ///// Update the current aggregated charging station admin status.
+        ///// </summary>
+        ///// <param name="Timestamp">The timestamp when this change was detected.</param>
+        ///// <param name="ParkingGarage">The updated charging station.</param>
+        ///// <param name="OldStatus">The old aggreagted charging station admin status.</param>
+        ///// <param name="NewStatus">The new aggreagted charging station admin status.</param>
+        //internal async Task UpdateParkingGarageAdminStatus(DateTime                                     Timestamp,
+        //                                                     ParkingGarage                              ParkingGarage,
+        //                                                     Timestamped<ParkingGarageAdminStatusTypes>  OldStatus,
+        //                                                     Timestamped<ParkingGarageAdminStatusTypes>  NewStatus)
+        //{
 
-            ChargingStation _ChargingStation  = null;
-            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
-                _ChargingStation.SetAdminStatus(NewStatus, Timestamp);
+        //    var OnParkingGarageAdminStatusChangedLocal = OnParkingGarageAdminStatusChanged;
+        //    if (OnParkingGarageAdminStatusChangedLocal != null)
+        //        await OnParkingGarageAdminStatusChangedLocal(Timestamp, ParkingGarage, OldStatus, NewStatus);
 
-        }
-
-        #endregion
-
-        #region SetChargingStationAdminStatus(ChargingStationId, StatusList, ChangeMethod = ChangeMethods.Replace)
-
-        public void SetChargingStationAdminStatus(ChargingStation_Id                                        ChargingStationId,
-                                                  IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>  StatusList,
-                                                  ChangeMethods                                             ChangeMethod  = ChangeMethods.Replace)
-        {
-
-            ChargingStation _ChargingStation  = null;
-            if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
-                _ChargingStation.SetAdminStatus(StatusList, ChangeMethod);
-
-            //if (SendUpstream)
-            //{
-            //
-            //    RoamingNetwork.
-            //        SendChargingStationAdminStatusDiff(new ChargingStationAdminStatusDiff(DateTime.Now,
-            //                                               ParkingOperatorId:    Id,
-            //                                               ParkingOperatorName:  Name,
-            //                                               NewStatus:         new List<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>(),
-            //                                               ChangedStatus:     new List<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>() {
-            //                                                                          new KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>(ChargingStationId, NewStatus.Value)
-            //                                                                      },
-            //                                               RemovedIds:        new List<ChargingStation_Id>()));
-            //
-            //}
-
-        }
-
-        #endregion
-
-
-        #region OnChargingStationData/(Admin)StatusChanged
-
-        /// <summary>
-        /// An event fired whenever the static data of any subordinated charging station changed.
-        /// </summary>
-        public event OnChargingStationDataChangedDelegate         OnChargingStationDataChanged;
-
-        /// <summary>
-        /// An event fired whenever the aggregated dynamic status of any subordinated charging station changed.
-        /// </summary>
-        public event OnChargingStationStatusChangedDelegate       OnChargingStationStatusChanged;
-
-        /// <summary>
-        /// An event fired whenever the aggregated admin status of any subordinated charging station changed.
-        /// </summary>
-        public event OnChargingStationAdminStatusChangedDelegate  OnChargingStationAdminStatusChanged;
-
-        #endregion
-
-        #region EVSEAddition
-
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
-
-        /// <summary>
-        /// Called whenever an EVSE will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
-
-            => EVSEAddition;
-
-        #endregion
-
-        #region EVSERemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
-
-        /// <summary>
-        /// Called whenever an EVSE will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
-
-            => EVSERemoval;
-
-        #endregion
-
-
-        #region (internal) UpdateChargingStationData(Timestamp, ChargingStation, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update the data of a charging station.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="ChargingStation">The changed charging station.</param>
-        /// <param name="PropertyName">The name of the changed property.</param>
-        /// <param name="OldValue">The old value of the changed property.</param>
-        /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateChargingStationData(DateTime         Timestamp,
-                                                      ChargingStation  ChargingStation,
-                                                      String           PropertyName,
-                                                      Object           OldValue,
-                                                      Object           NewValue)
-        {
-
-            var OnChargingStationDataChangedLocal = OnChargingStationDataChanged;
-            if (OnChargingStationDataChangedLocal != null)
-                await OnChargingStationDataChangedLocal(Timestamp, ChargingStation, PropertyName, OldValue, NewValue);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateChargingStationStatus(Timestamp, ChargingStation, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update the current aggregated charging station status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="ChargingStation">The updated charging station.</param>
-        /// <param name="OldStatus">The old aggreagted charging station status.</param>
-        /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateChargingStationStatus(DateTime                                Timestamp,
-                                                        ChargingStation                         ChargingStation,
-                                                        Timestamped<ChargingStationStatusTypes>  OldStatus,
-                                                        Timestamped<ChargingStationStatusTypes>  NewStatus)
-        {
-
-            var OnChargingStationStatusChangedLocal = OnChargingStationStatusChanged;
-            if (OnChargingStationStatusChangedLocal != null)
-                await OnChargingStationStatusChangedLocal(Timestamp, ChargingStation, OldStatus, NewStatus);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateChargingStationAdminStatus(Timestamp, ChargingStation, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update the current aggregated charging station admin status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="ChargingStation">The updated charging station.</param>
-        /// <param name="OldStatus">The old aggreagted charging station admin status.</param>
-        /// <param name="NewStatus">The new aggreagted charging station admin status.</param>
-        internal async Task UpdateChargingStationAdminStatus(DateTime                                     Timestamp,
-                                                             ChargingStation                              ChargingStation,
-                                                             Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
-                                                             Timestamped<ChargingStationAdminStatusTypes>  NewStatus)
-        {
-
-            var OnChargingStationAdminStatusChangedLocal = OnChargingStationAdminStatusChanged;
-            if (OnChargingStationAdminStatusChangedLocal != null)
-                await OnChargingStationAdminStatusChangedLocal(Timestamp, ChargingStation, OldStatus, NewStatus);
-
-        }
+        //}
 
         #endregion
 
@@ -1492,102 +1484,102 @@ namespace org.GraphDefined.WWCP
 
         #region Charging station groups
 
-        #region ChargingStationGroupAddition
+        #region ParkingGarageGroupAddition
 
-        internal readonly IVotingNotificator<DateTime, ParkingOperator, ChargingStationGroup, Boolean> ChargingStationGroupAddition;
+        //internal readonly IVotingNotificator<DateTime, ParkingOperator, ParkingGarageGroup, Boolean> ParkingGarageGroupAddition;
 
-        /// <summary>
-        /// Called whenever a charging station group will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, ParkingOperator, ChargingStationGroup, Boolean> OnChargingStationGroupAddition
+        ///// <summary>
+        ///// Called whenever a charging station group will be or was added.
+        ///// </summary>
+        //public IVotingSender<DateTime, ParkingOperator, ParkingGarageGroup, Boolean> OnParkingGarageGroupAddition
 
-            => ChargingStationGroupAddition;
-
-        #endregion
-
-        #region ChargingStationGroupRemoval
-
-        internal readonly IVotingNotificator<DateTime, ParkingOperator, ChargingStationGroup, Boolean> ChargingStationGroupRemoval;
-
-        /// <summary>
-        /// Called whenever an charging station group will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ParkingOperator, ChargingStationGroup, Boolean> OnChargingStationGroupRemoval
-
-            => ChargingStationGroupRemoval;
+        //    => ParkingGarageGroupAddition;
 
         #endregion
 
+        #region ParkingGarageGroupRemoval
 
-        #region ChargingStationGroups
+        //internal readonly IVotingNotificator<DateTime, ParkingOperator, ParkingGarageGroup, Boolean> ParkingGarageGroupRemoval;
 
-        private readonly EntityHashSet<ParkingOperator, ChargingStationGroup_Id, ChargingStationGroup> _ChargingStationGroups;
+        ///// <summary>
+        ///// Called whenever an charging station group will be or was removed.
+        ///// </summary>
+        //public IVotingSender<DateTime, ParkingOperator, ParkingGarageGroup, Boolean> OnParkingGarageGroupRemoval
 
-        /// <summary>
-        /// All charging station groups registered within this Charging Station Operator.
-        /// </summary>
-        public IEnumerable<ChargingStationGroup> ChargingStationGroups
-
-            => _ChargingStationGroups;
+        //    => ParkingGarageGroupRemoval;
 
         #endregion
 
-        #region CreateNewChargingStationGroup(ChargingStationGroupId = null, Configurator = null, OnSuccess = null, OnError = null)
+
+        #region ParkingGarageGroups
+
+        //private readonly EntityHashSet<ParkingOperator, ParkingGarageGroup_Id, ParkingGarageGroup> _ParkingGarageGroups;
+
+        ///// <summary>
+        ///// All charging station groups registered within this Charging Station Operator.
+        ///// </summary>
+        //public IEnumerable<ParkingGarageGroup> ParkingGarageGroups
+
+        //    => _ParkingGarageGroups;
+
+        #endregion
+
+        #region CreateNewParkingGarageGroup(ParkingGarageGroupId = null, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         ///// Create and register a new charging group having the given
         ///// unique charging group identification.
         ///// </summary>
-        ///// <param name="ChargingStationGroupId">The unique identification of the new charging group.</param>
+        ///// <param name="ParkingGarageGroupId">The unique identification of the new charging group.</param>
         ///// <param name="Configurator">An optional delegate to configure the new charging group before its successful creation.</param>
         ///// <param name="OnSuccess">An optional delegate to configure the new charging group after its successful creation.</param>
         ///// <param name="OnError">An optional delegate to be called whenever the creation of the charging group failed.</param>
-        //public ChargingStationGroup CreateNewChargingStationGroup(ChargingStationGroup_Id                                   ChargingStationGroupId  = null,
-        //                                                          Action<ChargingStationGroup>                              Configurator            = null,
-        //                                                          Action<ChargingStationGroup>                              OnSuccess               = null,
-        //                                                          Action<ParkingOperator, ChargingStationGroup_Id>  OnError                 = null)
+        //public ParkingGarageGroup CreateNewParkingGarageGroup(ParkingGarageGroup_Id                                   ParkingGarageGroupId  = null,
+        //                                                          Action<ParkingGarageGroup>                              Configurator            = null,
+        //                                                          Action<ParkingGarageGroup>                              OnSuccess               = null,
+        //                                                          Action<ParkingOperator, ParkingGarageGroup_Id>  OnError                 = null)
         //{
 
         //    #region Initial checks
 
-        //    if (ChargingStationGroupId == null)
-        //        ChargingStationGroupId = ChargingStationGroup_Id.Random(this.Id);
+        //    if (ParkingGarageGroupId == null)
+        //        ParkingGarageGroupId = ParkingGarageGroup_Id.Random(this.Id);
 
         //    // Do not throw an exception when an OnError delegate was given!
-        //    if (_ChargingStationGroups.Contains(ChargingStationGroupId))
+        //    if (_ParkingGarageGroups.Contains(ParkingGarageGroupId))
         //    {
         //        if (OnError == null)
-        //            throw new ChargingStationGroupAlreadyExists(ChargingStationGroupId, this.Id);
+        //            throw new ParkingGarageGroupAlreadyExists(ParkingGarageGroupId, this.Id);
         //        else
-        //            OnError?.Invoke(this, ChargingStationGroupId);
+        //            OnError?.Invoke(this, ParkingGarageGroupId);
         //    }
 
         //    #endregion
 
-        //    var _ChargingStationGroup = new ChargingStationGroup(ChargingStationGroupId, this);
+        //    var _ParkingGarageGroup = new ParkingGarageGroup(ParkingGarageGroupId, this);
 
         //    if (Configurator != null)
-        //        Configurator(_ChargingStationGroup);
+        //        Configurator(_ParkingGarageGroup);
 
-        //    if (ChargingStationGroupAddition.SendVoting(DateTime.Now, this, _ChargingStationGroup))
+        //    if (ParkingGarageGroupAddition.SendVoting(DateTime.Now, this, _ParkingGarageGroup))
         //    {
-        //        if (_ChargingStationGroups.TryAdd(_ChargingStationGroup))
+        //        if (_ParkingGarageGroups.TryAdd(_ParkingGarageGroup))
         //        {
 
-        //            _ChargingStationGroup.OnEVSEDataChanged                             += UpdateEVSEData;
-        //            _ChargingStationGroup.OnEVSEStatusChanged                           += UpdateEVSEStatus;
-        //            _ChargingStationGroup.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
+        //            _ParkingGarageGroup.OnParkingSpaceDataChanged                             += UpdateParkingSpaceData;
+        //            _ParkingGarageGroup.OnParkingSpaceStatusChanged                           += UpdateParkingSpaceStatus;
+        //            _ParkingGarageGroup.OnParkingSpaceAdminStatusChanged                      += UpdateParkingSpaceAdminStatus;
 
-        //            _ChargingStationGroup.OnChargingStationDataChanged                  += UpdateChargingStationData;
-        //            _ChargingStationGroup.OnChargingStationStatusChanged                += UpdateChargingStationStatus;
-        //            _ChargingStationGroup.OnChargingStationAdminStatusChanged           += UpdateChargingStationAdminStatus;
+        //            _ParkingGarageGroup.OnParkingGarageDataChanged                  += UpdateParkingGarageData;
+        //            _ParkingGarageGroup.OnParkingGarageStatusChanged                += UpdateParkingGarageStatus;
+        //            _ParkingGarageGroup.OnParkingGarageAdminStatusChanged           += UpdateParkingGarageAdminStatus;
 
-        //            //_ChargingStationGroup.OnDataChanged                                 += UpdateChargingStationGroupData;
-        //            //_ChargingStationGroup.OnAdminStatusChanged                          += UpdateChargingStationGroupAdminStatus;
+        //            //_ParkingGarageGroup.OnDataChanged                                 += UpdateParkingGarageGroupData;
+        //            //_ParkingGarageGroup.OnAdminStatusChanged                          += UpdateParkingGarageGroupAdminStatus;
 
-        //            OnSuccess?.Invoke(_ChargingStationGroup);
-        //            ChargingStationGroupAddition.SendNotification(DateTime.Now, this, _ChargingStationGroup);
-        //            return _ChargingStationGroup;
+        //            OnSuccess?.Invoke(_ParkingGarageGroup);
+        //            ParkingGarageGroupAddition.SendNotification(DateTime.Now, this, _ParkingGarageGroup);
+        //            return _ParkingGarageGroup;
 
         //        }
         //    }
@@ -1598,20 +1590,20 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region GetOrCreateChargingStationGroup(...)
+        #region GetOrCreateParkingGarageGroup(...)
 
-        //public ChargingStationGroup GetOrCreateChargingStationGroup(ChargingStationGroup_Id                        ChargingStationGroupId,
-        //                                                            Action<ChargingStationGroup>                   Configurator            = null,
-        //                                                            Action<ChargingStationGroup>                   OnSuccess               = null,
-        //                                                            Action<ParkingOperator, ChargingStationGroup_Id>  OnError                 = null)
+        //public ParkingGarageGroup GetOrCreateParkingGarageGroup(ParkingGarageGroup_Id                        ParkingGarageGroupId,
+        //                                                            Action<ParkingGarageGroup>                   Configurator            = null,
+        //                                                            Action<ParkingGarageGroup>                   OnSuccess               = null,
+        //                                                            Action<ParkingOperator, ParkingGarageGroup_Id>  OnError                 = null)
         //{
 
-        //    ChargingStationGroup _ChargingStationGroup = null;
+        //    ParkingGarageGroup _ParkingGarageGroup = null;
 
-        //    if (_ChargingStationGroups.TryGet(ChargingStationGroupId, out _ChargingStationGroup))
-        //        return _ChargingStationGroup;
+        //    if (_ParkingGarageGroups.TryGet(ParkingGarageGroupId, out _ParkingGarageGroup))
+        //        return _ParkingGarageGroup;
 
-        //    return CreateNewChargingStationGroup(ChargingStationGroupId,
+        //    return CreateNewParkingGarageGroup(ParkingGarageGroupId,
         //                                         Configurator,
         //                                         OnSuccess,
         //                                         OnError);
@@ -1620,252 +1612,252 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region TryGetChargingStationGroup
+        #region TryGetParkingGarageGroup
 
-        public Boolean TryGetChargingStationGroup(ChargingStationGroup_Id   ChargingStationGroupId,
-                                                  out ChargingStationGroup  ChargingStationGroup)
+        //public Boolean TryGetParkingGarageGroup(ParkingGarageGroup_Id   ParkingGarageGroupId,
+        //                                          out ParkingGarageGroup  ParkingGarageGroup)
 
-            => _ChargingStationGroups.TryGet(ChargingStationGroupId, out ChargingStationGroup);
-
-        #endregion
+        //    => _ParkingGarageGroups.TryGet(ParkingGarageGroupId, out ParkingGarageGroup);
 
         #endregion
 
-        #region EVSEs
+        #endregion
 
-        #region EVSEs
+        #region ParkingSpaces
 
-        public IEnumerable<EVSE> EVSEs
+        #region ParkingSpaces
 
-            => _ChargingPools.
-                   SelectMany(v => v.ChargingStations).
-                   SelectMany(v => v.EVSEs);
+        //public IEnumerable<ParkingSpace> ParkingSpaces
+
+        //    => _ParkingGarages.
+        //           SelectMany(v => v.ParkingGarages).
+        //           SelectMany(v => v.ParkingSpaces);
 
         #endregion
 
-        #region EVSEIds
+        #region ParkingSpaceIds
 
-        public IEnumerable<EVSE_Id> EVSEIds
+        //public IEnumerable<ParkingSpace_Id> ParkingSpaceIds
 
-            => _ChargingPools.
-                   SelectMany(v => v.ChargingStations).
-                   SelectMany(v => v.EVSEs).
-                   Select    (v => v.Id);
-
-        #endregion
-
-        #region AllEVSEStatus(IncludeEVSE = null)
-
-        public IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>> AllEVSEStatus(Func<EVSE, Boolean>  IncludeEVSE = null)
-
-            => _ChargingPools.
-                   SelectMany(pool    => pool.ChargingStations).
-                   SelectMany(station => station.EVSEs).
-                   Where     (evse    => IncludeEVSE == null || IncludeEVSE(evse)).
-                   OrderBy   (evse    => evse.Id).
-                   Select    (evse    => new KeyValuePair<EVSE_Id, EVSEStatusType>(evse.Id, evse.Status.Value));
+        //    => _ParkingGarages.
+        //           SelectMany(v => v.ParkingGarages).
+        //           SelectMany(v => v.ParkingSpaces).
+        //           Select    (v => v.Id);
 
         #endregion
 
+        #region AllParkingSpaceStatus(IncludeParkingSpace = null)
 
-        #region ContainsEVSE(EVSE)
+        //public IEnumerable<KeyValuePair<ParkingSpace_Id, ParkingSpaceStatusType>> AllParkingSpaceStatus(Func<ParkingSpace, Boolean>  IncludeParkingSpace = null)
 
-        /// <summary>
-        /// Check if the given EVSE is already present within the Charging Station Operator.
-        /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
-        public Boolean ContainsEVSE(EVSE EVSE)
-
-            => _ChargingPools.Any(pool => pool.ContainsEVSE(EVSE.Id));
-
-        #endregion
-
-        #region ContainsEVSE(EVSEId)
-
-        /// <summary>
-        /// Check if the given EVSE identification is already present within the Charging Station Operator.
-        /// </summary>
-        /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        public Boolean ContainsEVSE(EVSE_Id EVSEId)
-
-            => _ChargingPools.Any(pool => pool.ContainsEVSE(EVSEId));
-
-        #endregion
-
-        #region GetEVSEbyId(EVSEId)
-
-        public EVSE GetEVSEbyId(EVSE_Id EVSEId)
-
-            => _ChargingPools.
-                   SelectMany    (pool    => pool.   ChargingStations).
-                   SelectMany    (station => station.EVSEs).
-                   FirstOrDefault(evse    => evse.Id == EVSEId);
-
-        #endregion
-
-        #region TryGetEVSEbyId(EVSEId, out EVSE)
-
-        public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
-        {
-
-            EVSE = _ChargingPools.
-                       SelectMany    (pool    => pool.   ChargingStations).
-                       SelectMany    (station => station.EVSEs).
-                       FirstOrDefault(evse    => evse.Id == EVSEId);
-
-            return EVSE != null;
-
-        }
+        //    => _ParkingGarages.
+        //           SelectMany(pool    => pool.ParkingGarages).
+        //           SelectMany(station => station.ParkingSpaces).
+        //           Where     (evse    => IncludeParkingSpace == null || IncludeParkingSpace(evse)).
+        //           OrderBy   (evse    => evse.Id).
+        //           Select    (evse    => new KeyValuePair<ParkingSpace_Id, ParkingSpaceStatusType>(evse.Id, evse.Status.Value));
 
         #endregion
 
 
-        #region ValidEVSEIds
-
-        //private readonly ReactiveSet<EVSE_Id> _ValidEVSEIds;
+        #region ContainsParkingSpace(ParkingSpace)
 
         ///// <summary>
-        ///// A list of valid EVSE Ids. All others will be filtered.
+        ///// Check if the given ParkingSpace is already present within the Charging Station Operator.
         ///// </summary>
-        //public ReactiveSet<EVSE_Id> ValidEVSEIds
+        ///// <param name="ParkingSpace">An ParkingSpace.</param>
+        //public Boolean ContainsParkingSpace(ParkingSpace ParkingSpace)
+
+        //    => _ParkingGarages.Any(pool => pool.ContainsParkingSpace(ParkingSpace.Id));
+
+        #endregion
+
+        #region ContainsParkingSpace(ParkingSpaceId)
+
+        ///// <summary>
+        ///// Check if the given ParkingSpace identification is already present within the Charging Station Operator.
+        ///// </summary>
+        ///// <param name="ParkingSpaceId">The unique identification of an ParkingSpace.</param>
+        //public Boolean ContainsParkingSpace(ParkingSpace_Id ParkingSpaceId)
+
+        //    => _ParkingGarages.Any(pool => pool.ContainsParkingSpace(ParkingSpaceId));
+
+        #endregion
+
+        #region GetParkingSpacebyId(ParkingSpaceId)
+
+        //public ParkingSpace GetParkingSpacebyId(ParkingSpace_Id ParkingSpaceId)
+
+        //    => _ParkingGarages.
+        //           SelectMany    (pool    => pool.   ParkingGarages).
+        //           SelectMany    (station => station.ParkingSpaces).
+        //           FirstOrDefault(evse    => evse.Id == ParkingSpaceId);
+
+        #endregion
+
+        #region TryGetParkingSpacebyId(ParkingSpaceId, out ParkingSpace)
+
+        //public Boolean TryGetParkingSpacebyId(ParkingSpace_Id ParkingSpaceId, out ParkingSpace ParkingSpace)
+        //{
+
+        //    ParkingSpace = _ParkingGarages.
+        //               SelectMany    (pool    => pool.   ParkingGarages).
+        //               SelectMany    (station => station.ParkingSpaces).
+        //               FirstOrDefault(evse    => evse.Id == ParkingSpaceId);
+
+        //    return ParkingSpace != null;
+
+        //}
+
+        #endregion
+
+
+        #region ValidParkingSpaceIds
+
+        //private readonly ReactiveSet<ParkingSpace_Id> _ValidParkingSpaceIds;
+
+        ///// <summary>
+        ///// A list of valid ParkingSpace Ids. All others will be filtered.
+        ///// </summary>
+        //public ReactiveSet<ParkingSpace_Id> ValidParkingSpaceIds
         //{
         //    get
         //    {
-        //        return _ValidEVSEIds;
+        //        return _ValidParkingSpaceIds;
         //    }
         //}
 
         #endregion
 
-        #region InvalidEVSEIds
+        #region InvalidParkingSpaceIds
 
         /// <summary>
-        /// A list of invalid EVSE Ids.
+        /// A list of invalid ParkingSpace Ids.
         /// </summary>
-        public ReactiveSet<EVSE_Id> InvalidEVSEIds { get; }
+        public ReactiveSet<ParkingSpace_Id> InvalidParkingSpaceIds { get; }
 
         #endregion
 
-        #region LocalEVSEIds
+        #region LocalParkingSpaceIds
 
         /// <summary>
-        /// A list of manual EVSE Ids which will not be touched automagically.
+        /// A list of manual ParkingSpace Ids which will not be touched automagically.
         /// </summary>
-        public ReactiveSet<EVSE_Id> LocalEVSEIds { get; }
+        public ReactiveSet<ParkingSpace_Id> LocalParkingSpaceIds { get; }
 
         #endregion
 
 
-        #region SetEVSEStatus(EVSEId, NewStatus)
+        #region SetParkingSpaceStatus(ParkingSpaceId, NewStatus)
 
-        public void SetEVSEStatus(EVSE_Id         EVSEId,
-                                  EVSEStatusType  NewStatus)
-        {
-
-            EVSE _EVSE = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE))
-                _EVSE.SetStatus(NewStatus);
-
-        }
-
-        #endregion
-
-        #region SetEVSEStatus(EVSEId, NewTimestampedStatus)
-
-        public void SetEVSEStatus(EVSE_Id                      EVSEId,
-                                  Timestamped<EVSEStatusType>  NewTimestampedStatus)
-        {
-
-            EVSE _EVSE = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE))
-                _EVSE.SetStatus(NewTimestampedStatus);
-
-        }
-
-        #endregion
-
-        #region SetEVSEStatus(EVSEId, NewStatus, Timestamp)
-
-        public void SetEVSEStatus(EVSE_Id         EVSEId,
-                                  EVSEStatusType  NewStatus,
-                                  DateTime        Timestamp)
-        {
-
-            EVSE _EVSE = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE))
-                _EVSE.SetStatus(NewStatus, Timestamp);
-
-        }
-
-        #endregion
-
-        #region SetEVSEStatus(EVSEId, StatusList, ChangeMethod = ChangeMethods.Replace)
-
-        public void SetEVSEStatus(EVSE_Id                                   EVSEId,
-                                  IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
-                                  ChangeMethods                             ChangeMethod  = ChangeMethods.Replace)
-        {
-
-            if (InvalidEVSEIds.Contains(EVSEId))
-                return;
-
-            EVSE _EVSE  = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE))
-                _EVSE.SetStatus(StatusList, ChangeMethod);
-
-        }
-
-        #endregion
-
-        #region CalcEVSEStatusDiff(EVSEStatus, IncludeEVSE = null)
-
-        //public EVSEStatusDiff CalcEVSEStatusDiff(Dictionary<EVSE_Id, EVSEStatusType>  EVSEStatus,
-        //                                         Func<EVSE, Boolean>                  IncludeEVSE  = null)
+        //public void SetParkingSpaceStatus(ParkingSpace_Id         ParkingSpaceId,
+        //                          ParkingSpaceStatusType  NewStatus)
         //{
 
-        //    if (EVSEStatus == null || EVSEStatus.Count == 0)
-        //        return new EVSEStatusDiff(DateTime.Now, Id, Name);
+        //    ParkingSpace _ParkingSpace = null;
+        //    if (TryGetParkingSpacebyId(ParkingSpaceId, out _ParkingSpace))
+        //        _ParkingSpace.SetStatus(NewStatus);
+
+        //}
+
+        #endregion
+
+        #region SetParkingSpaceStatus(ParkingSpaceId, NewTimestampedStatus)
+
+        //public void SetParkingSpaceStatus(ParkingSpace_Id                      ParkingSpaceId,
+        //                          Timestamped<ParkingSpaceStatusType>  NewTimestampedStatus)
+        //{
+
+        //    ParkingSpace _ParkingSpace = null;
+        //    if (TryGetParkingSpacebyId(ParkingSpaceId, out _ParkingSpace))
+        //        _ParkingSpace.SetStatus(NewTimestampedStatus);
+
+        //}
+
+        #endregion
+
+        #region SetParkingSpaceStatus(ParkingSpaceId, NewStatus, Timestamp)
+
+        //public void SetParkingSpaceStatus(ParkingSpace_Id         ParkingSpaceId,
+        //                          ParkingSpaceStatusType  NewStatus,
+        //                          DateTime        Timestamp)
+        //{
+
+        //    ParkingSpace _ParkingSpace = null;
+        //    if (TryGetParkingSpacebyId(ParkingSpaceId, out _ParkingSpace))
+        //        _ParkingSpace.SetStatus(NewStatus, Timestamp);
+
+        //}
+
+        #endregion
+
+        #region SetParkingSpaceStatus(ParkingSpaceId, StatusList, ChangeMethod = ChangeMethods.Replace)
+
+        //public void SetParkingSpaceStatus(ParkingSpace_Id                                   ParkingSpaceId,
+        //                          IEnumerable<Timestamped<ParkingSpaceStatusType>>  StatusList,
+        //                          ChangeMethods                             ChangeMethod  = ChangeMethods.Replace)
+        //{
+
+        //    if (InvalidParkingSpaceIds.Contains(ParkingSpaceId))
+        //        return;
+
+        //    ParkingSpace _ParkingSpace  = null;
+        //    if (TryGetParkingSpacebyId(ParkingSpaceId, out _ParkingSpace))
+        //        _ParkingSpace.SetStatus(StatusList, ChangeMethod);
+
+        //}
+
+        #endregion
+
+        #region CalcParkingSpaceStatusDiff(ParkingSpaceStatus, IncludeParkingSpace = null)
+
+        //public ParkingSpaceStatusDiff CalcParkingSpaceStatusDiff(Dictionary<ParkingSpace_Id, ParkingSpaceStatusType>  ParkingSpaceStatus,
+        //                                         Func<ParkingSpace, Boolean>                  IncludeParkingSpace  = null)
+        //{
+
+        //    if (ParkingSpaceStatus == null || ParkingSpaceStatus.Count == 0)
+        //        return new ParkingSpaceStatusDiff(DateTime.Now, Id, Name);
 
         //    #region Get data...
 
-        //    var EVSEStatusDiff     = new EVSEStatusDiff(DateTime.Now, Id, Name);
+        //    var ParkingSpaceStatusDiff     = new ParkingSpaceStatusDiff(DateTime.Now, Id, Name);
 
-        //    // Only ValidEVSEIds!
-        //    // Do nothing with manual EVSE Ids!
-        //    var CurrentEVSEStates  = AllEVSEStatus(IncludeEVSE).
-        //                                 //Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
-        //                                 //            !ManualEVSEIds.Contains(KVP.Key)).
+        //    // Only ValidParkingSpaceIds!
+        //    // Do nothing with manual ParkingSpace Ids!
+        //    var CurrentParkingSpaceStates  = AllParkingSpaceStatus(IncludeParkingSpace).
+        //                                 //Where(KVP => ValidParkingSpaceIds. Contains(KVP.Key) &&
+        //                                 //            !ManualParkingSpaceIds.Contains(KVP.Key)).
         //                                 ToDictionary(v => v.Key, v => v.Value);
 
-        //    var OldEVSEIds         = new List<EVSE_Id>(CurrentEVSEStates.Keys);
+        //    var OldParkingSpaceIds         = new List<ParkingSpace_Id>(CurrentParkingSpaceStates.Keys);
 
         //    #endregion
 
         //    try
         //    {
 
-        //        #region Find new and changed EVSE states
+        //        #region Find new and changed ParkingSpace states
 
-        //        // Only for ValidEVSEIds!
-        //        // Do nothing with manual EVSE Ids!
-        //        foreach (var NewEVSEStatus in EVSEStatus)
-        //                                          //Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
-        //                                          //            !ManualEVSEIds.Contains(KVP.Key)))
+        //        // Only for ValidParkingSpaceIds!
+        //        // Do nothing with manual ParkingSpace Ids!
+        //        foreach (var NewParkingSpaceStatus in ParkingSpaceStatus)
+        //                                          //Where(KVP => ValidParkingSpaceIds. Contains(KVP.Key) &&
+        //                                          //            !ManualParkingSpaceIds.Contains(KVP.Key)))
         //        {
 
-        //            // Add to NewEVSEStates, if new EVSE was found!
-        //            if (!CurrentEVSEStates.ContainsKey(NewEVSEStatus.Key))
-        //                EVSEStatusDiff.AddNewStatus(NewEVSEStatus);
+        //            // Add to NewParkingSpaceStates, if new ParkingSpace was found!
+        //            if (!CurrentParkingSpaceStates.ContainsKey(NewParkingSpaceStatus.Key))
+        //                ParkingSpaceStatusDiff.AddNewStatus(NewParkingSpaceStatus);
 
         //            else
         //            {
 
-        //                // Add to CHANGED, if state of known EVSE changed!
-        //                if (CurrentEVSEStates[NewEVSEStatus.Key] != NewEVSEStatus.Value)
-        //                    EVSEStatusDiff.AddChangedStatus(NewEVSEStatus);
+        //                // Add to CHANGED, if state of known ParkingSpace changed!
+        //                if (CurrentParkingSpaceStates[NewParkingSpaceStatus.Key] != NewParkingSpaceStatus.Value)
+        //                    ParkingSpaceStatusDiff.AddChangedStatus(NewParkingSpaceStatus);
 
-        //                // Remove EVSEId, as it was processed...
-        //                OldEVSEIds.Remove(NewEVSEStatus.Key);
+        //                // Remove ParkingSpaceId, as it was processed...
+        //                OldParkingSpaceIds.Remove(NewParkingSpaceStatus.Key);
 
         //            }
 
@@ -1873,13 +1865,13 @@ namespace org.GraphDefined.WWCP
 
         //        #endregion
 
-        //        #region Delete what is left in OldEVSEIds!
+        //        #region Delete what is left in OldParkingSpaceIds!
 
-        //        EVSEStatusDiff.AddRemovedId(OldEVSEIds);
+        //        ParkingSpaceStatusDiff.AddRemovedId(OldParkingSpaceIds);
 
         //        #endregion
 
-        //        return EVSEStatusDiff;
+        //        return ParkingSpaceStatusDiff;
 
         //    }
 
@@ -1889,258 +1881,258 @@ namespace org.GraphDefined.WWCP
         //        while (e.InnerException != null)
         //            e = e.InnerException;
 
-        //        DebugX.Log("GetEVSEStatusDiff led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+        //        DebugX.Log("GetParkingSpaceStatusDiff led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
 
         //    }
 
         //    // empty!
-        //    return new EVSEStatusDiff(DateTime.Now, Id, Name);
+        //    return new ParkingSpaceStatusDiff(DateTime.Now, Id, Name);
 
         //}
 
         #endregion
 
-        #region ApplyEVSEStatusDiff(EVSEStatusDiff)
+        #region ApplyParkingSpaceStatusDiff(ParkingSpaceStatusDiff)
 
-        public EVSEStatusDiff ApplyEVSEStatusDiff(EVSEStatusDiff EVSEStatusDiff)
-        {
+        //public ParkingSpaceStatusDiff ApplyParkingSpaceStatusDiff(ParkingSpaceStatusDiff ParkingSpaceStatusDiff)
+        //{
 
-            #region Initial checks
+        //    #region Initial checks
 
-            if (EVSEStatusDiff == null)
-                throw new ArgumentNullException(nameof(EVSEStatusDiff),  "The given EVSE status diff must not be null!");
+        //    if (ParkingSpaceStatusDiff == null)
+        //        throw new ArgumentNullException(nameof(ParkingSpaceStatusDiff),  "The given ParkingSpace status diff must not be null!");
 
-            #endregion
+        //    #endregion
 
-            foreach (var status in EVSEStatusDiff.NewStatus)
-                SetEVSEStatus(status.Key, status.Value);
+        //    foreach (var status in ParkingSpaceStatusDiff.NewStatus)
+        //        SetParkingSpaceStatus(status.Key, status.Value);
 
-            foreach (var status in EVSEStatusDiff.ChangedStatus)
-                SetEVSEStatus(status.Key, status.Value);
+        //    foreach (var status in ParkingSpaceStatusDiff.ChangedStatus)
+        //        SetParkingSpaceStatus(status.Key, status.Value);
 
-            return EVSEStatusDiff;
+        //    return ParkingSpaceStatusDiff;
 
-        }
-
-        #endregion
-
-
-        #region SetEVSEAdminStatus(EVSEId, NewAdminStatus)
-
-        public void SetEVSEAdminStatus(EVSE_Id              EVSEId,
-                                       EVSEAdminStatusType  NewAdminStatus)
-        {
-
-            EVSE _EVSE = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE))
-                _EVSE.SetAdminStatus(NewAdminStatus);
-
-        }
-
-        #endregion
-
-        #region SetEVSEAdminStatus(EVSEId, NewTimestampedAdminStatus)
-
-        public void SetEVSEAdminStatus(EVSE_Id                           EVSEId,
-                                       Timestamped<EVSEAdminStatusType>  NewTimestampedAdminStatus)
-        {
-
-            EVSE _EVSE = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE))
-                _EVSE.SetAdminStatus(NewTimestampedAdminStatus);
-
-        }
-
-        #endregion
-
-        #region SetEVSEAdminStatus(EVSEId, NewAdminStatus, Timestamp)
-
-        public void SetEVSEAdminStatus(EVSE_Id              EVSEId,
-                                       EVSEAdminStatusType  NewAdminStatus,
-                                       DateTime             Timestamp)
-        {
-
-            EVSE _EVSE = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE))
-                _EVSE.SetAdminStatus(NewAdminStatus, Timestamp);
-
-        }
-
-        #endregion
-
-        #region SetEVSEAdminStatus(EVSEId, AdminStatusList, ChangeMethod = ChangeMethods.Replace)
-
-        public void SetEVSEAdminStatus(EVSE_Id                                        EVSEId,
-                                       IEnumerable<Timestamped<EVSEAdminStatusType>>  AdminStatusList,
-                                       ChangeMethods                                  ChangeMethod  = ChangeMethods.Replace)
-        {
-
-            if (InvalidEVSEIds.Contains(EVSEId))
-                return;
-
-            EVSE _EVSE  = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE))
-                _EVSE.SetAdminStatus(AdminStatusList, ChangeMethod);
-
-        }
-
-        #endregion
-
-        #region ApplyEVSEAdminStatusDiff(EVSEAdminStatusDiff)
-
-        public EVSEAdminStatusDiff ApplyEVSEAdminStatusDiff(EVSEAdminStatusDiff EVSEAdminStatusDiff)
-        {
-
-            #region Initial checks
-
-            if (EVSEAdminStatusDiff == null)
-                throw new ArgumentNullException(nameof(EVSEAdminStatusDiff),  "The given EVSE admin status diff must not be null!");
-
-            #endregion
-
-            foreach (var status in EVSEAdminStatusDiff.NewStatus)
-                SetEVSEAdminStatus(status.Key, status.Value);
-
-            foreach (var status in EVSEAdminStatusDiff.ChangedStatus)
-                SetEVSEAdminStatus(status.Key, status.Value);
-
-            return EVSEAdminStatusDiff;
-
-        }
+        //}
 
         #endregion
 
 
-        #region OnEVSEData/(Admin)StatusChanged
+        #region SetParkingSpaceAdminStatus(ParkingSpaceId, NewAdminStatus)
 
-        /// <summary>
-        /// An event fired whenever the static data of any subordinated EVSE changed.
-        /// </summary>
-        public event OnEVSEDataChangedDelegate         OnEVSEDataChanged;
+        //public void SetParkingSpaceAdminStatus(ParkingSpace_Id              ParkingSpaceId,
+        //                               ParkingSpaceAdminStatusType  NewAdminStatus)
+        //{
 
-        /// <summary>
-        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
-        /// </summary>
-        public event OnEVSEStatusChangedDelegate       OnEVSEStatusChanged;
+        //    ParkingSpace _ParkingSpace = null;
+        //    if (TryGetParkingSpacebyId(ParkingSpaceId, out _ParkingSpace))
+        //        _ParkingSpace.SetAdminStatus(NewAdminStatus);
 
-        /// <summary>
-        /// An event fired whenever the admin status of any subordinated EVSE changed.
-        /// </summary>
-        public event OnEVSEAdminStatusChangedDelegate  OnEVSEAdminStatusChanged;
+        //}
 
         #endregion
 
-        #region SocketOutletAddition
+        #region SetParkingSpaceAdminStatus(ParkingSpaceId, NewTimestampedAdminStatus)
 
-        internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletAddition;
+        //public void SetParkingSpaceAdminStatus(ParkingSpace_Id                           ParkingSpaceId,
+        //                               Timestamped<ParkingSpaceAdminStatusType>  NewTimestampedAdminStatus)
+        //{
+
+        //    ParkingSpace _ParkingSpace = null;
+        //    if (TryGetParkingSpacebyId(ParkingSpaceId, out _ParkingSpace))
+        //        _ParkingSpace.SetAdminStatus(NewTimestampedAdminStatus);
+
+        //}
+
+        #endregion
+
+        #region SetParkingSpaceAdminStatus(ParkingSpaceId, NewAdminStatus, Timestamp)
+
+        //public void SetParkingSpaceAdminStatus(ParkingSpace_Id              ParkingSpaceId,
+        //                               ParkingSpaceAdminStatusType  NewAdminStatus,
+        //                               DateTime             Timestamp)
+        //{
+
+        //    ParkingSpace _ParkingSpace = null;
+        //    if (TryGetParkingSpacebyId(ParkingSpaceId, out _ParkingSpace))
+        //        _ParkingSpace.SetAdminStatus(NewAdminStatus, Timestamp);
+
+        //}
+
+        #endregion
+
+        #region SetParkingSpaceAdminStatus(ParkingSpaceId, AdminStatusList, ChangeMethod = ChangeMethods.Replace)
+
+        //public void SetParkingSpaceAdminStatus(ParkingSpace_Id                                        ParkingSpaceId,
+        //                               IEnumerable<Timestamped<ParkingSpaceAdminStatusType>>  AdminStatusList,
+        //                               ChangeMethods                                  ChangeMethod  = ChangeMethods.Replace)
+        //{
+
+        //    if (InvalidParkingSpaceIds.Contains(ParkingSpaceId))
+        //        return;
+
+        //    ParkingSpace _ParkingSpace  = null;
+        //    if (TryGetParkingSpacebyId(ParkingSpaceId, out _ParkingSpace))
+        //        _ParkingSpace.SetAdminStatus(AdminStatusList, ChangeMethod);
+
+        //}
+
+        #endregion
+
+        #region ApplyParkingSpaceAdminStatusDiff(ParkingSpaceAdminStatusDiff)
+
+        //public ParkingSpaceAdminStatusDiff ApplyParkingSpaceAdminStatusDiff(ParkingSpaceAdminStatusDiff ParkingSpaceAdminStatusDiff)
+        //{
+
+        //    #region Initial checks
+
+        //    if (ParkingSpaceAdminStatusDiff == null)
+        //        throw new ArgumentNullException(nameof(ParkingSpaceAdminStatusDiff),  "The given ParkingSpace admin status diff must not be null!");
+
+        //    #endregion
+
+        //    foreach (var status in ParkingSpaceAdminStatusDiff.NewStatus)
+        //        SetParkingSpaceAdminStatus(status.Key, status.Value);
+
+        //    foreach (var status in ParkingSpaceAdminStatusDiff.ChangedStatus)
+        //        SetParkingSpaceAdminStatus(status.Key, status.Value);
+
+        //    return ParkingSpaceAdminStatusDiff;
+
+        //}
+
+        #endregion
+
+
+        #region OnParkingSpaceData/(Admin)StatusChanged
+
+        ///// <summary>
+        ///// An event fired whenever the static data of any subordinated ParkingSpace changed.
+        ///// </summary>
+        //public event OnParkingSpaceDataChangedDelegate         OnParkingSpaceDataChanged;
+
+        ///// <summary>
+        ///// An event fired whenever the dynamic status of any subordinated ParkingSpace changed.
+        ///// </summary>
+        //public event OnParkingSpaceStatusChangedDelegate       OnParkingSpaceStatusChanged;
+
+        ///// <summary>
+        ///// An event fired whenever the admin status of any subordinated ParkingSpace changed.
+        ///// </summary>
+        //public event OnParkingSpaceAdminStatusChangedDelegate  OnParkingSpaceAdminStatusChanged;
+
+        #endregion
+
+        #region ParkingSensorAddition
+
+        internal readonly IVotingNotificator<DateTime, ParkingSpace, ParkingSensor, Boolean> ParkingSensorAddition;
 
         /// <summary>
         /// Called whenever a socket outlet will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
+        public IVotingSender<DateTime, ParkingSpace, ParkingSensor, Boolean> OnParkingSensorAddition
 
-            => SocketOutletAddition;
+            => ParkingSensorAddition;
 
         #endregion
 
-        #region SocketOutletRemoval
+        #region ParkingSensorRemoval
 
-        internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletRemoval;
+        internal readonly IVotingNotificator<DateTime, ParkingSpace, ParkingSensor, Boolean> ParkingSensorRemoval;
 
         /// <summary>
         /// Called whenever a socket outlet will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, EVSE, SocketOutlet, Boolean> OnSocketOutletRemoval
+        public IVotingSender<DateTime, ParkingSpace, ParkingSensor, Boolean> OnParkingSensorRemoval
         {
             get
             {
-                return SocketOutletRemoval;
+                return ParkingSensorRemoval;
             }
         }
 
         #endregion
 
 
-        #region (internal) UpdateEVSEData(Timestamp, EVSE, OldStatus, NewStatus)
+        #region (internal) UpdateParkingSpaceData(Timestamp, ParkingSpace, OldStatus, NewStatus)
 
-        /// <summary>
-        /// Update the data of an EVSE.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EVSE">The changed EVSE.</param>
-        /// <param name="PropertyName">The name of the changed property.</param>
-        /// <param name="OldValue">The old value of the changed property.</param>
-        /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateEVSEData(DateTime  Timestamp,
-                                           EVSE      EVSE,
-                                           String    PropertyName,
-                                           Object    OldValue,
-                                           Object    NewValue)
-        {
+        ///// <summary>
+        ///// Update the data of an ParkingSpace.
+        ///// </summary>
+        ///// <param name="Timestamp">The timestamp when this change was detected.</param>
+        ///// <param name="ParkingSpace">The changed ParkingSpace.</param>
+        ///// <param name="PropertyName">The name of the changed property.</param>
+        ///// <param name="OldValue">The old value of the changed property.</param>
+        ///// <param name="NewValue">The new value of the changed property.</param>
+        //internal async Task UpdateParkingSpaceData(DateTime  Timestamp,
+        //                                   ParkingSpace      ParkingSpace,
+        //                                   String    PropertyName,
+        //                                   Object    OldValue,
+        //                                   Object    NewValue)
+        //{
 
-            var OnEVSEDataChangedLocal = OnEVSEDataChanged;
-            if (OnEVSEDataChangedLocal != null)
-                await OnEVSEDataChangedLocal(Timestamp, EVSE, PropertyName, OldValue, NewValue);
+        //    var OnParkingSpaceDataChangedLocal = OnParkingSpaceDataChanged;
+        //    if (OnParkingSpaceDataChangedLocal != null)
+        //        await OnParkingSpaceDataChangedLocal(Timestamp, ParkingSpace, PropertyName, OldValue, NewValue);
 
-        }
-
-        #endregion
-
-        #region (internal) UpdateEVSEAdminStatus(Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update an EVSE admin status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
-        /// <param name="EVSE">The updated EVSE.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
-        /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEAdminStatus(DateTime                          Timestamp,
-                                                  EventTracking_Id                  EventTrackingId,
-                                                  EVSE                              EVSE,
-                                                  Timestamped<EVSEAdminStatusType>  OldStatus,
-                                                  Timestamped<EVSEAdminStatusType>  NewStatus)
-        {
-
-            var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
-            if (OnEVSEAdminStatusChangedLocal != null)
-                await OnEVSEAdminStatusChangedLocal(Timestamp,
-                                                    EventTrackingId,
-                                                    EVSE,
-                                                    OldStatus,
-                                                    NewStatus);
-
-        }
+        //}
 
         #endregion
 
-        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
+        #region (internal) UpdateParkingSpaceAdminStatus(Timestamp, EventTrackingId, ParkingSpace, OldStatus, NewStatus)
 
-        /// <summary>
-        /// Update an EVSE status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
-        /// <param name="EVSE">The updated EVSE.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
-        /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEStatus(DateTime                     Timestamp,
-                                             EventTracking_Id             EventTrackingId,
-                                             EVSE                         EVSE,
-                                             Timestamped<EVSEStatusType>  OldStatus,
-                                             Timestamped<EVSEStatusType>  NewStatus)
-        {
+        ///// <summary>
+        ///// Update an ParkingSpace admin status.
+        ///// </summary>
+        ///// <param name="Timestamp">The timestamp when this change was detected.</param>
+        ///// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        ///// <param name="ParkingSpace">The updated ParkingSpace.</param>
+        ///// <param name="OldStatus">The old ParkingSpace status.</param>
+        ///// <param name="NewStatus">The new ParkingSpace status.</param>
+        //internal async Task UpdateParkingSpaceAdminStatus(DateTime                          Timestamp,
+        //                                          EventTracking_Id                  EventTrackingId,
+        //                                          ParkingSpace                              ParkingSpace,
+        //                                          Timestamped<ParkingSpaceAdminStatusType>  OldStatus,
+        //                                          Timestamped<ParkingSpaceAdminStatusType>  NewStatus)
+        //{
 
-            var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
-            if (OnEVSEStatusChangedLocal != null)
-                await OnEVSEStatusChangedLocal(Timestamp,
-                                               EventTrackingId,
-                                               EVSE,
-                                               OldStatus,
-                                               NewStatus);
+        //    var OnParkingSpaceAdminStatusChangedLocal = OnParkingSpaceAdminStatusChanged;
+        //    if (OnParkingSpaceAdminStatusChangedLocal != null)
+        //        await OnParkingSpaceAdminStatusChangedLocal(Timestamp,
+        //                                            EventTrackingId,
+        //                                            ParkingSpace,
+        //                                            OldStatus,
+        //                                            NewStatus);
 
-        }
+        //}
+
+        #endregion
+
+        #region (internal) UpdateParkingSpaceStatus     (Timestamp, EventTrackingId, ParkingSpace, OldStatus, NewStatus)
+
+        ///// <summary>
+        ///// Update an ParkingSpace status.
+        ///// </summary>
+        ///// <param name="Timestamp">The timestamp when this change was detected.</param>
+        ///// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        ///// <param name="ParkingSpace">The updated ParkingSpace.</param>
+        ///// <param name="OldStatus">The old ParkingSpace status.</param>
+        ///// <param name="NewStatus">The new ParkingSpace status.</param>
+        //internal async Task UpdateParkingSpaceStatus(DateTime                     Timestamp,
+        //                                     EventTracking_Id             EventTrackingId,
+        //                                     ParkingSpace                         ParkingSpace,
+        //                                     Timestamped<ParkingSpaceStatusType>  OldStatus,
+        //                                     Timestamped<ParkingSpaceStatusType>  NewStatus)
+        //{
+
+        //    var OnParkingSpaceStatusChangedLocal = OnParkingSpaceStatusChanged;
+        //    if (OnParkingSpaceStatusChangedLocal != null)
+        //        await OnParkingSpaceStatusChangedLocal(Timestamp,
+        //                                       EventTrackingId,
+        //                                       ParkingSpace,
+        //                                       OldStatus,
+        //                                       NewStatus);
+
+        //}
 
         #endregion
 
@@ -2151,49 +2143,49 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingReservations
 
-        private readonly ConcurrentDictionary<ChargingReservation_Id, ChargingPool>  _ChargingReservations;
+        private readonly ConcurrentDictionary<ChargingReservation_Id, ParkingGarage>  _ParkingReservations;
 
-        /// <summary>
-        /// Return all current charging reservations.
-        /// </summary>
-        public IEnumerable<ChargingReservation> ChargingReservations
+        ///// <summary>
+        ///// Return all current charging reservations.
+        ///// </summary>
+        //public IEnumerable<ChargingReservation> ChargingReservations
 
-            => _ChargingPools.
-                       SelectMany(pool => pool.ChargingReservations);
+        //    => _ParkingGarages.
+        //               SelectMany(garage => garage.ChargingReservations);
 
         #endregion
 
         #region OnReserve... / OnReserved... / OnNewReservation
 
-        /// <summary>
-        /// An event fired whenever an EVSE is being reserved.
-        /// </summary>
-        public event OnReserveEVSERequestDelegate              OnReserveEVSE;
+        ///// <summary>
+        ///// An event fired whenever an ParkingSpace is being reserved.
+        ///// </summary>
+        //public event OnReserveParkingSpaceRequestDelegate              OnReserveParkingSpaceRequest;
 
-        /// <summary>
-        /// An event fired whenever an EVSE was reserved.
-        /// </summary>
-        public event OnReserveEVSEResponseDelegate             OnEVSEReserved;
+        ///// <summary>
+        ///// An event fired whenever an ParkingSpace was reserved.
+        ///// </summary>
+        //public event OnReserveParkingSpaceResponseDelegate             OnParkingSpaceReserved;
 
-        /// <summary>
-        /// An event fired whenever a charging station is being reserved.
-        /// </summary>
-        public event OnChargingStationReserveDelegate   OnReserveChargingStation;
+        ///// <summary>
+        ///// An event fired whenever a charging station is being reserved.
+        ///// </summary>
+        //public event OnReserveParkingGarageRequestDelegate   OnReserveParkingGarage;
 
-        /// <summary>
-        /// An event fired whenever a charging station was reserved.
-        /// </summary>
-        public event OnChargingStationReservedDelegate  OnChargingStationReserved;
+        ///// <summary>
+        ///// An event fired whenever a charging station was reserved.
+        ///// </summary>
+        //public event OnReserveParkingGarageResponseDelegate  OnParkingGarageReserved;
 
-        /// <summary>
-        /// An event fired whenever a charging pool is being reserved.
-        /// </summary>
-        public event OnChargingPoolReserveDelegate      OnReserveChargingPool;
+        ///// <summary>
+        ///// An event fired whenever a charging pool is being reserved.
+        ///// </summary>
+        //public event OnReserveParkingGarageRequestDelegate      OnReserveParkingGarage;
 
-        /// <summary>
-        /// An event fired whenever a charging pool was reserved.
-        /// </summary>
-        public event OnChargingPoolReservedDelegate     OnChargingPoolReserved;
+        ///// <summary>
+        ///// An event fired whenever a charging pool was reserved.
+        ///// </summary>
+        //public event OnReserveParkingGarageResponseDelegate     OnParkingGarageReserved;
 
         /// <summary>
         /// An event fired whenever a new charging reservation was created.
@@ -2202,536 +2194,532 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Reserve(...EVSEId, StartTime, Duration, ReservationId = null, ProviderId = null, ...)
-
-        /// <summary>
-        /// Reserve the possibility to charge at the given EVSE.
-        /// </summary>
-        /// <param name="EVSEId">The unique identification of the EVSE to be reserved.</param>
-        /// <param name="StartTime">The starting time of the reservation.</param>
-        /// <param name="Duration">The duration of the reservation.</param>
-        /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
-        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-        /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
-        /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
-        /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
-        /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<ReservationResult>
-
-            Reserve(EVSE_Id                           EVSEId,
-                    DateTime?                         StartTime           = null,
-                    TimeSpan?                         Duration            = null,
-                    ChargingReservation_Id?           ReservationId       = null,
-                    eMobilityProvider_Id?             ProviderId          = null,
-                    eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id?               ChargingProductId   = null,
-                    IEnumerable<Auth_Token>           AuthTokens          = null,
-                    IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
-                    IEnumerable<UInt32>               PINs                = null,
-
-                    DateTime?                         Timestamp           = null,
-                    CancellationToken?                CancellationToken   = null,
-                    EventTracking_Id                  EventTrackingId     = null,
-                    TimeSpan?                         RequestTimeout      = null)
-
-        {
-
-            #region Initial checks
-
-            if (EVSEId == null)
-                throw new ArgumentNullException(nameof(EVSEId), "The given EVSE identification must not be null!");
-
-            ReservationResult result = null;
-
-            if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            #endregion
-
-            #region Send OnReserveEVSE event
-
-            var Runtime = Stopwatch.StartNew();
-
-            try
-            {
-
-                OnReserveEVSE?.Invoke(DateTime.Now,
-                                      Timestamp.Value,
-                                      this,
-                                      EventTrackingId,
-                                      RoamingNetwork.Id,
-                                      ReservationId,
-                                      EVSEId,
-                                      StartTime,
-                                      Duration,
-                                      ProviderId,
-                                      eMAId,
-                                      ChargingProductId,
-                                      AuthTokens,
-                                      eMAIds,
-                                      PINs,
-                                      RequestTimeout);
-
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(ParkingOperator) + "." + nameof(OnReserveEVSE));
-            }
-
-            #endregion
-
-
-            #region Try the remote Charging Station Operator...
-
-            if (RemoteParkingOperator != null &&
-               !LocalEVSEIds.Contains(EVSEId))
-            {
-
-                result = await RemoteParkingOperator.Reserve(EVSEId,
-                                                                      StartTime,
-                                                                      Duration,
-                                                                      ReservationId,
-                                                                      ProviderId,
-                                                                      eMAId,
-                                                                      ChargingProductId,
-                                                                      AuthTokens,
-                                                                      eMAIds,
-                                                                      PINs,
+        //#region Reserve(...ParkingSpaceId, StartTime, Duration, ReservationId = null, ProviderId = null, ...)
+
+        ///// <summary>
+        ///// Reserve the possibility to charge at the given ParkingSpace.
+        ///// </summary>
+        ///// <param name="ParkingSpaceId">The unique identification of the ParkingSpace to be reserved.</param>
+        ///// <param name="StartTime">The starting time of the reservation.</param>
+        ///// <param name="Duration">The duration of the reservation.</param>
+        ///// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
+        ///// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
+        ///// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
+        ///// <param name="ParkingProduct">The parking product to be reserved.</param>
+        ///// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
+        ///// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
+        ///// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //public async Task<ReservationResult>
+
+        //    Reserve(ParkingSpace_Id                   ParkingSpaceId,
+        //            DateTime?                         StartTime           = null,
+        //            TimeSpan?                         Duration            = null,
+        //            ChargingReservation_Id?           ReservationId       = null,
+        //            eMobilityProvider_Id?             ProviderId          = null,
+        //            eMobilityAccount_Id?              eMAId               = null,
+        //            ParkingProduct                    ParkingProduct      = null,
+        //            IEnumerable<Auth_Token>           AuthTokens          = null,
+        //            IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
+        //            IEnumerable<UInt32>               PINs                = null,
+
+        //            DateTime?                         Timestamp           = null,
+        //            CancellationToken?                CancellationToken   = null,
+        //            EventTracking_Id                  EventTrackingId     = null,
+        //            TimeSpan?                         RequestTimeout      = null)
+
+        //{
+
+        //    #region Initial checks
+
+        //    ReservationResult result = null;
+
+        //    if (!Timestamp.HasValue)
+        //        Timestamp = DateTime.Now;
+
+        //    if (EventTrackingId == null)
+        //        EventTrackingId = EventTracking_Id.New;
+
+        //    #endregion
+
+        //    #region Send OnReserveParkingSpace event
+
+        //    var Runtime = Stopwatch.StartNew();
+
+        //    try
+        //    {
+
+        //        OnReserveParkingSpaceRequest?.Invoke(DateTime.Now,
+        //                                             Timestamp.Value,
+        //                                             this,
+        //                                             EventTrackingId,
+        //                                             RoamingNetwork.Id,
+        //                                             ReservationId,
+        //                                             ParkingSpaceId,
+        //                                             StartTime,
+        //                                             Duration,
+        //                                             ProviderId,
+        //                                             eMAId,
+        //                                             ParkingProduct,
+        //                                             AuthTokens,
+        //                                             eMAIds,
+        //                                             PINs,
+        //                                             RequestTimeout);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        e.Log(nameof(ParkingOperator) + "." + nameof(OnReserveParkingSpaceRequest));
+        //    }
+
+        //    #endregion
+
+
+        //    #region Try the remote Charging Station Operator...
+
+        //    if (RemoteParkingOperator != null &&
+        //       !LocalParkingSpaceIds.Contains(ParkingSpaceId))
+        //    {
+
+        //        result = await RemoteParkingOperator.
+        //                           Reserve(ParkingSpaceId,
+        //                                   StartTime,
+        //                                   Duration,
+        //                                   ReservationId,
+        //                                   ProviderId,
+        //                                   eMAId,
+        //                                   ParkingProductId,
+        //                                   AuthTokens,
+        //                                   eMAIds,
+        //                                   PINs,
 
-                                                                      Timestamp,
-                                                                      CancellationToken,
-                                                                      EventTrackingId,
-                                                                      RequestTimeout);
+        //                                   Timestamp,
+        //                                   CancellationToken,
+        //                                   EventTrackingId,
+        //                                   RequestTimeout);
 
 
-                if (result.Result == ReservationResultType.Success)
-                {
+        //        if (result.Result == ReservationResultType.Success)
+        //        {
 
-                    //result.Reservation.ParkingOperator = this;
+        //            //result.Reservation.ParkingOperator = this;
 
-                    var OnNewReservationLocal = OnNewReservation;
-                    if (OnNewReservationLocal != null)
-                        OnNewReservationLocal(DateTime.Now, this, result.Reservation);
+        //            OnNewReservation?.Invoke(DateTime.Now, this, result.Reservation);
 
-                }
+        //        }
 
-            }
+        //    }
 
-            #endregion
-
-            #region ...else/or try local
-
-            if (RemoteParkingOperator == null ||
-                 result             == null ||
-                (result             != null &&
-                (result.Result      == ReservationResultType.UnknownEVSE ||
-                 result.Result      == ReservationResultType.Error)))
-            {
-
-                var _ChargingPool = EVSEs.Where (evse => evse.Id == EVSEId).
-                                          Select(evse => evse.ChargingStation.ChargingPool).
-                                          FirstOrDefault();
-
-                if (_ChargingPool != null)
-                {
-
-                    result = await _ChargingPool.Reserve(EVSEId,
-                                                         StartTime,
-                                                         Duration,
-                                                         ReservationId,
-                                                         ProviderId,
-                                                         eMAId,
-                                                         ChargingProductId,
-                                                         AuthTokens,
-                                                         eMAIds,
-                                                         PINs,
-
-                                                         Timestamp,
-                                                         CancellationToken,
-                                                         EventTrackingId,
-                                                         RequestTimeout);
-
-                    if (result.Result == ReservationResultType.Success)
-                        _ChargingReservations.TryAdd(result.Reservation.Id, _ChargingPool);
-
-                }
-
-                else
-                    result = ReservationResult.UnknownEVSE;
-
-            }
-
-            #endregion
-
+        //    #endregion
 
-            #region Send OnEVSEReserved event
+        //    #region ...else/or try local
 
-            Runtime.Stop();
+        //    if (RemoteParkingOperator == null ||
+        //         result             == null ||
+        //        (result             != null &&
+        //        (result.Result      == ReservationResultType.UnknownParkingSpace ||
+        //         result.Result      == ReservationResultType.Error)))
+        //    {
+
+        //        var _ParkingGarage = ParkingSpaces.Where (evse => evse.Id == ParkingSpaceId).
+        //                                  Select(evse => evse.ParkingGarage.ParkingGarage).
+        //                                  FirstOrDefault();
+
+        //        if (_ParkingGarage != null)
+        //        {
+
+        //            result = await _ParkingGarage.Reserve(ParkingSpaceId,
+        //                                                 StartTime,
+        //                                                 Duration,
+        //                                                 ReservationId,
+        //                                                 ProviderId,
+        //                                                 eMAId,
+        //                                                 ParkingProductId,
+        //                                                 AuthTokens,
+        //                                                 eMAIds,
+        //                                                 PINs,
+
+        //                                                 Timestamp,
+        //                                                 CancellationToken,
+        //                                                 EventTrackingId,
+        //                                                 RequestTimeout);
+
+        //            if (result.Result == ReservationResultType.Success)
+        //                _ChargingReservations.TryAdd(result.Reservation.Id, _ParkingGarage);
+
+        //        }
+
+        //        else
+        //            result = ReservationResult.UnknownParkingSpace;
+
+        //    }
 
-            try
-            {
-
-                OnEVSEReserved?.Invoke(DateTime.Now,
-                                       Timestamp.Value,
-                                       this,
-                                       EventTrackingId,
-                                       RoamingNetwork.Id,
-                                       ReservationId,
-                                       EVSEId,
-                                       StartTime,
-                                       Duration,
-                                       ProviderId,
-                                       eMAId,
-                                       ChargingProductId,
-                                       AuthTokens,
-                                       eMAIds,
-                                       PINs,
-                                       result,
-                                       Runtime.Elapsed,
-                                       RequestTimeout);
-
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(ParkingOperator) + "." + nameof(OnEVSEReserved));
-            }
-
-            #endregion
-
-            return result;
-
-        }
-
-        #endregion
-
-        #region Reserve(...ChargingStationId, StartTime, Duration, ReservationId = null, ProviderId = null, ...)
-
-        /// <summary>
-        /// Reserve the possibility to charge at the given charging station.
-        /// </summary>
-        /// <param name="ChargingStationId">The unique identification of the charging station to be reserved.</param>
-        /// <param name="StartTime">The starting time of the reservation.</param>
-        /// <param name="Duration">The duration of the reservation.</param>
-        /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
-        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-        /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
-        /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
-        /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
-        /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<ReservationResult>
-
-            Reserve(ChargingStation_Id                ChargingStationId,
-                    DateTime?                         StartTime           = null,
-                    TimeSpan?                         Duration            = null,
-                    ChargingReservation_Id?           ReservationId       = null,
-                    eMobilityProvider_Id?             ProviderId          = null,
-                    eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id?               ChargingProductId   = null,
-                    IEnumerable<Auth_Token>           AuthTokens          = null,
-                    IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
-                    IEnumerable<UInt32>               PINs                = null,
-
-                    DateTime?                         Timestamp           = null,
-                    CancellationToken?                CancellationToken   = null,
-                    EventTracking_Id                  EventTrackingId     = null,
-                    TimeSpan?                         RequestTimeout      = null)
-
-        {
-
-            #region Initial checks
-
-            if (ChargingStationId == null)
-                throw new ArgumentNullException(nameof(ChargingStationId),  "The given charging station identification must not be null!");
-
-            ReservationResult result = null;
-
-            if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            #endregion
-
-            #region Send OnReserveChargingStation event
-
-            var Runtime = Stopwatch.StartNew();
-
-            try
-            {
-
-                OnReserveChargingStation?.Invoke(DateTime.Now,
-                                                 Timestamp.Value,
-                                                 this,
-                                                 EventTrackingId,
-                                                 RoamingNetwork.Id,
-                                                 ChargingStationId,
-                                                 StartTime,
-                                                 Duration,
-                                                 ReservationId,
-                                                 ProviderId,
-                                                 eMAId,
-                                                 ChargingProductId,
-                                                 AuthTokens,
-                                                 eMAIds,
-                                                 PINs,
-                                                 RequestTimeout);
-
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(ParkingOperator) + "." + nameof(OnReserveChargingStation));
-            }
-
-            #endregion
-
-
-            var _ChargingPool  = ChargingStations.
-                                     Where (station => station.Id == ChargingStationId).
-                                     Select(station => station.ChargingPool).
-                                     FirstOrDefault();
-
-            if (_ChargingPool != null)
-            {
-
-                result = await _ChargingPool.Reserve(ChargingStationId,
-                                                     StartTime,
-                                                     Duration,
-                                                     ReservationId,
-                                                     ProviderId,
-                                                     eMAId,
-                                                     ChargingProductId,
-                                                     AuthTokens,
-                                                     eMAIds,
-                                                     PINs,
-
-                                                     Timestamp,
-                                                     CancellationToken,
-                                                     EventTrackingId,
-                                                     RequestTimeout);
-
-                if (result.Result == ReservationResultType.Success)
-                    _ChargingReservations.TryAdd(result.Reservation.Id, _ChargingPool);
-
-            }
-
-            else
-                result = ReservationResult.UnknownChargingStation;
-
-
-            #region Send OnChargingStationReserved event
-
-            Runtime.Stop();
-
-            try
-            {
-
-                OnChargingStationReserved?.Invoke(DateTime.Now,
-                                                  Timestamp.Value,
-                                                  this,
-                                                  EventTrackingId,
-                                                  RoamingNetwork.Id,
-                                                  ChargingStationId,
-                                                  StartTime,
-                                                  Duration,
-                                                  ReservationId,
-                                                  ProviderId,
-                                                  eMAId,
-                                                  ChargingProductId,
-                                                  AuthTokens,
-                                                  eMAIds,
-                                                  PINs,
-                                                  result,
-                                                  Runtime.Elapsed,
-                                                  RequestTimeout);
-
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(ParkingOperator) + "." + nameof(OnChargingStationReserved));
-            }
-
-            #endregion
-
-            return result;
-
-        }
-
-        #endregion
-
-        #region Reserve(...ChargingPoolId, StartTime, Duration, ReservationId = null, ProviderId = null, ...)
-
-        /// <summary>
-        /// Reserve the possibility to charge within the given charging pool.
-        /// </summary>
-        /// <param name="ChargingPoolId">The unique identification of the charging pool to be reserved.</param>
-        /// <param name="StartTime">The starting time of the reservation.</param>
-        /// <param name="Duration">The duration of the reservation.</param>
-        /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
-        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-        /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
-        /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
-        /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
-        /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<ReservationResult>
-
-            Reserve(ChargingPool_Id                   ChargingPoolId,
-                    DateTime?                         StartTime           = null,
-                    TimeSpan?                         Duration            = null,
-                    ChargingReservation_Id?           ReservationId       = null,
-                    eMobilityProvider_Id?             ProviderId          = null,
-                    eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id?               ChargingProductId   = null,
-                    IEnumerable<Auth_Token>           AuthTokens          = null,
-                    IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
-                    IEnumerable<UInt32>               PINs                = null,
-
-                    DateTime?                         Timestamp           = null,
-                    CancellationToken?                CancellationToken   = null,
-                    EventTracking_Id                  EventTrackingId     = null,
-                    TimeSpan?                         RequestTimeout      = null)
-
-        {
-
-            #region Initial checks
-
-            if (ChargingPoolId == null)
-                throw new ArgumentNullException(nameof(ChargingPoolId),  "The given charging pool identification must not be null!");
-
-            ReservationResult result = null;
-
-            if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
-
-            #endregion
-
-            #region Send OnReserveChargingPool event
-
-            var Runtime = Stopwatch.StartNew();
-
-            try
-            {
-
-                OnReserveChargingPool?.Invoke(DateTime.Now,
-                                              Timestamp.Value,
-                                              this,
-                                              EventTrackingId,
-                                              RoamingNetwork.Id,
-                                              ChargingPoolId,
-                                              StartTime,
-                                              Duration,
-                                              ReservationId,
-                                              ProviderId,
-                                              eMAId,
-                                              ChargingProductId,
-                                              AuthTokens,
-                                              eMAIds,
-                                              PINs,
-                                              RequestTimeout);
-
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(ParkingOperator) + "." + nameof(OnReserveChargingPool));
-            }
-
-            #endregion
-
-
-            var _ChargingPool  = ChargingPools.
-                                     FirstOrDefault(pool => pool.Id == ChargingPoolId);
-
-            if (_ChargingPool != null)
-            {
-
-                result = await _ChargingPool.Reserve(ChargingPoolId,
-                                                     StartTime,
-                                                     Duration,
-                                                     ReservationId,
-                                                     ProviderId,
-                                                     eMAId,
-                                                     ChargingProductId,
-                                                     AuthTokens,
-                                                     eMAIds,
-                                                     PINs,
-
-                                                     Timestamp,
-                                                     CancellationToken,
-                                                     EventTrackingId,
-                                                     RequestTimeout);
-
-                if (result.Result == ReservationResultType.Success)
-                    _ChargingReservations.TryAdd(result.Reservation.Id, _ChargingPool);
-
-            }
-
-            else
-                result = ReservationResult.UnknownChargingStation;
-
-
-            #region Send OnChargingPoolReserved event
-
-            Runtime.Stop();
-
-            try
-            {
-
-                OnChargingPoolReserved?.Invoke(DateTime.Now,
-                                               Timestamp.Value,
-                                               this,
-                                               EventTrackingId,
-                                               RoamingNetwork.Id,
-                                               ChargingPoolId,
-                                               StartTime,
-                                               Duration,
-                                               ReservationId,
-                                               ProviderId,
-                                               eMAId,
-                                               ChargingProductId,
-                                               AuthTokens,
-                                               eMAIds,
-                                               PINs,
-                                               result,
-                                               Runtime.Elapsed,
-                                               RequestTimeout);
-
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(ParkingOperator) + "." + nameof(OnChargingPoolReserved));
-            }
-
-            #endregion
-
-            return result;
-
-        }
-
-        #endregion
+        //    #endregion
+
+
+        //    #region Send OnParkingSpaceReserved event
+
+        //    Runtime.Stop();
+
+        //    try
+        //    {
+
+        //        OnParkingSpaceReserved?.Invoke(DateTime.Now,
+        //                               Timestamp.Value,
+        //                               this,
+        //                               EventTrackingId,
+        //                               RoamingNetwork.Id,
+        //                               ReservationId,
+        //                               ParkingSpaceId,
+        //                               StartTime,
+        //                               Duration,
+        //                               ProviderId,
+        //                               eMAId,
+        //                               ParkingProductId,
+        //                               AuthTokens,
+        //                               eMAIds,
+        //                               PINs,
+        //                               result,
+        //                               Runtime.Elapsed,
+        //                               RequestTimeout);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        e.Log(nameof(ParkingOperator) + "." + nameof(OnParkingSpaceReserved));
+        //    }
+
+        //    #endregion
+
+        //    return result;
+
+        //}
+
+        //#endregion
+
+        //#region Reserve(...ParkingGarageId, StartTime, Duration, ReservationId = null, ProviderId = null, ...)
+
+        ///// <summary>
+        ///// Reserve the possibility to charge at the given charging station.
+        ///// </summary>
+        ///// <param name="ParkingGarageId">The unique identification of the charging station to be reserved.</param>
+        ///// <param name="StartTime">The starting time of the reservation.</param>
+        ///// <param name="Duration">The duration of the reservation.</param>
+        ///// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
+        ///// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
+        ///// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
+        ///// <param name="ParkingProductId">An optional unique identification of the parking product to be reserved.</param>
+        ///// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
+        ///// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
+        ///// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //public async Task<ReservationResult>
+
+        //    Reserve(ParkingGarage_Id                ParkingGarageId,
+        //            DateTime?                         StartTime           = null,
+        //            TimeSpan?                         Duration            = null,
+        //            ChargingReservation_Id?           ReservationId       = null,
+        //            eMobilityProvider_Id?             ProviderId          = null,
+        //            eMobilityAccount_Id?              eMAId               = null,
+        //            ParkingProduct_Id?               ParkingProductId   = null,
+        //            IEnumerable<Auth_Token>           AuthTokens          = null,
+        //            IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
+        //            IEnumerable<UInt32>               PINs                = null,
+
+        //            DateTime?                         Timestamp           = null,
+        //            CancellationToken?                CancellationToken   = null,
+        //            EventTracking_Id                  EventTrackingId     = null,
+        //            TimeSpan?                         RequestTimeout      = null)
+
+        //{
+
+        //    #region Initial checks
+
+        //    if (ParkingGarageId == null)
+        //        throw new ArgumentNullException(nameof(ParkingGarageId),  "The given charging station identification must not be null!");
+
+        //    ReservationResult result = null;
+
+        //    if (!Timestamp.HasValue)
+        //        Timestamp = DateTime.Now;
+
+        //    if (EventTrackingId == null)
+        //        EventTrackingId = EventTracking_Id.New;
+
+        //    #endregion
+
+        //    #region Send OnReserveParkingGarage event
+
+        //    var Runtime = Stopwatch.StartNew();
+
+        //    try
+        //    {
+
+        //        OnReserveParkingGarage?.Invoke(DateTime.Now,
+        //                                         Timestamp.Value,
+        //                                         this,
+        //                                         EventTrackingId,
+        //                                         RoamingNetwork.Id,
+        //                                         ParkingGarageId,
+        //                                         StartTime,
+        //                                         Duration,
+        //                                         ReservationId,
+        //                                         ProviderId,
+        //                                         eMAId,
+        //                                         ParkingProductId,
+        //                                         AuthTokens,
+        //                                         eMAIds,
+        //                                         PINs,
+        //                                         RequestTimeout);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        e.Log(nameof(ParkingOperator) + "." + nameof(OnReserveParkingGarage));
+        //    }
+
+        //    #endregion
+
+
+        //    var _ParkingGarage  = ParkingGarages.
+        //                             Where (station => station.Id == ParkingGarageId).
+        //                             Select(station => station.ParkingGarage).
+        //                             FirstOrDefault();
+
+        //    if (_ParkingGarage != null)
+        //    {
+
+        //        result = await _ParkingGarage.Reserve(ParkingGarageId,
+        //                                             StartTime,
+        //                                             Duration,
+        //                                             ReservationId,
+        //                                             ProviderId,
+        //                                             eMAId,
+        //                                             ParkingProductId,
+        //                                             AuthTokens,
+        //                                             eMAIds,
+        //                                             PINs,
+
+        //                                             Timestamp,
+        //                                             CancellationToken,
+        //                                             EventTrackingId,
+        //                                             RequestTimeout);
+
+        //        if (result.Result == ReservationResultType.Success)
+        //            _ChargingReservations.TryAdd(result.Reservation.Id, _ParkingGarage);
+
+        //    }
+
+        //    else
+        //        result = ReservationResult.UnknownParkingGarage;
+
+
+        //    #region Send OnParkingGarageReserved event
+
+        //    Runtime.Stop();
+
+        //    try
+        //    {
+
+        //        OnParkingGarageReserved?.Invoke(DateTime.Now,
+        //                                          Timestamp.Value,
+        //                                          this,
+        //                                          EventTrackingId,
+        //                                          RoamingNetwork.Id,
+        //                                          ParkingGarageId,
+        //                                          StartTime,
+        //                                          Duration,
+        //                                          ReservationId,
+        //                                          ProviderId,
+        //                                          eMAId,
+        //                                          ParkingProductId,
+        //                                          AuthTokens,
+        //                                          eMAIds,
+        //                                          PINs,
+        //                                          result,
+        //                                          Runtime.Elapsed,
+        //                                          RequestTimeout);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        e.Log(nameof(ParkingOperator) + "." + nameof(OnParkingGarageReserved));
+        //    }
+
+        //    #endregion
+
+        //    return result;
+
+        //}
+
+        //#endregion
+
+        //#region Reserve(...ParkingGarageId, StartTime, Duration, ReservationId = null, ProviderId = null, ...)
+
+        ///// <summary>
+        ///// Reserve the possibility to charge within the given charging pool.
+        ///// </summary>
+        ///// <param name="ParkingGarageId">The unique identification of the charging pool to be reserved.</param>
+        ///// <param name="StartTime">The starting time of the reservation.</param>
+        ///// <param name="Duration">The duration of the reservation.</param>
+        ///// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
+        ///// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
+        ///// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
+        ///// <param name="ParkingProductId">An optional unique identification of the parking product to be reserved.</param>
+        ///// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
+        ///// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
+        ///// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //public async Task<ReservationResult>
+
+        //    Reserve(ParkingGarage_Id                   ParkingGarageId,
+        //            DateTime?                         StartTime           = null,
+        //            TimeSpan?                         Duration            = null,
+        //            ChargingReservation_Id?           ReservationId       = null,
+        //            eMobilityProvider_Id?             ProviderId          = null,
+        //            eMobilityAccount_Id?              eMAId               = null,
+        //            ParkingProduct_Id?               ParkingProductId   = null,
+        //            IEnumerable<Auth_Token>           AuthTokens          = null,
+        //            IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
+        //            IEnumerable<UInt32>               PINs                = null,
+
+        //            DateTime?                         Timestamp           = null,
+        //            CancellationToken?                CancellationToken   = null,
+        //            EventTracking_Id                  EventTrackingId     = null,
+        //            TimeSpan?                         RequestTimeout      = null)
+
+        //{
+
+        //    #region Initial checks
+
+        //    if (ParkingGarageId == null)
+        //        throw new ArgumentNullException(nameof(ParkingGarageId),  "The given charging pool identification must not be null!");
+
+        //    ReservationResult result = null;
+
+        //    if (!Timestamp.HasValue)
+        //        Timestamp = DateTime.Now;
+
+        //    if (EventTrackingId == null)
+        //        EventTrackingId = EventTracking_Id.New;
+
+        //    #endregion
+
+        //    #region Send OnReserveParkingGarage event
+
+        //    var Runtime = Stopwatch.StartNew();
+
+        //    try
+        //    {
+
+        //        OnReserveParkingGarage?.Invoke(DateTime.Now,
+        //                                      Timestamp.Value,
+        //                                      this,
+        //                                      EventTrackingId,
+        //                                      RoamingNetwork.Id,
+        //                                      ParkingGarageId,
+        //                                      StartTime,
+        //                                      Duration,
+        //                                      ReservationId,
+        //                                      ProviderId,
+        //                                      eMAId,
+        //                                      ParkingProductId,
+        //                                      AuthTokens,
+        //                                      eMAIds,
+        //                                      PINs,
+        //                                      RequestTimeout);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        e.Log(nameof(ParkingOperator) + "." + nameof(OnReserveParkingGarage));
+        //    }
+
+        //    #endregion
+
+
+        //    var _ParkingGarage  = ParkingGarages.
+        //                             FirstOrDefault(pool => pool.Id == ParkingGarageId);
+
+        //    if (_ParkingGarage != null)
+        //    {
+
+        //        result = await _ParkingGarage.Reserve(ParkingGarageId,
+        //                                             StartTime,
+        //                                             Duration,
+        //                                             ReservationId,
+        //                                             ProviderId,
+        //                                             eMAId,
+        //                                             ParkingProductId,
+        //                                             AuthTokens,
+        //                                             eMAIds,
+        //                                             PINs,
+
+        //                                             Timestamp,
+        //                                             CancellationToken,
+        //                                             EventTrackingId,
+        //                                             RequestTimeout);
+
+        //        if (result.Result == ReservationResultType.Success)
+        //            _ChargingReservations.TryAdd(result.Reservation.Id, _ParkingGarage);
+
+        //    }
+
+        //    else
+        //        result = ReservationResult.UnknownParkingGarage;
+
+
+        //    #region Send OnParkingGarageReserved event
+
+        //    Runtime.Stop();
+
+        //    try
+        //    {
+
+        //        OnParkingGarageReserved?.Invoke(DateTime.Now,
+        //                                       Timestamp.Value,
+        //                                       this,
+        //                                       EventTrackingId,
+        //                                       RoamingNetwork.Id,
+        //                                       ParkingGarageId,
+        //                                       StartTime,
+        //                                       Duration,
+        //                                       ReservationId,
+        //                                       ProviderId,
+        //                                       eMAId,
+        //                                       ParkingProductId,
+        //                                       AuthTokens,
+        //                                       eMAIds,
+        //                                       PINs,
+        //                                       result,
+        //                                       Runtime.Elapsed,
+        //                                       RequestTimeout);
+
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        e.Log(nameof(ParkingOperator) + "." + nameof(OnParkingGarageReserved));
+        //    }
+
+        //    #endregion
+
+        //    return result;
+
+        //}
+
+        //#endregion
 
         #region (internal) SendNewReservation(Timestamp, Sender, Reservation)
 
@@ -2751,102 +2739,102 @@ namespace org.GraphDefined.WWCP
 
         #region TryGetReservationById(ReservationId, out Reservation)
 
-        /// <summary>
-        /// Return the charging reservation specified by its unique identification.
-        /// </summary>
-        /// <param name="ReservationId">The charging reservation identification.</param>
-        /// <param name="Reservation">The charging reservation identification.</param>
-        /// <returns>True when successful, false otherwise.</returns>
-        public Boolean TryGetReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
-        {
+        ///// <summary>
+        ///// Return the charging reservation specified by its unique identification.
+        ///// </summary>
+        ///// <param name="ReservationId">The charging reservation identification.</param>
+        ///// <param name="Reservation">The charging reservation identification.</param>
+        ///// <returns>True when successful, false otherwise.</returns>
+        //public Boolean TryGetReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
+        //{
 
-            ChargingPool _ChargingPool = null;
+        //    ParkingGarage _ParkingGarage = null;
 
-            if (_ChargingReservations.TryGetValue(ReservationId, out _ChargingPool))
-                return _ChargingPool.TryGetReservationById(ReservationId, out Reservation);
+        //    if (_ParkingReservations.TryGetValue(ReservationId, out _ParkingGarage))
+        //        return _ParkingGarage.TryGetReservationById(ReservationId, out Reservation);
 
-            Reservation = null;
-            return false;
+        //    Reservation = null;
+        //    return false;
 
-        }
+        //}
 
         #endregion
 
 
-        #region CancelReservation(...ReservationId, Reason, ProviderId = null, EVSEId = null, ...)
+        #region CancelReservation(...ReservationId, Reason, ProviderId = null, ParkingSpaceId = null, ...)
 
-        /// <summary>
-        /// Try to remove the given charging reservation.
-        /// </summary>
-        /// <param name="ReservationId">The unique charging reservation identification.</param>
-        /// <param name="Reason">A reason for this cancellation.</param>
-        /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="EVSEId">An optional identification of the EVSE.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<CancelReservationResult>
+        ///// <summary>
+        ///// Try to remove the given charging reservation.
+        ///// </summary>
+        ///// <param name="ReservationId">The unique charging reservation identification.</param>
+        ///// <param name="Reason">A reason for this cancellation.</param>
+        ///// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
+        ///// <param name="ParkingSpaceId">An optional identification of the ParkingSpace.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //public async Task<CancelReservationResult>
 
-            CancelReservation(ChargingReservation_Id                 ReservationId,
-                              ChargingReservationCancellationReason  Reason,
-                              eMobilityProvider_Id?                  ProviderId          = null,
-                              EVSE_Id?                               EVSEId              = null,
+        //    CancelReservation(ChargingReservation_Id                 ReservationId,
+        //                      ChargingReservationCancellationReason  Reason,
+        //                      eMobilityProvider_Id?                  ProviderId          = null,
+        //                      ParkingSpace_Id?                       ParkingSpaceId      = null,
 
-                              DateTime?                              Timestamp           = null,
-                              CancellationToken?                     CancellationToken   = null,
-                              EventTracking_Id                       EventTrackingId     = null,
-                              TimeSpan?                              RequestTimeout      = null)
+        //                      DateTime?                              Timestamp           = null,
+        //                      CancellationToken?                     CancellationToken   = null,
+        //                      EventTracking_Id                       EventTrackingId     = null,
+        //                      TimeSpan?                              RequestTimeout      = null)
 
-        {
+        //{
 
-            if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+        //    if (!Timestamp.HasValue)
+        //        Timestamp = DateTime.Now;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+        //    if (EventTrackingId == null)
+        //        EventTrackingId = EventTracking_Id.New;
 
-            CancelReservationResult result         = null;
-            ChargingPool            _ChargingPool  = null;
+        //    CancelReservationResult result         = null;
+        //    ParkingGarage            _ParkingGarage  = null;
 
-            if (_ChargingReservations.TryRemove(ReservationId, out _ChargingPool))
-                result = await _ChargingPool.CancelReservation(ReservationId,
-                                                               Reason,
-                                                               ProviderId,
-                                                               EVSEId,
+        //    if (_ParkingReservations.TryRemove(ReservationId, out _ParkingGarage))
+        //        result = await _ParkingGarage.CancelReservation(ReservationId,
+        //                                                       Reason,
+        //                                                       ProviderId,
+        //                                                       ParkingSpaceId,
 
-                                                               Timestamp,
-                                                               CancellationToken,
-                                                               EventTrackingId,
-                                                               RequestTimeout);
+        //                                                       Timestamp,
+        //                                                       CancellationToken,
+        //                                                       EventTrackingId,
+        //                                                       RequestTimeout);
 
-            else
-            {
+        //    else
+        //    {
 
-                foreach (var __ChargingPool in _ChargingPools)
-                {
+        //        foreach (var __ParkingGarage in _ParkingGarages)
+        //        {
 
-                    result = await __ChargingPool.CancelReservation(ReservationId,
-                                                                    Reason,
-                                                                    ProviderId,
-                                                                    EVSEId,
+        //            result = await __ParkingGarage.CancelReservation(ReservationId,
+        //                                                            Reason,
+        //                                                            ProviderId,
+        //                                                            ParkingSpaceId,
 
-                                                                    Timestamp,
-                                                                    CancellationToken,
-                                                                    EventTrackingId,
-                                                                    RequestTimeout);
+        //                                                            Timestamp,
+        //                                                            CancellationToken,
+        //                                                            EventTrackingId,
+        //                                                            RequestTimeout);
 
-                    if (result != null && result.Result != CancelReservationResults.UnknownReservationId)
-                        break;
+        //            if (result != null && result.Result != CancelReservationResults.UnknownReservationId)
+        //                break;
 
-                }
+        //        }
 
-            }
+        //    }
 
-            return result;
+        //    return result;
 
-        }
+        //}
 
         #endregion
 
@@ -2875,9 +2863,9 @@ namespace org.GraphDefined.WWCP
                                                 TimeSpan?                              RequestTimeout)
         {
 
-            ChargingPool _ChargingPool = null;
+            ParkingGarage _ParkingGarage = null;
 
-            _ChargingReservations.TryRemove(ReservationId, out _ChargingPool);
+            _ParkingReservations.TryRemove(ReservationId, out _ParkingGarage);
 
             OnReservationCancelled?.Invoke(LogTimestamp,
                                            RequestTimestamp,
@@ -2900,1065 +2888,1065 @@ namespace org.GraphDefined.WWCP
 
         #region RemoteStart/-Stop and Sessions
 
-        #region ChargingSessions
+        //#region ChargingSessions
 
-        private readonly ConcurrentDictionary<ChargingSession_Id, ChargingPool>  _ChargingSessions;
+        //private readonly ConcurrentDictionary<ChargingSession_Id, ParkingGarage>  _ChargingSessions;
 
-        /// <summary>
-        /// Return all current charging sessions.
-        /// </summary>
+        ///// <summary>
+        ///// Return all current charging sessions.
+        ///// </summary>
 
-        public IEnumerable<ChargingSession> ChargingSessions
-
-            => _ChargingPools.
-                   SelectMany(pool => pool.ChargingSessions);
-
-        #endregion
-
-        #region OnRemote...Start / OnRemote...Started / OnNewChargingSession
-
-        /// <summary>
-        /// An event fired whenever a remote start EVSE command was received.
-        /// </summary>
-        public event OnRemoteStartEVSERequestDelegate               OnRemoteEVSEStart;
-
-        /// <summary>
-        /// An event fired whenever a remote start EVSE command completed.
-        /// </summary>
-        public event OnRemoteStartEVSEResponseDelegate             OnRemoteEVSEStarted;
-
-        /// <summary>
-        /// An event fired whenever a remote start charging station command was received.
-        /// </summary>
-        public event OnRemoteChargingStationStartDelegate    OnRemoteChargingStationStart;
-
-        /// <summary>
-        /// An event fired whenever a remote start charging station command completed.
-        /// </summary>
-        public event OnRemoteChargingStationStartedDelegate  OnRemoteChargingStationStarted;
-
-        /// <summary>
-        /// An event fired whenever a new charging session was created.
-        /// </summary>
-        public event OnNewChargingSessionDelegate            OnNewChargingSession;
-
-        #endregion
-
-        #region RemoteStart(...EVSEId, ChargingProductId = null, ReservationId = null, SessionId = null, ProviderId = null, eMAId = null, ...)
-
-        /// <summary>
-        /// Start a charging session at the given EVSE.
-        /// </summary>
-        /// <param name="EVSEId">The unique identification of the EVSE to be started.</param>
-        /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
-        /// <param name="PlannedDuration">The optional planned duration of the charging.</param>
-        /// <param name="PlannedEnergy">The optional planned amount of energy to charge.</param>
-        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<RemoteStartEVSEResult>
+        //public IEnumerable<ChargingSession> ChargingSessions
+
+        //    => _ParkingGarages.
+        //           SelectMany(pool => pool.ChargingSessions);
+
+        //#endregion
+
+        //#region OnRemote...Start / OnRemote...Started / OnNewChargingSession
+
+        ///// <summary>
+        ///// An event fired whenever a remote start ParkingSpace command was received.
+        ///// </summary>
+        //public event OnRemoteStartParkingSpaceRequestDelegate               OnRemoteParkingSpaceStart;
+
+        ///// <summary>
+        ///// An event fired whenever a remote start ParkingSpace command completed.
+        ///// </summary>
+        //public event OnRemoteStartParkingSpaceResponseDelegate             OnRemoteParkingSpaceStarted;
+
+        ///// <summary>
+        ///// An event fired whenever a remote start charging station command was received.
+        ///// </summary>
+        //public event OnRemoteParkingGarageStartDelegate    OnRemoteParkingGarageStart;
+
+        ///// <summary>
+        ///// An event fired whenever a remote start charging station command completed.
+        ///// </summary>
+        //public event OnRemoteParkingGarageStartedDelegate  OnRemoteParkingGarageStarted;
+
+        ///// <summary>
+        ///// An event fired whenever a new charging session was created.
+        ///// </summary>
+        //public event OnNewChargingSessionDelegate            OnNewChargingSession;
+
+        //#endregion
+
+        //#region RemoteStart(...ParkingSpaceId, ParkingProductId = null, ReservationId = null, SessionId = null, ProviderId = null, eMAId = null, ...)
+
+        ///// <summary>
+        ///// Start a charging session at the given ParkingSpace.
+        ///// </summary>
+        ///// <param name="ParkingSpaceId">The unique identification of the ParkingSpace to be started.</param>
+        ///// <param name="ParkingProductId">The unique identification of the choosen parking product.</param>
+        ///// <param name="PlannedDuration">The optional planned duration of the charging.</param>
+        ///// <param name="PlannedEnergy">The optional planned amount of energy to charge.</param>
+        ///// <param name="ReservationId">The unique identification for a charging reservation.</param>
+        ///// <param name="SessionId">The unique identification for this charging session.</param>
+        ///// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+        ///// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //public async Task<RemoteStartParkingSpaceResult>
 
-            RemoteStart(EVSE_Id                  EVSEId,
-                        ChargingProduct_Id?      ChargingProductId   = null,
-                        TimeSpan?                PlannedDuration     = null,
-                        Single?                  PlannedEnergy       = null,
-                        ChargingReservation_Id?  ReservationId       = null,
-                        ChargingSession_Id?      SessionId           = null,
-                        eMobilityProvider_Id?    ProviderId          = null,
-                        eMobilityAccount_Id?     eMAId               = null,
+        //    RemoteStart(ParkingSpace_Id                  ParkingSpaceId,
+        //                ParkingProduct_Id?      ParkingProductId   = null,
+        //                TimeSpan?                PlannedDuration     = null,
+        //                Single?                  PlannedEnergy       = null,
+        //                ChargingReservation_Id?  ReservationId       = null,
+        //                ChargingSession_Id?      SessionId           = null,
+        //                eMobilityProvider_Id?    ProviderId          = null,
+        //                eMobilityAccount_Id?     eMAId               = null,
 
-                        DateTime?                Timestamp           = null,
-                        CancellationToken?       CancellationToken   = null,
-                        EventTracking_Id         EventTrackingId     = null,
-                        TimeSpan?                RequestTimeout      = null)
+        //                DateTime?                Timestamp           = null,
+        //                CancellationToken?       CancellationToken   = null,
+        //                EventTracking_Id         EventTrackingId     = null,
+        //                TimeSpan?                RequestTimeout      = null)
 
-        {
+        //{
 
-            #region Initial checks
+        //    #region Initial checks
 
-            if (EVSEId == null)
-                throw new ArgumentNullException(nameof(EVSEId), "The given EVSE identification must not be null!");
+        //    if (ParkingSpaceId == null)
+        //        throw new ArgumentNullException(nameof(ParkingSpaceId), "The given ParkingSpace identification must not be null!");
 
-            RemoteStartEVSEResult result = null;
+        //    RemoteStartParkingSpaceResult result = null;
 
-            if (!Timestamp.HasValue)
-                Timestamp       = DateTime.Now;
-
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+        //    if (!Timestamp.HasValue)
+        //        Timestamp       = DateTime.Now;
+
+        //    if (EventTrackingId == null)
+        //        EventTrackingId = EventTracking_Id.New;
 
-            #endregion
+        //    #endregion
 
-            #region Send OnRemoteEVSEStart event
+        //    #region Send OnRemoteParkingSpaceStart event
 
-            var Runtime = Stopwatch.StartNew();
+        //    var Runtime = Stopwatch.StartNew();
 
-            try
-            {
-
-                OnRemoteEVSEStart?.Invoke(DateTime.Now,
-                                          Timestamp.Value,
-                                          this,
-                                          EventTrackingId,
-                                          RoamingNetwork.Id,
-                                          EVSEId,
-                                          ChargingProductId,
-                                          PlannedDuration,
-                                          PlannedEnergy,
-                                          ReservationId,
-                                          SessionId,
-                                          ProviderId,
-                                          eMAId,
-                                          RequestTimeout);
+        //    try
+        //    {
+
+        //        OnRemoteParkingSpaceStart?.Invoke(DateTime.Now,
+        //                                  Timestamp.Value,
+        //                                  this,
+        //                                  EventTrackingId,
+        //                                  RoamingNetwork.Id,
+        //                                  ParkingSpaceId,
+        //                                  ParkingProductId,
+        //                                  PlannedDuration,
+        //                                  PlannedEnergy,
+        //                                  ReservationId,
+        //                                  SessionId,
+        //                                  ProviderId,
+        //                                  eMAId,
+        //                                  RequestTimeout);
 
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteEVSEStart));
-            }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteParkingSpaceStart));
+        //    }
 
-            #endregion
+        //    #endregion
 
 
-            #region Try the remote Charging Station Operator...
+        //    #region Try the remote Charging Station Operator...
 
-            if (RemoteParkingOperator != null &&
-               !LocalEVSEIds.Contains(EVSEId))
-            {
-
-                result = await RemoteParkingOperator.RemoteStart(EVSEId,
-                                                                 ChargingProductId,
-                                                                 PlannedDuration,
-                                                                 PlannedEnergy,
-                                                                 ReservationId,
-                                                                 SessionId,
-                                                                 ProviderId,
-                                                                 eMAId,
+        //    if (RemoteParkingOperator != null &&
+        //       !LocalParkingSpaceIds.Contains(ParkingSpaceId))
+        //    {
+
+        //        result = await RemoteParkingOperator.RemoteStart(ParkingSpaceId,
+        //                                                         ParkingProductId,
+        //                                                         PlannedDuration,
+        //                                                         PlannedEnergy,
+        //                                                         ReservationId,
+        //                                                         SessionId,
+        //                                                         ProviderId,
+        //                                                         eMAId,
 
-                                                                 Timestamp,
-                                                                 CancellationToken,
-                                                                 EventTrackingId,
-                                                                 RequestTimeout);
+        //                                                         Timestamp,
+        //                                                         CancellationToken,
+        //                                                         EventTrackingId,
+        //                                                         RequestTimeout);
 
 
-                if (result.Result == RemoteStartEVSEResultType.Success)
-                {
+        //        if (result.Result == RemoteStartParkingSpaceResultType.Success)
+        //        {
 
-             //       result.Session.ParkingOperator = this;
+        //     //       result.Session.ParkingOperator = this;
 
-                    OnNewChargingSession?.Invoke(DateTime.Now, this, result.Session);
+        //            OnNewChargingSession?.Invoke(DateTime.Now, this, result.Session);
 
-                }
+        //        }
 
-            }
-
-            #endregion
-
-            #region ...else/or try local
-
-            if (RemoteParkingOperator == null ||
-                 result             == null ||
-                (result             != null &&
-                (result.Result      == RemoteStartEVSEResultType.UnknownEVSE ||
-                 result.Result      == RemoteStartEVSEResultType.Error)))
-            {
-
-                var _ChargingPool = _ChargingPools.SelectMany(pool => pool.EVSEs).
-                                                       Where (evse => evse.Id == EVSEId).
-                                                       Select(evse => evse.ChargingStation.ChargingPool).
-                                                       FirstOrDefault();
-
-                if (_ChargingPool != null)
-                {
-
-                    result = await _ChargingPool.RemoteStart(EVSEId,
-                                                             ChargingProductId,
-                                                             PlannedDuration,
-                                                             PlannedEnergy,
-                                                             ReservationId,
-                                                             SessionId,
-                                                             ProviderId,
-                                                             eMAId,
-
-                                                             Timestamp,
-                                                             CancellationToken,
-                                                             EventTrackingId,
-                                                             RequestTimeout);
-
+        //    }
+
+        //    #endregion
+
+        //    #region ...else/or try local
+
+        //    if (RemoteParkingOperator == null ||
+        //         result             == null ||
+        //        (result             != null &&
+        //        (result.Result      == RemoteStartParkingSpaceResultType.UnknownParkingSpace ||
+        //         result.Result      == RemoteStartParkingSpaceResultType.Error)))
+        //    {
+
+        //        var _ParkingGarage = _ParkingGarages.SelectMany(pool => pool.ParkingSpaces).
+        //                                               Where (evse => evse.Id == ParkingSpaceId).
+        //                                               Select(evse => evse.ParkingGarage.ParkingGarage).
+        //                                               FirstOrDefault();
+
+        //        if (_ParkingGarage != null)
+        //        {
+
+        //            result = await _ParkingGarage.RemoteStart(ParkingSpaceId,
+        //                                                     ParkingProductId,
+        //                                                     PlannedDuration,
+        //                                                     PlannedEnergy,
+        //                                                     ReservationId,
+        //                                                     SessionId,
+        //                                                     ProviderId,
+        //                                                     eMAId,
+
+        //                                                     Timestamp,
+        //                                                     CancellationToken,
+        //                                                     EventTrackingId,
+        //                                                     RequestTimeout);
+
 
-                    if (result.Result == RemoteStartEVSEResultType.Success)
-                    {
-                        //result.Session.ParkingOperator = this;
-                        _ChargingSessions.TryAdd(result.Session.Id, _ChargingPool);
-                    }
+        //            if (result.Result == RemoteStartParkingSpaceResultType.Success)
+        //            {
+        //                //result.Session.ParkingOperator = this;
+        //                _ChargingSessions.TryAdd(result.Session.Id, _ParkingGarage);
+        //            }
 
-                }
+        //        }
 
-                else
-                    result = RemoteStartEVSEResult.UnknownEVSE;
+        //        else
+        //            result = RemoteStartParkingSpaceResult.UnknownParkingSpace;
 
-            }
+        //    }
 
-            #endregion
+        //    #endregion
 
 
-            #region Send OnRemoteEVSEStarted event
-
-            Runtime.Stop();
-
-            try
-            {
-
-                OnRemoteEVSEStarted?.Invoke(DateTime.Now,
-                                            Timestamp.Value,
-                                            this,
-                                            EventTrackingId,
-                                            RoamingNetwork.Id,
-                                            EVSEId,
-                                            ChargingProductId,
-                                            PlannedDuration,
-                                            PlannedEnergy,
-                                            ReservationId,
-                                            SessionId,
-                                            ProviderId,
-                                            eMAId,
-                                            RequestTimeout,
-                                            result,
-                                            Runtime.Elapsed);
+        //    #region Send OnRemoteParkingSpaceStarted event
+
+        //    Runtime.Stop();
+
+        //    try
+        //    {
+
+        //        OnRemoteParkingSpaceStarted?.Invoke(DateTime.Now,
+        //                                    Timestamp.Value,
+        //                                    this,
+        //                                    EventTrackingId,
+        //                                    RoamingNetwork.Id,
+        //                                    ParkingSpaceId,
+        //                                    ParkingProductId,
+        //                                    PlannedDuration,
+        //                                    PlannedEnergy,
+        //                                    ReservationId,
+        //                                    SessionId,
+        //                                    ProviderId,
+        //                                    eMAId,
+        //                                    RequestTimeout,
+        //                                    result,
+        //                                    Runtime.Elapsed);
 
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteEVSEStarted));
-            }
-
-            #endregion
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteParkingSpaceStarted));
+        //    }
+
+        //    #endregion
 
-            return result;
+        //    return result;
 
-        }
+        //}
 
-        #endregion
+        //#endregion
 
-        #region RemoteStart(...ChargingStationId, ChargingProductId = null, ReservationId = null, SessionId = null, ProviderId = null, eMAId = null, ...)
+        //#region RemoteStart(...ParkingGarageId, ParkingProductId = null, ReservationId = null, SessionId = null, ProviderId = null, eMAId = null, ...)
 
-        /// <summary>
-        /// Start a charging session at the given charging station.
-        /// </summary>
-        /// <param name="ChargingStationId">The unique identification of the charging station to be started.</param>
-        /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
-        /// <param name="ReservationId">The unique identification for a charging reservation.</param>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<RemoteStartChargingStationResult>
+        ///// <summary>
+        ///// Start a charging session at the given charging station.
+        ///// </summary>
+        ///// <param name="ParkingGarageId">The unique identification of the charging station to be started.</param>
+        ///// <param name="ParkingProductId">The unique identification of the choosen parking product.</param>
+        ///// <param name="ReservationId">The unique identification for a charging reservation.</param>
+        ///// <param name="SessionId">The unique identification for this charging session.</param>
+        ///// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
+        ///// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //public async Task<RemoteStartParkingGarageResult>
 
-            RemoteStart(ChargingStation_Id       ChargingStationId,
-                        ChargingProduct_Id?      ChargingProductId   = null,
-                        ChargingReservation_Id?  ReservationId       = null,
-                        ChargingSession_Id?      SessionId           = null,
-                        eMobilityProvider_Id?    ProviderId          = null,
-                        eMobilityAccount_Id?     eMAId               = null,
+        //    RemoteStart(ParkingGarage_Id       ParkingGarageId,
+        //                ParkingProduct_Id?      ParkingProductId   = null,
+        //                ChargingReservation_Id?  ReservationId       = null,
+        //                ChargingSession_Id?      SessionId           = null,
+        //                eMobilityProvider_Id?    ProviderId          = null,
+        //                eMobilityAccount_Id?     eMAId               = null,
 
-                        DateTime?                Timestamp           = null,
-                        CancellationToken?       CancellationToken   = null,
-                        EventTracking_Id         EventTrackingId     = null,
-                        TimeSpan?                RequestTimeout      = null)
+        //                DateTime?                Timestamp           = null,
+        //                CancellationToken?       CancellationToken   = null,
+        //                EventTracking_Id         EventTrackingId     = null,
+        //                TimeSpan?                RequestTimeout      = null)
 
-        {
+        //{
 
-            #region Initial checks
+        //    #region Initial checks
 
-            if (ChargingStationId == null)
-                throw new ArgumentNullException(nameof(ChargingStationId),  "The given charging station identification must not be null!");
+        //    if (ParkingGarageId == null)
+        //        throw new ArgumentNullException(nameof(ParkingGarageId),  "The given charging station identification must not be null!");
 
-            RemoteStartChargingStationResult result = null;
+        //    RemoteStartParkingGarageResult result = null;
 
-            if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+        //    if (!Timestamp.HasValue)
+        //        Timestamp = DateTime.Now;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+        //    if (EventTrackingId == null)
+        //        EventTrackingId = EventTracking_Id.New;
 
-            #endregion
+        //    #endregion
 
-            #region Send OnRemoteChargingStationStart event
+        //    #region Send OnRemoteParkingGarageStart event
 
-            var Runtime = Stopwatch.StartNew();
+        //    var Runtime = Stopwatch.StartNew();
 
-            try
-            {
+        //    try
+        //    {
 
-                OnRemoteChargingStationStart?.Invoke(DateTime.Now,
-                                                     Timestamp.Value,
-                                                     this,
-                                                     EventTrackingId,
-                                                     RoamingNetwork.Id,
-                                                     ChargingStationId,
-                                                     ChargingProductId,
-                                                     ReservationId,
-                                                     SessionId,
-                                                     ProviderId,
-                                                     eMAId,
-                                                     RequestTimeout);
+        //        OnRemoteParkingGarageStart?.Invoke(DateTime.Now,
+        //                                             Timestamp.Value,
+        //                                             this,
+        //                                             EventTrackingId,
+        //                                             RoamingNetwork.Id,
+        //                                             ParkingGarageId,
+        //                                             ParkingProductId,
+        //                                             ReservationId,
+        //                                             SessionId,
+        //                                             ProviderId,
+        //                                             eMAId,
+        //                                             RequestTimeout);
 
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteChargingStationStart));
-            }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteParkingGarageStart));
+        //    }
 
-            #endregion
+        //    #endregion
 
 
-            #region Try remote Charging Station Operator...
+        //    #region Try remote Charging Station Operator...
 
-            if (RemoteParkingOperator != null)
-            {
+        //    if (RemoteParkingOperator != null)
+        //    {
 
-                result = await RemoteParkingOperator.RemoteStart(ChargingStationId,
-                                                                          ChargingProductId,
-                                                                          ReservationId,
-                                                                          SessionId,
-                                                                          ProviderId,
-                                                                          eMAId,
+        //        result = await RemoteParkingOperator.RemoteStart(ParkingGarageId,
+        //                                                                  ParkingProductId,
+        //                                                                  ReservationId,
+        //                                                                  SessionId,
+        //                                                                  ProviderId,
+        //                                                                  eMAId,
 
-                                                                          Timestamp,
-                                                                          CancellationToken,
-                                                                          EventTrackingId,
-                                                                          RequestTimeout);
+        //                                                                  Timestamp,
+        //                                                                  CancellationToken,
+        //                                                                  EventTrackingId,
+        //                                                                  RequestTimeout);
 
 
-                if (result.Result == RemoteStartChargingStationResultType.Success)
+        //        if (result.Result == RemoteStartParkingGarageResultType.Success)
 
-                {
+        //        {
 
-                    //result.Session.ParkingOperator = this;
+        //            //result.Session.ParkingOperator = this;
 
-                    OnNewChargingSession?.Invoke(DateTime.Now, this, result.Session);
+        //            OnNewChargingSession?.Invoke(DateTime.Now, this, result.Session);
 
-                }
+        //        }
 
-            }
+        //    }
 
-            #endregion
+        //    #endregion
 
-            #region ...else/or try local
+        //    #region ...else/or try local
 
-            if (RemoteParkingOperator == null ||
-                (result             != null &&
-                (result.Result      == RemoteStartChargingStationResultType.UnknownChargingStation ||
-                 result.Result      == RemoteStartChargingStationResultType.Error)))
-            {
+        //    if (RemoteParkingOperator == null ||
+        //        (result             != null &&
+        //        (result.Result      == RemoteStartParkingGarageResultType.UnknownParkingGarage ||
+        //         result.Result      == RemoteStartParkingGarageResultType.Error)))
+        //    {
 
-                var _ChargingPool = _ChargingPools.SelectMany(pool    => pool.ChargingStations).
-                                                      Where  (station => station.Id == ChargingStationId).
-                                                      Select (station => station.ChargingPool).
-                                                      FirstOrDefault();
+        //        var _ParkingGarage = _ParkingGarages.SelectMany(pool    => pool.ParkingGarages).
+        //                                              Where  (station => station.Id == ParkingGarageId).
+        //                                              Select (station => station.ParkingGarage).
+        //                                              FirstOrDefault();
 
-                if (_ChargingPool != null)
-                {
+        //        if (_ParkingGarage != null)
+        //        {
 
-                    result = await _ChargingPool.RemoteStart(ChargingStationId,
-                                                             ChargingProductId,
-                                                             ReservationId,
-                                                             SessionId,
-                                                             ProviderId,
-                                                             eMAId,
+        //            result = await _ParkingGarage.RemoteStart(ParkingGarageId,
+        //                                                     ParkingProductId,
+        //                                                     ReservationId,
+        //                                                     SessionId,
+        //                                                     ProviderId,
+        //                                                     eMAId,
 
-                                                             Timestamp,
-                                                             CancellationToken,
-                                                             EventTrackingId,
-                                                             RequestTimeout);
+        //                                                     Timestamp,
+        //                                                     CancellationToken,
+        //                                                     EventTrackingId,
+        //                                                     RequestTimeout);
 
-                    if (result.Result == RemoteStartChargingStationResultType.Success)
-                        _ChargingSessions.TryAdd(result.Session.Id, _ChargingPool);
+        //            if (result.Result == RemoteStartParkingGarageResultType.Success)
+        //                _ChargingSessions.TryAdd(result.Session.Id, _ParkingGarage);
 
-                }
+        //        }
 
-                else
-                    result = RemoteStartChargingStationResult.UnknownChargingStation;
+        //        else
+        //            result = RemoteStartParkingGarageResult.UnknownParkingGarage;
 
-            }
+        //    }
 
-            #endregion
+        //    #endregion
 
 
-            #region Send OnRemoteChargingStationStarted event
+        //    #region Send OnRemoteParkingGarageStarted event
 
-            Runtime.Stop();
+        //    Runtime.Stop();
 
-            try
-            {
+        //    try
+        //    {
 
-                OnRemoteChargingStationStarted?.Invoke(DateTime.Now,
-                                                       Timestamp.Value,
-                                                       this,
-                                                       EventTrackingId,
-                                                       RoamingNetwork.Id,
-                                                       ChargingStationId,
-                                                       ChargingProductId,
-                                                       ReservationId,
-                                                       SessionId,
-                                                       ProviderId,
-                                                       eMAId,
-                                                       RequestTimeout,
-                                                       result,
-                                                       Runtime.Elapsed);
+        //        OnRemoteParkingGarageStarted?.Invoke(DateTime.Now,
+        //                                               Timestamp.Value,
+        //                                               this,
+        //                                               EventTrackingId,
+        //                                               RoamingNetwork.Id,
+        //                                               ParkingGarageId,
+        //                                               ParkingProductId,
+        //                                               ReservationId,
+        //                                               SessionId,
+        //                                               ProviderId,
+        //                                               eMAId,
+        //                                               RequestTimeout,
+        //                                               result,
+        //                                               Runtime.Elapsed);
 
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteChargingStationStarted));
-            }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteParkingGarageStarted));
+        //    }
 
-            #endregion
+        //    #endregion
 
-            return result;
+        //    return result;
 
-        }
+        //}
 
-        #endregion
+        //#endregion
 
-        #region (internal) SendNewChargingSession(Timestamp, Sender, ChargingSession)
+        //#region (internal) SendNewChargingSession(Timestamp, Sender, ChargingSession)
 
-        internal void SendNewChargingSession(DateTime         Timestamp,
-                                             Object           Sender,
-                                             ChargingSession  ChargingSession)
-        {
+        //internal void SendNewChargingSession(DateTime         Timestamp,
+        //                                     Object           Sender,
+        //                                     ChargingSession  ChargingSession)
+        //{
 
-            OnNewChargingSession?.Invoke(Timestamp, Sender, ChargingSession);
+        //    OnNewChargingSession?.Invoke(Timestamp, Sender, ChargingSession);
 
-        }
+        //}
 
-        #endregion
+        //#endregion
 
 
-        #region OnRemote...Stop / OnRemote...Stopped / OnNewChargeDetailRecord
+        //#region OnRemote...Stop / OnRemote...Stopped / OnNewChargeDetailRecord
 
-        /// <summary>
-        /// An event fired whenever a remote stop command was received.
-        /// </summary>
-        public event OnRemoteStopDelegate                    OnRemoteStop;
+        ///// <summary>
+        ///// An event fired whenever a remote stop command was received.
+        ///// </summary>
+        //public event OnRemoteStopDelegate                    OnRemoteStop;
 
-        /// <summary>
-        /// An event fired whenever a remote stop command completed.
-        /// </summary>
-        public event OnRemoteStoppedDelegate                 OnRemoteStopped;
+        ///// <summary>
+        ///// An event fired whenever a remote stop command completed.
+        ///// </summary>
+        //public event OnRemoteStoppedDelegate                 OnRemoteStopped;
 
-        /// <summary>
-        /// An event fired whenever a remote stop EVSE command was received.
-        /// </summary>
-        public event OnRemoteStopEVSERequestDelegate                OnRemoteEVSEStop;
+        ///// <summary>
+        ///// An event fired whenever a remote stop ParkingSpace command was received.
+        ///// </summary>
+        //public event OnRemoteStopParkingSpaceRequestDelegate                OnRemoteParkingSpaceStop;
 
-        /// <summary>
-        /// An event fired whenever a remote stop EVSE command completed.
-        /// </summary>
-        public event OnRemoteStopEVSEResponseDelegate             OnRemoteEVSEStopped;
+        ///// <summary>
+        ///// An event fired whenever a remote stop ParkingSpace command completed.
+        ///// </summary>
+        //public event OnRemoteStopParkingSpaceResponseDelegate             OnRemoteParkingSpaceStopped;
 
-        /// <summary>
-        /// An event fired whenever a remote stop charging station command was received.
-        /// </summary>
-        public event OnRemoteChargingStationStopDelegate     OnRemoteChargingStationStop;
+        ///// <summary>
+        ///// An event fired whenever a remote stop charging station command was received.
+        ///// </summary>
+        //public event OnRemoteParkingGarageStopDelegate     OnRemoteParkingGarageStop;
 
-        /// <summary>
-        /// An event fired whenever a remote stop charging station command completed.
-        /// </summary>
-        public event OnRemoteChargingStationStoppedDelegate  OnRemoteChargingStationStopped;
+        ///// <summary>
+        ///// An event fired whenever a remote stop charging station command completed.
+        ///// </summary>
+        //public event OnRemoteParkingGarageStoppedDelegate  OnRemoteParkingGarageStopped;
 
-        /// <summary>
-        /// An event fired whenever a new charge detail record was created.
-        /// </summary>
-        public event OnNewChargeDetailRecordDelegate         OnNewChargeDetailRecord;
+        ///// <summary>
+        ///// An event fired whenever a new charge detail record was created.
+        ///// </summary>
+        //public event OnNewChargeDetailRecordDelegate         OnNewChargeDetailRecord;
 
-        #endregion
+        //#endregion
 
-        #region RemoteStop(...SessionId, ReservationHandling, ProviderId = null, eMAId = null, ...)
+        //#region RemoteStop(...SessionId, ReservationHandling, ProviderId = null, eMAId = null, ...)
 
-        /// <summary>
-        /// Stop the given charging session.
-        /// </summary>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
-        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<RemoteStopResult>
+        ///// <summary>
+        ///// Stop the given charging session.
+        ///// </summary>
+        ///// <param name="SessionId">The unique identification for this charging session.</param>
+        ///// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
+        ///// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        ///// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //public async Task<RemoteStopResult>
 
-            RemoteStop(ChargingSession_Id     SessionId,
-                       ReservationHandling    ReservationHandling,
-                       eMobilityProvider_Id?  ProviderId          = null,
-                       eMobilityAccount_Id?   eMAId               = null,
+        //    RemoteStop(ChargingSession_Id     SessionId,
+        //               ReservationHandling    ReservationHandling,
+        //               eMobilityProvider_Id?  ProviderId          = null,
+        //               eMobilityAccount_Id?   eMAId               = null,
 
-                       DateTime?              Timestamp           = null,
-                       CancellationToken?     CancellationToken   = null,
-                       EventTracking_Id       EventTrackingId     = null,
-                       TimeSpan?              RequestTimeout      = null)
+        //               DateTime?              Timestamp           = null,
+        //               CancellationToken?     CancellationToken   = null,
+        //               EventTracking_Id       EventTrackingId     = null,
+        //               TimeSpan?              RequestTimeout      = null)
 
-        {
+        //{
 
-            #region Initial checks
+        //    #region Initial checks
 
-            if (SessionId == null)
-                throw new ArgumentNullException(nameof(SessionId), "The given charging session identification must not be null!");
+        //    if (SessionId == null)
+        //        throw new ArgumentNullException(nameof(SessionId), "The given charging session identification must not be null!");
 
-            RemoteStopResult result        = null;
-            ChargingPool    _ChargingPool  = null;
+        //    RemoteStopResult result        = null;
+        //    ParkingGarage    _ParkingGarage  = null;
 
-            if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+        //    if (!Timestamp.HasValue)
+        //        Timestamp = DateTime.Now;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+        //    if (EventTrackingId == null)
+        //        EventTrackingId = EventTracking_Id.New;
 
-            #endregion
+        //    #endregion
 
-            #region Send OnRemoteStop event
+        //    #region Send OnRemoteStop event
 
-            var Runtime = Stopwatch.StartNew();
+        //    var Runtime = Stopwatch.StartNew();
 
-            try
-            {
+        //    try
+        //    {
 
-                OnRemoteStop?.Invoke(DateTime.Now,
-                                     Timestamp.Value,
-                                     this,
-                                     EventTrackingId,
-                                     RoamingNetwork.Id,
-                                     SessionId,
-                                     ReservationHandling,
-                                     ProviderId,
-                                     eMAId,
-                                     RequestTimeout);
+        //        OnRemoteStop?.Invoke(DateTime.Now,
+        //                             Timestamp.Value,
+        //                             this,
+        //                             EventTrackingId,
+        //                             RoamingNetwork.Id,
+        //                             SessionId,
+        //                             ReservationHandling,
+        //                             ProviderId,
+        //                             eMAId,
+        //                             RequestTimeout);
 
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteStop));
-            }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteStop));
+        //    }
 
-            #endregion
+        //    #endregion
 
 
-            #region Try remote Charging Station Operator...
+        //    #region Try remote Charging Station Operator...
 
-            if (RemoteParkingOperator != null)
-            {
+        //    if (RemoteParkingOperator != null)
+        //    {
 
-                result = await RemoteParkingOperator.
-                                   RemoteStop(SessionId,
-                                              ReservationHandling,
-                                              ProviderId,
-                                              eMAId,
+        //        result = await RemoteParkingOperator.
+        //                           RemoteStop(SessionId,
+        //                                      ReservationHandling,
+        //                                      ProviderId,
+        //                                      eMAId,
 
-                                              Timestamp,
-                                              CancellationToken,
-                                              EventTrackingId,
-                                              RequestTimeout);
+        //                                      Timestamp,
+        //                                      CancellationToken,
+        //                                      EventTrackingId,
+        //                                      RequestTimeout);
 
 
-                if (result.Result == RemoteStopResultType.Success)
-                {
+        //        if (result.Result == RemoteStopResultType.Success)
+        //        {
 
-                    // The CDR could also be sent separately!
-                    if (result.ChargeDetailRecord != null)
-                    {
+        //            // The CDR could also be sent separately!
+        //            if (result.ChargeDetailRecord != null)
+        //            {
 
-                        OnNewChargeDetailRecord?.Invoke(DateTime.Now, this, result.ChargeDetailRecord);
+        //                OnNewChargeDetailRecord?.Invoke(DateTime.Now, this, result.ChargeDetailRecord);
 
-                    }
+        //            }
 
-                }
+        //        }
 
 
-            }
+        //    }
 
-            #endregion
+        //    #endregion
 
-            #region ...else/or try local
+        //    #region ...else/or try local
 
-            if (RemoteParkingOperator == null ||
-                (result             != null &&
-                (result.Result      == RemoteStopResultType.InvalidSessionId ||
-                 result.Result      == RemoteStopResultType.Error)))
-            {
+        //    if (RemoteParkingOperator == null ||
+        //        (result             != null &&
+        //        (result.Result      == RemoteStopResultType.InvalidSessionId ||
+        //         result.Result      == RemoteStopResultType.Error)))
+        //    {
 
-                if (_ChargingSessions.TryGetValue(SessionId, out _ChargingPool))
-                {
+        //        if (_ChargingSessions.TryGetValue(SessionId, out _ParkingGarage))
+        //        {
 
-                    result = await _ChargingPool.
-                                       RemoteStop(SessionId,
-                                                  ReservationHandling,
-                                                  ProviderId,
-                                                  eMAId,
+        //            result = await _ParkingGarage.
+        //                               RemoteStop(SessionId,
+        //                                          ReservationHandling,
+        //                                          ProviderId,
+        //                                          eMAId,
 
-                                                  Timestamp,
-                                                  CancellationToken,
-                                                  EventTrackingId,
-                                                  RequestTimeout);
+        //                                          Timestamp,
+        //                                          CancellationToken,
+        //                                          EventTrackingId,
+        //                                          RequestTimeout);
 
-                }
+        //        }
 
-                else
-                    result = RemoteStopResult.InvalidSessionId(SessionId);
+        //        else
+        //            result = RemoteStopResult.InvalidSessionId(SessionId);
 
-            }
+        //    }
 
-            #endregion
+        //    #endregion
 
 
-            #region Send OnRemoteStopped event
+        //    #region Send OnRemoteStopped event
 
-            Runtime.Stop();
+        //    Runtime.Stop();
 
-            try
-            {
+        //    try
+        //    {
 
-                OnRemoteStopped?.Invoke(DateTime.Now,
-                                        Timestamp.Value,
-                                        this,
-                                        EventTrackingId,
-                                        RoamingNetwork.Id,
-                                        SessionId,
-                                        ReservationHandling,
-                                        ProviderId,
-                                        eMAId,
-                                        RequestTimeout,
-                                        result,
-                                        Runtime.Elapsed);
+        //        OnRemoteStopped?.Invoke(DateTime.Now,
+        //                                Timestamp.Value,
+        //                                this,
+        //                                EventTrackingId,
+        //                                RoamingNetwork.Id,
+        //                                SessionId,
+        //                                ReservationHandling,
+        //                                ProviderId,
+        //                                eMAId,
+        //                                RequestTimeout,
+        //                                result,
+        //                                Runtime.Elapsed);
 
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteStopped));
-            }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteStopped));
+        //    }
 
-            #endregion
+        //    #endregion
 
-            return result;
+        //    return result;
 
-        }
+        //}
 
-        #endregion
+        //#endregion
 
-        #region RemoteStop(...EVSEId, SessionId, ReservationHandling, ProviderId = null, eMAId = null, ...)
+        //#region RemoteStop(...ParkingSpaceId, SessionId, ReservationHandling, ProviderId = null, eMAId = null, ...)
 
-        /// <summary>
-        /// Stop the given charging session at the given EVSE.
-        /// </summary>
-        /// <param name="EVSEId">The unique identification of the EVSE to be stopped.</param>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
-        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<RemoteStopEVSEResult>
+        ///// <summary>
+        ///// Stop the given charging session at the given ParkingSpace.
+        ///// </summary>
+        ///// <param name="ParkingSpaceId">The unique identification of the ParkingSpace to be stopped.</param>
+        ///// <param name="SessionId">The unique identification for this charging session.</param>
+        ///// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
+        ///// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        ///// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //public async Task<RemoteStopParkingSpaceResult>
 
-            RemoteStop(EVSE_Id                EVSEId,
-                       ChargingSession_Id     SessionId,
-                       ReservationHandling    ReservationHandling,
-                       eMobilityProvider_Id?  ProviderId          = null,
-                       eMobilityAccount_Id?   eMAId               = null,
+        //    RemoteStop(ParkingSpace_Id                ParkingSpaceId,
+        //               ChargingSession_Id     SessionId,
+        //               ReservationHandling    ReservationHandling,
+        //               eMobilityProvider_Id?  ProviderId          = null,
+        //               eMobilityAccount_Id?   eMAId               = null,
 
-                       DateTime?              Timestamp           = null,
-                       CancellationToken?     CancellationToken   = null,
-                       EventTracking_Id       EventTrackingId     = null,
-                       TimeSpan?              RequestTimeout      = null)
+        //               DateTime?              Timestamp           = null,
+        //               CancellationToken?     CancellationToken   = null,
+        //               EventTracking_Id       EventTrackingId     = null,
+        //               TimeSpan?              RequestTimeout      = null)
 
-        {
+        //{
 
-            #region Initial checks
+        //    #region Initial checks
 
-            if (EVSEId == null)
-                throw new ArgumentNullException(nameof(EVSEId),     "The given EVSE identification must not be null!");
+        //    if (ParkingSpaceId == null)
+        //        throw new ArgumentNullException(nameof(ParkingSpaceId),     "The given ParkingSpace identification must not be null!");
 
-            if (SessionId == null)
-                throw new ArgumentNullException(nameof(SessionId),  "The given charging session identification must not be null!");
+        //    if (SessionId == null)
+        //        throw new ArgumentNullException(nameof(SessionId),  "The given charging session identification must not be null!");
 
-            RemoteStopEVSEResult result        = null;
-            ChargingPool        _ChargingPool  = null;
+        //    RemoteStopParkingSpaceResult result        = null;
+        //    ParkingGarage        _ParkingGarage  = null;
 
-            if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+        //    if (!Timestamp.HasValue)
+        //        Timestamp = DateTime.Now;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+        //    if (EventTrackingId == null)
+        //        EventTrackingId = EventTracking_Id.New;
 
-            #endregion
+        //    #endregion
 
-            #region Send OnRemoteEVSEStop event
+        //    #region Send OnRemoteParkingSpaceStop event
 
-            var Runtime = Stopwatch.StartNew();
+        //    var Runtime = Stopwatch.StartNew();
 
-            try
-            {
+        //    try
+        //    {
 
-                OnRemoteEVSEStop?.Invoke(DateTime.Now,
-                                         Timestamp.Value,
-                                         this,
-                                         EventTrackingId,
-                                         RoamingNetwork.Id,
-                                         EVSEId,
-                                         SessionId,
-                                         ReservationHandling,
-                                         ProviderId,
-                                         eMAId,
-                                         RequestTimeout);
+        //        OnRemoteParkingSpaceStop?.Invoke(DateTime.Now,
+        //                                 Timestamp.Value,
+        //                                 this,
+        //                                 EventTrackingId,
+        //                                 RoamingNetwork.Id,
+        //                                 ParkingSpaceId,
+        //                                 SessionId,
+        //                                 ReservationHandling,
+        //                                 ProviderId,
+        //                                 eMAId,
+        //                                 RequestTimeout);
 
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteEVSEStop));
-            }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteParkingSpaceStop));
+        //    }
 
-            #endregion
+        //    #endregion
 
 
-            #region Try remote Charging Station Operator...
+        //    #region Try remote Charging Station Operator...
 
-            if (RemoteParkingOperator != null &&
-               !LocalEVSEIds.Contains(EVSEId))
-            {
+        //    if (RemoteParkingOperator != null &&
+        //       !LocalParkingSpaceIds.Contains(ParkingSpaceId))
+        //    {
 
-                result = await RemoteParkingOperator.
-                                   RemoteStop(EVSEId,
-                                              SessionId,
-                                              ReservationHandling,
-                                              ProviderId,
-                                              eMAId,
+        //        result = await RemoteParkingOperator.
+        //                           RemoteStop(ParkingSpaceId,
+        //                                      SessionId,
+        //                                      ReservationHandling,
+        //                                      ProviderId,
+        //                                      eMAId,
 
-                                              Timestamp,
-                                              CancellationToken,
-                                              EventTrackingId,
-                                              RequestTimeout);
+        //                                      Timestamp,
+        //                                      CancellationToken,
+        //                                      EventTrackingId,
+        //                                      RequestTimeout);
 
 
-                if (result.Result == RemoteStopEVSEResultType.Success)
-                {
+        //        if (result.Result == RemoteStopParkingSpaceResultType.Success)
+        //        {
 
-                    // The CDR could also be sent separately!
-                    if (result.ChargeDetailRecord != null)
-                    {
+        //            // The CDR could also be sent separately!
+        //            if (result.ChargeDetailRecord != null)
+        //            {
 
-                        OnNewChargeDetailRecord?.Invoke(DateTime.Now,
-                                                        this,
-                                                        result.ChargeDetailRecord);
+        //                OnNewChargeDetailRecord?.Invoke(DateTime.Now,
+        //                                                this,
+        //                                                result.ChargeDetailRecord);
 
-                    }
+        //            }
 
-                }
+        //        }
 
 
-            }
+        //    }
 
-            #endregion
+        //    #endregion
 
-            #region ...else/or try local
+        //    #region ...else/or try local
 
-            if (RemoteParkingOperator == null ||
-                 result             == null ||
-                (result             != null &&
-                (result.Result      == RemoteStopEVSEResultType.UnknownEVSE ||
-                 result.Result      == RemoteStopEVSEResultType.InvalidSessionId ||
-                 result.Result      == RemoteStopEVSEResultType.Error)))
-            {
+        //    if (RemoteParkingOperator == null ||
+        //         result             == null ||
+        //        (result             != null &&
+        //        (result.Result      == RemoteStopParkingSpaceResultType.UnknownParkingSpace ||
+        //         result.Result      == RemoteStopParkingSpaceResultType.InvalidSessionId ||
+        //         result.Result      == RemoteStopParkingSpaceResultType.Error)))
+        //    {
 
-                if (_ChargingSessions.TryGetValue(SessionId, out _ChargingPool))
-                {
+        //        if (_ChargingSessions.TryGetValue(SessionId, out _ParkingGarage))
+        //        {
 
-                    result = await _ChargingPool.
-                                       RemoteStop(EVSEId,
-                                                  SessionId,
-                                                  ReservationHandling,
-                                                  ProviderId,
-                                                  eMAId,
+        //            result = await _ParkingGarage.
+        //                               RemoteStop(ParkingSpaceId,
+        //                                          SessionId,
+        //                                          ReservationHandling,
+        //                                          ProviderId,
+        //                                          eMAId,
 
-                                                  Timestamp,
-                                                  CancellationToken,
-                                                  EventTrackingId,
-                                                  RequestTimeout);
+        //                                          Timestamp,
+        //                                          CancellationToken,
+        //                                          EventTrackingId,
+        //                                          RequestTimeout);
 
-                }
+        //        }
 
-                else {
+        //        else {
 
-                    var __CP = ChargingPools.FirstOrDefault(cp => cp.ContainsEVSE(EVSEId));
+        //            var __CP = ParkingGarages.FirstOrDefault(cp => cp.ContainsParkingSpace(ParkingSpaceId));
 
-                    if (__CP != null)
-                      result = await __CP.RemoteStop(EVSEId,
-                                                     SessionId,
-                                                     ReservationHandling,
-                                                     ProviderId,
-                                                     eMAId,
+        //            if (__CP != null)
+        //              result = await __CP.RemoteStop(ParkingSpaceId,
+        //                                             SessionId,
+        //                                             ReservationHandling,
+        //                                             ProviderId,
+        //                                             eMAId,
 
-                                                     Timestamp,
-                                                     CancellationToken,
-                                                     EventTrackingId,
-                                                     RequestTimeout);
+        //                                             Timestamp,
+        //                                             CancellationToken,
+        //                                             EventTrackingId,
+        //                                             RequestTimeout);
 
-                    else
-                        result = RemoteStopEVSEResult.InvalidSessionId(SessionId);
+        //            else
+        //                result = RemoteStopParkingSpaceResult.InvalidSessionId(SessionId);
 
-                }
+        //        }
 
-                //else
-                  //  result = RemoteStopEVSEResult.InvalidSessionId(SessionId);
+        //        //else
+        //          //  result = RemoteStopParkingSpaceResult.InvalidSessionId(SessionId);
 
-            }
+        //    }
 
-            #endregion
+        //    #endregion
 
 
-            #region Send OnRemoteEVSEStopped event
+        //    #region Send OnRemoteParkingSpaceStopped event
 
-            Runtime.Stop();
+        //    Runtime.Stop();
 
-            try
-            {
+        //    try
+        //    {
 
-                OnRemoteEVSEStopped?.Invoke(DateTime.Now,
-                                            Timestamp.Value,
-                                            this,
-                                            EventTrackingId,
-                                            RoamingNetwork.Id,
-                                            EVSEId,
-                                            SessionId,
-                                            ReservationHandling,
-                                            ProviderId,
-                                            eMAId,
-                                            RequestTimeout,
-                                            result,
-                                            Runtime.Elapsed);
+        //        OnRemoteParkingSpaceStopped?.Invoke(DateTime.Now,
+        //                                    Timestamp.Value,
+        //                                    this,
+        //                                    EventTrackingId,
+        //                                    RoamingNetwork.Id,
+        //                                    ParkingSpaceId,
+        //                                    SessionId,
+        //                                    ReservationHandling,
+        //                                    ProviderId,
+        //                                    eMAId,
+        //                                    RequestTimeout,
+        //                                    result,
+        //                                    Runtime.Elapsed);
 
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteEVSEStopped));
-            }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteParkingSpaceStopped));
+        //    }
 
-            #endregion
+        //    #endregion
 
-            return result;
+        //    return result;
 
-        }
+        //}
 
-        #endregion
+        //#endregion
 
-        #region RemoteStop(...ChargingStationId, SessionId, ReservationHandling, ProviderId = null, eMAId = null, ...)
+        //#region RemoteStop(...ParkingGarageId, SessionId, ReservationHandling, ProviderId = null, eMAId = null, ...)
 
-        /// <summary>
-        /// Stop the given charging session at the given charging station.
-        /// </summary>
-        /// <param name="ChargingStationId">The unique identification of the charging station to be stopped.</param>
-        /// <param name="SessionId">The unique identification for this charging session.</param>
-        /// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
-        /// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
-        /// <param name="eMAId">The unique identification of the e-mobility account.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<RemoteStopChargingStationResult>
+        ///// <summary>
+        ///// Stop the given charging session at the given charging station.
+        ///// </summary>
+        ///// <param name="ParkingGarageId">The unique identification of the charging station to be stopped.</param>
+        ///// <param name="SessionId">The unique identification for this charging session.</param>
+        ///// <param name="ReservationHandling">Whether to remove the reservation after session end, or to keep it open for some more time.</param>
+        ///// <param name="ProviderId">The unique identification of the e-mobility service provider.</param>
+        ///// <param name="eMAId">The unique identification of the e-mobility account.</param>
+        ///// 
+        ///// <param name="Timestamp">The optional timestamp of the request.</param>
+        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
+        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
+        //public async Task<RemoteStopParkingGarageResult>
 
-            RemoteStop(ChargingStation_Id     ChargingStationId,
-                       ChargingSession_Id     SessionId,
-                       ReservationHandling    ReservationHandling,
-                       eMobilityProvider_Id?  ProviderId          = null,
-                       eMobilityAccount_Id?   eMAId               = null,
+        //    RemoteStop(ParkingGarage_Id     ParkingGarageId,
+        //               ChargingSession_Id     SessionId,
+        //               ReservationHandling    ReservationHandling,
+        //               eMobilityProvider_Id?  ProviderId          = null,
+        //               eMobilityAccount_Id?   eMAId               = null,
 
-                       DateTime?              Timestamp           = null,
-                       CancellationToken?     CancellationToken   = null,
-                       EventTracking_Id       EventTrackingId     = null,
-                       TimeSpan?              RequestTimeout      = null)
+        //               DateTime?              Timestamp           = null,
+        //               CancellationToken?     CancellationToken   = null,
+        //               EventTracking_Id       EventTrackingId     = null,
+        //               TimeSpan?              RequestTimeout      = null)
 
-        {
+        //{
 
-            #region Initial checks
+        //    #region Initial checks
 
-            if (ChargingStationId == null)
-                throw new ArgumentNullException(nameof(ChargingStationId),  "The given charging station identification must not be null!");
+        //    if (ParkingGarageId == null)
+        //        throw new ArgumentNullException(nameof(ParkingGarageId),  "The given charging station identification must not be null!");
 
-            if (SessionId == null)
-                throw new ArgumentNullException(nameof(SessionId),          "The given charging session identification must not be null!");
+        //    if (SessionId == null)
+        //        throw new ArgumentNullException(nameof(SessionId),          "The given charging session identification must not be null!");
 
-            RemoteStopChargingStationResult result        = null;
-            ChargingPool                   _ChargingPool  = null;
+        //    RemoteStopParkingGarageResult result        = null;
+        //    ParkingGarage                   _ParkingGarage  = null;
 
-            if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+        //    if (!Timestamp.HasValue)
+        //        Timestamp = DateTime.Now;
 
-            if (EventTrackingId == null)
-                EventTrackingId = EventTracking_Id.New;
+        //    if (EventTrackingId == null)
+        //        EventTrackingId = EventTracking_Id.New;
 
-            #endregion
+        //    #endregion
 
-            #region Send OnRemoteChargingStationStop event
+        //    #region Send OnRemoteParkingGarageStop event
 
-            var Runtime = Stopwatch.StartNew();
+        //    var Runtime = Stopwatch.StartNew();
 
-            try
-            {
+        //    try
+        //    {
 
-                OnRemoteChargingStationStop?.Invoke(DateTime.Now,
-                                                    Timestamp.Value,
-                                                    this,
-                                                    EventTrackingId,
-                                                    RoamingNetwork.Id,
-                                                    ChargingStationId,
-                                                    SessionId,
-                                                    ReservationHandling,
-                                                    ProviderId,
-                                                    eMAId,
-                                                    RequestTimeout);
+        //        OnRemoteParkingGarageStop?.Invoke(DateTime.Now,
+        //                                            Timestamp.Value,
+        //                                            this,
+        //                                            EventTrackingId,
+        //                                            RoamingNetwork.Id,
+        //                                            ParkingGarageId,
+        //                                            SessionId,
+        //                                            ReservationHandling,
+        //                                            ProviderId,
+        //                                            eMAId,
+        //                                            RequestTimeout);
 
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteChargingStationStop));
-            }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteParkingGarageStop));
+        //    }
 
-            #endregion
+        //    #endregion
 
 
-            #region Try remote Charging Station Operator...
+        //    #region Try remote Charging Station Operator...
 
-            if (RemoteParkingOperator != null)
-            {
+        //    if (RemoteParkingOperator != null)
+        //    {
 
-                result = await RemoteParkingOperator.
-                                   RemoteStop(ChargingStationId,
-                                              SessionId,
-                                              ReservationHandling,
-                                              ProviderId,
-                                              eMAId,
+        //        result = await RemoteParkingOperator.
+        //                           RemoteStop(ParkingGarageId,
+        //                                      SessionId,
+        //                                      ReservationHandling,
+        //                                      ProviderId,
+        //                                      eMAId,
 
-                                              Timestamp,
-                                              CancellationToken,
-                                              EventTrackingId,
-                                              RequestTimeout);
+        //                                      Timestamp,
+        //                                      CancellationToken,
+        //                                      EventTrackingId,
+        //                                      RequestTimeout);
 
 
-                if (result.Result == RemoteStopChargingStationResultType.Success)
-                {
+        //        if (result.Result == RemoteStopParkingGarageResultType.Success)
+        //        {
 
-                    // The CDR could also be sent separately!
-                    if (result.ChargeDetailRecord != null)
-                    {
+        //            // The CDR could also be sent separately!
+        //            if (result.ChargeDetailRecord != null)
+        //            {
 
-                        OnNewChargeDetailRecord?.Invoke(DateTime.Now,
-                                                        this,
-                                                        result.ChargeDetailRecord);
+        //                OnNewChargeDetailRecord?.Invoke(DateTime.Now,
+        //                                                this,
+        //                                                result.ChargeDetailRecord);
 
-                    }
+        //            }
 
-                }
+        //        }
 
 
-            }
+        //    }
 
-            #endregion
+        //    #endregion
 
-            #region ...else/or try local
+        //    #region ...else/or try local
 
-            if (RemoteParkingOperator == null ||
-                (result             != null &&
-                (result.Result      == RemoteStopChargingStationResultType.UnknownChargingStation ||
-                 result.Result      == RemoteStopChargingStationResultType.InvalidSessionId ||
-                 result.Result      == RemoteStopChargingStationResultType.Error)))
-            {
+        //    if (RemoteParkingOperator == null ||
+        //        (result             != null &&
+        //        (result.Result      == RemoteStopParkingGarageResultType.UnknownParkingGarage ||
+        //         result.Result      == RemoteStopParkingGarageResultType.InvalidSessionId ||
+        //         result.Result      == RemoteStopParkingGarageResultType.Error)))
+        //    {
 
-                if (_ChargingSessions.TryGetValue(SessionId, out _ChargingPool))
-                {
+        //        if (_ChargingSessions.TryGetValue(SessionId, out _ParkingGarage))
+        //        {
 
-                    result = await _ChargingPool.
-                                       RemoteStop(ChargingStationId,
-                                                  SessionId,
-                                                  ReservationHandling,
-                                                  ProviderId,
-                                                  eMAId,
+        //            result = await _ParkingGarage.
+        //                               RemoteStop(ParkingGarageId,
+        //                                          SessionId,
+        //                                          ReservationHandling,
+        //                                          ProviderId,
+        //                                          eMAId,
 
-                                                  Timestamp,
-                                                  CancellationToken,
-                                                  EventTrackingId,
-                                                  RequestTimeout);
+        //                                          Timestamp,
+        //                                          CancellationToken,
+        //                                          EventTrackingId,
+        //                                          RequestTimeout);
 
-                }
+        //        }
 
-                else
-                    result = RemoteStopChargingStationResult.InvalidSessionId(SessionId);
+        //        else
+        //            result = RemoteStopParkingGarageResult.InvalidSessionId(SessionId);
 
-            }
+        //    }
 
-            #endregion
+        //    #endregion
 
 
-            #region Send OnRemoteChargingStationStopped event
+        //    #region Send OnRemoteParkingGarageStopped event
 
-            Runtime.Stop();
+        //    Runtime.Stop();
 
-            try
-            {
+        //    try
+        //    {
 
-                OnRemoteChargingStationStopped?.Invoke(DateTime.Now,
-                                                       Timestamp.Value,
-                                                       this,
-                                                       EventTrackingId,
-                                                       RoamingNetwork.Id,
-                                                       ChargingStationId,
-                                                       SessionId,
-                                                       ReservationHandling,
-                                                       ProviderId,
-                                                       eMAId,
-                                                       RequestTimeout,
-                                                       result,
-                                                       Runtime.Elapsed);
+        //        OnRemoteParkingGarageStopped?.Invoke(DateTime.Now,
+        //                                               Timestamp.Value,
+        //                                               this,
+        //                                               EventTrackingId,
+        //                                               RoamingNetwork.Id,
+        //                                               ParkingGarageId,
+        //                                               SessionId,
+        //                                               ReservationHandling,
+        //                                               ProviderId,
+        //                                               eMAId,
+        //                                               RequestTimeout,
+        //                                               result,
+        //                                               Runtime.Elapsed);
 
-            }
-            catch (Exception e)
-            {
-                e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteChargingStationStopped));
-            }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        e.Log(nameof(ParkingOperator) + "." + nameof(OnRemoteParkingGarageStopped));
+        //    }
 
-            #endregion
+        //    #endregion
 
-            return result;
+        //    return result;
 
-        }
+        //}
 
-        #endregion
+        //#endregion
 
-        #region (internal) SendNewChargeDetailRecord(Timestamp, Sender, ChargeDetailRecord)
+        //#region (internal) SendNewChargeDetailRecord(Timestamp, Sender, ChargeDetailRecord)
 
-        internal void SendNewChargeDetailRecord(DateTime            Timestamp,
-                                                Object              Sender,
-                                                ChargeDetailRecord  ChargeDetailRecord)
-        {
+        //internal void SendNewChargeDetailRecord(DateTime            Timestamp,
+        //                                        Object              Sender,
+        //                                        ChargeDetailRecord  ChargeDetailRecord)
+        //{
 
-            OnNewChargeDetailRecord?.Invoke(Timestamp, Sender, ChargeDetailRecord);
+        //    OnNewChargeDetailRecord?.Invoke(Timestamp, Sender, ChargeDetailRecord);
 
-        }
+        //}
 
-        #endregion
+        //#endregion
 
         #endregion
 
@@ -3977,12 +3965,12 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 throw new ArgumentNullException("The given object must not be null!");
 
-            // Check if the given object is an EVSE_Operator.
-            var EVSE_Operator = Object as ParkingOperator;
-            if ((Object) EVSE_Operator == null)
-                throw new ArgumentException("The given object is not an EVSE_Operator!");
+            // Check if the given object is an ParkingSpace_Operator.
+            var ParkingSpace_Operator = Object as ParkingOperator;
+            if ((Object) ParkingSpace_Operator == null)
+                throw new ArgumentException("The given object is not an ParkingSpace_Operator!");
 
-            return CompareTo(EVSE_Operator);
+            return CompareTo(ParkingSpace_Operator);
 
         }
 
@@ -4024,11 +4012,11 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is an ParkingOperator.
-            var EVSE_Operator = Object as ParkingOperator;
-            if ((Object) EVSE_Operator == null)
+            var ParkingSpace_Operator = Object as ParkingOperator;
+            if ((Object) ParkingSpace_Operator == null)
                 return false;
 
-            return this.Equals(EVSE_Operator);
+            return this.Equals(ParkingSpace_Operator);
 
         }
 

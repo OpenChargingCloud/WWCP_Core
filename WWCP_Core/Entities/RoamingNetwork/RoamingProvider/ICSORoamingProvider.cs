@@ -41,17 +41,17 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the roaming provider.
         /// </summary>
-        CSORoamingProvider_Id  Id                               { get; }
+        CSORoamingProvider_Id  Id               { get; }
 
         /// <summary>
         /// The offical (multi-language) name of the roaming provider.
         /// </summary>
-        I18NString             Name                             { get; }
+        I18NString             Name             { get; }
 
         /// <summary>
         /// The hosting WWCP roaming network.
         /// </summary>
-        RoamingNetwork         RoamingNetwork                   { get; }
+        RoamingNetwork         RoamingNetwork   { get; }
 
         #endregion
 

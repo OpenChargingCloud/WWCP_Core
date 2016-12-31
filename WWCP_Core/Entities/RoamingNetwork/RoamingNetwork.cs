@@ -909,27 +909,27 @@ namespace org.GraphDefined.WWCP
                 _ParkingOperator.OnStatusChanged                               += UpdateStatus;
                 _ParkingOperator.OnAdminStatusChanged                          += UpdateAdminStatus;
 
-                _ParkingOperator.OnChargingPoolDataChanged                     += UpdateChargingPoolData;
-                _ParkingOperator.OnChargingPoolStatusChanged                   += UpdateChargingPoolStatus;
-                _ParkingOperator.OnChargingPoolAdminStatusChanged              += UpdateChargingPoolAdminStatus;
+                //_ParkingOperator.OnChargingPoolDataChanged                     += UpdateChargingPoolData;
+                //_ParkingOperator.OnChargingPoolStatusChanged                   += UpdateChargingPoolStatus;
+                //_ParkingOperator.OnChargingPoolAdminStatusChanged              += UpdateChargingPoolAdminStatus;
 
                 //_ParkingOperator.OnDataChanged                  += UpdateParkingData;
                 //_ParkingOperator.OnStatusChanged                += UpdateParkingStatus;
                 //_ParkingOperator.OnAdminStatusChanged           += UpdateParkingAdminStatus;
 
-                //_cso.EVSEAddition.OnVoting                         += SendEVSEAdding;
-                _ParkingOperator.EVSEAddition.OnNotification                   += SendEVSEAdded;
-                //_cso.EVSERemoval.OnVoting                          += SendEVSERemoving;
-                _ParkingOperator.EVSERemoval.OnNotification                    += SendEVSERemoved;
-                _ParkingOperator.OnEVSEDataChanged                             += UpdateEVSEData;
-                _ParkingOperator.OnEVSEStatusChanged                           += UpdateEVSEStatus;
-                _ParkingOperator.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
+                ////_cso.EVSEAddition.OnVoting                         += SendEVSEAdding;
+                //_ParkingOperator.EVSEAddition.OnNotification                   += SendEVSEAdded;
+                ////_cso.EVSERemoval.OnVoting                          += SendEVSERemoving;
+                //_ParkingOperator.EVSERemoval.OnNotification                    += SendEVSERemoved;
+                //_ParkingOperator.OnEVSEDataChanged                             += UpdateEVSEData;
+                //_ParkingOperator.OnEVSEStatusChanged                           += UpdateEVSEStatus;
+                //_ParkingOperator.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
 
 
                 _ParkingOperator.OnNewReservation                              += SendNewReservation;
                 _ParkingOperator.OnReservationCancelled                        += SendOnReservationCancelled;
-                _ParkingOperator.OnNewChargingSession                          += SendNewChargingSession;
-                _ParkingOperator.OnNewChargeDetailRecord                       += SendNewChargeDetailRecord;
+                //_ParkingOperator.OnNewChargingSession                          += SendNewChargingSession;
+                //_ParkingOperator.OnNewChargeDetailRecord                       += SendNewChargeDetailRecord;
 
                 return _ParkingOperator;
 
@@ -3560,37 +3560,37 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever an EVSE is being reserved.
         /// </summary>
-        public event OnReserveEVSERequestDelegate              OnReserveEVSE;
+        public event OnReserveEVSERequestDelegate              OnReserveEVSERequest;
 
         /// <summary>
         /// An event fired whenever an EVSE was reserved.
         /// </summary>
-        public event OnReserveEVSEResponseDelegate             OnEVSEReserved;
+        public event OnReserveEVSEResponseDelegate             OnReserveEVSEResponse;
 
         /// <summary>
         /// An event fired whenever a charging station is being reserved.
         /// </summary>
-        public event OnChargingStationReserveDelegate   OnReserveChargingStation;
+        public event OnReserveChargingStationRequestDelegate   OnReserveChargingStationRequest;
 
         /// <summary>
         /// An event fired whenever a charging station was reserved.
         /// </summary>
-        public event OnChargingStationReservedDelegate  OnChargingStationReserved;
+        public event OnReserveChargingStationResponseDelegate  OnReserveChargingStationResponse;
 
         /// <summary>
         /// An event fired whenever a charging pool is being reserved.
         /// </summary>
-        public event OnChargingPoolReserveDelegate      OnReserveChargingPool;
+        public event OnReserveChargingPoolRequestDelegate      OnReserveChargingPoolRequest;
 
         /// <summary>
         /// An event fired whenever a charging pool was reserved.
         /// </summary>
-        public event OnChargingPoolReservedDelegate     OnChargingPoolReserved;
+        public event OnReserveChargingPoolResponseDelegate     OnReserveChargingPoolResponse;
 
         /// <summary>
         /// An event fired whenever a new charging reservation was created.
         /// </summary>
-        public event OnNewReservationDelegate           OnNewReservation;
+        public event OnNewReservationDelegate                  OnNewReservation;
 
         #endregion
 
@@ -3605,7 +3605,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-        /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
+        /// <param name="ChargingProduct">The charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
@@ -3622,7 +3622,7 @@ namespace org.GraphDefined.WWCP
                     ChargingReservation_Id?           ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
                     eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id?               ChargingProductId   = null,
+                    ChargingProduct                   ChargingProduct     = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                     IEnumerable<UInt32>               PINs                = null,
@@ -3653,34 +3653,34 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region Send OnReserveEVSE event
+            #region Send OnReserveEVSERequest event
 
             var Runtime = Stopwatch.StartNew();
 
             try
             {
 
-                OnReserveEVSE?.Invoke(DateTime.Now,
-                                      Timestamp.Value,
-                                      this,
-                                      EventTrackingId,
-                                      Id,
-                                      ReservationId,
-                                      EVSEId,
-                                      StartTime,
-                                      Duration,
-                                      ProviderId,
-                                      eMAId,
-                                      ChargingProductId,
-                                      AuthTokens,
-                                      eMAIds,
-                                      PINs,
-                                      RequestTimeout);
+                OnReserveEVSERequest?.Invoke(DateTime.Now,
+                                             Timestamp.Value,
+                                             this,
+                                             EventTrackingId,
+                                             Id,
+                                             ReservationId,
+                                             EVSEId,
+                                             StartTime,
+                                             Duration,
+                                             ProviderId,
+                                             eMAId,
+                                             ChargingProduct,
+                                             AuthTokens,
+                                             eMAIds,
+                                             PINs,
+                                             RequestTimeout);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnReserveEVSE));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnReserveEVSERequest));
             }
 
             #endregion
@@ -3689,21 +3689,22 @@ namespace org.GraphDefined.WWCP
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _ChargingStationOperator))
             {
 
-                result = await _ChargingStationOperator.Reserve(EVSEId,
-                                                                StartTime,
-                                                                Duration,
-                                                                ReservationId,
-                                                                ProviderId,
-                                                                eMAId,
-                                                                ChargingProductId,
-                                                                AuthTokens,
-                                                                eMAIds,
-                                                                PINs,
+                result = await _ChargingStationOperator.
+                                   Reserve(EVSEId,
+                                           StartTime,
+                                           Duration,
+                                           ReservationId,
+                                           ProviderId,
+                                           eMAId,
+                                           ChargingProduct,
+                                           AuthTokens,
+                                           eMAIds,
+                                           PINs,
 
-                                                                Timestamp,
-                                                                CancellationToken,
-                                                                EventTrackingId,
-                                                                RequestTimeout);
+                                           Timestamp,
+                                           CancellationToken,
+                                           EventTrackingId,
+                                           RequestTimeout);
 
                 if (result.Result == ReservationResultType.Success)
                     _ChargingReservations_AtChargingStationOperators.TryAdd(result.Reservation.Id, _ChargingStationOperator);
@@ -3718,21 +3719,22 @@ namespace org.GraphDefined.WWCP
                                                       Select (EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Value))
                 {
 
-                    result = await EMPRoamingService.Reserve(EVSEId,
-                                                             StartTime,
-                                                             Duration,
-                                                             ReservationId,
-                                                             ProviderId,
-                                                             eMAId,
-                                                             ChargingProductId,
-                                                             AuthTokens,
-                                                             eMAIds,
-                                                             PINs,
+                    result = await EMPRoamingService.
+                                       Reserve(EVSEId,
+                                               StartTime,
+                                               Duration,
+                                               ReservationId,
+                                               ProviderId,
+                                               eMAId,
+                                               ChargingProduct,
+                                               AuthTokens,
+                                               eMAIds,
+                                               PINs,
 
-                                                             Timestamp,
-                                                             CancellationToken,
-                                                             EventTrackingId,
-                                                             RequestTimeout);
+                                               Timestamp,
+                                               CancellationToken,
+                                               EventTrackingId,
+                                               RequestTimeout);
 
 
                     if (result.Result == ReservationResultType.Success)
@@ -3751,36 +3753,36 @@ namespace org.GraphDefined.WWCP
                 result = ReservationResult.UnknownChargingStationOperator;
 
 
-            #region Send OnEVSEReserved event
+            #region Send OnReserveEVSEResponse event
 
             Runtime.Stop();
 
             try
             {
 
-                OnEVSEReserved?.Invoke(DateTime.Now,
-                                       Timestamp.Value,
-                                       this,
-                                       EventTrackingId,
-                                       Id,
-                                       ReservationId,
-                                       EVSEId,
-                                       StartTime,
-                                       Duration,
-                                       ProviderId,
-                                       eMAId,
-                                       ChargingProductId,
-                                       AuthTokens,
-                                       eMAIds,
-                                       PINs,
-                                       result,
-                                       Runtime.Elapsed,
-                                       RequestTimeout);
+                OnReserveEVSEResponse?.Invoke(DateTime.Now,
+                                              Timestamp.Value,
+                                              this,
+                                              EventTrackingId,
+                                              Id,
+                                              ReservationId,
+                                              EVSEId,
+                                              StartTime,
+                                              Duration,
+                                              ProviderId,
+                                              eMAId,
+                                              ChargingProduct,
+                                              AuthTokens,
+                                              eMAIds,
+                                              PINs,
+                                              result,
+                                              Runtime.Elapsed,
+                                              RequestTimeout);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnEVSEReserved));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnReserveEVSEResponse));
             }
 
             #endregion
@@ -3802,7 +3804,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-        /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
+        /// <param name="ChargingProduct">The charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
@@ -3819,7 +3821,7 @@ namespace org.GraphDefined.WWCP
                     ChargingReservation_Id?           ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
                     eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id?               ChargingProductId   = null,
+                    ChargingProduct                   ChargingProduct     = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                     IEnumerable<UInt32>               PINs                = null,
@@ -3850,34 +3852,34 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region Send OnReserveChargingStation event
+            #region Send OnReserveChargingStationRequest event
 
             var Runtime = Stopwatch.StartNew();
 
             try
             {
 
-                OnReserveChargingStation?.Invoke(DateTime.Now,
-                                                 Timestamp.Value,
-                                                 this,
-                                                 EventTrackingId,
-                                                 Id,
-                                                 ChargingStationId,
-                                                 StartTime,
-                                                 Duration,
-                                                 ReservationId,
-                                                 ProviderId,
-                                                 eMAId,
-                                                 ChargingProductId,
-                                                 AuthTokens,
-                                                 eMAIds,
-                                                 PINs,
-                                                 RequestTimeout);
+                OnReserveChargingStationRequest?.Invoke(DateTime.Now,
+                                                        Timestamp.Value,
+                                                        this,
+                                                        EventTrackingId,
+                                                        Id,
+                                                        ChargingStationId,
+                                                        StartTime,
+                                                        Duration,
+                                                        ReservationId,
+                                                        ProviderId,
+                                                        eMAId,
+                                                        ChargingProduct,
+                                                        AuthTokens,
+                                                        eMAIds,
+                                                        PINs,
+                                                        RequestTimeout);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnReserveChargingStation));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnReserveChargingStationRequest));
             }
 
             #endregion
@@ -3886,21 +3888,22 @@ namespace org.GraphDefined.WWCP
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out _ChargingStationOperator))
             {
 
-                result = await _ChargingStationOperator.Reserve(ChargingStationId,
-                                                                StartTime,
-                                                                Duration,
-                                                                ReservationId,
-                                                                ProviderId,
-                                                                eMAId,
-                                                                ChargingProductId,
-                                                                AuthTokens,
-                                                                eMAIds,
-                                                                PINs,
+                result = await _ChargingStationOperator.
+                                   Reserve(ChargingStationId,
+                                           StartTime,
+                                           Duration,
+                                           ReservationId,
+                                           ProviderId,
+                                           eMAId,
+                                           ChargingProduct,
+                                           AuthTokens,
+                                           eMAIds,
+                                           PINs,
 
-                                                                Timestamp,
-                                                                CancellationToken,
-                                                                EventTrackingId,
-                                                                RequestTimeout);
+                                           Timestamp,
+                                           CancellationToken,
+                                           EventTrackingId,
+                                           RequestTimeout);
 
                 if (result.Result == ReservationResultType.Success)
                     _ChargingReservations_AtChargingStationOperators.TryAdd(result.Reservation.Id, _ChargingStationOperator);
@@ -3911,36 +3914,36 @@ namespace org.GraphDefined.WWCP
                 result = ReservationResult.UnknownChargingStationOperator;
 
 
-            #region Send OnChargingStationReserved event
+            #region Send OnReserveChargingStationResponse event
 
             Runtime.Stop();
 
             try
             {
 
-                OnChargingStationReserved?.Invoke(DateTime.Now,
-                                                  Timestamp.Value,
-                                                  this,
-                                                  EventTrackingId,
-                                                  Id,
-                                                  ChargingStationId,
-                                                  StartTime,
-                                                  Duration,
-                                                  ReservationId,
-                                                  ProviderId,
-                                                  eMAId,
-                                                  ChargingProductId,
-                                                  AuthTokens,
-                                                  eMAIds,
-                                                  PINs,
-                                                  result,
-                                                  Runtime.Elapsed,
-                                                  RequestTimeout);
+                OnReserveChargingStationResponse?.Invoke(DateTime.Now,
+                                                         Timestamp.Value,
+                                                         this,
+                                                         EventTrackingId,
+                                                         Id,
+                                                         ChargingStationId,
+                                                         StartTime,
+                                                         Duration,
+                                                         ReservationId,
+                                                         ProviderId,
+                                                         eMAId,
+                                                         ChargingProduct,
+                                                         AuthTokens,
+                                                         eMAIds,
+                                                         PINs,
+                                                         result,
+                                                         Runtime.Elapsed,
+                                                         RequestTimeout);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnChargingStationReserved));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnReserveChargingStationResponse));
             }
 
             #endregion
@@ -3979,7 +3982,7 @@ namespace org.GraphDefined.WWCP
                     ChargingReservation_Id?           ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
                     eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id?               ChargingProductId   = null,
+                    ChargingProduct                   ChargingProduct     = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                     IEnumerable<UInt32>               PINs                = null,
@@ -4010,34 +4013,34 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region Send OnReserveChargingPool event
+            #region Send OnReserveChargingPoolRequest event
 
             var Runtime = Stopwatch.StartNew();
 
             try
             {
 
-                OnReserveChargingPool?.Invoke(DateTime.Now,
-                                              Timestamp.Value,
-                                              this,
-                                              EventTrackingId,
-                                              Id,
-                                              ChargingPoolId,
-                                              StartTime,
-                                              Duration,
-                                              ReservationId,
-                                              ProviderId,
-                                              eMAId,
-                                              ChargingProductId,
-                                              AuthTokens,
-                                              eMAIds,
-                                              PINs,
-                                              RequestTimeout);
+                OnReserveChargingPoolRequest?.Invoke(DateTime.Now,
+                                                     Timestamp.Value,
+                                                     this,
+                                                     EventTrackingId,
+                                                     Id,
+                                                     ChargingPoolId,
+                                                     StartTime,
+                                                     Duration,
+                                                     ReservationId,
+                                                     ProviderId,
+                                                     eMAId,
+                                                     ChargingProduct,
+                                                     AuthTokens,
+                                                     eMAIds,
+                                                     PINs,
+                                                     RequestTimeout);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnReserveChargingPool));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnReserveChargingPoolRequest));
             }
 
             #endregion
@@ -4046,21 +4049,22 @@ namespace org.GraphDefined.WWCP
             if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out _ChargingStationOperator))
             {
 
-                result = await _ChargingStationOperator.Reserve(ChargingPoolId,
-                                                                StartTime,
-                                                                Duration,
-                                                                ReservationId,
-                                                                ProviderId,
-                                                                eMAId,
-                                                                ChargingProductId,
-                                                                AuthTokens,
-                                                                eMAIds,
-                                                                PINs,
+                result = await _ChargingStationOperator.
+                                   Reserve(ChargingPoolId,
+                                           StartTime,
+                                           Duration,
+                                           ReservationId,
+                                           ProviderId,
+                                           eMAId,
+                                           ChargingProduct,
+                                           AuthTokens,
+                                           eMAIds,
+                                           PINs,
 
-                                                                Timestamp,
-                                                                CancellationToken,
-                                                                EventTrackingId,
-                                                                RequestTimeout);
+                                           Timestamp,
+                                           CancellationToken,
+                                           EventTrackingId,
+                                           RequestTimeout);
 
                 if (result.Result == ReservationResultType.Success)
                     _ChargingReservations_AtChargingStationOperators.TryAdd(result.Reservation.Id, _ChargingStationOperator);
@@ -4071,36 +4075,36 @@ namespace org.GraphDefined.WWCP
                 result = ReservationResult.UnknownChargingStationOperator;
 
 
-            #region Send OnEVSEReserved event
+            #region Send OnReserveChargingPoolResponse event
 
             Runtime.Stop();
 
             try
             {
 
-                OnChargingPoolReserved?.Invoke(DateTime.Now,
-                                               Timestamp.Value,
-                                               this,
-                                               EventTrackingId,
-                                               Id,
-                                               ChargingPoolId,
-                                               StartTime,
-                                               Duration,
-                                               ReservationId,
-                                               ProviderId,
-                                               eMAId,
-                                               ChargingProductId,
-                                               AuthTokens,
-                                               eMAIds,
-                                               PINs,
-                                               result,
-                                               Runtime.Elapsed,
-                                               RequestTimeout);
+                OnReserveChargingPoolResponse?.Invoke(DateTime.Now,
+                                                      Timestamp.Value,
+                                                      this,
+                                                      EventTrackingId,
+                                                      Id,
+                                                      ChargingPoolId,
+                                                      StartTime,
+                                                      Duration,
+                                                      ReservationId,
+                                                      ProviderId,
+                                                      eMAId,
+                                                      ChargingProduct,
+                                                      AuthTokens,
+                                                      eMAIds,
+                                                      PINs,
+                                                      result,
+                                                      Runtime.Elapsed,
+                                                      RequestTimeout);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(RoamingNetwork) + "." + nameof(OnChargingPoolReserved));
+                e.Log(nameof(RoamingNetwork) + "." + nameof(OnReserveChargingPoolResponse));
             }
 
             #endregion
@@ -4384,15 +4388,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RemoteStart(EVSEId,            ChargingProductId = null, ReservationId = null, SessionId = null, ProviderId = null, eMAId = null, ...)
+        #region RemoteStart(EVSEId,            ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, eMAId = null, ...)
 
         /// <summary>
         /// Start a charging session at the given EVSE.
         /// </summary>
         /// <param name="EVSEId">The unique identification of the EVSE to be started.</param>
-        /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
-        /// <param name="PlannedDuration">An optional maximum time span to charge. When it is reached, the charging process will stop automatically.</param>
-        /// <param name="PlannedEnergy">An optional maximum amount of energy to charge. When it is reached, the charging process will stop automatically.</param>
+        /// <param name="ChargingProduct">The choosen charging product.</param>
         /// <param name="ReservationId">Use the given optinal unique charging reservation identification for charging.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
@@ -4405,9 +4407,7 @@ namespace org.GraphDefined.WWCP
         public async Task<RemoteStartEVSEResult>
 
             RemoteStart(EVSE_Id                  EVSEId,
-                        ChargingProduct_Id?      ChargingProductId   = null,
-                        TimeSpan?                PlannedDuration     = null,
-                        Single?                  PlannedEnergy       = null,
+                        ChargingProduct          ChargingProduct     = null,
                         ChargingReservation_Id?  ReservationId       = null,
                         ChargingSession_Id?      SessionId           = null,
                         eMobilityProvider_Id?    ProviderId          = null,
@@ -4449,9 +4449,7 @@ namespace org.GraphDefined.WWCP
                                           EventTrackingId,
                                           Id,
                                           EVSEId,
-                                          ChargingProductId,
-                                          PlannedDuration,
-                                          PlannedEnergy,
+                                          ChargingProduct,
                                           ReservationId,
                                           SessionId,
                                           ProviderId,
@@ -4472,9 +4470,7 @@ namespace org.GraphDefined.WWCP
 
                 result = await _ChargingStationOperator.
                                    RemoteStart(EVSEId,
-                                               ChargingProductId,
-                                               PlannedDuration,
-                                               PlannedEnergy,
+                                               ChargingProduct,
                                                ReservationId,
                                                SessionId,
                                                ProviderId,
@@ -4499,19 +4495,18 @@ namespace org.GraphDefined.WWCP
                                                       Select (EMPRoamingServiceWithPriority => EMPRoamingServiceWithPriority.Value))
                 {
 
-                    result = await EMPRoamingService.RemoteStart(EVSEId,
-                                                                 ChargingProductId,
-                                                                 PlannedDuration,
-                                                                 PlannedEnergy,
-                                                                 ReservationId,
-                                                                 SessionId,
-                                                                 ProviderId,
-                                                                 eMAId,
+                    result = await EMPRoamingService.
+                                       RemoteStart(EVSEId,
+                                                   ChargingProduct,
+                                                   ReservationId,
+                                                   SessionId,
+                                                   ProviderId,
+                                                   eMAId,
 
-                                                                 Timestamp,
-                                                                 CancellationToken,
-                                                                 EventTrackingId,
-                                                                 RequestTimeout);
+                                                   Timestamp,
+                                                   CancellationToken,
+                                                   EventTrackingId,
+                                                   RequestTimeout);
 
 
                     if (result.Result == RemoteStartEVSEResultType.Success)
@@ -4538,9 +4533,7 @@ namespace org.GraphDefined.WWCP
                                             EventTrackingId,
                                             Id,
                                             EVSEId,
-                                            ChargingProductId,
-                                            PlannedDuration,
-                                            PlannedEnergy,
+                                            ChargingProduct,
                                             ReservationId,
                                             SessionId,
                                             ProviderId,
@@ -4563,13 +4556,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RemoteStart(ChargingStationId, ChargingProductId = null, ReservationId = null, SessionId = null, ProviderId = null, eMAId = null, ...)
+        #region RemoteStart(ChargingStationId, ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, eMAId = null, ...)
 
         /// <summary>
         /// Start a charging session at the given charging station.
         /// </summary>
         /// <param name="ChargingStationId">The unique identification of the charging station to be started.</param>
-        /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
+        /// <param name="ChargingProduct">The choosen charging product.</param>
         /// <param name="ReservationId">The unique identification for a charging reservation.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
@@ -4582,7 +4575,7 @@ namespace org.GraphDefined.WWCP
         public async Task<RemoteStartChargingStationResult>
 
             RemoteStart(ChargingStation_Id       ChargingStationId,
-                        ChargingProduct_Id?      ChargingProductId   = null,
+                        ChargingProduct          ChargingProduct     = null,
                         ChargingReservation_Id?  ReservationId       = null,
                         ChargingSession_Id?      SessionId           = null,
                         eMobilityProvider_Id?    ProviderId          = null,
@@ -4627,7 +4620,7 @@ namespace org.GraphDefined.WWCP
                                                      EventTrackingId,
                                                      Id,
                                                      ChargingStationId,
-                                                     ChargingProductId,
+                                                     ChargingProduct,
                                                      ReservationId,
                                                      SessionId,
                                                      ProviderId,
@@ -4646,17 +4639,18 @@ namespace org.GraphDefined.WWCP
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out _ChargingStationOperator))
             {
 
-                result = await _ChargingStationOperator.RemoteStart(ChargingStationId,
-                                                                    ChargingProductId,
-                                                                    ReservationId,
-                                                                    SessionId,
-                                                                    ProviderId,
-                                                                    eMAId,
+                result = await _ChargingStationOperator.
+                                   RemoteStart(ChargingStationId,
+                                               ChargingProduct,
+                                               ReservationId,
+                                               SessionId,
+                                               ProviderId,
+                                               eMAId,
 
-                                                                    Timestamp,
-                                                                    CancellationToken,
-                                                                    EventTrackingId,
-                                                                    RequestTimeout);
+                                               Timestamp,
+                                               CancellationToken,
+                                               EventTrackingId,
+                                               RequestTimeout);
 
 
                 if (result.Result == RemoteStartChargingStationResultType.Success)
@@ -4679,7 +4673,7 @@ namespace org.GraphDefined.WWCP
                                                        EventTrackingId,
                                                        Id,
                                                        ChargingStationId,
-                                                       ChargingProductId,
+                                                       ChargingProduct,
                                                        ReservationId,
                                                        SessionId,
                                                        ProviderId,
@@ -5241,13 +5235,13 @@ namespace org.GraphDefined.WWCP
 
         #region AuthorizeStart/-Stop
 
-        #region AuthorizeStart(AuthToken,                    ChargingProductId = null, SessionId = null, OperatorId = null, ...)
+        #region AuthorizeStart(AuthToken,                    ChargingProduct = null, SessionId = null, OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize start request.
         /// </summary>
         /// <param name="AuthToken">A (RFID) user identification.</param>
-        /// <param name="ChargingProductId">An optional charging product identification.</param>
+        /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
@@ -5258,7 +5252,7 @@ namespace org.GraphDefined.WWCP
         public async Task<AuthStartResult>
 
             AuthorizeStart(Auth_Token                   AuthToken,
-                           ChargingProduct_Id?          ChargingProductId   = null,
+                           ChargingProduct              ChargingProduct     = null,
                            ChargingSession_Id?          SessionId           = null,
                            ChargingStationOperator_Id?  OperatorId          = null,
 
@@ -5302,7 +5296,7 @@ namespace org.GraphDefined.WWCP
                                                 Id,
                                                 OperatorId,
                                                 AuthToken,
-                                                ChargingProductId,
+                                                ChargingProduct,
                                                 SessionId,
                                                 RequestTimeout);
 
@@ -5322,15 +5316,16 @@ namespace org.GraphDefined.WWCP
                                                           Select (kvp => kvp.Value))
             {
 
-                result = await iRemoteAuthorizeStartStop.AuthorizeStart(AuthToken,
-                                                                        ChargingProductId,
-                                                                        SessionId,
-                                                                        OperatorId,
+                result = await iRemoteAuthorizeStartStop.
+                                   AuthorizeStart(AuthToken,
+                                                  ChargingProduct,
+                                                  SessionId,
+                                                  OperatorId,
 
-                                                                        Timestamp,
-                                                                        CancellationToken,
-                                                                        EventTrackingId,
-                                                                        RequestTimeout);
+                                                  Timestamp,
+                                                  CancellationToken,
+                                                  EventTrackingId,
+                                                  RequestTimeout);
 
 
                 #region Authorized
@@ -5388,7 +5383,7 @@ namespace org.GraphDefined.WWCP
                                                  Id,
                                                  OperatorId,
                                                  AuthToken,
-                                                 ChargingProductId,
+                                                 ChargingProduct,
                                                  SessionId,
                                                  RequestTimeout,
                                                  result,
@@ -5408,14 +5403,14 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStart(AuthToken, EVSEId,            ChargingProductId = null, SessionId = null, OperatorId = null, ...)
+        #region AuthorizeStart(AuthToken, EVSEId,            ChargingProduct = null, SessionId = null, OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize start request at the given EVSE.
         /// </summary>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        /// <param name="ChargingProductId">An optional charging product identification.</param>
+        /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
@@ -5427,7 +5422,7 @@ namespace org.GraphDefined.WWCP
 
             AuthorizeStart(Auth_Token                   AuthToken,
                            EVSE_Id                      EVSEId,
-                           ChargingProduct_Id?          ChargingProductId   = null,
+                           ChargingProduct              ChargingProduct     = null,
                            ChargingSession_Id?          SessionId           = null,
                            ChargingStationOperator_Id?  OperatorId          = null,
 
@@ -5473,7 +5468,7 @@ namespace org.GraphDefined.WWCP
                                                     OperatorId,
                                                     AuthToken,
                                                     EVSEId,
-                                                    ChargingProductId,
+                                                    ChargingProduct,
                                                     SessionId,
                                                     RequestTimeout);
 
@@ -5493,7 +5488,7 @@ namespace org.GraphDefined.WWCP
 
                 result = await iRemoteAuthorizeStartStop.AuthorizeStart(AuthToken,
                                                                         EVSEId,
-                                                                        ChargingProductId,
+                                                                        ChargingProduct,
                                                                         SessionId,
                                                                         OperatorId,
 
@@ -5515,11 +5510,11 @@ namespace org.GraphDefined.WWCP
                         RegisterExternalChargingSession(DateTime.Now,
                                                         this,
                                                         new ChargingSession(result.SessionId.Value) {
-                                                            AuthService        = iRemoteAuthorizeStartStop,
-                                                            OperatorId         = OperatorId,
-                                                            EVSEId             = EVSEId,
-                                                            AuthTokenStart     = AuthToken,
-                                                            ChargingProductId  = ChargingProductId
+                                                            AuthService      = iRemoteAuthorizeStartStop,
+                                                            OperatorId       = OperatorId,
+                                                            EVSEId           = EVSEId,
+                                                            AuthTokenStart   = AuthToken,
+                                                            ChargingProduct  = ChargingProduct
                                                         });
 
                     break;
@@ -5565,7 +5560,7 @@ namespace org.GraphDefined.WWCP
                                                      OperatorId,
                                                      AuthToken,
                                                      EVSEId,
-                                                     ChargingProductId,
+                                                     ChargingProduct,
                                                      SessionId,
                                                      RequestTimeout,
                                                      result,
@@ -5585,14 +5580,14 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStart(AuthToken, ChargingStationId, ChargingProductId = null, SessionId = null, OperatorId = null, ...)
+        #region AuthorizeStart(AuthToken, ChargingStationId, ChargingProduct = null, SessionId = null, OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize start request at the given charging station.
         /// </summary>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="ChargingStationId">The unique identification of a charging station.</param>
-        /// <param name="ChargingProductId">An optional charging product identification.</param>
+        /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
@@ -5604,7 +5599,7 @@ namespace org.GraphDefined.WWCP
 
             AuthorizeStart(Auth_Token                   AuthToken,
                            ChargingStation_Id           ChargingStationId,
-                           ChargingProduct_Id?          ChargingProductId   = null,
+                           ChargingProduct              ChargingProduct     = null,
                            ChargingSession_Id?          SessionId           = null,
                            ChargingStationOperator_Id?  OperatorId          = null,
 
@@ -5650,7 +5645,7 @@ namespace org.GraphDefined.WWCP
                                                                OperatorId,
                                                                AuthToken,
                                                                ChargingStationId,
-                                                               ChargingProductId,
+                                                               ChargingProduct,
                                                                SessionId,
                                                                RequestTimeout);
 
@@ -5670,7 +5665,7 @@ namespace org.GraphDefined.WWCP
 
                 result = await iRemoteAuthorizeStartStop.AuthorizeStart(AuthToken,
                                                                         ChargingStationId,
-                                                                        ChargingProductId,
+                                                                        ChargingProduct,
                                                                         SessionId,
                                                                         OperatorId,
 
@@ -5739,7 +5734,7 @@ namespace org.GraphDefined.WWCP
                                                                 OperatorId,
                                                                 AuthToken,
                                                                 ChargingStationId,
-                                                                ChargingProductId,
+                                                                ChargingProduct,
                                                                 SessionId,
                                                                 RequestTimeout,
                                                                 result,
@@ -5759,14 +5754,14 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStart(AuthToken, ChargingPoolId,    ChargingProductId = null, SessionId = null, OperatorId = null, ...)
+        #region AuthorizeStart(AuthToken, ChargingPoolId,    ChargingProduct = null, SessionId = null, OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize start request at the given charging station.
         /// </summary>
         /// <param name="AuthToken">A (RFID) user identification.</param>
         /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
-        /// <param name="ChargingProductId">An optional charging product identification.</param>
+        /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
@@ -5778,7 +5773,7 @@ namespace org.GraphDefined.WWCP
 
             AuthorizeStart(Auth_Token                   AuthToken,
                            ChargingPool_Id              ChargingPoolId,
-                           ChargingProduct_Id?          ChargingProductId   = null,
+                           ChargingProduct              ChargingProduct     = null,
                            ChargingSession_Id?          SessionId           = null,
                            ChargingStationOperator_Id?  OperatorId          = null,
 
@@ -5824,7 +5819,7 @@ namespace org.GraphDefined.WWCP
                                                             OperatorId,
                                                             AuthToken,
                                                             ChargingPoolId,
-                                                            ChargingProductId,
+                                                            ChargingProduct,
                                                             SessionId,
                                                             RequestTimeout);
 
@@ -5844,7 +5839,7 @@ namespace org.GraphDefined.WWCP
 
                 result = await iRemoteAuthorizeStartStop.AuthorizeStart(AuthToken,
                                                                         ChargingPoolId,
-                                                                        ChargingProductId,
+                                                                        ChargingProduct,
                                                                         SessionId,
                                                                         OperatorId,
 
@@ -5913,7 +5908,7 @@ namespace org.GraphDefined.WWCP
                                                              OperatorId,
                                                              AuthToken,
                                                              ChargingPoolId,
-                                                             ChargingProductId,
+                                                             ChargingProduct,
                                                              SessionId,
                                                              RequestTimeout,
                                                              result,

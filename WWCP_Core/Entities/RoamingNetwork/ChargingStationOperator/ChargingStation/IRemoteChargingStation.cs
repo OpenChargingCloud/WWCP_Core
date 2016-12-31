@@ -111,7 +111,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
         /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
-        /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
+        /// <param name="ChargingProduct">The charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
@@ -127,7 +127,7 @@ namespace org.GraphDefined.WWCP
                     ChargingReservation_Id?           ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
                     eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id?               ChargingProductId   = null,
+                    ChargingProduct                   ChargingProduct     = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                     IEnumerable<UInt32>               PINs                = null,
@@ -146,7 +146,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="ChargingProductId">An optional unique identification of the charging product to be reserved.</param>
+        /// <param name="ChargingProduct">The charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
         /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
@@ -163,7 +163,7 @@ namespace org.GraphDefined.WWCP
                     ChargingReservation_Id?           ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
                     eMobilityAccount_Id?              eMAId               = null,
-                    ChargingProduct_Id?               ChargingProductId   = null,
+                    ChargingProduct                   ChargingProduct     = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
                     IEnumerable<UInt32>               PINs                = null,
@@ -222,7 +222,7 @@ namespace org.GraphDefined.WWCP
         /// Initiate a remote start of the given charging session at the given charging station
         /// and for the given provider/eMAId.
         /// </summary>
-        /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
+        /// <param name="ChargingProduct">The choosen charging product.</param>
         /// <param name="ReservationId">The unique identification for a charging reservation.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
@@ -234,7 +234,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<RemoteStartChargingStationResult>
 
-            RemoteStart(ChargingProduct_Id?      ChargingProductId,
+            RemoteStart(ChargingProduct          ChargingProduct,
                         ChargingReservation_Id?  ReservationId,
                         ChargingSession_Id?      SessionId,
                         eMobilityProvider_Id?    ProviderId,
@@ -250,9 +250,7 @@ namespace org.GraphDefined.WWCP
         /// and for the given Provider/eMAId.
         /// </summary>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
-        /// <param name="ChargingProductId">The unique identification of the choosen charging product.</param>
-        /// <param name="PlannedDuration">The optional planned duration of the charging.</param>
-        /// <param name="PlannedEnergy">The optional planned amount of energy to charge.</param>
+        /// <param name="ChargingProduct">The choosen charging product.</param>
         /// <param name="ReservationId">The unique identification for a charging reservation.</param>
         /// <param name="SessionId">The unique identification for this charging session.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
@@ -265,9 +263,7 @@ namespace org.GraphDefined.WWCP
         Task<RemoteStartEVSEResult>
 
             RemoteStart(EVSE_Id                  EVSEId,
-                        ChargingProduct_Id?      ChargingProductId,
-                        TimeSpan?                PlannedDuration,
-                        Single?                  PlannedEnergy,
+                        ChargingProduct          ChargingProduct,
                         ChargingReservation_Id?  ReservationId,
                         ChargingSession_Id?      SessionId,
                         eMobilityProvider_Id?    ProviderId,
