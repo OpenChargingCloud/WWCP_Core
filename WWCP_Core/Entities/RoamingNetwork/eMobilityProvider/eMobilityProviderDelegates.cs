@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2016 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2017 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 namespace org.GraphDefined.WWCP
 {
 
-    public delegate IRemoteEMobilityProvider RemoteEMobilityProviderCreatorDelegate(eMobilityProviderStub EMobilityProvider);
+    public delegate IRemoteEMobilityProvider RemoteEMobilityProviderCreatorDelegate(eMobilityProvider EMobilityProvider);
 
     public delegate String eMobilityProviderNameSelectorDelegate(I18NString I18NText);
 

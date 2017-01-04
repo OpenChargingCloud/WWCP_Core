@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2016 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2017 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -492,7 +492,7 @@ namespace org.GraphDefined.WWCP
 
         #region EnergyMeterValues
 
-        private List<Timestamped<Double>> _EnergyMeterValues;
+        private List<Timestamped<Single>> _EnergyMeterValues;
 
         /// <summary>
         /// An optional enumeration of intermediate energy meter values.
@@ -500,7 +500,7 @@ namespace org.GraphDefined.WWCP
         /// and the last timestamp in watt-hours [Wh].
         /// </summary>
         [Optional]
-        public List<Timestamped<Double>> EnergyMeteringValues
+        public List<Timestamped<Single>> EnergyMeteringValues
         {
             get
             {
@@ -531,13 +531,24 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region AuthService
+        public IRemoteAuthorizeStartStop  AuthService               { get; set; }
 
-        public IRemoteAuthorizeStartStop AuthService { get; set; }
 
-        #endregion
+        public ChargingStationOperator    ChargingStationOperator   { get; set; }
 
-        public Boolean RemoveMe { get; set; }
+
+        public IEMPRoamingProvider        EMPRoamingProvider        { get; set; }
+
+
+        public eMobilityProvider_Id       eMobilityProviderId       { get; set; }
+
+
+        public ICSORoamingProvider        CSORoamingProvider        { get; set; }
+
+
+        public DateTime                   CDRSent                   { get; set; }
+
+        public Boolean                    RemoveMe                  { get; set; }
 
         #endregion
 
@@ -577,13 +588,27 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._EnergyMeterValues  = new List<Timestamped<Double>>();
+            this._EnergyMeterValues  = new List<Timestamped<Single>>();
 
             this.SessionTime         = new StartEndDateTime(DateTime.Now);
 
         }
 
         #endregion
+
+
+        public ChargingSession SetChargingStationOperator(ChargingStationOperator ChargingStationOperator)
+        {
+            this.ChargingStationOperator = ChargingStationOperator;
+            return this;
+        }
+
+        public ChargingSession SetEMPRoamingProvider(IEMPRoamingProvider EMPRoamingProvider)
+        {
+            this.EMPRoamingProvider = EMPRoamingProvider;
+            return this;
+        }
+
 
 
         #region IComparable<ChargingSession> Members

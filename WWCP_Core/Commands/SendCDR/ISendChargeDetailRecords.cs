@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2016 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2017 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -62,7 +62,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The interface for sending charge detail records.
     /// </summary>
-    public interface IRemoteSendChargeDetailRecord
+    public interface IRemoteSendChargeDetailRecords
     {
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Send a charge detail record.
         /// </summary>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
+        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
         /// <param name="TransmissionType">Whether to send the CDR directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -83,13 +83,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<SendCDRsResult>
 
-            SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
-                                   TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
+            SendChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                                    TransmissionTypes                TransmissionType    = TransmissionTypes.Enqueued,
 
-                                   DateTime?           Timestamp           = null,
-                                   CancellationToken?  CancellationToken   = null,
-                                   EventTracking_Id    EventTrackingId     = null,
-                                   TimeSpan?           RequestTimeout      = null);
+                                    DateTime?                        Timestamp           = null,
+                                    CancellationToken?               CancellationToken   = null,
+                                    EventTracking_Id                 EventTrackingId     = null,
+                                    TimeSpan?                        RequestTimeout      = null);
 
     }
 

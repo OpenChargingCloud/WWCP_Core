@@ -2512,6 +2512,22 @@ namespace org.GraphDefined.WWCP
 
         private readonly ConcurrentDictionary<ChargingSession_Id, ChargingStation> _ChargingSessions;
 
+        #region GetChargingSessionById(ChargingSessionId)
+
+        public ChargingSession GetChargingSessionById(ChargingSession_Id ChargingSessionId)
+        {
+
+            ChargingStation _Station;
+
+            if (_ChargingSessions.TryGetValue(ChargingSessionId, out _Station))
+                return _Station.GetChargingSessionById(ChargingSessionId);
+
+            return null;
+
+        }
+
+        #endregion
+
         /// <summary>
         /// Return all current charging sessions.
         /// </summary>
@@ -2537,12 +2553,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a remote start charging station command was received.
         /// </summary>
-        public event OnRemoteChargingStationStartDelegate    OnRemoteChargingStationStart;
+        public event OnRemoteChargingStationStartRequestDelegate    OnRemoteChargingStationStart;
 
         /// <summary>
         /// An event fired whenever a remote start charging station command completed.
         /// </summary>
-        public event OnRemoteChargingStationStartedDelegate  OnRemoteChargingStationStarted;
+        public event OnRemoteChargingStationStartResponseDelegate  OnRemoteChargingStationStarted;
 
         /// <summary>
         /// An event fired whenever a new charging session was created.
@@ -2859,12 +2875,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a remote stop command was received.
         /// </summary>
-        public event OnRemoteStopDelegate                    OnRemoteStop;
+        public event OnRemoteStopRequestDelegate                    OnRemoteStop;
 
         /// <summary>
         /// An event fired whenever a remote stop command completed.
         /// </summary>
-        public event OnRemoteStoppedDelegate                 OnRemoteStopped;
+        public event OnRemoteStopResponseDelegate                 OnRemoteStopped;
 
         /// <summary>
         /// An event fired whenever a remote stop EVSE command was received.
@@ -2879,12 +2895,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a remote stop charging station command was received.
         /// </summary>
-        public event OnRemoteChargingStationStopDelegate     OnRemoteChargingStationStop;
+        public event OnRemoteChargingStationStopRequestDelegate     OnRemoteChargingStationStop;
 
         /// <summary>
         /// An event fired whenever a remote stop charging station command completed.
         /// </summary>
-        public event OnRemoteChargingStationStoppedDelegate  OnRemoteChargingStationStopped;
+        public event OnRemoteChargingStationStopResponseDelegate  OnRemoteChargingStationStopped;
 
         /// <summary>
         /// An event fired whenever a new charge detail record was created.

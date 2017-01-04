@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2016 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2017 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -72,20 +72,37 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (static) NotForwared(AuthorizatorId, Description = null, Runtime = null)
+        #region (static) NotForwared(AuthorizatorId, RejectedChargeDetailRecords = null, Description = null, Runtime = null)
 
-        public static SendCDRsResult NotForwared(IId        AuthorizatorId,
-                                                 String     Description  = null,
-                                                 TimeSpan?  Runtime      = null)
+        public static SendCDRsResult NotForwared(IId                              AuthorizatorId,
+                                                 IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords  = null,
+                                                 String                           Description                  = null,
+                                                 TimeSpan?                        Runtime                      = null)
 
             => new SendCDRsResult(SendCDRsResultType.NotForwared,
                                   AuthorizatorId,
-                                  Description: Description,
-                                  Runtime:     Runtime);
+                                  RejectedChargeDetailRecords,
+                                  Description,
+                                  Runtime);
 
         #endregion
 
-        #region (static) Enqueued(AuthorizatorId, Description = null, Runtime = null)
+        #region (static) Partly     (AuthorizatorId, RejectedChargeDetailRecords = null, Description = null, Runtime = null)
+
+        public static SendCDRsResult Partly(IId                              AuthorizatorId,
+                                            IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords  = null,
+                                            String                           Description                  = null,
+                                            TimeSpan?                        Runtime                      = null)
+
+            => new SendCDRsResult(SendCDRsResultType.Partly,
+                                  AuthorizatorId,
+                                  RejectedChargeDetailRecords,
+                                  Description,
+                                  Runtime);
+
+        #endregion
+
+        #region (static) Enqueued   (AuthorizatorId, Description = null, Runtime = null)
 
         public static SendCDRsResult Enqueued(IId        AuthorizatorId,
                                               String     Description  = null,
@@ -98,7 +115,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Forwarded(AuthorizatorId, Runtime = null)
+        #region (static) Forwarded  (AuthorizatorId, Runtime = null)
 
         public static SendCDRsResult Forwarded(IId        AuthorizatorId,
                                                TimeSpan?  Runtime  = null)
@@ -148,16 +165,18 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (static) Error(AuthorizatorId, Description = null, Runtime = null)
+        #region (static) Error(AuthorizatorId, RejectedChargeDetailRecords = null, Description = null, Runtime = null)
 
-        public static SendCDRsResult Error(IId        AuthorizatorId,
-                                           String     Description  = null,
-                                           TimeSpan?  Runtime      = null)
+        public static SendCDRsResult Error(IId                              AuthorizatorId,
+                                           IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords  = null,
+                                           String                           Description                  = null,
+                                           TimeSpan?                        Runtime                      = null)
 
             => new SendCDRsResult(SendCDRsResultType.Error,
                                   AuthorizatorId,
-                                  Description: Description,
-                                  Runtime:     Runtime);
+                                  RejectedChargeDetailRecords,
+                                  Description,
+                                  Runtime);
 
         #endregion
 
@@ -179,6 +198,8 @@ namespace org.GraphDefined.WWCP
     {
 
         NotForwared,
+
+        Partly,
 
         Enqueued,
 

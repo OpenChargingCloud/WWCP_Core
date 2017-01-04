@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2016 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2017 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -27,10 +27,10 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// An smart city admin status report.
     /// </summary>
-    public class SmartCityAdminStatusReport : StatusReport<SmartCityStub, SmartCityAdminStatusType>
+    public class SmartCityAdminStatusReport : StatusReport<SmartCity, SmartCityAdminStatusType>
     {
 
-        public SmartCityAdminStatusReport(IEnumerable<SmartCityStub> SmartCitys)
+        public SmartCityAdminStatusReport(IEnumerable<SmartCity> SmartCitys)
 
             : base(SmartCitys,
                    provider => provider.AdminStatus.Value)

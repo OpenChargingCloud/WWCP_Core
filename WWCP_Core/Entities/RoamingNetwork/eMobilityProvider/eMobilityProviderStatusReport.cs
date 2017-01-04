@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2016 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2017 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -27,10 +27,10 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// An e-mobility provider status report.
     /// </summary>
-    public class eMobilityProviderStatusReport : StatusReport<eMobilityProviderStub, eMobilityProviderStatusType>
+    public class eMobilityProviderStatusReport : StatusReport<eMobilityProvider, eMobilityProviderStatusType>
     {
 
-        public eMobilityProviderStatusReport(IEnumerable<eMobilityProviderStub> EMobilityProviders)
+        public eMobilityProviderStatusReport(IEnumerable<eMobilityProvider> EMobilityProviders)
 
             : base(EMobilityProviders,
                    provider => provider.Status.Value)

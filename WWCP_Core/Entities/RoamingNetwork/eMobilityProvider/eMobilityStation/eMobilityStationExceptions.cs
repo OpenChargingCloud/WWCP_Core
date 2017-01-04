@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2016 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2017 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP
     public class eMobilityStationAlreadyExists : eMobilityProviderException
     {
 
-        public eMobilityStationAlreadyExists(eMobilityProviderStub    eMobilityProvider,
+        public eMobilityStationAlreadyExists(eMobilityProvider    eMobilityProvider,
                                              eMobilityStation_Id  eMobilityStationId)
 
             : base(eMobilityProvider.RoamingNetwork,
@@ -54,7 +54,7 @@ namespace org.GraphDefined.WWCP
     public class eMobilityStationCouldNotBeCreated : eMobilityProviderException
     {
 
-        public eMobilityStationCouldNotBeCreated(eMobilityProviderStub    eMobilityProvider,
+        public eMobilityStationCouldNotBeCreated(eMobilityProvider    eMobilityProvider,
                                                  eMobilityStation_Id  eMobilityStation_Id)
 
             : base(eMobilityProvider.RoamingNetwork,
@@ -75,7 +75,7 @@ namespace org.GraphDefined.WWCP
     public class eMobilityStationException : eMobilityProviderException
     {
 
-        public eMobilityStationException(eMobilityProviderStub  eMobilityProvider,
+        public eMobilityStationException(eMobilityProvider  eMobilityProvider,
                                          String             Message)
 
             : base(eMobilityProvider.RoamingNetwork,
@@ -83,7 +83,7 @@ namespace org.GraphDefined.WWCP
 
         { }
 
-        public eMobilityStationException(eMobilityProviderStub  eMobilityProvider,
+        public eMobilityStationException(eMobilityProvider  eMobilityProvider,
                                          String             Message,
                                          Exception          InnerException)
 

@@ -59,8 +59,8 @@
     <Compile Include="Commands\AuthorizeStartStop\AAuthStopResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStopResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\IAAuthStartResult.cs" />
-    <Compile Include="Commands\ISendChargeDetailRecord.cs" />
-    <Compile Include="Commands\IAuthorizeStartStop.cs" />
+    <Compile Include="Commands\SendCDR\ISendChargeDetailRecords.cs" />
+    <Compile Include="Commands\AuthorizeStartStop\IAuthorizeStartStop.cs" />
     <Compile Include="Commands\PushDataAndStatus\IPushData.cs" />
     <Compile Include="Commands\PushDataAndStatus\IRemotePushStatusExtentions.cs" />
     <Compile Include="Commands\PushDataAndStatus\IPushStatus.cs" />
@@ -204,7 +204,7 @@
     <Compile Include="Commands\RemoteStartStop\RemoteStopChargingStationResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopResult.cs" />
     <Compile Include="Commands\Reserve\CancelReservationResult.cs" />
-    <Compile Include="Commands\SendCDR\OnSendCDRDelegate.cs" />
+    <Compile Include="Commands\SendCDR\OnSendCDRsDelegate.cs" />
     <Compile Include="CommonTypes\ActionType.cs" />
     <Compile Include="CommonTypes\Attributes\InternalUseOnly.cs" />
     <Compile Include="CommonTypes\AuthInfoStatus.cs" />
@@ -326,7 +326,7 @@
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationOperator.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\ChargingStation_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPool\ChargingPool_Id.cs" />
-    <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityProviderStub.cs" />
+    <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityProvider.cs" />
     <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityProvider_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationOperator_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityAccount\eMobilityAccount_Id.cs" />
@@ -336,7 +336,6 @@
     <Compile Include="Entities\RoamingNetwork\RoamingNetwork.cs" />
     <Compile Include="Importer\ImporterForwardingInfo.cs" />
     <Compile Include="Entities\RoamingNetwork\eMobilityProvider\IEMobilityProvider.cs" />
-    <Compile Include="CommonTypes\AuthorizatorId.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStartEVSEResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopEVSEResult.cs" />
     <Compile Include="CommonTypes\SessionInfo.cs" />
@@ -346,7 +345,7 @@
     <Compile Include="Commands\AuthorizeStartStop\TokenAuthorizationResultType.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStartEVSEResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStopEVSEResult.cs" />
-    <Compile Include="Commands\SendCDR\SendCDRResult.cs" />
+    <Compile Include="Commands\SendCDR\SendCDRsResult.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
     <Compile Include="Semantics.cs" />
     <Compile Include="Version.cs" />

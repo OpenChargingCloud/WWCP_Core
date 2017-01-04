@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2016 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2017 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -43,10 +43,10 @@ namespace org.GraphDefined.WWCP
     /// methods can be misused by any entity in the ev charging process to track the
     /// ev driver or its behaviour.
     /// </summary>
-    public class SmartCityStub : ABaseEMobilityEntity<SmartCity_Id>,
+    public class SmartCity : ABaseEMobilityEntity<SmartCity_Id>,
                                  IRemoteSmartCity,
-                                 IEquatable <SmartCityStub>,
-                                 IComparable<SmartCityStub>,
+                                 IEquatable <SmartCity>,
+                                 IComparable<SmartCity>,
                                  IComparable
     {
 
@@ -531,11 +531,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique smart city identification.</param>
         /// <param name="Name">The offical (multi-language) name of the smart city.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        internal SmartCityStub(SmartCity_Id                    Id,
+        internal SmartCity(SmartCity_Id                    Id,
                                I18NString                      Name,
                                RoamingNetwork                  RoamingNetwork,
                                I18NString                      Description              = null,
-                               Action<SmartCityStub>           Configurator             = null,
+                               Action<SmartCity>           Configurator             = null,
                                RemoteSmartCityCreatorDelegate  RemoteSmartCityCreator   = null,
                                SmartCityPriority               Priority                 = null,
                                SmartCityAdminStatusType        AdminStatus              = SmartCityAdminStatusType.Available,
@@ -2317,7 +2317,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="SmartCity1">A smart city.</param>
         /// <param name="SmartCity2">Another smart city.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public static Boolean operator == (SmartCityStub SmartCity1, SmartCityStub SmartCity2)
+        public static Boolean operator == (SmartCity SmartCity1, SmartCity SmartCity2)
         {
 
             // If both are null, or both are same instance, return true.
@@ -2342,7 +2342,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="SmartCity1">A smart city.</param>
         /// <param name="SmartCity2">Another smart city.</param>
         /// <returns>False if both match; True otherwise.</returns>
-        public static Boolean operator != (SmartCityStub SmartCity1, SmartCityStub SmartCity2)
+        public static Boolean operator != (SmartCity SmartCity1, SmartCity SmartCity2)
 
             => !(SmartCity1 == SmartCity2);
 
@@ -2356,8 +2356,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="SmartCity1">A smart city.</param>
         /// <param name="SmartCity2">Another smart city.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (SmartCityStub  SmartCity1,
-                                          SmartCityStub  SmartCity2)
+        public static Boolean operator < (SmartCity  SmartCity1,
+                                          SmartCity  SmartCity2)
         {
 
             if ((Object) SmartCity1 == null)
@@ -2377,8 +2377,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="SmartCity1">A smart city.</param>
         /// <param name="SmartCity2">Another smart city.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (SmartCityStub SmartCity1,
-                                           SmartCityStub SmartCity2)
+        public static Boolean operator <= (SmartCity SmartCity1,
+                                           SmartCity SmartCity2)
 
             => !(SmartCity1 > SmartCity2);
 
@@ -2392,8 +2392,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="SmartCity1">A smart city.</param>
         /// <param name="SmartCity2">Another smart city.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (SmartCityStub SmartCity1,
-                                          SmartCityStub SmartCity2)
+        public static Boolean operator > (SmartCity SmartCity1,
+                                          SmartCity SmartCity2)
         {
 
             if ((Object) SmartCity1 == null)
@@ -2413,8 +2413,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="SmartCity1">A smart city.</param>
         /// <param name="SmartCity2">Another smart city.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (SmartCityStub SmartCity1,
-                                           SmartCityStub SmartCity2)
+        public static Boolean operator >= (SmartCity SmartCity1,
+                                           SmartCity SmartCity2)
 
             => !(SmartCity1 < SmartCity2);
 
@@ -2436,7 +2436,7 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            var SmartCityStub = Object as SmartCityStub;
+            var SmartCityStub = Object as SmartCity;
             if ((Object) SmartCityStub == null)
                 throw new ArgumentException("The given object is not an SmartCityStub!", nameof(Object));
 
@@ -2452,7 +2452,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="SmartCityStub">An SmartCityStub object to compare with.</param>
-        public Int32 CompareTo(SmartCityStub SmartCityStub)
+        public Int32 CompareTo(SmartCity SmartCityStub)
         {
 
             if ((Object) SmartCityStub == null)
@@ -2481,7 +2481,7 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            var SmartCityStub = Object as SmartCityStub;
+            var SmartCityStub = Object as SmartCity;
             if ((Object) SmartCityStub == null)
                 return false;
 
@@ -2498,7 +2498,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="SmartCityStub">An SmartCityStub to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(SmartCityStub SmartCityStub)
+        public Boolean Equals(SmartCity SmartCityStub)
         {
 
             if ((Object) SmartCityStub == null)

@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2016 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2017 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -40,7 +40,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnRemoteStopDelegate(DateTime               LogTimestamp,
+    public delegate void OnRemoteStopRequestDelegate(DateTime               LogTimestamp,
                                               DateTime               RequestTimestamp,
                                               Object                 Sender,
                                               EventTracking_Id       EventTrackingId,
@@ -65,7 +65,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote stop result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate void OnRemoteStoppedDelegate(DateTime               LogTimestamp,
+    public delegate void OnRemoteStopResponseDelegate(DateTime               LogTimestamp,
                                                  DateTime               RequestTimestamp,
                                                  Object                 Sender,
                                                  EventTracking_Id       EventTrackingId,

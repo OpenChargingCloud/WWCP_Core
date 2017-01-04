@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2016 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2017 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -37,7 +37,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="eMobilityProvider">The e-mobility provider.</param>
         /// <param name="eVehicleId">The electric vehicle identification.</param>
-        public eVehicleAlreadyExists(eMobilityProviderStub  eMobilityProvider,
+        public eVehicleAlreadyExists(eMobilityProvider  eMobilityProvider,
                                      eVehicle_Id        eVehicleId)
 
             : base(eMobilityProvider.RoamingNetwork,
@@ -88,7 +88,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="eMobilityProvider">The e-mobility provider.</param>
         /// <param name="Message">An exception message.</param>
-        public eVehicleException(eMobilityProviderStub  eMobilityProvider,
+        public eVehicleException(eMobilityProvider  eMobilityProvider,
                                  String             Message)
 
             : base(eMobilityProvider.RoamingNetwork,
@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="eMobilityProvider">The e-mobility provider.</param>
         /// <param name="Message">An exception message.</param>
         /// <param name="InnerException">An inner exception.</param>
-        public eVehicleException(eMobilityProviderStub  eMobilityProvider,
+        public eVehicleException(eMobilityProvider  eMobilityProvider,
                                  String             Message,
                                  Exception          InnerException)
 

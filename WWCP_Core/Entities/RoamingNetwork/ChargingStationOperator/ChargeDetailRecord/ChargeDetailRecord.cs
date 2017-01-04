@@ -297,7 +297,7 @@ namespace org.GraphDefined.WWCP
             this.ProviderIdStop           = ProviderIdStop;
 
             this.Reservation              = Reservation;
-            this.ReservationId            = ReservationId.HasValue ? ReservationId.Value : Reservation != null ? Reservation.Id : new ChargingReservation_Id();
+            this.ReservationId            = ReservationId.HasValue ? ReservationId.Value : Reservation != null ? Reservation.Id : new ChargingReservation_Id?();
             this.ReservationTime          = ReservationTime;
 
             this.ParkingSpaceId           = ParkingSpaceId;
@@ -312,6 +312,49 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region Operator overloading
+
+        #region Operator == (ChargeDetailRecord1, ChargeDetailRecord2)
+
+        /// <summary>
+        /// Compares two charge detail records for equality.
+        /// </summary>
+        /// <param name="ChargeDetailRecord1">An charge detail record.</param>
+        /// <param name="ChargeDetailRecord2">Another charge detail record.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public static Boolean operator == (ChargeDetailRecord ChargeDetailRecord1, ChargeDetailRecord ChargeDetailRecord2)
+        {
+
+            // If both are null, or both are same instance, return true.
+            if (Object.ReferenceEquals(ChargeDetailRecord1, ChargeDetailRecord2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (((Object) ChargeDetailRecord1 == null) || ((Object) ChargeDetailRecord2 == null))
+                return false;
+
+            return ChargeDetailRecord1.Equals(ChargeDetailRecord2);
+
+        }
+
+        #endregion
+
+        #region Operator != (ChargeDetailRecord1, ChargeDetailRecord2)
+
+        /// <summary>
+        /// Compares two charge detail records for inequality.
+        /// </summary>
+        /// <param name="ChargeDetailRecord1">An charge detail record.</param>
+        /// <param name="ChargeDetailRecord2">Another charge detail record.</param>
+        /// <returns>False if both match; True otherwise.</returns>
+        public static Boolean operator != (ChargeDetailRecord ChargeDetailRecord1, ChargeDetailRecord ChargeDetailRecord2)
+
+            => !(ChargeDetailRecord1 == ChargeDetailRecord2);
+
+        #endregion
+
+        #endregion
 
         #region IComparable<ChargeDetailRecord> Members
 

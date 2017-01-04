@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2016 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2017 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -591,7 +591,7 @@ namespace org.GraphDefined.WWCP
         /// The e-mobility station Operator of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public eMobilityProviderStub Provider { get; }
+        public eMobilityProvider Provider { get; }
 
         #endregion
 
@@ -603,7 +603,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique identification of the e-mobility station pool.</param>
         /// <param name="MaxAdminStatusListSize">The default size of the admin status list.</param>
         internal eMobilityStation(eMobilityStation_Id                    Id,
-                                  eMobilityProviderStub                  Provider,
+                                  eMobilityProvider                  Provider,
                                   Action<eMobilityStation>               Configurator                   = null,
                                   RemoteEMobilityStationCreatorDelegate  RemoteeMobilityStationCreator  = null,
                                   eMobilityStationAdminStatusType        AdminStatus                    = eMobilityStationAdminStatusType.Operational,

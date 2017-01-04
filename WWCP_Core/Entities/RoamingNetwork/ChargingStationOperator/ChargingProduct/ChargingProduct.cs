@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2016 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2017 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -80,14 +80,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a new charging product.
         /// </summary>
-        /// <param name="ChargingProductId"></param>
+        /// <param name="Id">The unqiue identification of this charging product.</param>
         /// <param name="MinDuration">The electric vehicle wants to charge at least for this amount of time.</param>
         /// <param name="StopChargingAfterTime">Stop charging after this amount of time.</param>
         /// <param name="MinPower">The minimal charging power the electric vehicle accepts [kW].</param>
         /// <param name="MaxPower">The maximum charging power the electric vehicle consumes [kW].</param>
         /// <param name="MinEnergy">The electric vehicle wants to charge at least this amount of energy [kWh].</param>
         /// <param name="StopChargingAfterKWh">Stop charging after this amount of charged energy [kWh].</param>
-        public ChargingProduct(ChargingProduct_Id  ChargingProductId,
+        public ChargingProduct(ChargingProduct_Id  Id,
                                TimeSpan?           MinDuration            = null,
                                TimeSpan?           StopChargingAfterTime  = null,
                                kW?                 MinPower               = null,
@@ -96,7 +96,7 @@ namespace org.GraphDefined.WWCP
                                kWh?                StopChargingAfterKWh   = null)
         {
 
-            this.Id      = ChargingProductId;
+            this.Id                     = Id;
             this.MinDuration            = MinDuration;
             this.StopChargingAfterTime  = StopChargingAfterTime;
             this.MinPower               = MinPower;
