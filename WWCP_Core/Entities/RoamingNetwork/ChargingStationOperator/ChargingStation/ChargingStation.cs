@@ -2376,27 +2376,27 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a remote start EVSE command was received.
         /// </summary>
-        public event OnRemoteStartEVSERequestDelegate               OnRemoteEVSEStart;
+        public event OnRemoteStartEVSERequestDelegate              OnRemoteEVSEStartRequest;
 
         /// <summary>
         /// An event fired whenever a remote start EVSE command completed.
         /// </summary>
-        public event OnRemoteStartEVSEResponseDelegate             OnRemoteEVSEStarted;
+        public event OnRemoteStartEVSEResponseDelegate             OnRemoteEVSEStartResponse;
 
         /// <summary>
         /// An event fired whenever a remote start charging station command was received.
         /// </summary>
-        public event OnRemoteChargingStationStartRequestDelegate    OnRemoteChargingStationStart;
+        public event OnRemoteChargingStationStartRequestDelegate   OnRemoteChargingStationStartRequest;
 
         /// <summary>
         /// An event fired whenever a remote start charging station command completed.
         /// </summary>
-        public event OnRemoteChargingStationStartResponseDelegate  OnRemoteChargingStationStarted;
+        public event OnRemoteChargingStationStartResponseDelegate  OnRemoteChargingStationStartResponse;
 
         /// <summary>
         /// An event fired whenever a new charging session was created.
         /// </summary>
-        public event OnNewChargingSessionDelegate            OnNewChargingSession;
+        public event OnNewChargingSessionDelegate                  OnNewChargingSession;
 
         #endregion
 
@@ -2434,16 +2434,17 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (EVSEId == null)
-                throw new ArgumentNullException(nameof(EVSEId), "The given EVSE identification must not be null!");
-
-            RemoteStartEVSEResult result = null;
-
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
 
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
+
+
+            RemoteStartEVSEResult result = null;
 
             #endregion
 
@@ -2454,7 +2455,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteEVSEStart?.Invoke(DateTime.Now,
+                OnRemoteEVSEStartRequest?.Invoke(DateTime.Now,
                                           Timestamp.Value,
                                           this,
                                           EventTrackingId,
@@ -2470,7 +2471,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStation) + "." + nameof(OnRemoteEVSEStart));
+                e.Log(nameof(ChargingStation) + "." + nameof(OnRemoteEVSEStartRequest));
             }
 
             #endregion
@@ -2580,7 +2581,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteEVSEStarted?.Invoke(DateTime.Now,
+                OnRemoteEVSEStartResponse?.Invoke(DateTime.Now,
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
@@ -2598,7 +2599,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStation) + "." + nameof(OnRemoteEVSEStarted));
+                e.Log(nameof(ChargingStation) + "." + nameof(OnRemoteEVSEStartResponse));
             }
 
             #endregion
@@ -2644,37 +2645,41 @@ namespace org.GraphDefined.WWCP
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
 
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
+
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
+
 
             RemoteStartChargingStationResult result = null;
 
             #endregion
 
-            #region Send OnRemoteChargingStationStart event
+            #region Send OnRemoteChargingStationStartRequest event
 
             var Runtime = Stopwatch.StartNew();
 
             try
             {
 
-                OnRemoteChargingStationStart?.Invoke(DateTime.Now,
-                                                     Timestamp.Value,
-                                                     this,
-                                                     EventTrackingId,
-                                                     ChargingPool.Operator.RoamingNetwork.Id,
-                                                     Id,
-                                                     ChargingProduct,
-                                                     ReservationId,
-                                                     SessionId,
-                                                     ProviderId,
-                                                     eMAId,
-                                                     RequestTimeout);
+                OnRemoteChargingStationStartRequest?.Invoke(DateTime.Now,
+                                                            Timestamp.Value,
+                                                            this,
+                                                            EventTrackingId,
+                                                            ChargingPool.Operator.RoamingNetwork.Id,
+                                                            Id,
+                                                            ChargingProduct,
+                                                            ReservationId,
+                                                            SessionId,
+                                                            ProviderId,
+                                                            eMAId,
+                                                            RequestTimeout);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStation) + "." + nameof(OnRemoteChargingStationStart));
+                e.Log(nameof(ChargingStation) + "." + nameof(OnRemoteChargingStationStartRequest));
             }
 
             #endregion
@@ -2779,32 +2784,32 @@ namespace org.GraphDefined.WWCP
             }
 
 
-            #region Send OnRemoteChargingStationStarted event
+            #region Send OnRemoteChargingStationStartRequest event
 
             Runtime.Stop();
 
             try
             {
 
-                OnRemoteChargingStationStarted?.Invoke(DateTime.Now,
-                                                       Timestamp.Value,
-                                                       this,
-                                                       EventTrackingId,
-                                                       ChargingPool.Operator.RoamingNetwork.Id,
-                                                       Id,
-                                                       ChargingProduct,
-                                                       ReservationId,
-                                                       SessionId,
-                                                       ProviderId,
-                                                       eMAId,
-                                                       RequestTimeout,
-                                                       result,
-                                                       Runtime.Elapsed);
+                OnRemoteChargingStationStartResponse?.Invoke(DateTime.Now,
+                                                             Timestamp.Value,
+                                                             this,
+                                                             EventTrackingId,
+                                                             ChargingPool.Operator.RoamingNetwork.Id,
+                                                             Id,
+                                                             ChargingProduct,
+                                                             ReservationId,
+                                                             SessionId,
+                                                             ProviderId,
+                                                             eMAId,
+                                                             RequestTimeout,
+                                                             result,
+                                                             Runtime.Elapsed);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStation) + "." + nameof(OnRemoteChargingStationStarted));
+                e.Log(nameof(ChargingStation) + "." + nameof(OnRemoteChargingStationStartResponse));
             }
 
             #endregion
@@ -2842,37 +2847,27 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// An event fired whenever a remote stop command was received.
         /// </summary>
-        public event OnRemoteStopRequestDelegate                    OnRemoteStop;
+        public event OnRemoteStopRequestDelegate                  OnRemoteStopRequest;
 
         /// <summary>
         /// An event fired whenever a remote stop command completed.
         /// </summary>
-        public event OnRemoteStopResponseDelegate                 OnRemoteStopped;
+        public event OnRemoteStopResponseDelegate                 OnRemoteStopResponse;
 
         /// <summary>
         /// An event fired whenever a remote stop EVSE command was received.
         /// </summary>
-        public event OnRemoteStopEVSERequestDelegate                OnRemoteEVSEStop;
+        public event OnRemoteStopEVSERequestDelegate              OnRemoteEVSEStopRequest;
 
         /// <summary>
         /// An event fired whenever a remote stop EVSE command completed.
         /// </summary>
-        public event OnRemoteStopEVSEResponseDelegate             OnRemoteEVSEStopped;
-
-        /// <summary>
-        /// An event fired whenever a remote stop charging station command was received.
-        /// </summary>
-        public event OnRemoteChargingStationStopRequestDelegate     OnRemoteChargingStationStop;
-
-        /// <summary>
-        /// An event fired whenever a remote stop charging station command completed.
-        /// </summary>
-        public event OnRemoteChargingStationStopResponseDelegate  OnRemoteChargingStationStopped;
+        public event OnRemoteStopEVSEResponseDelegate             OnRemoteEVSEStopResponse;
 
         /// <summary>
         /// An event fired whenever a new charge detail record was created.
         /// </summary>
-        public event OnNewChargeDetailRecordDelegate         OnNewChargeDetailRecord;
+        public event OnNewChargeDetailRecordDelegate              OnNewChargeDetailRecord;
 
         #endregion
 
@@ -2906,41 +2901,42 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (SessionId == null)
-                throw new ArgumentNullException(nameof(SessionId), "The given charging session identification must not be null!");
-
-            RemoteStopResult result = null;
-
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
+
+            RemoteStopResult result = null;
+
             #endregion
 
-            #region Send OnRemoteStop event
+            #region Send OnRemoteStopRequest event
 
             var Runtime = Stopwatch.StartNew();
 
             try
             {
 
-                OnRemoteStop?.Invoke(DateTime.Now,
-                                     Timestamp.Value,
-                                     this,
-                                     EventTrackingId,
-                                     ChargingPool.Operator.RoamingNetwork.Id,
-                                     SessionId,
-                                     ReservationHandling,
-                                     ProviderId,
-                                     eMAId,
-                                     RequestTimeout);
+                OnRemoteStopRequest?.Invoke(DateTime.Now,
+                                            Timestamp.Value,
+                                            this,
+                                            EventTrackingId,
+                                            ChargingPool.Operator.RoamingNetwork.Id,
+                                            SessionId,
+                                            ReservationHandling,
+                                            ProviderId,
+                                            eMAId,
+                                            RequestTimeout);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStation) + "." + nameof(OnRemoteStop));
+                e.Log(nameof(ChargingStation) + "." + nameof(OnRemoteStopRequest));
             }
 
             #endregion
@@ -3025,14 +3021,14 @@ namespace org.GraphDefined.WWCP
             }
 
 
-            #region Send OnRemoteStopped event
+            #region Send OnRemoteStopResponse event
 
             Runtime.Stop();
 
             try
             {
 
-                OnRemoteStopped?.Invoke(DateTime.Now,
+                OnRemoteStopResponse?.Invoke(DateTime.Now,
                                         Timestamp.Value,
                                         this,
                                         EventTrackingId,
@@ -3048,7 +3044,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStation) + "." + nameof(OnRemoteStopped));
+                e.Log(nameof(ChargingStation) + "." + nameof(OnRemoteStopResponse));
             }
 
             #endregion
@@ -3091,45 +3087,43 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (EVSEId == null)
-                throw new ArgumentNullException(nameof(EVSEId),     "The given EVSE identification must not be null!");
-
-            if (SessionId == null)
-                throw new ArgumentNullException(nameof(SessionId),  "The given charging session identification must not be null!");
-
-            RemoteStopEVSEResult result = null;
-
             if (!Timestamp.HasValue)
                 Timestamp = DateTime.Now;
+
+            if (!CancellationToken.HasValue)
+                CancellationToken = new CancellationTokenSource().Token;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
+
+            RemoteStopEVSEResult result = null;
+
             #endregion
 
-            #region Send OnRemoteEVSEStop event
+            #region Send OnRemoteEVSEStopRequest event
 
             var Runtime = Stopwatch.StartNew();
 
             try
             {
 
-                OnRemoteEVSEStop?.Invoke(DateTime.Now,
-                                         Timestamp.Value,
-                                         this,
-                                         EventTrackingId,
-                                         ChargingPool.Operator.RoamingNetwork.Id,
-                                         EVSEId,
-                                         SessionId,
-                                         ReservationHandling,
-                                         ProviderId,
-                                         eMAId,
-                                         RequestTimeout);
+                OnRemoteEVSEStopRequest?.Invoke(DateTime.Now,
+                                                Timestamp.Value,
+                                                this,
+                                                EventTrackingId,
+                                                ChargingPool.Operator.RoamingNetwork.Id,
+                                                EVSEId,
+                                                SessionId,
+                                                ReservationHandling,
+                                                ProviderId,
+                                                eMAId,
+                                                RequestTimeout);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStation) + "." + nameof(OnRemoteEVSEStop));
+                e.Log(nameof(ChargingStation) + "." + nameof(OnRemoteEVSEStopRequest));
             }
 
             #endregion
@@ -3229,31 +3223,31 @@ namespace org.GraphDefined.WWCP
             }
 
 
-            #region Send OnRemoteEVSEStopped event
+            #region Send OnRemoteEVSEStopResponse event
 
             Runtime.Stop();
 
             try
             {
 
-                OnRemoteEVSEStopped?.Invoke(DateTime.Now,
-                                            Timestamp.Value,
-                                            this,
-                                            EventTrackingId,
-                                            ChargingPool.Operator.RoamingNetwork.Id,
-                                            EVSEId,
-                                            SessionId,
-                                            ReservationHandling,
-                                            ProviderId,
-                                            eMAId,
-                                            RequestTimeout,
-                                            result,
-                                            Runtime.Elapsed);
+                OnRemoteEVSEStopResponse?.Invoke(DateTime.Now,
+                                                 Timestamp.Value,
+                                                 this,
+                                                 EventTrackingId,
+                                                 ChargingPool.Operator.RoamingNetwork.Id,
+                                                 EVSEId,
+                                                 SessionId,
+                                                 ReservationHandling,
+                                                 ProviderId,
+                                                 eMAId,
+                                                 RequestTimeout,
+                                                 result,
+                                                 Runtime.Elapsed);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(ChargingStation) + "." + nameof(OnRemoteStopped));
+                e.Log(nameof(ChargingStation) + "." + nameof(OnRemoteStopResponse));
             }
 
             #endregion
@@ -3271,9 +3265,7 @@ namespace org.GraphDefined.WWCP
                                                 ChargeDetailRecord  ChargeDetailRecord)
         {
 
-            var OnNewChargeDetailRecordLocal = OnNewChargeDetailRecord;
-            if (OnNewChargeDetailRecordLocal != null)
-                OnNewChargeDetailRecordLocal(Timestamp, Sender, ChargeDetailRecord);
+            OnNewChargeDetailRecord?.Invoke(Timestamp, Sender, ChargeDetailRecord);
 
         }
 

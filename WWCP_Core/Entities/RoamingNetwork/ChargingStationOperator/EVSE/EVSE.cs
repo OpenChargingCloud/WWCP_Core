@@ -1731,9 +1731,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            var OnNewChargeDetailRecordLocal = OnNewChargeDetailRecord;
-            if (OnNewChargeDetailRecordLocal != null)
-                OnNewChargeDetailRecordLocal(Timestamp, Sender, ChargeDetailRecord);
+            OnNewChargeDetailRecord?.Invoke(Timestamp, Sender, ChargeDetailRecord);
 
         }
 
