@@ -53,7 +53,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="ChargeDetailRecord">An enumeration of charge detail records.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnSendCDRRequestDelegate(DateTime                         LogTimestamp,
+    public delegate Task OnSendCDRRequestDelegate(DateTime                         LogTimestamp,
                                                   DateTime                         RequestTimestamp,
                                                   Object                           Sender,
                                                   EventTracking_Id                 EventTrackingId,
@@ -72,7 +72,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
     /// <param name="Result">The authorize stop result.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnSendCDRResponseDelegate(DateTime                         LogTimestamp,
+    public delegate Task OnSendCDRResponseDelegate(DateTime                         LogTimestamp,
                                                    DateTime                         RequestTimestamp,
                                                    Object                           Sender,
                                                    EventTracking_Id                 EventTrackingId,

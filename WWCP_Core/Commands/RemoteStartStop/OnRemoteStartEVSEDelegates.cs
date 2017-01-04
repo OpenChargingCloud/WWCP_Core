@@ -43,7 +43,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnRemoteStartEVSERequestDelegate(DateTime                  LogTimestamp,
+    public delegate Task OnRemoteStartEVSERequestDelegate(DateTime                  LogTimestamp,
                                                           DateTime                  RequestTimestamp,
                                                           Object                    Sender,
                                                           EventTracking_Id          EventTrackingId,
@@ -100,7 +100,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote start result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate void OnRemoteStartEVSEResponseDelegate(DateTime                  LogTimestamp,
+    public delegate Task OnRemoteStartEVSEResponseDelegate(DateTime                  LogTimestamp,
                                                            DateTime                  RequestTimestamp,
                                                            Object                    Sender,
                                                            EventTracking_Id          EventTrackingId,

@@ -41,17 +41,17 @@ namespace org.GraphDefined.WWCP
     /// <param name="ProviderId">The unique identification of the e-mobility service provider for the case it is different from the current message sender.</param>
     /// <param name="eMAId">The unique identification of the e-mobility account.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnRemoteChargingStationStopRequestDelegate(DateTime               LogTimestamp,
-                                                             DateTime               RequestTimestamp,
-                                                             Object                 Sender,
-                                                             EventTracking_Id       EventTrackingId,
-                                                             RoamingNetwork_Id      RoamingNetworkId,
-                                                             ChargingStation_Id     ChargingStationId,
-                                                             ChargingSession_Id     SessionId,
-                                                             ReservationHandling    ReservationHandling,
-                                                             eMobilityProvider_Id?  ProviderId,
-                                                             eMobilityAccount_Id?   eMAId,
-                                                             TimeSpan?              RequestTimeout);
+    public delegate Task OnRemoteChargingStationStopRequestDelegate(DateTime               LogTimestamp,
+                                                                    DateTime               RequestTimestamp,
+                                                                    Object                 Sender,
+                                                                    EventTracking_Id       EventTrackingId,
+                                                                    RoamingNetwork_Id      RoamingNetworkId,
+                                                                    ChargingStation_Id     ChargingStationId,
+                                                                    ChargingSession_Id     SessionId,
+                                                                    ReservationHandling    ReservationHandling,
+                                                                    eMobilityProvider_Id?  ProviderId,
+                                                                    eMobilityAccount_Id?   eMAId,
+                                                                    TimeSpan?              RequestTimeout);
 
     /// <summary>
     /// Indicate a remote stop of the given charging session at the given charging station
@@ -69,19 +69,19 @@ namespace org.GraphDefined.WWCP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The remote stop result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate void OnRemoteChargingStationStopResponseDelegate(DateTime                         LogTimestamp,
-                                                                DateTime                         RequestTimestamp,
-                                                                Object                           Sender,
-                                                                EventTracking_Id                 EventTrackingId,
-                                                                RoamingNetwork_Id                RoamingNetworkId,
-                                                                ChargingStation_Id               ChargingStationId,
-                                                                ChargingSession_Id               SessionId,
-                                                                ReservationHandling              ReservationHandling,
-                                                                eMobilityProvider_Id?            ProviderId,
-                                                                eMobilityAccount_Id?             eMAId,
-                                                                TimeSpan?                        RequestTimeout,
-                                                                RemoteStopChargingStationResult  Result,
-                                                                TimeSpan                         Runtime);
+    public delegate Task OnRemoteChargingStationStopResponseDelegate(DateTime                         LogTimestamp,
+                                                                     DateTime                         RequestTimestamp,
+                                                                     Object                           Sender,
+                                                                     EventTracking_Id                 EventTrackingId,
+                                                                     RoamingNetwork_Id                RoamingNetworkId,
+                                                                     ChargingStation_Id               ChargingStationId,
+                                                                     ChargingSession_Id               SessionId,
+                                                                     ReservationHandling              ReservationHandling,
+                                                                     eMobilityProvider_Id?            ProviderId,
+                                                                     eMobilityAccount_Id?             eMAId,
+                                                                     TimeSpan?                        RequestTimeout,
+                                                                     RemoteStopChargingStationResult  Result,
+                                                                     TimeSpan                         Runtime);
 
 
     /// <summary>
