@@ -45,19 +45,13 @@ namespace org.GraphDefined.WWCP
                                                                            @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{6})([0-9|X])$ |"        +   // Hubject DIN:       DEBMW0010LY3
 
                                                                            @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-C([A-Za-z0-9]{8})-([0-9|X])$ |"    +   // Hubject ISO Hypen: DE-BMW-001000LY-3
-                                                                           @"^([A-Za-z]{2}[A-Za-z0-9]{3})C([A-Za-z0-9]{8})([0-9|X])$ |"       +   // Hubject ISO:       DEBMW001000LY3
+                                                                           @"^([A-Za-z]{2}[A-Za-z0-9]{3})C([A-Za-z0-9]{8})([0-9|X])$ |"       +   // Hubject ISO:       DEBMWC001000LY3
 
                                                                            @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-([A-Za-z0-9]{9})-([A-Za-z0-9])$ |" +   // e-clearing:
                                                                            @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{9})([A-Za-z0-9])$ |" +
                                                                            @"^([A-Za-z]{2}-[A-Za-z0-9]{3})-([A-Za-z0-9]{9})$ |" +
                                                                            @"^([A-Za-z]{2}[A-Za-z0-9]{3})([A-Za-z0-9]{9})$",
                                                                            RegexOptions.IgnorePatternWhitespace);
-
-        /// <summary>
-        /// The regular expression for parsing an e-mobility contract identification suffix.
-        /// </summary>
-        public static readonly Regex IdSuffix_RegEx  = new Regex(@"^[A-Za-z0-9]{9}-[A-Za-z0-9]$ | ^[A-Za-z0-9]{9}[A-Za-z0-9]$ | ^[A-Za-z0-9]{9}$",
-                                                                 RegexOptions.IgnorePatternWhitespace);
 
         #endregion
 
@@ -142,6 +136,7 @@ namespace org.GraphDefined.WWCP
 
             eMobilityProvider_Id _ProviderId;
 
+            // Hubject
             if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _ProviderId))
                 return new eMobilityAccount_Id(_ProviderId,
                                                _MatchCollection[0].Groups[2].Value,
@@ -153,14 +148,21 @@ namespace org.GraphDefined.WWCP
                                                _MatchCollection[0].Groups[6].Value[0]);
 
             if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[7].Value, out _ProviderId))
-                return new eMobilityAccount_Id(_ProviderId,
+                return new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.DIN),
                                                _MatchCollection[0].Groups[8].Value,
                                                _MatchCollection[0].Groups[9].Value[0]);
 
             if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[10].Value, out _ProviderId))
                 return new eMobilityAccount_Id(_ProviderId,
-                                               _MatchCollection[0].Groups[11].Value);
+                                               _MatchCollection[0].Groups[11].Value,
+                                               _MatchCollection[0].Groups[12].Value[0]);
 
+            if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[13].Value, out _ProviderId))
+                return new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.ISO_HYPHEN),
+                                               _MatchCollection[0].Groups[14].Value,
+                                               _MatchCollection[0].Groups[15].Value[0]);
+
+            // e-clearing
 
             throw new ArgumentException("Illegal contract identification '" + Text + "'!");
 
@@ -213,38 +215,58 @@ namespace org.GraphDefined.WWCP
                 if (_MatchCollection.Count != 1)
                     return false;
 
-                eMobilityProvider_Id _Provider;
+                eMobilityProvider_Id _ProviderId;
 
-                // ISO...
-                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _Provider))
+                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _ProviderId))
                 {
 
-                    eMobilityAccountId = new eMobilityAccount_Id(_Provider,
-                                                                 _MatchCollection[0].Groups[2].Value,
-                                                                 _MatchCollection[0].Groups[3].Value[0]);
+                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId,
+                                                   _MatchCollection[0].Groups[2].Value,
+                                                   _MatchCollection[0].Groups[3].Value[0]);
 
                     return true;
 
                 }
 
-                // DIN...
-                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[4].Value, out _Provider))
+                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[4].Value, out _ProviderId))
                 {
 
-                    eMobilityAccountId = new eMobilityAccount_Id(_Provider,
-                                                                 _MatchCollection[0].Groups[5].Value,
-                                                                 _MatchCollection[0].Groups[6].Value[0]);
+                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.DIN_HYPHEN),
+                                               _MatchCollection[0].Groups[5].Value,
+                                               _MatchCollection[0].Groups[6].Value[0]);
 
                     return true;
 
                 }
 
-                // Without check digit...
-                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[7].Value, out _Provider))
+                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[7].Value, out _ProviderId))
                 {
 
-                    eMobilityAccountId = new eMobilityAccount_Id(_Provider,
-                                                 _MatchCollection[0].Groups[8].Value);
+                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.DIN),
+                                           _MatchCollection[0].Groups[8].Value,
+                                           _MatchCollection[0].Groups[9].Value[0]);
+
+                    return true;
+
+                }
+
+                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[10].Value, out _ProviderId))
+                {
+
+                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId,
+                                       _MatchCollection[0].Groups[11].Value,
+                                       _MatchCollection[0].Groups[12].Value[0]);
+
+                    return true;
+
+                }
+
+                if (eMobilityProvider_Id.TryParse(_MatchCollection[0].Groups[13].Value, out _ProviderId))
+                {
+
+                    eMobilityAccountId = new eMobilityAccount_Id(_ProviderId.ChangeFormat(ProviderIdFormats.ISO_HYPHEN),
+                                   _MatchCollection[0].Groups[14].Value,
+                                   _MatchCollection[0].Groups[15].Value[0]);
 
                     return true;
 
