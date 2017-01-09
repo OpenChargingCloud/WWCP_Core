@@ -4323,7 +4323,7 @@ namespace org.GraphDefined.WWCP
 
         #region SendOnReservationCancelled(...)
 
-        internal void SendOnReservationCancelled(DateTime                               LogTimestamp,
+        internal Task SendOnReservationCancelled(DateTime                               LogTimestamp,
                                                  DateTime                               RequestTimestamp,
                                                  Object                                 Sender,
                                                  EventTracking_Id                       EventTrackingId,
@@ -4342,18 +4342,18 @@ namespace org.GraphDefined.WWCP
 
             _ChargingReservations_AtChargingStationOperators.TryRemove(ReservationId, out _Operator);
 
-            OnReservationCancelled?.Invoke(LogTimestamp,
-                                           RequestTimestamp,
-                                           Sender,
-                                           EventTrackingId,
-                                           RoamingNetworkId.HasValue ? RoamingNetworkId : Id,
-                                           ProviderId,
-                                           ReservationId,
-                                           Reservation,
-                                           Reason,
-                                           Result,
-                                           Runtime,
-                                           RequestTimeout);
+            return OnReservationCancelled?.Invoke(LogTimestamp,
+                                                  RequestTimestamp,
+                                                  Sender,
+                                                  EventTrackingId,
+                                                  RoamingNetworkId.HasValue ? RoamingNetworkId : Id,
+                                                  ProviderId,
+                                                  ReservationId,
+                                                  Reservation,
+                                                  Reason,
+                                                  Result,
+                                                  Runtime,
+                                                  RequestTimeout);
 
         }
 

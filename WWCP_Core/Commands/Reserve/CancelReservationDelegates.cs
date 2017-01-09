@@ -40,7 +40,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
     /// <param name="Reason">The reason for the cancellation.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnCancelReservationRequestDelegate(DateTime                               LogTimestamp,
+    public delegate Task OnCancelReservationRequestDelegate(DateTime                               LogTimestamp,
                                                             DateTime                               RequestTimestamp,
                                                             Object                                 Sender,
                                                             EventTracking_Id                       EventTrackingId,
@@ -99,7 +99,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Result">The result of the reservation.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnCancelReservationResponseDelegate(DateTime                               LogTimestamp,
+    public delegate Task OnCancelReservationResponseDelegate(DateTime                               LogTimestamp,
                                                              DateTime                               RequestTimestamp,
                                                              Object                                 Sender,
                                                              EventTracking_Id                       EventTrackingId,

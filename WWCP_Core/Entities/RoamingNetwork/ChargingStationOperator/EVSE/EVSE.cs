@@ -1278,7 +1278,7 @@ namespace org.GraphDefined.WWCP
         public event OnCancelReservationResponseDelegate OnReservationCancelled;
 
 
-        internal void SendOnReservationCancelled(DateTime                               LogTimestamp,
+        internal Task SendOnReservationCancelled(DateTime                               LogTimestamp,
                                                  DateTime                               RequestTimestamp,
                                                  Object                                 Sender,
                                                  EventTracking_Id                       EventTrackingId,
@@ -1296,18 +1296,18 @@ namespace org.GraphDefined.WWCP
             // Yes, this is really needed!
             _Reservation = null;
 
-            OnReservationCancelled?.Invoke(LogTimestamp,
-                                           RequestTimestamp,
-                                           Sender,
-                                           EventTrackingId,
-                                           RoamingNetworkId,
-                                           ProviderId,
-                                           ReservationId,
-                                           Reservation,
-                                           Reason,
-                                           Result,
-                                           Runtime,
-                                           RequestTimeout);
+            return OnReservationCancelled?.Invoke(LogTimestamp,
+                                                  RequestTimestamp,
+                                                  Sender,
+                                                  EventTrackingId,
+                                                  RoamingNetworkId,
+                                                  ProviderId,
+                                                  ReservationId,
+                                                  Reservation,
+                                                  Reason,
+                                                  Result,
+                                                  Runtime,
+                                                  RequestTimeout);
 
         }
 

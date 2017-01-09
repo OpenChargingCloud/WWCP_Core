@@ -2468,7 +2468,7 @@ namespace org.GraphDefined.WWCP
 
         #region (internal) SendReservationCancelled(...)
 
-        internal void SendOnReservationCancelled(DateTime                               LogTimestamp,
+        internal Task SendOnReservationCancelled(DateTime                               LogTimestamp,
                                                  DateTime                               RequestTimestamp,
                                                  Object                                 Sender,
                                                  EventTracking_Id                       EventTrackingId,
@@ -2487,18 +2487,18 @@ namespace org.GraphDefined.WWCP
 
             _ChargingReservations.TryRemove(ReservationId, out _ChargingStation);
 
-            OnReservationCancelled?.Invoke(LogTimestamp,
-                                           RequestTimestamp,
-                                           Sender,
-                                           EventTrackingId,
-                                           RoamingNetworkId,
-                                           ProviderId,
-                                           ReservationId,
-                                           Reservation,
-                                           Reason,
-                                           Result,
-                                           Runtime,
-                                           RequestTimeout);
+            return OnReservationCancelled?.Invoke(LogTimestamp,
+                                                  RequestTimestamp,
+                                                  Sender,
+                                                  EventTrackingId,
+                                                  RoamingNetworkId,
+                                                  ProviderId,
+                                                  ReservationId,
+                                                  Reservation,
+                                                  Reason,
+                                                  Result,
+                                                  Runtime,
+                                                  RequestTimeout);
 
         }
 

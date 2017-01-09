@@ -153,7 +153,7 @@ namespace org.GraphDefined.WWCP.Importer
         /// <summary>
         /// A delegate called whenever a new forwarding information was added.
         /// </summary>
-        public delegate void OnNewForwardingInformationDelegate(DateTime                Timestamp,
+        public delegate Task OnNewForwardingInformationDelegate(DateTime                Timestamp,
                                                                 WWCPImporter<T>         Importer,
                                                                 ImporterForwardingInfo  ForwardingInfo);
 
@@ -169,7 +169,7 @@ namespace org.GraphDefined.WWCP.Importer
         /// <summary>
         /// A delegate called whenever a new forwarding information was added.
         /// </summary>
-        public delegate void OnForwardingInformationChangedDelegate(DateTime                Timestamp,
+        public delegate Task OnForwardingInformationChangedDelegate(DateTime                Timestamp,
                                                                     WWCPImporter<T>         Importer,
                                                                     ImporterForwardingInfo  OldForwardingInfo,
                                                                     ImporterForwardingInfo  NewForwardingInfo);
@@ -186,7 +186,11 @@ namespace org.GraphDefined.WWCP.Importer
         /// <summary>
         /// A delegate called whenever a new forwarding information was changed.
         /// </summary>
-        public delegate void OnForwardingChangedDelegate(DateTime Timestamp, WWCPImporter<T> Sender, ImporterForwardingInfo ForwardingInfo, RoamingNetwork_Id? OldRN, RoamingNetwork_Id? NewRN);
+        public delegate Task OnForwardingChangedDelegate(DateTime                Timestamp,
+                                                         WWCPImporter<T>         Sender,
+                                                         ImporterForwardingInfo  ForwardingInfo,
+                                                         RoamingNetwork_Id?      OldRN,
+                                                         RoamingNetwork_Id?      NewRN);
 
         /// <summary>
         /// An event fired whenever a new forwarding information was changed.
