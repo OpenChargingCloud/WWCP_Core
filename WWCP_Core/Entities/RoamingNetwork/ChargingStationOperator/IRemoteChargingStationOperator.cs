@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A remote Charging Station Operator.
+    /// The common interface of remote charging station operators.
     /// </summary>
     public interface IRemoteChargingStationOperator
     {
@@ -172,7 +172,9 @@ namespace org.GraphDefined.WWCP
                     EventTracking_Id                  EventTrackingId     = null,
                     TimeSpan?                         RequestTimeout      = null);
 
+        #endregion
 
+        #region CancelReservation(...)
 
         /// <summary>
         /// Try to remove the given charging reservation.

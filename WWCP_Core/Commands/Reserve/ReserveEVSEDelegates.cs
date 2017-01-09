@@ -83,10 +83,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
     /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<ReservationResult> OnReserveEVSEDelegate(DateTime                          Timestamp,
-                                                                  CancellationToken                 CancellationToken,
-                                                                  EventTracking_Id                  EventTrackingId,
-                                                                  RoamingNetwork_Id                 RoamingNetworkId,
+    public delegate Task<ReservationResult> OnReserveEVSEDelegate(RoamingNetwork_Id                 RoamingNetworkId,
                                                                   ChargingReservation_Id?           ReservationId,
                                                                   EVSE_Id                           EVSEId,
                                                                   DateTime?                         StartTime,
@@ -97,7 +94,11 @@ namespace org.GraphDefined.WWCP
                                                                   IEnumerable<Auth_Token>           AuthTokens,
                                                                   IEnumerable<eMobilityAccount_Id>  eMAIds,
                                                                   IEnumerable<UInt32>               PINs,
-                                                                  TimeSpan?                         RequestTimeout);
+
+                                                                  DateTime?                         Timestamp           = null,
+                                                                  CancellationToken?                CancellationToken   = null,
+                                                                  EventTracking_Id                  EventTrackingId     = null,
+                                                                  TimeSpan?                         RequestTimeout      = null);
 
 
     /// <summary>
@@ -120,7 +121,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="Result">The result of the reservation.</param>
     /// <param name="Runtime">The runtime of the request.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnReserveEVSEResponseDelegate(DateTime                          LogTimestamp,
+    public delegate Task OnReserveEVSEResponseDelegate(DateTime                          LogTimestamp,
                                                        DateTime                          RequestTimestamp,
                                                        Object                            Sender,
                                                        EventTracking_Id                  EventTrackingId,
