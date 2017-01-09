@@ -381,7 +381,9 @@ namespace org.GraphDefined.WWCP.Importer
                                                   OrderByDescending(file => file).
                                                   FirstOrDefault();
 
-                var InputFile         = ConfigFilename != null ? ConfigFilename : ForwardingFilenamePrefix + ".json";
+                var InputFile         = ConfigFilename.IsNotNullOrEmpty()
+                                            ? ConfigFilename
+                                            : ForwardingFilenamePrefix + ".json";
 
                 if (File.Exists(InputFile))
                 {
@@ -412,7 +414,7 @@ namespace org.GraphDefined.WWCP.Importer
                             var CurrentEVSEOperator      = ChargingStationOperators.FirstOrDefault(evseoperator => evseoperator.RoamingNetwork.Id == CurrentRoamingNetworkId);
 
                             if (CurrentEVSEOperator == null)
-                                throw new ApplicationException("Could not find any Charging Station Operator for roaming network '" + CurrentRoamingNetworkId + "'!");
+                                throw new ApplicationException("Could not find any charging station operator for roaming network '" + CurrentRoamingNetworkId + "'!");
 
                             var CurrentRoamingNetworkJObject = CurrentRoamingNetwork.Value as JObject;
 
@@ -497,7 +499,7 @@ namespace org.GraphDefined.WWCP.Importer
                                                             _AllForwardingInfos.Add(ChargingStationId,
                                                                                     new ImporterForwardingInfo(
                                                                                         OnChangedCallback:       SendOnForwardingChanged,
-                                                                                        EVSEOperators:           ChargingStationOperators,
+                                                                                        ChargingStationOperators:           ChargingStationOperators,
                                                                                         StationId:               ChargingStationId,
                                                                                         StationName:             "",
                                                                                         StationServiceTag:       "",

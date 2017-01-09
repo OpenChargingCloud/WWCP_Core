@@ -168,7 +168,7 @@ namespace org.GraphDefined.WWCP.Importer
         #region Constructor(s)
 
         public ImporterForwardingInfo(Action<DateTime, ImporterForwardingInfo, RoamingNetwork_Id?, RoamingNetwork_Id?>  OnChangedCallback,
-                                      IEnumerable<ChargingStationOperator>                                              EVSEOperators,
+                                      IEnumerable<ChargingStationOperator>                                              ChargingStationOperators,
                                       ChargingStation_Id?                                                               StationId                 = null,
                                       String                                                                            StationName               = "",
                                       String                                                                            StationServiceTag         = "",
@@ -183,7 +183,7 @@ namespace org.GraphDefined.WWCP.Importer
         {
 
             this._OnForwardingChanged        = OnChangedCallback;
-            this.ChargingStationOperators               = EVSEOperators;
+            this.ChargingStationOperators    = ChargingStationOperators;
             this._EVSEIds                    = EVSEIds               != null ? new HashSet<EVSE_Id>(EVSEIds) : new HashSet<EVSE_Id>();
             this.StationId                   = StationId.HasValue            ? StationId.Value               : ChargingStation_Id.Create(EVSEIds).Value;
             this.StationName                 = StationName;
