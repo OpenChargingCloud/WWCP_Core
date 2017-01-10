@@ -36,6 +36,17 @@ namespace org.GraphDefined.WWCP
         LargePaddleInductive,
         AVCONConnector,
         TeslaConnector,
+
+        /// <summary>
+        /// The connector type is Tesla Connector “Roadster”-type (round, 4 pin).
+        /// </summary>
+        TESLA_Roadster,
+
+        /// <summary>
+        /// The connector type is Tesla Connector “Model-S”-type (oval, 5 pin).
+        /// </summary>
+        TESLA_ModelS,
+
         NEMA5_20,
         TypeEFrenchStandard,
         TypeFSchuko,
@@ -47,8 +58,8 @@ namespace org.GraphDefined.WWCP
         Type3Outlet,
         IEC60309SinglePhase,
         IEC60309ThreePhase,
-        CCSCombo2Plug_CableAttached,
         CCSCombo1Plug_CableAttached,
+        CCSCombo2Plug_CableAttached,
         CHAdeMO
 
     }

@@ -39,7 +39,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnAuthorizeStopRequestDelegate(DateTime                      LogTimestamp,
+    public delegate Task OnAuthorizeStopRequestDelegate(DateTime                      LogTimestamp,
                                                         DateTime                      RequestTimestamp,
                                                         Object                        Sender,
                                                         EventTracking_Id              EventTrackingId,
@@ -61,7 +61,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize stop result.</param>
-    public delegate void OnAuthorizeStopResponseDelegate(DateTime                      LogTimestamp,
+    public delegate Task OnAuthorizeStopResponseDelegate(DateTime                      LogTimestamp,
                                                          DateTime                      RequestTimestamp,
                                                          Object                        Sender,
                                                          EventTracking_Id              EventTrackingId,
@@ -89,7 +89,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnAuthorizeEVSEStopRequestDelegate(DateTime                      LogTimestamp,
+    public delegate Task OnAuthorizeEVSEStopRequestDelegate(DateTime                      LogTimestamp,
                                                             DateTime                      RequestTimestamp,
                                                             Object                        Sender,
                                                             EventTracking_Id              EventTrackingId,
@@ -113,7 +113,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize stop result.</param>
-    public delegate void OnAuthorizeEVSEStopResponseDelegate(DateTime                      LogTimestamp,
+    public delegate Task OnAuthorizeEVSEStopResponseDelegate(DateTime                      LogTimestamp,
                                                              DateTime                      RequestTimestamp,
                                                              Object                        Sender,
                                                              EventTracking_Id              EventTrackingId,
@@ -164,7 +164,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnAuthorizeChargingStationStopRequestDelegate(DateTime                      LogTimestamp,
+    public delegate Task OnAuthorizeChargingStationStopRequestDelegate(DateTime                      LogTimestamp,
                                                                        DateTime                      RequestTimestamp,
                                                                        Object                        Sender,
                                                                        EventTracking_Id              EventTrackingId,
@@ -188,7 +188,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize stop result.</param>
-    public delegate void OnAuthorizeChargingStationStopResponseDelegate(DateTime                        LogTimestamp,
+    public delegate Task OnAuthorizeChargingStationStopResponseDelegate(DateTime                        LogTimestamp,
                                                                         DateTime                        RequestTimestamp,
                                                                         Object                          Sender,
                                                                         EventTracking_Id                EventTrackingId,
@@ -217,7 +217,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnAuthorizeChargingPoolStopRequestDelegate (DateTime                      LogTimestamp,
+    public delegate Task OnAuthorizeChargingPoolStopRequestDelegate (DateTime                      LogTimestamp,
                                                                      DateTime                      RequestTimestamp,
                                                                      Object                        Sender,
                                                                      EventTracking_Id              EventTrackingId,
@@ -241,7 +241,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="AuthToken">A (RFID) user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize stop result.</param>
-    public delegate void OnAuthorizeChargingPoolStopResponseDelegate(DateTime                      LogTimestamp,
+    public delegate Task OnAuthorizeChargingPoolStopResponseDelegate(DateTime                      LogTimestamp,
                                                                      DateTime                      RequestTimestamp,
                                                                      Object                        Sender,
                                                                      EventTracking_Id              EventTrackingId,

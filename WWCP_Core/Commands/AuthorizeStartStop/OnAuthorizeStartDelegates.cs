@@ -40,7 +40,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargingProduct">The choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnAuthorizeStartRequestDelegate (DateTime                      LogTimestamp,
+    public delegate Task OnAuthorizeStartRequestDelegate (DateTime                      LogTimestamp,
                                                           DateTime                      RequestTimestamp,
                                                           Object                        Sender,
                                                           EventTracking_Id              EventTrackingId,
@@ -66,7 +66,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize start result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate void OnAuthorizeStartResponseDelegate(DateTime                      LogTimestamp,
+    public delegate Task OnAuthorizeStartResponseDelegate(DateTime                      LogTimestamp,
                                                           DateTime                      RequestTimestamp,
                                                           Object                        Sender,
                                                           EventTracking_Id              EventTrackingId,
@@ -96,7 +96,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargingProduct">The choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnAuthorizeEVSEStartRequestDelegate (DateTime                      LogTimestamp,
+    public delegate Task OnAuthorizeEVSEStartRequestDelegate (DateTime                      LogTimestamp,
                                                               DateTime                      RequestTimestamp,
                                                               Object                        Sender,
                                                               EventTracking_Id              EventTrackingId,
@@ -124,7 +124,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize start result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate void OnAuthorizeEVSEStartResponseDelegate(DateTime                      LogTimestamp,
+    public delegate Task OnAuthorizeEVSEStartResponseDelegate(DateTime                      LogTimestamp,
                                                               DateTime                      RequestTimestamp,
                                                               Object                        Sender,
                                                               EventTracking_Id              EventTrackingId,
@@ -179,7 +179,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargingProduct">The choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnAuthorizeChargingStationStartRequestDelegate (DateTime                      LogTimestamp,
+    public delegate Task OnAuthorizeChargingStationStartRequestDelegate (DateTime                      LogTimestamp,
                                                                          DateTime                      RequestTimestamp,
                                                                          Object                        Sender,
                                                                          EventTracking_Id              EventTrackingId,
@@ -207,7 +207,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize start result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate void OnAuthorizeChargingStationStartResponseDelegate(DateTime                         LogTimestamp,
+    public delegate Task OnAuthorizeChargingStationStartResponseDelegate(DateTime                         LogTimestamp,
                                                                          DateTime                         RequestTimestamp,
                                                                          Object                           Sender,
                                                                          EventTracking_Id                 EventTrackingId,
@@ -239,7 +239,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargingProduct">The choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate void OnAuthorizeChargingPoolStartRequestDelegate (DateTime                      LogTimestamp,
+    public delegate Task OnAuthorizeChargingPoolStartRequestDelegate (DateTime                      LogTimestamp,
                                                                       DateTime                      RequestTimestamp,
                                                                       Object                        Sender,
                                                                       EventTracking_Id              EventTrackingId,
@@ -267,7 +267,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize start result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate void OnAuthorizeChargingPoolStartResponseDelegate(DateTime                      LogTimestamp,
+    public delegate Task OnAuthorizeChargingPoolStartResponseDelegate(DateTime                      LogTimestamp,
                                                                       DateTime                      RequestTimestamp,
                                                                       Object                        Sender,
                                                                       EventTracking_Id              EventTrackingId,
