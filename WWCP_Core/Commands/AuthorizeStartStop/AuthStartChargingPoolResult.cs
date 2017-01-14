@@ -145,7 +145,8 @@ namespace org.GraphDefined.WWCP
             => new AuthStartChargingPoolResult(AuthorizatorId,
                                                AuthStartChargingPoolResultType.OutOfService,
                                                SessionId,
-                                               Runtime: Runtime);
+                                               Description: "Out-of-service!",
+                                               Runtime:     Runtime);
 
         #endregion
 

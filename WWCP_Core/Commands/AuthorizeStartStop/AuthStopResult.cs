@@ -118,7 +118,8 @@ namespace org.GraphDefined.WWCP
             => new AuthStopResult(AuthorizatorId,
                                   AuthStopResultType.OutOfService,
                                   SessionId,
-                                  Runtime: Runtime);
+                                  Description: "Out-of-service!",
+                                  Runtime:     Runtime);
 
         #endregion
 
