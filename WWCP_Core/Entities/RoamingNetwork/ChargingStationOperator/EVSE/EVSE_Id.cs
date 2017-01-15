@@ -350,8 +350,8 @@ namespace org.GraphDefined.WWCP
         public String ToFormat(OperatorIdFormats IdFormat)
 
             => IdFormat == OperatorIdFormats.ISO
-                   ? String.Concat(OperatorId.ToFormat(IdFormat), "*E", Suffix)
-                   : String.Concat(OperatorId.ToFormat(IdFormat),  "*", Suffix);
+                   ? String.Concat(OperatorId.ToString(IdFormat), "*E", Suffix)
+                   : String.Concat(OperatorId.ToString(IdFormat),  "*", Suffix);
 
         #endregion
 

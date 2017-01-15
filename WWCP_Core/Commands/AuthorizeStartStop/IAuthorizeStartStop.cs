@@ -196,6 +196,8 @@ namespace org.GraphDefined.WWCP
     public interface IRemoteAuthorizeStartStop
     {
 
+        IId AuthId { get; }
+
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>

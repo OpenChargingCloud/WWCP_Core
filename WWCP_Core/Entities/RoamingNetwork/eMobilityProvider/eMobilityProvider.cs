@@ -68,7 +68,8 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        //public Authorizator_Id AuthorizatorId { get; }
+        IId IRemoteAuthorizeStartStop.AuthId
+            => Id;
 
         #region Name
 

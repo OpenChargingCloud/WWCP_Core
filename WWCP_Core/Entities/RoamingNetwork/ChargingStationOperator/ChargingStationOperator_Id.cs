@@ -28,7 +28,7 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The different formats of charging station operators.
+    /// The different formats of charging station operator identifications.
     /// </summary>
     public enum OperatorIdFormats
     {
@@ -63,18 +63,12 @@ namespace org.GraphDefined.WWCP
         #region Data
 
         /// <summary>
-        /// The regular expression for parsing an Alpha-2-CountryCode and a charging station operator identification.
-        /// </summary>
-        public static readonly Regex  CountryAndOperatorId_RegEx  = new Regex(@"^([A-Z]{2})(\*?)([A-Z0-9]{3})$ | "     +
-                                                                              @"^\+?([0-9]{1,5})\*([0-9]{3,6})$ | " +
-                                                                              @"^([0-9]{1,5})$",
-                                                                              RegexOptions.IgnorePatternWhitespace);
-
-        /// <summary>
         /// The regular expression for parsing a charging station operator identification.
         /// </summary>
-        public static readonly Regex  OperatorId_RegEx            = new Regex(@"^[A-Z0-9]{1,5}$",
-                                                                              RegexOptions.IgnorePatternWhitespace);
+        public static readonly Regex  OperatorId_RegEx  = new Regex(@"^([A-Z]{2})(\*?)([A-Z0-9]{3})$ | "  +
+                                                                    @"^\+?([0-9]{1,5})\*([0-9]{3,6})$ | " +
+                                                                    @"^([0-9]{1,5})$",
+                                                                    RegexOptions.IgnorePatternWhitespace);
 
         #endregion
 
@@ -88,7 +82,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The identificator suffix.
         /// </summary>
-        public String             Suffix    { get; }
+        public String             Suffix        { get; }
 
         /// <summary>
         /// The format of the charging station operator identification.
@@ -128,22 +122,22 @@ namespace org.GraphDefined.WWCP
         /// Create a new charging station operator identification.
         /// </summary>
         /// <param name="CountryCode">The country code.</param>
-        /// <param name="OperatorId">The charging station operator identification.</param>
+        /// <param name="Suffix">The suffix of the charging station operator identification.</param>
         /// <param name="Format">The format of the charging station operator identification.</param>
         private ChargingStationOperator_Id(Country            CountryCode,
-                                           String             OperatorId,
+                                           String             Suffix,
                                            OperatorIdFormats  Format = OperatorIdFormats.ISO)
         {
 
             #region Initial checks
 
-            if (OperatorId.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(OperatorId),  "The charging station operator identification suffix must not be null or empty!");
+            if (Suffix.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Suffix),  "The charging station operator identification suffix must not be null or empty!");
 
             #endregion
 
             this.CountryCode  = CountryCode;
-            this.Suffix   = OperatorId;
+            this.Suffix       = Suffix;
             this.Format       = Format;
 
         }
@@ -163,11 +157,11 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (Text.IsNullOrEmpty())
-                throw new ArgumentException("The given text representation of a charging station operator identification must not be null or empty!", nameof(Text));
+                throw new ArgumentNullException(nameof(Text), "The given text representation of a charging station operator identification must not be null or empty!");
 
             #endregion
 
-            var MatchCollection = CountryAndOperatorId_RegEx.Matches(Text);
+            var MatchCollection = OperatorId_RegEx.Matches(Text);
 
             if (MatchCollection.Count != 1)
                 throw new ArgumentException("Illegal text representation of a charging station operator identification: '" + Text + "'!",
@@ -181,33 +175,31 @@ namespace org.GraphDefined.WWCP
                                                       MatchCollection[0].Groups[3].Value,
                                                       MatchCollection[0].Groups[2].Value == "*" ? OperatorIdFormats.ISO_STAR : OperatorIdFormats.ISO);
 
-            // +49...
+            // +49*...
             if (Country.TryParseTelefonCode(MatchCollection[0].Groups[4].Value.ToUpper(), out _CountryCode))
                 return new ChargingStationOperator_Id(_CountryCode,
                                                       MatchCollection[0].Groups[5].Value,
                                                       OperatorIdFormats.DIN);
 
             // Just e.g. "822"...
-            return Parse(Country.Germany,
-                         MatchCollection[0].Groups[6].Value).ChangeFormat(OperatorIdFormats.DIN);
-
-            //throw new ArgumentException("Unknown country code in the given text representation of a charging station operator identification: '" + Text + "'!",
-            //                            nameof(Text));
+            return new ChargingStationOperator_Id(Country.Germany,
+                                                  MatchCollection[0].Groups[6].Value,
+                                                  OperatorIdFormats.DIN);
 
         }
 
         #endregion
 
-        #region Parse(CountryCode, OperatorId, IdFormat = IdFormatType.ISO)
+        #region Parse(CountryCode, Suffix, IdFormat = IdFormatType.ISO)
 
         /// <summary>
         /// Parse the given string as an charging station operator identification.
         /// </summary>
         /// <param name="CountryCode">A country code.</param>
-        /// <param name="OperatorId">An charging station operator identification as a string.</param>
+        /// <param name="Suffix">The suffix of an charging station operator identification.</param>
         /// <param name="IdFormat">The format of the charging station operator identification [old|new].</param>
         public static ChargingStationOperator_Id Parse(Country            CountryCode,
-                                                       String             OperatorId,
+                                                       String             Suffix,
                                                        OperatorIdFormats  IdFormat = OperatorIdFormats.ISO)
         {
 
@@ -216,18 +208,44 @@ namespace org.GraphDefined.WWCP
             if (CountryCode == null)
                 throw new ArgumentNullException(nameof(CountryCode),  "The given country must not be null!");
 
-            if (OperatorId.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(OperatorId),   "The given charging station operator identification suffix must not be null or empty!");
+            if (Suffix.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Suffix),       "The given charging station operator identification suffix must not be null or empty!");
 
             #endregion
 
-            if (!OperatorId_RegEx.IsMatch(OperatorId))
-                throw new ArgumentException("Illegal charging station operator identification '" + CountryCode + "' / '" + OperatorId + "'!",
-                                            nameof(OperatorId));
+            switch (IdFormat)
+            {
 
-            return new ChargingStationOperator_Id(CountryCode,
-                                                  OperatorId,
-                                                  IdFormat);
+                case OperatorIdFormats.ISO:
+                    return Parse(CountryCode.Alpha2Code + Suffix);
+
+                case OperatorIdFormats.ISO_STAR:
+                    return Parse(CountryCode.Alpha2Code + "*" + Suffix);
+
+                default: // DIN:
+                    return Parse("+" + CountryCode.TelefonCode.ToString() + "*" + Suffix);
+
+            }
+
+        }
+
+        #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given text representation of a charging station operator identification.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging station operator identification.</param>
+        public static ChargingStationOperator_Id? TryParse(String Text)
+        {
+
+            ChargingStationOperator_Id _OperatorId;
+
+            if (TryParse(Text, out _OperatorId))
+                return _OperatorId;
+
+            return new ChargingStationOperator_Id?();
 
         }
 
@@ -257,7 +275,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var MatchCollection = CountryAndOperatorId_RegEx.Matches(Text);
+                var MatchCollection = OperatorId_RegEx.Matches(Text);
 
                 if (MatchCollection.Count != 1)
                 {
@@ -279,7 +297,7 @@ namespace org.GraphDefined.WWCP
 
                 }
 
-                // +49...
+                // +49*...
                 if (Country.TryParseTelefonCode(MatchCollection[0].Groups[4].Value, out _CountryCode))
                 {
 
@@ -293,8 +311,9 @@ namespace org.GraphDefined.WWCP
 
 
                 // Just e.g. "822"...
-                ChargingStationOperatorId = Parse(Country.Germany,
-                                                  MatchCollection[0].Groups[6].Value).ChangeFormat(OperatorIdFormats.DIN);
+                ChargingStationOperatorId = new ChargingStationOperator_Id(Country.Germany,
+                                                                           MatchCollection[0].Groups[6].Value,
+                                                                           OperatorIdFormats.DIN);
 
                 return true;
 
@@ -338,50 +357,6 @@ namespace org.GraphDefined.WWCP
             => new ChargingStationOperator_Id(CountryCode,
                                               Suffix,
                                               Format);
-
-        #endregion
-
-
-        #region ToFormat(Format)
-
-        /// <summary>
-        /// Return the identification in the given format.
-        /// </summary>
-        /// <param name="Format">The format of the identification.</param>
-        public String ToFormat(OperatorIdFormats Format)
-        {
-
-            switch (Format)
-            {
-
-                case OperatorIdFormats.DIN:
-                    return String.Concat("+",
-                                         CountryCode.TelefonCode,
-                                         "*",
-                                         Suffix);
-
-                default:
-                    return String.Concat(CountryCode.Alpha2Code,
-                                         "*",
-                                         Suffix);
-
-            }
-
-        }
-
-        ///// <summary>
-        ///// Return the identification in the given format.
-        ///// </summary>
-        ///// <param name="IdFormat">The format.</param>
-        //public String ToFormat(IdFormatOriginType IdFormat)
-        //{
-
-        //    if (IdFormat == IdFormatOriginType.Origin)
-        //        return ToFormat(this.Format);
-
-        //    return ToFormat((OperatorIdFormats) IdFormat);
-
-        //}
 
         #endregion
 
@@ -608,8 +583,8 @@ namespace org.GraphDefined.WWCP
         /// <returns>The HashCode of this object.</returns>
         public override Int32 GetHashCode()
 
-            => CountryCode.Alpha2Code.GetHashCode() ^
-               Suffix.            GetHashCode();
+            => CountryCode.GetHashCode() ^
+               Suffix.     GetHashCode();
 
         #endregion
 
@@ -630,8 +605,8 @@ namespace org.GraphDefined.WWCP
                 case OperatorIdFormats.ISO_STAR:
                     return CountryCode.Alpha2Code + "*" + Suffix;
 
-                default:  // ISO
-                    return CountryCode.Alpha2Code + Suffix;
+                default: // ISO
+                    return CountryCode.Alpha2Code       + Suffix;
 
             }
 
@@ -639,6 +614,38 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ToString(Format)
+
+        /// <summary>
+        /// Return the identification in the given format.
+        /// </summary>
+        /// <param name="Format">The format of the identification.</param>
+        public String ToString(OperatorIdFormats Format)
+        {
+
+            switch (Format)
+            {
+
+                case OperatorIdFormats.ISO:
+                    return String.Concat(CountryCode.Alpha2Code,
+                                         Suffix);
+
+                case OperatorIdFormats.ISO_STAR:
+                    return String.Concat(CountryCode.Alpha2Code,
+                                         "*",
+                                         Suffix);
+
+                default: // DIN
+                    return String.Concat("+",
+                                         CountryCode.TelefonCode,
+                                         "*",
+                                         Suffix);
+
+            }
+
+        }
+
+        #endregion
 
     }
 

@@ -533,6 +533,8 @@ namespace org.GraphDefined.WWCP
 
         public IRemoteAuthorizeStartStop  AuthService               { get; set; }
 
+        public IId                        AuthorizatorId             { get; set; }
+
 
         public ChargingStationOperator    ChargingStationOperator   { get; set; }
 
