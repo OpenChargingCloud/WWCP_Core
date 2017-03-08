@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The current status of an EVSE.
+    /// The current timestamped status of an EVSE.
     /// </summary>
     public struct EVSEStatus : IEquatable <EVSEStatus>,
                                IComparable<EVSEStatus>
@@ -273,7 +273,7 @@ namespace org.GraphDefined.WWCP
             if (!(Object is EVSEStatus))
                 return false;
 
-            return this.Equals((EVSEStatus) Object);
+            return Equals((EVSEStatus) Object);
 
         }
 

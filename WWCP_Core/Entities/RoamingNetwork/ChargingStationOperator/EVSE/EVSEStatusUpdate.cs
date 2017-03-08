@@ -153,9 +153,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEStatusUpdate2">Another EVSE status update.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (EVSEStatusUpdate EVSEStatusUpdate1, EVSEStatusUpdate EVSEStatusUpdate2)
-        {
-            return !(EVSEStatusUpdate1 == EVSEStatusUpdate2);
-        }
+            => !(EVSEStatusUpdate1 == EVSEStatusUpdate2);
 
         #endregion
 
@@ -171,7 +169,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) EVSEStatusUpdate1 == null)
-                throw new ArgumentNullException("The given EVSEStatusUpdate1 must not be null!");
+                throw new ArgumentNullException(nameof(EVSEStatusUpdate1), "The given EVSEStatusUpdate1 must not be null!");
 
             return EVSEStatusUpdate1.CompareTo(EVSEStatusUpdate2) < 0;
 
@@ -188,9 +186,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEStatusUpdate2">Another EVSE status update.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (EVSEStatusUpdate EVSEStatusUpdate1, EVSEStatusUpdate EVSEStatusUpdate2)
-        {
-            return !(EVSEStatusUpdate1 > EVSEStatusUpdate2);
-        }
+            => !(EVSEStatusUpdate1 > EVSEStatusUpdate2);
 
         #endregion
 
@@ -206,7 +202,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if ((Object) EVSEStatusUpdate1 == null)
-                throw new ArgumentNullException("The given EVSEStatusUpdate1 must not be null!");
+                throw new ArgumentNullException(nameof(EVSEStatusUpdate1), "The given EVSEStatusUpdate1 must not be null!");
 
             return EVSEStatusUpdate1.CompareTo(EVSEStatusUpdate2) > 0;
 
@@ -223,9 +219,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEStatusUpdate2">Another EVSE status update.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (EVSEStatusUpdate EVSEStatusUpdate1, EVSEStatusUpdate EVSEStatusUpdate2)
-        {
-            return !(EVSEStatusUpdate1 < EVSEStatusUpdate2);
-        }
+            => !(EVSEStatusUpdate1 < EVSEStatusUpdate2);
 
         #endregion
 
@@ -304,7 +298,7 @@ namespace org.GraphDefined.WWCP
             if (!(Object is EVSEStatusUpdate))
                 return false;
 
-            return this.Equals((EVSEStatusUpdate) Object);
+            return Equals((EVSEStatusUpdate) Object);
 
         }
 

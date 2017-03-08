@@ -135,13 +135,13 @@ namespace org.GraphDefined.WWCP
 
         #region AverageVoltage
 
-        private Double _AverageVoltage;
+        private Single _AverageVoltage;
 
         /// <summary>
         /// The average voltage.
         /// </summary>
         [Mandatory]
-        public Double AverageVoltage
+        public Single AverageVoltage
         {
 
             get
@@ -191,13 +191,13 @@ namespace org.GraphDefined.WWCP
 
         #region MaxCurrent
 
-        private Double _MaxCurrent;
+        private Single _MaxCurrent;
 
         /// <summary>
         /// The maximum current [Ampere].
         /// </summary>
         [Mandatory]
-        public Double MaxCurrent
+        public Single MaxCurrent
         {
 
             get
@@ -219,13 +219,13 @@ namespace org.GraphDefined.WWCP
 
         #region MaxPower
 
-        private Double? _MaxPower;
+        private Single? _MaxPower;
 
         /// <summary>
         /// The maximum power [kWatt].
         /// </summary>
         [Optional]
-        public Double? MaxPower
+        public Single? MaxPower
         {
 
             get
@@ -247,13 +247,13 @@ namespace org.GraphDefined.WWCP
 
         #region RealTimePower
 
-        private Double? _RealTimePower;
+        private Single? _RealTimePower;
 
         /// <summary>
         /// The current real-time power delivery [Watt].
         /// </summary>
         [Optional]
-        public Double? RealTimePower
+        public Single? RealTimePower
         {
 
             get
@@ -275,13 +275,13 @@ namespace org.GraphDefined.WWCP
 
         #region MaxCapacity
 
-        private Double? _MaxCapacity;
+        private Single? _MaxCapacity;
 
         /// <summary>
         /// The maximum capacity [kWh].
         /// </summary>
         [Mandatory]
-        public Double? MaxCapacity
+        public Single? MaxCapacity
         {
 
             get
