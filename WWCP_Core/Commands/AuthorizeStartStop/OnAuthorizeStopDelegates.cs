@@ -96,7 +96,7 @@ namespace org.GraphDefined.WWCP
                                                             RoamingNetwork_Id             RoamingNetworkId,
                                                             ChargingStationOperator_Id?   OperatorId,
                                                             EVSE_Id                       EVSEId,
-                                                            ChargingSession_Id            SessionId,
+                                                            ChargingSession_Id?           SessionId,
                                                             Auth_Token                    AuthToken,
                                                             TimeSpan?                     RequestTimeout);
 
@@ -120,7 +120,7 @@ namespace org.GraphDefined.WWCP
                                                              RoamingNetwork_Id             RoamingNetworkId,
                                                              ChargingStationOperator_Id?   OperatorId,
                                                              EVSE_Id                       EVSEId,
-                                                             ChargingSession_Id            SessionId,
+                                                             ChargingSession_Id?           SessionId,
                                                              Auth_Token                    AuthToken,
                                                              TimeSpan?                     RequestTimeout,
                                                              AuthStopEVSEResult            Result,
@@ -144,7 +144,7 @@ namespace org.GraphDefined.WWCP
                                                                          EventTracking_Id              EventTrackingId,
                                                                          ChargingStationOperator_Id?   OperatorId,
                                                                          EVSE_Id                       EVSEId,
-                                                                         ChargingSession_Id            SessionId,
+                                                                         ChargingSession_Id?           SessionId,
                                                                          Auth_Token                    AuthToken,
                                                                          TimeSpan?                     RequestTimeout);
 
@@ -171,7 +171,7 @@ namespace org.GraphDefined.WWCP
                                                                        RoamingNetwork_Id             RoamingNetworkId,
                                                                        ChargingStationOperator_Id?   OperatorId,
                                                                        ChargingStation_Id            ChargingStationId,
-                                                                       ChargingSession_Id            SessionId,
+                                                                       ChargingSession_Id?           SessionId,
                                                                        Auth_Token                    AuthToken,
                                                                        TimeSpan?                     RequestTimeout);
 
@@ -195,7 +195,7 @@ namespace org.GraphDefined.WWCP
                                                                         RoamingNetwork_Id               RoamingNetworkId,
                                                                         ChargingStationOperator_Id?     OperatorId,
                                                                         ChargingStation_Id              ChargingStationId,
-                                                                        ChargingSession_Id              SessionId,
+                                                                        ChargingSession_Id?             SessionId,
                                                                         Auth_Token                      AuthToken,
                                                                         TimeSpan?                       RequestTimeout,
                                                                         AuthStopChargingStationResult   Result,
@@ -224,7 +224,7 @@ namespace org.GraphDefined.WWCP
                                                                      RoamingNetwork_Id             RoamingNetworkId,
                                                                      ChargingStationOperator_Id?   OperatorId,
                                                                      ChargingPool_Id               ChargingPoolId,
-                                                                     ChargingSession_Id            SessionId,
+                                                                     ChargingSession_Id?           SessionId,
                                                                      Auth_Token                    AuthToken,
                                                                      TimeSpan?                     RequestTimeout);
 
@@ -248,7 +248,7 @@ namespace org.GraphDefined.WWCP
                                                                      RoamingNetwork_Id             RoamingNetworkId,
                                                                      ChargingStationOperator_Id?   OperatorId,
                                                                      ChargingPool_Id               ChargingPoolId,
-                                                                     ChargingSession_Id            SessionId,
+                                                                     ChargingSession_Id?           SessionId,
                                                                      Auth_Token                    AuthToken,
                                                                      TimeSpan?                     RequestTimeout,
                                                                      AuthStopChargingPoolResult    Result,
