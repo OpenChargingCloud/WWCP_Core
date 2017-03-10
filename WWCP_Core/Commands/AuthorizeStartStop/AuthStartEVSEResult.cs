@@ -180,7 +180,7 @@ namespace org.GraphDefined.WWCP
                        IEnumerable<UInt32>          ListOfAuthStopPINs     = null,
 
                        eMobilityProvider_Id?        ProviderId             = null,
-                       String                       Description            = null,
+                       String                       Description            = "Success",
                        String                       AdditionalInfo         = null,
                        TimeSpan?                    Runtime                = null)
 
@@ -218,7 +218,7 @@ namespace org.GraphDefined.WWCP
             NotAuthorized(IId                    AuthorizatorId,
                           ChargingSession_Id?    SessionId        = null,
                           eMobilityProvider_Id?  ProviderId       = null,
-                          String                 Description      = null,
+                          String                 Description      = "NotAuthorized",
                           String                 AdditionalInfo   = null,
                           TimeSpan?              Runtime          = null)
 

@@ -133,10 +133,27 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) NotSupported        (AuthorizatorId, SessionId = null, Runtime = null)
+
+        /// <summary>
+        /// The charging pool does not support this operation.
+        /// </summary>
+        public static AuthStartChargingPoolResult NotSupported(IId                  AuthorizatorId,
+                                                               ChargingSession_Id?  SessionId  = null,
+                                                               TimeSpan?            Runtime    = null)
+
+            => new AuthStartChargingPoolResult(AuthorizatorId,
+                                               AuthStartChargingPoolResultType.NotSupported,
+                                               SessionId,
+                                               Description: "Operation not supported!",
+                                               Runtime:     Runtime);
+
+        #endregion
+
         #region (static) OutOfService        (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
-        /// The ChargingPool or charging station is out of service.
+        /// The ChargingPool or charging pool is out of service.
         /// </summary>
         public static AuthStartChargingPoolResult OutOfService(IId                  AuthorizatorId,
                                                                ChargingSession_Id?  SessionId  = null,
@@ -180,7 +197,7 @@ namespace org.GraphDefined.WWCP
                        IEnumerable<UInt32>          ListOfAuthStopPINs     = null,
 
                        eMobilityProvider_Id?        ProviderId             = null,
-                       String                       Description            = null,
+                       String                       Description            = "Success",
                        String                       AdditionalInfo         = null,
                        TimeSpan?                    Runtime                = null)
 
@@ -218,7 +235,7 @@ namespace org.GraphDefined.WWCP
             NotAuthorized(IId                    AuthorizatorId,
                           ChargingSession_Id?    SessionId        = null,
                           eMobilityProvider_Id?  ProviderId       = null,
-                          String                 Description      = null,
+                          String                 Description      = "NotAuthorized",
                           String                 AdditionalInfo   = null,
                           TimeSpan?              Runtime          = null)
 
@@ -267,7 +284,7 @@ namespace org.GraphDefined.WWCP
         #region (static) CommunicationTimeout(AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
-        /// The authorize stop ran into a timeout between evse operator backend and charging station.
+        /// The authorize stop ran into a timeout between evse operator backend and charging pool.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
@@ -286,7 +303,7 @@ namespace org.GraphDefined.WWCP
         #region (static) StartChargingTimeout(AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
-        /// The authorize stop ran into a timeout between charging station and ev.
+        /// The authorize stop ran into a timeout between charging pool and ev.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="SessionId">The optional charging session identification from the authorization request.</param>
@@ -329,7 +346,7 @@ namespace org.GraphDefined.WWCP
 
 
     /// <summary>
-    /// The result of a authorize start operation at an EVSE.
+    /// The result of a authorize start operation at a charging pool.
     /// </summary>
     public enum AuthStartChargingPoolResultType
     {
@@ -340,7 +357,7 @@ namespace org.GraphDefined.WWCP
         Unspecified,
 
         /// <summary>
-        /// The charging station is unknown.
+        /// The charging pool is unknown.
         /// </summary>
         UnknownEVSE,
 
@@ -350,12 +367,17 @@ namespace org.GraphDefined.WWCP
         InvalidSessionId,
 
         /// <summary>
-        /// The charging station is reserved.
+        /// The charging pool is reserved.
         /// </summary>
         Reserved,
 
         /// <summary>
-        /// The charging station is out of service.
+        /// The charging pool does not support this operation.
+        /// </summary>
+        NotSupported,
+
+        /// <summary>
+        /// The charging pool is out of service.
         /// </summary>
         OutOfService,
 
@@ -375,12 +397,12 @@ namespace org.GraphDefined.WWCP
         Blocked,
 
         /// <summary>
-        /// The authorize start ran into a timeout between evse operator backend and the charging station.
+        /// The authorize start ran into a timeout between evse operator backend and the charging pool.
         /// </summary>
         CommunicationTimeout,
 
         /// <summary>
-        /// The authorize start ran into a timeout between the charging station and the EV.
+        /// The authorize start ran into a timeout between the charging pool and the EV.
         /// </summary>
         StartChargingTimeout,
 

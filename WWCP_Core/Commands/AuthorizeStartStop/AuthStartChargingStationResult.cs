@@ -133,10 +133,27 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) NotSupported        (AuthorizatorId, SessionId = null, Runtime = null)
+
+        /// <summary>
+        /// The charging station does not support this operation.
+        /// </summary>
+        public static AuthStartChargingStationResult NotSupported(IId                  AuthorizatorId,
+                                                                  ChargingSession_Id?  SessionId  = null,
+                                                                  TimeSpan?            Runtime    = null)
+
+            => new AuthStartChargingStationResult(AuthorizatorId,
+                                                  AuthStartChargingStationResultType.NotSupported,
+                                                  SessionId,
+                                                  Description: "Operation not supported!",
+                                                  Runtime:     Runtime);
+
+        #endregion
+
         #region (static) OutOfService        (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
-        /// The ChargingStation or charging station is out of service.
+        /// The charging station is out of service.
         /// </summary>
         public static AuthStartChargingStationResult OutOfService(IId                  AuthorizatorId,
                                                                   ChargingSession_Id?  SessionId  = null,
@@ -180,7 +197,7 @@ namespace org.GraphDefined.WWCP
                        IEnumerable<UInt32>          ListOfAuthStopPINs     = null,
 
                        eMobilityProvider_Id?        ProviderId             = null,
-                       String                       Description            = null,
+                       String                       Description            = "Success",
                        String                       AdditionalInfo         = null,
                        TimeSpan?                    Runtime                = null)
 
@@ -218,7 +235,7 @@ namespace org.GraphDefined.WWCP
             NotAuthorized(IId                    AuthorizatorId,
                           ChargingSession_Id?    SessionId        = null,
                           eMobilityProvider_Id?  ProviderId       = null,
-                          String                 Description      = null,
+                          String                 Description      = "NotAuthorized",
                           String                 AdditionalInfo   = null,
                           TimeSpan?              Runtime          = null)
 
@@ -353,6 +370,11 @@ namespace org.GraphDefined.WWCP
         /// The charging station is reserved.
         /// </summary>
         Reserved,
+
+        /// <summary>
+        /// The charging station does not support this operation.
+        /// </summary>
+        NotSupported,
 
         /// <summary>
         /// The charging station is out of service.

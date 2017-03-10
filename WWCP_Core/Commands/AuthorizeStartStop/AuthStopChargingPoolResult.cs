@@ -103,6 +103,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) NotSupported        (AuthorizatorId, SessionId = null, Runtime = null)
+
+        /// <summary>
+        /// The charging pool does not support this operation.
+        /// </summary>
+        public static AuthStopChargingPoolResult NotSupported(IId                  AuthorizatorId,
+                                                              ChargingSession_Id?  SessionId  = null,
+                                                              TimeSpan?            Runtime    = null)
+
+            => new AuthStopChargingPoolResult(AuthorizatorId,
+                                              AuthStopChargingPoolResultType.NotSupported,
+                                              SessionId,
+                                              Description: "Operation not supported!",
+                                              Runtime:     Runtime);
+
+        #endregion
+
         #region (static) OutOfService        (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
@@ -137,7 +154,7 @@ namespace org.GraphDefined.WWCP
         public static AuthStopChargingPoolResult Authorized(IId                    AuthorizatorId,
                                                             ChargingSession_Id?    SessionId        = null,
                                                             eMobilityProvider_Id?  ProviderId       = null,
-                                                            String                 Description      = null,
+                                                            String                 Description      = "Success",
                                                             String                 AdditionalInfo   = null,
                                                             TimeSpan?              Runtime          = null)
 
@@ -165,7 +182,7 @@ namespace org.GraphDefined.WWCP
         public static AuthStopChargingPoolResult NotAuthorized(IId                    AuthorizatorId,
                                                                ChargingSession_Id?    SessionId        = null,
                                                                eMobilityProvider_Id?  ProviderId       = null,
-                                                               String                 Description      = null,
+                                                               String                 Description      = "NotAuthorized",
                                                                String                 AdditionalInfo   = null,
                                                                TimeSpan?              Runtime          = null)
 
@@ -290,6 +307,11 @@ namespace org.GraphDefined.WWCP
         /// The given charging session identification is unknown or invalid.
         /// </summary>
         InvalidSessionId,
+
+        /// <summary>
+        /// The charging pool does not support this operation.
+        /// </summary>
+        NotSupported,
 
         /// <summary>
         /// The charging station is out of service.
