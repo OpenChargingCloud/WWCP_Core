@@ -65,8 +65,8 @@ namespace org.GraphDefined.WWCP
     public delegate Task OnRemoteEVSEStatusChangedDelegate(DateTime                     Timestamp,
                                                            EventTracking_Id             EventTrackingId,
                                                            IRemoteEVSE                  EVSE,
-                                                           Timestamped<EVSEStatusType>  OldStatus,
-                                                           Timestamped<EVSEStatusType>  NewStatus);
+                                                           Timestamped<EVSEStatusTypes>  OldStatus,
+                                                           Timestamped<EVSEStatusTypes>  NewStatus);
 
 
     /// <summary>

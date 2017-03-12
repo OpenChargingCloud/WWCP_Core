@@ -30,7 +30,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// An EVSE status diff.
     /// </summary>
-    public class EVSEStatusDiff : StatusDiff<EVSE_Id, EVSEStatusType>
+    public class EVSEStatusDiff : StatusDiff<EVSE_Id, EVSEStatusTypes>
     {
 
         #region EVSEStatusDiff(Timestamp, EVSEOperatorId, EVSEOperatorName = null)
@@ -64,8 +64,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEOperatorName">The optional internationalized name of the Charging Station Operator.</param>
         public EVSEStatusDiff(DateTime                                            Timestamp,
                               ChargingStationOperator_Id                                     EVSEOperatorId,
-                              IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>>  NewStatus,
-                              IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>>  ChangedStatus,
+                              IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusTypes>>  NewStatus,
+                              IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusTypes>>  ChangedStatus,
                               IEnumerable<EVSE_Id>                                RemovedIds,
                               I18NString                                          EVSEOperatorName = null)
 

@@ -312,7 +312,7 @@
     <Compile Include="Entities\AEMobilityEntity.cs" />
     <Compile Include="Entities\IId.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\ChargingStationUIFeatures.cs" />
-    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\EVSEStatusType.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\EVSEStatusTypes.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\PlugTypes.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\CableType.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\SocketOutlet.cs" />

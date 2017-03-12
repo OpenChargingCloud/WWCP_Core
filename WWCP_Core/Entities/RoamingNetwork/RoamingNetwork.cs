@@ -2473,10 +2473,10 @@ namespace org.GraphDefined.WWCP
             {
 
                 result = await iRemotePushData.
-                                   EnqueueChargingPoolDataUpdate(ChargingPool,
-                                                                 PropertyName,
-                                                                 OldValue,
-                                                                 NewValue).
+                                   UpdateStaticData(ChargingPool,
+                                                    PropertyName,
+                                                    OldValue,
+                                                    NewValue).
                                    ConfigureAwait(false);
 
             }
@@ -2831,10 +2831,10 @@ namespace org.GraphDefined.WWCP
             {
 
                 result = await iRemotePushData.
-                                   EnqueueChargingStationDataUpdate(ChargingStation,
-                                                                    PropertyName,
-                                                                    OldValue,
-                                                                    NewValue).
+                                   UpdateStaticData(ChargingStation,
+                                                    PropertyName,
+                                                    OldValue,
+                                                    NewValue).
                                    ConfigureAwait(false);
 
             }
@@ -2946,7 +2946,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the status of all EVSEs registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatus(UInt64 HistorySize)
+        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>> EVSEStatus(UInt64 HistorySize)
 
             => _ChargingStationOperators.
                    SelectMany(cso =>
@@ -2954,7 +2954,7 @@ namespace org.GraphDefined.WWCP
                            pool.SelectMany(station =>
                                station.Select(evse =>
 
-                                   new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>(
+                                   new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>(
                                        evse.Id,
                                        evse.StatusSchedule(HistorySize))
 
@@ -3042,7 +3042,7 @@ namespace org.GraphDefined.WWCP
         #region SetEVSEStatus(EVSEId, NewStatus)
 
         public void SetEVSEStatus(EVSE_Id                      EVSEId,
-                                  Timestamped<EVSEStatusType>  NewStatus)
+                                  Timestamped<EVSEStatusTypes>  NewStatus)
         {
 
             ChargingStationOperator _cso = null;
@@ -3058,7 +3058,7 @@ namespace org.GraphDefined.WWCP
 
         public void SetEVSEStatus(EVSE_Id         EVSEId,
                                   DateTime        Timestamp,
-                                  EVSEStatusType  NewStatus)
+                                  EVSEStatusTypes  NewStatus)
         {
 
             ChargingStationOperator _cso = null;
@@ -3073,7 +3073,7 @@ namespace org.GraphDefined.WWCP
         #region SetEVSEStatus(EVSEId, StatusList)
 
         public void SetEVSEStatus(EVSE_Id                                   EVSEId,
-                                  IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
+                                  IEnumerable<Timestamped<EVSEStatusTypes>>  StatusList,
                                   ChangeMethods                             ChangeMethod  = ChangeMethods.Replace)
         {
 
@@ -3397,8 +3397,8 @@ namespace org.GraphDefined.WWCP
         internal async Task UpdateEVSEStatus(DateTime                     Timestamp,
                                              EventTracking_Id             EventTrackingId,
                                              EVSE                         EVSE,
-                                             Timestamped<EVSEStatusType>  OldStatus,
-                                             Timestamped<EVSEStatusType>  NewStatus)
+                                             Timestamped<EVSEStatusTypes>  OldStatus,
+                                             Timestamped<EVSEStatusTypes>  NewStatus)
         {
 
             Acknowledgement result = null;

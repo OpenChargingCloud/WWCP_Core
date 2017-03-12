@@ -43,7 +43,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The current status of the EVSE.
         /// </summary>
-        public EVSEStatusType  Status      { get; }
+        public EVSEStatusTypes  Status      { get; }
 
         /// <summary>
         /// The timestamp of the current status of the EVSE.
@@ -53,8 +53,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The timestamped status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEStatusType> Combined
-            => new Timestamped<EVSEStatusType>(Timestamp, Status);
+        public Timestamped<EVSEStatusTypes> Combined
+            => new Timestamped<EVSEStatusTypes>(Timestamp, Status);
 
         #endregion
 
@@ -67,7 +67,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Status">The current status of the EVSE.</param>
         /// <param name="Timestamp">The timestamp of the current status of the EVSE.</param>
         public EVSEStatus(EVSE_Id         Id,
-                          EVSEStatusType  Status,
+                          EVSEStatusTypes  Status,
                           DateTime        Timestamp)
 
         {

@@ -1932,14 +1932,14 @@ namespace org.GraphDefined.WWCP
 
         #region AllEVSEStatus(IncludeEVSE = null)
 
-        public IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusType>> AllEVSEStatus(Func<EVSE, Boolean>  IncludeEVSE = null)
+        public IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusTypes>> AllEVSEStatus(Func<EVSE, Boolean>  IncludeEVSE = null)
 
             => _ChargingPools.
                    SelectMany(pool    => pool.ChargingStations).
                    SelectMany(station => station.EVSEs).
                    Where     (evse    => IncludeEVSE == null || IncludeEVSE(evse)).
                    OrderBy   (evse    => evse.Id).
-                   Select    (evse    => new KeyValuePair<EVSE_Id, EVSEStatusType>(evse.Id, evse.Status.Value));
+                   Select    (evse    => new KeyValuePair<EVSE_Id, EVSEStatusTypes>(evse.Id, evse.Status.Value));
 
         #endregion
 
@@ -2035,7 +2035,7 @@ namespace org.GraphDefined.WWCP
         #region SetEVSEStatus(EVSEId, NewStatus)
 
         public void SetEVSEStatus(EVSE_Id         EVSEId,
-                                  EVSEStatusType  NewStatus)
+                                  EVSEStatusTypes  NewStatus)
         {
 
             EVSE _EVSE = null;
@@ -2049,7 +2049,7 @@ namespace org.GraphDefined.WWCP
         #region SetEVSEStatus(EVSEId, NewTimestampedStatus)
 
         public void SetEVSEStatus(EVSE_Id                      EVSEId,
-                                  Timestamped<EVSEStatusType>  NewTimestampedStatus)
+                                  Timestamped<EVSEStatusTypes>  NewTimestampedStatus)
         {
 
             EVSE _EVSE = null;
@@ -2063,7 +2063,7 @@ namespace org.GraphDefined.WWCP
         #region SetEVSEStatus(EVSEId, NewStatus, Timestamp)
 
         public void SetEVSEStatus(EVSE_Id         EVSEId,
-                                  EVSEStatusType  NewStatus,
+                                  EVSEStatusTypes  NewStatus,
                                   DateTime        Timestamp)
         {
 
@@ -2078,7 +2078,7 @@ namespace org.GraphDefined.WWCP
         #region SetEVSEStatus(EVSEId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
         public void SetEVSEStatus(EVSE_Id                                   EVSEId,
-                                  IEnumerable<Timestamped<EVSEStatusType>>  StatusList,
+                                  IEnumerable<Timestamped<EVSEStatusTypes>>  StatusList,
                                   ChangeMethods                             ChangeMethod  = ChangeMethods.Replace)
         {
 
@@ -2095,7 +2095,7 @@ namespace org.GraphDefined.WWCP
 
         #region CalcEVSEStatusDiff(EVSEStatus, IncludeEVSE = null)
 
-        public EVSEStatusDiff CalcEVSEStatusDiff(Dictionary<EVSE_Id, EVSEStatusType>  EVSEStatus,
+        public EVSEStatusDiff CalcEVSEStatusDiff(Dictionary<EVSE_Id, EVSEStatusTypes>  EVSEStatus,
                                                  Func<EVSE, Boolean>                  IncludeEVSE  = null)
         {
 
@@ -2404,8 +2404,8 @@ namespace org.GraphDefined.WWCP
         internal async Task UpdateEVSEStatus(DateTime                     Timestamp,
                                              EventTracking_Id             EventTrackingId,
                                              EVSE                         EVSE,
-                                             Timestamped<EVSEStatusType>  OldStatus,
-                                             Timestamped<EVSEStatusType>  NewStatus)
+                                             Timestamped<EVSEStatusTypes>  OldStatus,
+                                             Timestamped<EVSEStatusTypes>  NewStatus)
         {
 
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;

@@ -17,17 +17,17 @@
 
 #region Usings
 
-using org.GraphDefined.Vanaheimr.Illias;
 using System;
-using System.Linq;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
+    public delegate Boolean IncludeEVSEDelegate           (EVSE             EVSE);
 
+    public delegate Boolean IncludeChargingStationDelegate(ChargingStation  ChargingStation);
 
-    public delegate Boolean IncludeEVSEDelegate(EVSE EVSE);
+    public delegate Boolean IncludeChargingPoolDelegate   (ChargingPool     ChargingPool);
 
 }

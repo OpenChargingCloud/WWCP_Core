@@ -43,12 +43,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The old status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEStatusType>  OldStatus   { get; }
+        public Timestamped<EVSEStatusTypes>  OldStatus   { get; }
 
         /// <summary>
         /// The new status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEStatusType>  NewStatus   { get; }
+        public Timestamped<EVSEStatusTypes>  NewStatus   { get; }
 
 
         /// <summary>
@@ -71,8 +71,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="OldStatus">The old status of the EVSE.</param>
         /// <param name="NewStatus">The new status of the EVSE.</param>
         public EVSEStatusChange(EVSE_Id                      Id,
-                                Timestamped<EVSEStatusType>  OldStatus,
-                                Timestamped<EVSEStatusType>  NewStatus)
+                                Timestamped<EVSEStatusTypes>  OldStatus,
+                                Timestamped<EVSEStatusTypes>  NewStatus)
 
         {
 

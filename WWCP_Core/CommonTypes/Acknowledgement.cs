@@ -32,6 +32,8 @@ namespace org.GraphDefined.WWCP
     {
         True,
         NoOperation,
+        Enqueued,
+        LockTimeout,
         False
     }
 

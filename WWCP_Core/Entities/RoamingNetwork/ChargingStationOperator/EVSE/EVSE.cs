@@ -42,7 +42,7 @@ namespace org.GraphDefined.WWCP
     public class EVSE : AEMobilityEntity<EVSE_Id>,
                         IEquatable<EVSE>, IComparable<EVSE>, IComparable,
                         IEnumerable<SocketOutlet>,
-                        IStatus<EVSEStatusType>
+                        IStatus<EVSEStatusTypes>
 
     {
 
@@ -361,7 +361,7 @@ namespace org.GraphDefined.WWCP
         /// The current EVSE status.
         /// </summary>
         [InternalUseOnly]
-        public Timestamped<EVSEStatusType> Status
+        public Timestamped<EVSEStatusTypes> Status
         {
 
             get
@@ -382,7 +382,7 @@ namespace org.GraphDefined.WWCP
                     {
 
                         default:
-                            return new Timestamped<EVSEStatusType>(AdminStatus.Timestamp, EVSEStatusType.OutOfService);
+                            return new Timestamped<EVSEStatusTypes>(AdminStatus.Timestamp, EVSEStatusTypes.OutOfService);
 
                     }
 
@@ -407,12 +407,12 @@ namespace org.GraphDefined.WWCP
 
         #region StatusSchedule
 
-        private readonly StatusSchedule<EVSEStatusType> _StatusSchedule;
+        private readonly StatusSchedule<EVSEStatusTypes> _StatusSchedule;
 
         /// <summary>
         /// The EVSE status schedule.
         /// </summary>
-        public IEnumerable<Timestamped<EVSEStatusType>> StatusSchedule(UInt64? HistorySize = null)
+        public IEnumerable<Timestamped<EVSEStatusTypes>> StatusSchedule(UInt64? HistorySize = null)
         {
 
              if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
@@ -433,8 +433,8 @@ namespace org.GraphDefined.WWCP
                  {
 
                      default:
-                         return new Timestamped<EVSEStatusType>[] {
-                                    new Timestamped<EVSEStatusType>(AdminStatus.Timestamp, EVSEStatusType.OutOfService)
+                         return new Timestamped<EVSEStatusTypes>[] {
+                                    new Timestamped<EVSEStatusTypes>(AdminStatus.Timestamp, EVSEStatusTypes.OutOfService)
                                 };
 
                  }
@@ -651,8 +651,8 @@ namespace org.GraphDefined.WWCP
             this._ChargingModes         = new ReactiveSet<ChargingModes>();
             this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
 
-            this._StatusSchedule        = new StatusSchedule<EVSEStatusType>(MaxStatusListSize);
-            this._StatusSchedule.     Insert(EVSEStatusType.     OutOfService);
+            this._StatusSchedule        = new StatusSchedule<EVSEStatusTypes>(MaxStatusListSize);
+            this._StatusSchedule.     Insert(EVSEStatusTypes.     OutOfService);
 
             this._AdminStatusSchedule   = new StatusSchedule<EVSEAdminStatusType>(MaxStatusListSize);
             this._AdminStatusSchedule.Insert(EVSEAdminStatusType.OutOfService);
@@ -741,7 +741,7 @@ namespace org.GraphDefined.WWCP
         /// Set the current status.
         /// </summary>
         /// <param name="NewStatus">A new status.</param>
-        public void SetStatus(EVSEStatusType NewStatus)
+        public void SetStatus(EVSEStatusTypes NewStatus)
         {
             _StatusSchedule.Insert(NewStatus);
         }
@@ -754,7 +754,7 @@ namespace org.GraphDefined.WWCP
         /// Set the current status.
         /// </summary>
         /// <param name="NewTimestampedStatus">A new timestamped status.</param>
-        public void SetStatus(Timestamped<EVSEStatusType> NewTimestampedStatus)
+        public void SetStatus(Timestamped<EVSEStatusTypes> NewTimestampedStatus)
         {
             _StatusSchedule.Insert(NewTimestampedStatus);
         }
@@ -768,7 +768,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="NewStatus">A new status.</param>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetStatus(EVSEStatusType  NewStatus,
+        public void SetStatus(EVSEStatusTypes  NewStatus,
                               DateTime        Timestamp)
         {
             _StatusSchedule.Insert(NewStatus, Timestamp);
@@ -783,7 +783,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="NewStatusList">A list of new timestamped status.</param>
         /// <param name="ChangeMethod">The change mode.</param>
-        public void SetStatus(IEnumerable<Timestamped<EVSEStatusType>>  NewStatusList,
+        public void SetStatus(IEnumerable<Timestamped<EVSEStatusTypes>>  NewStatusList,
                               ChangeMethods                             ChangeMethod = ChangeMethods.Replace)
         {
             _StatusSchedule.Insert(NewStatusList, ChangeMethod);
@@ -912,8 +912,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="NewStatus">The new EVSE status.</param>
         internal async Task UpdateStatus(DateTime                     Timestamp,
                                          EventTracking_Id             EventTrackingId,
-                                         Timestamped<EVSEStatusType>  OldStatus,
-                                         Timestamped<EVSEStatusType>  NewStatus)
+                                         Timestamped<EVSEStatusTypes>  OldStatus,
+                                         Timestamped<EVSEStatusTypes>  NewStatus)
         {
 
             var OnStatusChangedLocal = OnStatusChanged;
@@ -2022,7 +2022,7 @@ namespace org.GraphDefined.WWCP
             /// <summary>
             /// A delegate called to aggregate the dynamic status of all subordinated EVSEs.
             /// </summary>
-            public Func<EVSEStatusReport, EVSEStatusType> StatusAggregationDelegate { get; set; }
+            public Func<EVSEStatusReport, EVSEStatusTypes> StatusAggregationDelegate { get; set; }
 
             /// <summary>
             /// The charging station admin status schedule.

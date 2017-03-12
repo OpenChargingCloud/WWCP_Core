@@ -44,10 +44,10 @@ namespace org.GraphDefined.WWCP
     /// ev driver or its behaviour.
     /// </summary>
     public class SmartCity : ABaseEMobilityEntity<SmartCity_Id>,
-                                 IRemoteSmartCity,
-                                 IEquatable <SmartCity>,
-                                 IComparable<SmartCity>,
-                                 IComparable
+                             IRemoteSmartCity,
+                             IEquatable <SmartCity>,
+                             IComparable<SmartCity>,
+                             IComparable
     {
 
         #region Data
@@ -1048,6 +1048,10 @@ namespace org.GraphDefined.WWCP
         async Task<Acknowledgement>
 
             IRemotePushData.UpdateStaticData(ChargingStation     ChargingStation,
+                                             String              PropertyName,
+                                             Object              OldValue,
+                                             Object              NewValue,
+                                             TransmissionTypes   TransmissionType,
 
                                              DateTime?           Timestamp,
                                              CancellationToken?  CancellationToken,
@@ -1394,6 +1398,10 @@ namespace org.GraphDefined.WWCP
         async Task<Acknowledgement>
 
             IRemotePushData.UpdateStaticData(ChargingPool        ChargingPool,
+                                             String              PropertyName,
+                                             Object              OldValue,
+                                             Object              NewValue,
+                                             TransmissionTypes   TransmissionType,
 
                                              DateTime?           Timestamp,
                                              CancellationToken?  CancellationToken,
@@ -2222,8 +2230,8 @@ namespace org.GraphDefined.WWCP
         public Task<WWCP.Acknowledgement>
 
             EnqueueEVSEStatusUpdate(EVSE                         EVSE,
-                                    Timestamped<EVSEStatusType>  OldStatus,
-                                    Timestamped<EVSEStatusType>  NewStatus)
+                                    Timestamped<EVSEStatusTypes>  OldStatus,
+                                    Timestamped<EVSEStatusTypes>  NewStatus)
 
         {
 
@@ -2531,6 +2539,16 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
 
             => "Smart City " + Id;
+
+        public Task<Acknowledgement> UpdateStaticData(ChargingStation ChargingStation, string PropertyName = null, object OldValue = null, object NewValue = null, TransmissionTypes TransmissionType = TransmissionTypes.Enqueued, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Acknowledgement> UpdateStaticData(ChargingPool ChargingPool, string PropertyName = null, object OldValue = null, object NewValue = null, TransmissionTypes TransmissionType = TransmissionTypes.Enqueued, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        {
+            throw new NotImplementedException();
+        }
 
         #endregion
 

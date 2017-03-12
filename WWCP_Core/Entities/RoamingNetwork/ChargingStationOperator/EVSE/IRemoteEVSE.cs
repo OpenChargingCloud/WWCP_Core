@@ -157,13 +157,13 @@ namespace org.GraphDefined.WWCP
         IEnumerable<Timestamped<EVSEAdminStatusType>> AdminStatusSchedule { get; }
 
 
-        void SetStatus(EVSEStatusType NewStatus);
-        void SetStatus(Timestamped<EVSEStatusType> NewTimestampedStatus);
-        void SetStatus(IEnumerable<Timestamped<EVSEStatusType>> NewStatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
-        void SetStatus(EVSEStatusType NewStatus, DateTime Timestamp);
+        void SetStatus(EVSEStatusTypes NewStatus);
+        void SetStatus(Timestamped<EVSEStatusTypes> NewTimestampedStatus);
+        void SetStatus(IEnumerable<Timestamped<EVSEStatusTypes>> NewStatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
+        void SetStatus(EVSEStatusTypes NewStatus, DateTime Timestamp);
 
-        Timestamped<EVSEStatusType>              Status         { get; set; }
-        IEnumerable<Timestamped<EVSEStatusType>> StatusSchedule { get; }
+        Timestamped<EVSEStatusTypes>              Status         { get; set; }
+        IEnumerable<Timestamped<EVSEStatusTypes>> StatusSchedule { get; }
 
         #endregion
 

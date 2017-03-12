@@ -1349,9 +1349,9 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the status of all EVSEs registered within this charging station.
         /// </summary>
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatus(UInt64 HistorySize)
+        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>> EVSEStatus(UInt64 HistorySize)
 
-            => _EVSEs.Select(evse => new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>(evse.Id,
+            => _EVSEs.Select(evse => new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>(evse.Id,
                                                                                                          evse.StatusSchedule(HistorySize)));
 
         #endregion
@@ -1441,7 +1441,7 @@ namespace org.GraphDefined.WWCP
                 UpdateEVSEStatus(Now,
                                  EventTracking_Id.New,
                                  _EVSE,
-                                 new Timestamped<EVSEStatusType>(Now, EVSEStatusType.Unspecified),
+                                 new Timestamped<EVSEStatusTypes>(Now, EVSEStatusTypes.Unspecified),
                                  _EVSE.Status).Wait();
 
                 if (RemoteChargingStation != null)
@@ -1650,8 +1650,8 @@ namespace org.GraphDefined.WWCP
         internal async Task UpdateEVSEStatus(DateTime                     Timestamp,
                                              EventTracking_Id             EventTrackingId,
                                              EVSE                         EVSE,
-                                             Timestamped<EVSEStatusType>  OldStatus,
-                                             Timestamped<EVSEStatusType>  NewStatus)
+                                             Timestamped<EVSEStatusTypes>  OldStatus,
+                                             Timestamped<EVSEStatusTypes>  NewStatus)
         {
 
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;

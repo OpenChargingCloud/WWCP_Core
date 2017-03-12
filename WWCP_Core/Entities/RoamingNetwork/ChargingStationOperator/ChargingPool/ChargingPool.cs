@@ -1634,11 +1634,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the status of all EVSEs registered within this charging pool.
         /// </summary>
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>> EVSEStatus(UInt64 HistorySize)
+        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>> EVSEStatus(UInt64 HistorySize)
 
             => _ChargingStations.SelectMany(station => station.Select(evse =>
 
-                                     new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusType>>>(
+                                     new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>(
                                          evse.Id,
                                          evse.StatusSchedule(HistorySize))
 
@@ -1810,8 +1810,8 @@ namespace org.GraphDefined.WWCP
         internal async Task UpdateEVSEStatus(DateTime                     Timestamp,
                                              EventTracking_Id             EventTrackingId,
                                              EVSE                         EVSE,
-                                             Timestamped<EVSEStatusType>  OldStatus,
-                                             Timestamped<EVSEStatusType>  NewStatus)
+                                             Timestamped<EVSEStatusTypes>  OldStatus,
+                                             Timestamped<EVSEStatusTypes>  NewStatus)
         {
 
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;

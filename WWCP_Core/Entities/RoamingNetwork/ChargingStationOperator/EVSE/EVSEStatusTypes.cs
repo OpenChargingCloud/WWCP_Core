@@ -21,7 +21,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current status of an EVSE.
     /// </summary>
-    public enum EVSEStatusType
+    public enum EVSEStatusTypes
     {
 
         /// <summary>
