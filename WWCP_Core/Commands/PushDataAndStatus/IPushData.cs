@@ -279,12 +279,13 @@ namespace org.GraphDefined.WWCP
 
         #region (Set/Add/Update/Delete) Charging station(s)...
 
-        #region SetStaticData   (ChargingStation, ...)
+        #region SetStaticData   (ChargingStation, TransmissionType = Enqueued, ...)
 
         /// <summary>
         /// Set the EVSE data of the given charging station as new static EVSE data.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -293,6 +294,7 @@ namespace org.GraphDefined.WWCP
         Task<Acknowledgement>
 
             SetStaticData(ChargingStation     ChargingStation,
+                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
 
                           DateTime?           Timestamp           = null,
                           CancellationToken?  CancellationToken   = null,
@@ -301,12 +303,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AddStaticData   (ChargingStation, ...)
+        #region AddStaticData   (ChargingStation, TransmissionType = Enqueued, ...)
 
         /// <summary>
         /// Add the EVSE data of the given charging station to the static EVSE data.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -315,6 +318,7 @@ namespace org.GraphDefined.WWCP
         Task<Acknowledgement>
 
             AddStaticData(ChargingStation     ChargingStation,
+                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
 
                           DateTime?           Timestamp           = null,
                           CancellationToken?  CancellationToken   = null,
@@ -323,7 +327,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region UpdateStaticData(ChargingStation, ...)
+        #region UpdateStaticData(ChargingStation, TransmissionType = Enqueued, ...)
 
         /// <summary>
         /// Update the EVSE data of the given charging station.
@@ -468,12 +472,13 @@ namespace org.GraphDefined.WWCP
 
         #region (Set/Add/Update/Delete) Charging pool(s)...
 
-        #region SetStaticData   (ChargingPool, ...)
+        #region SetStaticData   (ChargingPool, TransmissionType = Enqueued, ...)
 
         /// <summary>
         /// Set the EVSE data of the given charging pool as new static EVSE data.
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -482,6 +487,7 @@ namespace org.GraphDefined.WWCP
         Task<Acknowledgement>
 
             SetStaticData(ChargingPool        ChargingPool,
+                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
 
                           DateTime?           Timestamp           = null,
                           CancellationToken?  CancellationToken   = null,
@@ -490,12 +496,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AddStaticData   (ChargingPool, ...)
+        #region AddStaticData   (ChargingPool, TransmissionType = Enqueued, ...)
 
         /// <summary>
         /// Add the EVSE data of the given charging pool to the static EVSE data.
         /// </summary>
         /// <param name="ChargingPool">A charging pool.</param>
+        /// <param name="TransmissionType">Whether to send the charging station update directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -504,6 +511,7 @@ namespace org.GraphDefined.WWCP
         Task<Acknowledgement>
 
             AddStaticData(ChargingPool        ChargingPool,
+                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
 
                           DateTime?           Timestamp           = null,
                           CancellationToken?  CancellationToken   = null,

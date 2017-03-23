@@ -60,7 +60,11 @@ namespace org.GraphDefined.WWCP
         IEC60309ThreePhase,
         CCSCombo1Plug_CableAttached,
         CCSCombo2Plug_CableAttached,
-        CHAdeMO
+        CHAdeMO,
+
+        CEE3,
+        CEE5
+
 
     }
 

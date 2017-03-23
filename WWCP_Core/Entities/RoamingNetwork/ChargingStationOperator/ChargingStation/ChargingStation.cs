@@ -87,6 +87,34 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ModelCode
+
+        private String _ModelCode;
+
+        /// <summary>
+        /// The internal model code of the charging station maintained by the Charging Station Operator.
+        /// </summary>
+        [Optional]
+        public String ModelCode
+        {
+
+            get
+            {
+                return _ModelCode;
+            }
+
+            set
+            {
+
+                if (ModelCode != value)
+                    SetProperty<String>(ref _ModelCode, value);
+
+            }
+
+        }
+
+        #endregion
+
         #region HubjectStationId
 
         private String _HubjectStationId;
