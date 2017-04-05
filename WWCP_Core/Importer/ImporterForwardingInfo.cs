@@ -67,35 +67,35 @@ namespace org.GraphDefined.WWCP.Importer
 
         public RoamingNetwork_Id ForwardedToRoamingNetworkId
 
-            => _ForwardedToEVSEOperator != null
-                ? _ForwardedToEVSEOperator.RoamingNetwork.Id
+            => _ForwardedToChargingStationOperator != null
+                ? _ForwardedToChargingStationOperator.RoamingNetwork.Id
                 : Defaults.UnknownRoamingNetwork;
 
         #endregion
 
-        #region ForwardedToEVSEOperator
+        #region ForwardedToChargingStationOperator
 
-        private ChargingStationOperator _ForwardedToEVSEOperator;
+        private ChargingStationOperator _ForwardedToChargingStationOperator;
 
-        public ChargingStationOperator ForwardedToEVSEOperator
+        public ChargingStationOperator ForwardedToChargingStationOperator
         {
 
             get
             {
-                return _ForwardedToEVSEOperator;
+                return _ForwardedToChargingStationOperator;
             }
 
             set
             {
 
                 // Remove ChargingStation from old ChargingPool/EVSEOperator
-                if (_ForwardedToEVSEOperator != null)
+                if (_ForwardedToChargingStationOperator != null)
                 {
 
                     ChargingStation _ChargingStationToMove = null;
 
                     // Do not fail if the charging station is not yet available/existing!
-                    if (_ForwardedToEVSEOperator.TryGetChargingStationbyId(StationId, out _ChargingStationToMove))
+                    if (_ForwardedToChargingStationOperator.TryGetChargingStationbyId(StationId, out _ChargingStationToMove))
                     {
 
                         _ChargingStationToMove.ChargingPool.RemoveChargingStation(StationId);
@@ -110,14 +110,14 @@ namespace org.GraphDefined.WWCP.Importer
 
                 }
 
-                var Old_ForwardedToEVSEOperator = _ForwardedToEVSEOperator;
+                var Old_ForwardedToChargingStationOperator = _ForwardedToChargingStationOperator;
 
-                _ForwardedToEVSEOperator = value;
+                _ForwardedToChargingStationOperator = value;
 
                 this._OnForwardingChanged(DateTime.Now,
                                           this,
-                                          Old_ForwardedToEVSEOperator != null ? Old_ForwardedToEVSEOperator.RoamingNetwork.Id : new RoamingNetwork_Id?(),
-                                          value                       != null ? value.RoamingNetwork.Id                       : new RoamingNetwork_Id?());
+                                          Old_ForwardedToChargingStationOperator != null ? Old_ForwardedToChargingStationOperator.RoamingNetwork.Id : new RoamingNetwork_Id?(),
+                                          value                                  != null ? value.RoamingNetwork.Id                                  : new RoamingNetwork_Id?());
 
             }
 
@@ -125,12 +125,12 @@ namespace org.GraphDefined.WWCP.Importer
 
         #endregion
 
-        #region ForwardedToEVSEOperatorId
+        #region ForwardedToChargingStationOperatorId
 
-        public ChargingStationOperator_Id? ForwardedToEVSEOperatorId
+        public ChargingStationOperator_Id? ForwardedToChargingStationOperatorId
 
-            => _ForwardedToEVSEOperator != null
-                ? _ForwardedToEVSEOperator.Id
+            => _ForwardedToChargingStationOperator != null
+                ? _ForwardedToChargingStationOperator.Id
                 : new ChargingStationOperator_Id?();
 
         #endregion
@@ -179,7 +179,7 @@ namespace org.GraphDefined.WWCP.Importer
                                       Timestamped<ChargingStationAdminStatusTypes>?                                     AdminStatus               = null,
                                       DateTime?                                                                         Created                   = null,
                                       Boolean                                                                           OutOfService              = false,
-                                      ChargingStationOperator                                                           ForwardedToEVSEOperator   = null)
+                                      ChargingStationOperator                                                           ForwardedToOperator   = null)
         {
 
             this._OnForwardingChanged        = OnChangedCallback;
@@ -195,7 +195,7 @@ namespace org.GraphDefined.WWCP.Importer
             this.Created                     = Created               != null ? Created.Value                 : DateTime.Now;
             this.OutOfService                = OutOfService;
             this.LastTimeSeen                = this.Created;
-            this._ForwardedToEVSEOperator    = ForwardedToEVSEOperator;
+            this._ForwardedToChargingStationOperator    = ForwardedToOperator;
 
         }
 
@@ -229,7 +229,11 @@ namespace org.GraphDefined.WWCP.Importer
         /// </summary>
         public override String ToString()
 
-            => StationId.ToString() + " => " + ForwardedToRoamingNetworkId;
+            => String.Concat(StationId.ToString(),
+                             " => ",
+                             ForwardedToRoamingNetworkId,
+                             " / ",
+                             ForwardedToChargingStationOperator.Id);
 
         #endregion
 

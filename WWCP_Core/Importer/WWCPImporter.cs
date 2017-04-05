@@ -44,10 +44,10 @@ namespace org.GraphDefined.WWCP.Importer
                                                DNSClient        DNSClient);
 
 
-    public delegate IEnumerable<ImporterForwardingInfo> CreateForwardingTableDelegate<T>(WWCPImporter<T>                       Importer,
-                                                                                         T                                     Input,
-                                                                                         IEnumerable<ChargingStationOperator>  ChargingStationOperators,
-                                                                                         ChargingStationOperator               DefaultChargingStationOperator);
+    public delegate IEnumerable<ImporterForwardingInfo> CreateForwardingTableDelegate<T>(WWCPImporter<T>                                                 Importer,
+                                                                                         T                                                               Input,
+                                                                                         Func<ChargingStation_Id, IEnumerable<ChargingStationOperator>>  ChargingStationOperators,
+                                                                                         Func<ChargingStation_Id, ChargingStationOperator>               DefaultChargingStationOperator);
 
     /// <summary>
     /// Import data into the WWCP in-memory datastructures.
@@ -86,26 +86,26 @@ namespace org.GraphDefined.WWCP.Importer
         /// <summary>
         /// The unique identification of this WWCP importer.
         /// </summary>
-        public String                                Id                               { get; }
+        public String                                                          Id                               { get; }
 
         /// <summary>
         /// The prefix of the importer forwarding files.
         /// </summary>
-        public String                                ForwardingFilenamePrefix         { get; }
+        public String                                                          ForwardingFilenamePrefix         { get; }
 
 
-        public IEnumerable<ChargingStationOperator>  ChargingStationOperators         { get; }
+        public Func<ChargingStation_Id, IEnumerable<ChargingStationOperator>>  ChargingStationOperators         { get; }
 
-        public ChargingStationOperator               DefaultChargingStationOperator   { get; }
+        public Func<ChargingStation_Id, ChargingStationOperator>               DefaultChargingStationOperator   { get; }
 
-        public IEnumerable<RoamingNetwork_Id>        RoamingNetworkIds
-            => ChargingStationOperators.Select(EVSEOperator => EVSEOperator.RoamingNetwork.Id);
+        public Func<ChargingStation_Id, IEnumerable<RoamingNetwork_Id>>        RoamingNetworkIds
+            => operators => ChargingStationOperators(operators).Select(cso => cso.RoamingNetwork.Id);
 
 
         /// <summary>
         /// The time span between importer runs.
         /// </summary>
-        public TimeSpan                              ImportEvery                      { get; }
+        public TimeSpan                                                        ImportEvery                      { get; }
 
         #region LastRunId
 
@@ -140,9 +140,9 @@ namespace org.GraphDefined.WWCP.Importer
         /// <summary>
         /// The number of cached data imports.
         /// </summary>
-        public UInt32                                MaxNumberOfCachedDataImports     { get; }
+        public UInt32                                                          MaxNumberOfCachedDataImports     { get; }
 
-        public DNSClient                             DNSClient                        { get; }
+        public DNSClient                                                       DNSClient                        { get; }
 
         #endregion
 
@@ -250,21 +250,21 @@ namespace org.GraphDefined.WWCP.Importer
         /// <summary>
         /// Create a new WWCP importer.
         /// </summary>
-        public WWCPImporter(String                                Id,
-                            String                                ForwardingFilenamePrefix         = null,
+        public WWCPImporter(String                                                          Id,
+                            String                                                          ForwardingFilenamePrefix         = null,
 
-                            IEnumerable<ChargingStationOperator>  ChargingStationOperators         = null,
-                            ChargingStationOperator               DefaultChargingStationOperator   = null,
-                            CreateForwardingTableDelegate<T>      CreateForwardingTable            = null,
+                            Func<ChargingStation_Id, IEnumerable<ChargingStationOperator>>  ChargingStationOperators         = null,
+                            Func<ChargingStation_Id, ChargingStationOperator>               DefaultChargingStationOperator   = null,
+                            CreateForwardingTableDelegate<T>                                CreateForwardingTable            = null,
 
-                            Action<WWCPImporter<T>, Task<T>>      OnStartup                        = null,
-                            TimeSpan?                             ImportEvery                      = null,
-                            GetDataDelegate<T>                    GetData                          = null,
-                            Action<WWCPImporter<T>, Task<T>>      OnEveryRun                       = null,
-                            UInt32                                MaxNumberOfCachedDataImports     = DefaultMaxNumberOfCachedImports,
-                            Action<WWCPImporter<T>, Task<T>>      OnShutdown                       = null,
+                            Action<WWCPImporter<T>, Task<T>>                                OnStartup                        = null,
+                            TimeSpan?                                                       ImportEvery                      = null,
+                            GetDataDelegate<T>                                              GetData                          = null,
+                            Action<WWCPImporter<T>, Task<T>>                                OnEveryRun                       = null,
+                            UInt32                                                          MaxNumberOfCachedDataImports     = DefaultMaxNumberOfCachedImports,
+                            Action<WWCPImporter<T>, Task<T>>                                OnShutdown                       = null,
 
-                            DNSClient                             DNSClient                        = null)
+                            DNSClient                                                       DNSClient                        = null)
 
         {
 
@@ -303,22 +303,22 @@ namespace org.GraphDefined.WWCP.Importer
 
 
             this.ChargingStationOperators        = ChargingStationOperators;
-            ChargingStationOperators.ForEach(EVSEOperator => EVSEOperator.OnChargingStationAdminStatusChanged += async (Timestamp,
-                                                                                                                        ChargingStation,
-                                                                                                                        OldStatus,
-                                                                                                                        NewStatus) => {
+            //ChargingStationOperators.ForEach(EVSEOperator => EVSEOperator.OnChargingStationAdminStatusChanged += async (Timestamp,
+            //                                                                                                            ChargingStation,
+            //                                                                                                            OldStatus,
+            //                                                                                                            NewStatus) => {
 
-                var fwd = AllForwardingInfos.FirstOrDefault(fwdinfo => fwdinfo.StationId == ChargingStation.Id);
-                if (fwd != null)
-                {
+            //    var fwd = AllForwardingInfos.FirstOrDefault(fwdinfo => fwdinfo.StationId == ChargingStation.Id);
+            //    if (fwd != null)
+            //    {
 
-                    fwd.AdminStatus = ChargingStation.AdminStatus;
+            //        fwd.AdminStatus = ChargingStation.AdminStatus;
 
-                    //ToDo: Store on disc after OnChargingStationAdminStatusChanged!!!
+            //        //ToDo: Store on disc after OnChargingStationAdminStatusChanged!!!
 
-                }
+            //    }
 
-            });
+            //});
 
             this.DefaultChargingStationOperator  = DefaultChargingStationOperator;
             this._AllForwardingInfos             = new Dictionary<ChargingStation_Id, ImporterForwardingInfo>();
@@ -415,10 +415,10 @@ namespace org.GraphDefined.WWCP.Importer
 
                             var CurrentRoamingNetworkId  = RoamingNetwork_Id.Parse(CurrentRoamingNetwork.Key);
 
-                            var CurrentEVSEOperator      = ChargingStationOperators.FirstOrDefault(evseoperator => evseoperator.RoamingNetwork.Id == CurrentRoamingNetworkId);
+                            //var CurrentEVSEOperator      = ChargingStationOperators.FirstOrDefault(evseoperator => evseoperator.RoamingNetwork.Id == CurrentRoamingNetworkId);
 
-                            if (CurrentEVSEOperator == null)
-                                throw new ApplicationException("Could not find any charging station operator for roaming network '" + CurrentRoamingNetworkId + "'!");
+                            //if (CurrentEVSEOperator == null)
+                            //    throw new ApplicationException("Could not find any charging station operator for roaming network '" + CurrentRoamingNetworkId + "'!");
 
                             var CurrentRoamingNetworkJObject = CurrentRoamingNetwork.Value as JObject;
 
@@ -443,6 +443,9 @@ namespace org.GraphDefined.WWCP.Importer
 
                                                     if (ChargingStation_Id.TryParse(StationConfig.Key, out ChargingStationId))
                                                     {
+
+                                                        var CurrentEVSEOperator = ChargingStationOperators(ChargingStationId).
+                                                                                      FirstOrDefault(cso => cso.RoamingNetwork.Id == CurrentRoamingNetworkId);
 
                                                         JToken JSONToken2;
                                                         String PhoneNumber = null;
@@ -502,18 +505,18 @@ namespace org.GraphDefined.WWCP.Importer
 
                                                             _AllForwardingInfos.Add(ChargingStationId,
                                                                                     new ImporterForwardingInfo(
-                                                                                        OnChangedCallback:       SendOnForwardingChanged,
-                                                                                        ChargingStationOperators:           ChargingStationOperators,
-                                                                                        StationId:               ChargingStationId,
-                                                                                        StationName:             "",
-                                                                                        StationServiceTag:       "",
-                                                                                        StationAddress:          new Address(),
-                                                                                        StationGeoCoordinate:    null,
-                                                                                        PhoneNumber:             PhoneNumber,
-                                                                                        AdminStatus:             AdminStatus,
-                                                                                        Created:                 DateTime.Now,
-                                                                                        OutOfService:            true,
-                                                                                        ForwardedToEVSEOperator: CurrentEVSEOperator)
+                                                                                        OnChangedCallback:          SendOnForwardingChanged,
+                                                                                        ChargingStationOperators:   ChargingStationOperators(ChargingStationId),
+                                                                                        StationId:                  ChargingStationId,
+                                                                                        StationName:                "",
+                                                                                        StationServiceTag:          "",
+                                                                                        StationAddress:             new Address(),
+                                                                                        StationGeoCoordinate:       null,
+                                                                                        PhoneNumber:                PhoneNumber,
+                                                                                        AdminStatus:                AdminStatus,
+                                                                                        Created:                    DateTime.Now,
+                                                                                        OutOfService:               true,
+                                                                                        ForwardedToOperator:        CurrentEVSEOperator)
                                                                                    );
 
                                                         }
@@ -874,7 +877,10 @@ namespace org.GraphDefined.WWCP.Importer
 
                         ContinueWith(ImporterTask => {
 
-                            AddOrUpdateForwardingInfos(CreateForwardingTable(this, ImporterTask.Result, ChargingStationOperators, DefaultChargingStationOperator));
+                            AddOrUpdateForwardingInfos(CreateForwardingTable(this,
+                                                                             ImporterTask.Result,
+                                                                             ChargingStationOperators,
+                                                                             DefaultChargingStationOperator));
 
                             return ImporterTask.Result;
 
