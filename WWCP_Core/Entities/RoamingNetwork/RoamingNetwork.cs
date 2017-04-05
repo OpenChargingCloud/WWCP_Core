@@ -5692,13 +5692,15 @@ namespace org.GraphDefined.WWCP
             #region The fastest Authorized|Blocked will win!
 
             result = results.
-                         Where  (res => res.Result == AuthStartEVSEResultType.Authorized).
+                         Where  (res => res        != null &&
+                                        res.Result == AuthStartEVSEResultType.Authorized).
                          OrderBy(res => res.Runtime).
                          FirstOrDefault();
 
             if (result == null)
                 result = results.
-                             Where  (res => res.Result == AuthStartEVSEResultType.Blocked).
+                             Where  (res => res        != null &&
+                                            res.Result == AuthStartEVSEResultType.Blocked).
                              OrderBy(res => res.Runtime).
                              FirstOrDefault();
 
@@ -6290,7 +6292,7 @@ namespace org.GraphDefined.WWCP
             if (result == null || result.Result != AuthStopResultType.Authorized)
                 foreach (var iRemoteAuthorizeStartStop in _IRemoteAuthorizeStartStop.
                                                           OrderBy(kvp => kvp.Key).
-                                                          Select(kvp => kvp.Value))
+                                                          Select (kvp => kvp.Value))
                 {
 
                     result = await iRemoteAuthorizeStartStop.AuthorizeStop(SessionId,
@@ -6471,13 +6473,15 @@ namespace org.GraphDefined.WWCP
                 #region The fastest Authorized|Blocked will win!
 
                 result = results.
-                             Where  (res => res.Result == AuthStopEVSEResultType.Authorized).
+                             Where  (res => res        != null &&
+                                            res.Result == AuthStopEVSEResultType.Authorized).
                              OrderBy(res => res.Runtime).
                              FirstOrDefault();
 
                 if (result == null)
                     result = results.
-                                 Where  (res => res.Result == AuthStopEVSEResultType.Blocked).
+                                 Where  (res => res        != null &&
+                                                res.Result == AuthStopEVSEResultType.Blocked).
                                  OrderBy(res => res.Runtime).
                                  FirstOrDefault();
 
