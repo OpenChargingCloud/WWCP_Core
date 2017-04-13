@@ -42,7 +42,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// No car connected to EVSE, ready to charge.
         /// </summary>
-        Available           = 3,
+        Operational           = 3,
 
                 /// <summary>
         /// Some cars connected to station or pool, but still ready to charge.
