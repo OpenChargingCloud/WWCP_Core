@@ -272,14 +272,14 @@ namespace org.GraphDefined.WWCP
         Task<RemoteStopEVSEResult>
 
             RemoteStop(ChargingSession_Id     SessionId,
-                       ReservationHandling    ReservationHandling,
-                       eMobilityProvider_Id?  ProviderId          = null,
-                       eMobilityAccount_Id?   eMAId               = null,
+                       ReservationHandling?   ReservationHandling   = null,
+                       eMobilityProvider_Id?  ProviderId            = null,
+                       eMobilityAccount_Id?   eMAId                 = null,
 
-                       DateTime?              Timestamp           = null,
-                       CancellationToken?     CancellationToken   = null,
-                       EventTracking_Id       EventTrackingId     = null,
-                       TimeSpan?              RequestTimeout      = null);
+                       DateTime?              Timestamp             = null,
+                       CancellationToken?     CancellationToken     = null,
+                       EventTracking_Id       EventTrackingId       = null,
+                       TimeSpan?              RequestTimeout        = null);
 
         ChargingSession ChargingSession { get; set; }
 
