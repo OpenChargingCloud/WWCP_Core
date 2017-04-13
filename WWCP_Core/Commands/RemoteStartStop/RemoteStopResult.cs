@@ -87,7 +87,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RemoteStopEVSEResult(SessionId, Result, ReservationId, ReservationHandling)
+        #region RemoteStopResult(SessionId, Result, ReservationId, ReservationHandling)
 
         /// <summary>
         /// Create a new remote stop result.
@@ -99,19 +99,19 @@ namespace org.GraphDefined.WWCP
         private RemoteStopResult(ChargingSession_Id       SessionId,
                                  RemoteStopResultType     Result,
                                  ChargingReservation_Id?  ReservationId,
-                                 ReservationHandling      ReservationHandling)
+                                 ReservationHandling?     ReservationHandling)
         {
 
             this.SessionId            = SessionId;
             this.Result               = Result;
             this.ReservationId        = ReservationId;
-            this.ReservationHandling  = ReservationHandling != null ? ReservationHandling : ReservationHandling.Close;
+            this.ReservationHandling  = ReservationHandling ?? WWCP.ReservationHandling.Close;
 
         }
 
         #endregion
 
-        #region RemoteStopEVSEResult(ChargeDetailRecord, Result, ReservationId, ReservationHandling)
+        #region RemoteStopResult(ChargeDetailRecord, Result, ReservationId, ReservationHandling)
 
         /// <summary>
         /// Create a new remote stop result.
@@ -123,7 +123,7 @@ namespace org.GraphDefined.WWCP
         private RemoteStopResult(ChargeDetailRecord       ChargeDetailRecord,
                                  RemoteStopResultType     Result,
                                  ChargingReservation_Id?  ReservationId,
-                                 ReservationHandling      ReservationHandling)
+                                 ReservationHandling?     ReservationHandling)
         {
 
             #region Initial checks
@@ -137,7 +137,7 @@ namespace org.GraphDefined.WWCP
             this.SessionId            = ChargeDetailRecord.SessionId;
             this.Result               = Result;
             this.ReservationId        = ReservationId;
-            this.ReservationHandling  = ReservationHandling != null ? ReservationHandling : ReservationHandling.Close;
+            this.ReservationHandling  = ReservationHandling ?? WWCP.ReservationHandling.Close;
 
         }
 
@@ -285,7 +285,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
         public static RemoteStopResult Success(ChargingSession_Id       SessionId,
                                                ChargingReservation_Id?  ReservationId        = null,
-                                               ReservationHandling      ReservationHandling  = null)
+                                               ReservationHandling?     ReservationHandling  = null)
 
             => new RemoteStopResult(SessionId,
                                     RemoteStopResultType.Success,
@@ -304,7 +304,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
         public static RemoteStopResult Success(ChargeDetailRecord       ChargeDetailRecord,
                                                ChargingReservation_Id?  ReservationId        = null,
-                                               ReservationHandling      ReservationHandling  = null)
+                                               ReservationHandling?     ReservationHandling  = null)
 
             => new RemoteStopResult(ChargeDetailRecord,
                                     RemoteStopResultType.Success,

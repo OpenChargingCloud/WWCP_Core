@@ -112,6 +112,9 @@ namespace org.GraphDefined.WWCP
 
             var MatchCollection = ReservationId_RegEx.Matches(Text);
 
+            if (MatchCollection.Count != 1)
+                throw new ArgumentException("Illegal text representation of a charging session identification: '" + Text + "'!", nameof(Text));
+
             ChargingStationOperator_Id _OperatorId;
 
             if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out _OperatorId))
