@@ -295,7 +295,7 @@ namespace org.GraphDefined.WWCP
         Task<RemoteStopResult>
 
             RemoteStop(ChargingSession_Id     SessionId,
-                       ReservationHandling    ReservationHandling,
+                       ReservationHandling?   ReservationHandling,
                        eMobilityProvider_Id?  ProviderId,
                        eMobilityAccount_Id?   eMAId,
 
@@ -322,7 +322,7 @@ namespace org.GraphDefined.WWCP
 
             RemoteStop(EVSE_Id                EVSEId,
                        ChargingSession_Id     SessionId,
-                       ReservationHandling    ReservationHandling,
+                       ReservationHandling?   ReservationHandling,
                        eMobilityProvider_Id?  ProviderId,
                        eMobilityAccount_Id?   eMAId,
 
@@ -349,7 +349,7 @@ namespace org.GraphDefined.WWCP
 
             RemoteStop(ChargingStation_Id     ChargingStationId,
                        ChargingSession_Id     SessionId,
-                       ReservationHandling    ReservationHandling,
+                       ReservationHandling?   ReservationHandling,
                        eMobilityProvider_Id?  ProviderId,
                        eMobilityAccount_Id?   eMAId,
 

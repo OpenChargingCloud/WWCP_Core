@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// Defines if a reservation can be used for consecutive charging sessions.
     /// </summary>
-    public class ReservationHandling
+    public struct ReservationHandling
     {
 
         #region Properties
@@ -98,6 +98,20 @@ namespace org.GraphDefined.WWCP
         public static ReservationHandling KeepAlive(TimeSpan KeepAliveTime)
 
             => new ReservationHandling(KeepAliveTime);
+
+        #endregion
+
+
+        #region (override) ToString()
+
+        /// <summary>
+        /// Return a string representation of this object.
+        /// </summary>
+        public override String ToString()
+
+            => KeepAliveTime.HasValue
+                   ? KeepAliveTime.Value.TotalSeconds + " secs"
+                   : "close";
 
         #endregion
 

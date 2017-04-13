@@ -55,7 +55,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The handling of the charging reservation after the charging session stopped.
         /// </summary>
-        public ReservationHandling                  ReservationHandling     { get; }
+        public ReservationHandling?                 ReservationHandling     { get; }
 
         /// <summary>
         /// An optional (error) message.
@@ -99,13 +99,13 @@ namespace org.GraphDefined.WWCP
         private RemoteStopChargingStationResult(ChargingSession_Id                   SessionId,
                                                 RemoteStopChargingStationResultType  Result,
                                                 ChargingReservation_Id?              ReservationId,
-                                                ReservationHandling                  ReservationHandling)
+                                                ReservationHandling?                 ReservationHandling)
         {
 
             this.SessionId            = SessionId;
             this.Result               = Result;
             this.ReservationId        = ReservationId;
-            this.ReservationHandling  = ReservationHandling != null ? ReservationHandling : ReservationHandling.Close;
+            this.ReservationHandling  = ReservationHandling ?? WWCP.ReservationHandling.Close;
 
         }
 
@@ -123,7 +123,7 @@ namespace org.GraphDefined.WWCP
         private RemoteStopChargingStationResult(ChargeDetailRecord                   ChargeDetailRecord,
                                                 RemoteStopChargingStationResultType  Result,
                                                 ChargingReservation_Id?              ReservationId,
-                                                ReservationHandling                  ReservationHandling)
+                                                ReservationHandling?                 ReservationHandling)
         {
 
             #region Initial checks
@@ -137,7 +137,7 @@ namespace org.GraphDefined.WWCP
             this.SessionId            = ChargeDetailRecord.SessionId;
             this.Result               = Result;
             this.ReservationId        = ReservationId;
-            this.ReservationHandling  = ReservationHandling != null ? ReservationHandling : ReservationHandling.Close;
+            this.ReservationHandling  = ReservationHandling ?? WWCP.ReservationHandling.Close;
 
         }
 
@@ -289,7 +289,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
         public static RemoteStopChargingStationResult Success(ChargingSession_Id       SessionId,
                                                               ChargingReservation_Id?  ReservationId        = null,
-                                                              ReservationHandling      ReservationHandling  = null)
+                                                              ReservationHandling?     ReservationHandling  = null)
 
             => new RemoteStopChargingStationResult(SessionId,
                                                    RemoteStopChargingStationResultType.Success,
@@ -308,7 +308,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
         public static RemoteStopChargingStationResult Success(ChargeDetailRecord       ChargeDetailRecord,
                                                               ChargingReservation_Id?  ReservationId        = null,
-                                                              ReservationHandling      ReservationHandling  = null)
+                                                              ReservationHandling?     ReservationHandling  = null)
 
             => new RemoteStopChargingStationResult(ChargeDetailRecord,
                                                    RemoteStopChargingStationResultType.Success,

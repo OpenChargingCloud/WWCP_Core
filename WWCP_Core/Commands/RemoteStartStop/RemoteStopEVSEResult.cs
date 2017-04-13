@@ -108,13 +108,13 @@ namespace org.GraphDefined.WWCP
         private RemoteStopEVSEResult(ChargingSession_Id        SessionId,
                                      RemoteStopEVSEResultType  Result,
                                      ChargingReservation_Id?   ReservationId,
-                                     ReservationHandling       ReservationHandling = null)
+                                     ReservationHandling?      ReservationHandling = null)
         {
 
             this.SessionId            = SessionId;
             this.Result               = Result;
             this.ReservationId        = ReservationId;
-            this.ReservationHandling  = ReservationHandling ?? ReservationHandling.Close;
+            this.ReservationHandling  = ReservationHandling ?? WWCP.ReservationHandling.Close;
 
         }
 
@@ -132,7 +132,7 @@ namespace org.GraphDefined.WWCP
         private RemoteStopEVSEResult(ChargeDetailRecord        ChargeDetailRecord,
                                      RemoteStopEVSEResultType  Result,
                                      ChargingReservation_Id?   ReservationId,
-                                     ReservationHandling       ReservationHandling = null)
+                                     ReservationHandling?      ReservationHandling = null)
         {
 
             #region Initial checks
@@ -146,7 +146,7 @@ namespace org.GraphDefined.WWCP
             this.SessionId            = ChargeDetailRecord.SessionId;
             this.Result               = Result;
             this.ReservationId        = ReservationId;
-            this.ReservationHandling  = ReservationHandling ?? ReservationHandling.Close;
+            this.ReservationHandling  = ReservationHandling ?? WWCP.ReservationHandling.Close;
 
         }
 
@@ -269,7 +269,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
         public static RemoteStopEVSEResult Success(ChargingSession_Id       SessionId,
                                                    ChargingReservation_Id?  ReservationId        = null,
-                                                   ReservationHandling      ReservationHandling  = null)
+                                                   ReservationHandling?     ReservationHandling  = null)
 
             => new RemoteStopEVSEResult(SessionId,
                                         RemoteStopEVSEResultType.Success,
@@ -288,7 +288,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ReservationHandling">The handling of the charging reservation after the charging session stopped.</param>
         public static RemoteStopEVSEResult Success(ChargeDetailRecord       ChargeDetailRecord,
                                                    ChargingReservation_Id?  ReservationId        = null,
-                                                   ReservationHandling      ReservationHandling  = null)
+                                                   ReservationHandling?     ReservationHandling  = null)
 
             => new RemoteStopEVSEResult(ChargeDetailRecord,
                                         RemoteStopEVSEResultType.Success,

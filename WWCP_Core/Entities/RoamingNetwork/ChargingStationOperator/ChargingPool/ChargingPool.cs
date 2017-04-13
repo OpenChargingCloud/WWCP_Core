@@ -2911,7 +2911,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RemoteStop(...SessionId, ReservationHandling, ProviderId = null, eMAId = null, ...)
+        #region RemoteStop(...SessionId, ReservationHandling = null, ProviderId = null, eMAId = null, ...)
 
         /// <summary>
         /// Stop the given charging session.
@@ -2928,14 +2928,14 @@ namespace org.GraphDefined.WWCP
         public async Task<RemoteStopResult>
 
             RemoteStop(ChargingSession_Id     SessionId,
-                       ReservationHandling    ReservationHandling,
-                       eMobilityProvider_Id?  ProviderId          = null,
-                       eMobilityAccount_Id?   eMAId               = null,
+                       ReservationHandling?   ReservationHandling   = null,
+                       eMobilityProvider_Id?  ProviderId            = null,
+                       eMobilityAccount_Id?   eMAId                 = null,
 
-                       DateTime?              Timestamp           = null,
-                       CancellationToken?     CancellationToken   = null,
-                       EventTracking_Id       EventTrackingId     = null,
-                       TimeSpan?              RequestTimeout      = null)
+                       DateTime?              Timestamp             = null,
+                       CancellationToken?     CancellationToken     = null,
+                       EventTracking_Id       EventTrackingId       = null,
+                       TimeSpan?              RequestTimeout        = null)
 
         {
 
@@ -3037,7 +3037,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RemoteStop(...EVSEId, SessionId, ReservationHandling, ProviderId = null, eMAId = null, ...)
+        #region RemoteStop(...EVSEId, SessionId, ReservationHandling = null, ProviderId = null, eMAId = null, ...)
 
         /// <summary>
         /// Stop the given charging session at the given EVSE.
@@ -3056,14 +3056,14 @@ namespace org.GraphDefined.WWCP
 
             RemoteStop(EVSE_Id                EVSEId,
                        ChargingSession_Id     SessionId,
-                       ReservationHandling    ReservationHandling,
-                       eMobilityProvider_Id?  ProviderId          = null,
-                       eMobilityAccount_Id?   eMAId               = null,
+                       ReservationHandling?   ReservationHandling   = null,
+                       eMobilityProvider_Id?  ProviderId            = null,
+                       eMobilityAccount_Id?   eMAId                 = null,
 
-                       DateTime?              Timestamp           = null,
-                       CancellationToken?     CancellationToken   = null,
-                       EventTracking_Id       EventTrackingId     = null,
-                       TimeSpan?              RequestTimeout      = null)
+                       DateTime?              Timestamp             = null,
+                       CancellationToken?     CancellationToken     = null,
+                       EventTracking_Id       EventTrackingId       = null,
+                       TimeSpan?              RequestTimeout        = null)
 
         {
 
@@ -3189,7 +3189,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RemoteStop(...ChargingStationId, SessionId, ReservationHandling, ProviderId = null, eMAId = null, ...)
+        #region RemoteStop(...ChargingStationId, SessionId, ReservationHandling = null, ProviderId = null, eMAId = null, ...)
 
         /// <summary>
         /// Stop the given charging session at the given charging station.
@@ -3208,14 +3208,14 @@ namespace org.GraphDefined.WWCP
 
             RemoteStop(ChargingStation_Id     ChargingStationId,
                        ChargingSession_Id     SessionId,
-                       ReservationHandling    ReservationHandling,
-                       eMobilityProvider_Id?  ProviderId          = null,
-                       eMobilityAccount_Id?   eMAId               = null,
+                       ReservationHandling?   ReservationHandling   = null,
+                       eMobilityProvider_Id?  ProviderId            = null,
+                       eMobilityAccount_Id?   eMAId                 = null,
 
-                       DateTime?              Timestamp           = null,
-                       CancellationToken?     CancellationToken   = null,
-                       EventTracking_Id       EventTrackingId     = null,
-                       TimeSpan?              RequestTimeout      = null)
+                       DateTime?              Timestamp             = null,
+                       CancellationToken?     CancellationToken     = null,
+                       EventTracking_Id       EventTrackingId       = null,
+                       TimeSpan?              RequestTimeout        = null)
 
         {
 
