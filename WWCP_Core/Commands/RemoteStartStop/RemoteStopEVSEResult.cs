@@ -355,9 +355,15 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-            => Result.ToString();
+
+            => String.Concat(Result.ToString(),
+                             ChargeDetailRecord != null
+                                 ? ", with CDR"
+                                 : "",
+                             ", ReservationHandling: " + ReservationHandling);
 
         #endregion
+
 
     }
 

@@ -3647,12 +3647,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveEVSERequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var _StartTime = DateTime.Now;
 
             try
             {
 
-                OnReserveEVSERequest?.Invoke(DateTime.Now,
+                OnReserveEVSERequest?.Invoke(_StartTime,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -3703,7 +3703,9 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            if (result == null || result.Result == ReservationResultType.UnknownEVSE)
+            if (result        == null ||
+               (result        != null &&
+               (result.Result == ReservationResultType.UnknownEVSE)))
             {
 
                 foreach (var EMPRoamingService in _EMPRoamingProviders.
@@ -3747,12 +3749,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveEVSEResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.Now;
 
             try
             {
 
-                OnReserveEVSEResponse?.Invoke(DateTime.Now,
+                OnReserveEVSEResponse?.Invoke(EndTime,
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
@@ -3768,7 +3770,7 @@ namespace org.GraphDefined.WWCP
                                               eMAIds,
                                               PINs,
                                               result,
-                                              Runtime.Elapsed,
+                                              EndTime - _StartTime,
                                               RequestTimeout);
 
             }
@@ -3846,12 +3848,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveChargingStationRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var _StartTime = DateTime.Now;
 
             try
             {
 
-                OnReserveChargingStationRequest?.Invoke(DateTime.Now,
+                OnReserveChargingStationRequest?.Invoke(_StartTime,
                                                         Timestamp.Value,
                                                         this,
                                                         EventTrackingId,
@@ -3908,12 +3910,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveChargingStationResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.Now;
 
             try
             {
 
-                OnReserveChargingStationResponse?.Invoke(DateTime.Now,
+                OnReserveChargingStationResponse?.Invoke(EndTime,
                                                          Timestamp.Value,
                                                          this,
                                                          EventTrackingId,
@@ -3929,7 +3931,7 @@ namespace org.GraphDefined.WWCP
                                                          eMAIds,
                                                          PINs,
                                                          result,
-                                                         Runtime.Elapsed,
+                                                         EndTime - _StartTime,
                                                          RequestTimeout);
 
             }
@@ -4007,12 +4009,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveChargingPoolRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var _StartTime = DateTime.Now;
 
             try
             {
 
-                OnReserveChargingPoolRequest?.Invoke(DateTime.Now,
+                OnReserveChargingPoolRequest?.Invoke(_StartTime,
                                                      Timestamp.Value,
                                                      this,
                                                      EventTrackingId,
@@ -4069,12 +4071,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveChargingPoolResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.Now;
 
             try
             {
 
-                OnReserveChargingPoolResponse?.Invoke(DateTime.Now,
+                OnReserveChargingPoolResponse?.Invoke(EndTime,
                                                       Timestamp.Value,
                                                       this,
                                                       EventTrackingId,
@@ -4090,7 +4092,7 @@ namespace org.GraphDefined.WWCP
                                                       eMAIds,
                                                       PINs,
                                                       result,
-                                                      Runtime.Elapsed,
+                                                      EndTime - _StartTime,
                                                       RequestTimeout);
 
             }
@@ -4213,9 +4215,10 @@ namespace org.GraphDefined.WWCP
 
             #region ...or check EMP roaming provider charging reservation lookup...
 
-            if (result        == null                                    ||
-                result.Result == CancelReservationResults.UnknownEVSE ||
-                result.Result == CancelReservationResults.UnknownReservationId)
+            if (result        == null                                 ||
+               (result        != null                                 &&
+               (result.Result == CancelReservationResults.UnknownEVSE ||
+                result.Result == CancelReservationResults.UnknownReservationId)))
             {
 
                 IEMPRoamingProvider _IEMPRoamingProvider = null;
@@ -4242,9 +4245,10 @@ namespace org.GraphDefined.WWCP
 
             #region ...or try to check every EMP roaming provider...
 
-            if (result == null ||
-                result.Result == CancelReservationResults.UnknownEVSE ||
-                result.Result == CancelReservationResults.UnknownReservationId)
+            if (result        == null                                 ||
+               (result        != null                                 &&
+               (result.Result == CancelReservationResults.UnknownEVSE ||
+                result.Result == CancelReservationResults.UnknownReservationId)))
             {
 
                 foreach (var EMPRoamingService in _EMPRoamingProviders.
@@ -4430,12 +4434,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStartRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.Now;
 
             try
             {
 
-                OnRemoteEVSEStartRequest?.Invoke(DateTime.Now,
+                OnRemoteEVSEStartRequest?.Invoke(StartTime,
                                                  Timestamp.Value,
                                                  this,
                                                  EventTrackingId,
@@ -4489,7 +4493,8 @@ namespace org.GraphDefined.WWCP
             #region ...or try every EMP roaming provider...
 
             if (result        == null ||
-                result.Result == RemoteStartEVSEResultType.UnknownEVSE)
+               (result        != null &&
+               (result.Result == RemoteStartEVSEResultType.UnknownEVSE)))
             {
 
                 foreach (var _EMPRoamingProvier in _EMPRoamingProviders.
@@ -4531,12 +4536,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStartResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.Now;
 
             try
             {
 
-                OnRemoteEVSEStartResponse?.Invoke(DateTime.Now,
+                OnRemoteEVSEStartResponse?.Invoke(EndTime,
                                                   Timestamp.Value,
                                                   this,
                                                   EventTrackingId,
@@ -4549,7 +4554,7 @@ namespace org.GraphDefined.WWCP
                                                   eMAId,
                                                   RequestTimeout,
                                                   result,
-                                                  Runtime.Elapsed);
+                                                  EndTime - StartTime);
 
             }
             catch (Exception e)
@@ -4615,12 +4620,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStartRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.Now;
 
             try
             {
 
-                OnRemoteChargingStationStartRequest?.Invoke(DateTime.Now,
+                OnRemoteChargingStationStartRequest?.Invoke(StartTime,
                                                             Timestamp.Value,
                                                             this,
                                                             EventTrackingId,
@@ -4674,7 +4679,8 @@ namespace org.GraphDefined.WWCP
             #region ...or try every EMP roaming provider...
 
             if (result        == null ||
-                result.Result == RemoteStartChargingStationResultType.UnknownChargingStation)
+               (result        != null &&
+               (result.Result == RemoteStartChargingStationResultType.UnknownChargingStation)))
             {
 
                 foreach (var _EMPRoamingProvider in _EMPRoamingProviders.
@@ -4716,10 +4722,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStartResponse event
 
+            var EndTime = DateTime.Now;
+
             try
             {
 
-                OnRemoteChargingStationStartResponse?.Invoke(DateTime.Now,
+                OnRemoteChargingStationStartResponse?.Invoke(EndTime,
                                                              Timestamp.Value,
                                                              this,
                                                              EventTrackingId,
@@ -4732,7 +4740,7 @@ namespace org.GraphDefined.WWCP
                                                              eMAId,
                                                              RequestTimeout,
                                                              result,
-                                                             Runtime.Elapsed);
+                                                             EndTime - StartTime);
 
             }
             catch (Exception e)
@@ -4829,12 +4837,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.Now;
 
             try
             {
 
-                OnRemoteStopRequest?.Invoke(DateTime.Now,
+                OnRemoteStopRequest?.Invoke(StartTime,
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
@@ -4861,37 +4869,29 @@ namespace org.GraphDefined.WWCP
             if (_ChargingSessions.TryRemove(SessionId, out _ChargingSession))
             {
 
-                result = await _ChargingSession?.ChargingStationOperator?.
-                                   RemoteStop(SessionId,
-                                              ReservationHandling,
-                                              ProviderId,
-                                              eMAId,
+                if (_ChargingSession.ChargingStationOperator != null)
+                    result = await _ChargingSession.ChargingStationOperator.
+                                       RemoteStop(SessionId,
+                                                  ReservationHandling,
+                                                  ProviderId,
+                                                  eMAId,
 
-                                              Timestamp,
-                                              CancellationToken,
-                                              EventTrackingId,
-                                              RequestTimeout);
+                                                  Timestamp,
+                                                  CancellationToken,
+                                                  EventTrackingId,
+                                                  RequestTimeout);
 
-            }
+                if (result == null && _ChargingSession.EMPRoamingProvider != null)
+                    result = await _ChargingSession.EMPRoamingProvider.
+                                       RemoteStop(SessionId,
+                                                  ReservationHandling,
+                                                  ProviderId,
+                                                  eMAId,
 
-            #endregion
-
-            #region ...or check EMP roaming provider charging session lookup...
-
-            if (result        == null ||
-                result.Result == RemoteStopResultType.InvalidSessionId)
-            {
-
-                result = await _ChargingSession?.EMPRoamingProvider?.
-                                   RemoteStop(SessionId,
-                                              ReservationHandling,
-                                              ProviderId,
-                                              eMAId,
-
-                                              Timestamp,
-                                              CancellationToken,
-                                              EventTrackingId,
-                                              RequestTimeout);
+                                                  Timestamp,
+                                                  CancellationToken,
+                                                  EventTrackingId,
+                                                  RequestTimeout);
 
             }
 
@@ -4900,7 +4900,8 @@ namespace org.GraphDefined.WWCP
             #region ...or try to check every charging station operator...
 
             if (result        == null ||
-                result.Result == RemoteStopResultType.InvalidSessionId)
+               (result        != null &&
+               (result.Result == RemoteStopResultType.InvalidSessionId)))
             {
 
                 foreach (var Operator in _ChargingStationOperators)
@@ -4926,7 +4927,8 @@ namespace org.GraphDefined.WWCP
             #region ...or try to check every EMP roaming provider...
 
             if (result        == null ||
-                result.Result == RemoteStopResultType.InvalidSessionId)
+               (result        != null &&
+               (result.Result == RemoteStopResultType.InvalidSessionId)))
             {
 
                 foreach (var EMPRoamingService in _EMPRoamingProviders.
@@ -4961,7 +4963,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.Now;
 
             try
             {
@@ -4977,7 +4979,7 @@ namespace org.GraphDefined.WWCP
                                              eMAId,
                                              RequestTimeout,
                                              result,
-                                             Runtime.Elapsed);
+                                             EndTime - StartTime);
 
             }
             catch (Exception e)
@@ -5041,12 +5043,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStopRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.Now;
 
             try
             {
 
-                OnRemoteEVSEStopRequest?.Invoke(DateTime.Now,
+                OnRemoteEVSEStopRequest?.Invoke(StartTime,
                                                 Timestamp.Value,
                                                 this,
                                                 EventTrackingId,
@@ -5074,40 +5076,31 @@ namespace org.GraphDefined.WWCP
             if (_ChargingSessions.TryRemove(SessionId, out _ChargingSession))
             {
 
-                result = await _ChargingSession?.ChargingStationOperator?.
-                                   RemoteStop(EVSEId,
-                                              SessionId,
-                                              ReservationHandling,
-                                              ProviderId,
-                                              eMAId,
+                if (_ChargingSession.ChargingStationOperator != null)
+                    result = await _ChargingSession.ChargingStationOperator.
+                                       RemoteStop(EVSEId,
+                                                  SessionId,
+                                                  ReservationHandling,
+                                                  ProviderId,
+                                                  eMAId,
 
-                                              Timestamp,
-                                              CancellationToken,
-                                              EventTrackingId,
-                                              RequestTimeout);
+                                                  Timestamp,
+                                                  CancellationToken,
+                                                  EventTrackingId,
+                                                  RequestTimeout);
 
-            }
+                if (result == null && _ChargingSession.EMPRoamingProvider != null)
+                    result = await _ChargingSession.EMPRoamingProvider.
+                                       RemoteStop(EVSEId,
+                                                  SessionId,
+                                                  ReservationHandling,
+                                                  ProviderId,
+                                                  eMAId,
 
-            #endregion
-
-            #region ...or check EMP roaming provider charging session lookup...
-
-            if (result        == null                                 ||
-                result.Result == RemoteStopEVSEResultType.UnknownEVSE ||
-                result.Result == RemoteStopEVSEResultType.InvalidSessionId)
-            {
-
-                result = await _ChargingSession?.EMPRoamingProvider?.
-                                   RemoteStop(EVSEId,
-                                              SessionId,
-                                              ReservationHandling,
-                                              ProviderId,
-                                              eMAId,
-
-                                              Timestamp,
-                                              CancellationToken,
-                                              EventTrackingId,
-                                              RequestTimeout);
+                                                  Timestamp,
+                                                  CancellationToken,
+                                                  EventTrackingId,
+                                                  RequestTimeout);
 
             }
 
@@ -5116,31 +5109,35 @@ namespace org.GraphDefined.WWCP
             #region ...or try to get the charging station operator from the EVSE identification...
 
             if (result        == null                                 ||
-                result.Result == RemoteStopEVSEResultType.UnknownEVSE ||
-                result.Result == RemoteStopEVSEResultType.InvalidSessionId)
+               (result        != null                                 &&
+               (result.Result == RemoteStopEVSEResultType.UnknownEVSE ||
+                result.Result == RemoteStopEVSEResultType.InvalidSessionId)))
             {
 
-                result = await GetChargingStationOperatorById(EVSEId.OperatorId).
-                                   RemoteStop(EVSEId,
-                                              SessionId,
-                                              ReservationHandling,
-                                              ProviderId,
-                                              eMAId,
+                var _CSO = GetChargingStationOperatorById(EVSEId.OperatorId);
 
-                                              Timestamp,
-                                              CancellationToken,
-                                              EventTrackingId,
-                                              RequestTimeout);
+                if (_CSO != null)
+                    result = await _CSO.RemoteStop(EVSEId,
+                                                   SessionId,
+                                                   ReservationHandling,
+                                                   ProviderId,
+                                                   eMAId,
+
+                                                   Timestamp,
+                                                   CancellationToken,
+                                                   EventTrackingId,
+                                                   RequestTimeout);
 
             }
 
             #endregion
 
-            #region ...or try to check every EMP roaming provider...
+            #region ...or try to check every EMP roaming service...
 
             if (result        == null                                 ||
-                result.Result == RemoteStopEVSEResultType.UnknownEVSE ||
-                result.Result == RemoteStopEVSEResultType.InvalidSessionId)
+               (result        != null                                 &&
+               (result.Result == RemoteStopEVSEResultType.UnknownEVSE ||
+                result.Result == RemoteStopEVSEResultType.InvalidSessionId)))
             {
 
                 foreach (var EMPRoamingService in _EMPRoamingProviders.
@@ -5176,12 +5173,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStopResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.Now;
 
             try
             {
 
-                OnRemoteEVSEStopResponse?.Invoke(DateTime.Now,
+                OnRemoteEVSEStopResponse?.Invoke(EndTime,
                                                  Timestamp.Value,
                                                  this,
                                                  EventTrackingId,
@@ -5193,7 +5190,7 @@ namespace org.GraphDefined.WWCP
                                                  eMAId,
                                                  RequestTimeout,
                                                  result,
-                                                 Runtime.Elapsed);
+                                                 EndTime - StartTime);
 
             }
             catch (Exception e)
@@ -5257,12 +5254,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStopRequest event
 
-            var Runtime = Stopwatch.StartNew();
+            var StartTime = DateTime.Now;
 
             try
             {
 
-                OnRemoteChargingStationStopRequest?.Invoke(DateTime.Now,
+                OnRemoteChargingStationStopRequest?.Invoke(StartTime,
                                                            Timestamp.Value,
                                                            this,
                                                            EventTrackingId,
@@ -5290,40 +5287,31 @@ namespace org.GraphDefined.WWCP
             if (_ChargingSessions.TryGetValue(SessionId, out _ChargingSession))
             {
 
-                result = await _ChargingSession?.ChargingStationOperator?.
-                                   RemoteStop(ChargingStationId,
-                                              SessionId,
-                                              ReservationHandling,
-                                              ProviderId,
-                                              eMAId,
+                if (_ChargingSession.ChargingStationOperator != null)
+                    result = await _ChargingSession.ChargingStationOperator.
+                                       RemoteStop(ChargingStationId,
+                                                  SessionId,
+                                                  ReservationHandling,
+                                                  ProviderId,
+                                                  eMAId,
 
-                                              Timestamp,
-                                              CancellationToken,
-                                              EventTrackingId,
-                                              RequestTimeout);
+                                                  Timestamp,
+                                                  CancellationToken,
+                                                  EventTrackingId,
+                                                  RequestTimeout);
 
-            }
+                if (result == null && _ChargingSession.EMPRoamingProvider != null)
+                    result = await _ChargingSession?.EMPRoamingProvider?.
+                                       RemoteStop(ChargingStationId,
+                                                  SessionId,
+                                                  ReservationHandling,
+                                                  ProviderId,
+                                                  eMAId,
 
-            #endregion
-
-            #region ...or check EMP roaming provider charging session lookup...
-
-            if (result        == null                                                       ||
-                result.Result == RemoteStopChargingStationResultType.UnknownChargingStation ||
-                result.Result == RemoteStopChargingStationResultType.InvalidSessionId)
-            {
-
-                result = await _ChargingSession?.EMPRoamingProvider?.
-                                   RemoteStop(ChargingStationId,
-                                              SessionId,
-                                              ReservationHandling,
-                                              ProviderId,
-                                              eMAId,
-
-                                              Timestamp,
-                                              CancellationToken,
-                                              EventTrackingId,
-                                              RequestTimeout);
+                                                  Timestamp,
+                                                  CancellationToken,
+                                                  EventTrackingId,
+                                                  RequestTimeout);
 
             }
 
@@ -5331,9 +5319,10 @@ namespace org.GraphDefined.WWCP
 
             #region ...or try to get the charging station operator from the charging station identification...
 
-            if (result        == null                                                       ||
-                result.Result == RemoteStopChargingStationResultType.UnknownChargingStation ||
-                result.Result == RemoteStopChargingStationResultType.InvalidSessionId)
+            if (result        == null                                 ||
+               (result        != null                                 &&
+               (result.Result == RemoteStopChargingStationResultType.UnknownChargingStation ||
+                result.Result == RemoteStopChargingStationResultType.InvalidSessionId)))
             {
 
                 result = await GetChargingStationOperatorById(ChargingStationId.OperatorId).
@@ -5354,9 +5343,10 @@ namespace org.GraphDefined.WWCP
 
             #region ...or try to check every EMP roaming provider...
 
-            if (result        == null                                                       ||
-                result.Result == RemoteStopChargingStationResultType.UnknownChargingStation ||
-                result.Result == RemoteStopChargingStationResultType.InvalidSessionId)
+            if (result        == null ||
+               (result        != null &&
+               (result.Result == RemoteStopChargingStationResultType.UnknownChargingStation ||
+                result.Result == RemoteStopChargingStationResultType.InvalidSessionId)))
             {
 
                 foreach (var EMPRoamingService in _EMPRoamingProviders.
@@ -5392,12 +5382,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStopResponse event
 
-            Runtime.Stop();
+            var EndTime = DateTime.Now;
 
             try
             {
 
-                OnRemoteChargingStationStopResponse?.Invoke(DateTime.Now,
+                OnRemoteChargingStationStopResponse?.Invoke(EndTime,
                                                             Timestamp.Value,
                                                             this,
                                                             EventTrackingId,
@@ -5409,7 +5399,7 @@ namespace org.GraphDefined.WWCP
                                                             eMAId,
                                                             RequestTimeout,
                                                             result,
-                                                            Runtime.Elapsed);
+                                                            EndTime - StartTime);
 
             }
             catch (Exception e)
