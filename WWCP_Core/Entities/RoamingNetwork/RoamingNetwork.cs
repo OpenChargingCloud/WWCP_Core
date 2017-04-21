@@ -628,6 +628,19 @@ namespace org.GraphDefined.WWCP
 
             => _ChargingStationOperators.TryGet(ChargingStationOperatorId, out ChargingStationOperator);
 
+        public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, out ChargingStationOperator ChargingStationOperator)
+        {
+
+            if (!ChargingStationOperatorId.HasValue)
+            {
+                ChargingStationOperator = null;
+                return false;
+            }
+
+            return _ChargingStationOperators.TryGet(ChargingStationOperatorId.Value, out ChargingStationOperator);
+
+        }
+
         #endregion
 
         #region RemoveChargingStationOperator(ChargingStationOperatorId)

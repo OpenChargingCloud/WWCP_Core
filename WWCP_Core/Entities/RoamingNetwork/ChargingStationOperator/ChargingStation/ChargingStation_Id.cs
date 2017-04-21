@@ -105,7 +105,10 @@ namespace org.GraphDefined.WWCP
         public static ChargingStation_Id Create(EVSE_Id  EVSEId)
         {
 
-            var _Array = EVSEId.ToString().Split('*', '-');
+            var _Array = new String[] {
+                             EVSEId.OperatorId.CountryCode.Alpha2Code,
+                             EVSEId.OperatorId.Suffix
+                         }.Concat(EVSEId.ToString().Substring(2 + EVSEId.OperatorId.Suffix.Length).ToUpper().Split('*', '-')).ToArray();
 
             if (EVSEId.Format == OperatorIdFormats.ISO || EVSEId.Format == OperatorIdFormats.ISO_STAR)
             {
@@ -134,7 +137,11 @@ namespace org.GraphDefined.WWCP
             if (EVSEId.ToString().Contains('-'))
                 return Parse(_Array.Take(_Array.Length - 1).AggregateWith("-"));
 
-            return Parse(_Array.Take(_Array.Length - 1).AggregateWith("*"));
+            if (_Array[0].StartsWith("+"))
+                return Parse(_Array.Take(1).Select(item => Country.ParseTelefonCode(item.Substring(1)).Alpha2Code).Concat(_Array.Skip(1).Take(_Array.Length - 1)).AggregateWith("*"));
+
+            else
+                return Parse(_Array.Take(_Array.Length - 1).AggregateWith("*"));
 
         }
 
@@ -176,7 +183,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 EVSEIdPrefixStrings = _EVSEIds.
-                                          Select(EVSEId         => EVSEId.ToString().Split('*', '-')).
+                                          Select(EVSEId         => EVSEId.ToFormat(OperatorIdFormats.ISO_STAR).Split('*', '-')).
                                           Select(EVSEIdElements => {
 
                                               if (EVSEIdElements.Length < 4)

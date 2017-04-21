@@ -1966,6 +1966,20 @@ namespace org.GraphDefined.WWCP
 
             => _ChargingPools.Any(pool => pool.ContainsEVSE(EVSEId));
 
+        /// <summary>
+        /// Check if the given EVSE identification is already present within the Charging Station Operator.
+        /// </summary>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        public Boolean ContainsEVSE(EVSE_Id? EVSEId)
+        {
+
+            if (!EVSEId.HasValue)
+                return false;
+
+            return _ChargingPools.Any(pool => pool.ContainsEVSE(EVSEId.Value));
+
+        }
+
         #endregion
 
         #region GetEVSEbyId(EVSEId)
@@ -1983,6 +1997,24 @@ namespace org.GraphDefined.WWCP
 
         public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
         {
+
+            EVSE = _ChargingPools.
+                       SelectMany    (pool    => pool.   ChargingStations).
+                       SelectMany    (station => station.EVSEs).
+                       FirstOrDefault(evse    => evse.Id == EVSEId);
+
+            return EVSE != null;
+
+        }
+
+        public Boolean TryGetEVSEbyId(EVSE_Id? EVSEId, out EVSE EVSE)
+        {
+
+            if (!EVSEId.HasValue)
+            {
+                EVSE = null;
+                return false;
+            }
 
             EVSE = _ChargingPools.
                        SelectMany    (pool    => pool.   ChargingStations).
