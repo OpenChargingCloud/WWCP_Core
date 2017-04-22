@@ -55,13 +55,16 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         [Mandatory]
         public TId               Id
-            => Ids.FirstOrDefault();
+            => _Ids.FirstOrDefault();
+
+        private List<TId>        _Ids;
 
         /// <summary>
         /// The global unique identification of this entity.
         /// </summary>
         [Mandatory]
-        public IEnumerable<TId>  Ids              { get; }
+        public IEnumerable<TId>  Ids
+            => _Ids;
 
         /// <summary>
         /// A unique status identification of this entity.
@@ -109,7 +112,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this.Ids             = new TId[] { Id };
+            this._Ids            = new List<TId> { Id };
             this.DataSource      = String.Empty;
             this.LastChange      = DateTime.Now;
             this._UserDefined    = new UserDefinedDictionary();
@@ -133,7 +136,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this.Ids             = Ids;
+            this._Ids            = new List<TId>(Ids);
             this.DataSource      = String.Empty;
             this.LastChange      = DateTime.Now;
             this._UserDefined    = new UserDefinedDictionary();
@@ -145,6 +148,36 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        // Ids
+
+        #region AddId(Id)
+
+        /// <summary>
+        /// Add a new identification.
+        /// </summary>
+        /// <param name="Id">An identification.</param>
+        public void AddId(TId Id)
+        {
+            _Ids.Add(Id);
+        }
+
+        #endregion
+
+        #region RemoveId(Id)
+
+        /// <summary>
+        /// Remove an identification.
+        /// </summary>
+        /// <param name="Id">An identification.</param>
+        public void RemoveId(TId Id)
+        {
+            _Ids.Remove(Id);
+        }
+
+        #endregion
+
+
+        // Properties
 
         #region SetProperty<T>(ref FieldToChange, NewValue, [CallerMemberName])
 

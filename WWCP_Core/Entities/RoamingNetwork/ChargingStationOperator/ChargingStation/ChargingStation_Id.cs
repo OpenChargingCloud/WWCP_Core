@@ -46,7 +46,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The regular expression for parsing a charging station identification.
         /// </summary>
-        public  static readonly Regex  ChargingStationId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?S([A-Z0-9][A-Z0-9\*]{0,30})$",
+        public  static readonly Regex  ChargingStationId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?S([A-Z0-9][A-Z0-9\*]{0,50})$",
                                                                             RegexOptions.IgnorePatternWhitespace);
 
         #endregion
@@ -67,7 +67,26 @@ namespace org.GraphDefined.WWCP
         /// Returns the length of the identification.
         /// </summary>
         public UInt64 Length
-            => (UInt64) (OperatorId.ToString(OperatorIdFormats.ISO_STAR).Length + 2 + Suffix.Length);
+        {
+            get
+            {
+
+                switch (OperatorId.Format)
+                {
+
+                    case OperatorIdFormats.DIN:
+                        return (UInt64) (OperatorId.CountryCode.TelefonCode.ToString().Length + 1 + OperatorId.Suffix.Length + 2 + Suffix.Length);
+
+                    case OperatorIdFormats.ISO_STAR:
+                        return (UInt64) (OperatorId.CountryCode.Alpha2Code.Length             + 1 + OperatorId.Suffix.Length + 2 + Suffix.Length);
+
+                    default:  // ISO
+                        return (UInt64) (OperatorId.CountryCode.Alpha2Code.Length                 + OperatorId.Suffix.Length + 1 + Suffix.Length);
+
+                }
+
+            }
+        }
 
         #endregion
 
@@ -105,43 +124,45 @@ namespace org.GraphDefined.WWCP
         public static ChargingStation_Id Create(EVSE_Id  EVSEId)
         {
 
-            var _Array = new String[] {
-                             EVSEId.OperatorId.CountryCode.Alpha2Code,
-                             EVSEId.OperatorId.Suffix
-                         }.Concat(EVSEId.ToString().Substring(2 + EVSEId.OperatorId.Suffix.Length).ToUpper().Split('*', '-')).ToArray();
+            return ChargingStation_Id.Parse(EVSEId.OperatorId, EVSEId.Suffix.ToUpper());
 
-            if (EVSEId.Format == OperatorIdFormats.ISO || EVSEId.Format == OperatorIdFormats.ISO_STAR)
-            {
-                if (_Array[2].StartsWith("E", StringComparison.Ordinal))
-                    _Array[2] = "S" + _Array[2].Substring(1);
-            }
-            else
-            {
-                if (!_Array[2].StartsWith("S", StringComparison.Ordinal))
-                     _Array[2] = "S" + _Array[2];
-            }
+            //var _Array = new String[] {
+            //                 EVSEId.OperatorId.CountryCode.Alpha2Code,
+            //                 EVSEId.OperatorId.Suffix
+            //             }.Concat(EVSEId.ToString().Substring(2 + EVSEId.OperatorId.Suffix.Length).ToUpper().Split('*', '-')).ToArray();
+
+            //if (EVSEId.Format == OperatorIdFormats.ISO || EVSEId.Format == OperatorIdFormats.ISO_STAR)
+            //{
+            //    if (_Array[2].StartsWith("E", StringComparison.Ordinal))
+            //        _Array[2] = "S" + _Array[2].Substring(1);
+            //}
+            //else
+            //{
+            //    if (!_Array[2].StartsWith("S", StringComparison.Ordinal))
+            //         _Array[2] = "S" + _Array[2];
+            //}
 
 
-            // e.g. "DE*822*E123456"
-            if (_Array.Length == 3)
-            {
+            //// e.g. "DE*822*E123456"
+            //if (_Array.Length == 3)
+            //{
 
-                if (EVSEId.ToString().Contains('-'))
-                    return Parse(_Array.AggregateWith("-"));
+            //    if (EVSEId.ToString().Contains('-'))
+            //        return Parse(_Array.AggregateWith("-"));
 
-                return Parse(_Array.AggregateWith("*"));
+            //    return Parse(_Array.AggregateWith("*"));
 
-            }
+            //}
 
-            // e.g. "DE*822*E123456*1" => "DE*822*S123456"
-            if (EVSEId.ToString().Contains('-'))
-                return Parse(_Array.Take(_Array.Length - 1).AggregateWith("-"));
+            //// e.g. "DE*822*E123456*1" => "DE*822*S123456"
+            //if (EVSEId.ToString().Contains('-'))
+            //    return Parse(_Array.Take(_Array.Length - 1).AggregateWith("-"));
 
-            if (_Array[0].StartsWith("+"))
-                return Parse(_Array.Take(1).Select(item => Country.ParseTelefonCode(item.Substring(1)).Alpha2Code).Concat(_Array.Skip(1).Take(_Array.Length - 1)).AggregateWith("*"));
+            //if (_Array[0].StartsWith("+"))
+            //    return Parse(_Array.Take(1).Select(item => Country.ParseTelefonCode(item.Substring(1)).Alpha2Code).Concat(_Array.Skip(1).Take(_Array.Length - 1)).AggregateWith("*"));
 
-            else
-                return Parse(_Array.Take(_Array.Length - 1).AggregateWith("*"));
+            //else
+            //    return Parse(_Array.Take(_Array.Length - 1).AggregateWith("*"));
 
         }
 
@@ -274,19 +295,29 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Random(OperatorId, Mapper = null)
+        #region Random(OperatorId, Length = 50, Mapper = null)
 
         /// <summary>
         /// Generate a new unique identification of a charging station identification.
         /// </summary>
         /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="Length">The desired length of the identification suffix.</param>
         /// <param name="Mapper">A delegate to modify the newly generated charging station identification.</param>
         public static ChargingStation_Id Random(ChargingStationOperator_Id  OperatorId,
+                                                Byte                        Length  = 50,
                                                 Func<String, String>        Mapper  = null)
 
+        {
 
-            => new ChargingStation_Id(OperatorId,
-                                      Mapper != null ? Mapper(_Random.RandomString(30)) : _Random.RandomString(30));
+            if (Length < 12 || Length > 50)
+                Length = 50;
+
+            return new ChargingStation_Id(OperatorId,
+                                          Mapper != null
+                                              ? Mapper(_Random.RandomString(Length))
+                                              : _Random.RandomString(Length));
+
+        }
 
         #endregion
 
@@ -334,8 +365,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="Suffix">The suffix of the charging station identification.</param>
         public static ChargingStation_Id Parse(ChargingStationOperator_Id  OperatorId,
                                                String                      Suffix)
+        {
 
-            => Parse(OperatorId.ToString(OperatorIdFormats.ISO_STAR) + "*S" + Suffix);
+            switch (OperatorId.Format)
+            {
+
+                case OperatorIdFormats.ISO_STAR:
+                    return Parse(OperatorId.ToString() + "*S" + Suffix);
+
+                case OperatorIdFormats.ISO:
+                    return Parse(OperatorId.ToString() + "S" + Suffix);
+
+                default:
+                    return Parse(OperatorId.ToString(OperatorIdFormats.ISO_STAR) + "*S" + Suffix);
+
+            }
+
+        }
 
         #endregion
 
@@ -634,7 +680,62 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-            => String.Concat(OperatorId, "*S", Suffix);
+        {
+
+            switch (OperatorId.Format)
+            {
+
+                case OperatorIdFormats.DIN:
+                    return "+" + OperatorId.CountryCode.TelefonCode.ToString() + "*" + OperatorId.Suffix + "*S" + Suffix;
+
+                case OperatorIdFormats.ISO_STAR:
+                    return OperatorId.CountryCode.Alpha2Code + "*" + OperatorId.Suffix + "*S" + Suffix;
+
+                default: // ISO
+                    return OperatorId.CountryCode.Alpha2Code       + OperatorId.Suffix + "S" + Suffix;
+
+            }
+
+        }
+
+        #endregion
+
+        #region ToString(Format)
+
+        /// <summary>
+        /// Return the identification in the given format.
+        /// </summary>
+        /// <param name="Format">The format of the identification.</param>
+        public String ToString(OperatorIdFormats Format)
+        {
+
+            switch (OperatorId.Format)
+            {
+
+                case OperatorIdFormats.ISO:
+                    return String.Concat(OperatorId.CountryCode.Alpha2Code,
+                                         OperatorId.Suffix,
+                                         "S",
+                                         Suffix);
+
+                case OperatorIdFormats.ISO_STAR:
+                    return String.Concat(OperatorId.CountryCode.Alpha2Code,
+                                         "*",
+                                         OperatorId.Suffix,
+                                         "*S",
+                                         Suffix);
+
+                default: // DIN
+                    return String.Concat("+",
+                                         OperatorId.CountryCode.TelefonCode,
+                                         "*",
+                                         OperatorId.Suffix,
+                                         "*S",
+                                         Suffix);
+
+            }
+
+        }
 
         #endregion
 
