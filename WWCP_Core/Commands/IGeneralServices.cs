@@ -21,7 +21,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The general services interface.
     /// </summary>
-    public interface IGeneralServices : IPushData, IPushStatus, IAuthorizeStartStop, ISendChargeDetailRecord
+    public interface IGeneralServices : IPushData, IPushStatus, IAuthorizeStartStop, ISendChargeDetailRecords
     {
 
 

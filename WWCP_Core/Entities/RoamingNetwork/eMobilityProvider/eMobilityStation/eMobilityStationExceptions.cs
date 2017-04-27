@@ -34,7 +34,7 @@ namespace org.GraphDefined.WWCP
     public class eMobilityStationAlreadyExists : eMobilityProviderException
     {
 
-        public eMobilityStationAlreadyExists(eMobilityProvider    eMobilityProvider,
+        public eMobilityStationAlreadyExists(eMobilityProviderProxy    eMobilityProvider,
                                              eMobilityStation_Id  eMobilityStationId)
 
             : base(eMobilityProvider.RoamingNetwork,
@@ -54,7 +54,7 @@ namespace org.GraphDefined.WWCP
     public class eMobilityStationCouldNotBeCreated : eMobilityProviderException
     {
 
-        public eMobilityStationCouldNotBeCreated(eMobilityProvider    eMobilityProvider,
+        public eMobilityStationCouldNotBeCreated(eMobilityProviderProxy    eMobilityProvider,
                                                  eMobilityStation_Id  eMobilityStation_Id)
 
             : base(eMobilityProvider.RoamingNetwork,
@@ -75,7 +75,7 @@ namespace org.GraphDefined.WWCP
     public class eMobilityStationException : eMobilityProviderException
     {
 
-        public eMobilityStationException(eMobilityProvider  eMobilityProvider,
+        public eMobilityStationException(eMobilityProviderProxy  eMobilityProvider,
                                          String             Message)
 
             : base(eMobilityProvider.RoamingNetwork,
@@ -83,7 +83,7 @@ namespace org.GraphDefined.WWCP
 
         { }
 
-        public eMobilityStationException(eMobilityProvider  eMobilityProvider,
+        public eMobilityStationException(eMobilityProviderProxy  eMobilityProvider,
                                          String             Message,
                                          Exception          InnerException)
 

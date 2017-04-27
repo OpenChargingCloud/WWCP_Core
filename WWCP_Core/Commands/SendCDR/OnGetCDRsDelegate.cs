@@ -29,19 +29,19 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-    /// <summary>
-    /// Create a SendChargeDetailRecord request.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp of the request.</param>
-    /// <param name="CancellationToken">A token to cancel this request.</param>
-    /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
-
-    /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<SendCDRsResult> OnChargeDetailRecordDelegate(DateTime                         Timestamp,
-                                                                      CancellationToken                CancellationToken,
-                                                                      EventTracking_Id                 EventTrackingId,
-                                                                      IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                                                                      TimeSpan?                        RequestTimeout  = null);
+ //   /// <summary>
+ //   /// Create a SendChargeDetailRecord request.
+ //   /// </summary>
+ //   /// <param name="Timestamp">The timestamp of the request.</param>
+ //   /// <param name="CancellationToken">A token to cancel this request.</param>
+ //   /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+ //
+ //   /// <param name="RequestTimeout">An optional timeout for this request.</param>
+ //   public delegate Task<SendCDRsResult> OnGetChargeDetailRecordDelegate(DateTime                         Timestamp,
+ //                                                                        CancellationToken                CancellationToken,
+ //                                                                        EventTracking_Id                 EventTrackingId,
+ //                                                                        IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+ //                                                                        TimeSpan?                        RequestTimeout  = null);
 
 
     /// <summary>
@@ -53,14 +53,16 @@ namespace org.GraphDefined.WWCP
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="ChargeDetailRecord">An enumeration of charge detail records.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnSendCDRRequestDelegate(DateTime                         LogTimestamp,
-                                                  DateTime                         RequestTimestamp,
-                                                  Object                           Sender,
-                                                  String                           SenderId,
-                                                  EventTracking_Id                 EventTrackingId,
-                                                  RoamingNetwork_Id                RoamingNetworkId,
-                                                  IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                                                  TimeSpan?                        RequestTimeout);
+    public delegate Task OnGetCDRsRequestDelegate (DateTime                         LogTimestamp,
+                                                   DateTime                         RequestTimestamp,
+                                                   Object                           Sender,
+                                                   String                           SenderId,
+                                                   EventTracking_Id                 EventTrackingId,
+                                                   RoamingNetwork_Id                RoamingNetworkId,
+                                                   DateTime                         From,
+                                                   DateTime?                        To,
+                                                   eMobilityProvider_Id?            ProviderId,
+                                                   TimeSpan?                        RequestTimeout);
 
 
     /// <summary>
@@ -73,15 +75,17 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
     /// <param name="Result">The authorize stop result.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnSendCDRResponseDelegate(DateTime                         LogTimestamp,
+    public delegate Task OnGetCDRsResponseDelegate(DateTime                         LogTimestamp,
                                                    DateTime                         RequestTimestamp,
                                                    Object                           Sender,
                                                    String                           SenderId,
                                                    EventTracking_Id                 EventTrackingId,
                                                    RoamingNetwork_Id                RoamingNetworkId,
-                                                   IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                                                   DateTime                         From,
+                                                   DateTime?                        To,
+                                                   eMobilityProvider_Id?            ProviderId,
                                                    TimeSpan?                        RequestTimeout,
-                                                   SendCDRsResult                   Result,
+                                                   IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                                                    TimeSpan                         Runtime);
 
 }

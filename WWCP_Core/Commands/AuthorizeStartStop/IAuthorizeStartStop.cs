@@ -190,10 +190,11 @@ namespace org.GraphDefined.WWCP
 
     }
 
+
     /// <summary>
     /// The interface for sending AuthStart/-Stop requests.
     /// </summary>
-    public interface IRemoteAuthorizeStartStop
+    public interface ISendAuthorizeStartStop
     {
 
         IId AuthId { get; }
@@ -202,6 +203,302 @@ namespace org.GraphDefined.WWCP
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
         Boolean  DisableAuthentication   { get; set; }
+
+
+        #region OnAuthorizeStart/-Started
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified for charging.
+        /// </summary>
+        event OnAuthorizeStartRequestDelegate                  OnAuthorizeStartRequest;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified for charging.
+        /// </summary>
+        event OnAuthorizeStartResponseDelegate                 OnAuthorizeStartResponse;
+
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified for charging at the given EVSE.
+        /// </summary>
+        event OnAuthorizeEVSEStartRequestDelegate              OnAuthorizeEVSEStartRequest;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified for charging at the given EVSE.
+        /// </summary>
+        event OnAuthorizeEVSEStartResponseDelegate             OnAuthorizeEVSEStartResponse;
+
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified for charging at the given charging station.
+        /// </summary>
+        event OnAuthorizeChargingStationStartRequestDelegate   OnAuthorizeChargingStationStartRequest;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified for charging at the given charging station.
+        /// </summary>
+        event OnAuthorizeChargingStationStartResponseDelegate  OnAuthorizeChargingStationStartResponse;
+
+        #endregion
+
+        #region AuthorizeStart
+
+        /// <summary>
+        /// Create an authorize start request.
+        /// </summary>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="ChargingProduct">An optional charging product.</param>
+        /// <param name="SessionId">An optional session identification.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<AuthStartResult>
+
+            AuthorizeStart(Auth_Token                   AuthToken,
+                           ChargingProduct              ChargingProduct     = null,
+                           ChargingSession_Id?          SessionId           = null,
+                           ChargingStationOperator_Id?  OperatorId          = null,
+
+                           DateTime?                    Timestamp           = null,
+                           CancellationToken?           CancellationToken   = null,
+                           EventTracking_Id             EventTrackingId     = null,
+                           TimeSpan?                    RequestTimeout      = null);
+
+
+        /// <summary>
+        /// Create an authorize start request at the given EVSE.
+        /// </summary>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        /// <param name="ChargingProduct">An optional charging product.</param>
+        /// <param name="SessionId">An optional session identification.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<AuthStartEVSEResult>
+
+            AuthorizeStart(Auth_Token                   AuthToken,
+                           EVSE_Id                      EVSEId,
+                           ChargingProduct              ChargingProduct     = null,
+                           ChargingSession_Id?          SessionId           = null,
+                           ChargingStationOperator_Id?  OperatorId          = null,
+
+                           DateTime?                    Timestamp           = null,
+                           CancellationToken?           CancellationToken   = null,
+                           EventTracking_Id             EventTrackingId     = null,
+                           TimeSpan?                    RequestTimeout      = null);
+
+
+        /// <summary>
+        /// Create an authorize start request at the given charging station.
+        /// </summary>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
+        /// <param name="ChargingProduct">An optional charging product.</param>
+        /// <param name="SessionId">An optional session identification.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<AuthStartChargingStationResult>
+
+            AuthorizeStart(Auth_Token                   AuthToken,
+                           ChargingStation_Id           ChargingStationId,
+                           ChargingProduct              ChargingProduct     = null,
+                           ChargingSession_Id?          SessionId           = null,
+                           ChargingStationOperator_Id?  OperatorId          = null,
+
+                           DateTime?                    Timestamp           = null,
+                           CancellationToken?           CancellationToken   = null,
+                           EventTracking_Id             EventTrackingId     = null,
+                           TimeSpan?                    RequestTimeout      = null);
+
+
+        /// <summary>
+        /// Create an authorize start request at the given charging pool.
+        /// </summary>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
+        /// <param name="ChargingProduct">An optional charging product.</param>
+        /// <param name="SessionId">An optional session identification.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<AuthStartChargingPoolResult>
+
+            AuthorizeStart(Auth_Token                   AuthToken,
+                           ChargingPool_Id              ChargingPoolId,
+                           ChargingProduct              ChargingProduct     = null,
+                           ChargingSession_Id?          SessionId           = null,
+                           ChargingStationOperator_Id?  OperatorId          = null,
+
+                           DateTime?                    Timestamp           = null,
+                           CancellationToken?           CancellationToken   = null,
+                           EventTracking_Id             EventTrackingId     = null,
+                           TimeSpan?                    RequestTimeout      = null);
+
+        #endregion
+
+
+        #region OnAuthorizeStop/-Stopped
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified to stop a charging process.
+        /// </summary>
+        event OnAuthorizeStopRequestDelegate                  OnAuthorizeStopRequest;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified to stop a charging process.
+        /// </summary>
+        event OnAuthorizeStopResponseDelegate                 OnAuthorizeStopResponse;
+
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified to stop a charging process at the given EVSE.
+        /// </summary>
+        event OnAuthorizeEVSEStopRequestDelegate              OnAuthorizeEVSEStopRequest;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified to stop a charging process at the given EVSE.
+        /// </summary>
+        event OnAuthorizeEVSEStopResponseDelegate             OnAuthorizeEVSEStopResponse;
+
+
+        /// <summary>
+        /// An event fired whenever an authentication token will be verified to stop a charging process at the given charging station.
+        /// </summary>
+        event OnAuthorizeChargingStationStopRequestDelegate   OnAuthorizeChargingStationStopRequest;
+
+        /// <summary>
+        /// An event fired whenever an authentication token had been verified to stop a charging process at the given charging station.
+        /// </summary>
+        event OnAuthorizeChargingStationStopResponseDelegate  OnAuthorizeChargingStationStopResponse;
+
+        #endregion
+
+        #region AuthorizeStop
+
+        /// <summary>
+        /// Create an authorize stop request.
+        /// </summary>
+        /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<AuthStopResult>
+
+            AuthorizeStop(ChargingSession_Id           SessionId,
+                          Auth_Token                   AuthToken,
+                          ChargingStationOperator_Id?  OperatorId          = null,
+
+                          DateTime?                    Timestamp           = null,
+                          CancellationToken?           CancellationToken   = null,
+                          EventTracking_Id             EventTrackingId     = null,
+                          TimeSpan?                    RequestTimeout      = null);
+
+
+        /// <summary>
+        /// Create an authorize stop request at the given EVSE.
+        /// </summary>
+        /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="EVSEId">The unique identification of an EVSE.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<AuthStopEVSEResult>
+
+            AuthorizeStop(ChargingSession_Id           SessionId,
+                          Auth_Token                   AuthToken,
+                          EVSE_Id                      EVSEId,
+                          ChargingStationOperator_Id?  OperatorId          = null,
+
+                          DateTime?                    Timestamp           = null,
+                          CancellationToken?           CancellationToken   = null,
+                          EventTracking_Id             EventTrackingId     = null,
+                          TimeSpan?                    RequestTimeout      = null);
+
+
+        /// <summary>
+        /// Create an authorize stop request at the given charging station.
+        /// </summary>
+        /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="ChargingStationId">The unique identification of a charging station.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<AuthStopChargingStationResult>
+
+            AuthorizeStop(ChargingSession_Id           SessionId,
+                          Auth_Token                   AuthToken,
+                          ChargingStation_Id           ChargingStationId,
+                          ChargingStationOperator_Id?  OperatorId          = null,
+
+                          DateTime?                    Timestamp           = null,
+                          CancellationToken?           CancellationToken   = null,
+                          EventTracking_Id             EventTrackingId     = null,
+                          TimeSpan?                    RequestTimeout      = null);
+
+
+        /// <summary>
+        /// Create an authorize stop request at the given charging pool.
+        /// </summary>
+        /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
+        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
+        /// <param name="OperatorId">An optional charging station operator identification.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<AuthStopChargingPoolResult>
+
+            AuthorizeStop(ChargingSession_Id           SessionId,
+                          Auth_Token                   AuthToken,
+                          ChargingPool_Id              ChargingPoolId,
+                          ChargingStationOperator_Id?  OperatorId          = null,
+
+                          DateTime?                    Timestamp           = null,
+                          CancellationToken?           CancellationToken   = null,
+                          EventTracking_Id             EventTrackingId     = null,
+                          TimeSpan?                    RequestTimeout      = null);
+
+        #endregion
+
+    }
+
+
+
+    /// <summary>
+    /// The interface for sending AuthStart/-Stop requests.
+    /// </summary>
+    public interface IReceiveAuthorizeStartStop
+    {
+
+        IId AuthId { get; }
 
 
         #region OnAuthorizeStart/-Started

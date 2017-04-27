@@ -110,9 +110,20 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">An EVSE.</param>
         public static EVSEAdminStatusUpdate Snapshot(EVSE EVSE)
 
-            => new EVSEAdminStatusUpdate(EVSE.Id,
-                                         EVSE.AdminStatus,
-                                         EVSE.AdminStatusSchedule().Skip(1).FirstOrDefault());
+        {
+
+            #region Initial checks
+
+            if (EVSE == null)
+                throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
+
+            #endregion
+
+            return new EVSEAdminStatusUpdate(EVSE.Id,
+                                             EVSE.AdminStatus,
+                                             EVSE.AdminStatusSchedule().Skip(1).FirstOrDefault());
+
+        }
 
         #endregion
 

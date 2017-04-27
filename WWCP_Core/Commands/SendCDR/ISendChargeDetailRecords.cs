@@ -32,7 +32,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The interface for sending charge detail records.
     /// </summary>
-    public interface ISendChargeDetailRecord
+    public interface ISendChargeDetailRecords
     {
 
         #region SendChargeDetailRecord(...ChargeDetailRecord, ...)
@@ -62,7 +62,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The interface for sending charge detail records.
     /// </summary>
-    public interface IRemoteSendChargeDetailRecords
+    public interface ISend2RemoteChargeDetailRecords
     {
 
         /// <summary>
@@ -85,6 +85,33 @@ namespace org.GraphDefined.WWCP
 
             SendChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                                     TransmissionTypes                TransmissionType    = TransmissionTypes.Enqueued,
+
+                                    DateTime?                        Timestamp           = null,
+                                    CancellationToken?               CancellationToken   = null,
+                                    EventTracking_Id                 EventTrackingId     = null,
+                                    TimeSpan?                        RequestTimeout      = null);
+
+    }
+
+
+    /// <summary>
+    /// The interface for receiving charge detail records.
+    /// </summary>
+    public interface IRemoteSendChargeDetailRecords
+    {
+
+        /// <summary>
+        /// Send a charge detail record.
+        /// </summary>
+        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<SendCDRsResult>
+
+            SendChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
 
                                     DateTime?                        Timestamp           = null,
                                     CancellationToken?               CancellationToken   = null,

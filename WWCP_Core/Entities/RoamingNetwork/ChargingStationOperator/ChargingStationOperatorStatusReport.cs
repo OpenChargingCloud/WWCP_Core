@@ -27,10 +27,10 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A charging station operator status report.
     /// </summary>
-    public class ChargingStationOperatorStatusReport : StatusReport<ChargingStationOperator, ChargingStationOperatorStatusType>
+    public class ChargingStationOperatorStatusReport : StatusReport<ChargingStationOperatorProxy, ChargingStationOperatorStatusType>
     {
 
-        public ChargingStationOperatorStatusReport(IEnumerable<ChargingStationOperator> ChargingStationOperators)
+        public ChargingStationOperatorStatusReport(IEnumerable<ChargingStationOperatorProxy> ChargingStationOperators)
 
             : base(ChargingStationOperators,
                    csoperator => csoperator.Status.Value)

@@ -59,11 +59,13 @@
     <Compile Include="Commands\AuthorizeStartStop\AAuthStopResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStopResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\IAAuthStartResult.cs" />
+    <Compile Include="Commands\DataAndStatus\IPullData.cs" />
+    <Compile Include="Commands\DataAndStatus\IPullStatus.cs" />
     <Compile Include="Commands\SendCDR\ISendChargeDetailRecords.cs" />
     <Compile Include="Commands\AuthorizeStartStop\IAuthorizeStartStop.cs" />
-    <Compile Include="Commands\PushDataAndStatus\IPushData.cs" />
-    <Compile Include="Commands\PushDataAndStatus\IRemotePushStatusExtentions.cs" />
-    <Compile Include="Commands\PushDataAndStatus\IPushStatus.cs" />
+    <Compile Include="Commands\DataAndStatus\IPushData.cs" />
+    <Compile Include="Commands\DataAndStatus\IRemotePushStatusExtentions.cs" />
+    <Compile Include="Commands\DataAndStatus\IPushStatus.cs" />
     <Compile Include="Commands\IGeneralServices.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStopDelegates.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStartDelegates.cs" />
@@ -73,6 +75,7 @@
     <Compile Include="Commands\Reserve\ReserveEVSEDelegates.cs" />
     <Compile Include="Commands\Reserve\CancelReservationDelegates.cs" />
     <Compile Include="Commands\Reserve\ReserveChargingPoolDelegates.cs" />
+    <Compile Include="Commands\SendCDR\OnGetCDRsDelegate.cs" />
     <Compile Include="CommonTypes\TransmissionTypes.cs" />
     <Compile Include="CommonTypes\Signature.cs" />
     <Compile Include="Entities\ABaseEMobilityEntity.cs" />
@@ -160,7 +163,7 @@
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\Exceptions.cs" />
     <Compile Include="Entities\GeoInformations\SmartCities\ISmartCity.cs" />
     <Compile Include="Entities\GeoInformations\SmartCities\IRemoteSmartCity.cs" />
-    <Compile Include="Entities\GeoInformations\SmartCities\SmartCityStub.cs" />
+    <Compile Include="Entities\GeoInformations\SmartCities\SmartCityProxy.cs" />
     <Compile Include="Entities\GeoInformations\SmartCities\SmartCityAdminStatusReport.cs" />
     <Compile Include="Entities\GeoInformations\SmartCities\SmartCityAdminStatusType.cs" />
     <Compile Include="Entities\GeoInformations\SmartCities\SmartCityDelegates.cs" />
@@ -197,8 +200,8 @@
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationOperatorDelegates.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\IEMPRoamingProvider.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\ICSORoamingProvider.cs" />
-    <Compile Include="Commands\PushDataAndStatus\AnonymousPushEVSEStatusService.cs" />
-    <Compile Include="Commands\PushDataAndStatus\PushDataAndStatusDelegates.cs" />
+    <Compile Include="Commands\DataAndStatus\AnonymousPushEVSEStatusService.cs" />
+    <Compile Include="Commands\DataAndStatus\PushDataAndStatusDelegates.cs" />
     <Compile Include="Commands\RemoteStartStop\OnRemoteStopChargingStationDelegates.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStartChargingStationResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopChargingStationResult.cs" />
@@ -323,10 +326,10 @@
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingSession\ChargingSession_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationOperatorExceptions.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkExceptions.cs" />
-    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationOperator.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationOperatorProxy.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\ChargingStation_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPool\ChargingPool_Id.cs" />
-    <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityProvider.cs" />
+    <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityProviderProxy.cs" />
     <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityProvider_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationOperator_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityAccount\eMobilityAccount_Id.cs" />

@@ -61,7 +61,7 @@ namespace org.GraphDefined.WWCP.Importer
 
         #endregion
 
-        public IEnumerable<ChargingStationOperator> ChargingStationOperators { get; }
+        public IEnumerable<ChargingStationOperatorProxy> ChargingStationOperators { get; }
 
         #region ForwardedToRoamingNetworkId
 
@@ -75,9 +75,9 @@ namespace org.GraphDefined.WWCP.Importer
 
         #region ForwardedToChargingStationOperator
 
-        private ChargingStationOperator _ForwardedToChargingStationOperator;
+        private ChargingStationOperatorProxy _ForwardedToChargingStationOperator;
 
-        public ChargingStationOperator ForwardedToChargingStationOperator
+        public ChargingStationOperatorProxy ForwardedToChargingStationOperator
         {
 
             get
@@ -168,7 +168,7 @@ namespace org.GraphDefined.WWCP.Importer
         #region Constructor(s)
 
         public ImporterForwardingInfo(Action<DateTime, ImporterForwardingInfo, RoamingNetwork_Id?, RoamingNetwork_Id?>  OnChangedCallback,
-                                      IEnumerable<ChargingStationOperator>                                              ChargingStationOperators,
+                                      IEnumerable<ChargingStationOperatorProxy>                                              ChargingStationOperators,
                                       ChargingStation_Id?                                                               StationId                 = null,
                                       String                                                                            StationName               = "",
                                       String                                                                            StationServiceTag         = "",
@@ -179,7 +179,7 @@ namespace org.GraphDefined.WWCP.Importer
                                       Timestamped<ChargingStationAdminStatusTypes>?                                     AdminStatus               = null,
                                       DateTime?                                                                         Created                   = null,
                                       Boolean                                                                           OutOfService              = false,
-                                      ChargingStationOperator                                                           ForwardedToOperator   = null)
+                                      ChargingStationOperatorProxy                                                           ForwardedToOperator   = null)
         {
 
             this._OnForwardingChanged        = OnChangedCallback;

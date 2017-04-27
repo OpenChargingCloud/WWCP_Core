@@ -44,12 +44,12 @@ namespace org.GraphDefined.WWCP
     /// methods can be misused by any entity in the ev charging process to track the
     /// ev driver or its behaviour.
     /// </summary>
-    public class eMobilityProvider : ABaseEMobilityEntity<eMobilityProvider_Id>,
-                                     IRemoteAuthorizeStartStop,
-                                     IRemoteEMobilityProvider,
-                                     IEquatable <eMobilityProvider>,
-                                     IComparable<eMobilityProvider>,
-                                     IComparable
+    public class eMobilityProviderProxy : ABaseEMobilityEntity<eMobilityProvider_Id>,
+                                          //IRemoteAuthorizeStartStop,
+                                          ISend2RemoteEMobilityProvider,
+                                          IEquatable <eMobilityProviderProxy>,
+                                          IComparable<eMobilityProviderProxy>,
+                                          IComparable
     {
 
         #region Data
@@ -68,7 +68,7 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        IId IRemoteAuthorizeStartStop.AuthId
+        IId ISendAuthorizeStartStop.AuthId
             => Id;
 
         #region Name
@@ -399,46 +399,51 @@ namespace org.GraphDefined.WWCP
 
         public eMobilityProviderPriority Priority { get; set; }
 
+        public Boolean DisablePushStatus { get; set; }
 
-        #region AllTokens
+        public Boolean DisableSendChargeDetailRecords { get; set; }
 
-        public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens
 
-            => RemoteEMobilityProvider != null
-                   ? RemoteEMobilityProvider.AllTokens
-                   : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
 
-        #endregion
+        //#region AllTokens
 
-        #region AuthorizedTokens
+        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens
 
-        public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens
+        //    => RemoteEMobilityProvider != null
+        //           ? RemoteEMobilityProvider.AllTokens
+        //           : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
 
-            => RemoteEMobilityProvider != null
-                   ? RemoteEMobilityProvider.AuthorizedTokens
-                   : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
+        //#endregion
 
-        #endregion
+        //#region AuthorizedTokens
 
-        #region NotAuthorizedTokens
+        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens
 
-        public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens
+        //    => RemoteEMobilityProvider != null
+        //           ? RemoteEMobilityProvider.AuthorizedTokens
+        //           : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
 
-            => RemoteEMobilityProvider != null
-                   ? RemoteEMobilityProvider.NotAuthorizedTokens
-                   : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
+        //#endregion
 
-        #endregion
+        //#region NotAuthorizedTokens
 
-        #region BlockedTokens
+        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens
 
-        public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens
+        //    => RemoteEMobilityProvider != null
+        //           ? RemoteEMobilityProvider.NotAuthorizedTokens
+        //           : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
 
-            => RemoteEMobilityProvider != null
-                   ? RemoteEMobilityProvider.BlockedTokens
-                   : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
+        //#endregion
 
-        #endregion
+        //#region BlockedTokens
+
+        //public IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens
+
+        //    => RemoteEMobilityProvider != null
+        //           ? RemoteEMobilityProvider.BlockedTokens
+        //           : new KeyValuePair<Auth_Token, TokenAuthorizationResultType>[0];
+
+        //#endregion
 
         #endregion
 
@@ -631,17 +636,17 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique e-mobility provider identification.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        internal eMobilityProvider(eMobilityProvider_Id                    Id,
-                                   RoamingNetwork                          RoamingNetwork,
-                                   Action<eMobilityProvider>               Configurator                    = null,
-                                   RemoteEMobilityProviderCreatorDelegate  RemoteEMobilityProviderCreator  = null,
-                                   I18NString                              Name                            = null,
-                                   I18NString                              Description                     = null,
-                                   eMobilityProviderPriority               Priority                        = null,
-                                   eMobilityProviderAdminStatusType        AdminStatus                     = eMobilityProviderAdminStatusType.Operational,
-                                   eMobilityProviderStatusType             Status                          = eMobilityProviderStatusType.Available,
-                                   UInt16                                  MaxAdminStatusListSize          = DefaultMaxAdminStatusListSize,
-                                   UInt16                                  MaxStatusListSize               = DefaultMaxStatusListSize)
+        internal eMobilityProviderProxy(eMobilityProvider_Id                    Id,
+                                        RoamingNetwork                          RoamingNetwork,
+                                        Action<eMobilityProviderProxy>          Configurator                    = null,
+                                        RemoteEMobilityProviderCreatorDelegate  RemoteEMobilityProviderCreator  = null,
+                                        I18NString                              Name                            = null,
+                                        I18NString                              Description                     = null,
+                                        eMobilityProviderPriority               Priority                        = null,
+                                        eMobilityProviderAdminStatusType        AdminStatus                     = eMobilityProviderAdminStatusType.Operational,
+                                        eMobilityProviderStatusType             Status                          = eMobilityProviderStatusType.Available,
+                                        UInt16                                  MaxAdminStatusListSize          = DefaultMaxAdminStatusListSize,
+                                        UInt16                                  MaxStatusListSize               = DefaultMaxStatusListSize)
 
             : base(Id,
                    RoamingNetwork)
@@ -651,7 +656,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(eMobilityProvider),  "The roaming network must not be null!");
+                throw new ArgumentNullException(nameof(eMobilityProviderProxy),  "The roaming network must not be null!");
 
             #endregion
 
@@ -685,12 +690,12 @@ namespace org.GraphDefined.WWCP
 
         #region eMobilityStationAddition
 
-        internal readonly IVotingNotificator<DateTime, eMobilityProvider, eMobilityStation, Boolean> eMobilityStationAddition;
+        internal readonly IVotingNotificator<DateTime, eMobilityProviderProxy, eMobilityStation, Boolean> eMobilityStationAddition;
 
         /// <summary>
         /// Called whenever an e-mobility station will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, eMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationAddition
+        public IVotingSender<DateTime, eMobilityProviderProxy, eMobilityStation, Boolean> OnEMobilityStationAddition
 
             => eMobilityStationAddition;
 
@@ -698,12 +703,12 @@ namespace org.GraphDefined.WWCP
 
         #region eMobilityStationRemoval
 
-        internal readonly IVotingNotificator<DateTime, eMobilityProvider, eMobilityStation, Boolean> eMobilityStationRemoval;
+        internal readonly IVotingNotificator<DateTime, eMobilityProviderProxy, eMobilityStation, Boolean> eMobilityStationRemoval;
 
         /// <summary>
         /// Called whenever an e-mobility station will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, eMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationRemoval
+        public IVotingSender<DateTime, eMobilityProviderProxy, eMobilityStation, Boolean> OnEMobilityStationRemoval
 
             => eMobilityStationRemoval;
 
@@ -712,7 +717,7 @@ namespace org.GraphDefined.WWCP
 
         #region eMobilityStations
 
-        private EntityHashSet<ChargingStationOperator, eMobilityStation_Id, eMobilityStation> _eMobilityStations;
+        private EntityHashSet<ChargingStationOperatorProxy, eMobilityStation_Id, eMobilityStation> _eMobilityStations;
 
         public IEnumerable<eMobilityStation> eMobilityStations
 
@@ -754,7 +759,7 @@ namespace org.GraphDefined.WWCP
                                                           RemoteEMobilityStationCreatorDelegate           RemoteeMobilityStationCreator  = null,
                                                           eMobilityStationAdminStatusType                 AdminStatus                    = eMobilityStationAdminStatusType.Operational,
                                                           Action<eMobilityStation>                        OnSuccess                      = null,
-                                                          Action<eMobilityProvider, eMobilityStation_Id>  OnError                        = null)
+                                                          Action<eMobilityProviderProxy, eMobilityStation_Id>  OnError                        = null)
 
         {
 
@@ -1044,12 +1049,12 @@ namespace org.GraphDefined.WWCP
 
         #region eVehicleAddition
 
-        internal readonly IVotingNotificator<DateTime, eMobilityProvider, eVehicle, Boolean> eVehicleAddition;
+        internal readonly IVotingNotificator<DateTime, eMobilityProviderProxy, eVehicle, Boolean> eVehicleAddition;
 
         /// <summary>
         /// Called whenever an electric vehicle will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, eMobilityProvider, eVehicle, Boolean> OnEVehicleAddition
+        public IVotingSender<DateTime, eMobilityProviderProxy, eVehicle, Boolean> OnEVehicleAddition
 
             => eVehicleAddition;
 
@@ -1057,12 +1062,12 @@ namespace org.GraphDefined.WWCP
 
         #region eVehicleRemoval
 
-        internal readonly IVotingNotificator<DateTime, eMobilityProvider, eVehicle, Boolean> eVehicleRemoval;
+        internal readonly IVotingNotificator<DateTime, eMobilityProviderProxy, eVehicle, Boolean> eVehicleRemoval;
 
         /// <summary>
         /// Called whenever an electric vehicle will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, eMobilityProvider, eVehicle, Boolean> OnEVehicleRemoval
+        public IVotingSender<DateTime, eMobilityProviderProxy, eVehicle, Boolean> OnEVehicleRemoval
 
             => eVehicleRemoval;
 
@@ -1071,7 +1076,7 @@ namespace org.GraphDefined.WWCP
 
         #region eVehicles
 
-        private EntityHashSet<ChargingStationOperator, eVehicle_Id, eVehicle> _eVehicles;
+        private EntityHashSet<ChargingStationOperatorProxy, eVehicle_Id, eVehicle> _eVehicles;
 
         public IEnumerable<eVehicle> eVehicles
 
@@ -1124,7 +1129,7 @@ namespace org.GraphDefined.WWCP
                                           eVehicleAdminStatusType                 AdminStatus            = eVehicleAdminStatusType.Operational,
                                           eVehicleStatusType                      Status                 = eVehicleStatusType.Available,
                                           Action<eVehicle>                        OnSuccess              = null,
-                                          Action<eMobilityProvider, eVehicle_Id>  OnError                = null)
+                                          Action<eMobilityProviderProxy, eVehicle_Id>  OnError                = null)
 
         {
 
@@ -1822,372 +1827,859 @@ namespace org.GraphDefined.WWCP
 
         //#endregion
 
-        //#region Receive incoming EVSEStatus
+        #region Receive incoming EVSEStatus
 
         //private IRemotePushStatus AsIPushStatus2Remote  => this;
 
-        //#region UpdateEVSEStatus(EVSEStatus, ...)
+        #region UpdateAdminStatus(AdminStatusUpdates, ...)
 
-        ///// <summary>
-        ///// Upload the given EVSE status.
-        ///// </summary>
-        ///// <param name="EVSEStatus">An EVSE status.</param>
-        ///// 
-        ///// <param name="Timestamp">The optional timestamp of the request.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
-        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
-        //async Task<Acknowledgement>
+        /// <summary>
+        /// Receive EVSE admin status updates.
+        /// </summary>
+        /// <param name="AdminStatusUpdates">An enumeration of EVSE admin status updates.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
 
-        //    IRemotePushStatus.UpdateEVSEStatus(EVSEStatus          EVSEStatus,
+            ISendStatus.UpdateAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
+                                                 TransmissionTypes                   TransmissionType,
 
-        //                                        DateTime?           Timestamp,
-        //                                        CancellationToken?  CancellationToken,
-        //                                        EventTracking_Id    EventTrackingId,
-        //                                        TimeSpan?           RequestTimeout)
+                                                 DateTime?                           Timestamp,
+                                                 CancellationToken?                  CancellationToken,
+                                                 EventTracking_Id                    EventTrackingId,
+                                                 TimeSpan?                           RequestTimeout)
 
-        //{
+        {
 
-        //    #region Initial checks
+            #region Initial checks
 
-        //    if (EVSEStatus == null)
-        //        throw new ArgumentNullException(nameof(EVSEStatus), "The given EVSE status must not be null!");
+            if (AdminStatusUpdates == null)
+                throw new ArgumentNullException(nameof(AdminStatusUpdates), "The given enumeration of EVSE admin status updates must not be null!");
 
 
-        //    Acknowledgement result;
+            Acknowledgement result;
 
-        //    #endregion
+            #endregion
 
-        //    #region Send OnUpdateEVSEStatusRequest event
+            #region Send OnUpdateEVSEStatusRequest event
 
-        //    //   OnPushEVSEStatusRequest?.Invoke(DateTime.Now,
-        //    //                                   Timestamp.Value,
-        //    //                                   this,
-        //    //                                   this.Id.ToString(),
-        //    //                                   EventTrackingId,
-        //    //                                   this.RoamingNetwork.Id,
-        //    //                                   ActionType,
-        //    //                                   GroupedEVSEStatus,
-        //    //                                   (UInt32) _NumberOfEVSEStatus,
-        //    //                                   RequestTimeout);
+            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
 
-        //    #endregion
+            #endregion
 
 
-        //    if (RemoteEMobilityProvider != null)
-        //        result = await RemoteEMobilityProvider.UpdateEVSEStatus(EVSEStatus,
+            if (!DisablePushStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateAdminStatus(AdminStatusUpdates,
 
-        //                                                                Timestamp,
-        //                                                                CancellationToken,
-        //                                                                EventTrackingId,
-        //                                                                RequestTimeout);
+                                                                         Timestamp,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         RequestTimeout);
 
-        //    else
-        //        result = new Acknowledgement(ResultType.NoOperation);
+            else
+                result = new Acknowledgement(ResultType.NoOperation);
 
 
-        //    #region Send OnUpdateEVSEStatusResponse event
+            #region Send OnUpdateEVSEStatusResponse event
 
-        //    // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
-        //    //                                    Timestamp.Value,
-        //    //                                    this,
-        //    //                                    this.Id.ToString(),
-        //    //                                    EventTrackingId,
-        //    //                                    this.RoamingNetwork.Id,
-        //    //                                    ActionType,
-        //    //                                    GroupedEVSEStatus,
-        //    //                                    (UInt32) _NumberOfEVSEStatus,
-        //    //                                    RequestTimeout,
-        //    //                                    result,
-        //    //                                    DateTime.Now - Timestamp.Value);
+            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
 
-        //    #endregion
+            #endregion
 
-        //    return result;
+            return result;
 
-        //}
+        }
 
-        //#endregion
 
-        //#region UpdateEVSEStatus(EVSEStatus, ...)
+        /// <summary>
+        /// Receive EVSE admin status updates.
+        /// </summary>
+        /// <param name="AdminStatusUpdates">An enumeration of EVSE admin status updates.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
 
-        ///// <summary>
-        ///// Upload the given enumeration of EVSE status.
-        ///// </summary>
-        ///// <param name="EVSEStatus">An enumeration of EVSE status.</param>
-        ///// 
-        ///// <param name="Timestamp">The optional timestamp of the request.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
-        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
-        //async Task<Acknowledgement>
+            ISendStatus.UpdateAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  AdminStatusUpdates,
+                                                 TransmissionTypes                              TransmissionType,
 
-        //    IRemotePushStatus.UpdateEVSEStatus(IEnumerable<EVSEStatus>  EVSEStatus,
+                                                 DateTime?                                      Timestamp,
+                                                 CancellationToken?                             CancellationToken,
+                                                 EventTracking_Id                               EventTrackingId,
+                                                 TimeSpan?                                      RequestTimeout)
 
-        //                                        DateTime?                Timestamp,
-        //                                        CancellationToken?       CancellationToken,
-        //                                        EventTracking_Id         EventTrackingId,
-        //                                        TimeSpan?                RequestTimeout)
+        {
 
-        //{
+            #region Initial checks
 
-        //    #region Initial checks
+            if (AdminStatusUpdates == null)
+                throw new ArgumentNullException(nameof(AdminStatusUpdates), "The given enumeration of charging station admin status updates must not be null!");
 
-        //    if (EVSEStatus == null)
-        //        throw new ArgumentNullException(nameof(EVSEStatus),  "The given enumeration of EVSE status must not be null!");
 
+            Acknowledgement result;
 
-        //    Acknowledgement result;
+            #endregion
 
-        //    #endregion
+            #region Send OnUpdateEVSEStatusRequest event
 
-        //    #region Send OnUpdateEVSEStatusRequest event
+            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
 
-        //    //   OnPushEVSEStatusRequest?.Invoke(DateTime.Now,
-        //    //                                   Timestamp.Value,
-        //    //                                   this,
-        //    //                                   this.Id.ToString(),
-        //    //                                   EventTrackingId,
-        //    //                                   this.RoamingNetwork.Id,
-        //    //                                   ActionType,
-        //    //                                   GroupedEVSEStatus,
-        //    //                                   (UInt32) _NumberOfEVSEStatus,
-        //    //                                   RequestTimeout);
+            #endregion
 
-        //    #endregion
 
+            if (!DisablePushStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateAdminStatus(AdminStatusUpdates,
 
-        //    if (RemoteEMobilityProvider != null)
-        //        result = await RemoteEMobilityProvider.UpdateEVSEStatus(EVSEStatus,
+                                                                        Timestamp,
+                                                                        CancellationToken,
+                                                                        EventTrackingId,
+                                                                        RequestTimeout);
 
-        //                                                                Timestamp,
-        //                                                                CancellationToken,
-        //                                                                EventTrackingId,
-        //                                                                RequestTimeout);
+            else
+                result = new Acknowledgement(ResultType.NoOperation);
 
-        //    else
-        //        result = new Acknowledgement(ResultType.NoOperation);
 
+            #region Send OnUpdateEVSEStatusResponse event
 
-        //    #region Send OnUpdateEVSEStatusResponse event
+            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
 
-        //    // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
-        //    //                                    Timestamp.Value,
-        //    //                                    this,
-        //    //                                    this.Id.ToString(),
-        //    //                                    EventTrackingId,
-        //    //                                    this.RoamingNetwork.Id,
-        //    //                                    ActionType,
-        //    //                                    GroupedEVSEStatus,
-        //    //                                    (UInt32) _NumberOfEVSEStatus,
-        //    //                                    RequestTimeout,
-        //    //                                    result,
-        //    //                                    DateTime.Now - Timestamp.Value);
+            #endregion
 
-        //    #endregion
+            return result;
 
-        //    return result;
+        }
 
-        //}
 
-        //#endregion
+        /// <summary>
+        /// Receive charging pool admin status updates.
+        /// </summary>
+        /// <param name="AdminStatusUpdates">An enumeration of charging pool admin status updates.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
 
-        //#region UpdateEVSEStatus(EVSE, ...)
+            ISendStatus.UpdateAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  AdminStatusUpdates,
+                                                 TransmissionTypes                           TransmissionType,
 
-        ///// <summary>
-        ///// Upload the EVSE status of the given EVSE.
-        ///// </summary>
-        ///// <param name="EVSE">An EVSE.</param>
-        ///// 
-        ///// <param name="Timestamp">The optional timestamp of the request.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
-        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
-        //async Task<Acknowledgement>
+                                                 DateTime?                                   Timestamp,
+                                                 CancellationToken?                          CancellationToken,
+                                                 EventTracking_Id                            EventTrackingId,
+                                                 TimeSpan?                                   RequestTimeout)
 
-        //    IRemotePushStatus.UpdateEVSEStatus(EVSE                 EVSE,
+        {
 
-        //                                        DateTime?            Timestamp,
-        //                                        CancellationToken?   CancellationToken,
-        //                                        EventTracking_Id     EventTrackingId,
-        //                                        TimeSpan?            RequestTimeout)
+            #region Initial checks
 
-        //{
+            if (AdminStatusUpdates == null)
+                throw new ArgumentNullException(nameof(AdminStatusUpdates), "The given enumeration of charging pool admin status updates must not be null!");
 
-        //    #region Initial checks
 
-        //    if (EVSE == null)
-        //        throw new ArgumentNullException(nameof(EVSE), "The given EVSE must not be null!");
+            Acknowledgement result;
 
+            #endregion
 
-        //    Acknowledgement result;
+            #region Send OnUpdateEVSEStatusRequest event
 
-        //    #endregion
+            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
 
-        //    #region Send OnUpdateEVSEStatusRequest event
+            #endregion
 
-        //    //   OnPushEVSEStatusRequest?.Invoke(DateTime.Now,
-        //    //                                   Timestamp.Value,
-        //    //                                   this,
-        //    //                                   this.Id.ToString(),
-        //    //                                   EventTrackingId,
-        //    //                                   this.RoamingNetwork.Id,
-        //    //                                   ActionType,
-        //    //                                   GroupedEVSEStatus,
-        //    //                                   (UInt32) _NumberOfEVSEStatus,
-        //    //                                   RequestTimeout);
 
-        //    #endregion
+            if (!DisablePushStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateAdminStatus(AdminStatusUpdates,
 
+                                                                         Timestamp,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         RequestTimeout);
 
-        //    if (RemoteEMobilityProvider != null)
-        //        result = await RemoteEMobilityProvider.UpdateEVSEStatus(EVSE,
+            else
+                result = new Acknowledgement(ResultType.NoOperation);
 
-        //                                                                Timestamp,
-        //                                                                CancellationToken,
-        //                                                                EventTrackingId,
-        //                                                                RequestTimeout);
 
-        //    else
-        //        result = new Acknowledgement(ResultType.NoOperation);
+            #region Send OnUpdateEVSEStatusResponse event
 
+            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
 
-        //    #region Send OnUpdateEVSEStatusResponse event
+            #endregion
 
-        //    // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
-        //    //                                    Timestamp.Value,
-        //    //                                    this,
-        //    //                                    this.Id.ToString(),
-        //    //                                    EventTrackingId,
-        //    //                                    this.RoamingNetwork.Id,
-        //    //                                    ActionType,
-        //    //                                    GroupedEVSEStatus,
-        //    //                                    (UInt32) _NumberOfEVSEStatus,
-        //    //                                    RequestTimeout,
-        //    //                                    result,
-        //    //                                    DateTime.Now - Timestamp.Value);
+            return result;
 
-        //    #endregion
+        }
 
-        //    return result;
 
-        //}
+        /// <summary>
+        /// Receive charging station operator admin status updates.
+        /// </summary>
+        /// <param name="AdminStatusUpdates">An enumeration of charging station operator admin status updates.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
 
-        //#endregion
+            ISendStatus.UpdateAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  AdminStatusUpdates,
+                                                 TransmissionTypes                                      TransmissionType,
 
-        //#region UpdateEVSEStatus(EVSEs, ...)
+                                                 DateTime?                                              Timestamp,
+                                                 CancellationToken?                                     CancellationToken,
+                                                 EventTracking_Id                                       EventTrackingId,
+                                                 TimeSpan?                                              RequestTimeout)
 
-        ///// <summary>
-        ///// Upload all EVSE status of the given enumeration of EVSEs.
-        ///// </summary>
-        ///// <param name="EVSEs">An enumeration of EVSEs.</param>
-        ///// 
-        ///// <param name="Timestamp">The optional timestamp of the request.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
-        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
-        //async Task<Acknowledgement>
+        {
 
-        //    IRemotePushStatus.UpdateEVSEStatus(IEnumerable<EVSE>    EVSEs,
+            #region Initial checks
 
-        //                                        DateTime?            Timestamp,
-        //                                        CancellationToken?   CancellationToken,
-        //                                        EventTracking_Id     EventTrackingId,
-        //                                        TimeSpan?            RequestTimeout)
+            if (AdminStatusUpdates == null)
+                throw new ArgumentNullException(nameof(AdminStatusUpdates), "The given enumeration of charging station operator admin status updates must not be null!");
 
-        //{
 
-        //    #region Initial checks
+            Acknowledgement result;
 
-        //    if (EVSEs == null)
-        //        throw new ArgumentNullException(nameof(EVSEs), "The given enumeration of EVSEs must not be null!");
+            #endregion
 
+            #region Send OnUpdateEVSEStatusRequest event
 
-        //    Acknowledgement result;
+            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
 
-        //    #endregion
+            #endregion
 
-        //    #region Send OnUpdateEVSEStatusRequest event
 
-        //    //   OnPushEVSEStatusRequest?.Invoke(DateTime.Now,
-        //    //                                   Timestamp.Value,
-        //    //                                   this,
-        //    //                                   this.Id.ToString(),
-        //    //                                   EventTrackingId,
-        //    //                                   this.RoamingNetwork.Id,
-        //    //                                   ActionType,
-        //    //                                   GroupedEVSEStatus,
-        //    //                                   (UInt32) _NumberOfEVSEStatus,
-        //    //                                   RequestTimeout);
+            if (!DisablePushStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateAdminStatus(AdminStatusUpdates,
 
-        //    #endregion
+                                                                         Timestamp,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         RequestTimeout);
 
+            else
+                result = new Acknowledgement(ResultType.NoOperation);
 
-        //    if (RemoteEMobilityProvider != null)
-        //        result = await RemoteEMobilityProvider.UpdateEVSEStatus(EVSEs,
 
-        //                                                                Timestamp,
-        //                                                                CancellationToken,
-        //                                                                EventTrackingId,
-        //                                                                RequestTimeout);
+            #region Send OnUpdateEVSEStatusResponse event
 
-        //    else
-        //        result = new Acknowledgement(ResultType.NoOperation);
+            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
 
+            #endregion
 
-        //    #region Send OnUpdateEVSEStatusResponse event
+            return result;
 
-        //    // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
-        //    //                                    Timestamp.Value,
-        //    //                                    this,
-        //    //                                    this.Id.ToString(),
-        //    //                                    EventTrackingId,
-        //    //                                    this.RoamingNetwork.Id,
-        //    //                                    ActionType,
-        //    //                                    GroupedEVSEStatus,
-        //    //                                    (UInt32) _NumberOfEVSEStatus,
-        //    //                                    RequestTimeout,
-        //    //                                    result,
-        //    //                                    DateTime.Now - Timestamp.Value);
+        }
 
-        //    #endregion
 
-        //    return result;
+        /// <summary>
+        /// Receive roaming network admin status updates.
+        /// </summary>
+        /// <param name="AdminStatusUpdates">An enumeration of roaming network admin status updates.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
 
-        //}
+            ISendStatus.UpdateAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  AdminStatusUpdates,
+                                                 TransmissionTypes                             TransmissionType,
 
-        //#endregion
+                                                 DateTime?                                     Timestamp,
+                                                 CancellationToken?                            CancellationToken,
+                                                 EventTracking_Id                              EventTrackingId,
+                                                 TimeSpan?                                     RequestTimeout)
 
+        {
 
-        //#region PushEVSEStatus(EVSEStatusDiff, ...)
+            #region Initial checks
 
-        ///// <summary>
-        ///// Send EVSE status updates.
-        ///// </summary>
-        ///// <param name="EVSEStatusDiff">An EVSE status diff.</param>
-        ///// 
-        ///// <param name="Timestamp">The optional timestamp of the request.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
-        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
-        ////async Task
+            if (AdminStatusUpdates == null)
+                throw new ArgumentNullException(nameof(AdminStatusUpdates), "The given enumeration of roaming network admin status updates must not be null!");
 
-        ////    IPushStatus2Remote.PushEVSEStatus(EVSEStatusDiff      EVSEStatusDiff,
 
-        ////                               DateTime?           Timestamp,
-        ////                               CancellationToken?  CancellationToken,
-        ////                               EventTracking_Id    EventTrackingId,
-        ////                               TimeSpan?           RequestTimeout)
+            Acknowledgement result;
 
-        ////{
+            #endregion
 
-        ////    await Task.FromResult("");
+            #region Send OnUpdateEVSEStatusRequest event
 
-        ////}
+            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
 
-        //#endregion
+            #endregion
 
-        //#endregion
+
+            if (!DisablePushStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateAdminStatus(AdminStatusUpdates,
+
+                                                                         Timestamp,
+                                                                         CancellationToken,
+                                                                         EventTrackingId,
+                                                                         RequestTimeout);
+
+            else
+                result = new Acknowledgement(ResultType.NoOperation);
+
+
+            #region Send OnUpdateEVSEStatusResponse event
+
+            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
+
+            #endregion
+
+            return result;
+
+        }
+
+        #endregion
+
+        #region UpdateStatus(StatusUpdates, ...)
+
+        /// <summary>
+        /// Receive EVSE status updates.
+        /// </summary>
+        /// <param name="StatusUpdates">An enumeration of EVSE status updates.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            ISendStatus.UpdateStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
+                                            TransmissionTypes              TransmissionType,
+
+                                            DateTime?                      Timestamp,
+                                            CancellationToken?             CancellationToken,
+                                            EventTracking_Id               EventTrackingId,
+                                            TimeSpan?                      RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (StatusUpdates == null)
+                throw new ArgumentNullException(nameof(StatusUpdates), "The given enumeration of EVSE status updates must not be null!");
+
+
+            Acknowledgement result;
+
+            #endregion
+
+            #region Send OnUpdateEVSEStatusRequest event
+
+            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
+
+            #endregion
+
+
+            if (!DisablePushStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateStatus(StatusUpdates,
+
+                                                                    Timestamp,
+                                                                    CancellationToken,
+                                                                    EventTrackingId,
+                                                                    RequestTimeout);
+
+            else
+                result = new Acknowledgement(ResultType.NoOperation);
+
+
+            #region Send OnUpdateEVSEStatusResponse event
+
+            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
+
+            #endregion
+
+            return result;
+
+        }
+
+
+        /// <summary>
+        /// Receive charging station status updates.
+        /// </summary>
+        /// <param name="StatusUpdates">An enumeration of charging station status updates.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            ISendStatus.UpdateStatus(IEnumerable<ChargingStationStatusUpdate>  StatusUpdates,
+                                            TransmissionTypes                         TransmissionType,
+
+                                            DateTime?                                 Timestamp,
+                                            CancellationToken?                        CancellationToken,
+                                            EventTracking_Id                          EventTrackingId,
+                                            TimeSpan?                                 RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (StatusUpdates == null)
+                throw new ArgumentNullException(nameof(StatusUpdates), "The given enumeration of charging station status updates must not be null!");
+
+
+            Acknowledgement result;
+
+            #endregion
+
+            #region Send OnUpdateEVSEStatusRequest event
+
+            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
+
+            #endregion
+
+
+            if (!DisablePushStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateStatus(StatusUpdates,
+
+                                                                    Timestamp,
+                                                                    CancellationToken,
+                                                                    EventTrackingId,
+                                                                    RequestTimeout);
+
+            else
+                result = new Acknowledgement(ResultType.NoOperation);
+
+
+            #region Send OnUpdateEVSEStatusResponse event
+
+            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
+
+            #endregion
+
+            return result;
+
+        }
+
+
+        /// <summary>
+        /// Receive charging pool status updates.
+        /// </summary>
+        /// <param name="StatusUpdates">An enumeration of charging pool status updates.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            ISendStatus.UpdateStatus(IEnumerable<ChargingPoolStatusUpdate>  StatusUpdates,
+                                            TransmissionTypes                      TransmissionType,
+
+                                            DateTime?                              Timestamp,
+                                            CancellationToken?                     CancellationToken,
+                                            EventTracking_Id                       EventTrackingId,
+                                            TimeSpan?                              RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (StatusUpdates == null)
+                throw new ArgumentNullException(nameof(StatusUpdates), "The given enumeration of charging pool status updates must not be null!");
+
+
+            Acknowledgement result;
+
+            #endregion
+
+            #region Send OnUpdateEVSEStatusRequest event
+
+            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
+
+            #endregion
+
+
+            if (!DisablePushStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateStatus(StatusUpdates,
+
+                                                                    Timestamp,
+                                                                    CancellationToken,
+                                                                    EventTrackingId,
+                                                                    RequestTimeout);
+
+            else
+                result = new Acknowledgement(ResultType.NoOperation);
+
+
+            #region Send OnUpdateEVSEStatusResponse event
+
+            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
+
+            #endregion
+
+            return result;
+
+        }
+
+
+        /// <summary>
+        /// Receive charging station operator status updates.
+        /// </summary>
+        /// <param name="StatusUpdates">An enumeration of charging station operator status updates.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            ISendStatus.UpdateStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  StatusUpdates,
+                                            TransmissionTypes                                 TransmissionType,
+
+                                            DateTime?                                         Timestamp,
+                                            CancellationToken?                                CancellationToken,
+                                            EventTracking_Id                                  EventTrackingId,
+                                            TimeSpan?                                         RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (StatusUpdates == null)
+                throw new ArgumentNullException(nameof(StatusUpdates), "The given enumeration of charging station operator status updates must not be null!");
+
+
+            Acknowledgement result;
+
+            #endregion
+
+            #region Send OnUpdateEVSEStatusRequest event
+
+            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
+
+            #endregion
+
+
+            if (!DisablePushStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateStatus(StatusUpdates,
+
+                                                                    Timestamp,
+                                                                    CancellationToken,
+                                                                    EventTrackingId,
+                                                                    RequestTimeout);
+
+            else
+                result = new Acknowledgement(ResultType.NoOperation);
+
+
+            #region Send OnUpdateEVSEStatusResponse event
+
+            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
+
+            #endregion
+
+            return result;
+
+        }
+
+
+        /// <summary>
+        /// Receive roaming network status updates.
+        /// </summary>
+        /// <param name="StatusUpdates">An enumeration of roaming network status updates.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        async Task<Acknowledgement>
+
+            ISendStatus.UpdateStatus(IEnumerable<RoamingNetworkStatusUpdate>  StatusUpdates,
+                                            TransmissionTypes                        TransmissionType,
+
+                                            DateTime?                                Timestamp,
+                                            CancellationToken?                       CancellationToken,
+                                            EventTracking_Id                         EventTrackingId,
+                                            TimeSpan?                                RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (StatusUpdates == null)
+                throw new ArgumentNullException(nameof(StatusUpdates), "The given enumeration of roaming network status updates must not be null!");
+
+
+            Acknowledgement result;
+
+            #endregion
+
+            #region Send OnUpdateEVSEStatusRequest event
+
+            // OnUpdateEVSEStatusRequest?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
+
+            #endregion
+
+
+            if (!DisablePushStatus && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.UpdateStatus(StatusUpdates,
+
+                                                                    Timestamp,
+                                                                    CancellationToken,
+                                                                    EventTrackingId,
+                                                                    RequestTimeout);
+
+            else
+                result = new Acknowledgement(ResultType.NoOperation);
+
+
+            #region Send OnUpdateEVSEStatusResponse event
+
+            // OnUpdateEVSEStatusResponse?.Invoke(DateTime.Now,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    this.Id.ToString(),
+            //                                    EventTrackingId,
+            //                                    this.RoamingNetwork.Id,
+            //                                    ActionType,
+            //                                    GroupedEVSEStatus,
+            //                                    (UInt32) _NumberOfEVSEStatus,
+            //                                    RequestTimeout,
+            //                                    result,
+            //                                    DateTime.Now - Timestamp.Value);
+
+            #endregion
+
+            return result;
+
+        }
+
+        #endregion
+
+
+
+        #endregion
 
         #region Receive incoming AuthStart/-Stop
 
@@ -2246,6 +2738,9 @@ namespace org.GraphDefined.WWCP
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
+
+            AuthStartResult result = null;
+
             #endregion
 
             #region Send OnAuthorizeStartRequest event
@@ -2258,6 +2753,7 @@ namespace org.GraphDefined.WWCP
                 OnAuthorizeStartRequest?.Invoke(StartTime,
                                                 Timestamp.Value,
                                                 this,
+                                                Id.ToString(),
                                                 EventTrackingId,
                                                 RoamingNetwork.Id,
                                                 OperatorId,
@@ -2269,17 +2765,27 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeStartRequest));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeStartRequest));
             }
 
             #endregion
 
 
-            var result   = AuthStartResult.OutOfService(
-                               Id,
-                               SessionId,
-                               TimeSpan.FromSeconds(0)
-                           );
+            if (!DisableAuthentication && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.AuthorizeStart(AuthToken,
+                                                                      null,
+                                                                      null,
+                                                                      null,
+
+                                                                      Timestamp,
+                                                                      CancellationToken,
+                                                                      EventTrackingId,
+                                                                      RequestTimeout);
+
+            else
+                result = AuthStartResult.OutOfService(Id,
+                                                      SessionId,
+                                                      TimeSpan.FromSeconds(0));
 
             var Endtime  = DateTime.Now;
             var Runtime  = Endtime - StartTime;
@@ -2293,6 +2799,7 @@ namespace org.GraphDefined.WWCP
                 OnAuthorizeStartResponse?.Invoke(Endtime,
                                                  Timestamp.Value,
                                                  this,
+                                                 Id.ToString(),
                                                  EventTrackingId,
                                                  RoamingNetwork.Id,
                                                  OperatorId,
@@ -2306,7 +2813,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeStartResponse));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeStartResponse));
             }
 
             #endregion
@@ -2365,6 +2872,9 @@ namespace org.GraphDefined.WWCP
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
+
+            AuthStartEVSEResult result = null;
+
             #endregion
 
             #region Send OnAuthorizeEVSEStartRequest event
@@ -2377,6 +2887,7 @@ namespace org.GraphDefined.WWCP
                 OnAuthorizeEVSEStartRequest?.Invoke(StartTime,
                                                     Timestamp.Value,
                                                     this,
+                                                    Id.ToString(),
                                                     EventTrackingId,
                                                     RoamingNetwork.Id,
                                                     OperatorId,
@@ -2389,17 +2900,28 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeEVSEStartRequest));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeEVSEStartRequest));
             }
 
             #endregion
 
 
-            var result   = AuthStartEVSEResult.OutOfService(
-                               Id,
-                               SessionId,
-                               TimeSpan.FromSeconds(0)
-                           );
+            if (!DisableAuthentication && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.AuthorizeStart(AuthToken,
+                                                                      EVSEId,
+                                                                      null,
+                                                                      null,
+                                                                      null,
+
+                                                                      Timestamp,
+                                                                      CancellationToken,
+                                                                      EventTrackingId,
+                                                                      RequestTimeout);
+
+            else
+                result = AuthStartEVSEResult.OutOfService(Id,
+                                                          SessionId,
+                                                          TimeSpan.FromSeconds(0));
 
             var Endtime  = DateTime.Now;
             var Runtime  = Endtime - StartTime;
@@ -2413,6 +2935,7 @@ namespace org.GraphDefined.WWCP
                 OnAuthorizeEVSEStartResponse?.Invoke(Endtime,
                                                      Timestamp.Value,
                                                      this,
+                                                     Id.ToString(),
                                                      EventTrackingId,
                                                      RoamingNetwork.Id,
                                                      OperatorId,
@@ -2427,7 +2950,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeEVSEStartResponse));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeEVSEStartResponse));
             }
 
             #endregion
@@ -2498,6 +3021,7 @@ namespace org.GraphDefined.WWCP
                 OnAuthorizeChargingStationStartRequest?.Invoke(StartTime,
                                                                Timestamp.Value,
                                                                this,
+                                                               Id.ToString(),
                                                                EventTrackingId,
                                                                RoamingNetwork.Id,
                                                                OperatorId,
@@ -2510,7 +3034,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeChargingStationStartRequest));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeChargingStationStartRequest));
             }
 
             #endregion
@@ -2534,6 +3058,7 @@ namespace org.GraphDefined.WWCP
                 OnAuthorizeChargingStationStartResponse?.Invoke(Endtime,
                                                                 Timestamp.Value,
                                                                 this,
+                                                                Id.ToString(),
                                                                 EventTrackingId,
                                                                 RoamingNetwork.Id,
                                                                 OperatorId,
@@ -2548,7 +3073,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeChargingStationStartResponse));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeChargingStationStartResponse));
             }
 
             #endregion
@@ -2619,6 +3144,7 @@ namespace org.GraphDefined.WWCP
                 OnAuthorizeChargingPoolStartRequest?.Invoke(StartTime,
                                                             Timestamp.Value,
                                                             this,
+                                                            Id.ToString(),
                                                             EventTrackingId,
                                                             RoamingNetwork.Id,
                                                             OperatorId,
@@ -2631,7 +3157,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeChargingPoolStartRequest));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeChargingPoolStartRequest));
             }
 
             #endregion
@@ -2655,6 +3181,7 @@ namespace org.GraphDefined.WWCP
                 OnAuthorizeChargingPoolStartResponse?.Invoke(Endtime,
                                                              Timestamp.Value,
                                                              this,
+                                                             Id.ToString(),
                                                              EventTrackingId,
                                                              RoamingNetwork.Id,
                                                              OperatorId,
@@ -2669,7 +3196,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeChargingPoolStartResponse));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeChargingPoolStartResponse));
             }
 
             #endregion
@@ -2728,6 +3255,9 @@ namespace org.GraphDefined.WWCP
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
+
+            AuthStopResult result = null;
+
             #endregion
 
             #region Send OnAuthorizeStopRequest event
@@ -2740,6 +3270,7 @@ namespace org.GraphDefined.WWCP
                 OnAuthorizeStopRequest?.Invoke(StartTime,
                                                Timestamp.Value,
                                                this,
+                                               Id.ToString(),
                                                EventTrackingId,
                                                RoamingNetwork.Id,
                                                OperatorId,
@@ -2750,17 +3281,26 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeStopRequest));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeStopRequest));
             }
 
             #endregion
 
 
-            var result   = AuthStopResult.OutOfService(
-                               Id,
-                               SessionId,
-                               TimeSpan.FromSeconds(0)
-                           );
+            if (!DisableAuthentication && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.AuthorizeStop(SessionId,
+                                                                     AuthToken,
+                                                                     null,
+
+                                                                     Timestamp,
+                                                                     CancellationToken,
+                                                                     EventTrackingId,
+                                                                     RequestTimeout);
+
+            else
+                result = AuthStopResult.OutOfService(Id,
+                                                     SessionId,
+                                                     TimeSpan.FromSeconds(0));
 
             var Endtime  = DateTime.Now;
             var Runtime  = Endtime - StartTime;
@@ -2774,6 +3314,7 @@ namespace org.GraphDefined.WWCP
                 OnAuthorizeStopResponse?.Invoke(Endtime,
                                                 Timestamp.Value,
                                                 this,
+                                                Id.ToString(),
                                                 EventTrackingId,
                                                 RoamingNetwork.Id,
                                                 OperatorId,
@@ -2786,7 +3327,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeStopResponse));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeStopResponse));
             }
 
             #endregion
@@ -2842,6 +3383,9 @@ namespace org.GraphDefined.WWCP
             if (!RequestTimeout.HasValue)
                 RequestTimeout = this.RequestTimeout;
 
+
+            AuthStopEVSEResult result = null;
+
             #endregion
 
             #region Send OnAuthorizeEVSEStopRequest event
@@ -2854,6 +3398,7 @@ namespace org.GraphDefined.WWCP
                 OnAuthorizeEVSEStopRequest?.Invoke(StartTime,
                                                    Timestamp.Value,
                                                    this,
+                                                   Id.ToString(),
                                                    EventTrackingId,
                                                    RoamingNetwork.Id,
                                                    OperatorId,
@@ -2865,17 +3410,27 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeEVSEStopRequest));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeEVSEStopRequest));
             }
 
             #endregion
 
 
-            var result   = AuthStopEVSEResult.OutOfService(
-                               Id,
-                               SessionId,
-                               TimeSpan.FromSeconds(0)
-                           );
+            if (!DisableAuthentication && RemoteEMobilityProvider != null)
+                result = await RemoteEMobilityProvider.AuthorizeStop(SessionId,
+                                                                     AuthToken,
+                                                                     EVSEId,
+                                                                     null,
+
+                                                                     Timestamp,
+                                                                     CancellationToken,
+                                                                     EventTrackingId,
+                                                                     RequestTimeout);
+
+            else
+                result = AuthStopEVSEResult.OutOfService(Id,
+                                                         SessionId,
+                                                         TimeSpan.FromSeconds(0));
 
             var Endtime  = DateTime.Now;
             var Runtime  = Endtime - StartTime;
@@ -2889,6 +3444,7 @@ namespace org.GraphDefined.WWCP
                 OnAuthorizeEVSEStopResponse?.Invoke(Endtime,
                                                     Timestamp.Value,
                                                     this,
+                                                    Id.ToString(),
                                                     EventTrackingId,
                                                     RoamingNetwork.Id,
                                                     OperatorId,
@@ -2902,7 +3458,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeEVSEStopResponse));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeEVSEStopResponse));
             }
 
             #endregion
@@ -2971,6 +3527,7 @@ namespace org.GraphDefined.WWCP
                 OnAuthorizeChargingStationStopRequest?.Invoke(StartTime,
                                                               Timestamp.Value,
                                                               this,
+                                                              Id.ToString(),
                                                               EventTrackingId,
                                                               RoamingNetwork.Id,
                                                               OperatorId,
@@ -2982,7 +3539,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeChargingStationStopRequest));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeChargingStationStopRequest));
             }
 
             #endregion
@@ -3006,6 +3563,7 @@ namespace org.GraphDefined.WWCP
                 OnAuthorizeChargingStationStopResponse?.Invoke(Endtime,
                                                                Timestamp.Value,
                                                                this,
+                                                               Id.ToString(),
                                                                EventTrackingId,
                                                                RoamingNetwork.Id,
                                                                OperatorId,
@@ -3019,7 +3577,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeChargingStationStopResponse));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeChargingStationStopResponse));
             }
 
             #endregion
@@ -3088,6 +3646,7 @@ namespace org.GraphDefined.WWCP
                 OnAuthorizeChargingPoolStopRequest?.Invoke(StartTime,
                                                            Timestamp.Value,
                                                            this,
+                                                           Id.ToString(),
                                                            EventTrackingId,
                                                            RoamingNetwork.Id,
                                                            OperatorId,
@@ -3099,7 +3658,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeChargingPoolStopRequest));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeChargingPoolStopRequest));
             }
 
             #endregion
@@ -3123,6 +3682,7 @@ namespace org.GraphDefined.WWCP
                 OnAuthorizeChargingPoolStopResponse?.Invoke(Endtime,
                                                             Timestamp.Value,
                                                             this,
+                                                            Id.ToString(),
                                                             EventTrackingId,
                                                             RoamingNetwork.Id,
                                                             OperatorId,
@@ -3136,7 +3696,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeChargingPoolStopResponse));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeChargingPoolStopResponse));
             }
 
             #endregion
@@ -3149,42 +3709,40 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Receive incoming ChargeDetailRecords
+        #region SendChargeDetailRecord(ChargeDetailRecords, ...)
 
-        //#region SendChargeDetailRecord(ChargeDetailRecord, ...)
+        /// <summary>
+        /// Send a charge detail record.
+        /// </summary>
+        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE admin status updates directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<SendCDRsResult>
 
-        ///// <summary>
-        ///// Send a charge detail record.
-        ///// </summary>
-        ///// <param name="ChargeDetailRecord">A charge detail record.</param>
-        ///// 
-        ///// <param name="Timestamp">The optional timestamp of the request.</param>
-        ///// <param name="CancellationToken">An optional token to cancel this request.</param>
-        ///// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        ///// <param name="RequestTimeout">An optional timeout for this request.</param>
-        //public async Task<SendCDRResult>
+            SendChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                                    TransmissionTypes                TransmissionType,
 
-        //    SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
+                                    DateTime?                        Timestamp,
+                                    CancellationToken?               CancellationToken,
+                                    EventTracking_Id                 EventTrackingId,
+                                    TimeSpan?                        RequestTimeout)
+        {
 
-        //                           DateTime?           Timestamp,
-        //                           CancellationToken?  CancellationToken,
-        //                           EventTracking_Id    EventTrackingId,
-        //                           TimeSpan?           RequestTimeout)
-        //{
+            if (!DisableSendChargeDetailRecords && RemoteEMobilityProvider != null)
+                return await RemoteEMobilityProvider.SendChargeDetailRecords(ChargeDetailRecords,
 
-        //    if (RemoteEMobilityProvider != null)
-        //        return await RemoteEMobilityProvider.SendChargeDetailRecord(ChargeDetailRecord,
+                                                                             Timestamp,
+                                                                             CancellationToken,
+                                                                             EventTrackingId,
+                                                                             RequestTimeout);
 
-        //                                                                    Timestamp,
-        //                                                                    CancellationToken,
-        //                                                                    EventTrackingId,
-        //                                                                    RequestTimeout);
+            return SendCDRsResult.OutOfService(Id);
 
-        //    return SendCDRResult.OutOfService(AuthorizatorId);
-
-        //}
-
-        //#endregion
+        }
 
         #endregion
 
@@ -3274,7 +3832,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnReserveEVSERequest));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnReserveEVSERequest));
             }
 
             #endregion
@@ -3327,7 +3885,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnReserveEVSEResponse));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnReserveEVSEResponse));
             }
 
             #endregion
@@ -3462,7 +4020,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteEVSEStartRequest));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnRemoteEVSEStartRequest));
             }
 
             #endregion
@@ -3507,7 +4065,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteEVSEStartResponse));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnRemoteEVSEStartResponse));
             }
 
             #endregion
@@ -3584,7 +4142,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteEVSEStop));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnRemoteEVSEStop));
             }
 
             #endregion
@@ -3626,7 +4184,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteEVSEStopped));
+                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnRemoteEVSEStopped));
             }
 
             #endregion
@@ -3656,7 +4214,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an EVSE_Operator.
-            var EVSE_Operator = Object as eMobilityProvider;
+            var EVSE_Operator = Object as eMobilityProviderProxy;
             if ((Object) EVSE_Operator == null)
                 throw new ArgumentException("The given object is not an EVSE_Operator!");
 
@@ -3672,7 +4230,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="EVSE_Operator">An EVSE_Operator object to compare with.</param>
-        public Int32 CompareTo(eMobilityProvider EVSE_Operator)
+        public Int32 CompareTo(eMobilityProviderProxy EVSE_Operator)
         {
 
             if ((Object) EVSE_Operator == null)
@@ -3702,7 +4260,7 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is an EVSE_Operator.
-            var EVSE_Operator = Object as eMobilityProvider;
+            var EVSE_Operator = Object as eMobilityProviderProxy;
             if ((Object) EVSE_Operator == null)
                 return false;
 
@@ -3719,7 +4277,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSE_Operator">An EVSE_Operator to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(eMobilityProvider EVSE_Operator)
+        public Boolean Equals(eMobilityProviderProxy EVSE_Operator)
         {
 
             if ((Object) EVSE_Operator == null)

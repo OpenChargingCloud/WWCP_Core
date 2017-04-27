@@ -797,7 +797,7 @@ namespace org.GraphDefined.WWCP
         /// The Charging Station Operator of this charging pool.
         /// </summary>
         [Optional]
-        public ChargingStationOperator  Operator            { get; }
+        public ChargingStationOperatorProxy  Operator            { get; }
 
         #endregion
 
@@ -811,7 +811,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="MaxPoolStatusListSize">The default size of the charging pool (aggregated charging station) status list.</param>
         /// <param name="MaxPoolAdminStatusListSize">The default size of the charging pool admin status list.</param>
         internal ChargingPool(ChargingPool_Id                    Id,
-                              ChargingStationOperator            ChargingStationOperator,
+                              ChargingStationOperatorProxy            ChargingStationOperator,
                               Action<ChargingPool>               Configurator                = null,
                               RemoteChargingPoolCreatorDelegate  RemoteChargingPoolCreator   = null,
                               ChargingPoolAdminStatusType        AdminStatus                 = ChargingPoolAdminStatusType.Operational,

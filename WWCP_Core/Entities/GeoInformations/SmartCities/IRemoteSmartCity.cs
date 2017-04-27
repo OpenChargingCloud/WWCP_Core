@@ -29,8 +29,31 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-    public interface IRemoteSmartCity  : IRemotePushData,
-                                         IRemotePushStatus
+    public interface ISend2RemoteSmartCity  : ISendData,
+                                              ISendStatus
+                                             //IRemoteAuthorizeStartStop,
+                                             //IRemoteSendChargeDetailRecord
+
+    {
+
+        #region Properties
+
+        /// <summary>
+        /// The unique identification of the smart city.
+        /// </summary>
+        SmartCity_Id  Id     { get; }
+
+        /// <summary>
+        /// The offical (multi-language) name of the smart city.
+        /// </summary>
+        I18NString    Name   { get; }
+
+        #endregion
+
+    }
+
+    public interface IRemoteSmartCity  : IReceiveData,
+                                         IReceiveStatus
                                         //IRemoteAuthorizeStartStop,
                                         //IRemoteSendChargeDetailRecord
 

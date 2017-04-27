@@ -36,7 +36,7 @@ namespace org.GraphDefined.WWCP
     public class ChargingPoolAlreadyExists : ChargingStationOperatorException
     {
 
-        public ChargingPoolAlreadyExists(ChargingStationOperator  ChargingStationOperator,
+        public ChargingPoolAlreadyExists(ChargingStationOperatorProxy  ChargingStationOperator,
                                          ChargingPool_Id          ChargingPoolId)
 
             : base(ChargingStationOperator.RoamingNetwork,
@@ -56,7 +56,7 @@ namespace org.GraphDefined.WWCP
     public class ChargingPoolException : ChargingStationOperatorException
     {
 
-        public ChargingPoolException(ChargingStationOperator  ChargingStationOperator,
+        public ChargingPoolException(ChargingStationOperatorProxy  ChargingStationOperator,
                                      String                   Message)
 
             : base(ChargingStationOperator.RoamingNetwork,
@@ -64,7 +64,7 @@ namespace org.GraphDefined.WWCP
 
         { }
 
-        public ChargingPoolException(ChargingStationOperator  ChargingStationOperator,
+        public ChargingPoolException(ChargingStationOperatorProxy  ChargingStationOperator,
                                      String                   Message,
                                      Exception                InnerException)
 

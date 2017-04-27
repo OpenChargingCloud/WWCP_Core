@@ -108,7 +108,7 @@ namespace org.GraphDefined.WWCP
         /// Take a snapshot of the current charging station operator status.
         /// </summary>
         /// <param name="ChargingStationOperator">A charging station operator.</param>
-        public static ChargingStationOperatorAdminStatusUpdate Snapshot(ChargingStationOperator ChargingStationOperator)
+        public static ChargingStationOperatorAdminStatusUpdate Snapshot(ChargingStationOperatorProxy ChargingStationOperator)
 
             => new ChargingStationOperatorAdminStatusUpdate(ChargingStationOperator.Id,
                                                             ChargingStationOperator.AdminStatus,

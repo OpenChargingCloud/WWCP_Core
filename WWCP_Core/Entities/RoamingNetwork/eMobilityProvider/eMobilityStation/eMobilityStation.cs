@@ -591,7 +591,7 @@ namespace org.GraphDefined.WWCP
         /// The e-mobility station Operator of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public eMobilityProvider Provider { get; }
+        public eMobilityProviderProxy Provider { get; }
 
         #endregion
 
@@ -603,7 +603,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique identification of the e-mobility station pool.</param>
         /// <param name="MaxAdminStatusListSize">The default size of the admin status list.</param>
         internal eMobilityStation(eMobilityStation_Id                    Id,
-                                  eMobilityProvider                  Provider,
+                                  eMobilityProviderProxy                  Provider,
                                   Action<eMobilityStation>               Configurator                   = null,
                                   RemoteEMobilityStationCreatorDelegate  RemoteeMobilityStationCreator  = null,
                                   eMobilityStationAdminStatusType        AdminStatus                    = eMobilityStationAdminStatusType.Operational,
@@ -836,7 +836,7 @@ namespace org.GraphDefined.WWCP
 
         #region eVehicles
 
-        private EntityHashSet<ChargingStationOperator, eVehicle_Id, eVehicle> _eVehicles;
+        private EntityHashSet<ChargingStationOperatorProxy, eVehicle_Id, eVehicle> _eVehicles;
 
         public IEnumerable<eVehicle> eVehicles
 

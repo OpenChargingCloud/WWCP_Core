@@ -93,7 +93,7 @@ namespace org.GraphDefined.WWCP
         /// The charging station operator used for charging.
         /// </summary>
         [Optional]
-        public ChargingStationOperator  ChargingStationOperator     { get; }
+        public ChargingStationOperatorProxy  ChargingStationOperator     { get; }
 
         /// <summary>
         /// The consumed charging product.
@@ -258,7 +258,7 @@ namespace org.GraphDefined.WWCP
                                   EVSE_Id?                          EVSEId                   = null,
                                   ChargingStation                   ChargingStation          = null,
                                   ChargingPool                      ChargingPool             = null,
-                                  ChargingStationOperator           ChargingStationOperator  = null,
+                                  ChargingStationOperatorProxy           ChargingStationOperator  = null,
                                   ChargingProduct                   ChargingProduct          = null,
 
                                   AuthInfo                          IdentificationStart      = null,

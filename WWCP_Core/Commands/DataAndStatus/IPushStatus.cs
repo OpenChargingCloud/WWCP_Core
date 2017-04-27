@@ -345,7 +345,7 @@ namespace org.GraphDefined.WWCP
     }
 
 
-    public interface IRemotePushStatus
+    public interface ISendStatus
     {
 
         /// <summary>
@@ -385,13 +385,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            UpdateEVSEAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
-                                  TransmissionTypes                   TransmissionType    = TransmissionTypes.Enqueued,
+            UpdateAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
+                              TransmissionTypes                   TransmissionType    = TransmissionTypes.Enqueued,
 
-                                  DateTime?                           Timestamp           = null,
-                                  CancellationToken?                  CancellationToken   = null,
-                                  EventTracking_Id                    EventTrackingId     = null,
-                                  TimeSpan?                           RequestTimeout      = null);
+                              DateTime?                           Timestamp           = null,
+                              CancellationToken?                  CancellationToken   = null,
+                              EventTracking_Id                    EventTrackingId     = null,
+                              TimeSpan?                           RequestTimeout      = null);
 
         #endregion
 
@@ -409,13 +409,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            UpdateEVSEStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
-                             TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueued,
+            UpdateStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
+                         TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueued,
 
-                             DateTime?                      Timestamp           = null,
-                             CancellationToken?             CancellationToken   = null,
-                             EventTracking_Id               EventTrackingId     = null,
-                             TimeSpan?                      RequestTimeout      = null);
+                         DateTime?                      Timestamp           = null,
+                         CancellationToken?             CancellationToken   = null,
+                         EventTracking_Id               EventTrackingId     = null,
+                         TimeSpan?                      RequestTimeout      = null);
 
         #endregion
 
@@ -434,13 +434,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            UpdateChargingStationAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  AdminStatusUpdates,
-                                             TransmissionTypes                              TransmissionType    = TransmissionTypes.Enqueued,
+            UpdateAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  AdminStatusUpdates,
+                              TransmissionTypes                              TransmissionType    = TransmissionTypes.Enqueued,
 
-                                             DateTime?                                      Timestamp           = null,
-                                             CancellationToken?                             CancellationToken   = null,
-                                             EventTracking_Id                               EventTrackingId     = null,
-                                             TimeSpan?                                      RequestTimeout      = null);
+                              DateTime?                                      Timestamp           = null,
+                              CancellationToken?                             CancellationToken   = null,
+                              EventTracking_Id                               EventTrackingId     = null,
+                              TimeSpan?                                      RequestTimeout      = null);
 
         #endregion
 
@@ -458,13 +458,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            UpdateChargingStationStatus(IEnumerable<ChargingStationStatusUpdate>  StatusUpdates,
-                                        TransmissionTypes                         TransmissionType    = TransmissionTypes.Enqueued,
+            UpdateStatus(IEnumerable<ChargingStationStatusUpdate>  StatusUpdates,
+                         TransmissionTypes                         TransmissionType    = TransmissionTypes.Enqueued,
 
-                                        DateTime?                                 Timestamp           = null,
-                                        CancellationToken?                        CancellationToken   = null,
-                                        EventTracking_Id                          EventTrackingId     = null,
-                                        TimeSpan?                                 RequestTimeout      = null);
+                         DateTime?                                 Timestamp           = null,
+                         CancellationToken?                        CancellationToken   = null,
+                         EventTracking_Id                          EventTrackingId     = null,
+                         TimeSpan?                                 RequestTimeout      = null);
 
         #endregion
 
@@ -483,13 +483,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            UpdateChargingPoolAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  AdminStatusUpdates,
-                                          TransmissionTypes                           TransmissionType    = TransmissionTypes.Enqueued,
+            UpdateAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  AdminStatusUpdates,
+                              TransmissionTypes                           TransmissionType    = TransmissionTypes.Enqueued,
 
-                                          DateTime?                                   Timestamp           = null,
-                                          CancellationToken?                          CancellationToken   = null,
-                                          EventTracking_Id                            EventTrackingId     = null,
-                                          TimeSpan?                                   RequestTimeout      = null);
+                              DateTime?                                   Timestamp           = null,
+                              CancellationToken?                          CancellationToken   = null,
+                              EventTracking_Id                            EventTrackingId     = null,
+                              TimeSpan?                                   RequestTimeout      = null);
 
         #endregion
 
@@ -507,13 +507,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            UpdateChargingPoolStatus(IEnumerable<ChargingPoolStatusUpdate>  StatusUpdates,
-                                     TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueued,
+            UpdateStatus(IEnumerable<ChargingPoolStatusUpdate>  StatusUpdates,
+                         TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueued,
 
-                                     DateTime?                              Timestamp           = null,
-                                     CancellationToken?                     CancellationToken   = null,
-                                     EventTracking_Id                       EventTrackingId     = null,
-                                     TimeSpan?                              RequestTimeout      = null);
+                         DateTime?                              Timestamp           = null,
+                         CancellationToken?                     CancellationToken   = null,
+                         EventTracking_Id                       EventTrackingId     = null,
+                         TimeSpan?                              RequestTimeout      = null);
 
         #endregion
 
@@ -532,13 +532,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            UpdateChargingStationOperatorAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  AdminStatusUpdates,
-                                                     TransmissionTypes                                      TransmissionType    = TransmissionTypes.Enqueued,
+            UpdateAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  AdminStatusUpdates,
+                              TransmissionTypes                                      TransmissionType    = TransmissionTypes.Enqueued,
 
-                                                     DateTime?                                              Timestamp           = null,
-                                                     CancellationToken?                                     CancellationToken   = null,
-                                                     EventTracking_Id                                       EventTrackingId     = null,
-                                                     TimeSpan?                                              RequestTimeout      = null);
+                              DateTime?                                              Timestamp           = null,
+                              CancellationToken?                                     CancellationToken   = null,
+                              EventTracking_Id                                       EventTrackingId     = null,
+                              TimeSpan?                                              RequestTimeout      = null);
 
         #endregion
 
@@ -556,13 +556,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            UpdateChargingStationOperatorStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  StatusUpdates,
-                                                TransmissionTypes                                 TransmissionType    = TransmissionTypes.Enqueued,
+            UpdateStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  StatusUpdates,
+                         TransmissionTypes                                 TransmissionType    = TransmissionTypes.Enqueued,
 
-                                                DateTime?                                         Timestamp           = null,
-                                                CancellationToken?                                CancellationToken   = null,
-                                                EventTracking_Id                                  EventTrackingId     = null,
-                                                TimeSpan?                                         RequestTimeout      = null);
+                         DateTime?                                         Timestamp           = null,
+                         CancellationToken?                                CancellationToken   = null,
+                         EventTracking_Id                                  EventTrackingId     = null,
+                         TimeSpan?                                         RequestTimeout      = null);
 
         #endregion
 
@@ -581,13 +581,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            UpdateRoamingNetworkAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  AdminStatusUpdates,
-                                            TransmissionTypes                             TransmissionType    = TransmissionTypes.Enqueued,
+            UpdateAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  AdminStatusUpdates,
+                              TransmissionTypes                             TransmissionType    = TransmissionTypes.Enqueued,
 
-                                            DateTime?                                     Timestamp           = null,
-                                            CancellationToken?                            CancellationToken   = null,
-                                            EventTracking_Id                              EventTrackingId     = null,
-                                            TimeSpan?                                     RequestTimeout      = null);
+                              DateTime?                                     Timestamp           = null,
+                              CancellationToken?                            CancellationToken   = null,
+                              EventTracking_Id                              EventTrackingId     = null,
+                              TimeSpan?                                     RequestTimeout      = null);
 
         #endregion
 
@@ -605,16 +605,224 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            UpdateRoamingNetworkStatus(IEnumerable<RoamingNetworkStatusUpdate>  StatusUpdates,
-                                       TransmissionTypes                        TransmissionType    = TransmissionTypes.Enqueued,
+            UpdateStatus(IEnumerable<RoamingNetworkStatusUpdate>  StatusUpdates,
+                         TransmissionTypes                        TransmissionType    = TransmissionTypes.Enqueued,
 
-                                       DateTime?                                Timestamp           = null,
-                                       CancellationToken?                       CancellationToken   = null,
-                                       EventTracking_Id                         EventTrackingId     = null,
-                                       TimeSpan?                                RequestTimeout      = null);
+                         DateTime?                                Timestamp           = null,
+                         CancellationToken?                       CancellationToken   = null,
+                         EventTracking_Id                         EventTrackingId     = null,
+                         TimeSpan?                                RequestTimeout      = null);
 
         #endregion
 
+
+    }
+
+
+
+    public interface IReceiveStatus
+    {
+
+        #region UpdateAdminStatus(AdminStatusUpdates, ...)
+
+        /// <summary>
+        /// Update the given enumeration of EVSE admin status updates.
+        /// </summary>
+        /// <param name="AdminStatusUpdates">An enumeration of EVSE admin status updates.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
+
+                              DateTime?                           Timestamp           = null,
+                              CancellationToken?                  CancellationToken   = null,
+                              EventTracking_Id                    EventTrackingId     = null,
+                              TimeSpan?                           RequestTimeout      = null);
+
+
+        /// <summary>
+        /// Update the given enumeration of charging station admin status updates.
+        /// </summary>
+        /// <param name="AdminStatusUpdates">An enumeration of charging station admin status updates.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  AdminStatusUpdates,
+
+                              DateTime?                                      Timestamp           = null,
+                              CancellationToken?                             CancellationToken   = null,
+                              EventTracking_Id                               EventTrackingId     = null,
+                              TimeSpan?                                      RequestTimeout      = null);
+
+
+        /// <summary>
+        /// Update the given enumeration of charging pool admin status updates.
+        /// </summary>
+        /// <param name="AdminStatusUpdates">An enumeration of charging pool admin status updates.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  AdminStatusUpdates,
+
+                              DateTime?                                   Timestamp           = null,
+                              CancellationToken?                          CancellationToken   = null,
+                              EventTracking_Id                            EventTrackingId     = null,
+                              TimeSpan?                                   RequestTimeout      = null);
+
+
+        /// <summary>
+        /// Update the given enumeration of charging station operator admin status updates.
+        /// </summary>
+        /// <param name="AdminStatusUpdates">An enumeration of charging station operator admin status updates.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  AdminStatusUpdates,
+
+                              DateTime?                                              Timestamp           = null,
+                              CancellationToken?                                     CancellationToken   = null,
+                              EventTracking_Id                                       EventTrackingId     = null,
+                              TimeSpan?                                              RequestTimeout      = null);
+
+
+        /// <summary>
+        /// Update the given enumeration of roaming network admin status updates.
+        /// </summary>
+        /// <param name="AdminStatusUpdates">An enumeration of roaming network admin status updates.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  AdminStatusUpdates,
+
+                              DateTime?                                     Timestamp           = null,
+                              CancellationToken?                            CancellationToken   = null,
+                              EventTracking_Id                              EventTrackingId     = null,
+                              TimeSpan?                                     RequestTimeout      = null);
+
+        #endregion
+
+        // AdminUpdate events?
+
+
+        #region UpdateEVSEStatus (StatusUpdates, ...)
+
+        /// <summary>
+        /// Update the given enumeration of EVSE status updates.
+        /// </summary>
+        /// <param name="StatusUpdates">An enumeration of EVSE status updates.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
+
+                         DateTime?                      Timestamp           = null,
+                         CancellationToken?             CancellationToken   = null,
+                         EventTracking_Id               EventTrackingId     = null,
+                         TimeSpan?                      RequestTimeout      = null);
+
+
+        /// <summary>
+        /// Update the given enumeration of charging station status updates.
+        /// </summary>
+        /// <param name="StatusUpdates">An enumeration of charging station status updates.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateStatus(IEnumerable<ChargingStationStatusUpdate>  StatusUpdates,
+
+                         DateTime?                                 Timestamp           = null,
+                         CancellationToken?                        CancellationToken   = null,
+                         EventTracking_Id                          EventTrackingId     = null,
+                         TimeSpan?                                 RequestTimeout      = null);
+
+
+        /// <summary>
+        /// Update the given enumeration of charging pool status updates.
+        /// </summary>
+        /// <param name="StatusUpdates">An enumeration of charging pool status updates.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateStatus(IEnumerable<ChargingPoolStatusUpdate>  StatusUpdates,
+
+                         DateTime?                              Timestamp           = null,
+                         CancellationToken?                     CancellationToken   = null,
+                         EventTracking_Id                       EventTrackingId     = null,
+                         TimeSpan?                              RequestTimeout      = null);
+
+
+        /// <summary>
+        /// Update the given enumeration of charging station operator status updates.
+        /// </summary>
+        /// <param name="StatusUpdates">An enumeration of charging station operator status updates.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  StatusUpdates,
+
+                         DateTime?                                         Timestamp           = null,
+                         CancellationToken?                                CancellationToken   = null,
+                         EventTracking_Id                                  EventTrackingId     = null,
+                         TimeSpan?                                         RequestTimeout      = null);
+
+
+        /// <summary>
+        /// Update the given enumeration of roaming network status updates.
+        /// </summary>
+        /// <param name="StatusUpdates">An enumeration of roaming network status updates.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<Acknowledgement>
+
+            UpdateStatus(IEnumerable<RoamingNetworkStatusUpdate>  StatusUpdates,
+
+                         DateTime?                                Timestamp           = null,
+                         CancellationToken?                       CancellationToken   = null,
+                         EventTracking_Id                         EventTrackingId     = null,
+                         TimeSpan?                                RequestTimeout      = null);
+
+        #endregion
+
+        // Update events?
 
     }
 

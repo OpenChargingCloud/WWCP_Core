@@ -262,7 +262,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The Roaming Provider provided eMobility services interface.
     /// </summary>
-    public interface IEMPRoamingProvider : IReserveRemoteStartStop
+    public interface IEMPRoamingProvider : IPullData,
+                                           IPullStatus,
+                                           IReserveRemoteStartStop
     {
 
         #region Properties
@@ -345,28 +347,62 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        // Server methods
-
-        #region OnAuthorizeStart/-StopEVSE
+        #region OnGetChargeDetailRecordsRequest/-Response
 
         /// <summary>
-        /// An event sent whenever a authorize start command was received.
+        /// An event sent whenever a 'get charge detail records' request will be send.
         /// </summary>
-        event OnAuthorizeStartEVSEDelegate  OnAuthorizeStartEVSE;
+        event OnGetCDRsRequestDelegate    OnGetChargeDetailRecordsRequest;
 
         /// <summary>
-        /// An event sent whenever a authorize start command was received.
+        /// An event sent whenever a response to a 'get charge detail records' request was received.
         /// </summary>
-        event OnAuthorizeStopEVSEDelegate   OnAuthorizeStopEVSE;
+        event OnGetCDRsResponseDelegate   OnGetChargeDetailRecordsResponse;
 
         #endregion
 
-        #region OnChargeDetailRecord
+
+        // Server methods
+
+        #region OnAuthorizeEVSEStartRequest/-Response
 
         /// <summary>
-        /// An event sent whenever a charge detail record was received.
+        /// An event sent whenever an 'authorize EVSE start' request was received.
         /// </summary>
-        event OnChargeDetailRecordDelegate OnChargeDetailRecord;
+        event OnAuthorizeEVSEStartRequestDelegate   OnAuthorizeEVSEStartRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an 'authorize EVSE start' request was sent.
+        /// </summary>
+        event OnAuthorizeEVSEStartResponseDelegate  OnAuthorizeEVSEStartResponse;
+
+        #endregion
+
+        #region OnAuthorizeEVSEStopRequest/-Response
+
+        /// <summary>
+        /// An event sent whenever an 'authorize EVSE stop' request was received.
+        /// </summary>
+        event OnAuthorizeEVSEStopRequestDelegate   OnAuthorizeEVSEStopRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to an 'authorize EVSE stop' request was sent.
+        /// </summary>
+        event OnAuthorizeEVSEStopResponseDelegate  OnAuthorizeEVSEStopResponse;
+
+        #endregion
+
+        #region OnChargeDetailRecordRequest/-Response
+
+        /// <summary>
+        /// An event sent whenever a 'charge detail record' was received.
+        /// </summary>
+        event OnSendCDRRequestDelegate   OnChargeDetailRecordRequest;
+
+        /// <summary>
+        /// An event sent whenever a response to a 'charge detail record' was sent.
+        /// </summary>
+        event OnSendCDRResponseDelegate  OnChargeDetailRecordResponse;
 
         #endregion
 

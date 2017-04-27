@@ -46,8 +46,8 @@ namespace org.GraphDefined.WWCP.Importer
 
     public delegate IEnumerable<ImporterForwardingInfo> CreateForwardingTableDelegate<T>(WWCPImporter<T>                                                 Importer,
                                                                                          T                                                               Input,
-                                                                                         Func<ChargingStation_Id, IEnumerable<ChargingStationOperator>>  ChargingStationOperators,
-                                                                                         Func<ChargingStation_Id, ChargingStationOperator>               DefaultChargingStationOperator);
+                                                                                         Func<ChargingStation_Id, IEnumerable<ChargingStationOperatorProxy>>  ChargingStationOperators,
+                                                                                         Func<ChargingStation_Id, ChargingStationOperatorProxy>               DefaultChargingStationOperator);
 
     /// <summary>
     /// Import data into the WWCP in-memory datastructures.
@@ -94,9 +94,9 @@ namespace org.GraphDefined.WWCP.Importer
         public String                                                          ForwardingFilenamePrefix         { get; }
 
 
-        public Func<ChargingStation_Id, IEnumerable<ChargingStationOperator>>  ChargingStationOperators         { get; }
+        public Func<ChargingStation_Id, IEnumerable<ChargingStationOperatorProxy>>  ChargingStationOperators         { get; }
 
-        public Func<ChargingStation_Id, ChargingStationOperator>               DefaultChargingStationOperator   { get; }
+        public Func<ChargingStation_Id, ChargingStationOperatorProxy>               DefaultChargingStationOperator   { get; }
 
         public Func<ChargingStation_Id, IEnumerable<RoamingNetwork_Id>>        RoamingNetworkIds
             => operators => ChargingStationOperators(operators).Select(cso => cso.RoamingNetwork.Id);
@@ -253,8 +253,8 @@ namespace org.GraphDefined.WWCP.Importer
         public WWCPImporter(String                                                          Id,
                             String                                                          ForwardingFilenamePrefix         = null,
 
-                            Func<ChargingStation_Id, IEnumerable<ChargingStationOperator>>  ChargingStationOperators         = null,
-                            Func<ChargingStation_Id, ChargingStationOperator>               DefaultChargingStationOperator   = null,
+                            Func<ChargingStation_Id, IEnumerable<ChargingStationOperatorProxy>>  ChargingStationOperators         = null,
+                            Func<ChargingStation_Id, ChargingStationOperatorProxy>               DefaultChargingStationOperator   = null,
                             CreateForwardingTableDelegate<T>                                CreateForwardingTable            = null,
 
                             Action<WWCPImporter<T>, Task<T>>                                OnStartup                        = null,

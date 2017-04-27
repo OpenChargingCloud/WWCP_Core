@@ -30,10 +30,25 @@ using System.Linq;
 namespace org.GraphDefined.WWCP
 {
 
-    public interface IRemoteEMobilityProvider // IRemotePushData,
-                                              // IRemotePushStatus,
-                                              // IRemoteAuthorizeStartStop,
-                                              // IRemoteSendChargeDetailRecord
+    public interface ISend2RemoteEMobilityProvider : //IRemotePushData,
+                                                     ISendStatus,
+                                                     ISendAuthorizeStartStop,
+                                                     ISend2RemoteChargeDetailRecords
+
+    {
+
+        /// <summary>
+        /// The unique identification of the e-mobility service provider.
+        /// </summary>
+        eMobilityProvider_Id Id { get; }
+
+    }
+
+
+    public interface IRemoteEMobilityProvider : IReceiveData,
+                                                IReceiveStatus,
+                                                IReceiveAuthorizeStartStop,
+                                                IRemoteSendChargeDetailRecords
 
     {
 
