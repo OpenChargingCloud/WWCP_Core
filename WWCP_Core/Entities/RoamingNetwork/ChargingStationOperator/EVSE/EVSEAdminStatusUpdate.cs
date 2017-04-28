@@ -44,12 +44,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The old timestamped status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEAdminStatusType>  OldStatus   { get; }
+        public Timestamped<EVSEAdminStatusTypes>  OldStatus   { get; }
 
         /// <summary>
         /// The new timestamped status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEAdminStatusType>  NewStatus   { get; }
+        public Timestamped<EVSEAdminStatusTypes>  NewStatus   { get; }
 
         #endregion
 
@@ -64,8 +64,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="OldStatus">The old timestamped admin status of the EVSE.</param>
         /// <param name="NewStatus">The new timestamped admin status of the EVSE.</param>
         public EVSEAdminStatusUpdate(EVSE_Id                           Id,
-                                     Timestamped<EVSEAdminStatusType>  OldStatus,
-                                     Timestamped<EVSEAdminStatusType>  NewStatus)
+                                     Timestamped<EVSEAdminStatusTypes>  OldStatus,
+                                     Timestamped<EVSEAdminStatusTypes>  NewStatus)
 
         {
 

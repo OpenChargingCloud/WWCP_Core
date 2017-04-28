@@ -42,7 +42,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Status">An EVSE status.</param>
         public static Boolean Contains(this IEnumerable<EVSEAdminStatus>  AdminStatus,
                                        EVSE_Id                            Id,
-                                       EVSEAdminStatusType                Status)
+                                       EVSEAdminStatusTypes                Status)
         {
 
             foreach (var adminstatus in AdminStatus)

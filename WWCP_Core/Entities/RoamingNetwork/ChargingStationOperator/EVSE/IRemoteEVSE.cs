@@ -148,13 +148,13 @@ namespace org.GraphDefined.WWCP
 
         #region (Admin-)Status
 
-        void SetAdminStatus(EVSEAdminStatusType NewAdminStatus);
-        void SetAdminStatus(Timestamped<EVSEAdminStatusType> NewTimestampedAdminStatus);
-        void SetAdminStatus(IEnumerable<Timestamped<EVSEAdminStatusType>> NewAdminStatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
-        void SetAdminStatus(EVSEAdminStatusType NewAdminStatus, DateTime Timestamp);
+        void SetAdminStatus(EVSEAdminStatusTypes NewAdminStatus);
+        void SetAdminStatus(Timestamped<EVSEAdminStatusTypes> NewTimestampedAdminStatus);
+        void SetAdminStatus(IEnumerable<Timestamped<EVSEAdminStatusTypes>> NewAdminStatusList, ChangeMethods ChangeMethod = ChangeMethods.Replace);
+        void SetAdminStatus(EVSEAdminStatusTypes NewAdminStatus, DateTime Timestamp);
 
-        Timestamped<EVSEAdminStatusType>              AdminStatus         { get; set; }
-        IEnumerable<Timestamped<EVSEAdminStatusType>> AdminStatusSchedule { get; }
+        Timestamped<EVSEAdminStatusTypes>              AdminStatus         { get; set; }
+        IEnumerable<Timestamped<EVSEAdminStatusTypes>> AdminStatusSchedule { get; }
 
 
         void SetStatus(EVSEStatusTypes NewStatus);

@@ -43,7 +43,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The current admin status of the EVSE.
         /// </summary>
-        public EVSEAdminStatusType  AdminStatus   { get; }
+        public EVSEAdminStatusTypes  AdminStatus   { get; }
 
         /// <summary>
         /// The timestamp of the current admin status of the EVSE.
@@ -53,8 +53,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The timestamped admin status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEAdminStatusType> Combined
-            => new Timestamped<EVSEAdminStatusType>(Timestamp, AdminStatus);
+        public Timestamped<EVSEAdminStatusTypes> Combined
+            => new Timestamped<EVSEAdminStatusTypes>(Timestamp, AdminStatus);
 
         #endregion
 
@@ -67,7 +67,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Status">The current admin status of the EVSE.</param>
         /// <param name="Timestamp">The timestamp of the current admin status of the EVSE.</param>
         public EVSEAdminStatus(EVSE_Id              Id,
-                               EVSEAdminStatusType  Status,
+                               EVSEAdminStatusTypes  Status,
                                DateTime             Timestamp)
 
         {

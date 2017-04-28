@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// An EVSE admin status report.
     /// </summary>
-    public class EVSEAdminStatusReport : StatusReport<EVSE, EVSEAdminStatusType>
+    public class EVSEAdminStatusReport : StatusReport<EVSE, EVSEAdminStatusTypes>
     {
 
         public EVSEAdminStatusReport(IEnumerable<EVSE> EVSEs)

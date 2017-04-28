@@ -367,8 +367,8 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
-                    AdminStatus.Value == EVSEAdminStatusType.InternalUse)
+                if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
+                    AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
                 {
 
                     return _StatusSchedule.CurrentStatus;
@@ -415,8 +415,8 @@ namespace org.GraphDefined.WWCP
         public IEnumerable<Timestamped<EVSEStatusTypes>> StatusSchedule(UInt64? HistorySize = null)
         {
 
-             if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
-                 AdminStatus.Value == EVSEAdminStatusType.InternalUse)
+             if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
+                 AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
              {
 
                 if (HistorySize.HasValue)
@@ -451,7 +451,7 @@ namespace org.GraphDefined.WWCP
         /// The current EVSE admin status.
         /// </summary>
         [InternalUseOnly]
-        public Timestamped<EVSEAdminStatusType> AdminStatus
+        public Timestamped<EVSEAdminStatusTypes> AdminStatus
         {
 
             get
@@ -476,12 +476,12 @@ namespace org.GraphDefined.WWCP
 
         #region AdminStatusSchedule
 
-        private readonly StatusSchedule<EVSEAdminStatusType> _AdminStatusSchedule;
+        private readonly StatusSchedule<EVSEAdminStatusTypes> _AdminStatusSchedule;
 
         /// <summary>
         /// The EVSE admin status schedule.
         /// </summary>
-        public IEnumerable<Timestamped<EVSEAdminStatusType>> AdminStatusSchedule(UInt64? HistorySize = null)
+        public IEnumerable<Timestamped<EVSEAdminStatusTypes>> AdminStatusSchedule(UInt64? HistorySize = null)
         {
 
             if (HistorySize.HasValue)
@@ -523,19 +523,10 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingStation
 
-        private readonly ChargingStation _ChargingStation;
-
         /// <summary>
         /// The charging station of this EVSE.
         /// </summary>
-        [InternalUseOnly]
-        public ChargingStation ChargingStation
-        {
-            get
-            {
-                return _ChargingStation;
-            }
-        }
+        public ChargingStation ChargingStation   { get; }
 
         #endregion
 
@@ -549,7 +540,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _ChargingStation.ChargingPool.Operator;
+                return ChargingStation.ChargingPool.Operator;
             }
         }
 
@@ -597,47 +588,25 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (internal) EVSE(Id, ChargingStation, ...)
+        #region EVSE(Id, ...)
 
         /// <summary>
         /// Create a new Electric Vehicle Supply Equipment (EVSE) having the given EVSE identification.
         /// </summary>
-        /// <param name="Id">The unique identification of this EVSE.</param>
-        /// <param name="ChargingStation">The parent charging station.</param>
-        /// <param name="MaxStatusListSize">The maximum size of the EVSE status list.</param>
-        /// <param name="MaxAdminStatusListSize">The maximum size of the EVSE admin status list.</param>
-        //internal EVSE(EVSE_Id          Id,
-        //              ChargingStation  ChargingStation,
-        //              UInt16           MaxStatusListSize       = DefaultMaxEVSEStatusListSize,
-        //              UInt16           MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize)
-
-        //    : this(Id,
-        //           MaxStatusListSize,
-        //           MaxAdminStatusListSize)
-
-        //{
-
-        //    #region Initial checks
-
-        //    if (ChargingStation == null)
-        //        throw new ArgumentNullException(nameof(ChargingStation),  "The charging station must not be null!");
-
-        //    #endregion
-
-        //}
-
-        #endregion
-
-        #region (internal) EVSE(Id, ...)
-
-        /// <summary>
-        /// Create a new Electric Vehicle Supply Equipment (EVSE) having the given EVSE identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of this EVSE.</param>
-        internal EVSE(EVSE_Id          Id,
-                      ChargingStation  ChargingStation,
-                      UInt16           MaxStatusListSize       = DefaultMaxEVSEStatusListSize,
-                      UInt16           MaxAdminStatusListSize  = DefaultMaxAdminStatusListSize)
+        /// <param name="Id">The unique identification of the EVSE.</param>
+        /// <param name="Configurator">A delegate to configure the newly created EVSE.</param>
+        /// <param name="RemoteEVSECreator">A delegate to attach a remote EVSE.</param>
+        /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
+        /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
+        /// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
+        /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
+        public EVSE(EVSE_Id                    Id,
+                    Action<EVSE>               Configurator             = null,
+                    RemoteEVSECreatorDelegate  RemoteEVSECreator        = null,
+                    EVSEAdminStatusTypes       InitialAdminStatus       = EVSEAdminStatusTypes.OutOfService,
+                    EVSEStatusTypes            InitialStatus            = EVSEStatusTypes.     OutOfService,
+                    UInt16                     MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
+                    UInt16                     MaxStatusListSize        = DefaultMaxEVSEStatusListSize)
 
             : base(Id)
 
@@ -645,19 +614,19 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this._ChargingStation       = ChargingStation;
-
             this._Description           = new I18NString();
             this._ChargingModes         = new ReactiveSet<ChargingModes>();
             this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
 
             this._StatusSchedule        = new StatusSchedule<EVSEStatusTypes>(MaxStatusListSize);
-            this._StatusSchedule.     Insert(EVSEStatusTypes.     OutOfService);
+            this._StatusSchedule.     Insert(InitialStatus);
 
-            this._AdminStatusSchedule   = new StatusSchedule<EVSEAdminStatusType>(MaxStatusListSize);
-            this._AdminStatusSchedule.Insert(EVSEAdminStatusType.OutOfService);
+            this._AdminStatusSchedule   = new StatusSchedule<EVSEAdminStatusTypes>(MaxStatusListSize);
+            this._AdminStatusSchedule.Insert(InitialAdminStatus);
 
             #endregion
+
+            Configurator?.Invoke(this);
 
             #region Init events
 
@@ -669,10 +638,10 @@ namespace org.GraphDefined.WWCP
             #region Link events
 
             _AdminStatusSchedule.OnStatusChanged += (Timestamp,
-                                                     EventTrackingId,
-                                                     StatusSchedule,
-                                                     OldStatus,
-                                                     NewStatus)
+                                                      EventTrackingId,
+                                                      StatusSchedule,
+                                                      OldStatus,
+                                                      NewStatus)
                 => UpdateAdminStatus(Timestamp,
                                      EventTrackingId,
                                      OldStatus,
@@ -705,6 +674,57 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             this.OnPropertyChanged += UpdateData;
+
+            this.RemoteEVSE = RemoteEVSECreator?.Invoke(this);
+
+        }
+
+        #endregion
+
+        #region EVSE(Id, ChargingStation, ...)
+
+        /// <summary>
+        /// Create a new Electric Vehicle Supply Equipment (EVSE) having the given EVSE identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the EVSE.</param>
+        /// <param name="ChargingStation">The charging station hosting this EVSE.</param>
+        /// <param name="Configurator">A delegate to configure the newly created EVSE.</param>
+        /// <param name="RemoteEVSECreator">A delegate to attach a remote EVSE.</param>
+        /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
+        /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
+        /// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
+        /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
+        public EVSE(EVSE_Id                    Id,
+                    ChargingStation            ChargingStation,
+                    Action<EVSE>               Configurator             = null,
+                    RemoteEVSECreatorDelegate  RemoteEVSECreator        = null,
+                    EVSEAdminStatusTypes       InitialAdminStatus       = EVSEAdminStatusTypes.OutOfService,
+                    EVSEStatusTypes            InitialStatus            = EVSEStatusTypes.     OutOfService,
+                    UInt16                     MaxStatusListSize        = DefaultMaxEVSEStatusListSize,
+                    UInt16                     MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize)
+
+            : this(Id,
+                   Configurator,
+                   RemoteEVSECreator,
+                   InitialAdminStatus,
+                   InitialStatus,
+                   MaxAdminStatusListSize,
+                   MaxStatusListSize)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingStation == null)
+                throw new ArgumentNullException(nameof(ChargingStation),  "The charging station must not be null!");
+
+            #endregion
+
+            #region Init data and properties
+
+            this.ChargingStation  = ChargingStation;
+
+            #endregion
 
         }
 
@@ -798,7 +818,7 @@ namespace org.GraphDefined.WWCP
         /// Set the admin status.
         /// </summary>
         /// <param name="NewAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(EVSEAdminStatusType NewAdminStatus)
+        public void SetAdminStatus(EVSEAdminStatusTypes NewAdminStatus)
         {
             _AdminStatusSchedule.Insert(NewAdminStatus);
         }
@@ -811,7 +831,7 @@ namespace org.GraphDefined.WWCP
         /// Set the admin status.
         /// </summary>
         /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<EVSEAdminStatusType> NewTimestampedAdminStatus)
+        public void SetAdminStatus(Timestamped<EVSEAdminStatusTypes> NewTimestampedAdminStatus)
         {
             _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
         }
@@ -825,7 +845,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="NewAdminStatus">A new admin status.</param>
-        public void SetAdminStatus(EVSEAdminStatusType  NewAdminStatus,
+        public void SetAdminStatus(EVSEAdminStatusTypes  NewAdminStatus,
                                    DateTime             Timestamp)
         {
             _AdminStatusSchedule.Insert(NewAdminStatus, Timestamp);
@@ -840,7 +860,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
         /// <param name="ChangeMethod">The change mode.</param>
-        public void SetAdminStatus(IEnumerable<Timestamped<EVSEAdminStatusType>>  NewAdminStatusList,
+        public void SetAdminStatus(IEnumerable<Timestamped<EVSEAdminStatusTypes>>  NewAdminStatusList,
                                    ChangeMethods                                  ChangeMethod = ChangeMethods.Replace)
         {
             _AdminStatusSchedule.Insert(NewAdminStatusList, ChangeMethod);
@@ -885,8 +905,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="NewStatus">The new EVSE admin status.</param>
         internal async Task UpdateAdminStatus(DateTime                          Timestamp,
                                               EventTracking_Id                  EventTrackingId,
-                                              Timestamped<EVSEAdminStatusType>  OldStatus,
-                                              Timestamped<EVSEAdminStatusType>  NewStatus)
+                                              Timestamped<EVSEAdminStatusTypes>  OldStatus,
+                                              Timestamped<EVSEAdminStatusTypes>  NewStatus)
         {
 
             var OnAdminStatusChangedLocal = OnAdminStatusChanged;
@@ -1058,7 +1078,7 @@ namespace org.GraphDefined.WWCP
                                          Timestamp.Value,
                                          this,
                                          EventTrackingId,
-                                         _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
+                                         ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
                                          ReservationId,
                                          Id,
                                          StartTime,
@@ -1080,8 +1100,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
-                AdminStatus.Value == EVSEAdminStatusType.InternalUse)
+            if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
+                AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
             {
 
                 if (_RemoteEVSE != null)
@@ -1146,7 +1166,7 @@ namespace org.GraphDefined.WWCP
                                           Timestamp.Value,
                                           this,
                                           EventTrackingId,
-                                          _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
+                                          ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
                                           ReservationId,
                                           Id,
                                           StartTime,
@@ -1211,8 +1231,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
-                AdminStatus.Value == EVSEAdminStatusType.InternalUse)
+            if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
+                AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
             {
 
                 if (_Reservation == null)
@@ -1383,7 +1403,7 @@ namespace org.GraphDefined.WWCP
                                       Timestamp.Value,
                                       this,
                                       EventTrackingId,
-                                      _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
+                                      ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
                                       Id,
                                       ChargingProduct,
                                       ReservationId,
@@ -1401,8 +1421,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
-                AdminStatus.Value == EVSEAdminStatusType.InternalUse)
+            if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
+                AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
             {
 
                 if (_RemoteEVSE != null)
@@ -1457,7 +1477,7 @@ namespace org.GraphDefined.WWCP
                                         Timestamp.Value,
                                         this,
                                         EventTrackingId,
-                                        _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
+                                        ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
                                         Id,
                                         ChargingProduct,
                                         ReservationId,
@@ -1617,7 +1637,7 @@ namespace org.GraphDefined.WWCP
                                      Timestamp.Value,
                                      this,
                                      EventTrackingId,
-                                     _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
+                                     ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
                                      Id,
                                      SessionId,
                                      ReservationHandling,
@@ -1634,8 +1654,8 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (AdminStatus.Value == EVSEAdminStatusType.Operational ||
-                AdminStatus.Value == EVSEAdminStatusType.InternalUse)
+            if (AdminStatus.Value == EVSEAdminStatusTypes.Operational ||
+                AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
             {
 
                 if (_RemoteEVSE != null)
@@ -1686,7 +1706,7 @@ namespace org.GraphDefined.WWCP
                                         Timestamp.Value,
                                         this,
                                         EventTrackingId,
-                                        _ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
+                                        ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
                                         Id,
                                         SessionId,
                                         ReservationHandling,
@@ -2027,7 +2047,7 @@ namespace org.GraphDefined.WWCP
             /// <summary>
             /// The charging station admin status schedule.
             /// </summary>
-            public IEnumerable<Timestamped<EVSEAdminStatusType>> AdminStatusSchedule { get; set; }
+            public IEnumerable<Timestamped<EVSEAdminStatusTypes>> AdminStatusSchedule { get; set; }
 
             #endregion
 

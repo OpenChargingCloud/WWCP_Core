@@ -34,15 +34,24 @@ namespace org.GraphDefined.WWCP
     public class EVSEDataPull
     {
 
-        public IEnumerable<EVSE>                           EVSEs      { get; }
-        public IEnumerable<KeyValuePair<EVSE_Id, String>>  Warnings   { get; }
+        public IEnumerable<EVSE>    EVSEs      { get; }
+        public IEnumerable<String>  Warnings   { get; }
 
-        public EVSEDataPull(IEnumerable<EVSE>                           EVSEs,
-                            IEnumerable<KeyValuePair<EVSE_Id, String>>  Warnings = null)
+        public EVSEDataPull(IEnumerable<EVSE>    EVSEs,
+                            IEnumerable<String>  Warnings = null)
         {
 
             this.EVSEs     = EVSEs;
-            this.Warnings  = Warnings;
+            this.Warnings  = Warnings ?? new String[0];
+
+        }
+
+        public EVSEDataPull(IEnumerable<EVSE>  EVSEs,
+                            params String[]    Warnings)
+        {
+
+            this.EVSEs     = EVSEs;
+            this.Warnings  = Warnings ?? new String[0];
 
         }
 

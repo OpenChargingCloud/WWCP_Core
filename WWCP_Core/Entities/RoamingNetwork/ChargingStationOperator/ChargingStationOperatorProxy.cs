@@ -2236,7 +2236,7 @@ namespace org.GraphDefined.WWCP
         #region SetEVSEAdminStatus(EVSEId, NewAdminStatus)
 
         public void SetEVSEAdminStatus(EVSE_Id              EVSEId,
-                                       EVSEAdminStatusType  NewAdminStatus)
+                                       EVSEAdminStatusTypes  NewAdminStatus)
         {
 
             EVSE _EVSE = null;
@@ -2250,7 +2250,7 @@ namespace org.GraphDefined.WWCP
         #region SetEVSEAdminStatus(EVSEId, NewTimestampedAdminStatus)
 
         public void SetEVSEAdminStatus(EVSE_Id                           EVSEId,
-                                       Timestamped<EVSEAdminStatusType>  NewTimestampedAdminStatus)
+                                       Timestamped<EVSEAdminStatusTypes>  NewTimestampedAdminStatus)
         {
 
             EVSE _EVSE = null;
@@ -2264,7 +2264,7 @@ namespace org.GraphDefined.WWCP
         #region SetEVSEAdminStatus(EVSEId, NewAdminStatus, Timestamp)
 
         public void SetEVSEAdminStatus(EVSE_Id              EVSEId,
-                                       EVSEAdminStatusType  NewAdminStatus,
+                                       EVSEAdminStatusTypes  NewAdminStatus,
                                        DateTime             Timestamp)
         {
 
@@ -2279,7 +2279,7 @@ namespace org.GraphDefined.WWCP
         #region SetEVSEAdminStatus(EVSEId, AdminStatusList, ChangeMethod = ChangeMethods.Replace)
 
         public void SetEVSEAdminStatus(EVSE_Id                                        EVSEId,
-                                       IEnumerable<Timestamped<EVSEAdminStatusType>>  AdminStatusList,
+                                       IEnumerable<Timestamped<EVSEAdminStatusTypes>>  AdminStatusList,
                                        ChangeMethods                                  ChangeMethod  = ChangeMethods.Replace)
         {
 
@@ -2407,8 +2407,8 @@ namespace org.GraphDefined.WWCP
         internal async Task UpdateEVSEAdminStatus(DateTime                          Timestamp,
                                                   EventTracking_Id                  EventTrackingId,
                                                   EVSE                              EVSE,
-                                                  Timestamped<EVSEAdminStatusType>  OldStatus,
-                                                  Timestamped<EVSEAdminStatusType>  NewStatus)
+                                                  Timestamped<EVSEAdminStatusTypes>  OldStatus,
+                                                  Timestamped<EVSEAdminStatusTypes>  NewStatus)
         {
 
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;

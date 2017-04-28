@@ -27,6 +27,9 @@ using System.Threading.Tasks;
 namespace org.GraphDefined.WWCP
 {
 
+    public delegate IRemoteEVSE RemoteEVSECreatorDelegate(EVSE EVSE);
+
+
     /// <summary>
     /// A delegate called whenever the static data of the EVSE changed.
     /// </summary>
@@ -66,7 +69,7 @@ namespace org.GraphDefined.WWCP
     public delegate Task OnEVSEAdminStatusChangedDelegate(DateTime                          Timestamp,
                                                           EventTracking_Id                  EventTrackingId,
                                                           EVSE                              EVSE,
-                                                          Timestamped<EVSEAdminStatusType>  OldEVSEStatus,
-                                                          Timestamped<EVSEAdminStatusType>  NewEVSEStatus);
+                                                          Timestamped<EVSEAdminStatusTypes>  OldEVSEStatus,
+                                                          Timestamped<EVSEAdminStatusTypes>  NewEVSEStatus);
 
 }

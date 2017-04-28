@@ -51,8 +51,8 @@ namespace org.GraphDefined.WWCP
     public delegate Task OnRemoteEVSEAdminStatusChangedDelegate(DateTime                          Timestamp,
                                                                 EventTracking_Id                  EventTrackingId,
                                                                 IRemoteEVSE                       EVSE,
-                                                                Timestamped<EVSEAdminStatusType>  OldStatus,
-                                                                Timestamped<EVSEAdminStatusType>  NewStatus);
+                                                                Timestamped<EVSEAdminStatusTypes>  OldStatus,
+                                                                Timestamped<EVSEAdminStatusTypes>  NewStatus);
 
     /// <summary>
     /// A delegate called whenever the dynamic status of any subordinated EVSE changed.

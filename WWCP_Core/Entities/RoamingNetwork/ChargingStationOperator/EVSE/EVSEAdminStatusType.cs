@@ -21,7 +21,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The admin status of an EVSE.
     /// </summary>
-    public enum EVSEAdminStatusType
+    public enum EVSEAdminStatusTypes
     {
 
         /// <summary>

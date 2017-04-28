@@ -689,8 +689,8 @@ namespace org.GraphDefined.WWCP
         internal async Task UpdateEVSEAdminStatus(DateTime                          Timestamp,
                                                   EventTracking_Id                  EventTrackingId,
                                                   EVSE                              EVSE,
-                                                  Timestamped<EVSEAdminStatusType>  OldStatus,
-                                                  Timestamped<EVSEAdminStatusType>  NewStatus)
+                                                  Timestamped<EVSEAdminStatusTypes>  OldStatus,
+                                                  Timestamped<EVSEAdminStatusTypes>  NewStatus)
         {
 
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;

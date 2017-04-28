@@ -2919,7 +2919,7 @@ namespace org.GraphDefined.WWCP
         /// Return the admin status of all EVSEs registered within this roaming network.
         /// </summary>
 
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatus(UInt64 HistorySize)
+        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>> EVSEAdminStatus(UInt64 HistorySize)
 
             => _ChargingStationOperators.
                    SelectMany(cso =>
@@ -2927,7 +2927,7 @@ namespace org.GraphDefined.WWCP
                            pool.SelectMany(station =>
                                station.Select(evse =>
 
-                                   new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>(
+                                   new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>(
                                        evse.Id,
                                        evse.AdminStatusSchedule(HistorySize))
 
@@ -3084,7 +3084,7 @@ namespace org.GraphDefined.WWCP
         #region SetEVSEAdminStatus(EVSEId, NewStatus)
 
         public void SetEVSEAdminStatus(EVSE_Id                           EVSEId,
-                                       Timestamped<EVSEAdminStatusType>  NewAdminStatus)
+                                       Timestamped<EVSEAdminStatusTypes>  NewAdminStatus)
         {
 
             ChargingStationOperatorProxy _cso = null;
@@ -3100,7 +3100,7 @@ namespace org.GraphDefined.WWCP
 
         public void SetEVSEAdminStatus(EVSE_Id              EVSEId,
                                        DateTime             Timestamp,
-                                       EVSEAdminStatusType  NewAdminStatus)
+                                       EVSEAdminStatusTypes  NewAdminStatus)
         {
 
             ChargingStationOperatorProxy _cso = null;
@@ -3115,7 +3115,7 @@ namespace org.GraphDefined.WWCP
         #region SetEVSEAdminStatus(EVSEId, AdminStatusList)
 
         public void SetEVSEAdminStatus(EVSE_Id                                        EVSEId,
-                                       IEnumerable<Timestamped<EVSEAdminStatusType>>  AdminStatusList,
+                                       IEnumerable<Timestamped<EVSEAdminStatusTypes>>  AdminStatusList,
                                        ChangeMethods                                  ChangeMethod  = ChangeMethods.Replace)
         {
 
@@ -3463,8 +3463,8 @@ namespace org.GraphDefined.WWCP
         internal async Task UpdateEVSEAdminStatus(DateTime                          Timestamp,
                                                   EventTracking_Id                  EventTrackingId,
                                                   EVSE                              EVSE,
-                                                  Timestamped<EVSEAdminStatusType>  OldStatus,
-                                                  Timestamped<EVSEAdminStatusType>  NewStatus)
+                                                  Timestamped<EVSEAdminStatusTypes>  OldStatus,
+                                                  Timestamped<EVSEAdminStatusTypes>  NewStatus)
         {
 
             //Acknowledgement result = null;

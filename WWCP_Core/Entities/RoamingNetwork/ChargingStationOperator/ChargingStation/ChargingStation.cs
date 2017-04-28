@@ -1060,36 +1060,31 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
+        #region ChargingStation(Id, ...)
+
         /// <summary>
         /// Create a new charging station having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charging station pool.</param>
-        /// <param name="ChargingPool">The parent charging pool.</param>
-        /// <param name="MaxAdminStatusListSize">The default size of the admin status list.</param>
-        /// <param name="MaxStatusListSize">The default size of the status list.</param>
-        internal ChargingStation(ChargingStation_Id                    Id,
-                                 ChargingPool                          ChargingPool,
-                                 Action<ChargingStation>               Configurator                  = null,
-                                 RemoteChargingStationCreatorDelegate  RemoteChargingStationCreator  = null,
-                                 ChargingStationAdminStatusTypes       AdminStatus                   = ChargingStationAdminStatusTypes.Operational,
-                                 ChargingStationStatusTypes            Status                        = ChargingStationStatusTypes.Available,
-                                 UInt16                                MaxAdminStatusListSize        = DefaultMaxAdminStatusListSize,
-                                 UInt16                                MaxStatusListSize             = DefaultMaxStatusListSize)
+        /// <param name="Configurator">A delegate to configure the newly created charging station.</param>
+        /// <param name="RemoteChargingStationCreator">A delegate to attach a remote charging station.</param>
+        /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
+        /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
+        /// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
+        /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
+        public ChargingStation(ChargingStation_Id                    Id,
+                               Action<ChargingStation>               Configurator                  = null,
+                               RemoteChargingStationCreatorDelegate  RemoteChargingStationCreator  = null,
+                               ChargingStationAdminStatusTypes       InitialAdminStatus            = ChargingStationAdminStatusTypes.Operational,
+                               ChargingStationStatusTypes            InitialStatus                 = ChargingStationStatusTypes.Available,
+                               UInt16                                MaxAdminStatusListSize        = DefaultMaxAdminStatusListSize,
+                               UInt16                                MaxStatusListSize             = DefaultMaxStatusListSize)
 
             : base(Id)
 
         {
 
-            #region Initial checks
-
-            if (ChargingPool == null)
-                throw new ArgumentNullException(nameof(ChargingPool),  "The charging pool must not be null!");
-
-            #endregion
-
             #region Init data and properties
-
-            this.ChargingPool               = ChargingPool;
 
             this._EVSEs                      = new EntityHashSet<ChargingStation, EVSE_Id, EVSE>(this);
 
@@ -1111,6 +1106,8 @@ namespace org.GraphDefined.WWCP
             this._StatusSchedule.Insert(Status);
 
             #endregion
+
+            Configurator?.Invoke(this);
 
             #region Init events
 
@@ -1150,9 +1147,56 @@ namespace org.GraphDefined.WWCP
 
             this.OnPropertyChanged += UpdateData;
 
-            Configurator?.Invoke(this);
-
             this.RemoteChargingStation = RemoteChargingStationCreator?.Invoke(this);
+
+        }
+
+        #endregion
+
+        #region ChargingStation(Id, ChargingPool, ...)
+
+        /// <summary>
+        /// Create a new charging station having the given identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charging station pool.</param>
+        /// <param name="ChargingPool">The parent charging pool.</param>
+        /// <param name="Configurator">A delegate to configure the newly created charging station.</param>
+        /// <param name="RemoteChargingStationCreator">A delegate to attach a remote charging station.</param>
+        /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
+        /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
+        /// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
+        /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
+        public ChargingStation(ChargingStation_Id                    Id,
+                               ChargingPool                          ChargingPool,
+                               Action<ChargingStation>               Configurator                   = null,
+                               RemoteChargingStationCreatorDelegate  RemoteChargingStationCreator   = null,
+                               ChargingStationAdminStatusTypes       InitialAdminStatus             = ChargingStationAdminStatusTypes.Operational,
+                               ChargingStationStatusTypes            InitialStatus                  = ChargingStationStatusTypes.Available,
+                               UInt16                                MaxAdminStatusListSize         = DefaultMaxAdminStatusListSize,
+                               UInt16                                MaxStatusListSize              = DefaultMaxStatusListSize)
+
+            : this(Id,
+                   Configurator,
+                   RemoteChargingStationCreator,
+                   InitialAdminStatus,
+                   InitialStatus,
+                   MaxAdminStatusListSize,
+                   MaxStatusListSize)
+
+        {
+
+            #region Initial checks
+
+            if (ChargingPool == null)
+                throw new ArgumentNullException(nameof(ChargingPool),  "The charging pool must not be null!");
+
+            #endregion
+
+            #region Init data and properties
+
+            this.ChargingPool  = ChargingPool;
+
+            #endregion
 
         }
 
@@ -1365,9 +1409,9 @@ namespace org.GraphDefined.WWCP
         /// Return the admin status of all EVSEs registered within this charging station.
         /// </summary>
 
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>> EVSEAdminStatus(UInt64 HistorySize)
+        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>> EVSEAdminStatus(UInt64 HistorySize)
 
-            => _EVSEs.Select(evse => new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusType>>>(evse.Id,
+            => _EVSEs.Select(evse => new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>(evse.Id,
                                                                                                               evse.AdminStatusSchedule(HistorySize)));
 
         #endregion
@@ -1649,8 +1693,8 @@ namespace org.GraphDefined.WWCP
         internal async Task UpdateEVSEAdminStatus(DateTime                          Timestamp,
                                                   EventTracking_Id                  EventTrackingId,
                                                   EVSE                              EVSE,
-                                                  Timestamped<EVSEAdminStatusType>  OldStatus,
-                                                  Timestamped<EVSEAdminStatusType>  NewStatus)
+                                                  Timestamped<EVSEAdminStatusTypes>  OldStatus,
+                                                  Timestamped<EVSEAdminStatusTypes>  NewStatus)
         {
 
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
