@@ -71,7 +71,7 @@ namespace org.GraphDefined.WWCP
         /// The charging tariff operator of this charging tariff.
         /// </summary>
         [InternalUseOnly]
-        public ChargingStationOperatorProxy  Operator   { get; }
+        public ChargingStationOperator  Operator   { get; }
 
         #endregion
 
@@ -82,7 +82,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the charging tariff pool.</param>
         internal ChargingTariff(ChargingTariff_Id        Id,
-                                ChargingStationOperatorProxy  Operator)
+                                ChargingStationOperator  Operator)
 
             : base(Id)
 

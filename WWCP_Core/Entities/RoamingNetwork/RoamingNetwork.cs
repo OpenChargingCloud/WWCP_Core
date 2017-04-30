@@ -229,7 +229,7 @@ namespace org.GraphDefined.WWCP
             this._Name                                              = Description ?? new I18NString();
             this._Description                                       = Description ?? new I18NString();
 
-            this._ChargingStationOperators                          = new EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperatorProxy>(this);
+            this._ChargingStationOperators                          = new EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator>(this);
             this._ParkingOperators                                  = new EntityHashSet<RoamingNetwork, ParkingOperator_Id,         ParkingOperator>        (this);
             this._eMobilityProviders                                = new EntityHashSet<RoamingNetwork, eMobilityProvider_Id,       eMobilityProviderProxy>      (this);
             this._SmartCities                                       = new EntityHashSet<RoamingNetwork, SmartCity_Id,               SmartCityProxy>              (this);
@@ -238,7 +238,7 @@ namespace org.GraphDefined.WWCP
 
             this._ChargingStationOperatorRoamingProviders           = new ConcurrentDictionary<CSORoamingProvider_Id, ICSORoamingProvider>();
             this._EMPRoamingProviders                               = new ConcurrentDictionary<EMPRoamingProvider_Id, IEMPRoamingProvider>();
-            this._ChargingReservations_AtChargingStationOperators   = new ConcurrentDictionary<ChargingReservation_Id, ChargingStationOperatorProxy>();
+            this._ChargingReservations_AtChargingStationOperators   = new ConcurrentDictionary<ChargingReservation_Id, ChargingStationOperator>();
             this._ChargingReservations_AtEMPRoamingProviders        = new ConcurrentDictionary<ChargingReservation_Id, IEMPRoamingProvider>();
 
             this._eMobilityRoamingServices                          = new ConcurrentDictionary<UInt32, IEMPRoamingProvider>();
@@ -271,8 +271,8 @@ namespace org.GraphDefined.WWCP
             this.EMPRoamingProviderRemoval   = new VotingNotificator<RoamingNetwork, IEMPRoamingProvider, Boolean>(() => new VetoVote(), true);
 
             // cso events
-            this.ChargingPoolAddition        = new VotingNotificator<DateTime, ChargingStationOperatorProxy, ChargingPool, Boolean>(() => new VetoVote(), true);
-            this.ChargingPoolRemoval         = new VotingNotificator<DateTime, ChargingStationOperatorProxy, ChargingPool, Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolAddition        = new VotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
+            this.ChargingPoolRemoval         = new VotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean>(() => new VetoVote(), true);
 
             // ChargingPool events
             this.ChargingStationAddition     = new VotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
@@ -411,12 +411,12 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingStationOperators
 
-        private readonly EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperatorProxy> _ChargingStationOperators;
+        private readonly EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator> _ChargingStationOperators;
 
         /// <summary>
         /// Return all Charging Station Operators registered within this roaming network.
         /// </summary>
-        public IEnumerable<ChargingStationOperatorProxy> ChargingStationOperators
+        public IEnumerable<ChargingStationOperator> ChargingStationOperators
 
             => _ChargingStationOperators;
 
@@ -454,7 +454,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Called whenever a charging station operator will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, ChargingStationOperatorProxy, Boolean> OnChargingStationOperatorAddition
+        public IVotingSender<DateTime, RoamingNetwork, ChargingStationOperator, Boolean> OnChargingStationOperatorAddition
             => _ChargingStationOperators.OnAddition;
 
         #endregion
@@ -464,7 +464,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Called whenever charging station operator will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, ChargingStationOperatorProxy, Boolean> OnChargingStationOperatorRemoval
+        public IVotingSender<DateTime, RoamingNetwork, ChargingStationOperator, Boolean> OnChargingStationOperatorRemoval
             => _ChargingStationOperators.OnRemoval;
 
         #endregion
@@ -472,16 +472,16 @@ namespace org.GraphDefined.WWCP
 
         #region CreateChargingStationOperator(ChargingStationOperatorId, Name = null, Description = null, Configurator = null, OnSuccess = null, OnError = null)
 
-        public ChargingStationOperatorProxy
+        public ChargingStationOperator
 
             CreateChargingStationOperator(ChargingStationOperator_Id                          ChargingStationOperatorId,
                                           I18NString                                          Name                                  = null,
                                           I18NString                                          Description                           = null,
-                                          Action<ChargingStationOperatorProxy>                Configurator                          = null,
+                                          Action<ChargingStationOperator>                Configurator                          = null,
                                           RemoteChargingStationOperatorCreatorDelegate        RemoteChargingStationOperatorCreator  = null,
                                           ChargingStationOperatorAdminStatusType              AdminStatus                           = ChargingStationOperatorAdminStatusType.Operational,
                                           ChargingStationOperatorStatusType                   Status                                = ChargingStationOperatorStatusType.Available,
-                                          Action<ChargingStationOperatorProxy>                OnSuccess                             = null,
+                                          Action<ChargingStationOperator>                OnSuccess                             = null,
                                           Action<RoamingNetwork, ChargingStationOperator_Id>  OnError                               = null)
 
                 => CreateChargingStationOperator(new ChargingStationOperator_Id[] { ChargingStationOperatorId },
@@ -505,16 +505,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging station operator before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging station operator after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging station operator failed.</param>
-        public ChargingStationOperatorProxy
+        public ChargingStationOperator
 
             CreateChargingStationOperator(IEnumerable<ChargingStationOperator_Id>             ChargingStationOperatorIds,
                                           I18NString                                          Name                                  = null,
                                           I18NString                                          Description                           = null,
-                                          Action<ChargingStationOperatorProxy>                Configurator                          = null,
+                                          Action<ChargingStationOperator>                Configurator                          = null,
                                           RemoteChargingStationOperatorCreatorDelegate        RemoteChargingStationOperatorCreator  = null,
                                           ChargingStationOperatorAdminStatusType              AdminStatus                           = ChargingStationOperatorAdminStatusType.Operational,
                                           ChargingStationOperatorStatusType                   Status                                = ChargingStationOperatorStatusType.Available,
-                                          Action<ChargingStationOperatorProxy>                OnSuccess                             = null,
+                                          Action<ChargingStationOperator>                OnSuccess                             = null,
                                           Action<RoamingNetwork, ChargingStationOperator_Id>  OnError                               = null)
 
         {
@@ -538,7 +538,7 @@ namespace org.GraphDefined.WWCP
                 }
 
 
-                var _ChargingStationOperator = new ChargingStationOperatorProxy(ChargingStationOperatorIds,
+                var _ChargingStationOperator = new ChargingStationOperator(ChargingStationOperatorIds,
                                                                            this,
                                                                            Configurator,
                                                                            RemoteChargingStationOperatorCreator,
@@ -598,7 +598,7 @@ namespace org.GraphDefined.WWCP
         /// Check if the given ChargingStationOperator is already present within the roaming network.
         /// </summary>
         /// <param name="ChargingStationOperator">An Charging Station Operator.</param>
-        public Boolean ContainsChargingStationOperator(ChargingStationOperatorProxy ChargingStationOperator)
+        public Boolean ContainsChargingStationOperator(ChargingStationOperator ChargingStationOperator)
 
             => _ChargingStationOperators.ContainsId(ChargingStationOperator.Id);
 
@@ -618,7 +618,7 @@ namespace org.GraphDefined.WWCP
 
         #region GetChargingStationOperatorById(ChargingStationOperatorId)
 
-        public ChargingStationOperatorProxy GetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId)
+        public ChargingStationOperator GetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId)
 
              => _ChargingStationOperators.GetById(ChargingStationOperatorId);
 
@@ -626,11 +626,11 @@ namespace org.GraphDefined.WWCP
 
         #region TryGetChargingStationOperatorById(ChargingStationOperatorId, out ChargingStationOperator)
 
-        public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId, out ChargingStationOperatorProxy ChargingStationOperator)
+        public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id ChargingStationOperatorId, out ChargingStationOperator ChargingStationOperator)
 
             => _ChargingStationOperators.TryGet(ChargingStationOperatorId, out ChargingStationOperator);
 
-        public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, out ChargingStationOperatorProxy ChargingStationOperator)
+        public Boolean TryGetChargingStationOperatorById(ChargingStationOperator_Id? ChargingStationOperatorId, out ChargingStationOperator ChargingStationOperator)
         {
 
             if (!ChargingStationOperatorId.HasValue)
@@ -647,10 +647,10 @@ namespace org.GraphDefined.WWCP
 
         #region RemoveChargingStationOperator(ChargingStationOperatorId)
 
-        public ChargingStationOperatorProxy RemoveChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId)
+        public ChargingStationOperator RemoveChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId)
         {
 
-            ChargingStationOperatorProxy _ChargingStationOperator = null;
+            ChargingStationOperator _ChargingStationOperator = null;
 
             if (_ChargingStationOperators.TryRemove(ChargingStationOperatorId, out _ChargingStationOperator))
                 return _ChargingStationOperator;
@@ -663,7 +663,7 @@ namespace org.GraphDefined.WWCP
 
         #region TryRemoveChargingStationOperator(RemoveChargingStationOperatorId, out RemoveChargingStationOperator)
 
-        public Boolean TryRemoveChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId, out ChargingStationOperatorProxy ChargingStationOperator)
+        public Boolean TryRemoveChargingStationOperator(ChargingStationOperator_Id ChargingStationOperatorId, out ChargingStationOperator ChargingStationOperator)
 
             => _ChargingStationOperators.TryRemove(ChargingStationOperatorId, out ChargingStationOperator);
 
@@ -701,7 +701,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
         internal async Task UpdateData(DateTime      Timestamp,
-                                                   ChargingStationOperatorProxy  cso,
+                                                   ChargingStationOperator  cso,
                                                    String        PropertyName,
                                                    Object        OldValue,
                                                    Object        NewValue)
@@ -725,7 +725,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="OldStatus">The old aggreagted Charging Station Operator status.</param>
         /// <param name="NewStatus">The new aggreagted Charging Station Operator status.</param>
         internal async Task UpdateStatus(DateTime                             Timestamp,
-                                         ChargingStationOperatorProxy                         cso,
+                                         ChargingStationOperator                         cso,
                                          Timestamped<ChargingStationOperatorStatusType>  OldStatus,
                                          Timestamped<ChargingStationOperatorStatusType>  NewStatus)
         {
@@ -772,7 +772,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="OldStatus">The old aggreagted Charging Station Operator status.</param>
         /// <param name="NewStatus">The new aggreagted Charging Station Operator status.</param>
         internal async Task UpdateAdminStatus(DateTime                                  Timestamp,
-                                              ChargingStationOperatorProxy                              cso,
+                                              ChargingStationOperator                              cso,
                                               Timestamped<ChargingStationOperatorAdminStatusType>  OldStatus,
                                               Timestamped<ChargingStationOperatorAdminStatusType>  NewStatus)
         {
@@ -2277,7 +2277,7 @@ namespace org.GraphDefined.WWCP
         public Boolean ContainsChargingPool(ChargingPool ChargingPool)
         {
 
-            ChargingStationOperatorProxy _ChargingStationOperator  = null;
+            ChargingStationOperator _ChargingStationOperator  = null;
 
             if (TryGetChargingStationOperatorById(ChargingPool.Operator.Id, out _ChargingStationOperator))
                 return _ChargingStationOperator.ContainsChargingPool(ChargingPool.Id);
@@ -2297,7 +2297,7 @@ namespace org.GraphDefined.WWCP
         public Boolean ContainsChargingPool(ChargingPool_Id ChargingPoolId)
         {
 
-            ChargingStationOperatorProxy _ChargingStationOperator  = null;
+            ChargingStationOperator _ChargingStationOperator  = null;
 
             if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out _ChargingStationOperator))
                 return _ChargingStationOperator.ContainsChargingPool(ChargingPoolId);
@@ -2314,7 +2314,7 @@ namespace org.GraphDefined.WWCP
         {
 
             ChargingPool            _ChargingPool             = null;
-            ChargingStationOperatorProxy _ChargingStationOperator  = null;
+            ChargingStationOperator _ChargingStationOperator  = null;
 
             if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out _ChargingStationOperator) &&
                 _ChargingStationOperator.TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
@@ -2331,7 +2331,7 @@ namespace org.GraphDefined.WWCP
         public Boolean TryGetChargingPoolbyId(ChargingPool_Id ChargingPoolId, out ChargingPool ChargingPool)
         {
 
-            ChargingStationOperatorProxy _ChargingStationOperator  = null;
+            ChargingStationOperator _ChargingStationOperator  = null;
 
             if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out _ChargingStationOperator))
                 return _ChargingStationOperator.TryGetChargingPoolbyId(ChargingPoolId, out ChargingPool);
@@ -2349,7 +2349,7 @@ namespace org.GraphDefined.WWCP
                                                IEnumerable<Timestamped<ChargingPoolAdminStatusType>>  StatusList)
         {
 
-            ChargingStationOperatorProxy _cso  = null;
+            ChargingStationOperator _cso  = null;
 
             if (TryGetChargingStationOperatorById(ChargingPoolId.OperatorId, out _cso))
                 _cso.SetChargingPoolAdminStatus(ChargingPoolId, StatusList);
@@ -2405,12 +2405,12 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingPoolAddition
 
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperatorProxy, ChargingPool, Boolean> ChargingPoolAddition;
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean> ChargingPoolAddition;
 
         /// <summary>
         /// Called whenever an EVS pool will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperatorProxy, ChargingPool, Boolean> OnChargingPoolAddition
+        public IVotingSender<DateTime, ChargingStationOperator, ChargingPool, Boolean> OnChargingPoolAddition
 
             => ChargingPoolAddition;
 
@@ -2418,12 +2418,12 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingPoolRemoval
 
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperatorProxy, ChargingPool, Boolean> ChargingPoolRemoval;
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean> ChargingPoolRemoval;
 
         /// <summary>
         /// Called whenever an EVS pool will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperatorProxy, ChargingPool, Boolean> OnChargingPoolRemoval
+        public IVotingSender<DateTime, ChargingStationOperator, ChargingPool, Boolean> OnChargingPoolRemoval
 
             => ChargingPoolRemoval;
 
@@ -2605,7 +2605,7 @@ namespace org.GraphDefined.WWCP
         public Boolean ContainsChargingStation(ChargingStation ChargingStation)
         {
 
-            ChargingStationOperatorProxy _ChargingStationOperator  = null;
+            ChargingStationOperator _ChargingStationOperator  = null;
 
             if (TryGetChargingStationOperatorById(ChargingStation.Operator.Id, out _ChargingStationOperator))
                 return _ChargingStationOperator.ContainsChargingStation(ChargingStation.Id);
@@ -2625,7 +2625,7 @@ namespace org.GraphDefined.WWCP
         public Boolean ContainsChargingStation(ChargingStation_Id ChargingStationId)
         {
 
-            ChargingStationOperatorProxy _ChargingStationOperator  = null;
+            ChargingStationOperator _ChargingStationOperator  = null;
 
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out _ChargingStationOperator))
                 return _ChargingStationOperator.ContainsChargingStation(ChargingStationId);
@@ -2642,7 +2642,7 @@ namespace org.GraphDefined.WWCP
         {
 
             ChargingStation         _ChargingStation          = null;
-            ChargingStationOperatorProxy _ChargingStationOperator  = null;
+            ChargingStationOperator _ChargingStationOperator  = null;
 
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out _ChargingStationOperator) &&
                 _ChargingStationOperator.TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
@@ -2659,7 +2659,7 @@ namespace org.GraphDefined.WWCP
         public Boolean TryGetChargingStationbyId(ChargingStation_Id ChargingStationId, out ChargingStation ChargingStation)
         {
 
-            ChargingStationOperatorProxy _ChargingStationOperator  = null;
+            ChargingStationOperator _ChargingStationOperator  = null;
 
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out _ChargingStationOperator))
                 return _ChargingStationOperator.TryGetChargingStationbyId(ChargingStationId, out ChargingStation);
@@ -2677,7 +2677,7 @@ namespace org.GraphDefined.WWCP
                                              Timestamped<ChargingStationStatusTypes>  CurrentStatus)
         {
 
-            ChargingStationOperatorProxy _cso  = null;
+            ChargingStationOperator _cso  = null;
 
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out _cso))
                 _cso.SetChargingStationStatus(ChargingStationId, CurrentStatus);
@@ -2692,7 +2692,7 @@ namespace org.GraphDefined.WWCP
                                                   Timestamped<ChargingStationAdminStatusTypes>  CurrentStatus)
         {
 
-            ChargingStationOperatorProxy _cso  = null;
+            ChargingStationOperator _cso  = null;
 
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out _cso))
                 _cso.SetChargingStationAdminStatus(ChargingStationId, CurrentStatus);
@@ -2707,7 +2707,7 @@ namespace org.GraphDefined.WWCP
                                                   IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>  StatusList)
         {
 
-            ChargingStationOperatorProxy _cso  = null;
+            ChargingStationOperator _cso  = null;
 
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out _cso))
                 _cso.SetChargingStationAdminStatus(ChargingStationId, StatusList);
@@ -2966,7 +2966,7 @@ namespace org.GraphDefined.WWCP
         public Boolean ContainsEVSE(EVSE EVSE)
         {
 
-            ChargingStationOperatorProxy _ChargingStationOperator  = null;
+            ChargingStationOperator _ChargingStationOperator  = null;
 
             if (TryGetChargingStationOperatorById(EVSE.Operator.Id, out _ChargingStationOperator))
                 return _ChargingStationOperator.ContainsEVSE(EVSE.Id);
@@ -2986,7 +2986,7 @@ namespace org.GraphDefined.WWCP
         public Boolean ContainsEVSE(EVSE_Id EVSEId)
         {
 
-            ChargingStationOperatorProxy _ChargingStationOperator  = null;
+            ChargingStationOperator _ChargingStationOperator  = null;
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _ChargingStationOperator))
                 return _ChargingStationOperator.ContainsEVSE(EVSEId);
@@ -3003,7 +3003,7 @@ namespace org.GraphDefined.WWCP
         {
 
             EVSE                    _EVSE                     = null;
-            ChargingStationOperatorProxy _ChargingStationOperator  = null;
+            ChargingStationOperator _ChargingStationOperator  = null;
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _ChargingStationOperator) &&
                 _ChargingStationOperator.TryGetEVSEbyId(EVSEId, out _EVSE))
@@ -3020,7 +3020,7 @@ namespace org.GraphDefined.WWCP
         public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
         {
 
-            ChargingStationOperatorProxy _ChargingStationOperator  = null;
+            ChargingStationOperator _ChargingStationOperator  = null;
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _ChargingStationOperator))
                 return _ChargingStationOperator.TryGetEVSEbyId(EVSEId, out EVSE);
@@ -3039,7 +3039,7 @@ namespace org.GraphDefined.WWCP
                                   Timestamped<EVSEStatusTypes>  NewStatus)
         {
 
-            ChargingStationOperatorProxy _cso = null;
+            ChargingStationOperator _cso = null;
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _cso))
                 _cso.SetEVSEStatus(EVSEId, NewStatus);
@@ -3055,7 +3055,7 @@ namespace org.GraphDefined.WWCP
                                   EVSEStatusTypes  NewStatus)
         {
 
-            ChargingStationOperatorProxy _cso = null;
+            ChargingStationOperator _cso = null;
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _cso))
                 _cso.SetEVSEStatus(EVSEId, NewStatus);
@@ -3071,7 +3071,7 @@ namespace org.GraphDefined.WWCP
                                   ChangeMethods                             ChangeMethod  = ChangeMethods.Replace)
         {
 
-            ChargingStationOperatorProxy _cso = null;
+            ChargingStationOperator _cso = null;
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _cso))
                 _cso.SetEVSEStatus(EVSEId, StatusList, ChangeMethod);
@@ -3087,7 +3087,7 @@ namespace org.GraphDefined.WWCP
                                        Timestamped<EVSEAdminStatusTypes>  NewAdminStatus)
         {
 
-            ChargingStationOperatorProxy _cso = null;
+            ChargingStationOperator _cso = null;
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _cso))
                 _cso.SetEVSEAdminStatus(EVSEId, NewAdminStatus);
@@ -3103,7 +3103,7 @@ namespace org.GraphDefined.WWCP
                                        EVSEAdminStatusTypes  NewAdminStatus)
         {
 
-            ChargingStationOperatorProxy _cso = null;
+            ChargingStationOperator _cso = null;
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _cso))
                 _cso.SetEVSEAdminStatus(EVSEId, NewAdminStatus);
@@ -3119,7 +3119,7 @@ namespace org.GraphDefined.WWCP
                                        ChangeMethods                                  ChangeMethod  = ChangeMethods.Replace)
         {
 
-            ChargingStationOperatorProxy _cso = null;
+            ChargingStationOperator _cso = null;
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _cso))
                 _cso.SetEVSEAdminStatus(EVSEId, AdminStatusList, ChangeMethod);
@@ -3528,7 +3528,7 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingReservations
 
-        private readonly ConcurrentDictionary<ChargingReservation_Id, ChargingStationOperatorProxy>  _ChargingReservations_AtChargingStationOperators;
+        private readonly ConcurrentDictionary<ChargingReservation_Id, ChargingStationOperator>  _ChargingReservations_AtChargingStationOperators;
         private readonly ConcurrentDictionary<ChargingReservation_Id, IEMPRoamingProvider>          _ChargingReservations_AtEMPRoamingProviders;
 
         /// <summary>
@@ -3625,7 +3625,7 @@ namespace org.GraphDefined.WWCP
             if (EVSEId == null)
                 throw new ArgumentNullException(nameof(EVSEId),  "The given EVSE identification must not be null!");
 
-            ChargingStationOperatorProxy _ChargingStationOperator  = null;
+            ChargingStationOperator _ChargingStationOperator  = null;
             ReservationResult       result                    = null;
 
             if (!Timestamp.HasValue)
@@ -3826,7 +3826,7 @@ namespace org.GraphDefined.WWCP
             if (ChargingStationId == null)
                 throw new ArgumentNullException(nameof(ChargingStationId),  "The given charging station identification must not be null!");
 
-            ChargingStationOperatorProxy _ChargingStationOperator  = null;
+            ChargingStationOperator _ChargingStationOperator  = null;
             ReservationResult       result                    = null;
 
             if (!Timestamp.HasValue)
@@ -3987,7 +3987,7 @@ namespace org.GraphDefined.WWCP
             if (ChargingPoolId == null)
                 throw new ArgumentNullException(nameof(ChargingPoolId),  "The given charging pool identification must not be null!");
 
-            ChargingStationOperatorProxy _ChargingStationOperator  = null;
+            ChargingStationOperator _ChargingStationOperator  = null;
             ReservationResult       result                    = null;
 
             if (!Timestamp.HasValue)
@@ -4130,7 +4130,7 @@ namespace org.GraphDefined.WWCP
         public Boolean TryGetReservationById(ChargingReservation_Id ReservationId, out ChargingReservation Reservation)
         {
 
-            ChargingStationOperatorProxy _cso = null;
+            ChargingStationOperator _cso = null;
 
             if (_ChargingReservations_AtChargingStationOperators.TryGetValue(ReservationId, out _cso))
                 return _cso.TryGetReservationById(ReservationId, out Reservation);
@@ -4173,7 +4173,7 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            ChargingStationOperatorProxy _ChargingStationOperator  = null;
+            ChargingStationOperator _ChargingStationOperator  = null;
             CancelReservationResult result                    = null;
 
             if (!Timestamp.HasValue)
@@ -4329,7 +4329,7 @@ namespace org.GraphDefined.WWCP
                                                  TimeSpan?                              RequestTimeout)
         {
 
-            ChargingStationOperatorProxy _Operator = null;
+            ChargingStationOperator _Operator = null;
 
             _ChargingReservations_AtChargingStationOperators.TryRemove(ReservationId, out _Operator);
 
@@ -4457,7 +4457,7 @@ namespace org.GraphDefined.WWCP
 
             #region Try to lookup the charging station operator given in the EVSE identification...
 
-            ChargingStationOperatorProxy _ChargingStationOperator;
+            ChargingStationOperator _ChargingStationOperator;
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _ChargingStationOperator))
             {
@@ -4643,7 +4643,7 @@ namespace org.GraphDefined.WWCP
 
             #region Try to lookup the charging station operator given in the charging station identification...
 
-            ChargingStationOperatorProxy _ChargingStationOperator;
+            ChargingStationOperator _ChargingStationOperator;
 
             if (TryGetChargingStationOperatorById(ChargingStationId.OperatorId, out _ChargingStationOperator))
             {
@@ -6863,7 +6863,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            ChargingStationOperatorProxy _cso = null;
+            ChargingStationOperator _cso = null;
 
             //if (_ChargingSessions_RFID.TryRemove(ChargingSession.Id, out _cso))
             //{
@@ -7111,7 +7111,7 @@ namespace org.GraphDefined.WWCP
                 var UpstreamRoamingProviders  = new Dictionary<IEMPRoamingProvider,   List<ChargeDetailRecord>>();
                 var UnknownCDRTargets         = new List<ChargeDetailRecord>();
 
-                ChargingStationOperatorProxy _Operator;
+                ChargingStationOperator _Operator;
                 ChargingSession         _ChargingSession;
                 IEMPRoamingProvider     _EMPRoamingProvider;
 
@@ -7309,7 +7309,7 @@ namespace org.GraphDefined.WWCP
         public ParkingSpace CreateParkingSpace(ParkingSpace_Id                                   ParkingSpaceId,
                                                Action<ParkingSpace>                              Configurator   = null,
                                                Action<ParkingSpace>                              OnSuccess      = null,
-                                               Action<ChargingStationOperatorProxy, ParkingSpace_Id>  OnError        = null)
+                                               Action<ChargingStationOperator, ParkingSpace_Id>  OnError        = null)
         {
 
             var _ParkingSpace = new ParkingSpace(ParkingSpaceId);

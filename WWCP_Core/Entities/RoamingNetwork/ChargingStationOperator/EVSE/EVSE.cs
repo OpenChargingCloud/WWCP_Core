@@ -536,7 +536,7 @@ namespace org.GraphDefined.WWCP
         /// The operator of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public ChargingStationOperatorProxy Operator
+        public ChargingStationOperator Operator
         {
             get
             {

@@ -1052,7 +1052,7 @@ namespace org.GraphDefined.WWCP
         /// The Charging Station Operator of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public ChargingStationOperatorProxy  Operator
+        public ChargingStationOperator  Operator
 
             => ChargingPool?.Operator;
 

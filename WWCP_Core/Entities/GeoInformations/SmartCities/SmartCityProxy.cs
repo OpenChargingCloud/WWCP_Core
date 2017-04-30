@@ -1675,7 +1675,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<Acknowledgement>
 
-            ISendData.SetStaticData(ChargingStationOperatorProxy  ChargingStationOperator,
+            ISendData.SetStaticData(ChargingStationOperator  ChargingStationOperator,
 
                                           DateTime?                Timestamp,
                                           CancellationToken?       CancellationToken,
@@ -1710,7 +1710,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<Acknowledgement>
 
-            ISendData.AddStaticData(ChargingStationOperatorProxy  ChargingStationOperator,
+            ISendData.AddStaticData(ChargingStationOperator  ChargingStationOperator,
 
                                           DateTime?                Timestamp,
                                           CancellationToken?       CancellationToken,
@@ -1745,7 +1745,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<Acknowledgement>
 
-            ISendData.UpdateStaticData(ChargingStationOperatorProxy  ChargingStationOperator,
+            ISendData.UpdateStaticData(ChargingStationOperator  ChargingStationOperator,
 
                                              DateTime?                Timestamp,
                                              CancellationToken?       CancellationToken,
@@ -1780,7 +1780,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<Acknowledgement>
 
-            ISendData.DeleteStaticData(ChargingStationOperatorProxy  ChargingStationOperator,
+            ISendData.DeleteStaticData(ChargingStationOperator  ChargingStationOperator,
 
                                              DateTime?                Timestamp,
                                              CancellationToken?       CancellationToken,
@@ -1816,7 +1816,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<Acknowledgement>
 
-            ISendData.SetStaticData(IEnumerable<ChargingStationOperatorProxy>  ChargingStationOperators,
+            ISendData.SetStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                                           DateTime?                             Timestamp,
                                           CancellationToken?                    CancellationToken,
@@ -1851,7 +1851,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<Acknowledgement>
 
-            ISendData.AddStaticData(IEnumerable<ChargingStationOperatorProxy>  ChargingStationOperators,
+            ISendData.AddStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                                           DateTime?                             Timestamp,
                                           CancellationToken?                    CancellationToken,
@@ -1887,7 +1887,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<Acknowledgement>
 
-            ISendData.UpdateStaticData(IEnumerable<ChargingStationOperatorProxy>  ChargingStationOperators,
+            ISendData.UpdateStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                                              DateTime?                             Timestamp,
                                              CancellationToken?                    CancellationToken,
@@ -1922,7 +1922,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         async Task<Acknowledgement>
 
-            ISendData.DeleteStaticData(IEnumerable<ChargingStationOperatorProxy>  ChargingStationOperators,
+            ISendData.DeleteStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                                              DateTime?                             Timestamp,
                                              CancellationToken?                    CancellationToken,

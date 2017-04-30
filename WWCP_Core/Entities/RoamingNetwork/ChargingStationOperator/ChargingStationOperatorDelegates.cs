@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 namespace org.GraphDefined.WWCP
 {
 
-    public delegate IRemoteChargingStationOperator RemoteChargingStationOperatorCreatorDelegate(ChargingStationOperatorProxy ChargingStationOperator);
+    public delegate IRemoteChargingStationOperator RemoteChargingStationOperatorCreatorDelegate(ChargingStationOperator ChargingStationOperator);
 
     public delegate String ChargingStationOperatorNameSelectorDelegate(I18NString I18NText);
 
@@ -41,7 +41,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
     public delegate Task OnChargingStationOperatorDataChangedDelegate(DateTime                 Timestamp,
-                                                                      ChargingStationOperatorProxy  EVSEOperator,
+                                                                      ChargingStationOperator  EVSEOperator,
                                                                       String                   PropertyName,
                                                                       Object                   OldValue,
                                                                       Object                   NewValue);
@@ -54,7 +54,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="OldStatus">The old timestamped status of the Charging Station Operator.</param>
     /// <param name="NewStatus">The new timestamped status of the Charging Station Operator.</param>
     public delegate Task OnChargingStationOperatorAdminStatusChangedDelegate(DateTime                                             Timestamp,
-                                                                             ChargingStationOperatorProxy                              EVSEOperator,
+                                                                             ChargingStationOperator                              EVSEOperator,
                                                                              Timestamped<ChargingStationOperatorAdminStatusType>  OldStatus,
                                                                              Timestamped<ChargingStationOperatorAdminStatusType>  NewStatus);
 
@@ -67,7 +67,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="OldStatus">The old timestamped status of the Charging Station Operator.</param>
     /// <param name="NewStatus">The new timestamped status of the Charging Station Operator.</param>
     public delegate Task OnChargingStationOperatorStatusChangedDelegate(DateTime                                        Timestamp,
-                                                                        ChargingStationOperatorProxy                         EVSEOperator,
+                                                                        ChargingStationOperator                         EVSEOperator,
                                                                         Timestamped<ChargingStationOperatorStatusType>  OldStatus,
                                                                         Timestamped<ChargingStationOperatorStatusType>  NewStatus);
 

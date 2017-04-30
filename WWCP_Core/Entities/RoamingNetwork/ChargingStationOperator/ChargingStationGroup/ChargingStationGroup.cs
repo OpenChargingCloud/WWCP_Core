@@ -103,7 +103,7 @@ namespace org.GraphDefined.WWCP
         /// The Charging Station Operator of this charging pool.
         /// </summary>
         [Mandatory]
-        public ChargingStationOperatorProxy  Operator      { get; }
+        public ChargingStationOperator  Operator      { get; }
 
         /// <summary>
         /// The offical (multi-language) name of this charging station group.
@@ -400,7 +400,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="MaxGroupStatusListSize">The default size of the charging station group status list.</param>
         /// <param name="MaxGroupAdminStatusListSize">The default size of the charging station group admin status list.</param>
         internal ChargingStationGroup(ChargingStationGroup_Id                                            Id,
-                                      ChargingStationOperatorProxy                                            Operator,
+                                      ChargingStationOperator                                            Operator,
                                       I18NString                                                         Name,
                                       I18NString                                                         Description                  = null,
 

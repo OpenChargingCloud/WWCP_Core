@@ -51,6 +51,6 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A delegate called whenever a charging station operator should be signed.
     /// </summary>
-    public delegate Signature ChargingStationOperatorSignatureDelegate(ChargingStationOperatorProxy ChargingStationOperator, PgpSecretKey SecretKey);
+    public delegate Signature ChargingStationOperatorSignatureDelegate(ChargingStationOperator ChargingStationOperator, PgpSecretKey SecretKey);
 
 }

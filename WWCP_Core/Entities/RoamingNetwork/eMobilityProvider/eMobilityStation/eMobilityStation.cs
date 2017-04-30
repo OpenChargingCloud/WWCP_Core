@@ -836,7 +836,7 @@ namespace org.GraphDefined.WWCP
 
         #region eVehicles
 
-        private EntityHashSet<ChargingStationOperatorProxy, eVehicle_Id, eVehicle> _eVehicles;
+        private EntityHashSet<ChargingStationOperator, eVehicle_Id, eVehicle> _eVehicles;
 
         public IEnumerable<eVehicle> eVehicles
 

@@ -678,7 +678,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            SetStaticData(ChargingStationOperatorProxy  ChargingStationOperator,
+            SetStaticData(ChargingStationOperator  ChargingStationOperator,
 
                           DateTime?                Timestamp           = null,
                           CancellationToken?       CancellationToken   = null,
@@ -700,7 +700,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            AddStaticData(ChargingStationOperatorProxy  ChargingStationOperator,
+            AddStaticData(ChargingStationOperator  ChargingStationOperator,
 
                           DateTime?                Timestamp           = null,
                           CancellationToken?       CancellationToken   = null,
@@ -722,7 +722,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            UpdateStaticData(ChargingStationOperatorProxy  ChargingStationOperator,
+            UpdateStaticData(ChargingStationOperator  ChargingStationOperator,
 
                              DateTime?                Timestamp           = null,
                              CancellationToken?       CancellationToken   = null,
@@ -744,7 +744,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            DeleteStaticData(ChargingStationOperatorProxy  ChargingStationOperator,
+            DeleteStaticData(ChargingStationOperator  ChargingStationOperator,
 
                              DateTime?                Timestamp           = null,
                              CancellationToken?       CancellationToken   = null,
@@ -767,7 +767,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            SetStaticData(IEnumerable<ChargingStationOperatorProxy>  ChargingStationOperators,
+            SetStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                           DateTime?                             Timestamp           = null,
                           CancellationToken?                    CancellationToken   = null,
@@ -789,7 +789,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            AddStaticData(IEnumerable<ChargingStationOperatorProxy>  ChargingStationOperators,
+            AddStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                           DateTime?                             Timestamp           = null,
                           CancellationToken?                    CancellationToken   = null,
@@ -811,7 +811,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            UpdateStaticData(IEnumerable<ChargingStationOperatorProxy>  ChargingStationOperators,
+            UpdateStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                              DateTime?                             Timestamp           = null,
                              CancellationToken?                    CancellationToken   = null,
@@ -832,7 +832,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            DeleteStaticData(IEnumerable<ChargingStationOperatorProxy>  ChargingStationOperators,
+            DeleteStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                              DateTime?                             Timestamp           = null,
                              CancellationToken?                    CancellationToken   = null,
@@ -1537,7 +1537,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            SetStaticData(ChargingStationOperatorProxy  ChargingStationOperator,
+            SetStaticData(ChargingStationOperator  ChargingStationOperator,
 
                           DateTime?                Timestamp           = null,
                           CancellationToken?       CancellationToken   = null,
@@ -1559,7 +1559,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            AddStaticData(ChargingStationOperatorProxy  ChargingStationOperator,
+            AddStaticData(ChargingStationOperator  ChargingStationOperator,
 
                           DateTime?                Timestamp           = null,
                           CancellationToken?       CancellationToken   = null,
@@ -1581,7 +1581,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            UpdateStaticData(ChargingStationOperatorProxy  ChargingStationOperator,
+            UpdateStaticData(ChargingStationOperator  ChargingStationOperator,
 
                              DateTime?                Timestamp           = null,
                              CancellationToken?       CancellationToken   = null,
@@ -1603,7 +1603,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            DeleteStaticData(ChargingStationOperatorProxy  ChargingStationOperator,
+            DeleteStaticData(ChargingStationOperator  ChargingStationOperator,
 
                              DateTime?                Timestamp           = null,
                              CancellationToken?       CancellationToken   = null,
@@ -1626,7 +1626,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            SetStaticData(IEnumerable<ChargingStationOperatorProxy>  ChargingStationOperators,
+            SetStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                           DateTime?                             Timestamp           = null,
                           CancellationToken?                    CancellationToken   = null,
@@ -1648,7 +1648,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            AddStaticData(IEnumerable<ChargingStationOperatorProxy>  ChargingStationOperators,
+            AddStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                           DateTime?                             Timestamp           = null,
                           CancellationToken?                    CancellationToken   = null,
@@ -1670,7 +1670,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            UpdateStaticData(IEnumerable<ChargingStationOperatorProxy>  ChargingStationOperators,
+            UpdateStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                              DateTime?                             Timestamp           = null,
                              CancellationToken?                    CancellationToken   = null,
@@ -1691,7 +1691,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<Acknowledgement>
 
-            DeleteStaticData(IEnumerable<ChargingStationOperatorProxy>  ChargingStationOperators,
+            DeleteStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
                              DateTime?                             Timestamp           = null,
                              CancellationToken?                    CancellationToken   = null,

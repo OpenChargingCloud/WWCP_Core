@@ -82,12 +82,12 @@ namespace org.GraphDefined.WWCP
 
         #region Operator
 
-        private ChargingStationOperatorProxy _Operator;
+        private ChargingStationOperator _Operator;
 
         /// <summary>
         /// The charging station operator serving this session.
         /// </summary>
-        public ChargingStationOperatorProxy Operator
+        public ChargingStationOperator Operator
 
         {
 
@@ -536,7 +536,7 @@ namespace org.GraphDefined.WWCP
         public IId                        AuthorizatorId             { get; set; }
 
 
-        public ChargingStationOperatorProxy    ChargingStationOperator   { get; set; }
+        public ChargingStationOperator    ChargingStationOperator   { get; set; }
 
 
         public IEMPRoamingProvider        EMPRoamingProvider        { get; set; }
@@ -599,7 +599,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        public ChargingSession SetChargingStationOperator(ChargingStationOperatorProxy ChargingStationOperator)
+        public ChargingSession SetChargingStationOperator(ChargingStationOperator ChargingStationOperator)
         {
             this.ChargingStationOperator = ChargingStationOperator;
             return this;
