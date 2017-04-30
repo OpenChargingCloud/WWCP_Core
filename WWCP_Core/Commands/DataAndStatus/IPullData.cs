@@ -85,7 +85,7 @@ namespace org.GraphDefined.WWCP
 
         // Push data directly...
 
-        #region SetStaticData   (EVSEs, ...)
+        #region PullEVSEData   (EVSEs, ...)
 
         /// <summary>
         /// Upload the static data of the given EVSEs.

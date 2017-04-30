@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -29,8 +30,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current timestamped status of an EVSE.
     /// </summary>
-    public struct EVSEStatus : IEquatable <EVSEStatus>,
-                               IComparable<EVSEStatus>
+    public class EVSEStatus : ACustomData,
+                              IEquatable <EVSEStatus>,
+                              IComparable<EVSEStatus>
     {
 
         #region Properties
@@ -66,9 +68,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="Status">The current status of the EVSE.</param>
         /// <param name="Timestamp">The timestamp of the current status of the EVSE.</param>
-        public EVSEStatus(EVSE_Id         Id,
-                          EVSEStatusTypes  Status,
-                          DateTime        Timestamp)
+        public EVSEStatus(EVSE_Id                              Id,
+                          EVSEStatusTypes                      Status,
+                          DateTime                             Timestamp,
+
+                          IReadOnlyDictionary<String, Object>  CustomData  = null)
+
+            : base(CustomData)
 
         {
 

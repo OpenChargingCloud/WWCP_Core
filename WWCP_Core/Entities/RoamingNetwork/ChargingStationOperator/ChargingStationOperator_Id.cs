@@ -161,7 +161,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            var MatchCollection = OperatorId_RegEx.Matches(Text);
+            var MatchCollection = OperatorId_RegEx.Matches(Text.ToUpper());
 
             if (MatchCollection.Count != 1)
                 throw new ArgumentException("Illegal text representation of a charging station operator identification: '" + Text + "'!",
@@ -275,7 +275,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                var MatchCollection = OperatorId_RegEx.Matches(Text);
+                var MatchCollection = OperatorId_RegEx.Matches(Text.ToUpper());
 
                 if (MatchCollection.Count != 1)
                 {
