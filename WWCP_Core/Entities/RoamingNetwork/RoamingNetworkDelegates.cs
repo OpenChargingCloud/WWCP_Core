@@ -31,38 +31,46 @@ namespace org.GraphDefined.WWCP
     /// A delegate called whenever the static data of the roaming network changed.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetwork">The updated roaming network.</param>
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
-    public delegate Task OnRoamingNetworkDataChangedDelegate(DateTime        Timestamp,
-                                                             RoamingNetwork  RoamingNetwork,
-                                                             String          PropertyName,
-                                                             Object          OldValue,
-                                                             Object          NewValue);
+    public delegate Task OnRoamingNetworkDataChangedDelegate(DateTime          Timestamp,
+                                                             EventTracking_Id  EventTrackingId,
+                                                             RoamingNetwork    RoamingNetwork,
+                                                             String            PropertyName,
+                                                             Object            OldValue,
+                                                             Object            NewValue);
 
-    /// <summary>
-    /// A delegate called whenever the dynamic status of the roaming network changed.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp when this change was detected.</param>
-    /// <param name="RoamingNetwork">The updated roaming network.</param>
-    /// <param name="OldStatus">The old timestamped status of the roaming network.</param>
-    /// <param name="NewStatus">The new timestamped status of the roaming network.</param>
-    public delegate Task OnRoamingNetworkStatusChangedDelegate(DateTime                               Timestamp,
-                                                               RoamingNetwork                         RoamingNetwork,
-                                                               Timestamped<RoamingNetworkStatusType>  OldStatus,
-                                                               Timestamped<RoamingNetworkStatusType>  NewStatus);
 
     /// <summary>
     /// A delegate called whenever the admin status of the roaming network changed.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetwork">The updated roaming network.</param>
     /// <param name="OldStatus">The old timestamped status of the roaming network.</param>
     /// <param name="NewStatus">The new timestamped status of the roaming network.</param>
     public delegate Task OnRoamingNetworkAdminStatusChangedDelegate(DateTime                                    Timestamp,
+                                                                    EventTracking_Id                            EventTrackingId,
                                                                     RoamingNetwork                              RoamingNetwork,
                                                                     Timestamped<RoamingNetworkAdminStatusType>  OldStatus,
                                                                     Timestamped<RoamingNetworkAdminStatusType>  NewStatus);
+
+
+    /// <summary>
+    /// A delegate called whenever the dynamic status of the roaming network changed.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+    /// <param name="RoamingNetwork">The updated roaming network.</param>
+    /// <param name="OldStatus">The old timestamped status of the roaming network.</param>
+    /// <param name="NewStatus">The new timestamped status of the roaming network.</param>
+    public delegate Task OnRoamingNetworkStatusChangedDelegate(DateTime                               Timestamp,
+                                                               EventTracking_Id                       EventTrackingId,
+                                                               RoamingNetwork                         RoamingNetwork,
+                                                               Timestamped<RoamingNetworkStatusType>  OldStatus,
+                                                               Timestamped<RoamingNetworkStatusType>  NewStatus);
 
 }

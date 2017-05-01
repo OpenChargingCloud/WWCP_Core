@@ -36,25 +36,29 @@ namespace org.GraphDefined.WWCP
     /// A delegate called whenever the static data of the charging station changed.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="ChargingStation">The updated charging station.</param>
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
-    public delegate Task OnChargingStationDataChangedDelegate(DateTime         Timestamp,
-                                                              ChargingStation  ChargingStation,
-                                                              String           PropertyName,
-                                                              Object           OldValue,
-                                                              Object           NewValue);
+    public delegate Task OnChargingStationDataChangedDelegate(DateTime          Timestamp,
+                                                              EventTracking_Id  EventTrackingId,
+                                                              ChargingStation   ChargingStation,
+                                                              String            PropertyName,
+                                                              Object            OldValue,
+                                                              Object            NewValue);
 
     /// <summary>
     /// A delegate called whenever the dynamic status of the charging station changed.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="ChargingStation">The updated charging station.</param>
     /// <param name="OldStatus">The old timestamped status of the charging station.</param>
     /// <param name="NewStatus">The new timestamped status of the charging station.</param>
-    public delegate Task OnChargingStationStatusChangedDelegate(DateTime                                Timestamp,
-                                                                ChargingStation                         ChargingStation,
+    public delegate Task OnChargingStationStatusChangedDelegate(DateTime                                 Timestamp,
+                                                                EventTracking_Id                         EventTrackingId,
+                                                                ChargingStation                          ChargingStation,
                                                                 Timestamped<ChargingStationStatusTypes>  OldStatus,
                                                                 Timestamped<ChargingStationStatusTypes>  NewStatus);
 
@@ -62,11 +66,13 @@ namespace org.GraphDefined.WWCP
     /// A delegate called whenever the admin status of the charging station changed.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="ChargingStation">The updated charging station.</param>
     /// <param name="OldStatus">The old timestamped status of the charging station.</param>
     /// <param name="NewStatus">The new timestamped status of the charging station.</param>
-    public delegate Task OnChargingStationAdminStatusChangedDelegate(DateTime                                     Timestamp,
-                                                                     ChargingStation                              ChargingStation,
+    public delegate Task OnChargingStationAdminStatusChangedDelegate(DateTime                                      Timestamp,
+                                                                     EventTracking_Id                              EventTrackingId,
+                                                                     ChargingStation                               ChargingStation,
                                                                      Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
                                                                      Timestamped<ChargingStationAdminStatusTypes>  NewStatus);
 

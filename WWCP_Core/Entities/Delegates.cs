@@ -21,6 +21,7 @@ using System;
 using System.Threading.Tasks;
 
 using Org.BouncyCastle.Bcpg.OpenPgp;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -31,11 +32,12 @@ namespace org.GraphDefined.WWCP
     /// A delegate called whenever a property of the given object changed.
     /// </summary>
     /// <param name="Timestamp">The timestamp of the event.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="Sender">The changed object.</param>
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
-    public delegate Task OnPropertyChangedDelegate(DateTime Timestamp, Object Sender, String PropertyName, Object OldValue, Object NewValue);
+    public delegate Task OnPropertyChangedDelegate(DateTime Timestamp, EventTracking_Id EventTrackingId, Object Sender, String PropertyName, Object OldValue, Object NewValue);
 
 
     /// <summary>

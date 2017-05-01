@@ -231,9 +231,9 @@ namespace org.GraphDefined.WWCP.Importer
 
             => String.Concat(StationId.ToString(),
                              " => ",
-                             ForwardedToRoamingNetworkId,
+                             ForwardedToRoamingNetworkId,// ?? "<none>",
                              " / ",
-                             ForwardedToChargingStationOperator.Id);
+                             ForwardedToChargingStationOperator?.Id.ToString() ?? "<none>");
 
         #endregion
 

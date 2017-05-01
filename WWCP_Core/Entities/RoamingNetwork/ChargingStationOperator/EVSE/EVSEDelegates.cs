@@ -34,29 +34,17 @@ namespace org.GraphDefined.WWCP
     /// A delegate called whenever the static data of the EVSE changed.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="EVSE">The updated EVSE.</param>
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
-    public delegate Task OnEVSEDataChangedDelegate(DateTime  Timestamp,
-                                                   EVSE      EVSE,
-                                                   String    PropertyName,
-                                                   Object    OldValue,
-                                                   Object    NewValue);
-
-    /// <summary>
-    /// A delegate called whenever the dynamic status of the EVSE changed.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp when this change was detected.</param>
-    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-    /// <param name="EVSE">The EVSE.</param>
-    /// <param name="OldEVSEStatus">The old timestamped status of the EVSE.</param>
-    /// <param name="NewEVSEStatus">The new timestamped status of the EVSE.</param>
-    public delegate Task OnEVSEStatusChangedDelegate(DateTime                     Timestamp,
-                                                     EventTracking_Id             EventTrackingId,
-                                                     EVSE                         EVSE,
-                                                     Timestamped<EVSEStatusTypes>  OldEVSEStatus,
-                                                     Timestamped<EVSEStatusTypes>  NewEVSEStatus);
+    public delegate Task OnEVSEDataChangedDelegate(DateTime          Timestamp,
+                                                   EventTracking_Id  EventTrackingId,
+                                                   EVSE              EVSE,
+                                                   String            PropertyName,
+                                                   Object            OldValue,
+                                                   Object            NewValue);
 
     /// <summary>
     /// A delegate called whenever the admin status of the EVSE changed.
@@ -66,10 +54,24 @@ namespace org.GraphDefined.WWCP
     /// <param name="EVSE">The EVSE.</param>
     /// <param name="OldEVSEStatus">The old timestamped status of the EVSE.</param>
     /// <param name="NewEVSEStatus">The new timestamped status of the EVSE.</param>
-    public delegate Task OnEVSEAdminStatusChangedDelegate(DateTime                          Timestamp,
-                                                          EventTracking_Id                  EventTrackingId,
-                                                          EVSE                              EVSE,
+    public delegate Task OnEVSEAdminStatusChangedDelegate(DateTime                           Timestamp,
+                                                          EventTracking_Id                   EventTrackingId,
+                                                          EVSE                               EVSE,
                                                           Timestamped<EVSEAdminStatusTypes>  OldEVSEStatus,
                                                           Timestamped<EVSEAdminStatusTypes>  NewEVSEStatus);
+
+    /// <summary>
+    /// A delegate called whenever the dynamic status of the EVSE changed.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+    /// <param name="EVSE">The EVSE.</param>
+    /// <param name="OldEVSEStatus">The old timestamped status of the EVSE.</param>
+    /// <param name="NewEVSEStatus">The new timestamped status of the EVSE.</param>
+    public delegate Task OnEVSEStatusChangedDelegate(DateTime                      Timestamp,
+                                                     EventTracking_Id              EventTrackingId,
+                                                     EVSE                          EVSE,
+                                                     Timestamped<EVSEStatusTypes>  OldEVSEStatus,
+                                                     Timestamped<EVSEStatusTypes>  NewEVSEStatus);
 
 }

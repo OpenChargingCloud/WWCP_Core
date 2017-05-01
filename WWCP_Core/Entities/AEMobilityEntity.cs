@@ -117,8 +117,8 @@ namespace org.GraphDefined.WWCP
             this.LastChange      = DateTime.Now;
             this._UserDefined    = new UserDefinedDictionary();
 
-            this._UserDefined.OnPropertyChanged += (timestamp, sender, key, oldValue, newValue)
-                => OnPropertyChanged?.Invoke(timestamp, sender, key, oldValue, newValue);
+            this._UserDefined.OnPropertyChanged += (timestamp, eventtrackingid, sender, key, oldValue, newValue)
+                => OnPropertyChanged?.Invoke(timestamp, eventtrackingid, sender, key, oldValue, newValue);
 
         }
 
@@ -141,8 +141,8 @@ namespace org.GraphDefined.WWCP
             this.LastChange      = DateTime.Now;
             this._UserDefined    = new UserDefinedDictionary();
 
-            this._UserDefined.OnPropertyChanged += (timestamp, sender, key, oldValue, newValue)
-                => OnPropertyChanged?.Invoke(timestamp, sender, key, oldValue, newValue);
+            this._UserDefined.OnPropertyChanged += (timestamp, eventtrackingid, sender, key, oldValue, newValue)
+                => OnPropertyChanged?.Invoke(timestamp, eventtrackingid, sender, key, oldValue, newValue);
 
         }
 
@@ -179,7 +179,7 @@ namespace org.GraphDefined.WWCP
 
         // Properties
 
-        #region SetProperty<T>(ref FieldToChange, NewValue, [CallerMemberName])
+        #region SetProperty<T>(ref FieldToChange, NewValue, EventTrackingId = null, [CallerMemberName])
 
         /// <summary>
         /// Change the given field and call the OnPropertyChanged event.
@@ -187,10 +187,12 @@ namespace org.GraphDefined.WWCP
         /// <typeparam name="T">The type of the field to be changed.</typeparam>
         /// <param name="FieldToChange">A reference to the field to be changed.</param>
         /// <param name="NewValue">The new value of the field to be changed.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="PropertyName">The name of the property to be changed (set by the compiler!)</param>
-        public void SetProperty<T>(ref                T       FieldToChange,
-                                                      T       NewValue,
-                                   [CallerMemberName] String  PropertyName = "")
+        public void SetProperty<T>(ref                T                 FieldToChange,
+                                                      T                 NewValue,
+                                                      EventTracking_Id  EventTrackingId  = null,
+                                   [CallerMemberName] String            PropertyName     = "")
         {
 
             if (!EqualityComparer<T>.Default.Equals(FieldToChange, NewValue))
@@ -199,7 +201,7 @@ namespace org.GraphDefined.WWCP
                 var OldValue       = FieldToChange;
                     FieldToChange  = NewValue;
 
-                PropertyChanged(PropertyName, OldValue, NewValue);
+                PropertyChanged(PropertyName, OldValue, NewValue, EventTrackingId);
 
             }
 
@@ -233,7 +235,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region PropertyChanged<T>(PropertyName, OldValue, NewValue)
+        #region PropertyChanged<T>(PropertyName, OldValue, NewValue, EventTrackingId)
 
         /// <summary>
         /// Notify subscribers that a property has changed.
@@ -242,9 +244,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        public void PropertyChanged<T>(String  PropertyName,
-                                       T       OldValue,
-                                       T       NewValue)
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        public void PropertyChanged<T>(String            PropertyName,
+                                       T                 OldValue,
+                                       T                 NewValue,
+                                       EventTracking_Id  EventTrackingId = null)
         {
 
             #region Initial checks
@@ -257,6 +261,7 @@ namespace org.GraphDefined.WWCP
             this.LastChange = DateTime.Now;
 
             OnPropertyChanged?.Invoke(LastChange,
+                                      EventTrackingId,
                                       this,
                                       PropertyName,
                                       OldValue,

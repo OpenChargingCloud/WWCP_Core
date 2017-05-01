@@ -86,7 +86,15 @@ namespace org.GraphDefined.WWCP
                     value = new I18NString();
 
                 if (_Name != value)
-                    SetProperty(ref _Name, value);
+                {
+
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _Name);
+
+                    else
+                        SetProperty(ref _Name, value);
+
+                }
 
             }
 
@@ -117,7 +125,15 @@ namespace org.GraphDefined.WWCP
                     value = new I18NString();
 
                 if (_Description != value)
-                    SetProperty(ref _Description, value);
+                {
+
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _Description);
+
+                    else
+                        SetProperty(ref _Description, value);
+
+                }
 
             }
 
@@ -146,7 +162,18 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (_Brand != value)
-                    SetProperty(ref _Brand, value);
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _Brand);
+
+                    else
+                        SetProperty(ref _Brand, value);
+
+                    // Delete inherited GeoLocations
+                    _ChargingStations.ForEach(station => station.Brand = null);
+
+                }
 
             }
 
@@ -156,13 +183,13 @@ namespace org.GraphDefined.WWCP
 
         #region LocationLanguage
 
-        private Languages _LocationLanguage;
+        private Languages? _LocationLanguage;
 
         /// <summary>
         /// The official language at this charging pool.
         /// </summary>
         [Optional]
-        public Languages LocationLanguage
+        public Languages? LocationLanguage
         {
 
             get
@@ -173,53 +200,14 @@ namespace org.GraphDefined.WWCP
             set
             {
 
-                if (value == null)
-                    value = Languages.unknown;
-
                 if (_LocationLanguage != value)
                 {
 
-                    SetProperty(ref _LocationLanguage, value);
+                    if (value == null)
+                        DeleteProperty(ref _LocationLanguage);
 
-                    // No downstream!
-                    //_ChargingStations.Values.ForEach(station => station.LocationLanguage = null);
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
-        #region HotlinePhoneNumber
-
-        private String _HotlinePhoneNumber;
-
-        /// <summary>
-        /// The telephone number of the Charging Station Operator hotline.
-        /// </summary>
-        [Optional]
-        public String HotlinePhoneNumber
-        {
-
-            get
-            {
-                return _HotlinePhoneNumber;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = "";
-
-                if (_HotlinePhoneNumber != value)
-                {
-
-                    SetProperty(ref _HotlinePhoneNumber, value);
-
-                    _ChargingStations.ForEach(station => station._HotlinePhoneNumber = null);
+                    else
+                        SetProperty(ref _LocationLanguage, value);
 
                 }
 
@@ -228,7 +216,6 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
-
 
         #region Address
 
@@ -249,15 +236,17 @@ namespace org.GraphDefined.WWCP
             set
             {
 
-                if (value == null)
-                    value = new Address();
-
                 if (_Address != value)
                 {
 
-                    SetProperty(ref _Address, value);
+                    if (value == null)
+                        DeleteProperty(ref _Address);
 
-                    _ChargingStations.ForEach(station => station._Address = null);
+                    else
+                        SetProperty(ref _Address, value);
+
+                    // Delete inherited addresses
+                    _ChargingStations.ForEach(station => station.Address = null);
 
                 }
 
@@ -289,9 +278,14 @@ namespace org.GraphDefined.WWCP
                 if (_GeoLocation != value)
                 {
 
-                    SetProperty(ref _GeoLocation, value);
+                    if (value == null)
+                        DeleteProperty(ref _GeoLocation);
 
-                    _ChargingStations.ForEach(station => station._GeoLocation = null);
+                    else
+                        SetProperty(ref _GeoLocation, value);
+
+                    // Delete inherited geo locations
+                    _ChargingStations.ForEach(station => station.GeoLocation = null);
 
                 }
 
@@ -321,15 +315,17 @@ namespace org.GraphDefined.WWCP
             set
             {
 
-                if (value == null)
-                    value = new Address();
-
                 if (_EntranceAddress != value)
                 {
 
-                    SetProperty(ref _EntranceAddress, value);
+                    if (value == null)
+                        DeleteProperty(ref _EntranceAddress);
 
-                    _ChargingStations.ForEach(station => station._EntranceAddress = null);
+                    else
+                        SetProperty(ref _EntranceAddress, value);
+
+                    // Delete inherited entrance addresses
+                    _ChargingStations.ForEach(station => station.EntranceAddress = null);
 
                 }
 
@@ -362,9 +358,14 @@ namespace org.GraphDefined.WWCP
                 if (_EntranceLocation != value)
                 {
 
-                    SetProperty(ref _EntranceLocation, value);
+                    if (value == null)
+                        DeleteProperty(ref _EntranceLocation);
 
-                    _ChargingStations.ForEach(station => station._EntranceLocation = null);
+                    else
+                        SetProperty(ref _EntranceLocation, value);
+
+                    // Delete inherited entrance locations
+                    _ChargingStations.ForEach(station => station.EntranceLocation = null);
 
                 }
 
@@ -379,7 +380,7 @@ namespace org.GraphDefined.WWCP
         private I18NString _ArrivalInstructions;
 
         /// <summary>
-        /// An optional (multi-language) description of hot to find the charging pool.
+        /// An optional (multi-language) description of how to find the charging pool.
         /// </summary>
         [Optional]
         public I18NString ArrivalInstructions
@@ -397,7 +398,18 @@ namespace org.GraphDefined.WWCP
                     value = new I18NString();
 
                 if (_ArrivalInstructions != value)
-                    SetProperty(ref _ArrivalInstructions, value);
+                {
+
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _ArrivalInstructions);
+
+                    else
+                        SetProperty(ref _ArrivalInstructions, value);
+
+                    // Delete inherited arrival instructions
+                    _ChargingStations.ForEach(station => station.ArrivalInstructions = null);
+
+                }
 
             }
 
@@ -430,9 +442,288 @@ namespace org.GraphDefined.WWCP
                 if (_OpeningTimes != value)
                 {
 
+                    // Can not be deleted!
+                    // Will always be at least 'Open24Hours'!
+
                     SetProperty(ref _OpeningTimes, value);
 
-                    _ChargingStations.ForEach(station => station._OpeningTimes = null);
+                    // Delete inherited opening times
+                    _ChargingStations.ForEach(station => station.OpeningTimes = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region UIFeatures
+
+        private ChargingStationUIFeatures? _UIFeatures;
+
+        /// <summary>
+        /// The user interface features of the charging station.
+        /// </summary>
+        [Optional]
+        public ChargingStationUIFeatures? UIFeatures
+        {
+
+            get
+            {
+                return _UIFeatures;
+            }
+
+            set
+            {
+
+                if (_UIFeatures != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _UIFeatures);
+
+                    else
+                        SetProperty(ref _UIFeatures, value);
+
+                    // Delete inherited user interface features
+                    _ChargingStations.ForEach(station => station.UIFeatures = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region AuthenticationModes
+
+        private ReactiveSet<AuthenticationModes> _AuthenticationModes;
+
+        public ReactiveSet<AuthenticationModes> AuthenticationModes
+        {
+
+            get
+            {
+                return _AuthenticationModes;
+            }
+
+            set
+            {
+
+                if (value == null)
+                    value = new ReactiveSet<AuthenticationModes>();
+
+                if (_AuthenticationModes != value)
+                {
+
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _AuthenticationModes);
+
+                    else
+                        SetProperty(ref _AuthenticationModes, _AuthenticationModes.Set(value));
+
+                    // Delete inherited authentication modes
+                    _ChargingStations.ForEach(station => station.AuthenticationModes = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region PaymentOptions
+
+        private ReactiveSet<PaymentOptions> _PaymentOptions;
+
+        [Mandatory]
+        public ReactiveSet<PaymentOptions> PaymentOptions
+        {
+
+            get
+            {
+                return _PaymentOptions;
+            }
+
+            set
+            {
+
+                if (value == null)
+                    value = new ReactiveSet<PaymentOptions>();
+
+                if (_PaymentOptions != value)
+                {
+
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _PaymentOptions);
+
+                    else
+                        SetProperty(ref _PaymentOptions, _PaymentOptions.Set(value));
+
+                    // Delete inherited payment options
+                    _ChargingStations.ForEach(station => station.PaymentOptions = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region Accessibility
+
+        private AccessibilityTypes? _Accessibility;
+
+        [Optional]
+        public AccessibilityTypes? Accessibility
+        {
+
+            get
+            {
+                return _Accessibility;
+            }
+
+            set
+            {
+
+                if (_Accessibility != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _Accessibility);
+
+                    else
+                        SetProperty(ref _Accessibility, value);
+
+                    // Delete inherited accessibilities
+                    _ChargingStations.ForEach(station => station.Accessibility = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region PhotoURIs
+
+        private ReactiveSet<String> _PhotoURIs;
+
+        /// <summary>
+        /// URIs of photos of this charging pool.
+        /// </summary>
+        [Optional]
+        public ReactiveSet<String> PhotoURIs
+        {
+
+            get
+            {
+                return _PhotoURIs;
+            }
+
+            set
+            {
+
+                if (value == null)
+                    value = new ReactiveSet<String>();
+
+                if (_PhotoURIs != value)
+                {
+
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _PhotoURIs);
+
+                    else
+                        SetProperty(ref _PhotoURIs, _PhotoURIs.Set(value));
+
+                    // Delete inherited photo uris
+                    _ChargingStations.ForEach(station => station.PhotoURIs = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region HotlinePhoneNumber
+
+        private I18NString _HotlinePhoneNumber;
+
+        /// <summary>
+        /// The telephone number of the charging station operator hotline.
+        /// </summary>
+        [Optional]
+        public I18NString HotlinePhoneNumber
+        {
+
+            get
+            {
+                return _HotlinePhoneNumber;
+            }
+
+            set
+            {
+
+                if (value == null)
+                    value = new I18NString();
+
+                if (_HotlinePhoneNumber != value)
+                {
+
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _HotlinePhoneNumber);
+
+                    else
+                        SetProperty(ref _HotlinePhoneNumber, value);
+
+                    // Delete inherited HotlinePhoneNumbers
+                    _ChargingStations.ForEach(station => station.HotlinePhoneNumber = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region GridConnection
+
+        private GridConnection _GridConnection;
+
+        /// <summary>
+        /// The grid connection of the charging pool.
+        /// </summary>
+        [Optional]
+        public GridConnection GridConnection
+        {
+
+            get
+            {
+                return _GridConnection;
+            }
+
+            set
+            {
+
+                if (_GridConnection != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _GridConnection);
+
+                    else
+                        SetProperty(ref _GridConnection, value);
+
+                    // Delete inherited grid connections
+                    _ChargingStations.ForEach(station => station.GridConnection = null);
 
                 }
 
@@ -462,15 +753,17 @@ namespace org.GraphDefined.WWCP
             set
             {
 
-                if (value == null)
-                    value = new Address();
-
                 if (_ExitAddress != value)
                 {
 
-                    SetProperty(ref _ExitAddress, value);
+                    if (value == null)
+                        DeleteProperty(ref _ExitAddress);
 
-                    _ChargingStations.ForEach(station => station._ExitAddress = null);
+                    else
+                        SetProperty(ref _ExitAddress, value);
+
+                    // Delete inherited exit addresses
+                    _ChargingStations.ForEach(station => station.ExitAddress = null);
 
                 }
 
@@ -503,43 +796,14 @@ namespace org.GraphDefined.WWCP
                 if (_ExitLocation != value)
                 {
 
-                    SetProperty(ref _ExitLocation, value);
+                    if (value == null)
+                        DeleteProperty(ref _ExitLocation);
 
-                    _ChargingStations.ForEach(station => station._ExitLocation = null);
+                    else
+                        SetProperty(ref _ExitLocation, value);
 
-                }
-
-            }
-
-        }
-
-        #endregion
-
-
-        #region AuthenticationModes
-
-        private ReactiveSet<AuthenticationModes> _AuthenticationModes;
-
-        public ReactiveSet<AuthenticationModes> AuthenticationModes
-        {
-
-            get
-            {
-                return _AuthenticationModes;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = new ReactiveSet<AuthenticationModes>();
-
-                if (_AuthenticationModes != value)
-                {
-
-                    SetProperty(ref _AuthenticationModes, value);
-
-                    _ChargingStations.ForEach(station => station._AuthenticationModes = null);
+                    // Delete inherited exit locations
+                    _ChargingStations.ForEach(station => station.ExitLocation = null);
 
                 }
 
@@ -549,70 +813,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region PaymentOptions
-
-        private ReactiveSet<PaymentOptions> _PaymentOptions;
-
-        [Mandatory]
-        public ReactiveSet<PaymentOptions> PaymentOptions
-        {
-
-            get
-            {
-                return _PaymentOptions;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    value = new ReactiveSet<PaymentOptions>();
-
-                if (_PaymentOptions != value)
-                {
-
-                    SetProperty(ref _PaymentOptions, value);
-
-                    _ChargingStations.ForEach(station => station._PaymentOptions = null);
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
-        #region Accessibility
-
-        private AccessibilityTypes _Accessibility;
-
-        [Optional]
-        public AccessibilityTypes Accessibility
-        {
-
-            get
-            {
-                return _Accessibility;
-            }
-
-            set
-            {
-
-                if (_Accessibility != value)
-                {
-
-                    SetProperty(ref _Accessibility, value);
-
-                    _ChargingStations.ForEach(station => station._Accessibility = value);
-
-                }
-
-            }
-
-        }
-
-        #endregion
 
         #region IsHubjectCompatible
 
@@ -620,7 +820,6 @@ namespace org.GraphDefined.WWCP
         public Partly IsHubjectCompatible
 
             => PartlyHelper.Generate(_ChargingStations.Select(station => station.IsHubjectCompatible));
-
 
         #endregion
 
@@ -630,82 +829,6 @@ namespace org.GraphDefined.WWCP
         public Partly DynamicInfoAvailable
 
             => PartlyHelper.Generate(_ChargingStations.Select(station => station.DynamicInfoAvailable));
-
-        #endregion
-
-
-        #region PoolOwner
-
-        private String _PoolOwner;
-
-        /// <summary>
-        /// The owner of this charging pool.
-        /// </summary>
-        [Optional]
-        public String PoolOwner
-        {
-
-            get
-            {
-                return _PoolOwner;
-            }
-
-            set
-            {
-                SetProperty<String>(ref _PoolOwner, value);
-            }
-
-        }
-
-        #endregion
-
-        #region LocationOwner
-
-        private String _LocationOwner;
-
-        /// <summary>
-        /// The owner of the charging pool location.
-        /// </summary>
-        [Optional]
-        public String LocationOwner
-        {
-
-            get
-            {
-                return _LocationOwner;
-            }
-
-            set
-            {
-                SetProperty<String>(ref _LocationOwner, value);
-            }
-
-        }
-
-        #endregion
-
-        #region PhotoURIs
-
-        private ReactiveSet<String> _PhotoURIs;
-
-        /// <summary>
-        /// URIs of photos of this charging pool.
-        /// </summary>
-        [Optional]
-        public ReactiveSet<String> PhotoURIs
-        {
-
-            get
-            {
-                return _PhotoURIs;
-            }
-
-            set
-            {
-                SetProperty(ref _PhotoURIs, value);
-            }
-
-        }
 
         #endregion
 
@@ -874,10 +997,10 @@ namespace org.GraphDefined.WWCP
             #region Link events
 
             this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateStatus(Timestamp, OldStatus, NewStatus);
+                                                          => UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateAdminStatus(Timestamp, OldStatus, NewStatus);
+                                                          => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             // ChargingPool events
             this.OnChargingStationAddition.OnVoting       += (timestamp, evseoperator, pool, vote) => ChargingStationOperator.ChargingStationAddition.SendVoting      (timestamp, evseoperator, pool, vote);
@@ -994,68 +1117,87 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (internal) UpdateData(Timestamp, Sender, PropertyName, OldValue, NewValue)
+        #region (internal) UpdateData       (Timestamp, EventTrackingId, Sender, PropertyName, OldValue, NewValue)
 
         /// <summary>
         /// Update the static data.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="Sender">The changed charging pool.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateData(DateTime  Timestamp,
-                                       Object    Sender,
-                                       String    PropertyName,
-                                       Object    OldValue,
-                                       Object    NewValue)
+        internal async Task UpdateData(DateTime          Timestamp,
+                                       EventTracking_Id  EventTrackingId,
+                                       Object            Sender,
+                                       String            PropertyName,
+                                       Object            OldValue,
+                                       Object            NewValue)
         {
 
             var OnDataChangedLocal = OnDataChanged;
             if (OnDataChangedLocal != null)
-                await OnDataChangedLocal(Timestamp, Sender as ChargingPool, PropertyName, OldValue, NewValue);
+                await OnDataChangedLocal(Timestamp,
+                                         EventTrackingId,
+                                         Sender as ChargingPool,
+                                         PropertyName,
+                                         OldValue,
+                                         NewValue);
 
         }
 
         #endregion
 
-        #region (internal) UpdateStatus(Timestamp, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update the current status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
-        /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateStatus(DateTime                             Timestamp,
-                                         Timestamped<ChargingPoolStatusType>  OldStatus,
-                                         Timestamped<ChargingPoolStatusType>  NewStatus)
-        {
-
-            var OnStatusChangedLocal = OnStatusChanged;
-            if (OnStatusChangedLocal != null)
-                await OnStatusChangedLocal(Timestamp, this, OldStatus, NewStatus);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateAdminStatus(Timestamp, OldStatus, NewStatus)
+        #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the current admin status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
         internal async Task UpdateAdminStatus(DateTime                                  Timestamp,
+                                              EventTracking_Id                          EventTrackingId,
                                               Timestamped<ChargingPoolAdminStatusType>  OldStatus,
                                               Timestamped<ChargingPoolAdminStatusType>  NewStatus)
         {
 
             var OnAdminStatusChangedLocal = OnAdminStatusChanged;
             if (OnAdminStatusChangedLocal != null)
-                await OnAdminStatusChangedLocal(Timestamp, this, OldStatus, NewStatus);
+                await OnAdminStatusChangedLocal(Timestamp,
+                                                EventTrackingId,
+                                                this,
+                                                OldStatus,
+                                                NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateStatus     (Timestamp, EventTrackingId, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the current status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="OldStatus">The old EVSE status.</param>
+        /// <param name="NewStatus">The new EVSE status.</param>
+        internal async Task UpdateStatus(DateTime                             Timestamp,
+                                         EventTracking_Id                     EventTrackingId,
+                                         Timestamped<ChargingPoolStatusType>  OldStatus,
+                                         Timestamped<ChargingPoolStatusType>  NewStatus)
+        {
+
+            var OnStatusChangedLocal = OnStatusChanged;
+            if (OnStatusChangedLocal != null)
+                await OnStatusChangedLocal(Timestamp,
+                                           EventTrackingId,
+                                           this,
+                                           OldStatus,
+                                           NewStatus);
 
         }
 
@@ -1488,78 +1630,97 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (internal) UpdateChargingStationData(Timestamp, ChargingStation, PropertyName, OldValue, NewValue)
+        #region (internal) UpdateChargingStationData        (Timestamp, EventTrackingId, ChargingStation, PropertyName, OldValue, NewValue)
 
         /// <summary>
         /// Update the static data of a charging station.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargingStation">The changed charging station.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateChargingStationData(DateTime         Timestamp,
-                                                      ChargingStation  ChargingStation,
-                                                      String           PropertyName,
-                                                      Object           OldValue,
-                                                      Object           NewValue)
+        internal async Task UpdateChargingStationData(DateTime          Timestamp,
+                                                      EventTracking_Id  EventTrackingId,
+                                                      ChargingStation   ChargingStation,
+                                                      String            PropertyName,
+                                                      Object            OldValue,
+                                                      Object            NewValue)
         {
 
             var OnChargingStationDataChangedLocal = OnChargingStationDataChanged;
             if (OnChargingStationDataChangedLocal != null)
-                await OnChargingStationDataChangedLocal(Timestamp, ChargingStation, PropertyName, OldValue, NewValue);
+                await OnChargingStationDataChangedLocal(Timestamp,
+                                                        EventTrackingId,
+                                                        ChargingStation,
+                                                        PropertyName,
+                                                        OldValue,
+                                                        NewValue);
 
         }
 
         #endregion
 
-        #region (internal) UpdateChargingStationStatus(Timestamp, ChargingStation, OldStatus, NewStatus)
+        #region (internal) UpdateChargingStationStatus(Timestamp, EventTrackingId, ChargingStation, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the curent status of a charging station.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargingStation">The updated charging station.</param>
         /// <param name="OldStatus">The old charging station status.</param>
         /// <param name="NewStatus">The new charging station status.</param>
-        internal async Task UpdateChargingStationStatus(DateTime                                Timestamp,
-                                                        ChargingStation                         ChargingStation,
+        internal async Task UpdateChargingStationStatus(DateTime                                 Timestamp,
+                                                        EventTracking_Id                         EventTrackingId,
+                                                        ChargingStation                          ChargingStation,
                                                         Timestamped<ChargingStationStatusTypes>  OldStatus,
                                                         Timestamped<ChargingStationStatusTypes>  NewStatus)
         {
 
             var OnChargingStationStatusChangedLocal = OnChargingStationStatusChanged;
             if (OnChargingStationStatusChangedLocal != null)
-                await OnChargingStationStatusChangedLocal(Timestamp, ChargingStation, OldStatus, NewStatus);
+                await OnChargingStationStatusChangedLocal(Timestamp,
+                                                          EventTrackingId,
+                                                          ChargingStation,
+                                                          OldStatus,
+                                                          NewStatus);
 
             if (StatusAggregationDelegate != null)
             {
                 _StatusSchedule.Insert(StatusAggregationDelegate(new ChargingStationStatusReport(_ChargingStations)),
-                                      Timestamp);
+                                       Timestamp);
             }
 
         }
 
         #endregion
 
-        #region (internal) UpdateChargingStationAdminStatus(Timestamp, ChargingStation, OldStatus, NewStatus)
+        #region (internal) UpdateChargingStationAdminStatus(Timestamp, EventTrackingId, ChargingStation, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the curent admin status of a charging station.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargingStation">The updated charging station.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
-        internal async Task UpdateChargingStationAdminStatus(DateTime                                     Timestamp,
-                                                             ChargingStation                              ChargingStation,
+        internal async Task UpdateChargingStationAdminStatus(DateTime                                      Timestamp,
+                                                             EventTracking_Id                              EventTrackingId,
+                                                             ChargingStation                               ChargingStation,
                                                              Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
                                                              Timestamped<ChargingStationAdminStatusTypes>  NewStatus)
         {
 
             var OnChargingStationAdminStatusChangedLocal = OnChargingStationAdminStatusChanged;
             if (OnChargingStationAdminStatusChangedLocal != null)
-                await OnChargingStationAdminStatusChangedLocal(Timestamp, ChargingStation, OldStatus, NewStatus);
+                await OnChargingStationAdminStatusChangedLocal(Timestamp,
+                                                               EventTrackingId,
+                                                               ChargingStation,
+                                                               OldStatus,
+                                                               NewStatus);
 
         }
 
@@ -1743,26 +1904,33 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (internal) UpdateEVSEData(Timestamp, EVSE, OldStatus, NewStatus)
+        #region (internal) UpdateEVSEData       (Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the static data of an EVSE.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="EVSE">The changed EVSE.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateEVSEData(DateTime  Timestamp,
-                                           EVSE      EVSE,
-                                           String    PropertyName,
-                                           Object    OldValue,
-                                           Object    NewValue)
+        internal async Task UpdateEVSEData(DateTime          Timestamp,
+                                           EventTracking_Id  EventTrackingId,
+                                           EVSE              EVSE,
+                                           String            PropertyName,
+                                           Object            OldValue,
+                                           Object            NewValue)
         {
 
             var OnEVSEDataChangedLocal = OnEVSEDataChanged;
             if (OnEVSEDataChangedLocal != null)
-                await OnEVSEDataChangedLocal(Timestamp, EVSE, PropertyName, OldValue, NewValue);
+                await OnEVSEDataChangedLocal(Timestamp,
+                                             EventTrackingId,
+                                             EVSE,
+                                             PropertyName,
+                                             OldValue,
+                                             NewValue);
 
         }
 
@@ -1778,9 +1946,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEAdminStatus(DateTime                          Timestamp,
-                                                  EventTracking_Id                  EventTrackingId,
-                                                  EVSE                              EVSE,
+        internal async Task UpdateEVSEAdminStatus(DateTime                           Timestamp,
+                                                  EventTracking_Id                   EventTrackingId,
+                                                  EVSE                               EVSE,
                                                   Timestamped<EVSEAdminStatusTypes>  OldStatus,
                                                   Timestamped<EVSEAdminStatusTypes>  NewStatus)
         {
@@ -1807,9 +1975,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEStatus(DateTime                     Timestamp,
-                                             EventTracking_Id             EventTrackingId,
-                                             EVSE                         EVSE,
+        internal async Task UpdateEVSEStatus(DateTime                      Timestamp,
+                                             EventTracking_Id              EventTrackingId,
+                                             EVSE                          EVSE,
                                              Timestamped<EVSEStatusTypes>  OldStatus,
                                              Timestamped<EVSEStatusTypes>  NewStatus)
         {
@@ -3400,8 +3568,6 @@ namespace org.GraphDefined.WWCP
             PaymentOptions       = OtherChargingPool.PaymentOptions;
             Accessibility        = OtherChargingPool.Accessibility;
 
-            PoolOwner            = OtherChargingPool.PoolOwner;
-            LocationOwner        = OtherChargingPool.LocationOwner;
             PhotoURIs            = OtherChargingPool.PhotoURIs;
 
             return this;

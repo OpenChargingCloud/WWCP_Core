@@ -24,7 +24,26 @@ using System;
 namespace org.GraphDefined.WWCP
 {
 
-    public enum GridConnection
+    public class GridConnection
+    {
+
+        public GridConnectionTypes Connection { get; }
+
+
+        public static GridConnection Unknown
+            => new GridConnection(GridConnectionTypes.Unknown);
+
+
+        public GridConnection(GridConnectionTypes Connection)
+        {
+
+            this.Connection  = Connection;
+
+        }
+
+    }
+
+    public enum GridConnectionTypes
     {
 
         /// <summary>

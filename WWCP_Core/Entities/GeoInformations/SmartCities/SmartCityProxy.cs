@@ -550,7 +550,7 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (Name.IsNullOrEmpty())
+            if (IEnumerableExtensions.IsNullOrEmpty(Name))
                 throw new ArgumentNullException(nameof(Name), "The given smart city name must not be null or empty!");
 
             #endregion

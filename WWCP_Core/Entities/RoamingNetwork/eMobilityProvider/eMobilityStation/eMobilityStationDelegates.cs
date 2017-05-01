@@ -36,11 +36,13 @@ namespace org.GraphDefined.WWCP
     /// A delegate called whenever the static data of the charging station changed.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="eMobilityStation">The updated charging station.</param>
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
     public delegate Task OnEMobilityStationDataChangedDelegate(DateTime          Timestamp,
+                                                               EventTracking_Id  EventTrackingId,
                                                                eMobilityStation  eMobilityStation,
                                                                String            PropertyName,
                                                                Object            OldValue,
@@ -50,13 +52,14 @@ namespace org.GraphDefined.WWCP
     /// A delegate called whenever the admin status of the charging station changed.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="eMobilityStation">The updated charging station.</param>
     /// <param name="OldStatus">The old timestamped status of the charging station.</param>
     /// <param name="NewStatus">The new timestamped status of the charging station.</param>
     public delegate Task OnEMobilityStationAdminStatusChangedDelegate(DateTime                                      Timestamp,
+                                                                      EventTracking_Id                              EventTrackingId,
                                                                       eMobilityStation                              eMobilityStation,
                                                                       Timestamped<eMobilityStationAdminStatusType>  OldStatus,
                                                                       Timestamped<eMobilityStationAdminStatusType>  NewStatus);
-
 
 }

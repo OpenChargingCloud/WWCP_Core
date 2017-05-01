@@ -46,7 +46,7 @@ namespace org.GraphDefined.WWCP
                                                     I18NString                  Name)
 
             : base(RoamingNetwork,
-                   "The given charging station operator identification '" + ChargingStationOperatorId + "' with name '" + Name?.FirstText + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")
+                   "The given charging station operator identification '" + ChargingStationOperatorId + "' with name '" + Name?.FirstText() + "' already exists within the given '" + RoamingNetwork.Id + "' roaming network!")
 
         { }
 

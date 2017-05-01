@@ -321,13 +321,13 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
 
-            => Street                        + " " +
-               HouseNumber                   + " " +
-               FloorLevel                    + ", " +
-               PostalCode                    + " " +
-               PostalCodeSub                 + " " +
-               City                          + ", " +
-               Country.CountryName.FirstText + " / " +
+            => Street                          + " " +
+               HouseNumber                     + " " +
+               FloorLevel                      + ", " +
+               PostalCode                      + " " +
+               PostalCodeSub                   + " " +
+               City                            + ", " +
+               Country.CountryName.FirstText() + " / " +
                Comment;
 
         #endregion

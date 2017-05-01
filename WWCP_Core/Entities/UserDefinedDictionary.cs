@@ -86,11 +86,12 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Set(Key, NewValue, OldValue = null)
+        #region Set(Key, NewValue, OldValue = null, EventTrackingId = null)
 
-        public SetPropertyResult Set(String  Key,
-                                     Object  NewValue,
-                                     Object  OldValue = null)
+        public SetPropertyResult Set(String            Key,
+                                     Object            NewValue,
+                                     Object            OldValue         = null,
+                                     EventTracking_Id  EventTrackingId  = null)
         {
 
             // Locks are shit, but ConcurrentDictionary does not compare values correctly!
@@ -105,6 +106,7 @@ namespace org.GraphDefined.WWCP
                     _Dictionary.Add(Key, NewValue);
 
                     OnPropertyChanged?.Invoke(DateTime.Now,
+                                              EventTrackingId,
                                               this,
                                               Key,
                                               OldValue,
@@ -123,6 +125,7 @@ namespace org.GraphDefined.WWCP
                     _Dictionary[Key] = NewValue;
 
                     OnPropertyChanged?.Invoke(DateTime.Now,
+                                              EventTrackingId,
                                               this,
                                               Key,
                                               OldValue,
@@ -136,6 +139,7 @@ namespace org.GraphDefined.WWCP
                 _Dictionary.Remove(Key);
 
                 OnPropertyChanged?.Invoke(DateTime.Now,
+                                          EventTrackingId,
                                           this,
                                           Key,
                                           OldValue,

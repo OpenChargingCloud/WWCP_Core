@@ -59,87 +59,6 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        #region ServiceIdentification
-
-        private String _ServiceIdentification;
-
-        /// <summary>
-        /// The internal service identification of the charging station maintained by the Charging Station Operator.
-        /// </summary>
-        [Optional]
-        public String ServiceIdentification
-        {
-
-            get
-            {
-                return _ServiceIdentification;
-            }
-
-            set
-            {
-
-                if (ServiceIdentification != value)
-                    SetProperty<String>(ref _ServiceIdentification, value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region ModelCode
-
-        private String _ModelCode;
-
-        /// <summary>
-        /// The internal model code of the charging station maintained by the Charging Station Operator.
-        /// </summary>
-        [Optional]
-        public String ModelCode
-        {
-
-            get
-            {
-                return _ModelCode;
-            }
-
-            set
-            {
-
-                if (ModelCode != value)
-                    SetProperty<String>(ref _ModelCode, value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region HubjectStationId
-
-        private String _HubjectStationId;
-
-        [Optional]
-        public String HubjectStationId
-        {
-
-            get
-            {
-                return _HubjectStationId;
-            }
-
-            set
-            {
-
-                if (HubjectStationId != value)
-                    SetProperty<String>(ref _HubjectStationId, value);
-
-            }
-
-        }
-
-        #endregion
-
         #region Name
 
         private I18NString _Name;
@@ -154,18 +73,25 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                if (_Name == null || !_Name.Any())
-                    return ChargingPool.Name;
-
-                return _Name;
+                return _Name.IsNotNullOrEmpty()
+                           ? _Name
+                           : ChargingPool?.Name;
 
             }
 
             set
             {
 
-                if (_Name != value && _Name != ChargingPool.Name)
-                    SetProperty<I18NString>(ref _Name, value);
+                if (value != _Name && value != ChargingPool?.Name)
+                {
+
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _Name);
+
+                    else
+                        SetProperty(ref _Name, value);
+
+                }
 
             }
 
@@ -186,17 +112,26 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-                return _Description ?? ChargingPool.Description;
+
+                return _Description.IsNotNullOrEmpty()
+                           ? _Description
+                           : ChargingPool?.Description;
+
             }
 
             set
             {
 
-                if (value == ChargingPool.Description)
-                    return;
+                if (value != _Description && value != ChargingPool?.Description)
+                {
 
-                if (Description != value)
-                    SetProperty<I18NString>(ref _Description, value);
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _Description);
+
+                    else
+                        SetProperty(ref _Description, value);
+
+                }
 
             }
 
@@ -218,14 +153,22 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-                return _Brand;
+                return _Brand ?? ChargingPool?.Brand;
             }
 
             set
             {
 
-                if (_Brand != value)
-                    SetProperty(ref _Brand, value);
+                if (value != _Brand && value != ChargingPool?.Brand)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _Brand);
+
+                    else
+                        SetProperty(ref _Brand, value);
+
+                }
 
             }
 
@@ -235,7 +178,7 @@ namespace org.GraphDefined.WWCP
 
         #region Address
 
-        internal Address _Address;
+        private Address _Address;
 
         /// <summary>
         /// The address of this charging station.
@@ -246,16 +189,13 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-                return _Address ?? ChargingPool.Address;
+                return _Address ?? ChargingPool?.Address;
             }
 
             set
             {
 
-                if (value == ChargingPool.Address)
-                    return;
-
-                if (Address != value)
+                if (value != _Address && value != ChargingPool?.Address)
                 {
 
                     if (value == null)
@@ -290,7 +230,7 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                SetProperty<String>(ref _OSM_NodeId, value);
+                SetProperty(ref _OSM_NodeId, value);
             }
 
         }
@@ -299,7 +239,7 @@ namespace org.GraphDefined.WWCP
 
         #region GeoLocation
 
-        internal GeoCoordinate? _GeoLocation;
+        private GeoCoordinate? _GeoLocation;
 
         /// <summary>
         /// The geographical location of this charging station.
@@ -312,18 +252,15 @@ namespace org.GraphDefined.WWCP
             {
 
                 return _GeoLocation.HasValue
-                    ? _GeoLocation
-                    : ChargingPool.GeoLocation;
+                           ? _GeoLocation
+                           : ChargingPool?.GeoLocation;
 
             }
 
             set
             {
 
-                if (value == ChargingPool.GeoLocation)
-                    return;
-
-                if (GeoLocation != value)
+                if (value != _GeoLocation && value != ChargingPool?.GeoLocation)
                 {
 
                     if (value == null)
@@ -354,16 +291,13 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-                return _EntranceAddress ?? ChargingPool.EntranceAddress;
+                return _EntranceAddress ?? ChargingPool?.EntranceAddress;
             }
 
             set
             {
 
-                if (value == ChargingPool.EntranceAddress)
-                    return;
-
-                if (EntranceAddress != value)
+                if (value != _EntranceAddress && value != ChargingPool?.EntranceAddress)
                 {
 
                     if (value == null)
@@ -396,18 +330,15 @@ namespace org.GraphDefined.WWCP
             {
 
                 return _EntranceLocation.HasValue
-                    ? _EntranceLocation
-                    : ChargingPool.EntranceLocation;
+                           ? _EntranceLocation
+                           : ChargingPool?.EntranceLocation;
 
             }
 
             set
             {
 
-                if (value == ChargingPool.EntranceLocation)
-                    return;
-
-                if (EntranceLocation != value)
+                if (value != _EntranceLocation && value != ChargingPool?.EntranceLocation)
                 {
 
                     if (value == null)
@@ -424,37 +355,37 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ExitAddress
+        #region ArrivalInstructions
 
-        internal Address _ExitAddress;
+        private I18NString _ArrivalInstructions;
 
         /// <summary>
-        /// The address of the exit of this charging station.
-        /// (If different from 'Address').
+        /// An optional (multi-language) description of how to find the charging pool.
         /// </summary>
         [Optional]
-        public Address ExitAddress
+        public I18NString ArrivalInstructions
         {
 
             get
             {
-                return _ExitAddress ?? ChargingPool.ExitAddress;
+
+                return _ArrivalInstructions.IsNotNullOrEmpty()
+                           ? _ArrivalInstructions
+                           : ChargingPool?.ArrivalInstructions;
+
             }
 
             set
             {
 
-                if (value == ChargingPool.ExitAddress)
-                    return;
-
-                if (ExitAddress != value)
+                if (value != _ArrivalInstructions && value != ChargingPool?.ArrivalInstructions)
                 {
 
-                    if (value == null)
-                        DeleteProperty(ref _ExitAddress);
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _ArrivalInstructions);
 
                     else
-                        SetProperty(ref _ExitAddress, value);
+                        SetProperty(ref _ArrivalInstructions, value);
 
                 }
 
@@ -464,41 +395,32 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ExitLocation
+        #region OpeningTimes
 
-        internal GeoCoordinate? _ExitLocation;
+        private OpeningTimes _OpeningTimes;
 
         /// <summary>
-        /// The geographical location of the exit of this charging station.
-        /// (If different from 'GeoLocation').
+        /// The opening times of this charging station.
         /// </summary>
-        [Optional]
-        public GeoCoordinate? ExitLocation
+        public OpeningTimes OpeningTimes
         {
 
             get
             {
-
-                return _ExitLocation.HasValue
-                    ? _ExitLocation
-                    : ChargingPool.ExitLocation;
-
+                return _OpeningTimes ?? ChargingPool?.OpeningTimes;
             }
 
             set
             {
 
-                if (value == ChargingPool.ExitLocation)
-                    return;
-
-                if (ExitLocation != value)
+                if (value != _OpeningTimes && value != ChargingPool?.OpeningTimes)
                 {
 
                     if (value == null)
-                        DeleteProperty(ref _ExitLocation);
+                        DeleteProperty(ref _OpeningTimes);
 
                     else
-                        SetProperty(ref _ExitLocation, value);
+                        SetProperty(ref _OpeningTimes, value);
 
                 }
 
@@ -522,35 +444,37 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region OpeningTimes
+        #region UIFeatures
 
-        internal OpeningTimes _OpeningTimes;
+        private ChargingStationUIFeatures? _UIFeatures;
 
         /// <summary>
-        /// The opening times of this charging station.
+        /// The user interface features of the charging station.
         /// </summary>
-        public OpeningTimes OpeningTimes
+        [Optional]
+        public ChargingStationUIFeatures? UIFeatures
         {
 
             get
             {
-                return _OpeningTimes ?? ChargingPool.OpeningTimes;
+
+                return _UIFeatures != null
+                           ? _UIFeatures
+                           : ChargingPool?.UIFeatures;
+
             }
 
             set
             {
 
-                if (value == ChargingPool.OpeningTimes)
-                    return;
-
-                if (OpeningTimes != value)
+                if (value != _UIFeatures && value != ChargingPool?.UIFeatures)
                 {
 
-                    if (value == null)
-                        DeleteProperty(ref _OpeningTimes);
+                    if (value != null)
+                        DeleteProperty(ref _UIFeatures);
 
                     else
-                        SetProperty(ref _OpeningTimes, value);
+                        SetProperty(ref _UIFeatures, value);
 
                 }
 
@@ -562,33 +486,31 @@ namespace org.GraphDefined.WWCP
 
         #region AuthenticationModes
 
-        internal ReactiveSet<AuthenticationModes> _AuthenticationModes;
+        private ReactiveSet<AuthenticationModes> _AuthenticationModes;
 
         public ReactiveSet<AuthenticationModes> AuthenticationModes
         {
 
             get
             {
-                return _AuthenticationModes ?? ChargingPool.AuthenticationModes;
+
+                return _AuthenticationModes.Any()
+                           ? _AuthenticationModes
+                           : ChargingPool?.AuthenticationModes;
+
             }
 
             set
             {
 
-                if (value == ChargingPool.AuthenticationModes)
-                    return;
-
-                if (AuthenticationModes != value)
+                if (value != _AuthenticationModes && value != ChargingPool?.AuthenticationModes)
                 {
 
-                    if (_AuthenticationModes == null)
-                        _AuthenticationModes = new ReactiveSet<AuthenticationModes>();
-
-                    if (value == null)
+                    if (value.IsNullOrEmpty())
                         DeleteProperty(ref _AuthenticationModes);
 
                     else
-                        SetProperty(ref _AuthenticationModes, value);
+                        SetProperty(ref _AuthenticationModes, _AuthenticationModes.Set(value));
 
                 }
 
@@ -600,7 +522,7 @@ namespace org.GraphDefined.WWCP
 
         #region PaymentOptions
 
-        internal ReactiveSet<PaymentOptions> _PaymentOptions;
+        private ReactiveSet<PaymentOptions> _PaymentOptions;
 
         [Mandatory]
         public ReactiveSet<PaymentOptions> PaymentOptions
@@ -608,26 +530,24 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-                return _PaymentOptions ?? ChargingPool.PaymentOptions;
+
+                return _PaymentOptions.Any()
+                           ? _PaymentOptions
+                           : ChargingPool?.PaymentOptions;
+
             }
 
             set
             {
 
-                if (value == ChargingPool.PaymentOptions)
-                    return;
-
-                if (PaymentOptions != value)
+                if (value != _PaymentOptions && value != ChargingPool?.PaymentOptions)
                 {
 
-                    if (_PaymentOptions == null)
-                        _PaymentOptions = new ReactiveSet<PaymentOptions>();
-
-                    if (value == null)
+                    if (value.IsNullOrEmpty())
                         DeleteProperty(ref _PaymentOptions);
 
                     else
-                        SetProperty(ref _PaymentOptions, value);
+                        SetProperty(ref _PaymentOptions, _PaymentOptions.Set(value));
 
                 }
 
@@ -639,31 +559,72 @@ namespace org.GraphDefined.WWCP
 
         #region Accessibility
 
-        internal AccessibilityTypes _Accessibility;
+        private AccessibilityTypes? _Accessibility;
 
         [Optional]
-        public AccessibilityTypes Accessibility
+        public AccessibilityTypes? Accessibility
         {
 
             get
             {
 
-                return _Accessibility != AccessibilityTypes.Unspecified
-                    ? _Accessibility
-                    : ChargingPool.Accessibility;
+                return _Accessibility != null
+                           ? _Accessibility
+                           : ChargingPool?.Accessibility;
 
             }
 
             set
             {
 
-                if (value == ChargingPool.Accessibility)
-                    return;
-
-                if (Accessibility != value)
+                if (value != _Accessibility && value != ChargingPool?.Accessibility)
                 {
 
-                    SetProperty(ref _Accessibility, value);
+                    if (value != null)
+                        DeleteProperty(ref _Accessibility);
+
+                    else
+                        SetProperty(ref _Accessibility, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region PhotoURIs
+
+        private ReactiveSet<String> _PhotoURIs;
+
+        /// <summary>
+        /// URIs of photos of this charging station.
+        /// </summary>
+        [Optional]
+        public ReactiveSet<String> PhotoURIs
+        {
+
+            get
+            {
+
+                return _PhotoURIs.Any()
+                           ? _PhotoURIs
+                           : ChargingPool?.PhotoURIs;
+
+            }
+
+            set
+            {
+
+                if (value != _PhotoURIs && value != ChargingPool?.PhotoURIs)
+                {
+
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _PhotoURIs);
+
+                    else
+                        SetProperty(ref _PhotoURIs, _PhotoURIs.Set(value));
 
                 }
 
@@ -675,27 +636,28 @@ namespace org.GraphDefined.WWCP
 
         #region HotlinePhoneNumber
 
-        internal String _HotlinePhoneNumber;
+        private I18NString _HotlinePhoneNumber;
 
         /// <summary>
         /// The telephone number of the Charging Station Operator hotline.
         /// </summary>
         [Optional]
-        public String HotlinePhoneNumber
+        public I18NString HotlinePhoneNumber
         {
 
             get
             {
-                return _HotlinePhoneNumber ?? ChargingPool.HotlinePhoneNumber;
+
+                return _HotlinePhoneNumber.IsNotNullOrEmpty()
+                           ? _HotlinePhoneNumber
+                           : ChargingPool?.HotlinePhoneNumber;
+
             }
 
             set
             {
 
-                if (value == ChargingPool.HotlinePhoneNumber)
-                    return;
-
-                if (HotlinePhoneNumber != value)
+                if (value != _HotlinePhoneNumber && value != ChargingPool?.HotlinePhoneNumber)
                 {
 
                     if (value == null)
@@ -711,6 +673,124 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+        #region GridConnection
+
+        private GridConnection _GridConnection;
+
+        /// <summary>
+        /// The grid connection of the charging station.
+        /// </summary>
+        [Optional]
+        public GridConnection GridConnection
+        {
+
+            get
+            {
+                return _GridConnection ?? ChargingPool?.GridConnection;
+            }
+
+            set
+            {
+
+                if (value != _GridConnection && value != ChargingPool?.GridConnection)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _GridConnection);
+
+                    else
+                        SetProperty(ref _GridConnection, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region ExitAddress
+
+        private Address _ExitAddress;
+
+        /// <summary>
+        /// The address of the exit of this charging station.
+        /// (If different from 'Address').
+        /// </summary>
+        [Optional]
+        public Address ExitAddress
+        {
+
+            get
+            {
+                return _ExitAddress ?? ChargingPool?.ExitAddress;
+            }
+
+            set
+            {
+
+                if (value != _ExitAddress && value != ChargingPool?.ExitAddress)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _ExitAddress);
+
+                    else
+                        SetProperty(ref _ExitAddress, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region ExitLocation
+
+        private GeoCoordinate? _ExitLocation;
+
+        /// <summary>
+        /// The geographical location of the exit of this charging station.
+        /// (If different from 'GeoLocation').
+        /// </summary>
+        [Optional]
+        public GeoCoordinate? ExitLocation
+        {
+
+            get
+            {
+
+                return _ExitLocation.HasValue
+                           ? _ExitLocation
+                           : ChargingPool?.ExitLocation;
+
+            }
+
+            set
+            {
+
+                if (value != _ExitLocation && value != ChargingPool?.ExitLocation)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _ExitLocation);
+
+                    else
+                        SetProperty(ref _ExitLocation, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+
+
+
 
         #region IsHubjectCompatible
 
@@ -763,126 +843,130 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region UserComment
 
-        private I18NString _UserComment;
+        #region ServiceIdentification
+
+        private String _ServiceIdentification;
 
         /// <summary>
-        /// A comment from the users.
+        /// The internal service identification of the charging station maintained by the Charging Station Operator.
         /// </summary>
         [Optional]
-        public I18NString UserComment
+        public String ServiceIdentification
         {
 
             get
             {
-                return _UserComment;
+                return _ServiceIdentification;
             }
 
             set
             {
-                SetProperty<I18NString>(ref _UserComment, value);
+
+                if (ServiceIdentification != value)
+                    SetProperty(ref _ServiceIdentification, value);
+
             }
 
         }
 
         #endregion
 
-        #region ServiceProviderComment
+        #region ModelCode
 
-        private I18NString _ServiceProviderComment;
+        private String _ModelCode;
 
         /// <summary>
-        /// A comment from the service provider.
+        /// The internal model code of the charging station maintained by the Charging Station Operator.
         /// </summary>
         [Optional]
-        public I18NString ServiceProviderComment
+        public String ModelCode
         {
 
             get
             {
-                return _ServiceProviderComment;
+                return _ModelCode;
             }
 
             set
             {
-                SetProperty<I18NString>(ref _ServiceProviderComment, value);
+
+                if (ModelCode != value)
+                    SetProperty(ref _ModelCode, value);
+
             }
 
         }
 
         #endregion
 
-        #region GridConnection
+        #region HubjectStationId
 
-        private GridConnection _GridConnection;
+        private String _HubjectStationId;
 
-        /// <summary>
-        /// The grid connection of the charging station.
-        /// </summary>
         [Optional]
-        public GridConnection GridConnection
+        public String HubjectStationId
         {
 
             get
             {
-                return _GridConnection;
+                return _HubjectStationId;
             }
 
             set
             {
-                SetProperty<GridConnection>(ref _GridConnection, value);
+
+                if (HubjectStationId != value)
+                    SetProperty<String>(ref _HubjectStationId, value);
+
             }
 
         }
 
         #endregion
 
-        #region UIFeatures
 
-        private ChargingStationUIFeatures _UIFeatures;
+
+
+
+
+        #region AdminStatus
 
         /// <summary>
-        /// The features of the charging station.
+        /// The current charging station admin status.
         /// </summary>
         [Optional]
-        public ChargingStationUIFeatures UIFeatures
+        public Timestamped<ChargingStationAdminStatusTypes> AdminStatus
         {
 
             get
             {
-                return _UIFeatures;
+                return _AdminStatusSchedule.CurrentStatus;
             }
 
             set
             {
-                SetProperty<ChargingStationUIFeatures>(ref _UIFeatures, value);
+                SetAdminStatus(value);
             }
 
         }
 
         #endregion
 
-        #region PhotoURIs
+        #region AdminStatusSchedule
 
-        private ReactiveSet<String> _PhotoURIs;
+        private StatusSchedule<ChargingStationAdminStatusTypes> _AdminStatusSchedule;
 
         /// <summary>
-        /// URIs of photos of this charging station.
+        /// The charging station admin status schedule.
         /// </summary>
-        [Optional]
-        public ReactiveSet<String> PhotoURIs
+        public IEnumerable<Timestamped<ChargingStationAdminStatusTypes>> AdminStatusSchedule(UInt64? HistorySize = null)
         {
 
-            get
-            {
-                return _PhotoURIs;
-            }
+            if (HistorySize.HasValue)
+                return _AdminStatusSchedule.Take(HistorySize);
 
-            set
-            {
-                SetProperty(ref _PhotoURIs, value);
-            }
+            return _AdminStatusSchedule;
 
         }
 
@@ -988,49 +1072,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
-        #region AdminStatus
-
-        /// <summary>
-        /// The current charging station admin status.
-        /// </summary>
-        [Optional]
-        public Timestamped<ChargingStationAdminStatusTypes> AdminStatus
-        {
-
-            get
-            {
-                return _AdminStatusSchedule.CurrentStatus;
-            }
-
-            set
-            {
-                SetAdminStatus(value);
-            }
-
-        }
-
-        #endregion
-
-        #region AdminStatusSchedule
-
-        private StatusSchedule<ChargingStationAdminStatusTypes> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The charging station admin status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<ChargingStationAdminStatusTypes>> AdminStatusSchedule(UInt64? HistorySize = null)
-        {
-
-            if (HistorySize.HasValue)
-                return _AdminStatusSchedule.Take(HistorySize);
-
-            return _AdminStatusSchedule;
-
-        }
-
-        #endregion
-
         #endregion
 
         #region Links
@@ -1080,19 +1121,54 @@ namespace org.GraphDefined.WWCP
                                UInt16                                MaxAdminStatusListSize        = DefaultMaxAdminStatusListSize,
                                UInt16                                MaxStatusListSize             = DefaultMaxStatusListSize)
 
+            : this(Id,
+                   null,
+                   Configurator,
+                   RemoteChargingStationCreator,
+                   InitialAdminStatus,
+                   InitialStatus,
+                   MaxAdminStatusListSize,
+                   MaxStatusListSize)
+
+        { }
+
+        #endregion
+
+        #region ChargingStation(Id, ChargingPool, ...)
+
+        /// <summary>
+        /// Create a new charging station having the given identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charging station pool.</param>
+        /// <param name="ChargingPool">The parent charging pool.</param>
+        /// <param name="Configurator">A delegate to configure the newly created charging station.</param>
+        /// <param name="RemoteChargingStationCreator">A delegate to attach a remote charging station.</param>
+        /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
+        /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
+        /// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
+        /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
+        public ChargingStation(ChargingStation_Id                    Id,
+                               ChargingPool                          ChargingPool,
+                               Action<ChargingStation>               Configurator                   = null,
+                               RemoteChargingStationCreatorDelegate  RemoteChargingStationCreator   = null,
+                               ChargingStationAdminStatusTypes       InitialAdminStatus             = ChargingStationAdminStatusTypes.Operational,
+                               ChargingStationStatusTypes            InitialStatus                  = ChargingStationStatusTypes.Available,
+                               UInt16                                MaxAdminStatusListSize         = DefaultMaxAdminStatusListSize,
+                               UInt16                                MaxStatusListSize              = DefaultMaxStatusListSize)
+
             : base(Id)
 
         {
 
             #region Init data and properties
 
+            this.ChargingPool                = ChargingPool;
+
             this._EVSEs                      = new EntityHashSet<ChargingStation, EVSE_Id, EVSE>(this);
 
             this.Name                        = new I18NString();
             this.Description                 = new I18NString();
 
-            this._UserComment                = new I18NString();
-            this._ServiceProviderComment     = new I18NString();
             //this.GeoLocation                 = new GeoCoordinate();
 
             this._ParkingSpaces               = new List<ParkingSpace>();
@@ -1123,11 +1199,11 @@ namespace org.GraphDefined.WWCP
 
             #region Link events
 
-            this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateStatus(Timestamp, OldStatus, NewStatus);
-
             this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateAdminStatus(Timestamp, OldStatus, NewStatus);
+                                                          => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+
+            this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+                                                          => UpdateStatus     (Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             // ChargingStation events
             this.OnEVSEAddition.           OnVoting       += (timestamp, station, evse, vote)      => ChargingPool.EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
@@ -1148,55 +1224,6 @@ namespace org.GraphDefined.WWCP
             this.OnPropertyChanged += UpdateData;
 
             this.RemoteChargingStation = RemoteChargingStationCreator?.Invoke(this);
-
-        }
-
-        #endregion
-
-        #region ChargingStation(Id, ChargingPool, ...)
-
-        /// <summary>
-        /// Create a new charging station having the given identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the charging station pool.</param>
-        /// <param name="ChargingPool">The parent charging pool.</param>
-        /// <param name="Configurator">A delegate to configure the newly created charging station.</param>
-        /// <param name="RemoteChargingStationCreator">A delegate to attach a remote charging station.</param>
-        /// <param name="InitialAdminStatus">An optional initial admin status of the EVSE.</param>
-        /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
-        /// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
-        /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
-        public ChargingStation(ChargingStation_Id                    Id,
-                               ChargingPool                          ChargingPool,
-                               Action<ChargingStation>               Configurator                   = null,
-                               RemoteChargingStationCreatorDelegate  RemoteChargingStationCreator   = null,
-                               ChargingStationAdminStatusTypes       InitialAdminStatus             = ChargingStationAdminStatusTypes.Operational,
-                               ChargingStationStatusTypes            InitialStatus                  = ChargingStationStatusTypes.Available,
-                               UInt16                                MaxAdminStatusListSize         = DefaultMaxAdminStatusListSize,
-                               UInt16                                MaxStatusListSize              = DefaultMaxStatusListSize)
-
-            : this(Id,
-                   Configurator,
-                   RemoteChargingStationCreator,
-                   InitialAdminStatus,
-                   InitialStatus,
-                   MaxAdminStatusListSize,
-                   MaxStatusListSize)
-
-        {
-
-            #region Initial checks
-
-            if (ChargingPool == null)
-                throw new ArgumentNullException(nameof(ChargingPool),  "The charging pool must not be null!");
-
-            #endregion
-
-            #region Init data and properties
-
-            this.ChargingPool  = ChargingPool;
-
-            #endregion
 
         }
 
@@ -1308,68 +1335,87 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (internal) UpdateData(Timestamp, Sender, PropertyName, OldValue, NewValue)
+        #region (internal) UpdateData       (Timestamp, EventTrackingId, Sender, PropertyName, OldValue, NewValue)
 
         /// <summary>
         /// Update the static data.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="Sender">The changed charging station.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateData(DateTime  Timestamp,
-                                       Object    Sender,
-                                       String    PropertyName,
-                                       Object    OldValue,
-                                       Object    NewValue)
+        internal async Task UpdateData(DateTime          Timestamp,
+                                       EventTracking_Id  EventTrackingId,
+                                       Object            Sender,
+                                       String            PropertyName,
+                                       Object            OldValue,
+                                       Object            NewValue)
         {
 
             var OnDataChangedLocal = OnDataChanged;
             if (OnDataChangedLocal != null)
-                await OnDataChangedLocal(Timestamp, Sender as ChargingStation, PropertyName, OldValue, NewValue);
+                await OnDataChangedLocal(Timestamp,
+                                         EventTrackingId,
+                                         Sender as ChargingStation,
+                                         PropertyName,
+                                         OldValue,
+                                         NewValue);
 
         }
 
         #endregion
 
-        #region (internal) UpdateStatus(Timestamp, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update the current status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
-        /// <param name="NewStatus">The new EVSE status.</param>
-        internal void UpdateStatus(DateTime                                Timestamp,
-                                   Timestamped<ChargingStationStatusTypes>  OldStatus,
-                                   Timestamped<ChargingStationStatusTypes>  NewStatus)
-        {
-
-            var OnAggregatedStatusChangedLocal = OnStatusChanged;
-            if (OnAggregatedStatusChangedLocal != null)
-                OnAggregatedStatusChangedLocal(Timestamp, this, OldStatus, NewStatus);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateAdminStatus(Timestamp, OldStatus, NewStatus)
+        #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the current admin status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
-        internal void UpdateAdminStatus(DateTime                                    Timestamp,
-                                        Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
-                                        Timestamped<ChargingStationAdminStatusTypes>  NewStatus)
+        internal async Task UpdateAdminStatus(DateTime                                      Timestamp,
+                                              EventTracking_Id                              EventTrackingId,
+                                              Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
+                                              Timestamped<ChargingStationAdminStatusTypes>  NewStatus)
         {
 
             var OnAdminStatusChangedLocal = OnAdminStatusChanged;
             if (OnAdminStatusChangedLocal != null)
-                OnAdminStatusChangedLocal(Timestamp, this, OldStatus, NewStatus);
+                await OnAdminStatusChangedLocal(Timestamp,
+                                                EventTrackingId,
+                                                this,
+                                                OldStatus,
+                                                NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateStatus     (Timestamp, EventTrackingId, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the current status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="OldStatus">The old EVSE status.</param>
+        /// <param name="NewStatus">The new EVSE status.</param>
+        internal async Task UpdateStatus(DateTime                                 Timestamp,
+                                         EventTracking_Id                         EventTrackingId,
+                                         Timestamped<ChargingStationStatusTypes>  OldStatus,
+                                         Timestamped<ChargingStationStatusTypes>  NewStatus)
+        {
+
+            var OnAggregatedStatusChangedLocal = OnStatusChanged;
+            if (OnAggregatedStatusChangedLocal != null)
+                await OnAggregatedStatusChangedLocal(Timestamp,
+                                                     EventTrackingId,
+                                                     this,
+                                                     OldStatus,
+                                                     NewStatus);
 
         }
 
@@ -1657,26 +1703,33 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (internal) UpdateEVSEData(Timestamp, EVSE, OldStatus, NewStatus)
+        #region (internal) UpdateEVSEData       (Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the data of an EVSE.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="EVSE">The changed EVSE.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateEVSEData(DateTime  Timestamp,
-                                           EVSE      EVSE,
-                                           String    PropertyName,
-                                           Object    OldValue,
-                                           Object    NewValue)
+        internal async Task UpdateEVSEData(DateTime          Timestamp,
+                                           EventTracking_Id  EventTrackingId,
+                                           EVSE              EVSE,
+                                           String            PropertyName,
+                                           Object            OldValue,
+                                           Object            NewValue)
         {
 
             var OnEVSEDataChangedLocal = OnEVSEDataChanged;
             if (OnEVSEDataChangedLocal != null)
-                await OnEVSEDataChangedLocal(Timestamp, EVSE, PropertyName, OldValue, NewValue);
+                await OnEVSEDataChangedLocal(Timestamp,
+                                             EventTrackingId,
+                                             EVSE,
+                                             PropertyName,
+                                             OldValue,
+                                             NewValue);
 
         }
 
@@ -3383,13 +3436,13 @@ namespace org.GraphDefined.WWCP
             ExitAddress          = OtherChargingStation.ExitAddress;
             ExitLocation         = OtherChargingStation.ExitLocation;
 
-            AuthenticationModes  = OtherChargingStation.AuthenticationModes;
-            PaymentOptions       = OtherChargingStation.PaymentOptions;
+            AuthenticationModes.Set(OtherChargingStation.AuthenticationModes);
+            PaymentOptions.     Set(OtherChargingStation.PaymentOptions);
             Accessibility        = OtherChargingStation.Accessibility;
 
 //            PoolOwner            = OtherChargingStation.PoolOwner;
 //            LocationOwner        = OtherChargingStation.LocationOwner;
-            PhotoURIs            = OtherChargingStation.PhotoURIs;
+            PhotoURIs.          Set(OtherChargingStation.PhotoURIs);
 
             return this;
 

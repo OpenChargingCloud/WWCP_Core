@@ -37,24 +37,28 @@ namespace org.GraphDefined.WWCP
     /// A delegate called whenever the static data of the electric vehicle changed.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="eVehicle">The updated electric vehicle.</param>
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
-    public delegate Task OnEVehicleDataChangedDelegate(DateTime  Timestamp,
-                                                       eVehicle  eVehicle,
-                                                       String    PropertyName,
-                                                       Object    OldValue,
-                                                       Object    NewValue);
+    public delegate Task OnEVehicleDataChangedDelegate(DateTime          Timestamp,
+                                                       EventTracking_Id  EventTrackingId,
+                                                       eVehicle          eVehicle,
+                                                       String            PropertyName,
+                                                       Object            OldValue,
+                                                       Object            NewValue);
 
     /// <summary>
     /// A delegate called whenever the admin status of the electric vehicle changed.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="eVehicle">The updated electric vehicle.</param>
     /// <param name="OldStatus">The old timestamped status of the electric vehicle.</param>
     /// <param name="NewStatus">The new timestamped status of the electric vehicle.</param>
     public delegate Task OnEVehicleAdminStatusChangedDelegate(DateTime                              Timestamp,
+                                                              EventTracking_Id                      EventTrackingId,
                                                               eVehicle                              eVehicle,
                                                               Timestamped<eVehicleAdminStatusType>  OldStatus,
                                                               Timestamped<eVehicleAdminStatusType>  NewStatus);
@@ -63,10 +67,12 @@ namespace org.GraphDefined.WWCP
     /// A delegate called whenever the dynamic status of the electric vehicle changed.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="eVehicle">The updated electric vehicle.</param>
     /// <param name="OldStatus">The old timestamped status of the electric vehicle.</param>
     /// <param name="NewStatus">The new timestamped status of the electric vehicle.</param>
     public delegate Task OnEVehicleStatusChangedDelegate(DateTime                         Timestamp,
+                                                         EventTracking_Id                 EventTrackingId,
                                                          eVehicle                         eVehicle,
                                                          Timestamped<eVehicleStatusType>  OldStatus,
                                                          Timestamped<eVehicleStatusType>  NewStatus);
@@ -75,10 +81,12 @@ namespace org.GraphDefined.WWCP
     /// A delegate called whenever the geo coordinate of the electric vehicle changed.
     /// </summary>
     /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
     /// <param name="eVehicle">The updated electric vehicle.</param>
     /// <param name="OldGeoCoordinate">The old timestamped geo coordinate of the electric vehicle.</param>
     /// <param name="NewGeoCoordinate">The new timestamped geo coordinate of the electric vehicle.</param>
     public delegate Task OnEVehicleGeoLocationChangedDelegate(DateTime                    Timestamp,
+                                                              EventTracking_Id            EventTrackingId,
                                                               eVehicle                    eVehicle,
                                                               Timestamped<GeoCoordinate>  OldGeoCoordinate,
                                                               Timestamped<GeoCoordinate>  NewGeoCoordinate);

@@ -546,7 +546,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique identification of the e-vehicle pool.</param>
         /// <param name="MaxAdminStatusListSize">The default size of the admin status list.</param>
         internal eVehicle(eVehicle_Id                    Id,
-                          eMobilityProviderProxy              Provider,
+                          eMobilityProviderProxy         Provider,
                           Action<eVehicle>               Configurator            = null,
                           RemoteEVehicleCreatorDelegate  RemoteEVehicleCreator   = null,
                           eVehicleAdminStatusType        AdminStatus             = eVehicleAdminStatusType.Operational,
@@ -593,10 +593,10 @@ namespace org.GraphDefined.WWCP
             #region Link events
 
             this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateAdminStatus(Timestamp, OldStatus, NewStatus);
+                                                          => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             this._StatusSchedule.OnStatusChanged      += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateStatus(Timestamp, OldStatus, NewStatus);
+                                                          => UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             #endregion
 
@@ -749,64 +749,83 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (internal) UpdateData(Timestamp, Sender, PropertyName, OldValue, NewValue)
+        #region (internal) UpdateData       (Timestamp, EventTrackingId, Sender, PropertyName, OldValue, NewValue)
 
         /// <summary>
         /// Update the static data.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="Sender">The changed charging station.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateData(DateTime  Timestamp,
-                                       Object    Sender,
-                                       String    PropertyName,
-                                       Object    OldValue,
-                                       Object    NewValue)
+        internal async Task UpdateData(DateTime          Timestamp,
+                                       EventTracking_Id  EventTrackingId,
+                                       Object            Sender,
+                                       String            PropertyName,
+                                       Object            OldValue,
+                                       Object            NewValue)
         {
 
             var OnDataChangedLocal = OnDataChanged;
             if (OnDataChangedLocal != null)
-                await OnDataChangedLocal(Timestamp, Sender as eVehicle, PropertyName, OldValue, NewValue);
+                await OnDataChangedLocal(Timestamp,
+                                         EventTrackingId,
+                                         Sender as eVehicle,
+                                         PropertyName,
+                                         OldValue,
+                                         NewValue);
 
         }
 
         #endregion
 
-        #region (internal) UpdateStatus(Timestamp, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update the current status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
-        /// <param name="NewStatus">The new EVSE status.</param>
-        internal void UpdateStatus(DateTime                         Timestamp,
-                                   Timestamped<eVehicleStatusType>  OldStatus,
-                                   Timestamped<eVehicleStatusType>  NewStatus)
-        {
-
-            OnStatusChanged?.Invoke(Timestamp, this, OldStatus, NewStatus);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateAdminStatus(Timestamp, OldStatus, NewStatus)
+        #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the current admin status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
         internal void UpdateAdminStatus(DateTime                              Timestamp,
+                                        EventTracking_Id                      EventTrackingId,
                                         Timestamped<eVehicleAdminStatusType>  OldStatus,
                                         Timestamped<eVehicleAdminStatusType>  NewStatus)
         {
 
-            OnAdminStatusChanged?.Invoke(Timestamp, this, OldStatus, NewStatus);
+            OnAdminStatusChanged?.Invoke(Timestamp,
+                                         EventTrackingId,
+                                         this,
+                                         OldStatus,
+                                         NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateStatus     (Timestamp, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update the current status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="OldStatus">The old EVSE status.</param>
+        /// <param name="NewStatus">The new EVSE status.</param>
+        internal void UpdateStatus(DateTime                         Timestamp,
+                                   EventTracking_Id                 EventTrackingId,
+                                   Timestamped<eVehicleStatusType>  OldStatus,
+                                   Timestamped<eVehicleStatusType>  NewStatus)
+        {
+
+            OnStatusChanged?.Invoke(Timestamp,
+                                    EventTrackingId,
+                                    this,
+                                    OldStatus,
+                                    NewStatus);
 
         }
 
@@ -825,20 +844,26 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (internal) UpdateGeoLocation(Timestamp, OldGeoCoordinate, NewGeoCoordinate)
+        #region (internal) UpdateGeoLocation(Timestamp, EventTrackingId, OldGeoCoordinate, NewGeoCoordinate)
 
         /// <summary>
         /// Update the current geo location.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldGeoCoordinate">The old geo coordinate.</param>
         /// <param name="NewGeoCoordinate">The new geo coordinate.</param>
         internal void UpdateGeoLocation(DateTime                    Timestamp,
+                                        EventTracking_Id            EventTrackingId,
                                         Timestamped<GeoCoordinate>  OldGeoCoordinate,
                                         Timestamped<GeoCoordinate>  NewGeoCoordinate)
         {
 
-            OnGeoLocationChanged?.Invoke(Timestamp, this, OldGeoCoordinate, NewGeoCoordinate);
+            OnGeoLocationChanged?.Invoke(Timestamp,
+                                         EventTrackingId,
+                                         this,
+                                         OldGeoCoordinate,
+                                         NewGeoCoordinate);
 
         }
 

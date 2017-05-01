@@ -50,7 +50,7 @@ namespace org.GraphDefined.WWCP.UnitTests
                                                           var max_n = report.Where(o => o.Value == max);
                                                           return (ChargingPoolStatusType) max_n.OrderBy(o => o.Key).First().Key;
                                                       };
-            _cp.OnStatusChanged += async (ts, pool, os, ns) => { Console.WriteLine("New pool state: " + ns.Value); };
+            _cp.OnStatusChanged += async (ts, EventTrackingId, pool, os, ns) => { Console.WriteLine("New pool state: " + ns.Value); };
 
             var s1  = _cp.CreateChargingStation(ChargingStation_Id.Random(_op.Id));
             s1.StatusAggregationDelegate = report => {
@@ -58,7 +58,7 @@ namespace org.GraphDefined.WWCP.UnitTests
                                                           var max_n = report.Where(o => o.Value == max);
                                                           return (ChargingStationStatusTypes) max_n.OrderBy(o => o.Key).First().Key;
                                                       };
-            s1.OnStatusChanged += async (ts, sta, os, ns) => { Console.WriteLine("New station #1 state: " + ns.Value); };
+            s1.OnStatusChanged += async (ts, EventTrackingId, sta, os, ns) => { Console.WriteLine("New station #1 state: " + ns.Value); };
 
             var e1 = s1.CreateEVSE(EVSE_Id.Parse("DE*822*E1111*1"));
             var e2 = s1.CreateEVSE(EVSE_Id.Parse("DE*822*E1111*2"));
@@ -69,7 +69,7 @@ namespace org.GraphDefined.WWCP.UnitTests
                                                           var max_n = report.Where(o => o.Value == max);
                                                           return (ChargingStationStatusTypes) max_n.OrderBy(o => o.Key).First().Key;
                                                       };
-            s2.OnStatusChanged += async (ts, sta, os, ns) => { Console.WriteLine("New station #2 state: " + ns.Value); };
+            s2.OnStatusChanged += async (ts, EventTrackingId, sta, os, ns) => { Console.WriteLine("New station #2 state: " + ns.Value); };
 
             var f1 = s2.CreateEVSE(EVSE_Id.Parse("DE*822*E2222*1"));
             var f2 = s2.CreateEVSE(EVSE_Id.Parse("DE*822*E2222*2"));

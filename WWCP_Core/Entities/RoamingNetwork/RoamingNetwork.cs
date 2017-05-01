@@ -276,7 +276,7 @@ namespace org.GraphDefined.WWCP
 
             // ChargingPool events
             this.ChargingStationAddition     = new VotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
-            this.ChargingStationRemoval      = new AggregatedNotificator<ChargingStation>();
+            this.ChargingStationRemoval      = new VotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean>(() => new VetoVote(), true);
 
             // ChargingStation events
             this.EVSEAddition                = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
@@ -380,26 +380,33 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (internal) UpdateData(Timestamp, Sender, PropertyName, OldValue, NewValue)
+        #region (internal) UpdateData(Timestamp, EventTrackingId, Sender, PropertyName, OldValue, NewValue)
 
         /// <summary>
         /// Update the static data of the roaming network.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="Sender">The changed roaming network.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateData(DateTime  Timestamp,
-                                       Object    Sender,
-                                       String    PropertyName,
-                                       Object    OldValue,
-                                       Object    NewValue)
+        internal async Task UpdateData(DateTime          Timestamp,
+                                       EventTracking_Id  EventTrackingId,
+                                       Object            Sender,
+                                       String            PropertyName,
+                                       Object            OldValue,
+                                       Object            NewValue)
         {
 
             var OnDataChangedLocal = OnDataChanged;
             if (OnDataChangedLocal != null)
-                await OnDataChangedLocal(Timestamp, Sender as RoamingNetwork, PropertyName, OldValue, NewValue);
+                await OnDataChangedLocal(Timestamp,
+                                         EventTrackingId,
+                                         Sender as RoamingNetwork,
+                                         PropertyName,
+                                         OldValue,
+                                         NewValue);
 
         }
 
@@ -2001,7 +2008,7 @@ namespace org.GraphDefined.WWCP
             if (_CPORoamingProvider.Id == null)
                 throw new ArgumentNullException(nameof(_CPORoamingProvider) + ".Id",    "The given roaming provider identification must not be null!");
 
-            if (_CPORoamingProvider.Name.IsNullOrEmpty())
+            if (IEnumerableExtensions.IsNullOrEmpty(_CPORoamingProvider.Name))
                 throw new ArgumentNullException(nameof(_CPORoamingProvider) + ".Name",  "The given roaming provider name must not be null or empty!");
 
             if (_ChargingStationOperatorRoamingProviders.ContainsKey(_CPORoamingProvider.Id))
@@ -2123,7 +2130,7 @@ namespace org.GraphDefined.WWCP
             if (eMobilityRoamingService.Id == null)
                 throw new ArgumentNullException(nameof(eMobilityRoamingService) + ".Id",    "The given roaming provider identification must not be null!");
 
-            if (eMobilityRoamingService.Name.IsNullOrEmpty())
+            if (IEnumerableExtensions.IsNullOrEmpty(eMobilityRoamingService.Name))
                 throw new ArgumentNullException(nameof(eMobilityRoamingService) + ".Name",  "The given roaming provider name must not be null or empty!");
 
             if (_EMPRoamingProviders.ContainsKey(eMobilityRoamingService.Id))
@@ -2381,14 +2388,14 @@ namespace org.GraphDefined.WWCP
         public event OnChargingPoolDataChangedDelegate         OnChargingPoolDataChanged;
 
         /// <summary>
+        /// An event fired whenever the admin status of any subordinated charging pool changed.
+        /// </summary>
+        public event OnChargingPoolAdminStatusChangedDelegate  OnChargingPoolAdminStatusChanged;
+
+        /// <summary>
         /// An event fired whenever the aggregated dynamic status of any subordinated charging pool changed.
         /// </summary>
         public event OnChargingPoolStatusChangedDelegate       OnChargingPoolStatusChanged;
-
-        /// <summary>
-        /// An event fired whenever the aggregated admin status of any subordinated charging pool changed.
-        /// </summary>
-        public event OnChargingPoolAdminStatusChangedDelegate  OnChargingPoolAdminStatusChanged;
 
         #endregion
 
@@ -2430,21 +2437,23 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (internal) UpdateChargingPoolData(Timestamp, ChargingPool, OldStatus, NewStatus)
+        #region (internal) UpdateChargingPoolData       (Timestamp, EventTrackingId, ChargingPool, PropertyName, OldValue, NewValue)
 
         /// <summary>
         /// Update the data of an charging pool.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargingPool">The changed charging pool.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateChargingPoolData(DateTime      Timestamp,
-                                                   ChargingPool  ChargingPool,
-                                                   String        PropertyName,
-                                                   Object        OldValue,
-                                                   Object        NewValue)
+        internal async Task UpdateChargingPoolData(DateTime          Timestamp,
+                                                   EventTracking_Id  EventTrackingId,
+                                                   ChargingPool      ChargingPool,
+                                                   String            PropertyName,
+                                                   Object            OldValue,
+                                                   Object            NewValue)
         {
 
             Acknowledgement result = null;
@@ -2488,45 +2497,29 @@ namespace org.GraphDefined.WWCP
 
             var OnChargingPoolDataChangedLocal = OnChargingPoolDataChanged;
             if (OnChargingPoolDataChangedLocal != null)
-                await OnChargingPoolDataChangedLocal(Timestamp, ChargingPool, PropertyName, OldValue, NewValue);
+                await OnChargingPoolDataChangedLocal(Timestamp,
+                                                     EventTrackingId,
+                                                     ChargingPool,
+                                                     PropertyName,
+                                                     OldValue,
+                                                     NewValue);
 
         }
 
         #endregion
 
-        #region (internal) UpdateChargingPoolStatus(Timestamp, ChargingPool, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update a charging pool status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="ChargingPool">The updated charging pool.</param>
-        /// <param name="OldStatus">The old aggregated charging pool status.</param>
-        /// <param name="NewStatus">The new aggregated charging pool status.</param>
-        internal async Task UpdateChargingPoolStatus(DateTime                             Timestamp,
-                                                     ChargingPool                         ChargingPool,
-                                                     Timestamped<ChargingPoolStatusType>  OldStatus,
-                                                     Timestamped<ChargingPoolStatusType>  NewStatus)
-        {
-
-            var OnChargingPoolStatusChangedLocal = OnChargingPoolStatusChanged;
-            if (OnChargingPoolStatusChangedLocal != null)
-                await OnChargingPoolStatusChangedLocal(Timestamp, ChargingPool, OldStatus, NewStatus);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateChargingPoolAdminStatus(Timestamp, ChargingPool, OldStatus, NewStatus)
+        #region (internal) UpdateChargingPoolAdminStatus(Timestamp, EventTrackingId, ChargingPool, OldStatus, NewStatus)
 
         /// <summary>
         /// Update a charging pool admin status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargingPool">The updated charging pool.</param>
         /// <param name="OldStatus">The old aggregated charging pool status.</param>
         /// <param name="NewStatus">The new aggregated charging pool status.</param>
         internal async Task UpdateChargingPoolAdminStatus(DateTime                                  Timestamp,
+                                                          EventTracking_Id                          EventTrackingId,
                                                           ChargingPool                              ChargingPool,
                                                           Timestamped<ChargingPoolAdminStatusType>  OldStatus,
                                                           Timestamped<ChargingPoolAdminStatusType>  NewStatus)
@@ -2534,7 +2527,40 @@ namespace org.GraphDefined.WWCP
 
             var OnChargingPoolAdminStatusChangedLocal = OnChargingPoolAdminStatusChanged;
             if (OnChargingPoolAdminStatusChangedLocal != null)
-                await OnChargingPoolAdminStatusChangedLocal(Timestamp, ChargingPool, OldStatus, NewStatus);
+                await OnChargingPoolAdminStatusChangedLocal(Timestamp,
+                                                            EventTrackingId,
+                                                            ChargingPool,
+                                                            OldStatus,
+                                                            NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateChargingPoolStatus     (Timestamp, EventTrackingId, ChargingPool, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update a charging pool status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="ChargingPool">The updated charging pool.</param>
+        /// <param name="OldStatus">The old aggregated charging pool status.</param>
+        /// <param name="NewStatus">The new aggregated charging pool status.</param>
+        internal async Task UpdateChargingPoolStatus(DateTime                             Timestamp,
+                                                     EventTracking_Id                     EventTrackingId,
+                                                     ChargingPool                         ChargingPool,
+                                                     Timestamped<ChargingPoolStatusType>  OldStatus,
+                                                     Timestamped<ChargingPoolStatusType>  NewStatus)
+        {
+
+            var OnChargingPoolStatusChangedLocal = OnChargingPoolStatusChanged;
+            if (OnChargingPoolStatusChangedLocal != null)
+                await OnChargingPoolStatusChangedLocal(Timestamp,
+                                                       EventTrackingId,
+                                                       ChargingPool,
+                                                       OldStatus,
+                                                       NewStatus);
 
         }
 
@@ -2739,14 +2765,14 @@ namespace org.GraphDefined.WWCP
         public event OnChargingStationDataChangedDelegate         OnChargingStationDataChanged;
 
         /// <summary>
-        /// An event fired whenever the aggregated dynamic status of any subordinated charging station changed.
-        /// </summary>
-        public event OnChargingStationStatusChangedDelegate       OnChargingStationStatusChanged;
-
-        /// <summary>
         /// An event fired whenever the admin status of any subordinated ChargingStation changed.
         /// </summary>
         public event OnChargingStationAdminStatusChangedDelegate  OnChargingStationAdminStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the aggregated dynamic status of any subordinated charging station changed.
+        /// </summary>
+        public event OnChargingStationStatusChangedDelegate       OnChargingStationStatusChanged;
 
         #endregion
 
@@ -2776,33 +2802,35 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingStationRemoval
 
-        internal readonly AggregatedNotificator<ChargingStation> ChargingStationRemoval;
+        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationRemoval;
 
         /// <summary>
         /// Called whenever a charging station will be or was removed.
         /// </summary>
-        public AggregatedNotificator<ChargingStation> OnChargingStationRemoval
+        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationRemoval
 
             => ChargingStationRemoval;
 
         #endregion
 
 
-        #region (internal) UpdateChargingStationData(Timestamp, ChargingStation, OldStatus, NewStatus)
+        #region (internal) UpdateChargingStationData       (Timestamp, EventTrackingId, ChargingStation, PropertyName, OldValue, NewValue)
 
         /// <summary>
         /// Update the data of a charging station.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargingStation">The changed charging station.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateChargingStationData(DateTime         Timestamp,
-                                                      ChargingStation  ChargingStation,
-                                                      String           PropertyName,
-                                                      Object           OldValue,
-                                                      Object           NewValue)
+        internal async Task UpdateChargingStationData(DateTime          Timestamp,
+                                                      EventTracking_Id  EventTrackingId,
+                                                      ChargingStation   ChargingStation,
+                                                      String            PropertyName,
+                                                      Object            OldValue,
+                                                      Object            NewValue)
         {
 
             Acknowledgement result = null;
@@ -2846,53 +2874,70 @@ namespace org.GraphDefined.WWCP
 
             var OnChargingStationDataChangedLocal = OnChargingStationDataChanged;
             if (OnChargingStationDataChangedLocal != null)
-                await OnChargingStationDataChangedLocal(Timestamp, ChargingStation, PropertyName, OldValue, NewValue);
+                await OnChargingStationDataChangedLocal(Timestamp,
+                                                        EventTrackingId,
+                                                        ChargingStation,
+                                                        PropertyName,
+                                                        OldValue,
+                                                        NewValue);
 
         }
 
         #endregion
 
-        #region (internal) UpdateChargingStationStatus(Timestamp, ChargingStation, OldStatus, NewStatus)
+        #region (internal) UpdateChargingStationAdminStatus(Timestamp, EventTrackingId, ChargingStation, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the current charging station admin status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="ChargingStation">The updated charging station.</param>
-        /// <param name="OldStatus">The old charging station admin status.</param>
-        /// <param name="NewStatus">The new charging station admin status.</param>
-        internal async Task UpdateChargingStationStatus(DateTime                                Timestamp,
-                                                        ChargingStation                         ChargingStation,
-                                                        Timestamped<ChargingStationStatusTypes>  OldStatus,
-                                                        Timestamped<ChargingStationStatusTypes>  NewStatus)
-        {
-
-            var OnChargingStationStatusChangedLocal = OnChargingStationStatusChanged;
-            if (OnChargingStationStatusChangedLocal != null)
-                await OnChargingStationStatusChangedLocal(Timestamp, ChargingStation, OldStatus, NewStatus);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateChargingStationAdminStatus(Timestamp, ChargingStation, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update the current charging station admin status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="ChargingStation">The updated charging station.</param>
         /// <param name="OldStatus">The old aggreagted charging station status.</param>
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateChargingStationAdminStatus(DateTime                                     Timestamp,
-                                                             ChargingStation                              ChargingStation,
+        internal async Task UpdateChargingStationAdminStatus(DateTime                                      Timestamp,
+                                                             EventTracking_Id                              EventTrackingId,
+                                                             ChargingStation                               ChargingStation,
                                                              Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
                                                              Timestamped<ChargingStationAdminStatusTypes>  NewStatus)
         {
 
             var OnChargingStationAdminStatusChangedLocal = OnChargingStationAdminStatusChanged;
             if (OnChargingStationAdminStatusChangedLocal != null)
-                await OnChargingStationAdminStatusChangedLocal(Timestamp, ChargingStation, OldStatus, NewStatus);
+                await OnChargingStationAdminStatusChangedLocal(Timestamp,
+                                                               EventTrackingId,
+                                                               ChargingStation,
+                                                               OldStatus,
+                                                               NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateChargingStationStatus     (Timestamp, EventTrackingId, ChargingStation, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update a charging pool admin status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="ChargingPool">The updated charging pool.</param>
+        /// <param name="OldStatus">The old aggregated charging pool status.</param>
+        /// <param name="NewStatus">The new aggregated charging pool status.</param>
+        internal async Task UpdateChargingStationStatus(DateTime                                 Timestamp,
+                                                        EventTracking_Id                         EventTrackingId,
+                                                        ChargingStation                          ChargingStation,
+                                                        Timestamped<ChargingStationStatusTypes>  OldStatus,
+                                                        Timestamped<ChargingStationStatusTypes>  NewStatus)
+        {
+
+            var OnChargingStationStatusChangedLocal = OnChargingStationStatusChanged;
+            if (OnChargingStationStatusChangedLocal != null)
+                await OnChargingStationStatusChangedLocal(Timestamp,
+                                                          EventTrackingId,
+                                                          ChargingStation,
+                                                          OldStatus,
+                                                          NewStatus);
 
         }
 
@@ -3264,14 +3309,14 @@ namespace org.GraphDefined.WWCP
         public event OnEVSEDataChangedDelegate         OnEVSEDataChanged;
 
         /// <summary>
-        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
-        /// </summary>
-        public event OnEVSEStatusChangedDelegate       OnEVSEStatusChanged;
-
-        /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
         public event OnEVSEAdminStatusChangedDelegate  OnEVSEAdminStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
+        /// </summary>
+        public event OnEVSEStatusChangedDelegate       OnEVSEStatusChanged;
 
         #endregion
 
@@ -3313,21 +3358,23 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (internal) UpdateEVSEData(Timestamp, EVSE, OldStatus, NewStatus)
+        #region (internal) UpdateEVSEData       (Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the data of an EVSE.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="EVSE">The changed EVSE.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateEVSEData(DateTime  Timestamp,
-                                           EVSE      EVSE,
-                                           String    PropertyName,
-                                           Object    OldValue,
-                                           Object    NewValue)
+        internal async Task UpdateEVSEData(DateTime          Timestamp,
+                                           EventTracking_Id  EventTrackingId,
+                                           EVSE              EVSE,
+                                           String            PropertyName,
+                                           Object            OldValue,
+                                           Object            NewValue)
         {
 
             Acknowledgement result = null;
@@ -3372,13 +3419,18 @@ namespace org.GraphDefined.WWCP
 
             var OnEVSEDataChangedLocal = OnEVSEDataChanged;
             if (OnEVSEDataChangedLocal != null)
-                await OnEVSEDataChangedLocal(Timestamp, EVSE, PropertyName, OldValue, NewValue);
+                await OnEVSEDataChangedLocal(Timestamp,
+                                             EventTrackingId,
+                                             EVSE,
+                                             PropertyName,
+                                             OldValue,
+                                             NewValue);
 
         }
 
         #endregion
 
-        #region (internal) UpdateEVSEStatus(Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
+        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
 
         /// <summary>
         /// Update an EVSE status.

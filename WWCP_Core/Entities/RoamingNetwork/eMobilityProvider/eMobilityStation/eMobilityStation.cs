@@ -648,7 +648,7 @@ namespace org.GraphDefined.WWCP
             #region Link events
 
             this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateAdminStatus(Timestamp, OldStatus, NewStatus);
+                                                          => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             //// eMobilityStation events
             //this.OnEVSEAddition.           OnVoting       += (timestamp, station, evse, vote)      => ChargingPool.EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
@@ -759,45 +759,54 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (internal) UpdateData(Timestamp, Sender, PropertyName, OldValue, NewValue)
+        #region (internal) UpdateData       (Timestamp, EventTrackingId, Sender, PropertyName, OldValue, NewValue)
 
         /// <summary>
         /// Update the static data.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="Sender">The changed e-mobility station.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateData(DateTime  Timestamp,
-                                       Object    Sender,
-                                       String    PropertyName,
-                                       Object    OldValue,
-                                       Object    NewValue)
+        internal async Task UpdateData(DateTime          Timestamp,
+                                       EventTracking_Id  EventTrackingId,
+                                       Object            Sender,
+                                       String            PropertyName,
+                                       Object            OldValue,
+                                       Object            NewValue)
         {
 
             var OnDataChangedLocal = OnDataChanged;
             if (OnDataChangedLocal != null)
-                await OnDataChangedLocal(Timestamp, Sender as eMobilityStation, PropertyName, OldValue, NewValue);
+                await OnDataChangedLocal(Timestamp,
+                                         EventTrackingId,
+                                         Sender as eMobilityStation,
+                                         PropertyName,
+                                         OldValue,
+                                         NewValue);
 
         }
 
         #endregion
 
-        #region (internal) UpdateAdminStatus(Timestamp, OldStatus, NewStatus)
+        #region (internal) UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the current admin status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old e-mobility station admin status.</param>
         /// <param name="NewStatus">The new e-mobility station admin status.</param>
         internal void UpdateAdminStatus(DateTime                                      Timestamp,
+                                        EventTracking_Id                              EventTrackingId,
                                         Timestamped<eMobilityStationAdminStatusType>  OldStatus,
                                         Timestamped<eMobilityStationAdminStatusType>  NewStatus)
         {
 
-            OnAdminStatusChanged?.Invoke(Timestamp, this, OldStatus, NewStatus);
+            OnAdminStatusChanged?.Invoke(Timestamp, EventTrackingId, this, OldStatus, NewStatus);
 
         }
 
@@ -1141,87 +1150,108 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (internal) UpdateEVehicleData(Timestamp, eVehicle, OldStatus, NewStatus)
+        #region (internal) UpdateEVehicleData(Timestamp, EventTrackingId, eVehicle, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the data of an eVehicle.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="eVehicle">The changed eVehicle.</param>
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateEVehicleData(DateTime      Timestamp,
-                                                   eVehicle  eVehicle,
-                                                   String        PropertyName,
-                                                   Object        OldValue,
-                                                   Object        NewValue)
+        internal async Task UpdateEVehicleData(DateTime          Timestamp,
+                                               EventTracking_Id  EventTrackingId,
+                                               eVehicle          eVehicle,
+                                               String            PropertyName,
+                                               Object            OldValue,
+                                               Object            NewValue)
         {
 
             var OnEVehicleDataChangedLocal = OnEVehicleDataChanged;
             if (OnEVehicleDataChangedLocal != null)
-                await OnEVehicleDataChangedLocal(Timestamp, eVehicle, PropertyName, OldValue, NewValue);
+                await OnEVehicleDataChangedLocal(Timestamp,
+                                                 EventTrackingId,
+                                                 eVehicle,
+                                                 PropertyName,
+                                                 OldValue,
+                                                 NewValue);
 
         }
 
         #endregion
 
-        #region (internal) UpdateEVehicleAdminStatus(Timestamp, eVehicle, OldStatus, NewStatus)
+        #region (internal) UpdateEVehicleAdminStatus(Timestamp, EventTrackingId, eVehicle, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the current eVehicle admin status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="eVehicle">The updated eVehicle.</param>
         /// <param name="OldStatus">The old aggreagted charging station status.</param>
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateEVehicleAdminStatus(DateTime                                  Timestamp,
-                                                          eVehicle                              eVehicle,
-                                                          Timestamped<eVehicleAdminStatusType>  OldStatus,
-                                                          Timestamped<eVehicleAdminStatusType>  NewStatus)
+        internal async Task UpdateEVehicleAdminStatus(DateTime                              Timestamp,
+                                                      EventTracking_Id                      EventTrackingId,
+                                                      eVehicle                              eVehicle,
+                                                      Timestamped<eVehicleAdminStatusType>  OldStatus,
+                                                      Timestamped<eVehicleAdminStatusType>  NewStatus)
         {
 
             var OnEVehicleAdminStatusChangedLocal = OnEVehicleAdminStatusChanged;
             if (OnEVehicleAdminStatusChangedLocal != null)
-                await OnEVehicleAdminStatusChangedLocal(Timestamp, eVehicle, OldStatus, NewStatus);
+                await OnEVehicleAdminStatusChangedLocal(Timestamp,
+                                                        EventTrackingId,
+                                                        eVehicle,
+                                                        OldStatus,
+                                                        NewStatus);
 
         }
 
         #endregion
 
-        #region (internal) UpdateEVehicleStatus(Timestamp, eVehicle, OldStatus, NewStatus)
+        #region (internal) UpdateEVehicleStatus(Timestamp, EventTrackingId, eVehicle, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the current eVehicle status.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="eVehicle">The updated eVehicle.</param>
         /// <param name="OldStatus">The old aggreagted charging station status.</param>
         /// <param name="NewStatus">The new aggreagted charging station status.</param>
-        internal async Task UpdateEVehicleStatus(DateTime                             Timestamp,
-                                                     eVehicle                         eVehicle,
-                                                     Timestamped<eVehicleStatusType>  OldStatus,
-                                                     Timestamped<eVehicleStatusType>  NewStatus)
+        internal async Task UpdateEVehicleStatus(DateTime                         Timestamp,
+                                                 EventTracking_Id                 EventTrackingId,
+                                                 eVehicle                         eVehicle,
+                                                 Timestamped<eVehicleStatusType>  OldStatus,
+                                                 Timestamped<eVehicleStatusType>  NewStatus)
         {
 
             var OnEVehicleStatusChangedLocal = OnEVehicleStatusChanged;
             if (OnEVehicleStatusChangedLocal != null)
-                await OnEVehicleStatusChangedLocal(Timestamp, eVehicle, OldStatus, NewStatus);
+                await OnEVehicleStatusChangedLocal(Timestamp,
+                                                   EventTrackingId,
+                                                   eVehicle,
+                                                   OldStatus,
+                                                   NewStatus);
 
         }
 
         #endregion
 
-        #region (internal) UpdateEVehicleGeoLocation(Timestamp, eVehicle, OldGeoCoordinate, NewGeoCoordinate)
+        #region (internal) UpdateEVehicleGeoLocation(Timestamp, EventTrackingId, eVehicle, OldGeoCoordinate, NewGeoCoordinate)
 
         /// <summary>
         /// Update the current electric vehicle geo location.
         /// </summary>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="eVehicle">The updated eVehicle.</param>
         /// <param name="OldGeoCoordinate">The old aggreagted charging station status.</param>
         /// <param name="NewGeoCoordinate">The new aggreagted charging station status.</param>
         internal async Task UpdateEVehicleGeoLocation(DateTime                    Timestamp,
+                                                      EventTracking_Id            EventTrackingId,
                                                       eVehicle                    eVehicle,
                                                       Timestamped<GeoCoordinate>  OldGeoCoordinate,
                                                       Timestamped<GeoCoordinate>  NewGeoCoordinate)
@@ -1229,7 +1259,11 @@ namespace org.GraphDefined.WWCP
 
             var OnEVehicleGeoLocationChangedLocal = OnEVehicleGeoLocationChanged;
             if (OnEVehicleGeoLocationChangedLocal != null)
-                await OnEVehicleGeoLocationChangedLocal(Timestamp, eVehicle, OldGeoCoordinate, NewGeoCoordinate);
+                await OnEVehicleGeoLocationChangedLocal(Timestamp,
+                                                        EventTrackingId,
+                                                        eVehicle,
+                                                        OldGeoCoordinate,
+                                                        NewGeoCoordinate);
 
         }
 
