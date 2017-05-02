@@ -48,7 +48,7 @@ namespace org.GraphDefined.WWCP.UnitTests
             _cp.StatusAggregationDelegate = report => {
                                                           var max   = report.Max  (v => v.Value);
                                                           var max_n = report.Where(o => o.Value == max);
-                                                          return (ChargingPoolStatusType) max_n.OrderBy(o => o.Key).First().Key;
+                                                          return (ChargingPoolStatusTypes) max_n.OrderBy(o => o.Key).First().Key;
                                                       };
             _cp.OnStatusChanged += async (ts, EventTrackingId, pool, os, ns) => { Console.WriteLine("New pool state: " + ns.Value); };
 

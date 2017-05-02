@@ -23,6 +23,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -57,12 +58,8 @@ namespace org.GraphDefined.WWCP
         /// The current status entry.
         /// </summary>
         public Timestamped<T> CurrentStatus
-        {
-            get
-            {
-                return CheckCurrentStatus();
-            }
-        }
+
+            => CheckCurrentStatus();
 
         #endregion
 
@@ -72,12 +69,8 @@ namespace org.GraphDefined.WWCP
         /// The current status value.
         /// </summary>
         public T CurrentValue
-        {
-            get
-            {
-                return CheckCurrentStatus().Value;
-            }
-        }
+
+            => CheckCurrentStatus().Value;
 
         #endregion
 
@@ -89,29 +82,17 @@ namespace org.GraphDefined.WWCP
         /// The next status entry.
         /// </summary>
         public Timestamped<T>? NextStatus
-        {
-            get
-            {
-                return _NextStatus;
-            }
-        }
+
+            => _NextStatus;
 
         #endregion
 
         #region MaxStatusHistorySize
 
-        private readonly UInt16 _MaxStatusHistorySize;
-
         /// <summary>
         /// The maximum number of stored status entries.
         /// </summary>
-        public UInt16 MaxStatusHistorySize
-        {
-            get
-            {
-                return _MaxStatusHistorySize;
-            }
-        }
+        public UInt16 MaxStatusHistorySize { get; }
 
         #endregion
 
@@ -127,7 +108,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="StatusSchedule">The status schedule.</param>
         /// <param name="OldStatus">The old timestamped status.</param>
         /// <param name="NewStatus">The new timestamped status.</param>
-        public delegate void OnStatusChangedDelegate(DateTime           Timestamp,
+        public delegate Task OnStatusChangedDelegate(DateTime           Timestamp,
                                                      EventTracking_Id   EventTrackingId,
                                                      StatusSchedule<T>  StatusSchedule,
                                                      Timestamped<T>     OldStatus,
@@ -149,8 +130,8 @@ namespace org.GraphDefined.WWCP
         public StatusSchedule(UInt16 MaxStatusListSize = DefaultMaxStatusListSize)
         {
 
-            this._MaxStatusHistorySize  = MaxStatusListSize;
-            this._StatusSchedule        = new List<Timestamped<T>>();
+            this.MaxStatusHistorySize  = MaxStatusListSize;
+            this._StatusSchedule       = new List<Timestamped<T>>();
 
         }
 
@@ -178,7 +159,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="NewTimestampedStatus">A new timestamped status.</param>
         public void Insert(Timestamped<T> NewTimestampedStatus)
         {
-            Insert(NewTimestampedStatus.Value, NewTimestampedStatus.Timestamp);
+
+            Insert(NewTimestampedStatus.Value,
+                   NewTimestampedStatus.Timestamp);
+
         }
 
         #endregion
@@ -214,7 +198,7 @@ namespace org.GraphDefined.WWCP
                     _StatusSchedule.Clear();
                     _StatusSchedule.AddRange(NewStatusSchedule.
                                                  OrderByDescending(v => v.Timestamp).
-                                                 Take((Int32)_MaxStatusHistorySize));
+                                                 Take((Int32) MaxStatusHistorySize));
 
                     // Will call the change-events.
                     CheckCurrentStatus();
@@ -264,7 +248,7 @@ namespace org.GraphDefined.WWCP
                                                                   OrderByDescending(status => status.Timestamp).
                                                                   First()).
                                             OrderByDescending(v => v.Timestamp).
-                                            Take((Int32) _MaxStatusHistorySize).
+                                            Take((Int32) MaxStatusHistorySize).
                                             ToArray();
 
                 _StatusSchedule.Clear();

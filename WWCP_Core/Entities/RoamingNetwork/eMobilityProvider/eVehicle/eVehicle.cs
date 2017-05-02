@@ -790,17 +790,17 @@ namespace org.GraphDefined.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
-        internal void UpdateAdminStatus(DateTime                              Timestamp,
-                                        EventTracking_Id                      EventTrackingId,
-                                        Timestamped<eVehicleAdminStatusType>  OldStatus,
-                                        Timestamped<eVehicleAdminStatusType>  NewStatus)
+        internal async Task UpdateAdminStatus(DateTime                              Timestamp,
+                                              EventTracking_Id                      EventTrackingId,
+                                              Timestamped<eVehicleAdminStatusType>  OldStatus,
+                                              Timestamped<eVehicleAdminStatusType>  NewStatus)
         {
 
-            OnAdminStatusChanged?.Invoke(Timestamp,
-                                         EventTrackingId,
-                                         this,
-                                         OldStatus,
-                                         NewStatus);
+            await OnAdminStatusChanged?.Invoke(Timestamp,
+                                               EventTrackingId,
+                                               this,
+                                               OldStatus,
+                                               NewStatus);
 
         }
 
@@ -815,17 +815,17 @@ namespace org.GraphDefined.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal void UpdateStatus(DateTime                         Timestamp,
-                                   EventTracking_Id                 EventTrackingId,
-                                   Timestamped<eVehicleStatusType>  OldStatus,
-                                   Timestamped<eVehicleStatusType>  NewStatus)
+        internal async Task UpdateStatus(DateTime                         Timestamp,
+                                         EventTracking_Id                 EventTrackingId,
+                                         Timestamped<eVehicleStatusType>  OldStatus,
+                                         Timestamped<eVehicleStatusType>  NewStatus)
         {
 
-            OnStatusChanged?.Invoke(Timestamp,
-                                    EventTrackingId,
-                                    this,
-                                    OldStatus,
-                                    NewStatus);
+            await OnStatusChanged?.Invoke(Timestamp,
+                                          EventTrackingId,
+                                          this,
+                                          OldStatus,
+                                          NewStatus);
 
         }
 

@@ -800,13 +800,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="OldStatus">The old e-mobility station admin status.</param>
         /// <param name="NewStatus">The new e-mobility station admin status.</param>
-        internal void UpdateAdminStatus(DateTime                                      Timestamp,
-                                        EventTracking_Id                              EventTrackingId,
-                                        Timestamped<eMobilityStationAdminStatusType>  OldStatus,
-                                        Timestamped<eMobilityStationAdminStatusType>  NewStatus)
+        internal async Task UpdateAdminStatus(DateTime                                      Timestamp,
+                                              EventTracking_Id                              EventTrackingId,
+                                              Timestamped<eMobilityStationAdminStatusType>  OldStatus,
+                                              Timestamped<eMobilityStationAdminStatusType>  NewStatus)
         {
 
-            OnAdminStatusChanged?.Invoke(Timestamp, EventTrackingId, this, OldStatus, NewStatus);
+            await OnAdminStatusChanged?.Invoke(Timestamp, EventTrackingId, this, OldStatus, NewStatus);
 
         }
 

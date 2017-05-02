@@ -43,7 +43,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The current admin status of the charging pool.
         /// </summary>
-        public ChargingPoolAdminStatusType  AdminStatus   { get; }
+        public ChargingPoolAdminStatusTypes  AdminStatus   { get; }
 
         /// <summary>
         /// The timestamp of the current admin status of the charging pool.
@@ -53,8 +53,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The timestamped admin status of the charging pool.
         /// </summary>
-        public Timestamped<ChargingPoolAdminStatusType> Combined
-            => new Timestamped<ChargingPoolAdminStatusType>(Timestamp, AdminStatus);
+        public Timestamped<ChargingPoolAdminStatusTypes> Combined
+            => new Timestamped<ChargingPoolAdminStatusTypes>(Timestamp, AdminStatus);
 
         #endregion
 
@@ -67,7 +67,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Status">The current admin status of the charging pool.</param>
         /// <param name="Timestamp">The timestamp of the current admin status of the charging pool.</param>
         public ChargingPoolAdminStatus(ChargingPool_Id              Id,
-                                       ChargingPoolAdminStatusType  Status,
+                                       ChargingPoolAdminStatusTypes  Status,
                                        DateTime                     Timestamp)
 
         {

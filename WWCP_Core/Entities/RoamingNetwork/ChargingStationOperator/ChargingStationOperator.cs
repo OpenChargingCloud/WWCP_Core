@@ -20,6 +20,7 @@
 using System;
 using System.Linq;
 using System.Threading;
+using System.Collections;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -29,7 +30,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
-using System.Collections;
 
 #endregion
 
@@ -48,7 +48,6 @@ namespace org.GraphDefined.WWCP
     /// e-mobility service provider. The required pricing information can either be public
     /// information or part of B2B contracts.
     /// </summary>
-    [DebuggerDisplay("{Id.ToString()} - {Name.FirstText}")]
     public class ChargingStationOperator : ABaseEMobilityEntity<ChargingStationOperator_Id>,
                                            IReserveRemoteStartStop,
                                            IEquatable<ChargingStationOperator>, IComparable<ChargingStationOperator>, IComparable,
@@ -462,16 +461,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="Name">The offical (multi-language) name of the EVSE Operator.</param>
         /// <param name="Description">An optional (multi-language) description of the EVSE Operator.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        internal ChargingStationOperator(IEnumerable<ChargingStationOperator_Id>        Ids,
-                                         RoamingNetwork                                 RoamingNetwork,
-                                         Action<ChargingStationOperator>           Configurator                          = null,
-                                         RemoteChargingStationOperatorCreatorDelegate   RemoteChargingStationOperatorCreator  = null,
-                                         I18NString                                     Name                                  = null,
-                                         I18NString                                     Description                           = null,
-                                         ChargingStationOperatorAdminStatusType         AdminStatus                           = ChargingStationOperatorAdminStatusType.Operational,
-                                         ChargingStationOperatorStatusType              Status                                = ChargingStationOperatorStatusType.Available,
-                                         UInt16                                         MaxAdminStatusListSize                = DefaultMaxAdminStatusListSize,
-                                         UInt16                                         MaxStatusListSize                     = DefaultMaxStatusListSize)
+        public ChargingStationOperator(IEnumerable<ChargingStationOperator_Id>               Ids,
+                                       RoamingNetwork                                        RoamingNetwork,
+                                       Action<ChargingStationOperator>                       Configurator                          = null,
+                                       RemoteChargingStationOperatorCreatorDelegate          RemoteChargingStationOperatorCreator  = null,
+                                       I18NString                                            Name                                  = null,
+                                       I18NString                                            Description                           = null,
+                                       Timestamped<ChargingStationOperatorAdminStatusType>?  InitialAdminStatus                    = null,
+                                       Timestamped<ChargingStationOperatorStatusType>?       InitialStatus                         = null,
+                                       UInt16                                                MaxAdminStatusListSize                = DefaultMaxAdminStatusListSize,
+                                       UInt16                                                MaxStatusListSize                     = DefaultMaxStatusListSize)
 
             : base(Ids,
                    RoamingNetwork)
@@ -482,6 +481,9 @@ namespace org.GraphDefined.WWCP
 
             if (RoamingNetwork == null)
                 throw new ArgumentNullException(nameof(RoamingNetwork),  "The roaming network must not be null!");
+
+            InitialAdminStatus = InitialAdminStatus ?? new Timestamped<ChargingStationOperatorAdminStatusType>(ChargingStationOperatorAdminStatusType.Operational);
+            InitialStatus      = InitialStatus      ?? new Timestamped<ChargingStationOperatorStatusType>     (ChargingStationOperatorStatusType.Available);
 
             #endregion
 
@@ -506,16 +508,18 @@ namespace org.GraphDefined.WWCP
             this._ChargingPools               = new EntityHashSet<ChargingStationOperator, ChargingPool_Id,         ChargingPool>(this);
             this._ChargingStationGroups       = new EntityHashSet<ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
 
-            this._AdminStatusSchedule         = new StatusSchedule<ChargingStationOperatorAdminStatusType>();
-            this._AdminStatusSchedule.Insert(AdminStatus);
+            this._AdminStatusSchedule         = new StatusSchedule<ChargingStationOperatorAdminStatusType>(MaxAdminStatusListSize);
+            this._AdminStatusSchedule.Insert(InitialAdminStatus.Value);
 
-            this._StatusSchedule              = new StatusSchedule<ChargingStationOperatorStatusType>();
-            this._StatusSchedule.Insert(Status);
+            this._StatusSchedule              = new StatusSchedule<ChargingStationOperatorStatusType>(MaxStatusListSize);
+            this._StatusSchedule.Insert(InitialStatus.Value);
 
             this._ChargingReservations        = new ConcurrentDictionary<ChargingReservation_Id, ChargingPool>();
             this._ChargingSessions            = new ConcurrentDictionary<ChargingSession_Id,     ChargingPool>();
 
             #endregion
+
+            Configurator?.Invoke(this);
 
             #region Init events
 
@@ -536,46 +540,22 @@ namespace org.GraphDefined.WWCP
             this.EVSERemoval                   = new VotingNotificator<DateTime, ChargingStation, EVSE,                 Boolean>(() => new VetoVote(), true);
 
             // EVSE events
-            this.SocketOutletAddition          = new VotingNotificator<DateTime, EVSE,            SocketOutlet,         Boolean>(() => new VetoVote(), true);
-            this.SocketOutletRemoval           = new VotingNotificator<DateTime, EVSE,            SocketOutlet,         Boolean>(() => new VetoVote(), true);
 
             #endregion
 
             #region Link events
 
-            // ChargingStationOperator events
-            this.OnChargingPoolAddition.   OnVoting       += (timestamp, ChargingStationOperator, pool, vote) => RoamingNetwork.ChargingPoolAddition.   SendVoting      (timestamp, ChargingStationOperator, pool, vote);
-            this.OnChargingPoolAddition.   OnNotification += (timestamp, ChargingStationOperator, pool)       => RoamingNetwork.ChargingPoolAddition.   SendNotification(timestamp, ChargingStationOperator, pool);
+            //this.OnPropertyChanged += UpdateData;
 
-            this.OnChargingPoolRemoval.    OnVoting       += (timestamp, ChargingStationOperator, pool, vote) => RoamingNetwork.ChargingPoolRemoval.    SendVoting      (timestamp, ChargingStationOperator, pool, vote);
-            this.OnChargingPoolRemoval.    OnNotification += (timestamp, ChargingStationOperator, pool)       => RoamingNetwork.ChargingPoolRemoval.    SendNotification(timestamp, ChargingStationOperator, pool);
+            //this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+                                                          //=> UpdateStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
-            // ChargingPool events
-            this.OnChargingStationAddition.OnVoting       += (timestamp, pool, station, vote)      => RoamingNetwork.ChargingStationAddition.SendVoting      (timestamp, pool, station, vote);
-            this.OnChargingStationAddition.OnNotification += (timestamp, pool, station)            => RoamingNetwork.ChargingStationAddition.SendNotification(timestamp, pool, station);
-
-            this.OnChargingStationRemoval. OnVoting       += (timestamp, pool, station, vote)      => RoamingNetwork.ChargingStationRemoval. SendVoting      (timestamp, pool, station, vote);
-            this.OnChargingStationRemoval. OnNotification += (timestamp, pool, station)            => RoamingNetwork.ChargingStationRemoval. SendNotification(timestamp, pool, station);
-
-            // ChargingStation events
-            this.OnEVSEAddition.           OnVoting       += (timestamp, station, evse, vote)      => RoamingNetwork.EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
-            this.OnEVSEAddition.           OnNotification += (timestamp, station, evse)            => RoamingNetwork.EVSEAddition.           SendNotification(timestamp, station, evse);
-
-            this.OnEVSERemoval.            OnVoting       += (timestamp, station, evse, vote)      => RoamingNetwork.EVSERemoval.            SendVoting      (timestamp, station, evse, vote);
-            this.OnEVSERemoval.            OnNotification += (timestamp, station, evse)            => RoamingNetwork.EVSERemoval.            SendNotification(timestamp, station, evse);
-
-            // EVSE events
-            this.SocketOutletAddition.     OnVoting       += (timestamp, evse, outlet, vote)       => RoamingNetwork.SocketOutletAddition.   SendVoting      (timestamp, evse, outlet, vote);
-            this.SocketOutletAddition.     OnNotification += (timestamp, evse, outlet)             => RoamingNetwork.SocketOutletAddition.   SendNotification(timestamp, evse, outlet);
-
-            this.SocketOutletRemoval.      OnVoting       += (timestamp, evse, outlet, vote)       => RoamingNetwork.SocketOutletRemoval.    SendVoting      (timestamp, evse, outlet, vote);
-            this.SocketOutletRemoval.      OnNotification += (timestamp, evse, outlet)             => RoamingNetwork.SocketOutletRemoval.    SendNotification(timestamp, evse, outlet);
+            //this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+                                                          //=> UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             #endregion
 
             LocalEVSEIds = new ReactiveSet<EVSE_Id>();
-
-            Configurator?.Invoke(this);
 
             this.RemoteChargingStationOperator = RemoteChargingStationOperatorCreator?.Invoke(this);
 
@@ -806,17 +786,17 @@ namespace org.GraphDefined.WWCP
 
         #region ChargingPoolAdminStatus(IncludePool = null)
 
-        public IEnumerable<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>> ChargingPoolAdminStatus(Func<ChargingPool, Boolean> IncludePool = null)
+        public IEnumerable<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusTypes>> ChargingPoolAdminStatus(Func<ChargingPool, Boolean> IncludePool = null)
 
             => _ChargingPools.
                    Where  (pool => IncludePool == null || IncludePool(pool)).
                    OrderBy(pool => pool.Id).
-                   Select (pool => new KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>(pool.Id, pool.AdminStatus.Value));
+                   Select (pool => new KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusTypes>(pool.Id, pool.AdminStatus.Value));
 
         #endregion
 
 
-        #region CreateChargingPool        (ChargingPoolId = null, Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateChargingPool        (ChargingPoolId, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register a new charging pool having the given
@@ -826,13 +806,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="Configurator">An optional delegate to configure the new charging pool before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
-        public ChargingPool CreateChargingPool(ChargingPool_Id?                                  ChargingPoolId             = null,
-                                               Action<ChargingPool>                              Configurator               = null,
-                                               RemoteChargingPoolCreatorDelegate                 RemoteChargingPoolCreator  = null,
-                                               ChargingPoolAdminStatusType                       AdminStatus                = ChargingPoolAdminStatusType.Operational,
-                                               ChargingPoolStatusType                            Status                     = ChargingPoolStatusType.Available,
-                                               Action<ChargingPool>                              OnSuccess                  = null,
-                                               Action<ChargingStationOperator, ChargingPool_Id>  OnError                    = null)
+        public ChargingPool CreateChargingPool(ChargingPool_Id?                                  ChargingPoolId              = null,
+                                               Action<ChargingPool>                              Configurator                = null,
+                                               RemoteChargingPoolCreatorDelegate                 RemoteChargingPoolCreator   = null,
+                                               Timestamped<ChargingPoolAdminStatusTypes>?        InitialAdminStatus          = null,
+                                               Timestamped<ChargingPoolStatusTypes>?             InitialStatus               = null,
+                                               UInt16                                            MaxAdminStatusListSize      = ChargingPool.DefaultMaxAdminStatusListSize,
+                                               UInt16                                            MaxStatusListSize           = ChargingPool.DefaultMaxStatusListSize,
+                                               Action<ChargingPool>                              OnSuccess                   = null,
+                                               Action<ChargingStationOperator, ChargingPool_Id>  OnError                     = null)
 
         {
 
@@ -863,31 +845,41 @@ namespace org.GraphDefined.WWCP
                                                  this,
                                                  Configurator,
                                                  RemoteChargingPoolCreator,
-                                                 AdminStatus,
-                                                 Status);
+                                                 InitialAdminStatus,
+                                                 InitialStatus,
+                                                 MaxAdminStatusListSize,
+                                                 MaxStatusListSize);
 
 
             if (ChargingPoolAddition.SendVoting(DateTime.Now, this, _ChargingPool) &&
                 _ChargingPools.TryAdd(_ChargingPool))
             {
 
-                _ChargingPool.OnEVSEDataChanged                    += UpdateEVSEData;
-                _ChargingPool.OnEVSEAdminStatusChanged             += UpdateEVSEAdminStatus;
-                _ChargingPool.OnEVSEStatusChanged                  += UpdateEVSEStatus;
+                _ChargingPool.OnDataChanged                             += UpdateChargingPoolData;
+                _ChargingPool.OnAdminStatusChanged                      += UpdateChargingPoolAdminStatus;
+                _ChargingPool.OnStatusChanged                           += UpdateChargingPoolStatus;
 
-                _ChargingPool.OnChargingStationDataChanged         += UpdateChargingStationData;
-                _ChargingPool.OnChargingStationAdminStatusChanged  += UpdateChargingStationAdminStatus;
-                _ChargingPool.OnChargingStationStatusChanged       += UpdateChargingStationStatus;
+                _ChargingPool.OnChargingStationAddition.OnVoting        += (timestamp, evseoperator, pool, vote)    => ChargingStationAddition.SendVoting      (timestamp, evseoperator, pool, vote);
+                _ChargingPool.OnChargingStationAddition.OnNotification  += (timestamp, evseoperator, pool)          => ChargingStationAddition.SendNotification(timestamp, evseoperator, pool);
+                _ChargingPool.OnChargingStationDataChanged              += UpdateChargingStationData;
+                _ChargingPool.OnChargingStationAdminStatusChanged       += UpdateChargingStationAdminStatus;
+                _ChargingPool.OnChargingStationStatusChanged            += UpdateChargingStationStatus;
+                _ChargingPool.OnChargingStationRemoval. OnVoting        += (timestamp, evseoperator, pool, vote)    => ChargingStationRemoval. SendVoting      (timestamp, evseoperator, pool, vote);
+                _ChargingPool.OnChargingStationRemoval. OnNotification  += (timestamp, evseoperator, pool)          => ChargingStationRemoval. SendNotification(timestamp, evseoperator, pool);
 
-                _ChargingPool.OnDataChanged                        += UpdateChargingPoolData;
-                _ChargingPool.OnAdminStatusChanged                 += UpdateChargingPoolAdminStatus;
-                _ChargingPool.OnStatusChanged                      += UpdateChargingPoolStatus;
+                _ChargingPool.OnEVSEAddition.           OnVoting        += (timestamp, station, evse, vote)         => EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
+                _ChargingPool.OnEVSEAddition.           OnNotification  += (timestamp, station, evse)               => EVSEAddition.           SendNotification(timestamp, station, evse);
+                _ChargingPool.OnEVSEDataChanged                         += UpdateEVSEData;
+                _ChargingPool.OnEVSEAdminStatusChanged                  += UpdateEVSEAdminStatus;
+                _ChargingPool.OnEVSEStatusChanged                       += UpdateEVSEStatus;
+                _ChargingPool.OnEVSERemoval.            OnVoting        += (timestamp, station, evse, vote)         => EVSERemoval .           SendVoting      (timestamp, station, evse, vote);
+                _ChargingPool.OnEVSERemoval.            OnNotification  += (timestamp, station, evse)               => EVSERemoval .           SendNotification(timestamp, station, evse);
 
-                _ChargingPool.OnNewReservation                     += SendNewReservation;
-                _ChargingPool.OnReservationCancelled               += SendOnReservationCancelled;
-                _ChargingPool.OnNewChargingSession                 += SendNewChargingSession;
-                _ChargingPool.OnNewChargeDetailRecord              += SendNewChargeDetailRecord;
 
+                _ChargingPool.OnNewReservation                          += SendNewReservation;
+                _ChargingPool.OnReservationCancelled                    += SendOnReservationCancelled;
+                _ChargingPool.OnNewChargingSession                      += SendNewChargingSession;
+                _ChargingPool.OnNewChargeDetailRecord                   += SendNewChargeDetailRecord;
 
                 OnSuccess?.Invoke(_ChargingPool);
                 ChargingPoolAddition.SendNotification(DateTime.Now, this, _ChargingPool);
@@ -902,7 +894,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CreateOrUpdateChargingPool(ChargingPoolId,        Configurator = null, OnSuccess = null, OnError = null)
+        #region CreateOrUpdateChargingPool(ChargingPoolId, Configurator = null, OnSuccess = null, OnError = null)
 
         /// <summary>
         /// Create and register or udpate a new charging pool having the given
@@ -913,48 +905,57 @@ namespace org.GraphDefined.WWCP
         /// <param name="OnSuccess">An optional delegate to configure the new charging pool after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging pool failed.</param>
         public ChargingPool CreateOrUpdateChargingPool(ChargingPool_Id                                   ChargingPoolId,
-                                                       Action<ChargingPool>                              Configurator               = null,
-                                                       RemoteChargingPoolCreatorDelegate                 RemoteChargingPoolCreator  = null,
-                                                       ChargingPoolAdminStatusType                       AdminStatus                = ChargingPoolAdminStatusType.Operational,
-                                                       ChargingPoolStatusType                            Status                     = ChargingPoolStatusType.Available,
-                                                       Action<ChargingPool>                              OnSuccess                  = null,
-                                                       Action<ChargingStationOperator, ChargingPool_Id>  OnError                    = null)
+                                                       Action<ChargingPool>                              Configurator                = null,
+                                                       RemoteChargingPoolCreatorDelegate                 RemoteChargingPoolCreator   = null,
+                                                       Timestamped<ChargingPoolAdminStatusTypes>?        InitialAdminStatus          = null,
+                                                       Timestamped<ChargingPoolStatusTypes>?             InitialStatus               = null,
+                                                       UInt16                                            MaxAdminStatusListSize      = ChargingPool.DefaultMaxAdminStatusListSize,
+                                                       UInt16                                            MaxStatusListSize           = ChargingPool.DefaultMaxStatusListSize,
+                                                       Action<ChargingPool>                              OnSuccess                   = null,
+                                                       Action<ChargingStationOperator, ChargingPool_Id>  OnError                     = null)
 
         {
 
-            #region Initial checks
+            lock (_ChargingPools)
+            {
 
-            if (!Ids.Contains(ChargingPoolId.OperatorId))
-                throw new InvalidChargingPoolOperatorId(this,
-                                                        ChargingPoolId.OperatorId,
-                                                        Ids);
+                #region Initial checks
 
-            #endregion
+                if (!Ids.Contains(ChargingPoolId.OperatorId))
+                    throw new InvalidChargingPoolOperatorId(this,
+                                                            ChargingPoolId.OperatorId,
+                                                            Ids);
 
-            #region If the charging pool identification is new/unknown: Call CreateChargingPool(...)
+                #endregion
 
-            if (!_ChargingPools.ContainsId(ChargingPoolId))
-                return CreateChargingPool(ChargingPoolId,
-                                          Configurator,
-                                          RemoteChargingPoolCreator,
-                                          AdminStatus,
-                                          Status,
-                                          OnSuccess,
-                                          OnError);
+                #region If the charging pool identification is new/unknown: Call CreateChargingPool(...)
 
-            #endregion
+                if (!_ChargingPools.ContainsId(ChargingPoolId))
+                    return CreateChargingPool(ChargingPoolId,
+                                              Configurator,
+                                              RemoteChargingPoolCreator,
+                                              InitialAdminStatus,
+                                              InitialStatus,
+                                              MaxAdminStatusListSize,
+                                              MaxStatusListSize,
+                                              OnSuccess,
+                                              OnError);
+
+                #endregion
 
 
-            // Merge existing charging pool with new pool data...
+                // Merge existing charging pool with new pool data...
 
-            return _ChargingPools.
-                       GetById(ChargingPoolId).
-                       UpdateWith(new ChargingPool(ChargingPoolId,
-                                                  this,
-                                                  Configurator,
-                                                  RemoteChargingPoolCreator,
-                                                  AdminStatus,
-                                                  Status));
+                return _ChargingPools.
+                           GetById(ChargingPoolId).
+                           UpdateWith(new ChargingPool(ChargingPoolId,
+                                                       this,
+                                                       Configurator,
+                                                       null,
+                                                       new Timestamped<ChargingPoolAdminStatusTypes>(DateTime.MinValue, ChargingPoolAdminStatusTypes.Operational),
+                                                       new Timestamped<ChargingPoolStatusTypes>(DateTime.MinValue, ChargingPoolStatusTypes.Available)));
+
+            }
 
         }
 
@@ -1068,7 +1069,7 @@ namespace org.GraphDefined.WWCP
         #region SetChargingPoolAdminStatus(ChargingPoolId, NewStatus)
 
         public void SetChargingPoolAdminStatus(ChargingPool_Id                           ChargingPoolId,
-                                               Timestamped<ChargingPoolAdminStatusType>  NewStatus,
+                                               Timestamped<ChargingPoolAdminStatusTypes>  NewStatus,
                                                Boolean                                   SendUpstream = false)
         {
 
@@ -1083,7 +1084,7 @@ namespace org.GraphDefined.WWCP
         #region SetChargingPoolAdminStatus(ChargingPoolId, NewStatus, Timestamp)
 
         public void SetChargingPoolAdminStatus(ChargingPool_Id              ChargingPoolId,
-                                               ChargingPoolAdminStatusType  NewStatus,
+                                               ChargingPoolAdminStatusTypes  NewStatus,
                                                DateTime                     Timestamp)
         {
 
@@ -1098,7 +1099,7 @@ namespace org.GraphDefined.WWCP
         #region SetChargingPoolAdminStatus(ChargingPoolId, StatusList, ChangeMethod = ChangeMethods.Replace)
 
         public void SetChargingPoolAdminStatus(ChargingPool_Id                                        ChargingPoolId,
-                                               IEnumerable<Timestamped<ChargingPoolAdminStatusType>>  StatusList,
+                                               IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>  StatusList,
                                                ChangeMethods                                          ChangeMethod  = ChangeMethods.Replace)
         {
 
@@ -1217,8 +1218,8 @@ namespace org.GraphDefined.WWCP
         internal async Task UpdateChargingPoolAdminStatus(DateTime                                  Timestamp,
                                                           EventTracking_Id                          EventTrackingId,
                                                           ChargingPool                              ChargingPool,
-                                                          Timestamped<ChargingPoolAdminStatusType>  OldStatus,
-                                                          Timestamped<ChargingPoolAdminStatusType>  NewStatus)
+                                                          Timestamped<ChargingPoolAdminStatusTypes>  OldStatus,
+                                                          Timestamped<ChargingPoolAdminStatusTypes>  NewStatus)
         {
 
             var OnChargingPoolAdminStatusChangedLocal = OnChargingPoolAdminStatusChanged;
@@ -1246,8 +1247,8 @@ namespace org.GraphDefined.WWCP
         internal async Task UpdateChargingPoolStatus(DateTime                             Timestamp,
                                                      EventTracking_Id                     EventTrackingId,
                                                      ChargingPool                         ChargingPool,
-                                                     Timestamped<ChargingPoolStatusType>  OldStatus,
-                                                     Timestamped<ChargingPoolStatusType>  NewStatus)
+                                                     Timestamped<ChargingPoolStatusTypes>  OldStatus,
+                                                     Timestamped<ChargingPoolStatusTypes>  NewStatus)
         {
 
             var OnChargingPoolStatusChangedLocal = OnChargingPoolStatusChanged;
@@ -2369,36 +2370,6 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
         public event OnEVSEAdminStatusChangedDelegate  OnEVSEAdminStatusChanged;
-
-        #endregion
-
-        #region SocketOutletAddition
-
-        internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletAddition;
-
-        /// <summary>
-        /// Called whenever a socket outlet will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
-
-            => SocketOutletAddition;
-
-        #endregion
-
-        #region SocketOutletRemoval
-
-        internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletRemoval;
-
-        /// <summary>
-        /// Called whenever a socket outlet will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, EVSE, SocketOutlet, Boolean> OnSocketOutletRemoval
-        {
-            get
-            {
-                return SocketOutletRemoval;
-            }
-        }
 
         #endregion
 
@@ -4451,9 +4422,13 @@ namespace org.GraphDefined.WWCP
         /// Return a string representation of this object.
         /// </summary>
         public override String ToString()
-            => Id.ToString();
+
+            => String.Concat(Id.ToString(),
+                             " - ",
+                             Name.FirstText());
 
         #endregion
+
 
     }
 

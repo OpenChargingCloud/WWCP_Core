@@ -19,7 +19,9 @@
 
 using System;
 using System.Linq;
+using System.Text;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
@@ -48,6 +50,8 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public  static readonly Regex  ChargingStationId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?S([A-Z0-9][A-Z0-9\*]{0,50})$",
                                                                             RegexOptions.IgnorePatternWhitespace);
+
+        private static readonly Char[] StarSplitter             = new Char[] { '*' };
 
         #endregion
 
@@ -115,16 +119,30 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Create(EVSEId)
+        #region Create(EVSEId, RemoveLastStar = true)
 
         /// <summary>
         /// Create a ChargingStationId based on the given EVSE identification.
         /// </summary>
         /// <param name="EVSEId">An EVSEId.</param>
-        public static ChargingStation_Id Create(EVSE_Id  EVSEId)
+        /// <param name="RemoveLastStar">Generate a charging station identification by removing the last star part.</param>
+        public static ChargingStation_Id Create(EVSE_Id  EVSEId,
+                                                Boolean  RemoveLastStar = true)
         {
 
-            return ChargingStation_Id.Parse(EVSEId.OperatorId, EVSEId.Suffix.ToUpper());
+            var _Suffix = EVSEId.Suffix;
+
+            if (RemoveLastStar)
+            {
+
+                var _HasAStar = EVSEId.Suffix.LastIndexOf("*");
+
+                if (_HasAStar > 0)
+                    _Suffix = _Suffix.Substring(0, _HasAStar);
+
+            }
+
+            return Parse(EVSEId.OperatorId, _Suffix.ToUpper());
 
             //var _Array = new String[] {
             //                 EVSEId.OperatorId.CountryCode.Alpha2Code,
@@ -168,13 +186,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Create(EVSEIds)
+        #region Create(EVSEIds, HelperId = "", Length = 15, Mapper = null)
 
         /// <summary>
         /// Create a ChargingStationId based on the given EVSEIds.
         /// </summary>
         /// <param name="EVSEIds">An enumeration of EVSEIds.</param>
-        public static ChargingStation_Id? Create(IEnumerable<EVSE_Id> EVSEIds)
+        public static ChargingStation_Id? Create(IEnumerable<EVSE_Id>  EVSEIds,
+                                                 String                HelperId  = "",
+                                                 Byte                  Length    = 15,
+                                                 Func<String, String>  Mapper    = null)
         {
 
             #region Initial checks
@@ -187,48 +208,44 @@ namespace org.GraphDefined.WWCP
             if (_EVSEIds.Length == 0)
                 return null;
 
+            #endregion
+
+            #region A single EVSE Id...
+
             // It is just a single EVSE Id...
             if (_EVSEIds.Length == 1)
                 return Create(_EVSEIds[0]);
 
             #endregion
 
-            #region Multiple EVSE Ids...
 
-            String[] EVSEIdPrefixStrings = null;
+            // Multiple OperatorIds which do not match!
+            if (_EVSEIds.Select(evse => evse.OperatorId.ToString()).Distinct().Count() > 1)
+                return null;
 
-            #region EVSEIdSuffix contains '*' or '-'...
+            #region EVSEIdSuffix contains '*'...
 
             if (_EVSEIds.Any(EVSEId => EVSEId.Suffix.Contains('*') ||
                                        EVSEId.Suffix.Contains('-')))
             {
 
-                EVSEIdPrefixStrings = _EVSEIds.
-                                          Select(EVSEId         => EVSEId.ToFormat(OperatorIdFormats.ISO_STAR).Split('*', '-')).
-                                          Select(EVSEIdElements => {
+                var EVSEIdPrefixStrings = _EVSEIds.
+                                              Select(EVSEId         => EVSEId.Suffix.Split(StarSplitter, StringSplitOptions.RemoveEmptyEntries)).
+                                              Select(SuffixElements => SuffixElements.Take(SuffixElements.Length - 1).AggregateWith("*", "")).
+                                              Where (NewSuffix      => NewSuffix != "").
+                                              Distinct().
+                                              ToArray();
 
-                                              if (EVSEIdElements.Length < 4)
-                                                  return new String[] { "" };
+                if (EVSEIdPrefixStrings.Length != 1)
+                    return null;
 
-                                              if (_EVSEIds[0].Format == OperatorIdFormats.ISO)
-                                                  if (EVSEIdElements[2].StartsWith("E", StringComparison.Ordinal))
-                                                      EVSEIdElements[2] = "S" + EVSEIdElements[2].Substring(1);
-
-                                              return EVSEIdElements;
-
-                                          }).
-                                          Select(EVSEIdElements => EVSEIdElements.
-                                                                       Take(EVSEIdElements.Length - 1).
-                                                                       AggregateWith("*", "")).
-                                          Where(v => v != "").
-                                          Distinct().
-                                          ToArray();
+                return Parse(_EVSEIds[0].OperatorId, EVSEIdPrefixStrings[0]);
 
             }
 
             #endregion
 
-            #region ...or use longest prefix!
+            #region ...or use longest prefix...
 
             else
             {
@@ -252,44 +269,40 @@ namespace org.GraphDefined.WWCP
                     if (TmpEVSEId.Format == OperatorIdFormats.ISO)
                     {
                         if (((UInt64) _Prefix.Length) > _EVSEIds[0].OperatorId.Length + 2)
-                            _Prefix = TmpEVSEId.OperatorId + "*S" + TmpEVSEId.Suffix;
+                            _Prefix = TmpEVSEId.Suffix; //TmpEVSEId.OperatorId + "*S" + TmpEVSEId.Suffix;
                         else
                             return null;
                     }
 
-                    EVSEIdPrefixStrings = new String[1] { _Prefix };
+                    return Parse(_EVSEIds[0].OperatorId, _Prefix);
 
                 }
 
-                else
-                    return null;
-
             }
 
             #endregion
 
+            #region ...or generate a hash of the EVSEIds!
 
-            if (EVSEIdPrefixStrings.Length == 1)
-            {
+            if (Length < 12)
+                Length = 12;
 
-                var Id = EVSEIdPrefixStrings.First();
+            if (Length > 50)
+                Length = 50;
 
-                if (Id.Contains('-'))
-                    Id = Id.Replace("-", "*");
+            var Suffíx = new SHA1CryptoServiceProvider().
+                             ComputeHash(Encoding.UTF8.GetBytes(EVSEIds.Select(evseid => evseid.ToString()).
+                                                                        AggregateWith(HelperId ?? ","))).
+                             ToHexString().
+                             SubstringMax(Length).
+                             ToUpper();
 
-                var IdElements = Id.Split(new String[] { "*" }, StringSplitOptions.None);
-
-                return Parse(IdElements[0] +  "*" +
-                             IdElements[1] + "*S" +
-                             (EVSEIds.First().Format == OperatorIdFormats.DIN
-                                  ? IdElements.Skip(2).Aggregate("*")
-                                  : IdElements.Skip(2).Aggregate("*").Substring(1)));
-
-            }
+            return Parse(_EVSEIds[0].OperatorId,
+                         Mapper != null
+                            ? Mapper(Suffíx)
+                            : Suffíx);
 
             #endregion
-
-            return null;
 
         }
 
@@ -385,7 +398,24 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region TryParse(Text, out EVSEGroupId)
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Parse the given string as a charging station identification.
+        /// </summary>
+        public static ChargingStation_Id? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out ChargingStation_Id ChargingStationId))
+                return ChargingStationId;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ChargingStationId)
 
         /// <summary>
         /// Parse the given string as a charging station identification.

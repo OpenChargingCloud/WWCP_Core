@@ -83,20 +83,25 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return _Description != null
-                    ? _Description
-                    : ChargingStation.Description;
+                return _Description.IsNotNullOrEmpty()
+                           ? _Description
+                           : ChargingStation?.Description;
 
             }
 
             set
             {
 
-                if (value == ChargingStation.Description)
-                    value = null;
+                if (value != _Description && value != ChargingStation?.Description)
+                {
 
-                if (_Description != value)
-                    SetProperty(ref _Description, value);
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _Description);
+
+                    else
+                        SetProperty(ref _Description, value);
+
+                }
 
             }
 
@@ -104,16 +109,15 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
         #region ChargingModes
 
-        private ReactiveSet<ChargingModes> _ChargingModes;
+        private ChargingModes? _ChargingModes;
 
         /// <summary>
         /// Charging modes.
         /// </summary>
         [Mandatory]
-        public ReactiveSet<ChargingModes> ChargingModes
+        public ChargingModes? ChargingModes
         {
 
             get
@@ -125,7 +129,42 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (_ChargingModes != value)
+                {
+
+                    if (_ChargingModes == null)
+                        _ChargingModes = value;
+
                     SetProperty(ref _ChargingModes, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region CurrentTypes
+
+        private CurrentTypes? _CurrentTypes;
+
+        /// <summary>
+        /// The type of the current.
+        /// </summary>
+        [Mandatory]
+        public CurrentTypes? CurrentTypes
+        {
+
+            get
+            {
+                return _CurrentTypes;
+            }
+
+            set
+            {
+
+                if (_CurrentTypes != value)
+                    SetProperty(ref _CurrentTypes, value);
 
             }
 
@@ -135,13 +174,13 @@ namespace org.GraphDefined.WWCP
 
         #region AverageVoltage
 
-        private Single _AverageVoltage;
+        private Single? _AverageVoltage;
 
         /// <summary>
         /// The average voltage.
         /// </summary>
         [Mandatory]
-        public Single AverageVoltage
+        public Single? AverageVoltage
         {
 
             get
@@ -152,36 +191,19 @@ namespace org.GraphDefined.WWCP
             set
             {
 
-                if (Math.Abs(_AverageVoltage - value) > EPSILON)
-                    SetProperty(ref _AverageVoltage, value);
+                if (value != null)
+                {
 
-            }
+                    if (!_AverageVoltage.HasValue)
+                        _AverageVoltage = value;
 
-        }
+                    else if (Math.Abs(_AverageVoltage.Value - value.Value) > EPSILON)
+                        SetProperty(ref _AverageVoltage, value);
 
-        #endregion
+                }
 
-        #region CurrentType
-
-        private CurrentTypes _CurrentType;
-
-        /// <summary>
-        /// The type of the current.
-        /// </summary>
-        [Mandatory]
-        public CurrentTypes CurrentType
-        {
-
-            get
-            {
-                return _CurrentType;
-            }
-
-            set
-            {
-
-                if (_CurrentType != value)
-                    SetProperty(ref _CurrentType, value);
+                else
+                    DeleteProperty(ref _AverageVoltage);
 
             }
 
@@ -191,13 +213,13 @@ namespace org.GraphDefined.WWCP
 
         #region MaxCurrent
 
-        private Single _MaxCurrent;
+        private Single? _MaxCurrent;
 
         /// <summary>
         /// The maximum current [Ampere].
         /// </summary>
         [Mandatory]
-        public Single MaxCurrent
+        public Single? MaxCurrent
         {
 
             get
@@ -208,8 +230,19 @@ namespace org.GraphDefined.WWCP
             set
             {
 
-                if (Math.Abs(_MaxCurrent - value) > EPSILON)
-                    SetProperty(ref _MaxCurrent, value);
+                if (value != null)
+                {
+
+                    if (!_MaxCurrent.HasValue)
+                        _MaxCurrent = value;
+
+                    else if (Math.Abs(_MaxCurrent.Value - value.Value) > EPSILON)
+                        SetProperty(ref _MaxCurrent, value);
+
+                }
+
+                else
+                    DeleteProperty(ref _MaxCurrent);
 
             }
 
@@ -236,36 +269,19 @@ namespace org.GraphDefined.WWCP
             set
             {
 
-                if (_MaxPower != value)
-                    SetProperty(ref _MaxPower, value);
+                if (value != null)
+                {
 
-            }
+                    if (!_MaxPower.HasValue)
+                        _MaxPower = value;
 
-        }
+                    else if (Math.Abs(_MaxPower.Value - value.Value) > EPSILON)
+                        SetProperty(ref _MaxPower, value);
 
-        #endregion
+                }
 
-        #region RealTimePower
-
-        private Single? _RealTimePower;
-
-        /// <summary>
-        /// The current real-time power delivery [Watt].
-        /// </summary>
-        [Optional]
-        public Single? RealTimePower
-        {
-
-            get
-            {
-                return _RealTimePower;
-            }
-
-            set
-            {
-
-                if (_RealTimePower != value)
-                    SetProperty(ref _RealTimePower, value);
+                else
+                    DeleteProperty(ref _MaxPower);
 
             }
 
@@ -292,43 +308,25 @@ namespace org.GraphDefined.WWCP
             set
             {
 
-                if (_MaxCapacity != value)
-                    SetProperty(ref _MaxCapacity, value);
+                if (value != null)
+                {
+
+                    if (!_MaxCapacity.HasValue)
+                        _MaxCapacity = value;
+
+                    else if (Math.Abs(_MaxCapacity.Value - value.Value) > EPSILON)
+                        SetProperty(ref _MaxCapacity, value);
+
+                }
+
+                else
+                    DeleteProperty(ref _MaxCapacity);
 
             }
 
         }
 
         #endregion
-
-        #region PointOfDelivery // MeterId
-
-        private String _PointOfDelivery;
-
-        /// <summary>
-        /// Point of delivery or meter identification.
-        /// </summary>
-        [Optional]
-        public String PointOfDelivery
-        {
-
-            get
-            {
-                return _PointOfDelivery;
-            }
-
-            set
-            {
-
-                if (_PointOfDelivery != value)
-                    SetProperty<String>(ref _PointOfDelivery, value);
-
-            }
-
-        }
-
-        #endregion
-
 
         #region SocketOutlets
 
@@ -349,6 +347,86 @@ namespace org.GraphDefined.WWCP
                     SetProperty(ref _SocketOutlets, value);
 
             }
+
+        }
+
+        #endregion
+
+        #region EnergyMeterId
+
+        private String _EnergyMeterId;
+
+        /// <summary>
+        /// The energy meter identification.
+        /// </summary>
+        [Optional]
+        public String EnergyMeterId
+        {
+
+            get
+            {
+                return _EnergyMeterId;
+            }
+
+            set
+            {
+
+                if (value != null)
+                    SetProperty(ref _EnergyMeterId, value);
+
+                else
+                    DeleteProperty(ref _EnergyMeterId);
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region AdminStatus
+
+        /// <summary>
+        /// The current EVSE admin status.
+        /// </summary>
+        [InternalUseOnly]
+        public Timestamped<EVSEAdminStatusTypes> AdminStatus
+        {
+
+            get
+            {
+                return _AdminStatusSchedule.CurrentStatus;
+            }
+
+            set
+            {
+
+                if (value == null)
+                    return;
+
+                if (_AdminStatusSchedule.CurrentValue != value.Value)
+                    SetAdminStatus(value);
+
+            }
+
+        }
+
+        #endregion
+
+        #region AdminStatusSchedule
+
+        private readonly StatusSchedule<EVSEAdminStatusTypes> _AdminStatusSchedule;
+
+        /// <summary>
+        /// The EVSE admin status schedule.
+        /// </summary>
+        public IEnumerable<Timestamped<EVSEAdminStatusTypes>> AdminStatusSchedule(UInt64? HistorySize = null)
+        {
+
+            if (HistorySize.HasValue)
+                return _AdminStatusSchedule.Take(HistorySize);
+
+            return _AdminStatusSchedule;
 
         }
 
@@ -445,144 +523,26 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AdminStatus
-
-        /// <summary>
-        /// The current EVSE admin status.
-        /// </summary>
-        [InternalUseOnly]
-        public Timestamped<EVSEAdminStatusTypes> AdminStatus
-        {
-
-            get
-            {
-                return _AdminStatusSchedule.CurrentStatus;
-            }
-
-            set
-            {
-
-                if (value == null)
-                    return;
-
-                if (_AdminStatusSchedule.CurrentValue != value.Value)
-                    SetAdminStatus(value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region AdminStatusSchedule
-
-        private readonly StatusSchedule<EVSEAdminStatusTypes> _AdminStatusSchedule;
-
-        /// <summary>
-        /// The EVSE admin status schedule.
-        /// </summary>
-        public IEnumerable<Timestamped<EVSEAdminStatusTypes>> AdminStatusSchedule(UInt64? HistorySize = null)
-        {
-
-            if (HistorySize.HasValue)
-                return _AdminStatusSchedule.Take(HistorySize);
-
-            return _AdminStatusSchedule;
-
-        }
-
-        #endregion
-
         #endregion
 
         #region Links
 
-        #region RemoteEVSE
-
-        private IRemoteEVSE _RemoteEVSE;
-
         /// <summary>
         /// An optional remote EVSE.
         /// </summary>
-        public IRemoteEVSE RemoteEVSE
-        {
-
-            get
-            {
-                return _RemoteEVSE;
-            }
-
-            internal set
-            {
-                _RemoteEVSE = value;
-            }
-
-        }
-
-        #endregion
-
-        #region ChargingStation
+        public IRemoteEVSE              RemoteEVSE        { get; }// internal set; }
 
         /// <summary>
         /// The charging station of this EVSE.
         /// </summary>
-        public ChargingStation ChargingStation   { get; }
-
-        #endregion
-
-        #region Operator
+        public ChargingStation          ChargingStation   { get; }
 
         /// <summary>
         /// The operator of this EVSE.
         /// </summary>
         [InternalUseOnly]
-        public ChargingStationOperator Operator
-        {
-            get
-            {
-                return ChargingStation.ChargingPool.Operator;
-            }
-        }
-
-        #endregion
-
-        #endregion
-
-        #region Events
-
-        #region SocketOutletAddition
-
-        internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletAddition;
-
-        /// <summary>
-        /// Called whenever a socket outlet will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
-        {
-            get
-            {
-                return SocketOutletAddition;
-            }
-        }
-
-        #endregion
-
-        #region SocketOutletRemoval
-
-        internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletRemoval;
-
-        /// <summary>
-        /// Called whenever a socket outlet will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, EVSE, SocketOutlet, Boolean> OnSocketOutletRemoval
-        {
-            get
-            {
-                return SocketOutletRemoval;
-            }
-        }
-
-        #endregion
+        public ChargingStationOperator  Operator
+            => ChargingStation?.ChargingPool?.Operator;
 
         #endregion
 
@@ -600,84 +560,24 @@ namespace org.GraphDefined.WWCP
         /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
         /// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
         /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
-        public EVSE(EVSE_Id                    Id,
-                    Action<EVSE>               Configurator             = null,
-                    RemoteEVSECreatorDelegate  RemoteEVSECreator        = null,
-                    EVSEAdminStatusTypes       InitialAdminStatus       = EVSEAdminStatusTypes.OutOfService,
-                    EVSEStatusTypes            InitialStatus            = EVSEStatusTypes.     OutOfService,
-                    UInt16                     MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
-                    UInt16                     MaxStatusListSize        = DefaultMaxEVSEStatusListSize)
+        public EVSE(EVSE_Id                             Id,
+                    Action<EVSE>                        Configurator             = null,
+                    RemoteEVSECreatorDelegate           RemoteEVSECreator        = null,
+                    Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus       = null,
+                    Timestamped<EVSEStatusTypes>?       InitialStatus            = null,
+                    UInt16                              MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
+                    UInt16                              MaxStatusListSize        = DefaultMaxEVSEStatusListSize)
 
-            : base(Id)
+            : this(Id,
+                   null,
+                   Configurator,
+                   RemoteEVSECreator,
+                   InitialAdminStatus,
+                   InitialStatus,
+                   MaxAdminStatusListSize,
+                   MaxStatusListSize)
 
-        {
-
-            #region Init data and properties
-
-            this._Description           = new I18NString();
-            this._ChargingModes         = new ReactiveSet<ChargingModes>();
-            this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
-
-            this._StatusSchedule        = new StatusSchedule<EVSEStatusTypes>(MaxStatusListSize);
-            this._StatusSchedule.     Insert(InitialStatus);
-
-            this._AdminStatusSchedule   = new StatusSchedule<EVSEAdminStatusTypes>(MaxStatusListSize);
-            this._AdminStatusSchedule.Insert(InitialAdminStatus);
-
-            #endregion
-
-            Configurator?.Invoke(this);
-
-            #region Init events
-
-            this.SocketOutletAddition   = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
-            this.SocketOutletRemoval    = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
-
-            #endregion
-
-            #region Link events
-
-            _AdminStatusSchedule.OnStatusChanged += (Timestamp,
-                                                      EventTrackingId,
-                                                      StatusSchedule,
-                                                      OldStatus,
-                                                      NewStatus)
-                => UpdateAdminStatus(Timestamp,
-                                     EventTrackingId,
-                                     OldStatus,
-                                     NewStatus);
-
-            _StatusSchedule.     OnStatusChanged += (Timestamp,
-                                                     EventTrackingId,
-                                                     StatusSchedule,
-                                                     OldStatus,
-                                                     NewStatus)
-
-                => UpdateStatus(Timestamp,
-                                EventTrackingId,
-                                OldStatus,
-                                NewStatus);
-
-
-            this.SocketOutletAddition.OnVoting        += (timestamp, evse, outlet, vote)
-                                                          => ChargingStation.SocketOutletAddition.SendVoting      (timestamp, evse, outlet, vote);
-
-            this.SocketOutletAddition.OnNotification  += (timestamp, evse, outlet)
-                                                          => ChargingStation.SocketOutletAddition.SendNotification(timestamp, evse, outlet);
-
-            this.SocketOutletRemoval. OnVoting        += (timestamp, evse, outlet, vote)
-                                                          => ChargingStation.SocketOutletRemoval. SendVoting      (timestamp, evse, outlet, vote);
-
-            this.SocketOutletRemoval. OnNotification  += (timestamp, evse, outlet)
-                                                          => ChargingStation.SocketOutletRemoval. SendNotification(timestamp, evse, outlet);
-
-            #endregion
-
-            this.OnPropertyChanged += UpdateData;
-
-            this.RemoteEVSE = RemoteEVSECreator?.Invoke(this);
-
-        }
+        { }
 
         #endregion
 
@@ -694,43 +594,85 @@ namespace org.GraphDefined.WWCP
         /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
         /// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
         /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
-        public EVSE(EVSE_Id                    Id,
-                    ChargingStation            ChargingStation,
-                    Action<EVSE>               Configurator             = null,
-                    RemoteEVSECreatorDelegate  RemoteEVSECreator        = null,
-                    EVSEAdminStatusTypes       InitialAdminStatus       = EVSEAdminStatusTypes.OutOfService,
-                    EVSEStatusTypes            InitialStatus            = EVSEStatusTypes.     OutOfService,
-                    UInt16                     MaxStatusListSize        = DefaultMaxEVSEStatusListSize,
-                    UInt16                     MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize)
+        public EVSE(EVSE_Id                             Id,
+                    ChargingStation                     ChargingStation,
+                    Action<EVSE>                        Configurator             = null,
+                    RemoteEVSECreatorDelegate           RemoteEVSECreator        = null,
+                    Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus       = null,
+                    Timestamped<EVSEStatusTypes>?       InitialStatus            = null,
+                    UInt16                              MaxStatusListSize        = DefaultMaxEVSEStatusListSize,
+                    UInt16                              MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize)
 
-            : this(Id,
-                   Configurator,
-                   RemoteEVSECreator,
-                   InitialAdminStatus,
-                   InitialStatus,
-                   MaxAdminStatusListSize,
-                   MaxStatusListSize)
+            : base(Id)
 
         {
 
-            #region Initial checks
-
-            if (ChargingStation == null)
-                throw new ArgumentNullException(nameof(ChargingStation),  "The charging station must not be null!");
-
-            #endregion
-
             #region Init data and properties
 
-            this.ChargingStation  = ChargingStation;
+            this.ChargingStation        = ChargingStation;
+
+            InitialAdminStatus          = InitialAdminStatus ?? new Timestamped<EVSEAdminStatusTypes>(EVSEAdminStatusTypes.Operational);
+            InitialStatus               = InitialStatus      ?? new Timestamped<EVSEStatusTypes>     (EVSEStatusTypes.Available);
+
+            this._Description           = new I18NString();
+            this._SocketOutlets         = new ReactiveSet<SocketOutlet>();
+
+            this._AdminStatusSchedule   = new StatusSchedule<EVSEAdminStatusTypes>(MaxAdminStatusListSize);
+            this._AdminStatusSchedule.Insert(InitialAdminStatus.Value);
+
+            this._StatusSchedule        = new StatusSchedule<EVSEStatusTypes>(MaxStatusListSize);
+            this._StatusSchedule.     Insert(InitialStatus.Value);
 
             #endregion
+
+            #region Init events
+
+            #endregion
+
+            Configurator?.Invoke(this);
+
+            #region Link events
+
+            this.OnPropertyChanged += UpdateData;
+
+            this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+                                                          => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
+
+            this._StatusSchedule.     OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
+                                                          => UpdateStatus     (Timestamp, EventTrackingId, OldStatus, NewStatus);
+
+            #endregion
+
+            this.RemoteEVSE = RemoteEVSECreator?.Invoke(this);
 
         }
 
         #endregion
 
         #endregion
+
+
+        public void AddChargingMode(ChargingModes ChargingMode)
+        {
+
+            if (!_ChargingModes.HasValue)
+                _ChargingModes = ChargingMode;
+
+            else
+                _ChargingModes |= ChargingMode;
+
+        }
+
+        public void AddCurrentType(CurrentTypes CurrentType)
+        {
+
+            if (!_CurrentTypes.HasValue)
+                _CurrentTypes = CurrentType;
+
+            else
+                _CurrentTypes |= CurrentType;
+
+        }
 
 
         #region Data/(Admin-)Status management
@@ -1111,10 +1053,10 @@ namespace org.GraphDefined.WWCP
                 AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
             {
 
-                if (_RemoteEVSE != null)
+                if (RemoteEVSE != null)
                 {
 
-                    result = await _RemoteEVSE.
+                    result = await RemoteEVSE.
                                        ChargingStation.
                                            Reserve(Id,
                                                    StartTime,
@@ -1432,10 +1374,10 @@ namespace org.GraphDefined.WWCP
                 AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
             {
 
-                if (_RemoteEVSE != null)
+                if (RemoteEVSE != null)
                 {
 
-                    result = await _RemoteEVSE.
+                    result = await RemoteEVSE.
                                        ChargingStation.
                                        RemoteStart(Id,
                                                    ChargingProduct,
@@ -1665,10 +1607,10 @@ namespace org.GraphDefined.WWCP
                 AdminStatus.Value == EVSEAdminStatusTypes.InternalUse)
             {
 
-                if (_RemoteEVSE != null)
+                if (RemoteEVSE != null)
                 {
 
-                    result = await _RemoteEVSE.
+                    result = await RemoteEVSE.
                                        ChargingStation.
                                        RemoteStop(Id,
                                                   SessionId,
@@ -1763,6 +1705,45 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+        #endregion
+
+
+        #region UpdateWith(OtherEVSE)
+
+        /// <summary>
+        /// Update this EVSE with the data of the other EVSE.
+        /// </summary>
+        /// <param name="OtherEVSE">Another EVSE.</param>
+        public EVSE UpdateWith(EVSE OtherEVSE)
+        {
+
+            Description          = OtherEVSE.Description;
+
+            ChargingModes        = OtherEVSE.ChargingModes;
+            AverageVoltage       = OtherEVSE.AverageVoltage;
+            CurrentTypes         = OtherEVSE.CurrentTypes;
+            MaxCurrent           = OtherEVSE.MaxCurrent;
+            MaxPower             = OtherEVSE.MaxPower;
+            MaxCapacity          = OtherEVSE.MaxCapacity;
+
+            if (SocketOutlets == null && OtherEVSE.SocketOutlets != null)
+                SocketOutlets = new ReactiveSet<SocketOutlet>(OtherEVSE.SocketOutlets);
+            else if (SocketOutlets != null)
+                SocketOutlets = OtherEVSE.SocketOutlets;
+
+            EnergyMeterId        = OtherEVSE.EnergyMeterId;
+
+
+            if (OtherEVSE.AdminStatus.Timestamp > AdminStatus.Timestamp)
+                SetAdminStatus(OtherEVSE.AdminStatus);
+
+            if (OtherEVSE.Status.Timestamp > Status.Timestamp)
+                SetStatus(OtherEVSE.Status);
+
+            return this;
+
+        }
 
         #endregion
 
@@ -2038,7 +2019,7 @@ namespace org.GraphDefined.WWCP
             /// The features of the charging station.
             /// </summary>
             [Optional]
-            public ChargingStationUIFeatures UIFeatures { get; set; }
+            public UIFeatures UIFeatures { get; set; }
 
             /// <summary>
             /// URIs of photos of this charging station.

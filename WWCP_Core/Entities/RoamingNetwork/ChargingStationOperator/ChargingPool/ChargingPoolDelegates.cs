@@ -60,8 +60,8 @@ namespace org.GraphDefined.WWCP
     public delegate Task OnChargingPoolAdminStatusChangedDelegate(DateTime                                  Timestamp,
                                                                   EventTracking_Id                          EventTrackingId,
                                                                   ChargingPool                              ChargingPool,
-                                                                  Timestamped<ChargingPoolAdminStatusType>  OldStatus,
-                                                                  Timestamped<ChargingPoolAdminStatusType>  NewStatus);
+                                                                  Timestamped<ChargingPoolAdminStatusTypes>  OldStatus,
+                                                                  Timestamped<ChargingPoolAdminStatusTypes>  NewStatus);
 
 
     /// <summary>
@@ -75,7 +75,7 @@ namespace org.GraphDefined.WWCP
     public delegate Task OnChargingPoolStatusChangedDelegate(DateTime                             Timestamp,
                                                              EventTracking_Id                     EventTrackingId,
                                                              ChargingPool                         ChargingPool,
-                                                             Timestamped<ChargingPoolStatusType>  OldStatus,
-                                                             Timestamped<ChargingPoolStatusType>  NewStatus);
+                                                             Timestamped<ChargingPoolStatusTypes>  OldStatus,
+                                                             Timestamped<ChargingPoolStatusTypes>  NewStatus);
 
 }

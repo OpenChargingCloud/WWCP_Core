@@ -21,7 +21,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current status of a charging pool.
     /// </summary>
-    public enum ChargingPoolStatusType
+    public enum ChargingPoolStatusTypes
     {
 
         /// <summary>

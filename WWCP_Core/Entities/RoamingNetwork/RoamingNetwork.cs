@@ -295,15 +295,15 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        private readonly ConcurrentDictionary<UInt32, ISendData>   _IRemotePushData    = new ConcurrentDictionary<UInt32, ISendData>();
+        private readonly ConcurrentDictionary<UInt32, ISendData>   _ISendData    = new ConcurrentDictionary<UInt32, ISendData>();
 
         public void AddIReceiveStaticData(ISendData iSendStaticData)
         {
-            lock(_IRemotePushData)
+            lock(_ISendData)
             {
 
-                _IRemotePushData.TryAdd(_IRemotePushData.Count > 0
-                                            ? _IRemotePushData.Keys.Max() + 1
+                _ISendData.TryAdd(_ISendData.Count > 0
+                                            ? _ISendData.Keys.Max() + 1
                                             : 1,
                                         iSendStaticData);
 
@@ -558,25 +558,34 @@ namespace org.GraphDefined.WWCP
                 if (_ChargingStationOperators.TryAdd(_ChargingStationOperator, OnSuccess))
                 {
 
-                    _ChargingStationOperator.OnDataChanged                                 += UpdateData;
-                    _ChargingStationOperator.OnStatusChanged                               += UpdateStatus;
-                    _ChargingStationOperator.OnAdminStatusChanged                          += UpdateAdminStatus;
+                    _ChargingStationOperator.OnDataChanged                                 += UpdateCSOData;
+                    _ChargingStationOperator.OnStatusChanged                               += UpdateCSOStatus;
+                    _ChargingStationOperator.OnAdminStatusChanged                          += UpdateCSOAdminStatus;
 
+                    _ChargingStationOperator.OnChargingPoolAddition.   OnVoting            += (timestamp, cso, pool, vote)      => ChargingPoolAddition.   SendVoting      (timestamp, cso, pool, vote);
+                    _ChargingStationOperator.OnChargingPoolAddition.   OnNotification      += (timestamp, cso, pool)            => ChargingPoolAddition.   SendNotification(timestamp, cso, pool);
                     _ChargingStationOperator.OnChargingPoolDataChanged                     += UpdateChargingPoolData;
                     _ChargingStationOperator.OnChargingPoolStatusChanged                   += UpdateChargingPoolStatus;
                     _ChargingStationOperator.OnChargingPoolAdminStatusChanged              += UpdateChargingPoolAdminStatus;
+                    _ChargingStationOperator.OnChargingPoolRemoval.    OnVoting            += (timestamp, cso, pool, vote)      => ChargingPoolRemoval.    SendVoting      (timestamp, cso, pool, vote);
+                    _ChargingStationOperator.OnChargingPoolRemoval.    OnNotification      += (timestamp, cso, pool)            => ChargingPoolRemoval.    SendNotification(timestamp, cso, pool);
 
+                    _ChargingStationOperator.OnChargingStationAddition.OnVoting            += (timestamp, pool, station, vote)  => ChargingStationAddition.SendVoting      (timestamp, pool, station, vote);
+                    _ChargingStationOperator.OnChargingStationAddition.OnNotification      += (timestamp, pool, station)        => ChargingStationAddition.SendNotification(timestamp, pool, station);
                     _ChargingStationOperator.OnChargingStationDataChanged                  += UpdateChargingStationData;
                     _ChargingStationOperator.OnChargingStationStatusChanged                += UpdateChargingStationStatus;
                     _ChargingStationOperator.OnChargingStationAdminStatusChanged           += UpdateChargingStationAdminStatus;
+                    _ChargingStationOperator.OnChargingStationRemoval. OnVoting            += (timestamp, pool, station, vote)  => ChargingStationRemoval. SendVoting      (timestamp, pool, station, vote);
+                    _ChargingStationOperator.OnChargingStationRemoval. OnNotification      += (timestamp, pool, station)        => ChargingStationRemoval. SendNotification(timestamp, pool, station);
 
-                    //_cso.EVSEAddition.OnVoting                         += SendEVSEAdding;
+                    _ChargingStationOperator.OnEVSEAddition.           OnVoting            += (timestamp, station, evse, vote)  => EVSEAddition.           SendVoting      (timestamp, station, evse, vote);
+                    _ChargingStationOperator.OnEVSEAddition.           OnNotification      += (timestamp, station, evse)        => EVSEAddition.           SendNotification(timestamp, station, evse);
                     _ChargingStationOperator.EVSEAddition.OnNotification                   += SendEVSEAdded;
-                    //_cso.EVSERemoval.OnVoting                          += SendEVSERemoving;
-                    _ChargingStationOperator.EVSERemoval.OnNotification                    += SendEVSERemoved;
                     _ChargingStationOperator.OnEVSEDataChanged                             += UpdateEVSEData;
                     _ChargingStationOperator.OnEVSEStatusChanged                           += UpdateEVSEStatus;
                     _ChargingStationOperator.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
+                    _ChargingStationOperator.OnEVSERemoval.            OnVoting            += (timestamp, station, evse, vote)  => EVSERemoval.            SendVoting      (timestamp, station, evse, vote);
+                    _ChargingStationOperator.OnEVSERemoval.            OnNotification      += (timestamp, station, evse)        => EVSERemoval.            SendNotification(timestamp, station, evse);
 
 
                     _ChargingStationOperator.OnNewReservation                              += SendNewReservation;
@@ -697,7 +706,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (internal) UpdatecsoData(Timestamp, cso, OldStatus, NewStatus)
+        #region (internal) UpdateCSOData(Timestamp, cso, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the data of an evse operator.
@@ -707,11 +716,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="PropertyName">The name of the changed property.</param>
         /// <param name="OldValue">The old value of the changed property.</param>
         /// <param name="NewValue">The new value of the changed property.</param>
-        internal async Task UpdateData(DateTime      Timestamp,
-                                                   ChargingStationOperator  cso,
-                                                   String        PropertyName,
-                                                   Object        OldValue,
-                                                   Object        NewValue)
+        internal async Task UpdateCSOData(DateTime                 Timestamp,
+                                          ChargingStationOperator  cso,
+                                          String                   PropertyName,
+                                          Object                   OldValue,
+                                          Object                   NewValue)
         {
 
             var OnChargingStationOperatorDataChangedLocal = OnChargingStationOperatorDataChanged;
@@ -722,7 +731,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (internal) UpdateStatus(Timestamp, cso, OldStatus, NewStatus)
+        #region (internal) UpdateCSOStatus(Timestamp, cso, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the current Charging Station Operator status.
@@ -731,10 +740,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="cso">The updated Charging Station Operator.</param>
         /// <param name="OldStatus">The old aggreagted Charging Station Operator status.</param>
         /// <param name="NewStatus">The new aggreagted Charging Station Operator status.</param>
-        internal async Task UpdateStatus(DateTime                             Timestamp,
-                                         ChargingStationOperator                         cso,
-                                         Timestamped<ChargingStationOperatorStatusType>  OldStatus,
-                                         Timestamped<ChargingStationOperatorStatusType>  NewStatus)
+        internal async Task UpdateCSOStatus(DateTime                             Timestamp,
+                                            ChargingStationOperator                         cso,
+                                            Timestamped<ChargingStationOperatorStatusType>  OldStatus,
+                                            Timestamped<ChargingStationOperatorStatusType>  NewStatus)
         {
 
             // Send Charging Station Operator status change upstream
@@ -769,7 +778,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region (internal) UpdateAdminStatus(Timestamp, cso, OldStatus, NewStatus)
+        #region (internal) UpdateCSOAdminStatus(Timestamp, cso, OldStatus, NewStatus)
 
         /// <summary>
         /// Update the current Charging Station Operator admin status.
@@ -778,10 +787,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="cso">The updated Charging Station Operator.</param>
         /// <param name="OldStatus">The old aggreagted Charging Station Operator status.</param>
         /// <param name="NewStatus">The new aggreagted Charging Station Operator status.</param>
-        internal async Task UpdateAdminStatus(DateTime                                  Timestamp,
-                                              ChargingStationOperator                              cso,
-                                              Timestamped<ChargingStationOperatorAdminStatusType>  OldStatus,
-                                              Timestamped<ChargingStationOperatorAdminStatusType>  NewStatus)
+        internal async Task UpdateCSOAdminStatus(DateTime                                             Timestamp,
+                                                 ChargingStationOperator                              cso,
+                                                 Timestamped<ChargingStationOperatorAdminStatusType>  OldStatus,
+                                                 Timestamped<ChargingStationOperatorAdminStatusType>  NewStatus)
         {
 
             // Send Charging Station Operator admin status change upstream
@@ -2253,10 +2262,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the admin status of all charging pools registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusType>>>> ChargingPoolAdminStatus
+        public IEnumerable<KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>> ChargingPoolAdminStatus
 
             => _ChargingStationOperators.
-                   SelectMany(cso => cso.Select(pool => new KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusType>>>(pool.Id,
+                   SelectMany(cso => cso.Select(pool => new KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>(pool.Id,
                                                                                                                                                  pool.AdminStatusSchedule())));
 
         #endregion
@@ -2266,10 +2275,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the status of all charging pools registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusType>>>> ChargingPoolStatus
+        public IEnumerable<KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>> ChargingPoolStatus
 
             => _ChargingStationOperators.
-                   SelectMany(cso => cso.Select(pool => new KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusType>>>(pool.Id,
+                   SelectMany(cso => cso.Select(pool => new KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>(pool.Id,
                                                                                                                                             pool.StatusSchedule())));
 
         #endregion
@@ -2353,7 +2362,7 @@ namespace org.GraphDefined.WWCP
         #region SetChargingPoolAdminStatus(ChargingPoolId, StatusList)
 
         public void SetChargingPoolAdminStatus(ChargingPool_Id                                        ChargingPoolId,
-                                               IEnumerable<Timestamped<ChargingPoolAdminStatusType>>  StatusList)
+                                               IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>  StatusList)
         {
 
             ChargingStationOperator _cso  = null;
@@ -2470,7 +2479,7 @@ namespace org.GraphDefined.WWCP
 
             //}
 
-            foreach (var iRemotePushData in _IRemotePushData.
+            foreach (var iRemotePushData in _ISendData.
                                                 OrderBy(kvp => kvp.Key).
                                                 Select (kvp => kvp.Value))
             {
@@ -2521,8 +2530,8 @@ namespace org.GraphDefined.WWCP
         internal async Task UpdateChargingPoolAdminStatus(DateTime                                  Timestamp,
                                                           EventTracking_Id                          EventTrackingId,
                                                           ChargingPool                              ChargingPool,
-                                                          Timestamped<ChargingPoolAdminStatusType>  OldStatus,
-                                                          Timestamped<ChargingPoolAdminStatusType>  NewStatus)
+                                                          Timestamped<ChargingPoolAdminStatusTypes>  OldStatus,
+                                                          Timestamped<ChargingPoolAdminStatusTypes>  NewStatus)
         {
 
             var OnChargingPoolAdminStatusChangedLocal = OnChargingPoolAdminStatusChanged;
@@ -2550,8 +2559,8 @@ namespace org.GraphDefined.WWCP
         internal async Task UpdateChargingPoolStatus(DateTime                             Timestamp,
                                                      EventTracking_Id                     EventTrackingId,
                                                      ChargingPool                         ChargingPool,
-                                                     Timestamped<ChargingPoolStatusType>  OldStatus,
-                                                     Timestamped<ChargingPoolStatusType>  NewStatus)
+                                                     Timestamped<ChargingPoolStatusTypes>  OldStatus,
+                                                     Timestamped<ChargingPoolStatusTypes>  NewStatus)
         {
 
             var OnChargingPoolStatusChangedLocal = OnChargingPoolStatusChanged;
@@ -2847,7 +2856,7 @@ namespace org.GraphDefined.WWCP
 
             //}
 
-            foreach (var iRemotePushData in _IRemotePushData.
+            foreach (var iRemotePushData in _ISendData.
                                                 OrderBy(kvp => kvp.Key).
                                                 Select (kvp => kvp.Value))
             {
@@ -3204,42 +3213,17 @@ namespace org.GraphDefined.WWCP
                                    EVSE             EVSE)
         {
 
-            //foreach (var AuthenticationService in _IeMobilityServiceProviders.
-            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //{
-
-            //    result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                        ActionType.update,
-            //                                                        EVSE.Operator.Id);
-
-            //}
-
-            foreach (var iRemotePushData in _IRemotePushData.
-                                                OrderBy(kvp => kvp.Key).
-                                                Select (kvp => kvp.Value))
+            foreach (var iSendData in _ISendData.
+                                          OrderBy(kvp => kvp.Key).
+                                          Select (kvp => kvp.Value))
             {
 
                 //result = await iRemotePushData.
-                iRemotePushData.
+                iSendData.
                     SetStaticData(EVSE).
                     ConfigureAwait(false);
 
             }
-
-            //foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
-            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //{
-
-            //    result = await PushEVSEStatusService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                        ActionType.update,
-            //                                                        EVSE.Operator.Id);
-
-            //}
-
-
-            EVSEAddition.SendNotification(Timestamp, ChargingStation, EVSE);
 
         }
 
@@ -3272,7 +3256,7 @@ namespace org.GraphDefined.WWCP
 
             //}
 
-            foreach (var iRemotePushData in _IRemotePushData.
+            foreach (var iRemotePushData in _ISendData.
                                                 OrderBy(kvp => kvp.Key).
                                                 Select (kvp => kvp.Value))
             {
@@ -3391,7 +3375,7 @@ namespace org.GraphDefined.WWCP
 
             //}
 
-            foreach (var iRemotePushData in _IRemotePushData.
+            foreach (var iRemotePushData in _ISendData.
                                                 OrderBy(kvp => kvp.Key).
                                                 Select (kvp => kvp.Value))
             {

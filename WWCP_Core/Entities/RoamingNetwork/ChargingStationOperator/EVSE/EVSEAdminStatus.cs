@@ -29,8 +29,8 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current admin status of an EVSE.
     /// </summary>
-    public struct EVSEAdminStatus : IEquatable <EVSEAdminStatus>,
-                                    IComparable<EVSEAdminStatus>
+    public class EVSEAdminStatus : IEquatable<EVSEAdminStatus>,
+                                   IComparable<EVSEAdminStatus>
     {
 
         #region Properties
@@ -38,7 +38,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id              Id            { get; }
+        public EVSE_Id               Id            { get; }
 
         /// <summary>
         /// The current admin status of the EVSE.
@@ -48,7 +48,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The timestamp of the current admin status of the EVSE.
         /// </summary>
-        public DateTime             Timestamp     { get; }
+        public DateTime              Timestamp     { get; }
 
         /// <summary>
         /// The timestamped admin status of the EVSE.
@@ -64,16 +64,16 @@ namespace org.GraphDefined.WWCP
         /// Create a new EVSE admin status.
         /// </summary>
         /// <param name="Id">The unique identification of the EVSE.</param>
-        /// <param name="Status">The current admin status of the EVSE.</param>
+        /// <param name="AdminStatus">The current admin status of the EVSE.</param>
         /// <param name="Timestamp">The timestamp of the current admin status of the EVSE.</param>
-        public EVSEAdminStatus(EVSE_Id              Id,
-                               EVSEAdminStatusTypes  Status,
-                               DateTime             Timestamp)
+        public EVSEAdminStatus(EVSE_Id               Id,
+                               EVSEAdminStatusTypes  AdminStatus,
+                               DateTime              Timestamp)
 
         {
 
             this.Id           = Id;
-            this.AdminStatus  = Status;
+            this.AdminStatus  = AdminStatus;
             this.Timestamp    = Timestamp;
 
         }

@@ -46,7 +46,9 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return _RegularOpenings.Where(rh => !(rh.DayOfWeek == DayOfWeek.Sunday && rh.PeriodBegin.Hour == 0 && rh.PeriodBegin.Minute == 0 && rh.PeriodEnd.Hour == 0 && rh.PeriodEnd.Minute == 0));
+                return _RegularOpenings.Where(rh => !(rh.DayOfWeek == DayOfWeek.Sunday &&
+                                                    rh.PeriodBegin.Hour == 0 && rh.PeriodBegin.Minute == 0 &&
+                                                    rh.PeriodEnd.  Hour == 0 && rh.PeriodEnd.  Minute == 0));
             }
         }
 
@@ -100,10 +102,10 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region OpeningTime(FreeText = "", IsOpen24Hours = true)
+        #region OpeningTime(IsOpen24Hours, FreeText = "")
 
-        private OpeningTimes(String   FreeText       = "",
-                             Boolean  IsOpen24Hours  = true)
+        private OpeningTimes(Boolean  IsOpen24Hours,
+                             String   FreeText = "")
         {
 
             this._RegularOpenings      = new RegularHours[7];
@@ -111,6 +113,22 @@ namespace org.GraphDefined.WWCP
             this._ExceptionalClosings  = new List<ExceptionalPeriod>();
             this._FreeText             = FreeText;
             this._IsOpen24Hours        = IsOpen24Hours;
+
+        }
+
+        #endregion
+
+        #region OpeningTime(FromWeekday, ToWeekday, Text = "")
+
+        public OpeningTimes(DayOfWeek  FromWeekday,
+                            DayOfWeek  ToWeekday,
+                            String     FreeText = "")
+
+            : this(false, FreeText)
+
+        {
+
+            SetRegularOpening(FromWeekday, ToWeekday, new HourMin(0, 0), new HourMin(0, 0));
 
         }
 
@@ -124,7 +142,7 @@ namespace org.GraphDefined.WWCP
                             HourMin    End,
                             String     FreeText = "")
 
-            : this(FreeText, IsOpen24Hours: false)
+            : this(false, FreeText)
 
         {
 
@@ -190,7 +208,7 @@ namespace org.GraphDefined.WWCP
                                                 Boolean  IsOpen24Hours = true)
         {
 
-            return new OpeningTimes(Text, IsOpen24Hours);
+            return new OpeningTimes(IsOpen24Hours, Text);
 
         }
 
@@ -212,7 +230,7 @@ namespace org.GraphDefined.WWCP
 
             OpeningTimes = null;
 
-            var match = Regex.Match(Text, "([a-zA-Z]+) - ([a-zA-Z]+) (([0-9]{2}:[0-9]{2})h - ([0-9]{2}:[0-9]{2})h|closed)");
+            var match = Regex.Match(Text, "([a-zA-Z]+) - ([a-zA-Z]+) (([0-9]{2}:[0-9]{2})h - ([0-9]{2}:[0-9]{2})h|open|closed)");
             if (!match.Success)
                 return false;
 
@@ -346,11 +364,21 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
+            #region ...or parse "open"
+
+            else if (match.Groups[3].Value == "open")
+            {
+                OpeningTimes = new OpeningTimes(FromWeekday, ToWeekday);
+                return true;
+            }
+
+            #endregion
+
             #region ...or parse "closed"
 
             else if (match.Groups[3].Value == "closed")
             {
-                OpeningTimes = OpeningTimes.FromFreeText(Text, IsOpen24Hours: false);
+                OpeningTimes = new OpeningTimes(false, Text);
                 return true;
             }
 

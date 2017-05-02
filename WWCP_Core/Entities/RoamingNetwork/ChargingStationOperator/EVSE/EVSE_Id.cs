@@ -233,6 +233,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Parse the given string as an EVSE identification.
+        /// </summary>
+        public static EVSE_Id? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out EVSE_Id EVSEId))
+                return EVSEId;
+
+            return null;
+
+        }
+
+        #endregion
+
         #region TryParse(Text, out EVSE_Id)
 
         /// <summary>

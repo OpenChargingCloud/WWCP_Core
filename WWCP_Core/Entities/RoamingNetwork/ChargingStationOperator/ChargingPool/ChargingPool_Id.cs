@@ -102,16 +102,17 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a valid charging pool identification based on the given parameters.
         /// </summary>
-        /// <param name="EVSEOperatorId">The identification of an Charging Station Operator.</param>
+        /// <param name="OperatorId">The identification of an Charging Station Operator.</param>
         /// <param name="Address">The address of the charging pool.</param>
         /// <param name="GeoLocation">The geo location of the charging pool.</param>
         /// <param name="Length">The maximum size of the generated charging pool identification suffix [12 &lt; n &lt; 50].</param>
         /// <param name="Mapper">A delegate to modify a generated charging pool identification suffix.</param>
-        public static ChargingPool_Id Generate(ChargingStationOperator_Id  EVSEOperatorId,
+        public static ChargingPool_Id Generate(ChargingStationOperator_Id  OperatorId,
                                                Address                     Address,
-                                               GeoCoordinate?              GeoLocation,
-                                               Byte                        Length = 50,
-                                               Func<String, String>        Mapper = null)
+                                               GeoCoordinate?              GeoLocation  = null,
+                                               String                      HelperId     = "",
+                                               Byte                        Length       = 15,
+                                               Func<String, String>        Mapper       = null)
         {
 
             if (Length < 12)
@@ -121,13 +122,19 @@ namespace org.GraphDefined.WWCP
                 Length = 50;
 
             var Suffíx = new SHA1CryptoServiceProvider().
-                             ComputeHash(Encoding.UTF8.GetBytes(Address.    ToString() +
-                                                                GeoLocation.ToString())).
+                             ComputeHash(Encoding.UTF8.GetBytes(
+                                             String.Concat(
+                                                 OperatorId.  ToString(),
+                                                 Address.     ToString(),
+                                                 GeoLocation?.ToString() ?? "",
+                                                 HelperId                ?? ""
+                                             )
+                                         )).
                                          ToHexString().
                                          SubstringMax(Length).
                                          ToUpper();
 
-            return Parse(EVSEOperatorId,
+            return Parse(OperatorId,
                          Mapper != null
                             ? Mapper(Suffíx)
                             : Suffíx);
@@ -201,7 +208,24 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region TryParse(Text, out EVSEGroupId)
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Parse the given string as a charging pool identification.
+        /// </summary>
+        public static ChargingPool_Id? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out ChargingPool_Id ChargingPoolId))
+                return ChargingPoolId;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryParse(Text, out ChargingPoolId)
 
         /// <summary>
         /// Parse the given string as a charging pool identification.

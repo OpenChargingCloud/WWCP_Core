@@ -137,24 +137,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChargingStations
-
-        private List<ChargingStation> _ChargingStations;
-
-        /// <summary>
-        /// Charging stations reachable from this parking space.
-        /// </summary>
-        [Optional]
-        public List<ChargingStation> ChargingStations
-        {
-            get
-            {
-                return _ChargingStations;
-            }
-        }
-
-        #endregion
-
         // status := free, ocupied, reserved, not accessible
 
         // fee := double
@@ -164,6 +146,46 @@ namespace org.GraphDefined.WWCP
         // Opening hours
 
         // restrictions := EV only, must be plugged in, disabled persons only
+
+        #region Sensors
+
+        private ReactiveSet<String> _Sensors;
+
+        /// <summary>
+        /// Parking sensors at the parking space.
+        /// </summary>
+        [Optional]
+        public ReactiveSet<String> Sensors
+        {
+            get
+            {
+                return _Sensors;
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #region Links
+
+        #region ChargingStations
+
+        private ReactiveSet<ChargingStation> _ChargingStations;
+
+        /// <summary>
+        /// Charging stations reachable from this parking space.
+        /// </summary>
+        [Optional]
+        public ReactiveSet<ChargingStation> ChargingStations
+        {
+            get
+            {
+                return _ChargingStations;
+            }
+        }
+
+        #endregion
 
         #endregion
 
@@ -190,7 +212,7 @@ namespace org.GraphDefined.WWCP
         /// Create a new parking space having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the parking space.</param>
-        internal ParkingSpace(ParkingSpace_Id  Id)
+        public ParkingSpace(ParkingSpace_Id  Id)
             : base(Id)
         {
 
@@ -206,7 +228,7 @@ namespace org.GraphDefined.WWCP
             this._Name              = new I18NString(Languages.eng, Id.ToString());
             this._Description       = new I18NString();
             this._Geometry          = new List<GeoCoordinate>();
-            this._ChargingStations  = new List<ChargingStation>();
+            this._ChargingStations  = new ReactiveSet<ChargingStation>();
 
             #endregion
 

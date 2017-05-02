@@ -41,7 +41,11 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargingStationGroup">The updated charging pool.</param>
     /// <param name="OldStatus">The old timestamped admin status of the charging pool.</param>
     /// <param name="NewStatus">The new timestamped admin status of the charging pool.</param>
-    public delegate void OnAdminStatusChangedDelegate(DateTime Timestamp, ChargingStationGroup ChargingStationGroup, Timestamped<ChargingStationGroupAdminStatusType> OldStatus, Timestamped<ChargingStationGroupAdminStatusType> NewStatus);
+    public delegate Task OnAdminStatusChangedDelegate(DateTime Timestamp,
+                                                      EventTracking_Id EventTrackingId,
+                                                      ChargingStationGroup ChargingStationGroup,
+                                                      Timestamped<ChargingStationGroupAdminStatusType> OldStatus,
+                                                      Timestamped<ChargingStationGroupAdminStatusType> NewStatus);
 
     /// <summary>
     /// A delegate called whenever the status changed.
@@ -50,7 +54,11 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargingStationGroup">The updated charging pool.</param>
     /// <param name="OldStatus">The old timestamped admin status of the charging pool.</param>
     /// <param name="NewStatus">The new timestamped admin status of the charging pool.</param>
-    public delegate void OnStatusChangedDelegate(DateTime Timestamp, ChargingStationGroup ChargingStationGroup, Timestamped<ChargingStationGroupStatusType> OldStatus, Timestamped<ChargingStationGroupStatusType> NewStatus);
+    public delegate Task OnStatusChangedDelegate(DateTime Timestamp,
+                                                 EventTracking_Id EventTrackingId,
+                                                 ChargingStationGroup ChargingStationGroup,
+                                                 Timestamped<ChargingStationGroupStatusType> OldStatus,
+                                                 Timestamped<ChargingStationGroupStatusType> NewStatus);
 
 
     public class AutoIncludeMemberIds
@@ -346,40 +354,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SocketOutletAddition
-
-        internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletAddition;
-
-        /// <summary>
-        /// Called whenever a socket outlet will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
-        {
-            get
-            {
-                return SocketOutletAddition;
-            }
-        }
-
-        #endregion
-
-        #region SocketOutletRemoval
-
-        internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletRemoval;
-
-        /// <summary>
-        /// Called whenever a socket outlet will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, EVSE, SocketOutlet, Boolean> OnSocketOutletRemoval
-        {
-            get
-            {
-                return SocketOutletRemoval;
-            }
-        }
-
-        #endregion
-
         #endregion
 
         #region Constructor(s)
@@ -457,15 +431,13 @@ namespace org.GraphDefined.WWCP
             this.EVSERemoval              = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
 
             // EVSE events
-            this.SocketOutletAddition     = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
-            this.SocketOutletRemoval      = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
 
             #endregion
 
             #region Link events
 
             this._AdminStatusSchedule.OnStatusChanged += (Timestamp, EventTrackingId, StatusSchedule, OldStatus, NewStatus)
-                                                          => UpdateAdminStatus(Timestamp, OldStatus, NewStatus);
+                                                          => UpdateAdminStatus(Timestamp, EventTrackingId, OldStatus, NewStatus);
 
             // ChargingStationGroup events
             //this.OnChargingStationAddition.OnVoting       += (timestamp, evseoperator, pool, vote) => EVSEOperator.ChargingStationAddition.SendVoting      (timestamp, evseoperator, pool, vote);
@@ -480,13 +452,6 @@ namespace org.GraphDefined.WWCP
 
             this.OnEVSERemoval.            OnVoting       += (timestamp, station, evse, vote)      => Operator.EVSERemoval .           SendVoting      (timestamp, station, evse, vote);
             this.OnEVSERemoval.            OnNotification += (timestamp, station, evse)            => Operator.EVSERemoval .           SendNotification(timestamp, station, evse);
-
-            // EVSE events
-            this.SocketOutletAddition.     OnVoting       += (timestamp, evse, outlet, vote)       => Operator.SocketOutletAddition.   SendVoting      (timestamp, evse, outlet, vote);
-            this.SocketOutletAddition.     OnNotification += (timestamp, evse, outlet)             => Operator.SocketOutletAddition.   SendNotification(timestamp, evse, outlet);
-
-            this.SocketOutletRemoval.      OnVoting       += (timestamp, evse, outlet, vote)       => Operator.SocketOutletRemoval.    SendVoting      (timestamp, evse, outlet, vote);
-            this.SocketOutletRemoval.      OnNotification += (timestamp, evse, outlet)             => Operator.SocketOutletRemoval.    SendNotification(timestamp, evse, outlet);
 
             #endregion
 
@@ -637,14 +602,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
-        internal void UpdateAdminStatus(DateTime                                  Timestamp,
-                                        Timestamped<ChargingStationGroupAdminStatusType>  OldStatus,
-                                        Timestamped<ChargingStationGroupAdminStatusType>  NewStatus)
+        internal async Task UpdateAdminStatus(DateTime                                          Timestamp,
+                                              EventTracking_Id                                  EventTrackingId,
+                                              Timestamped<ChargingStationGroupAdminStatusType>  OldStatus,
+                                              Timestamped<ChargingStationGroupAdminStatusType>  NewStatus)
         {
 
-            var OnAdminStatusChangedLocal = OnAdminStatusChanged;
-            if (OnAdminStatusChangedLocal != null)
-                OnAdminStatusChangedLocal(Timestamp, this, OldStatus, NewStatus);
+            await OnAdminStatusChanged?.Invoke(Timestamp, EventTrackingId, this, OldStatus, NewStatus);
 
         }
 

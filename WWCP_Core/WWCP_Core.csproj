@@ -316,7 +316,7 @@
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\ChargingStation.cs" />
     <Compile Include="Entities\AEMobilityEntity.cs" />
     <Compile Include="Entities\IId.cs" />
-    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\ChargingStationUIFeatures.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\UIFeatures.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\EVSEStatusTypes.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\PlugTypes.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\CableType.cs" />
@@ -328,7 +328,7 @@
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingSession\ChargingSession_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationOperatorExceptions.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkExceptions.cs" />
-    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationOperatorProxy.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationOperator.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\ChargingStation_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPool\ChargingPool_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityProviderProxy.cs" />

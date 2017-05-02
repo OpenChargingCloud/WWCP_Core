@@ -15,34 +15,73 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+using System.Linq;
+using System.Collections.Generic;
+
+#endregion
+
 namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
+    /// Extention methods for current types.
+    /// </summary>
+    public static class CurrentTypesExtentions
+    {
+
+        public static CurrentTypes Reduce(this IEnumerable<CurrentTypes> EnumerationOfCurrentTypes)
+        {
+
+            var _CurrentTypes = CurrentTypes.Unspecified;
+
+            foreach (var CurrentType in EnumerationOfCurrentTypes)
+                _CurrentTypes |= CurrentType;
+
+            return _CurrentTypes;
+
+        }
+
+        public static IEnumerable<CurrentTypes> ToEnumeration(this CurrentTypes CurrentTypesEnum)
+
+            => Enum.GetValues(typeof(CurrentTypes)).
+                    Cast<CurrentTypes>().
+                    Where(flag => CurrentTypesEnum.HasFlag(flag) && flag != CurrentTypes.Unspecified);
+
+        public static IEnumerable<String> ToText(this CurrentTypes CurrentTypesEnum)
+
+            => CurrentTypesEnum.ToEnumeration().Select(item => item.ToString());
+
+    }
+
+    /// <summary>
     /// The type of the current at an EVSE.
     /// </summary>
+    [Flags]
     public enum CurrentTypes
     {
 
         /// <summary>
         /// Unknown current type.
         /// </summary>
-        Undefined,
+        Unspecified         = 0,
 
         /// <summary>
         /// AC with 1 phase.
         /// </summary>
-        AC_OnePhase,
+        AC_OnePhase         = 1,
 
         /// <summary>
         /// AC with 3 phases.
         /// </summary>
-        AC_ThreePhases,
+        AC_ThreePhases      = 2,
 
         /// <summary>
         /// Direct current.
         /// </summary>
-        DC
+        DC                  = 4
 
     }
 

@@ -43,7 +43,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The current status of the charging pool.
         /// </summary>
-        public ChargingPoolStatusType  Status      { get; }
+        public ChargingPoolStatusTypes  Status      { get; }
 
         /// <summary>
         /// The timestamp of the current status of the charging pool.
@@ -53,8 +53,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The timestamped status of the charging pool.
         /// </summary>
-        public Timestamped<ChargingPoolStatusType> Combined
-            => new Timestamped<ChargingPoolStatusType>(Timestamp, Status);
+        public Timestamped<ChargingPoolStatusTypes> Combined
+            => new Timestamped<ChargingPoolStatusTypes>(Timestamp, Status);
 
         #endregion
 
@@ -67,7 +67,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Status">The current status of the charging pool.</param>
         /// <param name="Timestamp">The timestamp of the current status of the charging pool.</param>
         public ChargingPoolStatus(ChargingPool_Id         Id,
-                                  ChargingPoolStatusType  Status,
+                                  ChargingPoolStatusTypes  Status,
                                   DateTime                Timestamp)
 
         {

@@ -44,12 +44,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The old timestamped status of the charging pool.
         /// </summary>
-        public Timestamped<ChargingPoolAdminStatusType>  OldStatus   { get; }
+        public Timestamped<ChargingPoolAdminStatusTypes>  OldStatus   { get; }
 
         /// <summary>
         /// The new timestamped status of the charging pool.
         /// </summary>
-        public Timestamped<ChargingPoolAdminStatusType>  NewStatus   { get; }
+        public Timestamped<ChargingPoolAdminStatusTypes>  NewStatus   { get; }
 
         #endregion
 
@@ -64,8 +64,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="OldStatus">The old timestamped admin status of the charging pool.</param>
         /// <param name="NewStatus">The new timestamped admin status of the charging pool.</param>
         public ChargingPoolAdminStatusUpdate(ChargingPool_Id                           Id,
-                                             Timestamped<ChargingPoolAdminStatusType>  OldStatus,
-                                             Timestamped<ChargingPoolAdminStatusType>  NewStatus)
+                                             Timestamped<ChargingPoolAdminStatusTypes>  OldStatus,
+                                             Timestamped<ChargingPoolAdminStatusTypes>  NewStatus)
 
         {
 

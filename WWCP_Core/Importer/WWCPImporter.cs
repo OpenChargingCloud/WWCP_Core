@@ -127,6 +127,11 @@ namespace org.GraphDefined.WWCP.Importer
 
         #endregion
 
+        public Boolean Get(ChargingStation_Id ChargingStationId, out ImporterForwardingInfo ImporterForwardingInfo)
+
+            => _AllForwardingInfos.TryGetValue(ChargingStationId, out ImporterForwardingInfo);
+
+
         #region ImportedData
 
         private List<Timestamped<T>> _ImportedData;
@@ -207,6 +212,16 @@ namespace org.GraphDefined.WWCP.Importer
                                                String           Message);
 
         public event OnStartedDelegate OnStarted;
+
+        #endregion
+
+        #region OnFinished
+
+        public delegate Task OnFinishedDelegate(DateTime         Timestamp,
+                                                WWCPImporter<T>  Importer,
+                                                String           Message);
+
+        public event OnFinishedDelegate OnFinished;
 
         #endregion
 
@@ -303,23 +318,6 @@ namespace org.GraphDefined.WWCP.Importer
 
 
             this.ChargingStationOperators        = ChargingStationOperators;
-            //ChargingStationOperators.ForEach(EVSEOperator => EVSEOperator.OnChargingStationAdminStatusChanged += async (Timestamp,
-            //                                                                                                            ChargingStation,
-            //                                                                                                            OldStatus,
-            //                                                                                                            NewStatus) => {
-
-            //    var fwd = AllForwardingInfos.FirstOrDefault(fwdinfo => fwdinfo.StationId == ChargingStation.Id);
-            //    if (fwd != null)
-            //    {
-
-            //        fwd.AdminStatus = ChargingStation.AdminStatus;
-
-            //        //ToDo: Store on disc after OnChargingStationAdminStatusChanged!!!
-
-            //    }
-
-            //});
-
             this.DefaultChargingStationOperator  = DefaultChargingStationOperator;
             this._AllForwardingInfos             = new Dictionary<ChargingStation_Id, ImporterForwardingInfo>();
             this._ImportedData                   = new List<Timestamped<T>>();
@@ -783,11 +781,23 @@ namespace org.GraphDefined.WWCP.Importer
                     if (!Started)
                     {
 
-                        OnStarted?.Invoke(DateTime.Now,
+                        #region Debug info
+
+                        _LastRunId = 0;
+
+                        var StartTime = DateTime.Now;
+
+                        #if DEBUG
+
+                        DebugX.Log("WWCP importer '" + Id + "' Initital import started!");
+
+                        #endif
+
+                        OnStarted?.Invoke(StartTime,
                                           this,
                                           "Importer started");
 
-                        _LastRunId = 0;
+                        #endregion
 
                         LoadForwardingDataFromFile();
 
@@ -804,7 +814,22 @@ namespace org.GraphDefined.WWCP.Importer
 
                         OnStartup (this, FirstData);
                         OnEveryRun(this, FirstData);
-                        DebugX.Log("WWCP importer '" + Id + "' Initital import finished!");
+
+                        #region Debug info
+
+                        var EndTime = DateTime.Now;
+
+                        #if DEBUG
+
+                        DebugX.Log("WWCP importer '" + Id + "' Initital import finished after " + (EndTime - StartTime).TotalSeconds + " seconds!");
+
+                        #endif
+
+                        OnFinished?.Invoke(StartTime,
+                                           this,
+                                           "Importer finished");
+
+                        #endregion
 
                         ImporterRunTimer.Change(TimeSpan.FromSeconds(1),
                                                 ImportEvery);
@@ -848,10 +873,9 @@ namespace org.GraphDefined.WWCP.Importer
 
                 #if DEBUG
 
-             //   DebugX.LogT("WWCP importer '" + Id + "' started!");
+                DebugX.LogT("WWCP importer '" + Id + "' started!");
 
-                var StopWatch = new Stopwatch();
-                StopWatch.Start();
+                var StartTime = DateTime.Now;
 
                 #endif
 
@@ -901,17 +925,17 @@ namespace org.GraphDefined.WWCP.Importer
 
                         Wait();
 
-                    #region Debug info
+                        #region Debug info
 
-                    #if DEBUG
+                        #if DEBUG
 
-                        StopWatch.Stop();
+                        var EndTime = DateTime.Now;
 
-           //             DebugX.LogT("WWCP importer '" + Id + "' finished after " + StopWatch.Elapsed.TotalSeconds + " seconds!");
+                        DebugX.LogT("WWCP importer '" + Id + "' finished after " + (EndTime - StartTime).TotalSeconds + " seconds!");
 
-                    #endif
+                        #endif
 
-                    #endregion
+                        #endregion
 
                 }
                 catch (Exception e)

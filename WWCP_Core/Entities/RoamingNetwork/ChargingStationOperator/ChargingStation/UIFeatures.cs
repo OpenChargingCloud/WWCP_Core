@@ -15,50 +15,71 @@
  * limitations under the License.
  */
 
+#region Usings
+
+using System;
+
+#endregion
+
 namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The admin status of a charging pool.
+    /// User interface features, e.g. of a charging station.
     /// </summary>
-    public enum ChargingPoolAdminStatusTypes
+    [Flags]
+    public enum UIFeatures : long
     {
 
         /// <summary>
-        /// Unclear or unknown admin status of the charging pool.
+        /// Undefined interface features.
         /// </summary>
-        Unspecified         = 0,
+        Undefined           =  0,
 
         /// <summary>
-        /// The charging pool is planned for the future.
+        /// There is a (large) screen.
         /// </summary>
-        Planned             = 1,
+        Screen              =  1,
 
         /// <summary>
-        /// The charging pool is currently in deployment, but not fully operational yet.
+        /// The is a keypad, e.g. for entering a PIN.
         /// </summary>
-        InDeployment        = 2,
+        Pinpad              =  2,
 
         /// <summary>
-        /// The charging pool is not ready for charging because it is under maintenance.
+        /// Audio feedback is available.
         /// </summary>
-        OutOfService        = 3,
+        Sound               =  4,
 
         /// <summary>
-        /// The charging pool is ready to charge.
+        /// Voice control supported.
         /// </summary>
-        Operational         = 4,
+        SpeechRecognition   =  8,
 
         /// <summary>
-        /// Private or internal use.
+        /// RFID cards will be accepted.
         /// </summary>
-        Other               = 5,
+        RFID                = 16,
 
         /// <summary>
-        /// The charging pool was not found!
-        /// (Only valid within batch-processing)
+        /// NFC control supported.
         /// </summary>
-        UnknownPool         = 6
+        NFC                 = 32,
+
+        /// <summary>
+        /// Bluetooth control supported.
+        /// </summary>
+        Bluetooth           = 64,
+
+        /// <summary>
+        /// Bluetooth low-energy beacons supported.
+        /// </summary>
+        BLEBeacons          = 128,
+
+        /// <summary>
+        /// WLAN control supported.
+        /// </summary>
+        WLAN                = 256
 
     }
 

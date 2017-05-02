@@ -40,7 +40,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id         Id          { get; }
+        public EVSE_Id          Id          { get; }
 
         /// <summary>
         /// The current status of the EVSE.
@@ -50,7 +50,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The timestamp of the current status of the EVSE.
         /// </summary>
-        public DateTime        Timestamp   { get; }
+        public DateTime         Timestamp   { get; }
 
         /// <summary>
         /// The timestamped status of the EVSE.

@@ -27,7 +27,7 @@ using System;
 namespace org.GraphDefined.WWCP
 {
 
-    public class ChargingPoolAdminStatusDiff : StatusDiff<ChargingPool_Id, ChargingPoolAdminStatusType>
+    public class ChargingPoolAdminStatusDiff : StatusDiff<ChargingPool_Id, ChargingPoolAdminStatusTypes>
     {
 
         #region StatusDiff(Timestamp, EVSEOperatorId, EVSEOperatorName = null)
@@ -61,8 +61,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSEOperatorName">The optional internationalized name of the Charging Station Operator.</param>
         public ChargingPoolAdminStatusDiff(DateTime                                                                 Timestamp,
                                            ChargingStationOperator_Id                                                          EVSEOperatorId,
-                                           IEnumerable<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>  NewStatus,
-                                           IEnumerable<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>  ChangedStatus,
+                                           IEnumerable<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusTypes>>  NewStatus,
+                                           IEnumerable<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusTypes>>  ChangedStatus,
                                            IEnumerable<ChargingPool_Id>                                             RemovedIds,
                                            I18NString                                                               EVSEOperatorName = null)
 
