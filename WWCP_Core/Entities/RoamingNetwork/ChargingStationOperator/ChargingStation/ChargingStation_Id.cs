@@ -406,7 +406,9 @@ namespace org.GraphDefined.WWCP
         public static ChargingStation_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out ChargingStation_Id ChargingStationId))
+            ChargingStation_Id ChargingStationId;
+
+            if (TryParse(Text, out ChargingStationId))
                 return ChargingStationId;
 
             return null;

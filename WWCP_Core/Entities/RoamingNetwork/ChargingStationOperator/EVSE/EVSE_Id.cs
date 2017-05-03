@@ -241,7 +241,9 @@ namespace org.GraphDefined.WWCP
         public static EVSE_Id? TryParse(String Text)
         {
 
-            if (TryParse(Text, out EVSE_Id EVSEId))
+            EVSE_Id EVSEId;
+
+            if (TryParse(Text, out EVSEId))
                 return EVSEId;
 
             return null;
