@@ -30,4 +30,18 @@ namespace org.GraphDefined.WWCP
     public interface IId : IComparable
     { }
 
+    /// <summary>
+    /// The common interface of a datastructure used as an unique identification.
+    /// </summary>
+    public interface IId<T> : IComparable<T>,
+                              IComparable
+    {
+
+        /// <summary>
+        /// The unique identification of the data structure.
+        /// </summary>
+        T Id { get; }
+
+    }
+
 }

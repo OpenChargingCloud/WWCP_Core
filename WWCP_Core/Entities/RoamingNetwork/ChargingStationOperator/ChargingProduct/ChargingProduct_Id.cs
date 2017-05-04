@@ -19,6 +19,8 @@
 
 using System;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 #endregion
 
 namespace org.GraphDefined.WWCP
@@ -89,8 +91,46 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Text">A text representation of a charging product identification.</param>
         public static ChargingProduct_Id Parse(String Text)
+        {
 
-            => new ChargingProduct_Id(Text);
+            if (Text == null || Text.Trim().IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Text), "The given charging product identification must not be null or empty!");
+
+            return new ChargingProduct_Id(Text);
+
+        }
+
+        #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Parse the given string as a charging product identification.
+        /// </summary>
+        /// <param name="Text">A text representation of a charging product identification.</param>
+        public static ChargingProduct_Id? TryParse(String Text)
+        {
+
+            if (Text != null &&
+                Text.Trim().IsNotNullOrEmpty())
+            {
+
+                try
+                {
+
+                    return new ChargingProduct_Id(Text);
+
+                }
+#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
+                catch (Exception)
+#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
+                { }
+
+            }
+
+            return default(ChargingProduct_Id);
+
+        }
 
         #endregion
 
@@ -103,19 +143,29 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingProductId">The parsed charging product identification.</param>
         public static Boolean TryParse(String Text, out ChargingProduct_Id ChargingProductId)
         {
-            try
+
+            if (Text != null &&
+                Text.Trim().IsNotNullOrEmpty())
             {
 
-                ChargingProductId = new ChargingProduct_Id(Text);
+                try
+                {
 
-                return true;
+                    ChargingProductId = new ChargingProduct_Id(Text);
+
+                    return true;
+
+                }
+#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
+                catch (Exception)
+#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
+                { }
 
             }
-            catch (Exception)
-            {
-                ChargingProductId = default(ChargingProduct_Id);
-                return false;
-            }
+
+            ChargingProductId = default(ChargingProduct_Id);
+            return false;
+
         }
 
         #endregion

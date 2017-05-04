@@ -38,90 +38,35 @@ namespace org.GraphDefined.WWCP
     /// This is meant to be one electrical circuit which can charge a electric vehicle
     /// independently. Thus there could be multiple interdependent power sockets.
     /// </summary>
-    public class Brand : AEMobilityEntity<Brand_Id>,
-                         IEquatable<Brand>, IComparable<Brand>, IComparable
+    public class Brand : IId<Brand_Id>,
+                         IEquatable<Brand>,
+                         IComparable<Brand>
 
     {
 
         #region Properties
 
-        #region Name
-
-        private I18NString _Name;
+        /// <summary>
+        /// The unique identification of the brand.
+        /// </summary>
+        public Brand_Id    Id          { get; }
 
         /// <summary>
         /// The multi-language brand name.
         /// </summary>
-        [Mandatory]
-        public I18NString Name
-        {
-
-            get
-            {
-                return _Name;
-            }
-
-            set
-            {
-                if (_Name != value)
-                    SetProperty<I18NString>(ref _Name, value);
-            }
-
-        }
-
-        #endregion
-
-        #region LogoURI
-
-        private String _LogoURI;
+        public I18NString  Name        { get; }
 
         /// <summary>
-        /// An URI to the logo of this brand.
+        /// The optional URI of the logo of this brand.
         /// </summary>
         [Optional]
-        public String LogoURI
-        {
-
-            get
-            {
-                return _LogoURI;
-            }
-
-            set
-            {
-                if (_LogoURI != value)
-                    SetProperty<String>(ref _LogoURI, value);
-            }
-
-        }
-
-        #endregion
-
-        #region Homepage
-
-        private String _Homepage;
+        public String      LogoURI     { get; }
 
         /// <summary>
         /// The homepage of this brand.
         /// </summary>
         [Optional]
-        public String Homepage
-        {
-
-            get
-            {
-                return _Homepage;
-            }
-
-            set
-            {
-                if (_Homepage != value)
-                    SetProperty<String>(ref _Homepage, value);
-            }
-
-        }
-
-        #endregion
+        public String      Homepage    { get; }
 
         #endregion
 
@@ -132,27 +77,25 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of this brand.</param>
         /// <param name="Name">The multi-language brand name.</param>
-        /// <param name="Logo">The logo of this brand.</param>
-        /// <param name="Homepage">The homepage of this brand.</param>
+        /// <param name="Logo">An optional logo of this brand.</param>
+        /// <param name="Homepage">An optional homepage of this brand.</param>
         public Brand(Brand_Id    Id,
                      I18NString  Name,
                      String      Logo     = null,
                      String      Homepage = null)
-
-            : base(Id)
-
         {
 
             #region Initial checks
 
-            if (Name == null || !Name.Any())
-                throw new ArgumentNullException("Name", "The given brand name must not be null or empty!");
+            if (Name.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(Name), "The given brand name must not be null or empty!");
 
             #endregion
 
-            this._Name      = Name;
-            this._LogoURI   = Logo;
-            this._Homepage  = Homepage;
+            this.Id        = Id;
+            this.Name      = Name;
+            this.LogoURI   = Logo;
+            this.Homepage  = Homepage;
 
         }
 
@@ -179,6 +122,24 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentException("The given object is not a brand!");
 
             return CompareTo(Brand);
+
+        }
+
+        #endregion
+
+        #region CompareTo(BrandId)
+
+        /// <summary>
+        /// Compares this brand to another brand identification.
+        /// </summary>
+        /// <param name="BrandId">Another brand identification to compare with.</param>
+        public Int32 CompareTo(Brand_Id BrandId)
+        {
+
+            if ((Object) BrandId == null)
+                throw new ArgumentNullException(nameof(BrandId),  "The given brand identification must not be null!");
+
+            return Id.CompareTo(BrandId);
 
         }
 
@@ -225,6 +186,25 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             return this.Equals(Brand);
+
+        }
+
+        #endregion
+
+        #region Equals(BrandId)
+
+        /// <summary>
+        /// Compares two this brand to another brand identification for equality.
+        /// </summary>
+        /// <param name="BrandId">An brand identification to compare with.</param>
+        /// <returns>True if both match; False otherwise.</returns>
+        public Boolean Equals(Brand_Id BrandId)
+        {
+
+            if ((Object) BrandId == null)
+                return false;
+
+            return Id.Equals(BrandId);
 
         }
 

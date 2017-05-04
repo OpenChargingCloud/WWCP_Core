@@ -324,4 +324,276 @@ namespace org.GraphDefined.WWCP
 
     }
 
+    public class SpecialHashSet<THost, TId, T> : IEnumerable<T>
+
+        where T   : IId<TId>
+        where TId : IId
+
+    {
+
+        #region Data
+
+        private readonly THost               _Host;
+
+        private readonly Dictionary<TId, T>  _Lookup;
+
+        private readonly Object              Lock = new Object();
+
+        #endregion
+
+        #region Events
+
+        private readonly IVotingNotificator<DateTime, THost, T, Boolean> _Addition;
+
+        /// <summary>
+        /// Called whenever a parking operator will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, THost, T, Boolean> OnAddition
+            => _Addition;
+
+
+        private readonly IVotingNotificator<DateTime, THost, T, Boolean> _Removal;
+
+        /// <summary>
+        /// Called whenever a parking operator will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, THost, T, Boolean> OnRemoval
+            => _Removal;
+
+        #endregion
+
+        #region Constructor(s)
+
+        public SpecialHashSet(THost Host)
+        {
+
+            this._Host           = Host;
+            this._Lookup         = new Dictionary<TId, T>();
+
+            this._Addition       = new VotingNotificator<DateTime, THost, T, Boolean>(() => new VetoVote(), true);
+            this._Removal        = new VotingNotificator<DateTime, THost, T, Boolean>(() => new VetoVote(), true);
+
+        }
+
+        #endregion
+
+
+        #region ContainsId(...)
+
+        public Boolean ContainsId(TId Id)
+            => _Lookup.ContainsKey(Id);
+
+        #endregion
+
+        #region Contains(...)
+
+        public Boolean Contains(T Entity)
+            => _Lookup.ContainsValue(Entity);
+
+        #endregion
+
+        #region TryAdd(Entity, ...)
+
+        public Boolean TryAdd(T Entity)
+        {
+
+            lock (Lock)
+            {
+
+                if (_Addition.SendVoting(DateTime.Now, _Host, Entity))
+                {
+
+                    _Lookup.Add(Entity.Id, Entity);
+
+                    _Addition.SendNotification(DateTime.Now, _Host, Entity);
+
+                    return true;
+
+                }
+
+                return false;
+
+            }
+
+        }
+
+        public Boolean TryAdd(T          Entity,
+                              Action<T>  OnSuccess)
+        {
+
+            lock (Lock)
+            {
+
+                if (TryAdd(Entity))
+                {
+
+                    OnSuccess?.Invoke(Entity);
+
+                    return true;
+
+                }
+
+                return false;
+
+            }
+
+        }
+
+        public Boolean TryAdd(T                    Entity,
+                              Action<DateTime, T>  OnSuccess)
+        {
+
+            lock (Lock)
+            {
+
+                if (TryAdd(Entity))
+                {
+
+                    OnSuccess?.Invoke(DateTime.Now, Entity);
+
+                    return true;
+
+                }
+
+                return false;
+
+            }
+
+        }
+
+        public Boolean TryAdd(T                           Entity,
+                              Action<DateTime, THost, T>  OnSuccess)
+        {
+
+            lock (Lock)
+            {
+
+                if (TryAdd(Entity))
+                {
+
+                    OnSuccess?.Invoke(DateTime.Now, _Host, Entity);
+
+                    return true;
+
+                }
+
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region Get(Id)
+
+        public T GetById(TId Id)
+        {
+
+            lock (Lock)
+            {
+
+                T _Entity;
+
+                if (_Lookup.TryGetValue(Id, out _Entity))
+                    return _Entity;
+
+                return default(T);
+
+            }
+
+        }
+
+        #endregion
+
+        #region TryGet(Id, out Entity)
+
+        public Boolean TryGet(TId Id, out T Entity)
+        {
+
+            lock (Lock)
+            {
+
+                if (_Lookup.TryGetValue(Id, out Entity))
+                    return true;
+
+                Entity = default(T);
+
+                return false;
+
+            }
+
+        }
+
+        #endregion
+
+        #region TryRemove(Id, out Entity)
+
+        public Boolean TryRemove(TId Id, out T Entity)
+        {
+
+            if (_Lookup.TryGetValue(Id, out Entity))
+            {
+
+                _Lookup.Remove(Id);
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        #endregion
+
+        #region Remove(...)
+
+        public T Remove(TId Id)
+        {
+
+            T _Entity = default(T);
+
+            if (_Lookup.TryGetValue(Id, out _Entity))
+            {
+
+                _Lookup.Remove(Id);
+
+                return _Entity;
+
+            }
+
+            return default(T);
+
+        }
+
+        public void Remove(T Entity)
+        {
+
+            if (_Lookup.TryGetValue(Entity.Id, out Entity))
+            {
+
+                _Lookup.Remove(Entity.Id);
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region IEnumerable<T> Members
+
+        public IEnumerator<T> GetEnumerator()
+
+            => _Lookup.Select(_ => _.Value).GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator()
+
+            => _Lookup.Select(_ => _.Value).GetEnumerator();
+
+        #endregion
+
+    }
+
 }

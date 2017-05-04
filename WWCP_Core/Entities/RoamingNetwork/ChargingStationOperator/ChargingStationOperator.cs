@@ -505,8 +505,10 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._ChargingPools               = new EntityHashSet<ChargingStationOperator, ChargingPool_Id,         ChargingPool>(this);
-            this._ChargingStationGroups       = new EntityHashSet<ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
+            this._Brands                      = new SpecialHashSet<ChargingStationOperator, Brand_Id,                Brand>               (this);
+
+            this._ChargingPools               = new EntityHashSet <ChargingStationOperator, ChargingPool_Id,         ChargingPool>        (this);
+            this._ChargingStationGroups       = new EntityHashSet <ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
 
             this._AdminStatusSchedule         = new StatusSchedule<ChargingStationOperatorAdminStatusType>(MaxAdminStatusListSize);
             this._AdminStatusSchedule.Insert(InitialAdminStatus.Value);
@@ -523,23 +525,20 @@ namespace org.GraphDefined.WWCP
 
             #region Init events
 
-            // Charging Station Operator events
+            this.BrandAddition                 = new VotingNotificator<DateTime, ChargingStationOperator,    Brand,                Boolean>(() => new VetoVote(), true);
+            this.BrandRemoval                  = new VotingNotificator<DateTime, ChargingStationOperator,    Brand,                Boolean>(() => new VetoVote(), true);
+
             this.ChargingPoolAddition          = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
             this.ChargingPoolRemoval           = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
 
-            // Charging station group events
             this.ChargingStationGroupAddition  = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
             this.ChargingStationGroupRemoval   = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
 
-            // Charging pool events
-            this.ChargingStationAddition       = new VotingNotificator<DateTime, ChargingPool,    ChargingStation,      Boolean>(() => new VetoVote(), true);
-            this.ChargingStationRemoval        = new VotingNotificator<DateTime, ChargingPool,    ChargingStation,      Boolean>(() => new VetoVote(), true);
+            this.ChargingStationAddition       = new VotingNotificator<DateTime, ChargingPool,               ChargingStation,      Boolean>(() => new VetoVote(), true);
+            this.ChargingStationRemoval        = new VotingNotificator<DateTime, ChargingPool,               ChargingStation,      Boolean>(() => new VetoVote(), true);
 
-            // Charging station events
-            this.EVSEAddition                  = new VotingNotificator<DateTime, ChargingStation, EVSE,                 Boolean>(() => new VetoVote(), true);
-            this.EVSERemoval                   = new VotingNotificator<DateTime, ChargingStation, EVSE,                 Boolean>(() => new VetoVote(), true);
-
-            // EVSE events
+            this.EVSEAddition                  = new VotingNotificator<DateTime, ChargingStation,            EVSE,                 Boolean>(() => new VetoVote(), true);
+            this.EVSERemoval                   = new VotingNotificator<DateTime, ChargingStation,            EVSE,                 Boolean>(() => new VetoVote(), true);
 
             #endregion
 
@@ -734,6 +733,167 @@ namespace org.GraphDefined.WWCP
             return this;
 
         }
+
+        #endregion
+
+        #region Brands
+
+        #region BrandAddition
+
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, Brand, Boolean> BrandAddition;
+
+        /// <summary>
+        /// Called whenever a brand will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStationOperator, Brand, Boolean> OnBrandAddition
+
+            => BrandAddition;
+
+        #endregion
+
+        #region BrandRemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, Brand, Boolean> BrandRemoval;
+
+        /// <summary>
+        /// Called whenever a brand will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStationOperator, Brand, Boolean> OnBrandRemoval
+
+            => BrandRemoval;
+
+        #endregion
+
+
+        #region Brands
+
+        private readonly SpecialHashSet<ChargingStationOperator, Brand_Id, Brand> _Brands;
+
+        /// <summary>
+        /// All brands registered within this charging station operator.
+        /// </summary>
+        public IEnumerable<Brand> Brands
+
+            => _Brands;
+
+        #endregion
+
+        #region CreateBrand     (Id, Name, Logo = null, Homepage = null, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create and register a new brand having the given
+        /// unique brand identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of this brand.</param>
+        /// <param name="Name">The multi-language brand name.</param>
+        /// <param name="Logo">An optional logo of this brand.</param>
+        /// <param name="Homepage">An optional homepage of this brand.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the brand failed.</param>
+        public Brand CreateBrand(Brand_Id                                   Id,
+                                 I18NString                                 Name,
+                                 String                                     Logo        = null,
+                                 String                                     Homepage    = null,
+
+                                 Action<Brand>                              OnSuccess   = null,
+                                 Action<ChargingStationOperator, Brand_Id>  OnError     = null)
+
+        {
+
+            #region Initial checks
+
+            if (_Brands.ContainsId(Id))
+            {
+
+                if (OnError != null)
+                    OnError?.Invoke(this, Id);
+
+                else
+                    throw new BrandAlreadyExists(this, Id);
+
+            }
+
+            #endregion
+
+            var _Brand = new Brand(Id,
+                                   Name,
+                                   Logo,
+                                   Homepage);
+
+
+            if (BrandAddition.SendVoting(DateTime.Now, this, _Brand))
+            {
+                if (_Brands.TryAdd(_Brand))
+                {
+
+                    OnSuccess?.Invoke(_Brand);
+                    BrandAddition.SendNotification(DateTime.Now, this, _Brand);
+                    return _Brand;
+
+                }
+            }
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region GetOrCreateBrand(Id, Name, Logo = null, Homepage = null, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Get or create and register a new brand having the given
+        /// unique brand identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of this brand.</param>
+        /// <param name="Name">The multi-language brand name.</param>
+        /// <param name="Logo">An optional logo of this brand.</param>
+        /// <param name="Homepage">An optional homepage of this brand.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the brand failed.</param>
+        public Brand GetOrCreateBrand(Brand_Id                                   Id,
+                                      I18NString                                 Name,
+                                      String                                     Logo        = null,
+                                      String                                     Homepage    = null,
+
+                                      Action<Brand>                              OnSuccess   = null,
+                                      Action<ChargingStationOperator, Brand_Id>  OnError     = null)
+
+        {
+
+            Brand _Brand;
+
+            if (_Brands.TryGet(Id, out _Brand))
+                return _Brand;
+
+            return CreateBrand(Id,
+                               Name,
+                               Logo,
+                               Homepage,
+
+                               OnSuccess,
+                               OnError);
+
+        }
+
+        #endregion
+
+
+        #region TryGetBrand(Id, out Brand)
+
+        /// <summary>
+        /// Try to return the brand of the given brand identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the brand.</param>
+        /// <param name="Brand">The brand.</param>
+        public Boolean TryGetBrand(Brand_Id   Id,
+                                   out Brand  Brand)
+
+            => _Brands.TryGet(Id, out Brand);
+
+        #endregion
 
         #endregion
 
@@ -1623,7 +1783,7 @@ namespace org.GraphDefined.WWCP
         internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingStationGroup, Boolean> ChargingStationGroupRemoval;
 
         /// <summary>
-        /// Called whenever an charging station group will be or was removed.
+        /// Called whenever a charging station group will be or was removed.
         /// </summary>
         public IVotingSender<DateTime, ChargingStationOperator, ChargingStationGroup, Boolean> OnChargingStationGroupRemoval
 
@@ -1637,7 +1797,7 @@ namespace org.GraphDefined.WWCP
         private readonly EntityHashSet<ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup> _ChargingStationGroups;
 
         /// <summary>
-        /// All charging station groups registered within this Charging Station Operator.
+        /// All charging station groups registered within this charging station operator.
         /// </summary>
         public IEnumerable<ChargingStationGroup> ChargingStationGroups
 
@@ -1684,7 +1844,7 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (IEnumerableExtensions.IsNullOrEmpty(Name))
+            if (Name.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Name), "The name of the charging station group must not be null or empty!");
 
             if (_ChargingStationGroups.ContainsId(Id))

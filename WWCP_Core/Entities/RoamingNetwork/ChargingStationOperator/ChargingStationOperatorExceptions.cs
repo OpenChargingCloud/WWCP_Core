@@ -125,4 +125,24 @@ namespace org.GraphDefined.WWCP
     #endregion
 
 
+    #region BrandAlreadyExists
+
+    /// <summary>
+    /// An exception thrown whenever a brand already exists within the given charging station operator.
+    /// </summary>
+    public class BrandAlreadyExists : ChargingStationOperatorException
+    {
+
+        public BrandAlreadyExists(ChargingStationOperator  ChargingStationOperator,
+                                  Brand_Id                 BrandId)
+
+            : base(ChargingStationOperator.RoamingNetwork,
+                   "The given brand identification '" + BrandId + "' already exists within the given '" + ChargingStationOperator.Id + "' charging station operator!")
+
+        { }
+
+    }
+
+    #endregion
+
 }
