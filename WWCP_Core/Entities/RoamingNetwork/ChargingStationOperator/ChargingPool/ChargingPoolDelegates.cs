@@ -57,9 +57,9 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargingPool">The updated charging pool.</param>
     /// <param name="OldStatus">The old timestamped status of the charging pool.</param>
     /// <param name="NewStatus">The new timestamped status of the charging pool.</param>
-    public delegate Task OnChargingPoolAdminStatusChangedDelegate(DateTime                                  Timestamp,
-                                                                  EventTracking_Id                          EventTrackingId,
-                                                                  ChargingPool                              ChargingPool,
+    public delegate Task OnChargingPoolAdminStatusChangedDelegate(DateTime                                   Timestamp,
+                                                                  EventTracking_Id                           EventTrackingId,
+                                                                  ChargingPool                               ChargingPool,
                                                                   Timestamped<ChargingPoolAdminStatusTypes>  OldStatus,
                                                                   Timestamped<ChargingPoolAdminStatusTypes>  NewStatus);
 
@@ -72,9 +72,9 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargingPool">The updated charging pool.</param>
     /// <param name="OldStatus">The old timestamped status of the charging pool.</param>
     /// <param name="NewStatus">The new timestamped status of the charging pool.</param>
-    public delegate Task OnChargingPoolStatusChangedDelegate(DateTime                             Timestamp,
-                                                             EventTracking_Id                     EventTrackingId,
-                                                             ChargingPool                         ChargingPool,
+    public delegate Task OnChargingPoolStatusChangedDelegate(DateTime                              Timestamp,
+                                                             EventTracking_Id                      EventTrackingId,
+                                                             ChargingPool                          ChargingPool,
                                                              Timestamped<ChargingPoolStatusTypes>  OldStatus,
                                                              Timestamped<ChargingPoolStatusTypes>  NewStatus);
 
