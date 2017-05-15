@@ -37,9 +37,9 @@ namespace org.GraphDefined.WWCP
         #region Properties
 
         /// <summary>
-        /// The unique identification of the EVSE.
+        /// The EVSE.
         /// </summary>
-        public EVSE_Id                      Id          { get; }
+        public EVSE                          EVSE        { get; }
 
         /// <summary>
         /// The old timestamped status of the EVSE.
@@ -55,21 +55,21 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region EVSEStatusUpdate(Id, OldStatus, NewStatus)
+        #region EVSEStatusUpdate(EVSE, OldStatus, NewStatus)
 
         /// <summary>
         /// Create a new EVSE status update.
         /// </summary>
-        /// <param name="Id">The unique identification of the EVSE.</param>
+        /// <param name="EVSE">The EVSE.</param>
         /// <param name="OldStatus">The old timestamped status of the EVSE.</param>
         /// <param name="NewStatus">The new timestamped status of the EVSE.</param>
-        public EVSEStatusUpdate(EVSE_Id                      Id,
+        public EVSEStatusUpdate(EVSE                          EVSE,
                                 Timestamped<EVSEStatusTypes>  OldStatus,
                                 Timestamped<EVSEStatusTypes>  NewStatus)
 
         {
 
-            this.Id         = Id;
+            this.EVSE       = EVSE;
             this.OldStatus  = OldStatus;
             this.NewStatus  = NewStatus;
 
@@ -77,21 +77,21 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEStatusUpdate(Id, OldStatus, NewStatus)
+        #region EVSEStatusUpdate(EVSE, OldStatus, NewStatus)
 
         /// <summary>
         /// Create a new EVSE status update.
         /// </summary>
-        /// <param name="Id">The unique identification of the EVSE.</param>
+        /// <param name="EVSE">The EVSE.</param>
         /// <param name="OldStatus">The old timestamped status of the EVSE.</param>
         /// <param name="NewStatus">The new timestamped status of the EVSE.</param>
-        public EVSEStatusUpdate(EVSE_Id     Id,
+        public EVSEStatusUpdate(EVSE        EVSE,
                                 EVSEStatus  OldStatus,
                                 EVSEStatus  NewStatus)
 
         {
 
-            this.Id         = Id;
+            this.EVSE       = EVSE;
             this.OldStatus  = OldStatus.Combined;
             this.NewStatus  = NewStatus.Combined;
 
@@ -110,7 +110,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">An EVSE.</param>
         public static EVSEStatusUpdate Snapshot(EVSE EVSE)
 
-            => new EVSEStatusUpdate(EVSE.Id,
+            => new EVSEStatusUpdate(EVSE,
                                     EVSE.Status,
                                     EVSE.StatusSchedule().Skip(1).FirstOrDefault());
 
@@ -262,7 +262,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException(nameof(EVSEStatusUpdate), "The given EVSE status update must not be null!");
 
             // Compare EVSE Ids
-            var _Result = Id.CompareTo(EVSEStatusUpdate.Id);
+            var _Result = EVSE.CompareTo(EVSEStatusUpdate.EVSE);
 
             // If equal: Compare the new EVSE status
             if (_Result == 0)
@@ -317,7 +317,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) EVSEStatusUpdate == null)
                 return false;
 
-            return Id.       Equals(EVSEStatusUpdate.Id)        &&
+            return EVSE.     Equals(EVSEStatusUpdate.EVSE)      &&
                    OldStatus.Equals(EVSEStatusUpdate.OldStatus) &&
                    NewStatus.Equals(EVSEStatusUpdate.NewStatus);
 
@@ -338,7 +338,7 @@ namespace org.GraphDefined.WWCP
             unchecked
             {
 
-                return Id.       GetHashCode() * 7 ^
+                return EVSE.     GetHashCode() * 7 ^
                        OldStatus.GetHashCode() * 5 ^
                        NewStatus.GetHashCode();
 
@@ -354,12 +354,13 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Id, ": ",
+            => String.Concat(EVSE.Id, ": ",
                              OldStatus,
                              " -> ",
                              NewStatus);
 
         #endregion
+
 
     }
 

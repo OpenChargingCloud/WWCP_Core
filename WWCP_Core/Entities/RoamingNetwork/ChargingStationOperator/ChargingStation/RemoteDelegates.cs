@@ -47,17 +47,11 @@ namespace org.GraphDefined.WWCP
     /// <param name="PropertyName">The name of the changed property.</param>
     /// <param name="OldValue">The old value of the changed property.</param>
     /// <param name="NewValue">The new value of the changed property.</param>
-    public delegate void OnRemoteChargingStationDataChangedDelegate(DateTime Timestamp, IRemoteChargingStation ChargingStation, String PropertyName, Object OldValue, Object NewValue);
-
-    /// <summary>
-    /// A delegate called whenever the dynamic status of the charging station changed.
-    /// </summary>
-    /// <param name="Timestamp">The timestamp when this change was detected.</param>
-    /// <param name="ChargingStation">The charging station.</param>
-    /// <param name="OldEVSEStatus">The old timestamped status of the charging station.</param>
-    /// <param name="NewEVSEStatus">The new timestamped status of the charging station.</param>
-    public delegate void OnRemoteChargingStationStatusChangedDelegate(DateTime Timestamp, IRemoteChargingStation ChargingStation, Timestamped<ChargingStationStatusTypes> OldEVSEStatus, Timestamped<ChargingStationStatusTypes> NewEVSEStatus);
-
+    public delegate void OnRemoteChargingStationDataChangedDelegate(DateTime                Timestamp,
+                                                                    IRemoteChargingStation  ChargingStation,
+                                                                    String                  PropertyName,
+                                                                    Object                  OldValue,
+                                                                    Object                  NewValue);
 
     /// <summary>
     /// A delegate called whenever the admin status of the charging station changed.
@@ -66,9 +60,23 @@ namespace org.GraphDefined.WWCP
     /// <param name="ChargingStation">The charging station.</param>
     /// <param name="OldEVSEStatus">The old timestamped status of the charging station.</param>
     /// <param name="NewEVSEStatus">The new timestamped status of the charging station.</param>
-    public delegate void OnRemoteChargingStationAdminStatusChangedDelegate(DateTime Timestamp, IRemoteChargingStation ChargingStation, Timestamped<ChargingStationAdminStatusTypes> OldEVSEStatus, Timestamped<ChargingStationAdminStatusTypes> NewEVSEStatus);
+    public delegate void OnRemoteChargingStationAdminStatusChangedDelegate(DateTime                                      Timestamp,
+                                                                           EventTracking_Id                              EventTrackingId,
+                                                                           IRemoteChargingStation                        RemoteChargingStation,
+                                                                           Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
+                                                                           Timestamped<ChargingStationAdminStatusTypes>  NewStatus);
 
-
-
+    /// <summary>
+    /// A delegate called whenever the dynamic status of the charging station changed.
+    /// </summary>
+    /// <param name="Timestamp">The timestamp when this change was detected.</param>
+    /// <param name="ChargingStation">The charging station.</param>
+    /// <param name="OldEVSEStatus">The old timestamped status of the charging station.</param>
+    /// <param name="NewEVSEStatus">The new timestamped status of the charging station.</param>
+    public delegate void OnRemoteChargingStationStatusChangedDelegate(DateTime                                 Timestamp,
+                                                                      EventTracking_Id                         EventTrackingId,
+                                                                      IRemoteChargingStation                   RemoteChargingStation,
+                                                                      Timestamped<ChargingStationStatusTypes>  OldStatus,
+                                                                      Timestamped<ChargingStationStatusTypes>  NewStatus);
 
 }

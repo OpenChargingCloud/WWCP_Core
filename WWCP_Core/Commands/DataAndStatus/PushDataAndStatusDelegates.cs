@@ -24,10 +24,13 @@ using System;
 namespace org.GraphDefined.WWCP
 {
 
-    public delegate Boolean IncludeEVSEDelegate           (EVSE             EVSE);
+    public delegate Boolean IncludeEVSEIdDelegate           (EVSE_Id             EVSEId);
+    public delegate Boolean IncludeEVSEDelegate             (EVSE                EVSE);
 
-    public delegate Boolean IncludeChargingStationDelegate(ChargingStation  ChargingStation);
+    public delegate Boolean IncludeChargingStationIdDelegate(ChargingStation_Id  ChargingStationId);
+    public delegate Boolean IncludeChargingStationDelegate  (ChargingStation     ChargingStation);
 
-    public delegate Boolean IncludeChargingPoolDelegate   (ChargingPool     ChargingPool);
+    public delegate Boolean IncludeChargingPoolIdDelegate   (ChargingPool_Id     ChargingPoolId);
+    public delegate Boolean IncludeChargingPoolDelegate     (ChargingPool        ChargingPool);
 
 }

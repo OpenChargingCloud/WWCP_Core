@@ -1617,18 +1617,11 @@ namespace org.GraphDefined.WWCP
                     if (RemoteChargingStation != null)
                     {
 
-                        _EVSE.OnStatusChanged                    += async (Timestamp, EventTrackingId, EVSE,   OldStatus, NewStatus) => _EVSE.RemoteEVSE.Status           = NewStatus;
-                        _EVSE.OnAdminStatusChanged               += async (Timestamp, EventTrackingId, EVSE,   OldStatus, NewStatus) => _EVSE.RemoteEVSE.AdminStatus      = NewStatus;
-                        _EVSE.OnNewReservation                   += (Timestamp, Sender, Reservation)                => _EVSE.RemoteEVSE.Reservation      = Reservation;
-                        //_EVSE.OnReservationCancelled             += (Timestamp, Sender, Reservation, ReservationCancellation) => _EVSE.RemoteEVSE.Send
-                        _EVSE.OnNewChargingSession               += (Timestamp, Sender, ChargingSession)            => _EVSE.RemoteEVSE.ChargingSession  = ChargingSession;
+                        OnAdminStatusChanged               += async (Timestamp, EventTrackingId, station, oldstatus, newstatus) => this.AdminStatus      = newstatus;
+                        OnStatusChanged                    += async (Timestamp, EventTrackingId, station, oldstatus, newstatus) => this.Status           = newstatus;
 
-                        _EVSE.RemoteEVSE.OnStatusChanged         += async (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)   => _EVSE.Status                      = NewStatus;
-                        _EVSE.RemoteEVSE.OnAdminStatusChanged    += async (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)   => _EVSE.AdminStatus                 = NewStatus;
-                        _EVSE.RemoteEVSE.OnNewReservation        += (Timestamp, RemoteEVSE, Reservation)            => _EVSE.Reservation                 = Reservation;
-                        _EVSE.RemoteEVSE.OnReservationCancelled  += _EVSE.SendOnReservationCancelled;
-                        _EVSE.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession)        => _EVSE.ChargingSession             = ChargingSession;
-                        _EVSE.RemoteEVSE.OnNewChargeDetailRecord += (Timestamp, RemoteEVSE, ChargeDetailRecord)     => _EVSE.SendNewChargeDetailRecord(Timestamp, RemoteEVSE, ChargeDetailRecord);
+                        this.RemoteChargingStation.OnAdminStatusChanged    += async (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)  => AdminStatus                 = NewStatus;
+                        this.RemoteChargingStation.OnStatusChanged         += async (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)  => Status                      = NewStatus;
 
                         //RemoteConfigurator?.Invoke(_EVSE.RemoteEVSE);
 

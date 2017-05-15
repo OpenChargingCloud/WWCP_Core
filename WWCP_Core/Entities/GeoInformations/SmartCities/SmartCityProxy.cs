@@ -773,11 +773,12 @@ namespace org.GraphDefined.WWCP
         async Task<Acknowledgement>
 
             ISendData.SetStaticData(IEnumerable<EVSE>   EVSEs,
+                                    TransmissionTypes   TransmissionType,
 
-                                          DateTime?           Timestamp,
-                                          CancellationToken?  CancellationToken,
-                                          EventTracking_Id    EventTrackingId,
-                                          TimeSpan?           RequestTimeout)
+                                    DateTime?           Timestamp,
+                                    CancellationToken?  CancellationToken,
+                                    EventTracking_Id    EventTrackingId,
+                                    TimeSpan?           RequestTimeout)
 
         {
 
@@ -808,11 +809,12 @@ namespace org.GraphDefined.WWCP
         async Task<Acknowledgement>
 
             ISendData.AddStaticData(IEnumerable<EVSE>   EVSEs,
+                                    TransmissionTypes   TransmissionType,
 
-                                          DateTime?           Timestamp,
-                                          CancellationToken?  CancellationToken,
-                                          EventTracking_Id    EventTrackingId,
-                                          TimeSpan?           RequestTimeout)
+                                    DateTime?           Timestamp,
+                                    CancellationToken?  CancellationToken,
+                                    EventTracking_Id    EventTrackingId,
+                                    TimeSpan?           RequestTimeout)
 
         {
 
@@ -843,11 +845,12 @@ namespace org.GraphDefined.WWCP
         async Task<Acknowledgement>
 
             ISendData.UpdateStaticData(IEnumerable<EVSE>   EVSEs,
+                                       TransmissionTypes   TransmissionType,
 
-                                             DateTime?           Timestamp,
-                                             CancellationToken?  CancellationToken,
-                                             EventTracking_Id    EventTrackingId,
-                                             TimeSpan?           RequestTimeout)
+                                       DateTime?           Timestamp,
+                                       CancellationToken?  CancellationToken,
+                                       EventTracking_Id    EventTrackingId,
+                                       TimeSpan?           RequestTimeout)
 
         {
 
@@ -878,11 +881,12 @@ namespace org.GraphDefined.WWCP
         async Task<Acknowledgement>
 
             ISendData.DeleteStaticData(IEnumerable<EVSE>   EVSEs,
+                                       TransmissionTypes   TransmissionType,
 
-                                             DateTime?           Timestamp,
-                                             CancellationToken?  CancellationToken,
-                                             EventTracking_Id    EventTrackingId,
-                                             TimeSpan?           RequestTimeout)
+                                       DateTime?           Timestamp,
+                                       CancellationToken?  CancellationToken,
+                                       EventTracking_Id    EventTrackingId,
+                                       TimeSpan?           RequestTimeout)
 
         {
 
@@ -914,12 +918,12 @@ namespace org.GraphDefined.WWCP
         async Task<Acknowledgement>
 
             ISendStatus.UpdateAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
-                                                 TransmissionTypes                   TransmissionType,
+                                          TransmissionTypes                   TransmissionType,
 
-                                                 DateTime?                           Timestamp,
-                                                 CancellationToken?                  CancellationToken,
-                                                 EventTracking_Id                    EventTrackingId,
-                                                 TimeSpan?                           RequestTimeout)
+                                          DateTime?                           Timestamp,
+                                          CancellationToken?                  CancellationToken,
+                                          EventTracking_Id                    EventTrackingId,
+                                          TimeSpan?                           RequestTimeout)
 
         {
 
@@ -943,12 +947,12 @@ namespace org.GraphDefined.WWCP
         async Task<Acknowledgement>
 
             ISendStatus.UpdateStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
-                                            TransmissionTypes              TransmissionType,
+                                     TransmissionTypes              TransmissionType,
 
-                                            DateTime?                      Timestamp,
-                                            CancellationToken?             CancellationToken,
-                                            EventTracking_Id               EventTrackingId,
-                                            TimeSpan?                      RequestTimeout)
+                                     DateTime?                      Timestamp,
+                                     CancellationToken?             CancellationToken,
+                                     EventTracking_Id               EventTrackingId,
+                                     TimeSpan?                      RequestTimeout)
 
         {
 

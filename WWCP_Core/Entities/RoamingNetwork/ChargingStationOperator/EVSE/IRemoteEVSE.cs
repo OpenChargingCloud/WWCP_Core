@@ -104,14 +104,14 @@ namespace org.GraphDefined.WWCP
         event OnRemoteEVSEDataChangedDelegate         OnDataChanged;
 
         /// <summary>
-        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
-        /// </summary>
-        event OnRemoteEVSEStatusChangedDelegate       OnStatusChanged;
-
-        /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
         event OnRemoteEVSEAdminStatusChangedDelegate  OnAdminStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
+        /// </summary>
+        event OnRemoteEVSEStatusChangedDelegate       OnStatusChanged;
 
         #endregion
 
@@ -137,11 +137,6 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever a new charging session was created.
         /// </summary>
         event OnNewChargingSessionDelegate  OnNewChargingSession;
-
-
-
-        IVotingSender<DateTime, IRemoteEVSE, SocketOutlet, bool> OnSocketOutletAddition { get; }
-        IVotingSender<DateTime, IRemoteEVSE, SocketOutlet, bool> OnSocketOutletRemoval  { get; }
 
         #endregion
 

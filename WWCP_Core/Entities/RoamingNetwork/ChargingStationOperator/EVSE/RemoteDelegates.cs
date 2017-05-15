@@ -48,9 +48,9 @@ namespace org.GraphDefined.WWCP
     /// <param name="EVSE">The updated remote EVSE.</param>
     /// <param name="OldStatus">The old timestamped admin status of the EVSE.</param>
     /// <param name="NewStatus">The new timestamped admin status of the EVSE.</param>
-    public delegate Task OnRemoteEVSEAdminStatusChangedDelegate(DateTime                          Timestamp,
-                                                                EventTracking_Id                  EventTrackingId,
-                                                                IRemoteEVSE                       EVSE,
+    public delegate Task OnRemoteEVSEAdminStatusChangedDelegate(DateTime                           Timestamp,
+                                                                EventTracking_Id                   EventTrackingId,
+                                                                IRemoteEVSE                        RemoteEVSE,
                                                                 Timestamped<EVSEAdminStatusTypes>  OldStatus,
                                                                 Timestamped<EVSEAdminStatusTypes>  NewStatus);
 
@@ -62,9 +62,9 @@ namespace org.GraphDefined.WWCP
     /// <param name="EVSE">The updated remote EVSE.</param>
     /// <param name="OldStatus">The old timestamped status of the EVSE.</param>
     /// <param name="NewStatus">The new timestamped status of the EVSE.</param>
-    public delegate Task OnRemoteEVSEStatusChangedDelegate(DateTime                     Timestamp,
-                                                           EventTracking_Id             EventTrackingId,
-                                                           IRemoteEVSE                  EVSE,
+    public delegate Task OnRemoteEVSEStatusChangedDelegate(DateTime                      Timestamp,
+                                                           EventTracking_Id              EventTrackingId,
+                                                           IRemoteEVSE                   RemoteEVSE,
                                                            Timestamped<EVSEStatusTypes>  OldStatus,
                                                            Timestamped<EVSEStatusTypes>  NewStatus);
 

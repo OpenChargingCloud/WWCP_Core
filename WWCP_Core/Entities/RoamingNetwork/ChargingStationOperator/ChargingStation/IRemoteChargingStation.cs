@@ -72,14 +72,14 @@ namespace org.GraphDefined.WWCP
         event OnRemoteChargingStationDataChangedDelegate         OnDataChanged;
 
         /// <summary>
-        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
-        /// </summary>
-        event OnRemoteChargingStationStatusChangedDelegate       OnStatusChanged;
-
-        /// <summary>
         /// An event fired whenever the admin status of any subordinated EVSE changed.
         /// </summary>
         event OnRemoteChargingStationAdminStatusChangedDelegate  OnAdminStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the dynamic status of any subordinated EVSE changed.
+        /// </summary>
+        event OnRemoteChargingStationStatusChangedDelegate       OnStatusChanged;
 
         #endregion
 

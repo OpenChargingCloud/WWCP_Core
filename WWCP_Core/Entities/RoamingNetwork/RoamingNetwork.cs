@@ -283,8 +283,6 @@ namespace org.GraphDefined.WWCP
             this.EVSERemoval                 = new VotingNotificator<DateTime, ChargingStation, EVSE, Boolean>(() => new VetoVote(), true);
 
             // EVSE events
-            this.SocketOutletAddition        = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
-            this.SocketOutletRemoval         = new VotingNotificator<DateTime, EVSE, SocketOutlet, Boolean>(() => new VetoVote(), true);
 
             #endregion
 
@@ -297,22 +295,22 @@ namespace org.GraphDefined.WWCP
 
         private readonly ConcurrentDictionary<UInt32, ISendData>   _ISendData    = new ConcurrentDictionary<UInt32, ISendData>();
 
-        public void AddIReceiveStaticData(ISendData iSendStaticData)
+        public void AddISendData(ISendData iSendData)
         {
             lock(_ISendData)
             {
 
                 _ISendData.TryAdd(_ISendData.Count > 0
-                                            ? _ISendData.Keys.Max() + 1
-                                            : 1,
-                                        iSendStaticData);
+                                      ? _ISendData.Keys.Max() + 1
+                                      : 1,
+                                  iSendData);
 
             }
         }
 
         private readonly ConcurrentDictionary<UInt32, ISendStatus> _IRemotePushStatus  = new ConcurrentDictionary<UInt32, ISendStatus>();
 
-        public void AddIPush2RemoteStatus(ISendStatus iPush2RemoteStatus)
+        public void AddISendStatus(ISendStatus iSendStatus)
         {
             lock (_IRemotePushStatus)
             {
@@ -320,7 +318,7 @@ namespace org.GraphDefined.WWCP
                 _IRemotePushStatus.TryAdd(_IRemotePushStatus.Count > 0
                                               ? _IRemotePushStatus.Keys.Max() + 1
                                               : 1,
-                                          iPush2RemoteStatus);
+                                          iSendStatus);
 
             }
         }
@@ -328,7 +326,7 @@ namespace org.GraphDefined.WWCP
 
         private readonly ConcurrentDictionary<UInt32, ISendAuthorizeStartStop> _ISend2RemoteAuthorizeStartStop = new ConcurrentDictionary<UInt32, ISendAuthorizeStartStop>();
 
-        public void AddIRemoteAuthorizeStartStop(ISendAuthorizeStartStop iRemoteAuthorizeStartStop)
+        public void AddISendAuthorizeStartStop(ISendAuthorizeStartStop iRemoteAuthorizeStartStop)
         {
             lock (_ISend2RemoteAuthorizeStartStop)
             {
@@ -344,7 +342,7 @@ namespace org.GraphDefined.WWCP
 
         private readonly ConcurrentDictionary<UInt32, ISend2RemoteChargeDetailRecords> _IRemoteSendChargeDetailRecord = new ConcurrentDictionary<UInt32, ISend2RemoteChargeDetailRecords>();
 
-        public void AddIRemoteSendChargeDetailRecords(ISend2RemoteChargeDetailRecords iRemoteSendChargeDetailRecord)
+        public void AddISend2RemoteChargeDetailRecords(ISend2RemoteChargeDetailRecords iRemoteSendChargeDetailRecord)
         {
             lock (_IRemoteSendChargeDetailRecord)
             {
@@ -1285,9 +1283,9 @@ namespace org.GraphDefined.WWCP
                     //_EMobilityProvider.OnEMobilityStationAddition
 
                     //AddIRemotePushData               (_EMobilityProvider);
-                    AddIPush2RemoteStatus            (_eMobilityProviderProxy);
-                    AddIRemoteAuthorizeStartStop     (_eMobilityProviderProxy);
-                    AddIRemoteSendChargeDetailRecords(_eMobilityProviderProxy);
+                    AddISendStatus            (_eMobilityProviderProxy);
+                    AddISendAuthorizeStartStop     (_eMobilityProviderProxy);
+                    AddISend2RemoteChargeDetailRecords(_eMobilityProviderProxy);
 
 
                     // Link events!
@@ -2042,10 +2040,10 @@ namespace org.GraphDefined.WWCP
                     //                               ? _ChargingStationOperatorRoamingProviderPriorities.Keys.Max() + 1
                     //                               : 10);
 
-                    AddIReceiveStaticData            (_CPORoamingProvider);
-                    AddIPush2RemoteStatus            (_CPORoamingProvider);
-                    AddIRemoteAuthorizeStartStop     (_CPORoamingProvider);
-                    AddIRemoteSendChargeDetailRecords(_CPORoamingProvider);
+                    AddISendData                      (_CPORoamingProvider);
+                    AddISendStatus                    (_CPORoamingProvider);
+                    AddISendAuthorizeStartStop        (_CPORoamingProvider);
+                    AddISend2RemoteChargeDetailRecords(_CPORoamingProvider);
 
                     CPORoamingProviderAddition.SendNotification(this, _CPORoamingProvider);
 
@@ -3089,7 +3087,7 @@ namespace org.GraphDefined.WWCP
 
         #region SetEVSEStatus(EVSEId, NewStatus)
 
-        public void SetEVSEStatus(EVSE_Id                      EVSEId,
+        public void SetEVSEStatus(EVSE_Id                       EVSEId,
                                   Timestamped<EVSEStatusTypes>  NewStatus)
         {
 
@@ -3218,7 +3216,6 @@ namespace org.GraphDefined.WWCP
                                           Select (kvp => kvp.Value))
             {
 
-                //result = await iRemotePushData.
                 iSendData.
                     SetStaticData(EVSE).
                     ConfigureAwait(false);
@@ -3245,39 +3242,15 @@ namespace org.GraphDefined.WWCP
                                      EVSE             EVSE)
         {
 
-            //foreach (var AuthenticationService in _IeMobilityServiceProviders.
-            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //{
-
-            //    result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                        ActionType.update,
-            //                                                        EVSE.Operator.Id);
-
-            //}
-
-            foreach (var iRemotePushData in _ISendData.
-                                                OrderBy(kvp => kvp.Key).
-                                                Select (kvp => kvp.Value))
+            foreach (var iSendData in _ISendData.
+                                          OrderBy(kvp => kvp.Key).
+                                          Select (kvp => kvp.Value))
             {
 
-                //result = await iRemotePushData.
-                iRemotePushData.DeleteStaticData(EVSE).
-                                   ConfigureAwait(false);
+                iSendData.DeleteStaticData(EVSE).
+                          ConfigureAwait(false);
 
             }
-
-            //foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
-            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //{
-
-            //    result = await PushEVSEStatusService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                        ActionType.update,
-            //                                                        EVSE.Operator.Id);
-
-            //}
-
 
             EVSERemoval.SendNotification(Timestamp, ChargingStation, EVSE);
 
@@ -3315,32 +3288,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SocketOutletAddition
-
-        internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletAddition;
-
-        /// <summary>
-        /// Called whenever a socket outlet will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, EVSE, SocketOutlet, Boolean> OnSocketOutletAddition
-
-            => SocketOutletAddition;
-
-        #endregion
-
-        #region SocketOutletRemoval
-
-        internal readonly IVotingNotificator<DateTime, EVSE, SocketOutlet, Boolean> SocketOutletRemoval;
-
-        /// <summary>
-        /// Called whenever a socket outlet will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, EVSE, SocketOutlet, Boolean> OnSocketOutletRemoval
-
-            => SocketOutletRemoval;
-
-        #endregion
-
 
         #region (internal) UpdateEVSEData       (Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
 
@@ -3363,43 +3310,20 @@ namespace org.GraphDefined.WWCP
 
             Acknowledgement result = null;
 
-
-            //foreach (var AuthenticationService in _IeMobilityServiceProviders.
-            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //{
-
-            //    result = await AuthenticationService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                        ActionType.update,
-            //                                                        EVSE.Operator.Id);
-
-            //}
-
-            foreach (var iRemotePushData in _ISendData.
-                                                OrderBy(kvp => kvp.Key).
-                                                Select (kvp => kvp.Value))
+            foreach (var iSendData in _ISendData.
+                                          OrderBy(kvp => kvp.Key).
+                                          Select (kvp => kvp.Value))
             {
 
-                result = await iRemotePushData.
+                result = await iSendData.
                                    UpdateStaticData(EVSE,
                                                     PropertyName,
                                                     OldValue,
-                                                    NewValue).
+                                                    NewValue,
+                                                    EventTrackingId: EventTrackingId).
                                    ConfigureAwait(false);
 
             }
-
-            //foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
-            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //{
-
-            //    result = await PushEVSEStatusService.PushEVSEStatus(new EVSEStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                        ActionType.update,
-            //                                                        EVSE.Operator.Id);
-
-            //}
-
 
             var OnEVSEDataChangedLocal = OnEVSEDataChanged;
             if (OnEVSEDataChangedLocal != null)
@@ -3409,78 +3333,6 @@ namespace org.GraphDefined.WWCP
                                              PropertyName,
                                              OldValue,
                                              NewValue);
-
-        }
-
-        #endregion
-
-        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Update an EVSE status.
-        /// </summary>
-        /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
-        /// <param name="EVSE">The updated EVSE.</param>
-        /// <param name="OldStatus">The old EVSE status.</param>
-        /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEStatus(DateTime                      Timestamp,
-                                             EventTracking_Id              EventTrackingId,
-                                             EVSE                          EVSE,
-                                             Timestamped<EVSEStatusTypes>  OldStatus,
-                                             Timestamped<EVSEStatusTypes>  NewStatus)
-        {
-
-            Acknowledgement result = null;
-
-
-            //foreach (IRemotePushStatus iRemotePushStatus in _EMobilityProviders.
-            //                                                    OrderByDescending(provider => provider.Priority.Value))
-            //{
-
-            //    result = await iRemotePushStatus.
-            //                       UpdateEVSEStatus(new EVSEStatusUpdate(EVSE.Id,
-            //                                                             OldStatus,
-            //                                                             NewStatus)).
-            //                       ConfigureAwait(false);
-
-            //}
-
-            foreach (var iRemotePushStatus in _IRemotePushStatus.
-                                                  OrderBy(kvp => kvp.Key).
-                                                  Select (kvp => kvp.Value))
-            {
-
-                result = await iRemotePushStatus.
-                                   UpdateStatus(new EVSEStatusUpdate[] { new EVSEStatusUpdate(EVSE.Id,
-                                                                                              OldStatus,
-                                                                                              NewStatus) }).
-                                   ConfigureAwait(false);
-
-            }
-
-            //foreach (var iPushStatus in _PushEVSEStatusToOperatorRoamingServices.
-            //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //{
-
-            //    result = await iPushStatus.
-            //                       Update
-            //                       PushEVSEStatus(new EVSEStatus(EVSE.Id,
-            //                                                     NewStatus.Value,
-            //                                                     NewStatus.Timestamp)).
-            //                       ConfigureAwait(false);
-
-            //}
-
-
-            var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
-            if (OnEVSEStatusChangedLocal != null)
-                await OnEVSEStatusChangedLocal(Timestamp,
-                                               EventTrackingId,
-                                               EVSE,
-                                               OldStatus,
-                                               NewStatus);
 
         }
 
@@ -3550,6 +3402,50 @@ namespace org.GraphDefined.WWCP
                                                     EVSE,
                                                     OldStatus,
                                                     NewStatus);
+
+        }
+
+        #endregion
+
+        #region (internal) UpdateEVSEStatus     (Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
+
+        /// <summary>
+        /// Update an EVSE status.
+        /// </summary>
+        /// <param name="Timestamp">The timestamp when this change was detected.</param>
+        /// <param name="EventTrackingId">An event tracking identification for correlating this request with other events.</param>
+        /// <param name="EVSE">The updated EVSE.</param>
+        /// <param name="OldStatus">The old EVSE status.</param>
+        /// <param name="NewStatus">The new EVSE status.</param>
+        internal async Task UpdateEVSEStatus(DateTime                      Timestamp,
+                                             EventTracking_Id              EventTrackingId,
+                                             EVSE                          EVSE,
+                                             Timestamped<EVSEStatusTypes>  OldStatus,
+                                             Timestamped<EVSEStatusTypes>  NewStatus)
+        {
+
+            Acknowledgement result = null;
+
+            foreach (var iSendStatus in _IRemotePushStatus.
+                                            OrderBy(kvp => kvp.Key).
+                                            Select (kvp => kvp.Value))
+            {
+
+                result = await iSendStatus.
+                                   UpdateStatus(new EVSEStatusUpdate[] { new EVSEStatusUpdate(EVSE,
+                                                                                              OldStatus,
+                                                                                              NewStatus) }).
+                                   ConfigureAwait(false);
+
+            }
+
+            var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
+            if (OnEVSEStatusChangedLocal != null)
+                await OnEVSEStatusChangedLocal(Timestamp,
+                                               EventTrackingId,
+                                               EVSE,
+                                               OldStatus,
+                                               NewStatus);
 
         }
 

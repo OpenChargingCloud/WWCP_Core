@@ -645,6 +645,26 @@ namespace org.GraphDefined.WWCP
 
             this.RemoteEVSE = RemoteEVSECreator?.Invoke(this);
 
+            if (this.RemoteEVSE != null)
+            {
+
+                OnAdminStatusChanged               += async (Timestamp, EventTrackingId, EVSE,   OldStatus, NewStatus) => this.RemoteEVSE.AdminStatus      = NewStatus;
+                OnStatusChanged                    += async (Timestamp, EventTrackingId, EVSE,   OldStatus, NewStatus) => this.RemoteEVSE.Status           = NewStatus;
+
+                OnNewReservation                   += (Timestamp, Sender, Reservation)                => this.RemoteEVSE.Reservation      = Reservation;
+                //_EVSE.OnReservationCancelled             += (Timestamp, Sender, Reservation, ReservationCancellation) => _EVSE.RemoteEVSE.Send
+                OnNewChargingSession               += (Timestamp, Sender, ChargingSession)            => this.RemoteEVSE.ChargingSession  = ChargingSession;
+
+                this.RemoteEVSE.OnAdminStatusChanged    += async (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)  => AdminStatus                 = NewStatus;
+                this.RemoteEVSE.OnStatusChanged         += async (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)  => Status                      = NewStatus;
+
+                this.RemoteEVSE.OnNewReservation        += (Timestamp, RemoteEVSE, Reservation)                                  => Reservation                 = Reservation;
+                this.RemoteEVSE.OnReservationCancelled  += SendOnReservationCancelled;
+                this.RemoteEVSE.OnNewChargingSession    += (Timestamp, RemoteEVSE, ChargingSession)                              => ChargingSession             = ChargingSession;
+                this.RemoteEVSE.OnNewChargeDetailRecord += (Timestamp, RemoteEVSE, ChargeDetailRecord)                           => SendNewChargeDetailRecord(Timestamp, RemoteEVSE, ChargeDetailRecord);
+
+            }
+
         }
 
         #endregion

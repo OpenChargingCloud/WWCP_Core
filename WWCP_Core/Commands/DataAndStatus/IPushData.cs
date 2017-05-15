@@ -187,12 +187,13 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region SetStaticData   (EVSEs, ...)
+        #region SetStaticData   (EVSEs, TransmissionType = Enqueued, ...)
 
         /// <summary>
         /// Upload the static data of the given EVSEs.
         /// </summary>
         /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -201,6 +202,7 @@ namespace org.GraphDefined.WWCP
         Task<Acknowledgement>
 
             SetStaticData(IEnumerable<EVSE>   EVSEs,
+                          TransmissionTypes   TransmissionType   = TransmissionTypes.Enqueued,
 
                           DateTime?           Timestamp          = null,
                           CancellationToken?  CancellationToken  = null,
@@ -209,12 +211,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AddStaticData   (EVSEs, ...)
+        #region AddStaticData   (EVSEs, TransmissionType = Enqueued, ...)
 
         /// <summary>
         /// Upload the static data of the given EVSEs.
         /// </summary>
         /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -223,6 +226,7 @@ namespace org.GraphDefined.WWCP
         Task<Acknowledgement>
 
             AddStaticData(IEnumerable<EVSE>   EVSEs,
+                          TransmissionTypes   TransmissionType   = TransmissionTypes.Enqueued,
 
                           DateTime?           Timestamp          = null,
                           CancellationToken?  CancellationToken  = null,
@@ -231,12 +235,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region UpdateStaticData(EVSEs, ...)
+        #region UpdateStaticData(EVSEs, TransmissionType = Enqueued, ...)
 
         /// <summary>
         /// Upload the static data of the given EVSEs.
         /// </summary>
         /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -245,6 +250,7 @@ namespace org.GraphDefined.WWCP
         Task<Acknowledgement>
 
             UpdateStaticData(IEnumerable<EVSE>   EVSEs,
+                             TransmissionTypes   TransmissionType   = TransmissionTypes.Enqueued,
 
                              DateTime?           Timestamp          = null,
                              CancellationToken?  CancellationToken  = null,
@@ -253,12 +259,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region DeleteStaticData(EVSEs, ...)
+        #region DeleteStaticData(EVSEs, TransmissionType = Enqueued, ...)
 
         /// <summary>
         /// Upload the static data of the given EVSEs.
         /// </summary>
         /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -267,6 +274,7 @@ namespace org.GraphDefined.WWCP
         Task<Acknowledgement>
 
             DeleteStaticData(IEnumerable<EVSE>   EVSEs,
+                             TransmissionTypes   TransmissionType   = TransmissionTypes.Enqueued,
 
                              DateTime?           Timestamp          = null,
                              CancellationToken?  CancellationToken  = null,
