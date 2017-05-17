@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 namespace org.GraphDefined.WWCP
 {
 
-    public delegate IRemoteEMobilityProvider RemoteEMobilityProviderCreatorDelegate(eMobilityProviderProxy EMobilityProvider);
+    public delegate IRemoteEMobilityProvider RemoteEMobilityProviderCreatorDelegate(eMobilityProvider EMobilityProvider);
 
     public delegate String eMobilityProviderNameSelectorDelegate(I18NString I18NText);
 

@@ -44,11 +44,11 @@ namespace org.GraphDefined.WWCP
     /// methods can be misused by any entity in the ev charging process to track the
     /// ev driver or its behaviour.
     /// </summary>
-    public class eMobilityProviderProxy : ABaseEMobilityEntity<eMobilityProvider_Id>,
+    public class eMobilityProvider : ABaseEMobilityEntity<eMobilityProvider_Id>,
                                           //IRemoteAuthorizeStartStop,
                                           ISend2RemoteEMobilityProvider,
-                                          IEquatable <eMobilityProviderProxy>,
-                                          IComparable<eMobilityProviderProxy>,
+                                          IEquatable <eMobilityProvider>,
+                                          IComparable<eMobilityProvider>,
                                           IComparable
     {
 
@@ -636,9 +636,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique e-mobility provider identification.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        internal eMobilityProviderProxy(eMobilityProvider_Id                    Id,
+        internal eMobilityProvider(eMobilityProvider_Id                    Id,
                                         RoamingNetwork                          RoamingNetwork,
-                                        Action<eMobilityProviderProxy>          Configurator                    = null,
+                                        Action<eMobilityProvider>          Configurator                    = null,
                                         RemoteEMobilityProviderCreatorDelegate  RemoteEMobilityProviderCreator  = null,
                                         I18NString                              Name                            = null,
                                         I18NString                              Description                     = null,
@@ -656,7 +656,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(eMobilityProviderProxy),  "The roaming network must not be null!");
+                throw new ArgumentNullException(nameof(eMobilityProvider),  "The roaming network must not be null!");
 
             #endregion
 
@@ -690,12 +690,12 @@ namespace org.GraphDefined.WWCP
 
         #region eMobilityStationAddition
 
-        internal readonly IVotingNotificator<DateTime, eMobilityProviderProxy, eMobilityStation, Boolean> eMobilityStationAddition;
+        internal readonly IVotingNotificator<DateTime, eMobilityProvider, eMobilityStation, Boolean> eMobilityStationAddition;
 
         /// <summary>
         /// Called whenever an e-mobility station will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, eMobilityProviderProxy, eMobilityStation, Boolean> OnEMobilityStationAddition
+        public IVotingSender<DateTime, eMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationAddition
 
             => eMobilityStationAddition;
 
@@ -703,12 +703,12 @@ namespace org.GraphDefined.WWCP
 
         #region eMobilityStationRemoval
 
-        internal readonly IVotingNotificator<DateTime, eMobilityProviderProxy, eMobilityStation, Boolean> eMobilityStationRemoval;
+        internal readonly IVotingNotificator<DateTime, eMobilityProvider, eMobilityStation, Boolean> eMobilityStationRemoval;
 
         /// <summary>
         /// Called whenever an e-mobility station will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, eMobilityProviderProxy, eMobilityStation, Boolean> OnEMobilityStationRemoval
+        public IVotingSender<DateTime, eMobilityProvider, eMobilityStation, Boolean> OnEMobilityStationRemoval
 
             => eMobilityStationRemoval;
 
@@ -759,7 +759,7 @@ namespace org.GraphDefined.WWCP
                                                           RemoteEMobilityStationCreatorDelegate           RemoteeMobilityStationCreator  = null,
                                                           eMobilityStationAdminStatusType                 AdminStatus                    = eMobilityStationAdminStatusType.Operational,
                                                           Action<eMobilityStation>                        OnSuccess                      = null,
-                                                          Action<eMobilityProviderProxy, eMobilityStation_Id>  OnError                        = null)
+                                                          Action<eMobilityProvider, eMobilityStation_Id>  OnError                        = null)
 
         {
 
@@ -1062,12 +1062,12 @@ namespace org.GraphDefined.WWCP
 
         #region eVehicleAddition
 
-        internal readonly IVotingNotificator<DateTime, eMobilityProviderProxy, eVehicle, Boolean> eVehicleAddition;
+        internal readonly IVotingNotificator<DateTime, eMobilityProvider, eVehicle, Boolean> eVehicleAddition;
 
         /// <summary>
         /// Called whenever an electric vehicle will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, eMobilityProviderProxy, eVehicle, Boolean> OnEVehicleAddition
+        public IVotingSender<DateTime, eMobilityProvider, eVehicle, Boolean> OnEVehicleAddition
 
             => eVehicleAddition;
 
@@ -1075,12 +1075,12 @@ namespace org.GraphDefined.WWCP
 
         #region eVehicleRemoval
 
-        internal readonly IVotingNotificator<DateTime, eMobilityProviderProxy, eVehicle, Boolean> eVehicleRemoval;
+        internal readonly IVotingNotificator<DateTime, eMobilityProvider, eVehicle, Boolean> eVehicleRemoval;
 
         /// <summary>
         /// Called whenever an electric vehicle will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, eMobilityProviderProxy, eVehicle, Boolean> OnEVehicleRemoval
+        public IVotingSender<DateTime, eMobilityProvider, eVehicle, Boolean> OnEVehicleRemoval
 
             => eVehicleRemoval;
 
@@ -1142,7 +1142,7 @@ namespace org.GraphDefined.WWCP
                                           eVehicleAdminStatusType                 AdminStatus            = eVehicleAdminStatusType.Operational,
                                           eVehicleStatusType                      Status                 = eVehicleStatusType.Available,
                                           Action<eVehicle>                        OnSuccess              = null,
-                                          Action<eMobilityProviderProxy, eVehicle_Id>  OnError                = null)
+                                          Action<eMobilityProvider, eVehicle_Id>  OnError                = null)
 
         {
 
@@ -2782,7 +2782,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeStartRequest));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeStartRequest));
             }
 
             #endregion
@@ -2830,7 +2830,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeStartResponse));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeStartResponse));
             }
 
             #endregion
@@ -2917,7 +2917,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeEVSEStartRequest));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeEVSEStartRequest));
             }
 
             #endregion
@@ -2967,7 +2967,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeEVSEStartResponse));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeEVSEStartResponse));
             }
 
             #endregion
@@ -3051,7 +3051,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeChargingStationStartRequest));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeChargingStationStartRequest));
             }
 
             #endregion
@@ -3090,7 +3090,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeChargingStationStartResponse));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeChargingStationStartResponse));
             }
 
             #endregion
@@ -3174,7 +3174,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeChargingPoolStartRequest));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeChargingPoolStartRequest));
             }
 
             #endregion
@@ -3213,7 +3213,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeChargingPoolStartResponse));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeChargingPoolStartResponse));
             }
 
             #endregion
@@ -3298,7 +3298,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeStopRequest));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeStopRequest));
             }
 
             #endregion
@@ -3344,7 +3344,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeStopResponse));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeStopResponse));
             }
 
             #endregion
@@ -3427,7 +3427,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeEVSEStopRequest));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeEVSEStopRequest));
             }
 
             #endregion
@@ -3475,7 +3475,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeEVSEStopResponse));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeEVSEStopResponse));
             }
 
             #endregion
@@ -3556,7 +3556,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeChargingStationStopRequest));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeChargingStationStopRequest));
             }
 
             #endregion
@@ -3594,7 +3594,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeChargingStationStopResponse));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeChargingStationStopResponse));
             }
 
             #endregion
@@ -3675,7 +3675,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeChargingPoolStopRequest));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeChargingPoolStopRequest));
             }
 
             #endregion
@@ -3713,7 +3713,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnAuthorizeChargingPoolStopResponse));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnAuthorizeChargingPoolStopResponse));
             }
 
             #endregion
@@ -3849,7 +3849,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnReserveEVSERequest));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnReserveEVSERequest));
             }
 
             #endregion
@@ -3902,7 +3902,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnReserveEVSEResponse));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnReserveEVSEResponse));
             }
 
             #endregion
@@ -4037,7 +4037,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnRemoteEVSEStartRequest));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteEVSEStartRequest));
             }
 
             #endregion
@@ -4082,7 +4082,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnRemoteEVSEStartResponse));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteEVSEStartResponse));
             }
 
             #endregion
@@ -4159,7 +4159,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnRemoteEVSEStop));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteEVSEStop));
             }
 
             #endregion
@@ -4201,7 +4201,7 @@ namespace org.GraphDefined.WWCP
             }
             catch (Exception e)
             {
-                e.Log(nameof(eMobilityProviderProxy) + "." + nameof(OnRemoteEVSEStopped));
+                e.Log(nameof(eMobilityProvider) + "." + nameof(OnRemoteEVSEStopped));
             }
 
             #endregion
@@ -4231,7 +4231,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException("The given object must not be null!");
 
             // Check if the given object is an EVSE_Operator.
-            var EVSE_Operator = Object as eMobilityProviderProxy;
+            var EVSE_Operator = Object as eMobilityProvider;
             if ((Object) EVSE_Operator == null)
                 throw new ArgumentException("The given object is not an EVSE_Operator!");
 
@@ -4247,7 +4247,7 @@ namespace org.GraphDefined.WWCP
         /// Compares two instances of this object.
         /// </summary>
         /// <param name="EVSE_Operator">An EVSE_Operator object to compare with.</param>
-        public Int32 CompareTo(eMobilityProviderProxy EVSE_Operator)
+        public Int32 CompareTo(eMobilityProvider EVSE_Operator)
         {
 
             if ((Object) EVSE_Operator == null)
@@ -4277,7 +4277,7 @@ namespace org.GraphDefined.WWCP
                 return false;
 
             // Check if the given object is an EVSE_Operator.
-            var EVSE_Operator = Object as eMobilityProviderProxy;
+            var EVSE_Operator = Object as eMobilityProvider;
             if ((Object) EVSE_Operator == null)
                 return false;
 
@@ -4294,7 +4294,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="EVSE_Operator">An EVSE_Operator to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(eMobilityProviderProxy EVSE_Operator)
+        public Boolean Equals(eMobilityProvider EVSE_Operator)
         {
 
             if ((Object) EVSE_Operator == null)

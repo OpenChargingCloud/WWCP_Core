@@ -231,7 +231,7 @@ namespace org.GraphDefined.WWCP
 
             this._ChargingStationOperators                          = new EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator>(this);
             this._ParkingOperators                                  = new EntityHashSet<RoamingNetwork, ParkingOperator_Id,         ParkingOperator>        (this);
-            this._eMobilityProviders                                = new EntityHashSet<RoamingNetwork, eMobilityProvider_Id,       eMobilityProviderProxy>      (this);
+            this._eMobilityProviders                                = new EntityHashSet<RoamingNetwork, eMobilityProvider_Id,       eMobilityProvider>      (this);
             this._SmartCities                                       = new EntityHashSet<RoamingNetwork, SmartCity_Id,               SmartCityProxy>              (this);
             this._NavigationProviders                               = new EntityHashSet<RoamingNetwork, NavigationProvider_Id,      NavigationProvider>     (this);
             this._GridOperators                                     = new EntityHashSet<RoamingNetwork, GridOperator_Id,            GridOperator>           (this);
@@ -1178,12 +1178,12 @@ namespace org.GraphDefined.WWCP
 
         #region eMobilityProviders
 
-        private readonly EntityHashSet<RoamingNetwork, eMobilityProvider_Id, eMobilityProviderProxy> _eMobilityProviders;
+        private readonly EntityHashSet<RoamingNetwork, eMobilityProvider_Id, eMobilityProvider> _eMobilityProviders;
 
         /// <summary>
         /// Return all e-mobility providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<eMobilityProviderProxy> eMobilityProviders
+        public IEnumerable<eMobilityProvider> eMobilityProviders
 
             => _eMobilityProviders;
 
@@ -1219,7 +1219,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Called whenever an e-mobility provider will be or was added.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, eMobilityProviderProxy, Boolean> OnEMobilityProviderAddition
+        public IVotingSender<DateTime, RoamingNetwork, eMobilityProvider, Boolean> OnEMobilityProviderAddition
             => _eMobilityProviders.OnAddition;
 
         #endregion
@@ -1229,7 +1229,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Called whenever an e-mobility provider will be or was removed.
         /// </summary>
-        public IVotingSender<DateTime, RoamingNetwork, eMobilityProviderProxy, Boolean> OnEMobilityProviderRemoval
+        public IVotingSender<DateTime, RoamingNetwork, eMobilityProvider, Boolean> OnEMobilityProviderRemoval
             => _eMobilityProviders.OnRemoval;
 
         #endregion
@@ -1247,30 +1247,30 @@ namespace org.GraphDefined.WWCP
         /// <param name="Configurator">An optional delegate to configure the new e-mobility provider before its successful creation.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new e-mobility provider after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the e-mobility provider failed.</param>
-        public eMobilityProviderProxy CreateNewEMobilityProvider(eMobilityProvider_Id                          ProviderId,
+        public eMobilityProvider CreateEMobilityProvider(eMobilityProvider_Id                          ProviderId,
                                                             I18NString                                    Name                            = null,
                                                             I18NString                                    Description                     = null,
                                                             eMobilityProviderPriority                     Priority                        = null,
-                                                            Action<eMobilityProviderProxy>                     Configurator                    = null,
+                                                            Action<eMobilityProvider>                     Configurator                    = null,
                                                             RemoteEMobilityProviderCreatorDelegate        RemoteEMobilityProviderCreator  = null,
                                                             eMobilityProviderAdminStatusType              AdminStatus                     = eMobilityProviderAdminStatusType.Operational,
                                                             eMobilityProviderStatusType                   Status                          = eMobilityProviderStatusType.Available,
-                                                            Action<eMobilityProviderProxy>                     OnSuccess                       = null,
+                                                            Action<eMobilityProvider>                     OnSuccess                       = null,
                                                             Action<RoamingNetwork, eMobilityProvider_Id>  OnError                         = null)
         {
 
             lock (_ChargingStationOperators)
             {
 
-                var _eMobilityProviderProxy = new eMobilityProviderProxy(ProviderId,
-                                                                         this,
-                                                                         Configurator,
-                                                                         RemoteEMobilityProviderCreator,
-                                                                         Name,
-                                                                         Description,
-                                                                         Priority,
-                                                                         AdminStatus,
-                                                                         Status);
+                var _eMobilityProviderProxy = new eMobilityProvider(ProviderId,
+                                                                    this,
+                                                                    Configurator,
+                                                                    RemoteEMobilityProviderCreator,
+                                                                    Name,
+                                                                    Description,
+                                                                    Priority,
+                                                                    AdminStatus,
+                                                                    Status);
 
 
                 if (_eMobilityProviders.TryAdd(_eMobilityProviderProxy, OnSuccess))
@@ -1335,7 +1335,7 @@ namespace org.GraphDefined.WWCP
         /// Check if the given EMobilityProvider is already present within the roaming network.
         /// </summary>
         /// <param name="EMobilityProvider">An Charging Station Operator.</param>
-        public Boolean ContainsEMobilityProvider(eMobilityProviderProxy EMobilityProvider)
+        public Boolean ContainsEMobilityProvider(eMobilityProvider EMobilityProvider)
 
             => _eMobilityProviders.ContainsId(EMobilityProvider.Id);
 
@@ -1355,7 +1355,7 @@ namespace org.GraphDefined.WWCP
 
         #region GetEMobilityProviderById(EMobilityProviderId)
 
-        public eMobilityProviderProxy GetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId)
+        public eMobilityProvider GetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId)
 
             => _eMobilityProviders.GetById(EMobilityProviderId);
 
@@ -1363,7 +1363,7 @@ namespace org.GraphDefined.WWCP
 
         #region TryGetEMobilityProviderById(EMobilityProviderId, out EMobilityProvider)
 
-        public Boolean TryGetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId, out eMobilityProviderProxy EMobilityProvider)
+        public Boolean TryGetEMobilityProviderById(eMobilityProvider_Id EMobilityProviderId, out eMobilityProvider EMobilityProvider)
 
             => _eMobilityProviders.TryGet(EMobilityProviderId, out EMobilityProvider);
 
@@ -1371,10 +1371,10 @@ namespace org.GraphDefined.WWCP
 
         #region RemoveEMobilityProvider(EMobilityProviderId)
 
-        public eMobilityProviderProxy RemoveEMobilityProvider(eMobilityProvider_Id EMobilityProviderId)
+        public eMobilityProvider RemoveEMobilityProvider(eMobilityProvider_Id EMobilityProviderId)
         {
 
-            eMobilityProviderProxy _EMobilityProvider = null;
+            eMobilityProvider _EMobilityProvider = null;
 
             if (_eMobilityProviders.TryRemove(EMobilityProviderId, out _EMobilityProvider))
                 return _EMobilityProvider;
@@ -1387,7 +1387,7 @@ namespace org.GraphDefined.WWCP
 
         #region TryRemoveEMobilityProvider(RemoveEMobilityProviderId, out RemoveEMobilityProvider)
 
-        public Boolean TryRemoveEMobilityProvider(eMobilityProvider_Id EMobilityProviderId, out eMobilityProviderProxy EMobilityProvider)
+        public Boolean TryRemoveEMobilityProvider(eMobilityProvider_Id EMobilityProviderId, out eMobilityProvider EMobilityProvider)
 
             => _eMobilityProviders.TryRemove(EMobilityProviderId, out EMobilityProvider);
 
@@ -5625,33 +5625,41 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region If authorized...
-
-            if (result?.Result == AuthStartEVSEResultType.Authorized)
+            if (result != null)
             {
 
-                // Store the upstream session id in order to contact the right authenticator at later requests!
-                // Will be deleted when the charge detail record was sent!
+                #region Authorized
 
-                var NewChargingSession = new ChargingSession(result.SessionId.Value) {
-                                             AuthService      = _ISend2RemoteAuthorizeStartStop.Values.FirstOrDefault(_ => _.AuthId == result.AuthorizatorId),
-                                             AuthorizatorId   = result.AuthorizatorId,
-                                             OperatorId       = OperatorId,
-                                             EVSEId           = EVSEId,
-                                             AuthTokenStart   = AuthToken,
-                                             ChargingProduct  = ChargingProduct
-                                         };
+                if (result.Result == AuthStartEVSEResultType.Authorized)
+                {
 
-                if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
+                    if (result.SessionId.HasValue)
+                    {
 
-                if (result.SessionId.HasValue)
-                    RegisterExternalChargingSession(DateTime.Now,
-                                                    this,
-                                                    NewChargingSession);
+                        // Store the upstream session id in order to contact the right authenticator at later requests!
+                        // Will be deleted when the charge detail record was sent!
+
+                        var NewChargingSession = new ChargingSession(result.SessionId.Value) {
+                                                     AuthService      = _ISend2RemoteAuthorizeStartStop.Values.FirstOrDefault(_ => _.AuthId == result.AuthorizatorId),
+                                                     AuthorizatorId   = result.AuthorizatorId,
+                                                     OperatorId       = OperatorId,
+                                                     EVSEId           = EVSEId,
+                                                     AuthTokenStart   = AuthToken,
+                                                     ChargingProduct  = ChargingProduct
+                                                 };
+
+                        if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
+                            RegisterExternalChargingSession(DateTime.Now,
+                                                            this,
+                                                            NewChargingSession);
+
+                    }
+
+                }
+
+                #endregion
 
             }
-
-            #endregion
 
 
             var Endtime = DateTime.Now;
@@ -7039,7 +7047,7 @@ namespace org.GraphDefined.WWCP
 
                 #region Group charge detail records by their targets...
 
-                var UpstreamProviders         = new Dictionary<eMobilityProviderProxy, List<ChargeDetailRecord>>();
+                var UpstreamProviders         = new Dictionary<eMobilityProvider, List<ChargeDetailRecord>>();
                 var UpstreamRoamingProviders  = new Dictionary<IEMPRoamingProvider,   List<ChargeDetailRecord>>();
                 var UnknownCDRTargets         = new List<ChargeDetailRecord>();
 
