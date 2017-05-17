@@ -5623,6 +5623,13 @@ namespace org.GraphDefined.WWCP
                              OrderBy(res => res.Runtime).
                              FirstOrDefault();
 
+            if (result == null)
+                result = results.
+                             Where  (res => res        != null &&
+                                            res.Result == AuthStartEVSEResultType.NotAuthorized).
+                             OrderBy(res => res.Runtime).
+                             FirstOrDefault();
+
             #endregion
 
             if (result != null)
