@@ -39,8 +39,8 @@ namespace org.GraphDefined.WWCP
     public interface IRemoteChargingStation
     {
 
-        IEnumerable<EVSE>                           EVSEs       { get; }
-        ChargingStation_Id                          Id          { get; }
+        IEnumerable<IRemoteEVSE>                     EVSEs       { get; }
+        ChargingStation_Id                           Id          { get; }
         Timestamped<ChargingStationStatusTypes>      Status      { get; }
 
         Timestamped<ChargingStationAdminStatusTypes> AdminStatus { get; set; }

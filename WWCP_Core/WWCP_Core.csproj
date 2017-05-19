@@ -84,6 +84,7 @@
     <Compile Include="Entities\ACryptoEMobilityEntity.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPoolGroup\ChargingPoolGroupAdminStatusType.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPoolGroup\ChargingPoolGroup_Id.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPool\RemoteDelegates.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingProduct\ChargingProduct.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationGroup\ChargingStationGroupStatusType.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationGroup\ChargingStationGroup_Id.cs" />

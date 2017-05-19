@@ -31,6 +31,36 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
+    /// Extention methods for charging pool identifications.
+    /// </summary>
+    public static class ChargingPoolIdExtentions
+    {
+
+        /// <summary>
+        /// Create a new charging station identification based
+        /// on the given charging pool identification.
+        /// </summary>
+        /// <param name="ChargingPoolId">A charging pool identification.</param>
+        /// <param name="AdditionalSuffix">An additional EVSE suffix.</param>
+        public static ChargingStation_Id CreateStationId(this ChargingPool_Id  ChargingPoolId,
+                                                      String                AdditionalSuffix)
+        {
+
+            var Suffix = ChargingPoolId.Suffix;
+
+            if (Suffix.StartsWith("POOL", StringComparison.Ordinal))
+                Suffix = "STATION" + Suffix.Substring(4);
+
+            if (Suffix.StartsWith("P", StringComparison.Ordinal))
+                Suffix = "S" + Suffix.Substring(1);
+
+            return ChargingStation_Id.Parse(ChargingPoolId.OperatorId, Suffix + AdditionalSuffix ?? "");
+
+        }
+
+    }
+
+    /// <summary>
     /// The unique identification of an electric vehicle charging pool (EVCP).
     /// </summary>
     public struct ChargingPool_Id : IId,

@@ -32,6 +32,37 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
+    /// Extention methods for charging station identifications.
+    /// </summary>
+    public static class ChargingStationIdExtentions
+    {
+
+        /// <summary>
+        /// Create a new EVSE identification
+        /// based on the given charging station identification.
+        /// </summary>
+        /// <param name="ChargingStationId">A charging station identification.</param>
+        /// <param name="AdditionalSuffix">An additional EVSE suffix.</param>
+        public static EVSE_Id CreateEVSEId(this ChargingStation_Id  ChargingStationId,
+                                           String                   AdditionalSuffix)
+        {
+
+            var Suffix = ChargingStationId.Suffix;
+
+            if (Suffix.StartsWith("STATION", StringComparison.Ordinal))
+                Suffix = "EVSE" + Suffix.Substring(7);
+
+            if (Suffix.StartsWith("S", StringComparison.Ordinal))
+                Suffix = "E" + Suffix.Substring(1);
+
+            return EVSE_Id.Parse(ChargingStationId.OperatorId, Suffix + AdditionalSuffix ?? "");
+
+        }
+
+    }
+
+
+    /// <summary>
     /// The unique identification of an electric vehicle charging station (EVCS).
     /// </summary>
     public struct ChargingStation_Id : IId,
