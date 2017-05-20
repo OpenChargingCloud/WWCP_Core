@@ -49,11 +49,8 @@ namespace org.GraphDefined.WWCP
 
             var Suffix = ChargingStationId.Suffix;
 
-            if (Suffix.StartsWith("STATION", StringComparison.Ordinal))
-                Suffix = "EVSE" + Suffix.Substring(7);
-
-            if (Suffix.StartsWith("S", StringComparison.Ordinal))
-                Suffix = "E" + Suffix.Substring(1);
+            if (Suffix.StartsWith("TATION", StringComparison.Ordinal))
+                Suffix = "VSE" + Suffix.Substring(6);
 
             return EVSE_Id.Parse(ChargingStationId.OperatorId, Suffix + AdditionalSuffix ?? "");
 

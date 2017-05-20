@@ -211,6 +211,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 case OperatorIdFormats.ISO:
+                case OperatorIdFormats.ISO_STAR:
                     if (!IdSuffixISO_RegEx.IsMatch(Suffix))
                         throw new ArgumentException("Illegal EVSE identification suffix '" + Suffix + "'!",
                                                     nameof(Suffix));
