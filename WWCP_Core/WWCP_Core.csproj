@@ -388,7 +388,7 @@
     <Folder Include="Entities\GeoInformations\SmartCities\ConstructionSite\" />
     <Folder Include="Entities\GeoInformations\SmartCities\Street\" />
     <Folder Include="Entities\GeoInformations\SmartCities\WLAN\" />
-    <Folder Include="IO\" />
+    <Folder Include="JSON_IO\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
