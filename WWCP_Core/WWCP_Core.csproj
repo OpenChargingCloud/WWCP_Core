@@ -345,6 +345,21 @@
     <Compile Include="Commands\RemoteStartStop\RemoteStartEVSEResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopEVSEResult.cs" />
     <Compile Include="CommonTypes\SessionInfo.cs" />
+    <Compile Include="JSON_IO\Address.cs" />
+    <Compile Include="JSON_IO\ChargeDetailRecords.cs" />
+    <Compile Include="JSON_IO\ChargingPools.cs" />
+    <Compile Include="JSON_IO\ChargingReservations.cs" />
+    <Compile Include="JSON_IO\ChargingSessions.cs" />
+    <Compile Include="JSON_IO\ChargingStationOperators.cs" />
+    <Compile Include="JSON_IO\ChargingStations.cs" />
+    <Compile Include="JSON_IO\EMobilityProviders.cs" />
+    <Compile Include="JSON_IO\EVSEs.cs" />
+    <Compile Include="JSON_IO\GridOperator.cs" />
+    <Compile Include="JSON_IO\ParkingOperators.cs" />
+    <Compile Include="JSON_IO\RoamingNetwork.cs" />
+    <Compile Include="JSON_IO\SimpleTypes.cs" />
+    <Compile Include="JSON_IO\SmartCities.cs" />
+    <Compile Include="JSON_IO\SocketOutlets.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\AEMPRoamingProvider.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\CSORoamingProvider_Id.cs" />
@@ -388,7 +403,6 @@
     <Folder Include="Entities\GeoInformations\SmartCities\ConstructionSite\" />
     <Folder Include="Entities\GeoInformations\SmartCities\Street\" />
     <Folder Include="Entities\GeoInformations\SmartCities\WLAN\" />
-    <Folder Include="JSON_IO\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
