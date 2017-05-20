@@ -354,6 +354,7 @@
     <Compile Include="JSON_IO\ChargingStations.cs" />
     <Compile Include="JSON_IO\EMobilityProviders.cs" />
     <Compile Include="JSON_IO\EVSEs.cs" />
+    <Compile Include="JSON_IO\ExtentionMethods.cs" />
     <Compile Include="JSON_IO\GridOperator.cs" />
     <Compile Include="JSON_IO\ParkingOperators.cs" />
     <Compile Include="JSON_IO\RoamingNetwork.cs" />
