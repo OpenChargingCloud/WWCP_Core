@@ -57,6 +57,11 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public const UInt16 DefaultMaxAdminStatusListSize    = 15;
 
+        /// <summary>
+        /// The maximum time span for a reservation.
+        /// </summary>
+        public static readonly TimeSpan  DefaultMaxReservationDuration   = TimeSpan.FromMinutes(30);
+
         #endregion
 
         #region Properties
@@ -851,33 +856,33 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EnergySources
+        #region EnergyMix
 
-        private EnergySources _EnergySources;
+        private EnergyMix _EnergyMix;
 
         /// <summary>
-        /// The source of energy / energy mix at the charging station.
+        /// The energy mix at the charging station.
         /// </summary>
         [Optional]
-        public EnergySources EnergySources
+        public EnergyMix EnergyMix
         {
 
             get
             {
-                return _EnergySources ?? ChargingPool?.EnergySources;
+                return _EnergyMix ?? ChargingPool?.EnergyMix;
             }
 
             set
             {
 
-                if (value != _EnergySources && value != ChargingPool?.EnergySources)
+                if (value != _EnergyMix && value != ChargingPool?.EnergyMix)
                 {
 
                     if (value == null)
-                        DeleteProperty(ref _EnergySources);
+                        DeleteProperty(ref _EnergyMix);
 
                     else
-                        SetProperty(ref _EnergySources, value);
+                        SetProperty(ref _EnergyMix, value);
 
                 }
 
@@ -1003,6 +1008,39 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+
+        #region MaxReservationDuration
+
+        private TimeSpan _MaxReservationDuration;
+
+        /// <summary>
+        /// The maximum reservation time.
+        /// </summary>
+        [Optional]
+        public TimeSpan MaxReservationDuration
+        {
+
+            get
+            {
+                return _MaxReservationDuration;
+            }
+
+            set
+            {
+
+                if (value != null)
+                    SetProperty(ref _MaxReservationDuration, value);
+
+                else
+                    DeleteProperty(ref _MaxReservationDuration);
+
+            }
+
+        }
+
+        #endregion
+
 
 
         #region IsHubjectCompatible
@@ -1422,7 +1460,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Data/(Admin-)Status management
+        #region Data/(Admin-)Status
 
         #region OnData/(Admin)StatusChanged
 
@@ -2051,11 +2089,6 @@ namespace org.GraphDefined.WWCP
 
 
         #region Reservations
-
-        /// <summary>
-        /// The maximum time span for a reservation.
-        /// </summary>
-        public static readonly TimeSpan MaxReservationDuration = TimeSpan.FromMinutes(30);
 
         #region ChargingReservations
 

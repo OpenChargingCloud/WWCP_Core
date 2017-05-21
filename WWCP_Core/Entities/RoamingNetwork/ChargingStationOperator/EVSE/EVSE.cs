@@ -53,17 +53,17 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The default max size of the EVSE status history.
         /// </summary>
-        public const            UInt16    DefaultMaxEVSEStatusListSize    = 50;
+        public const           UInt16    DefaultMaxEVSEStatusListSize    = 50;
 
         /// <summary>
         /// The default max size of the EVSE admin status history.
         /// </summary>
-        public const            UInt16    DefaultMaxAdminStatusListSize   = 50;
+        public const           UInt16    DefaultMaxAdminStatusListSize   = 50;
 
         /// <summary>
         /// The maximum time span for a reservation.
         /// </summary>
-        public static readonly  TimeSpan  MaxReservationDuration          = TimeSpan.FromMinutes(15);
+        public static readonly TimeSpan  DefaultMaxReservationDuration   = TimeSpan.FromMinutes(15);
 
         #endregion
 
@@ -165,78 +165,6 @@ namespace org.GraphDefined.WWCP
 
                 if (_CurrentTypes != value)
                     SetProperty(ref _CurrentTypes, value);
-
-            }
-
-        }
-
-        #endregion
-
-        #region GridConnection
-
-        private GridConnectionTypes? _GridConnection;
-
-        /// <summary>
-        /// The grid connection of the EVSE.
-        /// </summary>
-        [Optional]
-        public GridConnectionTypes? GridConnection
-        {
-
-            get
-            {
-                return _GridConnection ?? ChargingStation?.GridConnection;
-            }
-
-            set
-            {
-
-                if (value != _GridConnection && value != ChargingStation?.GridConnection)
-                {
-
-                    if (value == null)
-                        DeleteProperty(ref _GridConnection);
-
-                    else
-                        SetProperty(ref _GridConnection, value);
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
-        #region EnergySources
-
-        private EnergySources _EnergySources;
-
-        /// <summary>
-        /// The source of energy / energy mix at the EVSE.
-        /// </summary>
-        [Optional]
-        public EnergySources EnergySources
-        {
-
-            get
-            {
-                return _EnergySources ?? ChargingStation?.EnergySources;
-            }
-
-            set
-            {
-
-                if (value != _EnergySources && value != ChargingStation?.EnergySources)
-                {
-
-                    if (value == null)
-                        DeleteProperty(ref _EnergySources);
-
-                    else
-                        SetProperty(ref _EnergySources, value);
-
-                }
 
             }
 
@@ -621,6 +549,42 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region EnergyMix
+
+        private EnergyMix _EnergyMix;
+
+        /// <summary>
+        /// The energy mix at the EVSE.
+        /// </summary>
+        [Optional]
+        public EnergyMix EnergyMix
+        {
+
+            get
+            {
+                return _EnergyMix ?? ChargingStation?.EnergyMix;
+            }
+
+            set
+            {
+
+                if (value != _EnergyMix && value != ChargingStation?.EnergyMix)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _EnergyMix);
+
+                    else
+                        SetProperty(ref _EnergyMix, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
         #region SocketOutlets
 
         private ReactiveSet<SocketOutlet> _SocketOutlets;
@@ -691,7 +655,36 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        // MaxReservationTime
+        #region MaxReservationDuration
+
+        private TimeSpan _MaxReservationDuration;
+
+        /// <summary>
+        /// The maximum reservation time.
+        /// </summary>
+        [Optional]
+        public TimeSpan MaxReservationDuration
+        {
+
+            get
+            {
+                return _MaxReservationDuration;
+            }
+
+            set
+            {
+
+                if (value != null)
+                    SetProperty(ref _MaxReservationDuration, value);
+
+                else
+                    DeleteProperty(ref _MaxReservationDuration);
+
+            }
+
+        }
+
+        #endregion
 
 
         #region ChargingSession

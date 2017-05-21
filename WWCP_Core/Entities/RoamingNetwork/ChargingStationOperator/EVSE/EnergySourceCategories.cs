@@ -18,51 +18,30 @@
 #region Usings
 
 using System;
+using System.Linq;
+using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using System.Collections.Generic;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
-    /// <summary>
-    /// A socket outlet to connect an electric vehicle (EV)
-    /// to an Electric Vehicle Supply Equipment (EVSE).
-    /// </summary>
-    public class EnergySources
+    public enum EnergySourceCategories
     {
 
-
-        private readonly Dictionary<String, Single> _EnergyMix;
-
-
-        #region Constructor(s)
-
-        /// <summary>
-        /// Create a new energy sources overview.
-        /// </summary>
-        public EnergySources()
-        {
-
-            
-
-        }
-
-        #endregion
-
-
-        #region (override) ToString()
-
-        /// <summary>
-        /// Return a string representation of this object.
-        /// </summary>
-        public override String ToString()
-
-            => String.Concat("");
-
-        #endregion
+        General_Green,
+        Gas,
+        Coal,
+        StoneCoal,
+        Oil,
+        General_Fossil,
+        Nuclear,
+        Sun,
+        Wind,
+        Geotermal,
+        Waste
 
     }
 

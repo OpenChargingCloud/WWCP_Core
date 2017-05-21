@@ -733,33 +733,33 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EnergySources
+        #region EnergyMix
 
-        private EnergySources _EnergySources;
+        private EnergyMix _EnergyMix;
 
         /// <summary>
-        /// The source of energy / energy mix at the charging pool.
+        /// The energy mix at the charging pool.
         /// </summary>
         [Optional]
-        public EnergySources EnergySources
+        public EnergyMix EnergyMix
         {
 
             get
             {
-                return _EnergySources;
+                return _EnergyMix;
             }
 
             set
             {
 
-                if (_EnergySources != value)
+                if (_EnergyMix != value)
                 {
 
                     if (value == null)
-                        DeleteProperty(ref _EnergySources);
+                        DeleteProperty(ref _EnergyMix);
 
                     else
-                        SetProperty(ref _EnergySources, value);
+                        SetProperty(ref _EnergyMix, value);
 
                 }
 

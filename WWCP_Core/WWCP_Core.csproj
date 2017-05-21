@@ -92,7 +92,9 @@
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingTariff_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSEGroup\EVSEGroupAdminStatusType.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSEGroup\EVSEGroup_Id.cs" />
-    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\EnergySources.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\EnvironmentalImpacts.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\EnergySourceCategories.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\EnergyMix.cs" />
     <Compile Include="Entities\RoamingNetwork\ParkingOperator\ParkingReservation\ParkingReservation.cs" />
     <Compile Include="Entities\RoamingNetwork\ParkingOperator\ParkingReservation\ParkingReservationCancellation.cs" />
     <Compile Include="Entities\RoamingNetwork\ParkingOperator\ParkingReservation\ParkingReservationLevel.cs" />
@@ -296,7 +298,7 @@
     <Compile Include="Importer\WWCPImporter.cs" />
     <Compile Include="Importer\ImporterDefaults.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\EVSEStatusReport.cs" />
-    <Compile Include="CommonTypes\GridConnection.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\GridConnectionTypes.cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="CommonTypes\Attributes\ChargeWithContract.cs" />
     <Compile Include="CommonTypes\Attributes\ChargeWithoutContract.cs" />
