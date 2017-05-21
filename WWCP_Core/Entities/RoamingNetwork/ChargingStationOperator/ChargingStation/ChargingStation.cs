@@ -734,42 +734,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region GridConnection
-
-        private GridConnection _GridConnection;
-
-        /// <summary>
-        /// The grid connection of the charging station.
-        /// </summary>
-        [Optional]
-        public GridConnection GridConnection
-        {
-
-            get
-            {
-                return _GridConnection ?? ChargingPool?.GridConnection;
-            }
-
-            set
-            {
-
-                if (value != _GridConnection && value != ChargingPool?.GridConnection)
-                {
-
-                    if (value == null)
-                        DeleteProperty(ref _GridConnection);
-
-                    else
-                        SetProperty(ref _GridConnection, value);
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
         #region ExitAddress
 
         private Address _ExitAddress;
@@ -841,6 +805,160 @@ namespace org.GraphDefined.WWCP
                         SetProperty(ref _ExitLocation, value);
 
                 }
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region GridConnection
+
+        private GridConnection _GridConnection;
+
+        /// <summary>
+        /// The grid connection of the charging station.
+        /// </summary>
+        [Optional]
+        public GridConnection GridConnection
+        {
+
+            get
+            {
+                return _GridConnection ?? ChargingPool?.GridConnection;
+            }
+
+            set
+            {
+
+                if (value != _GridConnection && value != ChargingPool?.GridConnection)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _GridConnection);
+
+                    else
+                        SetProperty(ref _GridConnection, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxCurrent
+
+        private Single? _MaxCurrent;
+
+        /// <summary>
+        /// The maximum current of the grid connector of the charging station [Ampere].
+        /// </summary>
+        [Mandatory]
+        public Single? MaxCurrent
+        {
+
+            get
+            {
+                return _MaxCurrent;
+            }
+
+            set
+            {
+
+                if (value != null)
+                {
+
+                    if (!_MaxCurrent.HasValue)
+                        _MaxCurrent = value;
+
+                    else if (Math.Abs(_MaxCurrent.Value - value.Value) > EPSILON)
+                        SetProperty(ref _MaxCurrent, value);
+
+                }
+
+                else
+                    DeleteProperty(ref _MaxCurrent);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxPower
+
+        private Single? _MaxPower;
+
+        /// <summary>
+        /// The maximum power of the grid connector of the charging station [kWatt].
+        /// </summary>
+        [Optional]
+        public Single? MaxPower
+        {
+
+            get
+            {
+                return _MaxPower;
+            }
+
+            set
+            {
+
+                if (value != null)
+                {
+
+                    if (!_MaxPower.HasValue)
+                        _MaxPower = value;
+
+                    else if (Math.Abs(_MaxPower.Value - value.Value) > EPSILON)
+                        SetProperty(ref _MaxPower, value);
+
+                }
+
+                else
+                    DeleteProperty(ref _MaxPower);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxCapacity
+
+        private Single? _MaxCapacity;
+
+        /// <summary>
+        /// The maximum capacity of the grid connector of the charging station [kWh].
+        /// </summary>
+        [Mandatory]
+        public Single? MaxCapacity
+        {
+
+            get
+            {
+                return _MaxCapacity;
+            }
+
+            set
+            {
+
+                if (value != null)
+                {
+
+                    if (!_MaxCapacity.HasValue)
+                        _MaxCapacity = value;
+
+                    else if (Math.Abs(_MaxCapacity.Value - value.Value) > EPSILON)
+                        SetProperty(ref _MaxCapacity, value);
+
+                }
+
+                else
+                    DeleteProperty(ref _MaxCapacity);
 
             }
 

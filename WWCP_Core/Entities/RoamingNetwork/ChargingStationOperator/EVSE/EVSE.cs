@@ -53,17 +53,17 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The default max size of the EVSE status history.
         /// </summary>
-        public const UInt16 DefaultMaxEVSEStatusListSize    = 50;
+        public const            UInt16    DefaultMaxEVSEStatusListSize    = 50;
 
         /// <summary>
         /// The default max size of the EVSE admin status history.
         /// </summary>
-        public const UInt16 DefaultMaxAdminStatusListSize   = 50;
+        public const            UInt16    DefaultMaxAdminStatusListSize   = 50;
 
         /// <summary>
         /// The maximum time span for a reservation.
         /// </summary>
-        public static readonly TimeSpan MaxReservationDuration = TimeSpan.FromMinutes(15);
+        public static readonly  TimeSpan  MaxReservationDuration          = TimeSpan.FromMinutes(15);
 
         #endregion
 
@@ -234,7 +234,7 @@ namespace org.GraphDefined.WWCP
                 {
 
                     if (!_MaxCurrent.HasValue)
-                        _MaxCurrent = value;
+                        SetProperty(ref _MaxCurrent, value);
 
                     else if (Math.Abs(_MaxCurrent.Value - value.Value) > EPSILON)
                         SetProperty(ref _MaxCurrent, value);
@@ -243,6 +243,68 @@ namespace org.GraphDefined.WWCP
 
                 else
                     DeleteProperty(ref _MaxCurrent);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxCurrentRealTime
+
+        private Timestamped<Single>? _MaxCurrentRealTime;
+
+        /// <summary>
+        /// The real-time maximum current [Ampere].
+        /// </summary>
+        [Mandatory]
+        public Timestamped<Single>? MaxCurrentRealTime
+        {
+
+            get
+            {
+                return _MaxCurrentRealTime;
+            }
+
+            set
+            {
+
+                if (value != null)
+                    SetProperty(ref _MaxCurrentRealTime, value);
+
+                else
+                    DeleteProperty(ref _MaxCurrentRealTime);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxCurrentPrognoses
+
+        private IEnumerable<Timestamped<Single>> _MaxCurrentPrognoses;
+
+        /// <summary>
+        /// Prognoses on future values of the maximum current [Ampere].
+        /// </summary>
+        [Mandatory]
+        public IEnumerable<Timestamped<Single>> MaxCurrentPrognoses
+        {
+
+            get
+            {
+                return _MaxCurrentPrognoses;
+            }
+
+            set
+            {
+
+                if (value != null)
+                    SetProperty(ref _MaxCurrentPrognoses, value);
+
+                else
+                    DeleteProperty(ref _MaxCurrentPrognoses);
 
             }
 
@@ -289,6 +351,68 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region MaxPowerRealTime
+
+        private Timestamped<Single>? _MaxPowerRealTime;
+
+        /// <summary>
+        /// The real-time maximum power [kWatt].
+        /// </summary>
+        [Mandatory]
+        public Timestamped<Single>? MaxPowerRealTime
+        {
+
+            get
+            {
+                return _MaxPowerRealTime;
+            }
+
+            set
+            {
+
+                if (value != null)
+                    SetProperty(ref _MaxPowerRealTime, value);
+
+                else
+                    DeleteProperty(ref _MaxPowerRealTime);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxPowerPrognoses
+
+        private IEnumerable<Timestamped<Single>> _MaxPowerPrognoses;
+
+        /// <summary>
+        /// Prognoses on future values of the maximum power [kWatt].
+        /// </summary>
+        [Mandatory]
+        public IEnumerable<Timestamped<Single>> MaxPowerPrognoses
+        {
+
+            get
+            {
+                return _MaxPowerPrognoses;
+            }
+
+            set
+            {
+
+                if (value != null)
+                    SetProperty(ref _MaxPowerPrognoses, value);
+
+                else
+                    DeleteProperty(ref _MaxPowerPrognoses);
+
+            }
+
+        }
+
+        #endregion
+
         #region MaxCapacity
 
         private Single? _MaxCapacity;
@@ -328,23 +452,61 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SocketOutlets
+        #region MaxCapacityRealTime
 
-        private ReactiveSet<SocketOutlet> _SocketOutlets;
+        private Timestamped<Single>? _MaxCapacityRealTime;
 
-        public ReactiveSet<SocketOutlet> SocketOutlets
+        /// <summary>
+        /// The real-time maximum capacity [kWh].
+        /// </summary>
+        [Mandatory]
+        public Timestamped<Single>? MaxCapacityRealTime
         {
 
             get
             {
-                return _SocketOutlets;
+                return _MaxCapacityRealTime;
             }
 
             set
             {
 
-                if (_SocketOutlets != value)
-                    SetProperty(ref _SocketOutlets, value);
+                if (value != null)
+                    SetProperty(ref _MaxCapacityRealTime, value);
+
+                else
+                    DeleteProperty(ref _MaxCapacityRealTime);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxCapacityPrognoses
+
+        private IEnumerable<Timestamped<Single>> _MaxCapacityPrognoses;
+
+        /// <summary>
+        /// Prognoses on future values of the maximum capacity [kWh].
+        /// </summary>
+        [Mandatory]
+        public IEnumerable<Timestamped<Single>> MaxCapacityPrognoses
+        {
+
+            get
+            {
+                return _MaxCapacityPrognoses;
+            }
+
+            set
+            {
+
+                if (value != null)
+                    SetProperty(ref _MaxCapacityPrognoses, value);
+
+                else
+                    DeleteProperty(ref _MaxCapacityPrognoses);
 
             }
 
@@ -376,6 +538,30 @@ namespace org.GraphDefined.WWCP
 
                 else
                     DeleteProperty(ref _EnergyMeterId);
+
+            }
+
+        }
+
+        #endregion
+
+        #region SocketOutlets
+
+        private ReactiveSet<SocketOutlet> _SocketOutlets;
+
+        public ReactiveSet<SocketOutlet> SocketOutlets
+        {
+
+            get
+            {
+                return _SocketOutlets;
+            }
+
+            set
+            {
+
+                if (_SocketOutlets != value)
+                    SetProperty(ref _SocketOutlets, value);
 
             }
 
