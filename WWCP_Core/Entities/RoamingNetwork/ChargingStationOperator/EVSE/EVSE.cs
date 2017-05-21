@@ -172,6 +172,78 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region GridConnection
+
+        private GridConnectionTypes? _GridConnection;
+
+        /// <summary>
+        /// The grid connection of the EVSE.
+        /// </summary>
+        [Optional]
+        public GridConnectionTypes? GridConnection
+        {
+
+            get
+            {
+                return _GridConnection ?? ChargingStation?.GridConnection;
+            }
+
+            set
+            {
+
+                if (value != _GridConnection && value != ChargingStation?.GridConnection)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _GridConnection);
+
+                    else
+                        SetProperty(ref _GridConnection, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region EnergySources
+
+        private EnergySources _EnergySources;
+
+        /// <summary>
+        /// The source of energy / energy mix at the EVSE.
+        /// </summary>
+        [Optional]
+        public EnergySources EnergySources
+        {
+
+            get
+            {
+                return _EnergySources ?? ChargingStation?.EnergySources;
+            }
+
+            set
+            {
+
+                if (value != _EnergySources && value != ChargingStation?.EnergySources)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _EnergySources);
+
+                    else
+                        SetProperty(ref _EnergySources, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
         #region AverageVoltage
 
         private Single? _AverageVoltage;
@@ -210,6 +282,7 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
 
         #region MaxCurrent
 
@@ -312,6 +385,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
         #region MaxPower
 
         private Single? _MaxPower;
@@ -413,6 +487,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
         #region MaxCapacity
 
         private Single? _MaxCapacity;
@@ -513,6 +588,7 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
 
         #region EnergyMeterId
 
