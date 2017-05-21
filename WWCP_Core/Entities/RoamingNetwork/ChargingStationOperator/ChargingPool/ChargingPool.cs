@@ -696,13 +696,13 @@ namespace org.GraphDefined.WWCP
 
         #region GridConnection
 
-        private GridConnection _GridConnection;
+        private GridConnectionTypes? _GridConnection;
 
         /// <summary>
         /// The grid connection of the charging pool.
         /// </summary>
         [Optional]
-        public GridConnection GridConnection
+        public GridConnectionTypes? GridConnection
         {
 
             get
@@ -724,6 +724,42 @@ namespace org.GraphDefined.WWCP
 
                     // Delete inherited grid connections
                     _ChargingStations.ForEach(station => station.GridConnection = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region EnergySources
+
+        private EnergySources _EnergySources;
+
+        /// <summary>
+        /// The source of energy / energy mix at the charging pool.
+        /// </summary>
+        [Optional]
+        public EnergySources EnergySources
+        {
+
+            get
+            {
+                return _EnergySources;
+            }
+
+            set
+            {
+
+                if (_EnergySources != value)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _EnergySources);
+
+                    else
+                        SetProperty(ref _EnergySources, value);
 
                 }
 

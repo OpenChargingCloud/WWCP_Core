@@ -397,9 +397,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator != (ChargingStationOperator_Id ChargingStationOperatorId1, ChargingStationOperator_Id ChargingStationOperatorId2)
-        {
-            return !(ChargingStationOperatorId1 == ChargingStationOperatorId2);
-        }
+            => !(ChargingStationOperatorId1 == ChargingStationOperatorId2);
 
         #endregion
 
@@ -432,9 +430,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator <= (ChargingStationOperator_Id ChargingStationOperatorId1, ChargingStationOperator_Id ChargingStationOperatorId2)
-        {
-            return !(ChargingStationOperatorId1 > ChargingStationOperatorId2);
-        }
+            => !(ChargingStationOperatorId1 > ChargingStationOperatorId2);
 
         #endregion
 
@@ -467,9 +463,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationOperatorId2">Another charging station operator identification.</param>
         /// <returns>true|false</returns>
         public static Boolean operator >= (ChargingStationOperator_Id ChargingStationOperatorId1, ChargingStationOperator_Id ChargingStationOperatorId2)
-        {
-            return !(ChargingStationOperatorId1 < ChargingStationOperatorId2);
-        }
+            => !(ChargingStationOperatorId1 < ChargingStationOperatorId2);
 
         #endregion
 

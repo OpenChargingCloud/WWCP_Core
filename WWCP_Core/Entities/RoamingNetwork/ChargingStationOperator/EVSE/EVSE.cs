@@ -570,6 +570,103 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region Reservation
+
+        private ChargingReservation _Reservation;
+
+        /// <summary>
+        /// The current charging reservation, if available.
+        /// </summary>
+        [InternalUseOnly]
+        public ChargingReservation Reservation
+        {
+
+            get
+            {
+                return _Reservation;
+            }
+
+            set
+            {
+
+                // Skip, if the reservation is already known... 
+                if (_Reservation != value)
+                {
+
+                    _Reservation = value;
+
+                    if (_Reservation != null)
+                    {
+
+                        //SetStatus(EVSEStatusType.Reserved);
+
+                        OnNewReservation?.Invoke(DateTime.Now, this, _Reservation);
+
+                    }
+
+                    //else
+                    //    SetStatus(EVSEStatusType.Available);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        // MaxReservationTime
+
+
+        #region ChargingSession
+
+        private ChargingSession _ChargingSession;
+
+        /// <summary>
+        /// The current charging session, if available.
+        /// </summary>
+        [InternalUseOnly]
+        public ChargingSession ChargingSession
+        {
+
+            get
+            {
+                return _ChargingSession;
+            }
+
+            set
+            {
+
+                // Skip, if the charging session is already known... 
+                if (_ChargingSession != value)
+                {
+
+                    _ChargingSession = value;
+
+                    if (_ChargingSession != null)
+                    {
+
+                        if (_ChargingSession.EVSE == null)
+                            _ChargingSession.EVSE = this;
+
+                        //SetStatus(EVSEStatusType.Charging);
+
+                        OnNewChargingSession?.Invoke(DateTime.Now, this, _ChargingSession);
+
+                    }
+
+                    //else
+                    //    SetStatus(EVSEStatusType.Available);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+
         #region AdminStatus
 
         /// <summary>
@@ -711,12 +808,100 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Events
+
+        #region OnReserveRequest/-Response / OnNewReservation
+
+        /// <summary>
+        /// An event fired whenever a reserve command was received.
+        /// </summary>
+        public event OnReserveEVSERequestDelegate   OnReserveRequest;
+
+        /// <summary>
+        /// An event fired whenever a reserve command completed.
+        /// </summary>
+        public event OnReserveEVSEResponseDelegate  OnReserveResponse;
+
+        /// <summary>
+        /// An event fired whenever a new charging reservation was created.
+        /// </summary>
+        public event OnNewReservationDelegate       OnNewReservation;
+
+        #endregion
+
+        #region OnRemoteStartRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a remote start command was received.
+        /// </summary>
+        public event OnRemoteStartEVSERequestDelegate   OnRemoteStartRequest;
+
+        /// <summary>
+        /// An event fired whenever a remote start command completed.
+        /// </summary>
+        public event OnRemoteStartEVSEResponseDelegate  OnRemoteStartResponse;
+
+        #endregion
+
+        #region OnNewChargingSession
+
+        /// <summary>
+        /// An event fired whenever a new charging session was created.
+        /// </summary>
+        public event OnNewChargingSessionDelegate OnNewChargingSession;
+
+        #endregion
+
+        #region OnRemoteStopRequest/-Response
+
+        /// <summary>
+        /// An event fired whenever a remote stop command was received.
+        /// </summary>
+        public event OnRemoteStopEVSERequestDelegate   OnRemoteStopRequest;
+
+        /// <summary>
+        /// An event fired whenever a remote stop command completed.
+        /// </summary>
+        public event OnRemoteStopEVSEResponseDelegate  OnRemoteStopResponse;
+
+        #endregion
+
+        #region OnNewChargeDetailRecord
+
+        /// <summary>
+        /// An event fired whenever a new charge detail record was created.
+        /// </summary>
+        public event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord;
+
+        #endregion
+
+        #region OnData/(Admin)StatusChanged
+
+        /// <summary>
+        /// An event fired whenever the static data changed.
+        /// </summary>
+        public event OnEVSEDataChangedDelegate         OnDataChanged;
+
+        /// <summary>
+        /// An event fired whenever the admin status changed.
+        /// </summary>
+        public event OnEVSEAdminStatusChangedDelegate  OnAdminStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the dynamic status changed.
+        /// </summary>
+        public event OnEVSEStatusChangedDelegate       OnStatusChanged;
+
+        #endregion
+
+        #endregion
+
         #region Links
 
         /// <summary>
         /// An optional remote EVSE.
         /// </summary>
-        public IRemoteEVSE              RemoteEVSE        { get; }// internal set; }
+        public IRemoteEVSE              RemoteEVSE        { get; }
 
         /// <summary>
         /// The charging station of this EVSE.
@@ -858,6 +1043,45 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region UpdateWith(OtherEVSE)
+
+        /// <summary>
+        /// Update this EVSE with the data of the other EVSE.
+        /// </summary>
+        /// <param name="OtherEVSE">Another EVSE.</param>
+        public EVSE UpdateWith(EVSE OtherEVSE)
+        {
+
+            Description          = OtherEVSE.Description;
+
+            ChargingModes        = OtherEVSE.ChargingModes;
+            AverageVoltage       = OtherEVSE.AverageVoltage;
+            CurrentTypes         = OtherEVSE.CurrentTypes;
+            MaxCurrent           = OtherEVSE.MaxCurrent;
+            MaxPower             = OtherEVSE.MaxPower;
+            MaxCapacity          = OtherEVSE.MaxCapacity;
+
+            if (SocketOutlets == null && OtherEVSE.SocketOutlets != null)
+                SocketOutlets = new ReactiveSet<SocketOutlet>(OtherEVSE.SocketOutlets);
+            else if (SocketOutlets != null)
+                SocketOutlets = OtherEVSE.SocketOutlets;
+
+            EnergyMeterId        = OtherEVSE.EnergyMeterId;
+
+
+            if (OtherEVSE.AdminStatus.Timestamp > AdminStatus.Timestamp)
+                SetAdminStatus(OtherEVSE.AdminStatus);
+
+            if (OtherEVSE.Status.Timestamp > Status.Timestamp)
+                SetStatus(OtherEVSE.Status);
+
+            return this;
+
+        }
+
+        #endregion
+
+
         public void AddChargingMode(ChargingModes ChargingMode)
         {
 
@@ -881,27 +1105,7 @@ namespace org.GraphDefined.WWCP
         }
 
 
-        #region Data/(Admin-)Status management
-
-        #region OnData/(Admin)StatusChanged
-
-        /// <summary>
-        /// An event fired whenever the static data changed.
-        /// </summary>
-        public event OnEVSEDataChangedDelegate         OnDataChanged;
-
-        /// <summary>
-        /// An event fired whenever the dynamic status changed.
-        /// </summary>
-        public event OnEVSEStatusChangedDelegate       OnStatusChanged;
-
-        /// <summary>
-        /// An event fired whenever the admin status changed.
-        /// </summary>
-        public event OnEVSEAdminStatusChangedDelegate  OnAdminStatusChanged;
-
-        #endregion
-
+        #region Data/(Admin-)Status
 
         #region SetStatus(NewStatus)
 
@@ -1106,71 +1310,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
         #region Reservations
-
-        #region Reservation
-
-        private ChargingReservation _Reservation;
-
-        /// <summary>
-        /// The current charging reservation, if available.
-        /// </summary>
-        [InternalUseOnly]
-        public ChargingReservation Reservation
-        {
-
-            get
-            {
-                return _Reservation;
-            }
-
-            set
-            {
-
-                // Skip, if the reservation is already known... 
-                if (_Reservation != value)
-                {
-
-                    _Reservation = value;
-
-                    if (_Reservation != null)
-                    {
-
-                        //SetStatus(EVSEStatusType.Reserved);
-
-                        OnNewReservation?.Invoke(DateTime.Now, this, _Reservation);
-
-                    }
-
-                    //else
-                    //    SetStatus(EVSEStatusType.Available);
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
-        #region OnReserveRequest/-Response / OnNewReservation
-
-        /// <summary>
-        /// An event fired whenever a reserve command was received.
-        /// </summary>
-        public event OnReserveEVSERequestDelegate   OnReserveRequest;
-
-        /// <summary>
-        /// An event fired whenever a reserve command completed.
-        /// </summary>
-        public event OnReserveEVSEResponseDelegate  OnReserveResponse;
-
-        /// <summary>
-        /// An event fired whenever a new charging reservation was created.
-        /// </summary>
-        public event OnNewReservationDelegate       OnNewReservation;
-
-        #endregion
-
 
         #region Reserve(...StartTime, Duration, ReservationId = null, ProviderId = null, ...)
 
@@ -1490,21 +1629,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region RemoteStart/-Stop and Sessions
-
-        #region OnRemoteStart / OnRemoteStarted
-
-        /// <summary>
-        /// An event fired whenever a remote start command was received.
-        /// </summary>
-        public event OnRemoteStartEVSERequestDelegate    OnRemoteStart;
-
-        /// <summary>
-        /// An event fired whenever a remote start command completed.
-        /// </summary>
-        public event OnRemoteStartEVSEResponseDelegate  OnRemoteStarted;
-
-        #endregion
+        #region RemoteStart/-Stop and SendSession/-CDR
 
         #region RemoteStart(...ChargingProduct = null, ReservationId = null, SessionId = null, ProviderId = null, eMAId = null, ...)
 
@@ -1547,30 +1672,30 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region Send OnRemoteStart event
+            #region Send OnRemoteStartRequest event
 
             var Runtime = Stopwatch.StartNew();
 
             try
             {
 
-                OnRemoteStart?.Invoke(DateTime.Now,
-                                      Timestamp.Value,
-                                      this,
-                                      EventTrackingId,
-                                      ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
-                                      Id,
-                                      ChargingProduct,
-                                      ReservationId,
-                                      SessionId,
-                                      ProviderId,
-                                      eMAId,
-                                      RequestTimeout);
+                OnRemoteStartRequest?.Invoke(DateTime.Now,
+                                             Timestamp.Value,
+                                             this,
+                                             EventTrackingId,
+                                             ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
+                                             Id,
+                                             ChargingProduct,
+                                             ReservationId,
+                                             SessionId,
+                                             ProviderId,
+                                             eMAId,
+                                             RequestTimeout);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(EVSE) + "." + nameof(OnRemoteStart));
+                e.Log(nameof(EVSE) + "." + nameof(OnRemoteStartRequest));
             }
 
             #endregion
@@ -1621,32 +1746,32 @@ namespace org.GraphDefined.WWCP
             }
 
 
-            #region Send OnRemoteStarted event
+            #region Send OnRemoteStartResponse event
 
             Runtime.Stop();
 
             try
             {
 
-                OnRemoteStarted?.Invoke(DateTime.Now,
-                                        Timestamp.Value,
-                                        this,
-                                        EventTrackingId,
-                                        ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
-                                        Id,
-                                        ChargingProduct,
-                                        ReservationId,
-                                        SessionId,
-                                        ProviderId,
-                                        eMAId,
-                                        RequestTimeout,
-                                        result,
-                                        Runtime.Elapsed);
+                OnRemoteStartResponse?.Invoke(DateTime.Now,
+                                              Timestamp.Value,
+                                              this,
+                                              EventTrackingId,
+                                              ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
+                                              Id,
+                                              ChargingProduct,
+                                              ReservationId,
+                                              SessionId,
+                                              ProviderId,
+                                              eMAId,
+                                              RequestTimeout,
+                                              result,
+                                              Runtime.Elapsed);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(EVSE) + "." + nameof(OnRemoteStart));
+                e.Log(nameof(EVSE) + "." + nameof(OnRemoteStartRequest));
             }
 
             #endregion
@@ -1657,61 +1782,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChargingSession
-
-        private ChargingSession _ChargingSession;
-
-        /// <summary>
-        /// The current charging session, if available.
-        /// </summary>
-        [InternalUseOnly]
-        public ChargingSession ChargingSession
-        {
-
-            get
-            {
-                return _ChargingSession;
-            }
-
-            set
-            {
-
-                // Skip, if the charging session is already known... 
-                if (_ChargingSession != value)
-                {
-
-                    _ChargingSession = value;
-
-                    if (_ChargingSession != null)
-                    {
-
-                        if (_ChargingSession.EVSE == null)
-                            _ChargingSession.EVSE = this;
-
-                        //SetStatus(EVSEStatusType.Charging);
-
-                        OnNewChargingSession?.Invoke(DateTime.Now, this, _ChargingSession);
-
-                    }
-
-                    //else
-                    //    SetStatus(EVSEStatusType.Available);
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
-        #region OnNewChargingSession
-
-        /// <summary>
-        /// An event fired whenever a new charging session was created.
-        /// </summary>
-        public event OnNewChargingSessionDelegate OnNewChargingSession;
-
+        #region (internal) SendNewChargingSession(...)
 
         internal void SendNewChargingSession(DateTime         Timestamp,
                                              Object           Sender,
@@ -1724,20 +1795,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
-        #region OnRemoteStop / OnRemoteStopped / 
-
-        /// <summary>
-        /// An event fired whenever a remote stop command was received.
-        /// </summary>
-        public event OnRemoteStopEVSERequestDelegate     OnRemoteStop;
-
-        /// <summary>
-        /// An event fired whenever a remote stop command completed.
-        /// </summary>
-        public event OnRemoteStopEVSEResponseDelegate  OnRemoteStopped;
-
-        #endregion
 
         #region RemoteStop(...SessionId, ReservationHandling = null, ProviderId = null, eMAId = null, ...)
 
@@ -1781,29 +1838,29 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region Send OnRemoteStop event
+            #region Send OnRemoteStopRequest event
 
             var Runtime = Stopwatch.StartNew();
 
             try
             {
 
-                OnRemoteStop?.Invoke(DateTime.Now,
-                                     Timestamp.Value,
-                                     this,
-                                     EventTrackingId,
-                                     ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
-                                     Id,
-                                     SessionId,
-                                     ReservationHandling,
-                                     ProviderId,
-                                     eMAId,
-                                     RequestTimeout);
+                OnRemoteStopRequest?.Invoke(DateTime.Now,
+                                            Timestamp.Value,
+                                            this,
+                                            EventTrackingId,
+                                            ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
+                                            Id,
+                                            SessionId,
+                                            ReservationHandling,
+                                            ProviderId,
+                                            eMAId,
+                                            RequestTimeout);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(EVSE) + "." + nameof(OnRemoteStop));
+                e.Log(nameof(EVSE) + "." + nameof(OnRemoteStopRequest));
             }
 
             #endregion
@@ -1850,31 +1907,31 @@ namespace org.GraphDefined.WWCP
             }
 
 
-            #region Send OnRemoteStopped event
+            #region Send OnRemoteStopResponse event
 
             Runtime.Stop();
 
             try
             {
 
-                OnRemoteStopped?.Invoke(DateTime.Now,
-                                        Timestamp.Value,
-                                        this,
-                                        EventTrackingId,
-                                        ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
-                                        Id,
-                                        SessionId,
-                                        ReservationHandling,
-                                        ProviderId,
-                                        eMAId,
-                                        RequestTimeout,
-                                        result,
-                                        Runtime.Elapsed);
+                OnRemoteStopResponse?.Invoke(DateTime.Now,
+                                             Timestamp.Value,
+                                             this,
+                                             EventTrackingId,
+                                             ChargingStation.ChargingPool.Operator.RoamingNetwork.Id,
+                                             Id,
+                                             SessionId,
+                                             ReservationHandling,
+                                             ProviderId,
+                                             eMAId,
+                                             RequestTimeout,
+                                             result,
+                                             Runtime.Elapsed);
 
             }
             catch (Exception e)
             {
-                e.Log(nameof(EVSE) + "." + nameof(OnRemoteStopped));
+                e.Log(nameof(EVSE) + "." + nameof(OnRemoteStopResponse));
             }
 
             #endregion
@@ -1885,13 +1942,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region OnNewChargeDetailRecord
-
-        /// <summary>
-        /// An event fired whenever a new charge detail record was created.
-        /// </summary>
-        public event OnNewChargeDetailRecordDelegate OnNewChargeDetailRecord;
-
+        #region (internal) SendNewChargeDetailRecord(...)
 
         internal void SendNewChargeDetailRecord(DateTime            Timestamp,
                                                 Object              Sender,
@@ -1911,45 +1962,6 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
-
-        #endregion
-
-
-        #region UpdateWith(OtherEVSE)
-
-        /// <summary>
-        /// Update this EVSE with the data of the other EVSE.
-        /// </summary>
-        /// <param name="OtherEVSE">Another EVSE.</param>
-        public EVSE UpdateWith(EVSE OtherEVSE)
-        {
-
-            Description          = OtherEVSE.Description;
-
-            ChargingModes        = OtherEVSE.ChargingModes;
-            AverageVoltage       = OtherEVSE.AverageVoltage;
-            CurrentTypes         = OtherEVSE.CurrentTypes;
-            MaxCurrent           = OtherEVSE.MaxCurrent;
-            MaxPower             = OtherEVSE.MaxPower;
-            MaxCapacity          = OtherEVSE.MaxCapacity;
-
-            if (SocketOutlets == null && OtherEVSE.SocketOutlets != null)
-                SocketOutlets = new ReactiveSet<SocketOutlet>(OtherEVSE.SocketOutlets);
-            else if (SocketOutlets != null)
-                SocketOutlets = OtherEVSE.SocketOutlets;
-
-            EnergyMeterId        = OtherEVSE.EnergyMeterId;
-
-
-            if (OtherEVSE.AdminStatus.Timestamp > AdminStatus.Timestamp)
-                SetAdminStatus(OtherEVSE.AdminStatus);
-
-            if (OtherEVSE.Status.Timestamp > Status.Timestamp)
-                SetStatus(OtherEVSE.Status);
-
-            return this;
-
-        }
 
         #endregion
 
@@ -1974,6 +1986,115 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region Operator overloading
+
+        #region Operator == (EVSE1, EVSE2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EVSE1">An EVSE.</param>
+        /// <param name="EVSE2">Another EVSE.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (EVSE EVSE1, EVSE EVSE2)
+        {
+
+            // If both are null, or both are same instance, return true.
+            if (Object.ReferenceEquals(EVSE1, EVSE2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (((Object) EVSE1 == null) || ((Object) EVSE2 == null))
+                return false;
+
+            return EVSE1.Equals(EVSE2);
+
+        }
+
+        #endregion
+
+        #region Operator != (EVSE1, EVSE2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EVSE1">An EVSE.</param>
+        /// <param name="EVSE2">Another EVSE.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (EVSE EVSE1, EVSE EVSE2)
+            => !(EVSE1 == EVSE2);
+
+        #endregion
+
+        #region Operator <  (EVSE1, EVSE2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EVSE1">An EVSE.</param>
+        /// <param name="EVSE2">Another EVSE.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (EVSE EVSE1, EVSE EVSE2)
+        {
+
+            if ((Object) EVSE1 == null)
+                throw new ArgumentNullException("The given EVSE1 must not be null!");
+
+            return EVSE1.CompareTo(EVSE2) < 0;
+
+        }
+
+        #endregion
+
+        #region Operator <= (EVSE1, EVSE2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EVSE1">An EVSE.</param>
+        /// <param name="EVSE2">Another EVSE.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (EVSE EVSE1, EVSE EVSE2)
+            => !(EVSE1 > EVSE2);
+
+        #endregion
+
+        #region Operator >  (EVSE1, EVSE2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EVSE1">An EVSE.</param>
+        /// <param name="EVSE2">Another EVSE.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (EVSE EVSE1, EVSE EVSE2)
+        {
+
+            if ((Object) EVSE1 == null)
+                throw new ArgumentNullException("The given EVSE1 must not be null!");
+
+            return EVSE1.CompareTo(EVSE2) > 0;
+
+        }
+
+        #endregion
+
+        #region Operator >= (EVSE1, EVSE2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="EVSE1">An EVSE.</param>
+        /// <param name="EVSE2">Another EVSE.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (EVSE EVSE1, EVSE EVSE2)
+            => !(EVSE1 < EVSE2);
+
+        #endregion
+
+        #endregion
+
         #region IComparable<EVSE> Members
 
         #region CompareTo(Object)
@@ -1986,9 +2107,8 @@ namespace org.GraphDefined.WWCP
         {
 
             if (Object == null)
-                throw new ArgumentNullException("The given object must not be null!");
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
 
-            // Check if the given object is an EVSE.
             var EVSE = Object as EVSE;
             if ((Object) EVSE == null)
                 throw new ArgumentException("The given object is not an EVSE!");
@@ -2034,12 +2154,11 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an EVSE.
             var EVSE = Object as EVSE;
             if ((Object) EVSE == null)
                 return false;
 
-            return this.Equals(EVSE);
+            return Equals(EVSE);
 
         }
 
@@ -2219,7 +2338,7 @@ namespace org.GraphDefined.WWCP
             /// The grid connection of the charging station.
             /// </summary>
             [Optional]
-            public GridConnection GridConnection { get; set; }
+            public GridConnectionTypes GridConnection { get; set; }
 
             /// <summary>
             /// The features of the charging station.

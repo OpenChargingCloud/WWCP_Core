@@ -92,6 +92,7 @@
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingTariff_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSEGroup\EVSEGroupAdminStatusType.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSEGroup\EVSEGroup_Id.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\EnergySources.cs" />
     <Compile Include="Entities\RoamingNetwork\ParkingOperator\ParkingReservation\ParkingReservation.cs" />
     <Compile Include="Entities\RoamingNetwork\ParkingOperator\ParkingReservation\ParkingReservationCancellation.cs" />
     <Compile Include="Entities\RoamingNetwork\ParkingOperator\ParkingReservation\ParkingReservationLevel.cs" />

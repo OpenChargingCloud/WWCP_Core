@@ -19,43 +19,50 @@
 
 using System;
 
+using org.GraphDefined.Vanaheimr.Illias;
+using System.Collections.Generic;
+
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
-    public enum GridConnectionTypes
+    /// <summary>
+    /// A socket outlet to connect an electric vehicle (EV)
+    /// to an Electric Vehicle Supply Equipment (EVSE).
+    /// </summary>
+    public class EnergySources
     {
 
-        /// <summary>
-        /// Unknown grid connection.
-        /// </summary>
-        Unknown,
+
+        private readonly Dictionary<String, Single> _EnergyMix;
+
+
+        #region Constructor(s)
 
         /// <summary>
-        /// 3-phase grid connection.
+        /// Create a new energy sources overview.
         /// </summary>
-        ThreePhase,
+        public EnergySources()
+        {
+
+            
+
+        }
+
+        #endregion
+
+
+        #region (override) ToString()
 
         /// <summary>
-        /// Single phase grid connection.
+        /// Return a string representation of this object.
         /// </summary>
-        SinglePhase,
+        public override String ToString()
 
-        /// <summary>
-        /// Single phase grid connection on L0.
-        /// </summary>
-        SinglePhaseL0,
+            => String.Concat("");
 
-        /// <summary>
-        /// Single phase grid connection on L1.
-        /// </summary>
-        SinglePhaseL1,
-
-        /// <summary>
-        /// Single phase grid connection on L2.
-        /// </summary>
-        SinglePhaseL2,
+        #endregion
 
     }
 

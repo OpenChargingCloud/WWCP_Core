@@ -117,9 +117,9 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #region ToJSON(this GridConnection, JPropertyKey)
 
-        public static JProperty ToJSON(this GridConnection GridConnection, String JPropertyKey)
+        public static JProperty ToJSON(this GridConnectionTypes GridConnection, String JPropertyKey)
 
-            => GridConnection != GridConnection.Unknown
+            => GridConnection != GridConnectionTypes.Unknown
                    ? new JProperty(JPropertyKey,
                                    GridConnection.ToString())
                    : null;

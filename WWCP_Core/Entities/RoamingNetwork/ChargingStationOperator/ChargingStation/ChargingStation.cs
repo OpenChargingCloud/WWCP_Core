@@ -45,6 +45,8 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
+        private Double EPSILON = 0.01;
+
         /// <summary>
         /// The default max size of the charging station (aggregated EVSE) status list.
         /// </summary>
@@ -815,13 +817,13 @@ namespace org.GraphDefined.WWCP
 
         #region GridConnection
 
-        private GridConnection _GridConnection;
+        private GridConnectionTypes? _GridConnection;
 
         /// <summary>
         /// The grid connection of the charging station.
         /// </summary>
         [Optional]
-        public GridConnection GridConnection
+        public GridConnectionTypes? GridConnection
         {
 
             get
@@ -840,6 +842,42 @@ namespace org.GraphDefined.WWCP
 
                     else
                         SetProperty(ref _GridConnection, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region EnergySources
+
+        private EnergySources _EnergySources;
+
+        /// <summary>
+        /// The source of energy / energy mix at the charging station.
+        /// </summary>
+        [Optional]
+        public EnergySources EnergySources
+        {
+
+            get
+            {
+                return _EnergySources ?? ChargingPool?.EnergySources;
+            }
+
+            set
+            {
+
+                if (value != _EnergySources && value != ChargingPool?.EnergySources)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _EnergySources);
+
+                    else
+                        SetProperty(ref _EnergySources, value);
 
                 }
 
@@ -3670,6 +3708,113 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region Operator overloading
+
+        #region Operator == (ChargingStation1, ChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStation1">A charging station.</param>
+        /// <param name="ChargingStation2">Another charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+        {
+
+            // If both are null, or both are same instance, return true.
+            if (Object.ReferenceEquals(ChargingStation1, ChargingStation2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (((Object) ChargingStation1 == null) || ((Object) ChargingStation2 == null))
+                return false;
+
+            return ChargingStation1.Equals(ChargingStation2);
+
+        }
+
+        #endregion
+
+        #region Operator != (ChargingStation1, ChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStation1">A charging station.</param>
+        /// <param name="ChargingStation2">Another charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+            => !(ChargingStation1 == ChargingStation2);
+
+        #endregion
+
+        #region Operator <  (ChargingStation1, ChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStation1">A charging station.</param>
+        /// <param name="ChargingStation2">Another charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+        {
+
+            if ((Object) ChargingStation1 == null)
+                throw new ArgumentNullException(nameof(ChargingStation1), "The given ChargingStation1 must not be null!");
+
+            return ChargingStation1.CompareTo(ChargingStation2) < 0;
+
+        }
+
+        #endregion
+
+        #region Operator <= (ChargingStation1, ChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStation1">A charging station.</param>
+        /// <param name="ChargingStation2">Another charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+            => !(ChargingStation1 > ChargingStation2);
+
+        #endregion
+
+        #region Operator >  (ChargingStation1, ChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStation1">A charging station.</param>
+        /// <param name="ChargingStation2">Another charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+        {
+
+            if ((Object) ChargingStation1 == null)
+                throw new ArgumentNullException(nameof(ChargingStation1), "The given ChargingStation1 must not be null!");
+
+            return ChargingStation1.CompareTo(ChargingStation2) > 0;
+
+        }
+
+        #endregion
+
+        #region Operator >= (ChargingStation1, ChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStation1">A charging station.</param>
+        /// <param name="ChargingStation2">Another charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+            => !(ChargingStation1 < ChargingStation2);
+
+        #endregion
+
+        #endregion
 
         #region IComparable<ChargingStation> Members
 
@@ -3910,7 +4055,7 @@ namespace org.GraphDefined.WWCP
             /// The grid connection of the charging station.
             /// </summary>
             [Optional]
-            public GridConnection GridConnection { get; set; }
+            public GridConnectionTypes GridConnection { get; set; }
 
             /// <summary>
             /// The features of the charging station.
