@@ -48,11 +48,8 @@ namespace org.GraphDefined.WWCP
 
             var Suffix = ChargingPoolId.Suffix;
 
-            if (Suffix.StartsWith("POOL", StringComparison.Ordinal))
-                Suffix = "STATION" + Suffix.Substring(4);
-
-            if (Suffix.StartsWith("P", StringComparison.Ordinal))
-                Suffix = "S" + Suffix.Substring(1);
+            if (Suffix.StartsWith("OOL", StringComparison.Ordinal))
+                Suffix = "TATION" + Suffix.Substring(3);
 
             return ChargingStation_Id.Parse(ChargingPoolId.OperatorId, Suffix + AdditionalSuffix ?? "");
 

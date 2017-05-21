@@ -15,8 +15,34 @@
  * limitations under the License.
  */
 
-using System.Runtime.CompilerServices;
+#region Usings
 
-[assembly: InternalsVisibleTo("org.GraphDefined.WWCP.Net")]
-[assembly: InternalsVisibleTo("org.GraphDefined.WWCP.EMSP")]
-[assembly: InternalsVisibleTo("org.GraphDefined.WWCP.ChargingStation")]
+using System;
+using System.Linq;
+using System.Collections.Generic;
+
+using org.GraphDefined.Vanaheimr.Illias;
+
+#endregion
+
+namespace org.GraphDefined.WWCP
+{
+
+    public enum EnergySourceCategories
+    {
+
+        General_Green,
+        Gas,
+        Coal,
+        StoneCoal,
+        Oil,
+        General_Fossil,
+        Nuclear,
+        Sun,
+        Wind,
+        Geotermal,
+        Waste
+
+    }
+
+}

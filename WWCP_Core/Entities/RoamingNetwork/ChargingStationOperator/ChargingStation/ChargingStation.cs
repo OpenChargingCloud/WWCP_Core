@@ -45,6 +45,8 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
+        private Double EPSILON = 0.01;
+
         /// <summary>
         /// The default max size of the charging station (aggregated EVSE) status list.
         /// </summary>
@@ -54,6 +56,11 @@ namespace org.GraphDefined.WWCP
         /// The default max size of the charging station admin status list.
         /// </summary>
         public const UInt16 DefaultMaxAdminStatusListSize    = 15;
+
+        /// <summary>
+        /// The maximum time span for a reservation.
+        /// </summary>
+        public static readonly TimeSpan  DefaultMaxReservationDuration   = TimeSpan.FromMinutes(30);
 
         #endregion
 
@@ -734,42 +741,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region GridConnection
-
-        private GridConnection _GridConnection;
-
-        /// <summary>
-        /// The grid connection of the charging station.
-        /// </summary>
-        [Optional]
-        public GridConnection GridConnection
-        {
-
-            get
-            {
-                return _GridConnection ?? ChargingPool?.GridConnection;
-            }
-
-            set
-            {
-
-                if (value != _GridConnection && value != ChargingPool?.GridConnection)
-                {
-
-                    if (value == null)
-                        DeleteProperty(ref _GridConnection);
-
-                    else
-                        SetProperty(ref _GridConnection, value);
-
-                }
-
-            }
-
-        }
-
-        #endregion
-
         #region ExitAddress
 
         private Address _ExitAddress;
@@ -847,6 +818,229 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+
+        #region GridConnection
+
+        private GridConnectionTypes? _GridConnection;
+
+        /// <summary>
+        /// The grid connection of the charging station.
+        /// </summary>
+        [Optional]
+        public GridConnectionTypes? GridConnection
+        {
+
+            get
+            {
+                return _GridConnection ?? ChargingPool?.GridConnection;
+            }
+
+            set
+            {
+
+                if (value != _GridConnection && value != ChargingPool?.GridConnection)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _GridConnection);
+
+                    else
+                        SetProperty(ref _GridConnection, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region EnergyMix
+
+        private EnergyMix _EnergyMix;
+
+        /// <summary>
+        /// The energy mix at the charging station.
+        /// </summary>
+        [Optional]
+        public EnergyMix EnergyMix
+        {
+
+            get
+            {
+                return _EnergyMix ?? ChargingPool?.EnergyMix;
+            }
+
+            set
+            {
+
+                if (value != _EnergyMix && value != ChargingPool?.EnergyMix)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _EnergyMix);
+
+                    else
+                        SetProperty(ref _EnergyMix, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxCurrent
+
+        private Single? _MaxCurrent;
+
+        /// <summary>
+        /// The maximum current of the grid connector of the charging station [Ampere].
+        /// </summary>
+        [Mandatory]
+        public Single? MaxCurrent
+        {
+
+            get
+            {
+                return _MaxCurrent;
+            }
+
+            set
+            {
+
+                if (value != null)
+                {
+
+                    if (!_MaxCurrent.HasValue)
+                        _MaxCurrent = value;
+
+                    else if (Math.Abs(_MaxCurrent.Value - value.Value) > EPSILON)
+                        SetProperty(ref _MaxCurrent, value);
+
+                }
+
+                else
+                    DeleteProperty(ref _MaxCurrent);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxPower
+
+        private Single? _MaxPower;
+
+        /// <summary>
+        /// The maximum power of the grid connector of the charging station [kWatt].
+        /// </summary>
+        [Optional]
+        public Single? MaxPower
+        {
+
+            get
+            {
+                return _MaxPower;
+            }
+
+            set
+            {
+
+                if (value != null)
+                {
+
+                    if (!_MaxPower.HasValue)
+                        _MaxPower = value;
+
+                    else if (Math.Abs(_MaxPower.Value - value.Value) > EPSILON)
+                        SetProperty(ref _MaxPower, value);
+
+                }
+
+                else
+                    DeleteProperty(ref _MaxPower);
+
+            }
+
+        }
+
+        #endregion
+
+        #region MaxCapacity
+
+        private Single? _MaxCapacity;
+
+        /// <summary>
+        /// The maximum capacity of the grid connector of the charging station [kWh].
+        /// </summary>
+        [Mandatory]
+        public Single? MaxCapacity
+        {
+
+            get
+            {
+                return _MaxCapacity;
+            }
+
+            set
+            {
+
+                if (value != null)
+                {
+
+                    if (!_MaxCapacity.HasValue)
+                        _MaxCapacity = value;
+
+                    else if (Math.Abs(_MaxCapacity.Value - value.Value) > EPSILON)
+                        SetProperty(ref _MaxCapacity, value);
+
+                }
+
+                else
+                    DeleteProperty(ref _MaxCapacity);
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region MaxReservationDuration
+
+        private TimeSpan _MaxReservationDuration;
+
+        /// <summary>
+        /// The maximum reservation time.
+        /// </summary>
+        [Optional]
+        public TimeSpan MaxReservationDuration
+        {
+
+            get
+            {
+                return _MaxReservationDuration;
+            }
+
+            set
+            {
+
+                if (value != null)
+                    SetProperty(ref _MaxReservationDuration, value);
+
+                else
+                    DeleteProperty(ref _MaxReservationDuration);
+
+            }
+
+        }
+
+        #endregion
+
 
 
         #region IsHubjectCompatible
@@ -1127,6 +1321,29 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Events
+
+        #region OnData/(Admin)StatusChanged
+
+        /// <summary>
+        /// An event fired whenever the static data changed.
+        /// </summary>
+        public event OnChargingStationDataChangedDelegate         OnDataChanged;
+
+        /// <summary>
+        /// An event fired whenever the dynamic status changed.
+        /// </summary>
+        public event OnChargingStationStatusChangedDelegate       OnStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the admin status changed.
+        /// </summary>
+        public event OnChargingStationAdminStatusChangedDelegate  OnAdminStatusChanged;
+
+        #endregion
+
+        #endregion
+
         #region Links
 
         /// <summary>
@@ -1266,27 +1483,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Data/(Admin-)Status management
-
-        #region OnData/(Admin)StatusChanged
-
-        /// <summary>
-        /// An event fired whenever the static data changed.
-        /// </summary>
-        public event OnChargingStationDataChangedDelegate         OnDataChanged;
-
-        /// <summary>
-        /// An event fired whenever the dynamic status changed.
-        /// </summary>
-        public event OnChargingStationStatusChangedDelegate       OnStatusChanged;
-
-        /// <summary>
-        /// An event fired whenever the admin status changed.
-        /// </summary>
-        public event OnChargingStationAdminStatusChangedDelegate  OnAdminStatusChanged;
-
-        #endregion
-
+        #region Data/(Admin-)Status
 
         #region SetStatus(NewStatus)
 
@@ -1895,11 +2092,6 @@ namespace org.GraphDefined.WWCP
 
 
         #region Reservations
-
-        /// <summary>
-        /// The maximum time span for a reservation.
-        /// </summary>
-        public static readonly TimeSpan MaxReservationDuration = TimeSpan.FromMinutes(30);
 
         #region ChargingReservations
 
@@ -3552,6 +3744,113 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region Operator overloading
+
+        #region Operator == (ChargingStation1, ChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStation1">A charging station.</param>
+        /// <param name="ChargingStation2">Another charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator == (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+        {
+
+            // If both are null, or both are same instance, return true.
+            if (Object.ReferenceEquals(ChargingStation1, ChargingStation2))
+                return true;
+
+            // If one is null, but not both, return false.
+            if (((Object) ChargingStation1 == null) || ((Object) ChargingStation2 == null))
+                return false;
+
+            return ChargingStation1.Equals(ChargingStation2);
+
+        }
+
+        #endregion
+
+        #region Operator != (ChargingStation1, ChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStation1">A charging station.</param>
+        /// <param name="ChargingStation2">Another charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator != (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+            => !(ChargingStation1 == ChargingStation2);
+
+        #endregion
+
+        #region Operator <  (ChargingStation1, ChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStation1">A charging station.</param>
+        /// <param name="ChargingStation2">Another charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+        {
+
+            if ((Object) ChargingStation1 == null)
+                throw new ArgumentNullException(nameof(ChargingStation1), "The given ChargingStation1 must not be null!");
+
+            return ChargingStation1.CompareTo(ChargingStation2) < 0;
+
+        }
+
+        #endregion
+
+        #region Operator <= (ChargingStation1, ChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStation1">A charging station.</param>
+        /// <param name="ChargingStation2">Another charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+            => !(ChargingStation1 > ChargingStation2);
+
+        #endregion
+
+        #region Operator >  (ChargingStation1, ChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStation1">A charging station.</param>
+        /// <param name="ChargingStation2">Another charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+        {
+
+            if ((Object) ChargingStation1 == null)
+                throw new ArgumentNullException(nameof(ChargingStation1), "The given ChargingStation1 must not be null!");
+
+            return ChargingStation1.CompareTo(ChargingStation2) > 0;
+
+        }
+
+        #endregion
+
+        #region Operator >= (ChargingStation1, ChargingStation2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="ChargingStation1">A charging station.</param>
+        /// <param name="ChargingStation2">Another charging station.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (ChargingStation ChargingStation1, ChargingStation ChargingStation2)
+            => !(ChargingStation1 < ChargingStation2);
+
+        #endregion
+
+        #endregion
 
         #region IComparable<ChargingStation> Members
 
@@ -3792,7 +4091,7 @@ namespace org.GraphDefined.WWCP
             /// The grid connection of the charging station.
             /// </summary>
             [Optional]
-            public GridConnection GridConnection { get; set; }
+            public GridConnectionTypes GridConnection { get; set; }
 
             /// <summary>
             /// The features of the charging station.
