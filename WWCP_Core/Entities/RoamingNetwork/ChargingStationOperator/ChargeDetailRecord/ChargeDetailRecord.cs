@@ -31,7 +31,8 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A charge detail record for a charging session.
     /// </summary>
-    public class ChargeDetailRecord : IEquatable <ChargeDetailRecord>,
+    public class ChargeDetailRecord : ACustomData,
+                                      IEquatable <ChargeDetailRecord>,
                                       IComparable<ChargeDetailRecord>,
                                       IComparable
     {
@@ -250,33 +251,41 @@ namespace org.GraphDefined.WWCP
         /// <param name="EnergyMeteringValues">An optional enumeration of intermediate energy metering values.</param>
         /// <param name="MeteringSignature">An optional signature of the metering values.</param>
         /// 
-        public ChargeDetailRecord(ChargingSession_Id                SessionId,
-                                  StartEndDateTime?                 SessionTime,
-                                  TimeSpan?                         Duration                 = null,
+        public ChargeDetailRecord(ChargingSession_Id                   SessionId,
+                                  StartEndDateTime?                    SessionTime,
+                                  TimeSpan?                            Duration                    = null,
 
-                                  EVSE                              EVSE                     = null,
-                                  EVSE_Id?                          EVSEId                   = null,
-                                  ChargingStation                   ChargingStation          = null,
-                                  ChargingPool                      ChargingPool             = null,
-                                  ChargingStationOperator           ChargingStationOperator  = null,
-                                  ChargingProduct                   ChargingProduct          = null,
+                                  EVSE                                 EVSE                        = null,
+                                  EVSE_Id?                             EVSEId                      = null,
+                                  ChargingStation                      ChargingStation             = null,
+                                  ChargingStation_Id?                  ChargingStationId           = null,
+                                  ChargingPool                         ChargingPool                = null,
+                                  ChargingPool_Id?                     ChargingPoolId              = null,
+                                  ChargingStationOperator              ChargingStationOperator     = null,
+                                  ChargingStationOperator_Id?          ChargingStationOperatorId   = null,
+                                  ChargingProduct                      ChargingProduct             = null,
 
-                                  AuthInfo                          IdentificationStart      = null,
-                                  AuthInfo                          IdentificationStop       = null,
-                                  eMobilityProvider_Id?             ProviderIdStart          = null,
-                                  eMobilityProvider_Id?             ProviderIdStop           = null,
+                                  AuthInfo                             IdentificationStart         = null,
+                                  AuthInfo                             IdentificationStop          = null,
+                                  eMobilityProvider_Id?                ProviderIdStart             = null,
+                                  eMobilityProvider_Id?                ProviderIdStop              = null,
 
-                                  ChargingReservation               Reservation              = null,
-                                  ChargingReservation_Id?           ReservationId            = null,
-                                  StartEndDateTime?                 ReservationTime          = null,
+                                  ChargingReservation                  Reservation                 = null,
+                                  ChargingReservation_Id?              ReservationId               = null,
+                                  StartEndDateTime?                    ReservationTime             = null,
 
-                                  ParkingSpace_Id?                  ParkingSpaceId           = null,
-                                  StartEndDateTime?                 ParkingTime              = null,
-                                  Decimal?                          ParkingFee               = null,
+                                  ParkingSpace_Id?                     ParkingSpaceId              = null,
+                                  StartEndDateTime?                    ParkingTime                 = null,
+                                  Decimal?                             ParkingFee                  = null,
 
-                                  EnergyMeter_Id?                   EnergyMeterId            = null,
-                                  IEnumerable<Timestamped<Single>>  EnergyMeteringValues     = null,
-                                  String                            MeteringSignature        = null)
+                                  EnergyMeter_Id?                      EnergyMeterId               = null,
+                                  IEnumerable<Timestamped<Single>>     EnergyMeteringValues        = null,
+                                  String                               MeteringSignature           = null,
+
+                                  IReadOnlyDictionary<String, Object>  CustomData                  = null
+                                 )
+
+            : base(CustomData)
 
         {
 

@@ -42,7 +42,7 @@ namespace org.GraphDefined.WWCP
         protected ACustomData(IReadOnlyDictionary<String, Object> CustomData)
         {
 
-            if (CustomData != null)
+            if (CustomData != null && CustomData.Count > 0)
             {
 
                 this._CustomData = new Dictionary<String, Object>();
