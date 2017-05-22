@@ -165,6 +165,19 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) NoOperation(AuthorizatorId, Description = null, Runtime = null)
+
+        public static SendCDRsResult NoOperation(IId        AuthorizatorId,
+                                                 String     Description  = null,
+                                                 TimeSpan?  Runtime      = null)
+
+            => new SendCDRsResult(SendCDRsResultType.NoOperation,
+                                  AuthorizatorId,
+                                  Description: Description,
+                                  Runtime:     Runtime);
+
+        #endregion
+
         #region (static) Error(AuthorizatorId, RejectedChargeDetailRecords = null, Description = null, Runtime = null)
 
         public static SendCDRsResult Error(IId                              AuthorizatorId,
@@ -210,6 +223,8 @@ namespace org.GraphDefined.WWCP
         UnknownEVSE,
 
         OutOfService,
+
+        NoOperation,
 
         Error
 
