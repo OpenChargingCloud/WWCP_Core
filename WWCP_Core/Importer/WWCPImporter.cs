@@ -446,80 +446,87 @@ namespace org.GraphDefined.WWCP.Importer
                                                     if (ChargingStation_Id.TryParse(StationConfig.Key, out ChargingStationId))
                                                     {
 
-                                                        var CurrentEVSEOperator = GetChargingStationOperators(ChargingStationId).
-                                                                                      FirstOrDefault(cso => cso.RoamingNetwork.Id == CurrentRoamingNetworkId);
 
-                                                        JToken JSONToken2;
-                                                        String PhoneNumber = null;
-                                                        var CurrentSettings = StationConfig.Value as JObject;
+                                                        var CurrentEVSEOperator = GetChargingStationOperators(ChargingStationId)?.
+                                                                                      FirstOrDefault(cso => cso                   != null &&
+                                                                                                            cso.RoamingNetwork.Id == CurrentRoamingNetworkId);
 
-                                                        #region PhoneNumber
-
-                                                        //if (CurrentSettings.TryGetValue("PhoneNumber", out JSONToken2))
-                                                        //{
-                                                        //    PhoneNumber = JSONToken2.Value<String>();
-                                                        //}
-
-                                                        #endregion
-
-                                                        #region AdminStatus
-
-                                                        var AdminStatus = ChargingStationAdminStatusTypes.Operational;
-
-                                                        if (CurrentSettings.TryGetValue("Adminstatus", out JSONToken2) &&
-                                                            !Enum.TryParse(JSONToken2.Value<String>(), true, out AdminStatus))
-
-                                                            DebugX.Log("Invalid admin status '" + JSONToken2.Value<String>() + "' for charging station '" + ChargingStationId + "'!");
-
-                                                        #endregion
-
-                                                        #region Group
-
-                                                        if (CurrentSettings.TryGetValue("Group", out JSONToken2))
+                                                        if (CurrentEVSEOperator != null)
                                                         {
 
-                                                            var JV = JSONToken2 as JValue;
-                                                            var JA = JSONToken2 as JArray;
+                                                            JToken JSONToken2;
+                                                            String PhoneNumber = null;
+                                                            var CurrentSettings = StationConfig.Value as JObject;
 
-                                                            var GroupList = JV != null
-                                                                                ? new String[] { JV.Value<String>() }
-                                                                                : JA != null
-                                                                                    ? JA.AsEnumerable().Select(v => v.Value<String>())
-                                                                                    : null;
+                                                            #region PhoneNumber
 
-                                                            if (GroupList != null)
+                                                            //if (CurrentSettings.TryGetValue("PhoneNumber", out JSONToken2))
+                                                            //{
+                                                            //    PhoneNumber = JSONToken2.Value<String>();
+                                                            //}
+
+                                                            #endregion
+
+                                                            #region AdminStatus
+
+                                                            var AdminStatus = ChargingStationAdminStatusTypes.Operational;
+
+                                                            if (CurrentSettings.TryGetValue("Adminstatus", out JSONToken2) &&
+                                                                !Enum.TryParse(JSONToken2.Value<String>(), true, out AdminStatus))
+
+                                                                DebugX.Log("Invalid admin status '" + JSONToken2.Value<String>() + "' for charging station '" + ChargingStationId + "'!");
+
+                                                            #endregion
+
+                                                            #region Group
+
+                                                            if (CurrentSettings.TryGetValue("Group", out JSONToken2))
                                                             {
-                                                                foreach (var GroupId in GroupList)
+
+                                                                var JV = JSONToken2 as JValue;
+                                                                var JA = JSONToken2 as JArray;
+
+                                                                var GroupList = JV != null
+                                                                                    ? new String[] { JV.Value<String>() }
+                                                                                    : JA != null
+                                                                                        ? JA.AsEnumerable().Select(v => v.Value<String>())
+                                                                                        : null;
+
+                                                                if (GroupList != null)
                                                                 {
-                                                                    CurrentEVSEOperator.
-                                                                        GetOrCreateChargingStationGroup(GroupId,
-                                                                                                        I18NString.Create(Languages.deu, GroupId)).
-                                                                        Add(ChargingStationId);
+                                                                    foreach (var GroupId in GroupList)
+                                                                    {
+                                                                        CurrentEVSEOperator.
+                                                                            GetOrCreateChargingStationGroup(GroupId,
+                                                                                                            I18NString.Create(Languages.deu, GroupId)).
+                                                                            Add(ChargingStationId);
+                                                                    }
                                                                 }
+
                                                             }
 
-                                                        }
+                                                            #endregion
 
-                                                        #endregion
+                                                            if (!_AllForwardingInfos.ContainsKey(ChargingStationId))
+                                                            {
 
-                                                        if (!_AllForwardingInfos.ContainsKey(ChargingStationId))
-                                                        {
+                                                                _AllForwardingInfos.Add(ChargingStationId,
+                                                                                        new ImporterForwardingInfo(
+                                                                                            OnChangedCallback: SendOnForwardingChanged,
+                                                                                            ChargingStationOperators: GetChargingStationOperators(ChargingStationId),
+                                                                                            StationId: ChargingStationId,
+                                                                                            StationName: "",
+                                                                                            StationServiceTag: "",
+                                                                                            StationAddress: new Address(),
+                                                                                            StationGeoCoordinate: null,
+                                                                                            PhoneNumber: PhoneNumber,
+                                                                                            AdminStatus: AdminStatus,
+                                                                                            Created: DateTime.Now,
+                                                                                            OutOfService: true,
+                                                                                            ForwardedToOperator: CurrentEVSEOperator)
+                                                                                       );
 
-                                                            _AllForwardingInfos.Add(ChargingStationId,
-                                                                                    new ImporterForwardingInfo(
-                                                                                        OnChangedCallback:          SendOnForwardingChanged,
-                                                                                        ChargingStationOperators:   GetChargingStationOperators(ChargingStationId),
-                                                                                        StationId:                  ChargingStationId,
-                                                                                        StationName:                "",
-                                                                                        StationServiceTag:          "",
-                                                                                        StationAddress:             new Address(),
-                                                                                        StationGeoCoordinate:       null,
-                                                                                        PhoneNumber:                PhoneNumber,
-                                                                                        AdminStatus:                AdminStatus,
-                                                                                        Created:                    DateTime.Now,
-                                                                                        OutOfService:               true,
-                                                                                        ForwardedToOperator:        CurrentEVSEOperator)
-                                                                                   );
+                                                            }
 
                                                         }
 
