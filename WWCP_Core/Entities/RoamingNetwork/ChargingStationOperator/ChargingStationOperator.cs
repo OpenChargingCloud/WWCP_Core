@@ -4583,9 +4583,12 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Id.ToString(),
-                             " - ",
-                             Name.FirstText());
+            => String.Concat("'",
+                             Name.FirstText(),
+                             "' (",
+                             Id.ToString(),
+                             ") in ",
+                             RoamingNetwork.Id.ToString());
 
         #endregion
 
