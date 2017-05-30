@@ -94,6 +94,11 @@ namespace org.GraphDefined.WWCP
                                   Action<EVSE>                      OnSuccess     = null,
                                   Action<ChargingStation, EVSE_Id>  OnError       = null);
 
+        IRemoteEVSE AddEVSE(IRemoteEVSE                       EVSE,
+                            Action<EVSE>                      Configurator  = null,
+                            Action<EVSE>                      OnSuccess     = null,
+                            Action<ChargingStation, EVSE_Id>  OnError       = null);
+
 
         Task<IEnumerable<EVSEStatus>> GetEVSEStatus(DateTime                 Timestamp,
                                                     CancellationToken        CancellationToken,

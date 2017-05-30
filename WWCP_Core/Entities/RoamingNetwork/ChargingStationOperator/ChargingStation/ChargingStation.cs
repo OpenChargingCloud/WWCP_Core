@@ -1814,6 +1814,9 @@ namespace org.GraphDefined.WWCP
                     if (RemoteChargingStation != null)
                     {
 
+                        if (_EVSE.RemoteEVSE != null)
+                            RemoteChargingStation.AddEVSE(_EVSE.RemoteEVSE);
+
                         OnAdminStatusChanged               += async (Timestamp, EventTrackingId, station, oldstatus, newstatus) => this.AdminStatus      = newstatus;
                         OnStatusChanged                    += async (Timestamp, EventTrackingId, station, oldstatus, newstatus) => this.Status           = newstatus;
 
