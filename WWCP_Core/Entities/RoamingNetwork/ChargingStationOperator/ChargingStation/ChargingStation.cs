@@ -3680,7 +3680,14 @@ namespace org.GraphDefined.WWCP
         {
 
             if (ParkingSpaces != null)
+            {
+
+                if (_ParkingSpaces == null)
+                    _ParkingSpaces = new ReactiveSet<ParkingSpace>();
+
                 _ParkingSpaces.Add(ParkingSpaces);
+
+            }
 
         }
 
