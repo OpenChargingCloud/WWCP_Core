@@ -165,6 +165,7 @@
     <Compile Include="Entities\GeoInformations\NavigationProvider\NavigationProvider_Id.cs" />
     <Compile Include="Entities\GeoInformations\NavigationProvider\INavigationProvider.cs" />
     <Compile Include="Entities\GeoInformations\NavigationProvider\IRemoteNavigationProvider.cs" />
+    <Compile Include="Entities\RoamingNetwork\PriorityList.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\EMPRoamingProvider_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\Exceptions.cs" />
     <Compile Include="Entities\GeoInformations\SmartCities\ISmartCity.cs" />
