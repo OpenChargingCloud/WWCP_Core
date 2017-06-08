@@ -254,16 +254,18 @@ namespace org.GraphDefined.WWCP
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="ErrorMessage">An error message.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopResult Error(IId                  AuthorizatorId,
-                                           ChargingSession_Id?  SessionId     = null,
-                                           String               ErrorMessage  = null,
-                                           TimeSpan?            Runtime       = null)
+        public static AuthStopResult
 
-            => new AuthStopResult(AuthorizatorId,
-                                  AuthStopResultType.Error,
-                                  SessionId,
-                                  Description: ErrorMessage,
-                                  Runtime:     Runtime);
+            Error(IId                  AuthorizatorId,
+                  ChargingSession_Id?  SessionId     = null,
+                  String               ErrorMessage  = null,
+                  TimeSpan?            Runtime       = null)
+
+                => new AuthStopResult(AuthorizatorId,
+                                      AuthStopResultType.Error,
+                                      SessionId,
+                                      Description: ErrorMessage,
+                                      Runtime:     Runtime);
 
         #endregion
 

@@ -35,15 +35,23 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
+    /// The common interface of all roaming networks.
+    /// </summary>
+    public interface IRoamingNetwork : IEquatable<RoamingNetwork>, IComparable<RoamingNetwork>, IComparable,
+                                       IStatus<RoamingNetworkStatusType>,
+                                       ISendAuthorizeStartStop
+    { }
+
+
+    /// <summary>
     /// A Electric Vehicle Roaming Network is a service abstraction to allow multiple
     /// independent roaming services to be delivered over the same infrastructure.
     /// This can e.g. be a differentation of service levels (premiun, basic,
     /// discount) or allow a simplified testing (production, qa, featureX, ...)
     /// </summary>
     public class RoamingNetwork : ACryptoEMobilityEntity<RoamingNetwork_Id>,
-                                  IEquatable<RoamingNetwork>, IComparable<RoamingNetwork>, IComparable,
-                                  IEnumerable<IEntity>,
-                                  IStatus<RoamingNetworkStatusType>
+                                  IRoamingNetwork,
+                                  IEnumerable<IEntity>
     {
 
         #region Data
@@ -61,6 +69,11 @@ namespace org.GraphDefined.WWCP
         #endregion
 
         #region Properties
+
+        IId ISendAuthorizeStartStop.AuthId => Id;
+
+        public Boolean DisableAuthentication { get; set; }
+
 
         #region Name
 
@@ -293,67 +306,10 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        private readonly ConcurrentDictionary<UInt32, ISendData>   _ISendData    = new ConcurrentDictionary<UInt32, ISendData>();
-
-        public void AddISendData(ISendData iSendData)
-        {
-            lock(_ISendData)
-            {
-
-                _ISendData.TryAdd(_ISendData.Count > 0
-                                      ? _ISendData.Keys.Max() + 1
-                                      : 1,
-                                  iSendData);
-
-            }
-        }
-
-        private readonly ConcurrentDictionary<UInt32, ISendStatus> _IRemotePushStatus  = new ConcurrentDictionary<UInt32, ISendStatus>();
-
-        public void AddISendStatus(ISendStatus iSendStatus)
-        {
-            lock (_IRemotePushStatus)
-            {
-
-                _IRemotePushStatus.TryAdd(_IRemotePushStatus.Count > 0
-                                              ? _IRemotePushStatus.Keys.Max() + 1
-                                              : 1,
-                                          iSendStatus);
-
-            }
-        }
-
-
-        private readonly ConcurrentDictionary<UInt32, ISendAuthorizeStartStop> _ISend2RemoteAuthorizeStartStop = new ConcurrentDictionary<UInt32, ISendAuthorizeStartStop>();
-
-        public void AddISendAuthorizeStartStop(ISendAuthorizeStartStop iRemoteAuthorizeStartStop)
-        {
-            lock (_ISend2RemoteAuthorizeStartStop)
-            {
-
-                _ISend2RemoteAuthorizeStartStop.TryAdd(_ISend2RemoteAuthorizeStartStop.Count > 0
-                                                      ? _ISend2RemoteAuthorizeStartStop.Keys.Max() + 1
-                                                      : 1,
-                                                  iRemoteAuthorizeStartStop);
-
-            }
-        }
-
-
-        private readonly ConcurrentDictionary<UInt32, ISend2RemoteChargeDetailRecords> _IRemoteSendChargeDetailRecord = new ConcurrentDictionary<UInt32, ISend2RemoteChargeDetailRecords>();
-
-        public void AddISend2RemoteChargeDetailRecords(ISend2RemoteChargeDetailRecords iRemoteSendChargeDetailRecord)
-        {
-            lock (_IRemoteSendChargeDetailRecord)
-            {
-
-                _IRemoteSendChargeDetailRecord.TryAdd(_IRemoteSendChargeDetailRecord.Count > 0
-                                                         ? _IRemoteSendChargeDetailRecord.Keys.Max() + 1
-                                                         : 1,
-                                                     iRemoteSendChargeDetailRecord);
-
-            }
-        }
+        private readonly PriorityList<ISendData>                       _ISendData                       = new PriorityList<ISendData>();
+        private readonly PriorityList<ISendStatus>                     _ISendStatus               = new PriorityList<ISendStatus>();
+        private readonly PriorityList<ISendAuthorizeStartStop>         _ISend2RemoteAuthorizeStartStop  = new PriorityList<ISendAuthorizeStartStop>();
+        private readonly PriorityList<ISend2RemoteChargeDetailRecords> _IRemoteSendChargeDetailRecord   = new PriorityList<ISend2RemoteChargeDetailRecords>();
 
 
         #region Data/(Admin-)Status management
@@ -1283,9 +1239,9 @@ namespace org.GraphDefined.WWCP
                     //_EMobilityProvider.OnEMobilityStationAddition
 
                     //AddIRemotePushData               (_EMobilityProvider);
-                    AddISendStatus            (_eMobilityProviderProxy);
-                    AddISendAuthorizeStartStop     (_eMobilityProviderProxy);
-                    AddISend2RemoteChargeDetailRecords(_eMobilityProviderProxy);
+                    _ISendStatus.Add             (_eMobilityProviderProxy);
+                    _ISend2RemoteAuthorizeStartStop.Add(_eMobilityProviderProxy);
+                    _IRemoteSendChargeDetailRecord.Add (_eMobilityProviderProxy);
 
 
                     // Link events!
@@ -2040,10 +1996,10 @@ namespace org.GraphDefined.WWCP
                     //                               ? _ChargingStationOperatorRoamingProviderPriorities.Keys.Max() + 1
                     //                               : 10);
 
-                    AddISendData                      (_CPORoamingProvider);
-                    AddISendStatus                    (_CPORoamingProvider);
-                    AddISendAuthorizeStartStop        (_CPORoamingProvider);
-                    AddISend2RemoteChargeDetailRecords(_CPORoamingProvider);
+                    _ISendData.Add                     (_CPORoamingProvider);
+                    _ISendStatus.Add             (_CPORoamingProvider);
+                    _ISend2RemoteAuthorizeStartStop.Add(_CPORoamingProvider);
+                    _IRemoteSendChargeDetailRecord.Add (_CPORoamingProvider);
 
                     CPORoamingProviderAddition.SendNotification(this, _CPORoamingProvider);
 
@@ -2463,9 +2419,6 @@ namespace org.GraphDefined.WWCP
                                                    Object            NewValue)
         {
 
-            Acknowledgement result = null;
-
-
             //foreach (var AuthenticationService in _IeMobilityServiceProviders.
             //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
             //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
@@ -2477,19 +2430,11 @@ namespace org.GraphDefined.WWCP
 
             //}
 
-            foreach (var iRemotePushData in _ISendData.
-                                                OrderBy(kvp => kvp.Key).
-                                                Select (kvp => kvp.Value))
-            {
-
-                result = await iRemotePushData.
-                                   UpdateStaticData(ChargingPool,
-                                                    PropertyName,
-                                                    OldValue,
-                                                    NewValue).
-                                   ConfigureAwait(false);
-
-            }
+            var results = _ISendData.WhenAll(iSendData => iSendData.
+                                                              UpdateStaticData(ChargingPool,
+                                                                               PropertyName,
+                                                                               OldValue,
+                                                                               NewValue));
 
             //foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
             //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
@@ -2840,9 +2785,6 @@ namespace org.GraphDefined.WWCP
                                                       Object            NewValue)
         {
 
-            Acknowledgement result = null;
-
-
             //foreach (var AuthenticationService in _IeMobilityServiceProviders.
             //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
             //                                          Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
@@ -2854,19 +2796,11 @@ namespace org.GraphDefined.WWCP
 
             //}
 
-            foreach (var iRemotePushData in _ISendData.
-                                                OrderBy(kvp => kvp.Key).
-                                                Select (kvp => kvp.Value))
-            {
-
-                result = await iRemotePushData.
-                                   UpdateStaticData(ChargingStation,
-                                                    PropertyName,
-                                                    OldValue,
-                                                    NewValue).
-                                   ConfigureAwait(false);
-
-            }
+            var results = _ISendData.WhenAll(iSendData => iSendData.
+                                                              UpdateStaticData(ChargingStation,
+                                                                               PropertyName,
+                                                                               OldValue,
+                                                                               NewValue));
 
             //foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
             //                                          OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
@@ -3211,16 +3145,8 @@ namespace org.GraphDefined.WWCP
                                    EVSE             EVSE)
         {
 
-            foreach (var iSendData in _ISendData.
-                                          OrderBy(kvp => kvp.Key).
-                                          Select (kvp => kvp.Value))
-            {
-
-                iSendData.
-                    SetStaticData(EVSE).
-                    ConfigureAwait(false);
-
-            }
+            var results = _ISendData.WhenAll(iSendData => iSendData.
+                                                              SetStaticData(EVSE));
 
         }
 
@@ -3242,15 +3168,8 @@ namespace org.GraphDefined.WWCP
                                      EVSE             EVSE)
         {
 
-            foreach (var iSendData in _ISendData.
-                                          OrderBy(kvp => kvp.Key).
-                                          Select (kvp => kvp.Value))
-            {
-
-                iSendData.DeleteStaticData(EVSE).
-                          ConfigureAwait(false);
-
-            }
+            var results = _ISendData.WhenAll(iSendData => iSendData.
+                                                              DeleteStaticData(EVSE));
 
             EVSERemoval.SendNotification(Timestamp, ChargingStation, EVSE);
 
@@ -3308,22 +3227,12 @@ namespace org.GraphDefined.WWCP
                                            Object            NewValue)
         {
 
-            Acknowledgement result = null;
-
-            foreach (var iSendData in _ISendData.
-                                          OrderBy(kvp => kvp.Key).
-                                          Select (kvp => kvp.Value))
-            {
-
-                result = await iSendData.
-                                   UpdateStaticData(EVSE,
-                                                    PropertyName,
-                                                    OldValue,
-                                                    NewValue,
-                                                    EventTrackingId: EventTrackingId).
-                                   ConfigureAwait(false);
-
-            }
+            var results = _ISendData.WhenAll(iSendData => iSendData.
+                                                              UpdateStaticData(EVSE,
+                                                              PropertyName,
+                                                              OldValue,
+                                                              NewValue,
+                                                              EventTrackingId: EventTrackingId));
 
             var OnEVSEDataChangedLocal = OnEVSEDataChanged;
             if (OnEVSEDataChangedLocal != null)
@@ -3424,20 +3333,10 @@ namespace org.GraphDefined.WWCP
                                              Timestamped<EVSEStatusTypes>  NewStatus)
         {
 
-            Acknowledgement result = null;
-
-            foreach (var iSendStatus in _IRemotePushStatus.
-                                            OrderBy(kvp => kvp.Key).
-                                            Select (kvp => kvp.Value))
-            {
-
-                result = await iSendStatus.
-                                   UpdateStatus(new EVSEStatusUpdate[] { new EVSEStatusUpdate(EVSE,
+            var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.
+                                                              UpdateStatus(new EVSEStatusUpdate[] { new EVSEStatusUpdate(EVSE,
                                                                                               OldStatus,
-                                                                                              NewStatus) }).
-                                   ConfigureAwait(false);
-
-            }
+                                                                                              NewStatus) }));
 
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
             if (OnEVSEStatusChangedLocal != null)
@@ -5420,69 +5319,64 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            AuthStartResult result = null;
+            var result = await _ISend2RemoteAuthorizeStartStop.
+                                   WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
+                                                                              AuthorizeStart(AuthIdentification,
+                                                                                             ChargingProduct,
+                                                                                             SessionId,
+                                                                                             OperatorId,
 
-            foreach (var iRemoteAuthorizeStartStop in _ISend2RemoteAuthorizeStartStop.
-                                                          OrderBy(kvp => kvp.Key).
-                                                          Select (kvp => kvp.Value))
+                                                                                             Timestamp,
+                                                                                             CancellationToken,
+                                                                                             EventTrackingId,
+                                                                                             RequestTimeout),
+
+                                             result2 => result2.Result == AuthStartResultType.Authorized ||
+                                                        result2.Result == AuthStartResultType.Blocked,
+
+                                             runtime => AuthStartResult.Error(Id,
+                                                                              this,
+                                                                              SessionId,
+                                                                              "No authorization service returned a positiv result!",
+                                                                              runtime)).
+
+                                   ConfigureAwait(false);
+
+
+            #region If Authorized...
+
+            if (result.Result == AuthStartResultType.Authorized)
             {
 
-                result = await iRemoteAuthorizeStartStop.
-                                   AuthorizeStart(AuthIdentification,
-                                                  ChargingProduct,
-                                                  SessionId,
-                                                  OperatorId,
-
-                                                  Timestamp,
-                                                  CancellationToken,
-                                                  EventTrackingId,
-                                                  RequestTimeout);
-
-
-                #region Authorized
-
-                if (result.Result == AuthStartResultType.Authorized)
+                if (result.SessionId.HasValue)
                 {
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
-                    // Will be deleted when the CDRecord was sent!
-                    //_ChargingSessions.TryAdd(result.SessionId,
-                    //                         new ChargingSession(result.SessionId) {
-                    //                             OperatorRoamingService  = OperatorRoamingService,
-                    //                             csoId          = OperatorId,
-                    //                             AuthToken               = AuthToken,
-                    //                             ChargingProductId       = ChargingProductId
-                    //                         });
+                    // Will be deleted when the charge detail record was sent!
 
-                    break;
+                    var NewChargingSession = new ChargingSession(result.SessionId.Value) {
+                                                 AuthorizatorId   = result.AuthorizatorId,
+                                                 AuthService      = result.ISendAuthorizeStartStop,
+                                                 OperatorId       = OperatorId,
+                                                 AuthTokenStart   = AuthIdentification?.AuthToken,
+                                                 ChargingProduct  = ChargingProduct
+                                             };
+
+                    if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
+                        RegisterExternalChargingSession(DateTime.Now,
+                                                        this,
+                                                        NewChargingSession);
 
                 }
 
-                #endregion
-
-                #region Blocked
-
-                else if (result.Result == AuthStartResultType.Blocked)
-                    break;
-
-                #endregion
-
             }
-
-            #region ...or fail!
-
-            if (result == null)
-                result =  AuthStartResult.Error(Id,
-                                                SessionId,
-                                                "No authorization service returned a positiv result!");
 
             #endregion
 
 
-            var Endtime = DateTime.Now;
-            var Runtime = Endtime - StartTime;
-
             #region Send OnAuthorizeStartResponse event
+
+            var Endtime = DateTime.Now;
 
             try
             {
@@ -5499,7 +5393,7 @@ namespace org.GraphDefined.WWCP
                                                  SessionId,
                                                  RequestTimeout,
                                                  result,
-                                                 Runtime);
+                                                 Endtime - StartTime);
 
             }
             catch (Exception e)
@@ -5560,9 +5454,6 @@ namespace org.GraphDefined.WWCP
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
-
-            AuthStartEVSEResult result = null;
-
             #endregion
 
             #region Send OnAuthorizeEVSEStartRequest event
@@ -5594,98 +5485,66 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            var results = await Task.WhenAll(_ISend2RemoteAuthorizeStartStop.
-                                                 OrderBy(kvp => kvp.Key).
-                                                 Select (kvp => kvp.Value.AuthorizeStart(AuthIdentification,
-                                                                                         EVSEId,
-                                                                                         ChargingProduct,
-                                                                                         SessionId,
-                                                                                         OperatorId,
+            var result = await _ISend2RemoteAuthorizeStartStop.
+                                   WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
+                                                                              AuthorizeStart(AuthIdentification,
+                                                                                             EVSEId,
+                                                                                             ChargingProduct,
+                                                                                             SessionId,
+                                                                                             OperatorId,
 
-                                                                                         Timestamp,
-                                                                                         CancellationToken,
-                                                                                         EventTrackingId,
-                                                                                         RequestTimeout)));
+                                                                                             Timestamp,
+                                                                                             CancellationToken,
+                                                                                             EventTrackingId,
+                                                                                             RequestTimeout),
+
+                                             result2 => result2.Result == AuthStartEVSEResultType.Authorized ||
+                                                        result2.Result == AuthStartEVSEResultType.Blocked,
+
+                                             runtime => AuthStartEVSEResult.Error(Id,
+                                                                                  this,
+                                                                                  SessionId,
+                                                                                  "No authorization service returned a positiv result!",
+                                                                                  runtime)).
+
+                                   ConfigureAwait(false);
 
 
-            #region The fastest Authorized|Blocked will win!
+            #region If Authorized...
 
-            result = results.
-                         Where  (res => res        != null &&
-                                        res.Result == AuthStartEVSEResultType.Authorized).
-                         OrderBy(res => res.Runtime).
-                         FirstOrDefault();
-
-            if (result == null)
-                result = results.
-                             Where  (res => res        != null &&
-                                            res.Result == AuthStartEVSEResultType.Blocked).
-                             OrderBy(res => res.Runtime).
-                             FirstOrDefault();
-
-            if (result == null)
-                result = results.
-                             Where  (res => res        != null &&
-                                            res.Result == AuthStartEVSEResultType.NotAuthorized).
-                             OrderBy(res => res.Runtime).
-                             FirstOrDefault();
-
-            #endregion
-
-            if (result != null)
+            if (result.Result == AuthStartEVSEResultType.Authorized)
             {
 
-                #region Authorized
-
-                if (result.Result == AuthStartEVSEResultType.Authorized)
+                if (result.SessionId.HasValue)
                 {
 
-                    if (result.SessionId.HasValue)
-                    {
+                    // Store the upstream session id in order to contact the right authenticator at later requests!
+                    // Will be deleted when the charge detail record was sent!
 
-                        // Store the upstream session id in order to contact the right authenticator at later requests!
-                        // Will be deleted when the charge detail record was sent!
+                    var NewChargingSession = new ChargingSession(result.SessionId.Value) {
+                                                 AuthorizatorId   = result.AuthorizatorId,
+                                                 AuthService      = result.ISendAuthorizeStartStop,
+                                                 OperatorId       = OperatorId,
+                                                 EVSEId           = EVSEId,
+                                                 AuthTokenStart   = AuthIdentification?.AuthToken,
+                                                 ChargingProduct  = ChargingProduct
+                                             };
 
-                        var NewChargingSession = new ChargingSession(result.SessionId.Value) {
-                                                     AuthService      = _ISend2RemoteAuthorizeStartStop.Values.FirstOrDefault(_ => _.AuthId == result.AuthorizatorId),
-                                                     AuthorizatorId   = result.AuthorizatorId,
-                                                     OperatorId       = OperatorId,
-                                                     EVSEId           = EVSEId,
-                                                     AuthTokenStart   = AuthIdentification?.AuthToken,
-                                                     ChargingProduct  = ChargingProduct
-                                                 };
-
-                        if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
-                            RegisterExternalChargingSession(DateTime.Now,
-                                                            this,
-                                                            NewChargingSession);
-
-                    }
+                    if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
+                        RegisterExternalChargingSession(DateTime.Now,
+                                                        this,
+                                                        NewChargingSession);
 
                 }
 
-                #endregion
-
             }
-
-
-            var Endtime = DateTime.Now;
-            var Runtime = Endtime - StartTime;
-
-            #region ...or fail!
-
-            if (result == null)
-                result =  AuthStartEVSEResult.Error(
-                              Id,
-                              SessionId,
-                              "No attached authorization service returned a positiv result!",
-                              Runtime
-                          );
 
             #endregion
 
 
             #region Send OnAuthorizeEVSEStartResponse event
+
+            var Endtime = DateTime.Now;
 
             try
             {
@@ -5703,7 +5562,7 @@ namespace org.GraphDefined.WWCP
                                                      SessionId,
                                                      RequestTimeout,
                                                      result,
-                                                     Runtime);
+                                                     Endtime - StartTime);
 
             }
             catch (Exception e)
@@ -5764,9 +5623,6 @@ namespace org.GraphDefined.WWCP
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
-
-            AuthStartChargingStationResult result = null;
-
             #endregion
 
             #region Send OnAuthorizeChargingStationStartRequest event
@@ -5798,70 +5654,66 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            foreach (var iRemoteAuthorizeStartStop in _ISend2RemoteAuthorizeStartStop.
-                                                          OrderBy(kvp => kvp.Key).
-                                                          Select(kvp => kvp.Value))
+            var result = await _ISend2RemoteAuthorizeStartStop.
+                                   WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
+                                                                              AuthorizeStart(AuthIdentification,
+                                                                                             ChargingStationId,
+                                                                                             ChargingProduct,
+                                                                                             SessionId,
+                                                                                             OperatorId,
+
+                                                                                             Timestamp,
+                                                                                             CancellationToken,
+                                                                                             EventTrackingId,
+                                                                                             RequestTimeout),
+
+                                             result2 => result2.Result == AuthStartChargingStationResultType.Authorized ||
+                                                        result2.Result == AuthStartChargingStationResultType.Blocked,
+
+                                             runtime => AuthStartChargingStationResult.Error(Id,
+                                                                                             this,
+                                                                                             SessionId,
+                                                                                             "No authorization service returned a positiv result!",
+                                                                                             runtime)).
+
+                                   ConfigureAwait(false);
+
+
+            #region If Authorized...
+
+            if (result.Result == AuthStartChargingStationResultType.Authorized)
             {
 
-                result = await iRemoteAuthorizeStartStop.AuthorizeStart(AuthIdentification,
-                                                                        ChargingStationId,
-                                                                        ChargingProduct,
-                                                                        SessionId,
-                                                                        OperatorId,
-
-                                                                        Timestamp,
-                                                                        CancellationToken,
-                                                                        EventTrackingId,
-                                                                        RequestTimeout);
-
-
-                #region Authorized
-
-                if (result.Result == AuthStartChargingStationResultType.Authorized)
+                if (result.SessionId.HasValue)
                 {
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
-                    // Will be deleted when the CDRecord was sent!
-                    //_ChargingSessions.TryAdd(result.SessionId,
-                    //                         new ChargingSession(result.SessionId) {
-                    //                             OperatorRoamingService  = OperatorRoamingService,
-                    //                             csoId          = OperatorId,
-                    //                             ChargingStationId       = ChargingStationId,
-                    //                             AuthToken               = AuthToken,
-                    //                             ChargingProductId       = ChargingProductId
-                    //                         });
+                    // Will be deleted when the charge detail record was sent!
 
-                    break;
+                    var NewChargingSession = new ChargingSession(result.SessionId.Value) {
+                                                 AuthorizatorId     = result.AuthorizatorId,
+                                                 AuthService        = result.ISendAuthorizeStartStop,
+                                                 OperatorId         = OperatorId,
+                                                 ChargingStationId  = ChargingStationId,
+                                                 AuthTokenStart     = AuthIdentification?.AuthToken,
+                                                 ChargingProduct    = ChargingProduct
+                                             };
+
+                    if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
+                        RegisterExternalChargingSession(DateTime.Now,
+                                                        this,
+                                                        NewChargingSession);
 
                 }
 
-                #endregion
-
-                #region Blocked
-
-                else if (result.Result == AuthStartChargingStationResultType.Blocked)
-                    break;
-
-                #endregion
-
             }
-
-            #region ...or fail!
-
-            if (result == null)
-                result = AuthStartChargingStationResult.Error(
-                             Id,
-                             SessionId,
-                             "No authorization service returned a positiv result!"
-                         );
 
             #endregion
 
 
-            var Endtime = DateTime.Now;
-            var Runtime = Endtime - StartTime;
-
             #region Send OnAuthorizeChargingStationStarted event
+
+            var Endtime = DateTime.Now;
 
             try
             {
@@ -5879,7 +5731,7 @@ namespace org.GraphDefined.WWCP
                                                                 SessionId,
                                                                 RequestTimeout,
                                                                 result,
-                                                                Runtime);
+                                                                Endtime - StartTime);
 
             }
             catch (Exception e)
@@ -5941,7 +5793,7 @@ namespace org.GraphDefined.WWCP
                 EventTrackingId = EventTracking_Id.New;
 
 
-            AuthStartChargingPoolResult result = null;
+            //AuthStartChargingPoolResult result = null;
 
             #endregion
 
@@ -5974,70 +5826,66 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            foreach (var iRemoteAuthorizeStartStop in _ISend2RemoteAuthorizeStartStop.
-                                                          OrderBy(kvp => kvp.Key).
-                                                          Select(kvp => kvp.Value))
+            var result = await _ISend2RemoteAuthorizeStartStop.
+                                   WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
+                                                                              AuthorizeStart(AuthIdentification,
+                                                                                             ChargingPoolId,
+                                                                                             ChargingProduct,
+                                                                                             SessionId,
+                                                                                             OperatorId,
+
+                                                                                             Timestamp,
+                                                                                             CancellationToken,
+                                                                                             EventTrackingId,
+                                                                                             RequestTimeout),
+
+                                             result2 => result2.Result == AuthStartChargingPoolResultType.Authorized ||
+                                                        result2.Result == AuthStartChargingPoolResultType.Blocked,
+
+                                             runtime => AuthStartChargingPoolResult.Error(Id,
+                                                                                          this,
+                                                                                          SessionId,
+                                                                                          "No authorization service returned a positiv result!",
+                                                                                          runtime)).
+
+                                   ConfigureAwait(false);
+
+
+            #region If Authorized...
+
+            if (result.Result == AuthStartChargingPoolResultType.Authorized)
             {
 
-                result = await iRemoteAuthorizeStartStop.AuthorizeStart(AuthIdentification,
-                                                                        ChargingPoolId,
-                                                                        ChargingProduct,
-                                                                        SessionId,
-                                                                        OperatorId,
-
-                                                                        Timestamp,
-                                                                        CancellationToken,
-                                                                        EventTrackingId,
-                                                                        RequestTimeout);
-
-
-                #region Authorized
-
-                if (result.Result == AuthStartChargingPoolResultType.Authorized)
+                if (result.SessionId.HasValue)
                 {
 
                     // Store the upstream session id in order to contact the right authenticator at later requests!
-                    // Will be deleted when the CDRecord was sent!
-                    //_ChargingSessions.TryAdd(result.SessionId,
-                    //                         new ChargingSession(result.SessionId) {
-                    //                             OperatorRoamingService  = OperatorRoamingService,
-                    //                             csoId          = OperatorId,
-                    //                             ChargingStationId       = ChargingStationId,
-                    //                             AuthToken               = AuthToken,
-                    //                             ChargingProductId       = ChargingProductId
-                    //                         });
+                    // Will be deleted when the charge detail record was sent!
 
-                    break;
+                    var NewChargingSession = new ChargingSession(result.SessionId.Value) {
+                                                 AuthorizatorId   = result.AuthorizatorId,
+                                                 AuthService      = result.ISendAuthorizeStartStop,
+                                                 OperatorId       = OperatorId,
+                                                 ChargingPoolId   = ChargingPoolId,
+                                                 AuthTokenStart   = AuthIdentification?.AuthToken,
+                                                 ChargingProduct  = ChargingProduct
+                                             };
+
+                    if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
+                        RegisterExternalChargingSession(DateTime.Now,
+                                                        this,
+                                                        NewChargingSession);
 
                 }
 
-                #endregion
-
-                #region Blocked
-
-                else if (result.Result == AuthStartChargingPoolResultType.Blocked)
-                    break;
-
-                #endregion
-
             }
-
-            #region ...or fail!
-
-            if (result == null)
-                result = AuthStartChargingPoolResult.Error(
-                             Id,
-                             SessionId,
-                             "No authorization service returned a positiv result!"
-                         );
 
             #endregion
 
 
-            var Endtime = DateTime.Now;
-            var Runtime = Endtime - StartTime;
-
             #region Send OnAuthorizeChargingPoolStartResponse event
+
+            var Endtime = DateTime.Now;
 
             try
             {
@@ -6055,7 +5903,7 @@ namespace org.GraphDefined.WWCP
                                                              SessionId,
                                                              RequestTimeout,
                                                              result,
-                                                             Runtime);
+                                                             Endtime - StartTime);
 
             }
             catch (Exception e)
@@ -6230,43 +6078,32 @@ namespace org.GraphDefined.WWCP
             #region Try to find anyone who might kown anything about the given SessionId!
 
             if (result == null || result.Result != AuthStopResultType.Authorized)
-                foreach (var iRemoteAuthorizeStartStop in _ISend2RemoteAuthorizeStartStop.
-                                                          OrderBy(kvp => kvp.Key).
-                                                          Select (kvp => kvp.Value))
-                {
+                result = await _ISend2RemoteAuthorizeStartStop.
+                                   WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
+                                                                              AuthorizeStop(SessionId,
+                                                                                            AuthIdentification,
+                                                                                            OperatorId,
 
-                    result = await iRemoteAuthorizeStartStop.AuthorizeStop(SessionId,
-                                                                           AuthIdentification,
-                                                                           OperatorId,
+                                                                                            Timestamp,
+                                                                                            CancellationToken,
+                                                                                            EventTrackingId,
+                                                                                            RequestTimeout),
 
-                                                                           Timestamp,
-                                                                           CancellationToken,
-                                                                           EventTrackingId,
-                                                                           RequestTimeout);
+                                             result2 => result2.Result == AuthStopResultType.Authorized ||
+                                                        result2.Result == AuthStopResultType.Blocked,
 
-                    if (result.Result == AuthStopResultType.Authorized)
-                        break;
-
-                }
-
-            #endregion
-
-            #region ...or fail!
-
-            if (result == null)
-                result = AuthStopResult.Error(
-                             Id,
-                             SessionId,
-                             "No authorization service returned a positiv result!"
-                         );
+                                             runtime => AuthStopResult.Error(Id,
+                                                            //                 this,
+                                                                             SessionId,
+                                                                             "No authorization service returned a positiv result!",
+                                                                             runtime));
 
             #endregion
 
-
-            var Endtime = DateTime.Now;
-            var Runtime = Endtime - StartTime;
 
             #region Send OnAuthorizeStopResponse event
+
+            var Endtime = DateTime.Now;
 
             try
             {
@@ -6282,7 +6119,7 @@ namespace org.GraphDefined.WWCP
                                                 AuthIdentification,
                                                 RequestTimeout,
                                                 result,
-                                                Runtime);
+                                                Endtime - StartTime);
 
             }
             catch (Exception e)
@@ -6397,11 +6234,9 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             else
-            {
-
-                var results = await Task.WhenAll(_ISend2RemoteAuthorizeStartStop.
-                                                     OrderBy(kvp => kvp.Key).
-                                                     Select (kvp => kvp.Value.AuthorizeStop(SessionId,
+                result = await _ISend2RemoteAuthorizeStartStop.
+                                   WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
+                                                                              AuthorizeStop(SessionId,
                                                                                             AuthIdentification,
                                                                                             EVSEId,
                                                                                             OperatorId,
@@ -6409,46 +6244,23 @@ namespace org.GraphDefined.WWCP
                                                                                             Timestamp,
                                                                                             CancellationToken,
                                                                                             EventTrackingId,
-                                                                                            RequestTimeout)));
+                                                                                            RequestTimeout),
 
+                                             result2 => result2.Result == AuthStopEVSEResultType.Authorized ||
+                                                        result2.Result == AuthStopEVSEResultType.Blocked,
 
-                #region The fastest Authorized|Blocked will win!
+                                             runtime => AuthStopEVSEResult.Error(Id,
+                                                            //                     this,
+                                                                                 SessionId,
+                                                                                 "No authorization service returned a positiv result!",
+                                                                                 runtime)).
 
-                result = results.
-                             Where  (res => res        != null &&
-                                            res.Result == AuthStopEVSEResultType.Authorized).
-                             OrderBy(res => res.Runtime).
-                             FirstOrDefault();
-
-                if (result == null)
-                    result = results.
-                                 Where  (res => res        != null &&
-                                                res.Result == AuthStopEVSEResultType.Blocked).
-                                 OrderBy(res => res.Runtime).
-                                 FirstOrDefault();
-
-                #endregion
-
-            }
-
-
-            var Endtime = DateTime.Now;
-            var Runtime = Endtime - StartTime;
-
-            #region ...or fail!
-
-            if (result == null)
-                result = AuthStopEVSEResult.Error(
-                              Id,
-                              SessionId,
-                              "No attached authorization service returned a positiv result!",
-                              Runtime
-                          );
-
-            #endregion
+                                   ConfigureAwait(false);
 
 
             #region Send OnAuthorizeEVSEStopResponse event
+
+            var Endtime = DateTime.Now;
 
             try
             {
@@ -6465,7 +6277,7 @@ namespace org.GraphDefined.WWCP
                                                     AuthIdentification,
                                                     RequestTimeout,
                                                     result,
-                                                    Runtime);
+                                                    Endtime - StartTime);
 
             }
             catch (Exception e)
@@ -6594,36 +6406,48 @@ namespace org.GraphDefined.WWCP
             #region Try to find anyone who might kown anything about the given SessionId!
 
             if (result == null || result.Result != AuthStopChargingStationResultType.Authorized)
-                foreach (var iRemoteAuthorizeStartStop in _ISend2RemoteAuthorizeStartStop.
-                                                          OrderBy(kvp => kvp.Key).
-                                                          Select (kvp => kvp.Value))
-                {
+                result = await _ISend2RemoteAuthorizeStartStop.
+                                   WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
+                                                                              AuthorizeStop(SessionId,
+                                                                                            AuthIdentification,
+                                                                                            ChargingStationId,
+                                                                                            OperatorId,
 
-                    result = await iRemoteAuthorizeStartStop.AuthorizeStop(SessionId,
-                                                                           AuthIdentification,
-                                                                           ChargingStationId,
-                                                                           OperatorId,
+                                                                                            Timestamp,
+                                                                                            CancellationToken,
+                                                                                            EventTrackingId,
+                                                                                            RequestTimeout),
 
-                                                                           Timestamp,
-                                                                           CancellationToken,
-                                                                           EventTrackingId,
-                                                                           RequestTimeout);
+                                             result2 => result2.Result == AuthStopChargingStationResultType.Authorized ||
+                                                        result2.Result == AuthStopChargingStationResultType.Blocked,
 
-                    if (result.Result == AuthStopChargingStationResultType.Authorized)
-                        break;
+                                             runtime => AuthStopChargingStationResult.Error(Id,
+                                                            //                                this,
+                                                                                            SessionId,
+                                                                                            "No authorization service returned a positiv result!",
+                                                                                            runtime));
 
-                }
 
-            #endregion
+            //if (result == null || result.Result != AuthStopChargingStationResultType.Authorized)
+            //    foreach (var iRemoteAuthorizeStartStop in _ISend2RemoteAuthorizeStartStop.
+            //                                              OrderBy(kvp => kvp.Key).
+            //                                              Select (kvp => kvp.Value))
+            //    {
 
-            #region ...or fail!
+            //        result = await iRemoteAuthorizeStartStop.AuthorizeStop(SessionId,
+            //                                                               AuthToken,
+            //                                                               ChargingStationId,
+            //                                                               OperatorId,
 
-            if (result == null)
-                result = AuthStopChargingStationResult.Error(
-                             Id,
-                             SessionId,
-                             "No authorization service returned a positiv result!"
-                         );
+            //                                                               Timestamp,
+            //                                                               CancellationToken,
+            //                                                               EventTrackingId,
+            //                                                               RequestTimeout);
+
+            //        if (result.Result == AuthStopChargingStationResultType.Authorized)
+            //            break;
+
+            //    }
 
             #endregion
 
@@ -6755,7 +6579,7 @@ namespace org.GraphDefined.WWCP
             //                                                                             CancellationToken,
             //                                                                             EventTrackingId,
             //                                                                             OperatorId,
-            //                                                                             ChargingStationId,
+            //                                                                             ChargingPoolId,
             //                                                                             SessionId,
             //                                                                             AuthToken,
             //                                                                             RequestTimeout);
@@ -6765,7 +6589,7 @@ namespace org.GraphDefined.WWCP
             //                                                                             CancellationToken,
             //                                                                             EventTrackingId,
             //                                                                             OperatorId,
-            //                                                                             ChargingStationId,
+            //                                                                             ChargingPoolId,
             //                                                                             SessionId,
             //                                                                             AuthToken,
             //                                                                             RequestTimeout);
@@ -6777,44 +6601,55 @@ namespace org.GraphDefined.WWCP
             #region Try to find anyone who might kown anything about the given SessionId!
 
             if (result == null || result.Result != AuthStopChargingPoolResultType.Authorized)
-                foreach (var iRemoteAuthorizeStartStop in _ISend2RemoteAuthorizeStartStop.
-                                                          OrderBy(kvp => kvp.Key).
-                                                          Select (kvp => kvp.Value))
-                {
+                result = await _ISend2RemoteAuthorizeStartStop.
+                                   WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
+                                                                              AuthorizeStop(SessionId,
+                                                                                            AuthIdentification,
+                                                                                            ChargingPoolId,
+                                                                                            OperatorId,
 
-                    result = await iRemoteAuthorizeStartStop.AuthorizeStop(SessionId,
-                                                                           AuthIdentification,
-                                                                           ChargingPoolId,
-                                                                           OperatorId,
+                                                                                            Timestamp,
+                                                                                            CancellationToken,
+                                                                                            EventTrackingId,
+                                                                                            RequestTimeout),
 
-                                                                           Timestamp,
-                                                                           CancellationToken,
-                                                                           EventTrackingId,
-                                                                           RequestTimeout);
+                                             result2 => result2.Result == AuthStopChargingPoolResultType.Authorized ||
+                                                        result2.Result == AuthStopChargingPoolResultType.Blocked,
 
-                    if (result.Result == AuthStopChargingPoolResultType.Authorized)
-                        break;
+                                             runtime => AuthStopChargingPoolResult.Error(Id,
+                                                            //                             this,
+                                                                                         SessionId,
+                                                                                         "No authorization service returned a positiv result!",
+                                                                                         runtime));
 
-                }
+
+            //if (result == null || result.Result != AuthStopChargingPoolResultType.Authorized)
+            //    foreach (var iRemoteAuthorizeStartStop in _ISend2RemoteAuthorizeStartStop.
+            //                                              OrderBy(kvp => kvp.Key).
+            //                                              Select (kvp => kvp.Value))
+            //    {
+
+            //        result = await iRemoteAuthorizeStartStop.AuthorizeStop(SessionId,
+            //                                                               AuthToken,
+            //                                                               ChargingPoolId,
+            //                                                               OperatorId,
+
+            //                                                               Timestamp,
+            //                                                               CancellationToken,
+            //                                                               EventTrackingId,
+            //                                                               RequestTimeout);
+
+            //        if (result.Result == AuthStopChargingPoolResultType.Authorized)
+            //            break;
+
+            //    }
 
             #endregion
 
-            #region ...or fail!
-
-            if (result == null)
-                result = AuthStopChargingPoolResult.Error(
-                             Id,
-                             SessionId,
-                             "No authorization service returned a positiv result!"
-                         );
-
-            #endregion
-
-
-            var Endtime = DateTime.Now;
-            var Runtime = Endtime - StartTime;
 
             #region Send OnAuthorizeChargingPoolStopResponse event
+
+            var Endtime = DateTime.Now;
 
             try
             {
@@ -6831,7 +6666,7 @@ namespace org.GraphDefined.WWCP
                                                             AuthIdentification,
                                                             RequestTimeout,
                                                             result,
-                                                            Runtime);
+                                                            Endtime - StartTime);
 
             }
             catch (Exception e)
@@ -6906,7 +6741,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Charging Sessions / Charge Detail Records...
+        #region Charging Sessions
 
         #region ChargingSessions
 
@@ -7070,6 +6905,9 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #endregion
+
+        #region Charge Detail Records
 
         #region ChargeDetailRecords
 
@@ -7152,12 +6990,10 @@ namespace org.GraphDefined.WWCP
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
+
+            SendCDRsResult result = null;
+
             #endregion
-
-            //ToDo: Merge given cdr information with local information!
-
-            foreach (var ChargeDetailRecord in ChargeDetailRecords)
-                _ChargeDetailRecords.TryAdd(ChargeDetailRecord.SessionId, ChargeDetailRecord);
 
             #region Send OnSendCDRsRequest event
 
@@ -7184,203 +7020,207 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            #region Delete cached session information
+            if (!ChargeDetailRecords.Any())
+                result = SendCDRsResult.NoOperation(Id);
 
-            foreach (var ChargeDetailRecord in ChargeDetailRecords)
+            else
             {
-                if (ChargeDetailRecord.EVSEId.HasValue)
+
+                //ToDo: Merge given cdr information with local information!
+
+                foreach (var ChargeDetailRecord in ChargeDetailRecords)
+                    _ChargeDetailRecords.TryAdd(ChargeDetailRecord.SessionId, ChargeDetailRecord);
+
+
+                #region Delete cached session information
+
+                foreach (var ChargeDetailRecord in ChargeDetailRecords)
                 {
-
-                    EVSE _EVSE = null;
-
-                    if (TryGetEVSEbyId(ChargeDetailRecord.EVSEId.Value, out _EVSE))
+                    if (ChargeDetailRecord.EVSEId.HasValue)
                     {
 
-                        if (_EVSE.ChargingSession != null &&
-                            _EVSE.ChargingSession.Id == ChargeDetailRecord.SessionId)
+                        EVSE _EVSE = null;
+
+                        if (TryGetEVSEbyId(ChargeDetailRecord.EVSEId.Value, out _EVSE))
                         {
 
-                            //_EVSE.Status = EVSEStatusType.Available;
-                            _EVSE.ChargingSession = null;
-                            _EVSE.Reservation = null;
+                            if (_EVSE.ChargingSession != null &&
+                                _EVSE.ChargingSession.Id == ChargeDetailRecord.SessionId)
+                            {
 
+                                //_EVSE.Status = EVSEStatusType.Available;
+                                _EVSE.ChargingSession = null;
+                                _EVSE.Reservation = null;
+
+                            }
+
+                        }
+
+                    }
+                }
+
+                #endregion
+
+                #region Some charge detail records should perhaps be filtered...
+
+                var FilteredCDRs  = new Dictionary<ChargingSession_Id, String>();
+                var CDRsToSend    = new HashSet<ChargeDetailRecord>(ChargeDetailRecords);
+
+                var OnFilterCDRRecordsLocal = OnFilterCDRRecords;
+                if (OnFilterCDRRecordsLocal != null)
+                {
+
+                    foreach (var ChargeDetailRecord in ChargeDetailRecords)
+                    {
+
+                        var FilterResult = OnFilterCDRRecordsLocal(Id, ChargeDetailRecord);
+
+                        if (FilterResult.IsNotNullOrEmpty())
+                        {
+                            FilteredCDRs.Add(ChargeDetailRecord.SessionId, FilterResult);
+                            CDRsToSend.Remove(ChargeDetailRecord);
                         }
 
                     }
 
                 }
-            }
 
-            #endregion
+                #endregion
 
-            #region Some charge detail records should perhaps be filtered...
 
-            var FilteredCDRs  = new Dictionary<ChargingSession_Id, String>();
-            var CDRsToSend    = new HashSet<ChargeDetailRecord>(ChargeDetailRecords);
+                if (CDRsToSend.Count ==  0)
+                    result = SendCDRsResult.NotForwared(Id, Description: "All " + FilteredCDRs.Count + " charge detail record(s) had been filtered!");
 
-            var OnFilterCDRRecordsLocal = OnFilterCDRRecords;
-            if (OnFilterCDRRecordsLocal != null)
-            {
-
-                foreach (var ChargeDetailRecord in ChargeDetailRecords)
+                else
                 {
 
-                    var FilterResult = OnFilterCDRRecordsLocal(Id, ChargeDetailRecord);
+                    #region Group charge detail records by their targets...
 
-                    if (FilterResult.IsNotNullOrEmpty())
+                    var UpstreamProviders         = new Dictionary<eMobilityProvider,   List<ChargeDetailRecord>>();
+                    var UpstreamRoamingProviders  = new Dictionary<IEMPRoamingProvider, List<ChargeDetailRecord>>();
+                    var UnknownCDRTargets         = new List<ChargeDetailRecord>();
+
+                    ChargingStationOperator _Operator;
+                    ChargingSession         _ChargingSession;
+                    IEMPRoamingProvider     _EMPRoamingProvider;
+
+                    foreach (var ChargeDetailRecord in ChargeDetailRecords)
                     {
-                        FilteredCDRs.Add(ChargeDetailRecord.SessionId, FilterResult);
-                        CDRsToSend.Remove(ChargeDetailRecord);
+
+                        #region Group by e-mobility providers...
+
+                        //if (_ChargingSessions_at_Operators.TryGetValue(ChargeDetailRecord.SessionId, out _Operator))
+                        //{
+
+                        //    if (!UpstreamOperators.ContainsKey(_Operator))
+                        //        UpstreamOperators.Add(_Operator, new List<ChargeDetailRecord>());
+
+                        //    UpstreamOperators[_Operator].Add(ChargeDetailRecord);
+
+                        //}
+
+                        #endregion
+
+                        #region ...or group by EMP roaming operators...
+
+                        //if (_ChargingSessions_at_EMPRoamingProviders.TryGetValue(ChargeDetailRecord.SessionId, out _EMPRoamingProvider))
+                        //{
+
+                        //    if (!UpstreamRoamingProviders.ContainsKey(_EMPRoamingProvider))
+                        //        UpstreamRoamingProviders.Add(_EMPRoamingProvider, new List<ChargeDetailRecord>());
+
+                        //    UpstreamRoamingProviders[_EMPRoamingProvider].Add(ChargeDetailRecord);
+
+                        //}
+
+                        #endregion
+
+                        #region ...or save as unknown!
+
+                        //else
+                        //    UnknownCDRTargets.Add(ChargeDetailRecord);
+
+                        #endregion
+
                     }
 
-                }
+                    #endregion
 
-            }
-
-            #endregion
-
-
-
-            SendCDRsResult result = null;
-
-            if (CDRsToSend.Count ==  0)
-                result = SendCDRsResult.NotForwared(Id, Description: "All " + FilteredCDRs.Count + " charge detail record(s) had been filtered!");
-
-            else
-            {
-
-                #region Group charge detail records by their targets...
-
-                var UpstreamProviders         = new Dictionary<eMobilityProvider, List<ChargeDetailRecord>>();
-                var UpstreamRoamingProviders  = new Dictionary<IEMPRoamingProvider,   List<ChargeDetailRecord>>();
-                var UnknownCDRTargets         = new List<ChargeDetailRecord>();
-
-                ChargingStationOperator _Operator;
-                ChargingSession         _ChargingSession;
-                IEMPRoamingProvider     _EMPRoamingProvider;
-
-                foreach (var ChargeDetailRecord in ChargeDetailRecords)
-                {
+                    #region An authenticator was found for the upstream SessionId!
 
                     //if (_ChargingSessions.TryGetValue(ChargeDetailRecord.SessionId, out _ChargingSession))
-
-                    #region Group by e-mobility providers...
-
-                    //if (_ChargingSessions_at_Operators.TryGetValue(ChargeDetailRecord.SessionId, out _Operator))
                     //{
 
-                    //    if (!UpstreamOperators.ContainsKey(_Operator))
-                    //        UpstreamOperators.Add(_Operator, new List<ChargeDetailRecord>());
+                    //    if (_ChargingSession.AuthService != null)
+                    //        result = await _ChargingSession.AuthService.SendChargeDetailRecord(Timestamp,
+                    //                                                                           CancellationToken,
+                    //                                                                           EventTrackingId,
+                    //                                                                           ChargeDetailRecord,
+                    //                                                                           RequestTimeout);
 
-                    //    UpstreamOperators[_Operator].Add(ChargeDetailRecord);
+                    //    else if (_ChargingSession.OperatorRoamingService != null)
+                    //        result = await _ChargingSession.OperatorRoamingService.SendChargeDetailRecord(Timestamp,
+                    //                                                                                      CancellationToken,
+                    //                                                                                      EventTrackingId,
+                    //                                                                                      ChargeDetailRecord,
+                    //                                                                                      RequestTimeout);
+
+                    //    _ChargingSession.RemoveMe = true;
 
                     //}
 
                     #endregion
 
-                    #region ...or group by EMP roaming operators...
+                    #region Try to find *Roaming Providers* who might kown anything about the given SessionId!
 
-                    //if (_ChargingSessions_at_EMPRoamingProviders.TryGetValue(ChargeDetailRecord.SessionId, out _EMPRoamingProvider))
-                    //{
-
-                    //    if (!UpstreamRoamingProviders.ContainsKey(_EMPRoamingProvider))
-                    //        UpstreamRoamingProviders.Add(_EMPRoamingProvider, new List<ChargeDetailRecord>());
-
-                    //    UpstreamRoamingProviders[_EMPRoamingProvider].Add(ChargeDetailRecord);
-
-                    //}
-
-                    #endregion
-
-                    #region ...or save as unknown!
-
-                    //else
-                    //    UnknownCDRTargets.Add(ChargeDetailRecord);
-
-                    #endregion
-
-                }
-
-                #endregion
-
-
-                //foreach (var Operator in UpstreamProviderss)
-                //{
-
-                //    Operator.Key.send
-
-                //}
-
-
-
-
-                #region An authenticator was found for the upstream SessionId!
-
-                //if (_ChargingSessions.TryGetValue(ChargeDetailRecord.SessionId, out _ChargingSession))
-                //{
-
-                //    if (_ChargingSession.AuthService != null)
-                //        result = await _ChargingSession.AuthService.SendChargeDetailRecord(Timestamp,
-                //                                                                           CancellationToken,
-                //                                                                           EventTrackingId,
-                //                                                                           ChargeDetailRecord,
-                //                                                                           RequestTimeout);
-
-                //    else if (_ChargingSession.OperatorRoamingService != null)
-                //        result = await _ChargingSession.OperatorRoamingService.SendChargeDetailRecord(Timestamp,
-                //                                                                                      CancellationToken,
-                //                                                                                      EventTrackingId,
-                //                                                                                      ChargeDetailRecord,
-                //                                                                                      RequestTimeout);
-
-                //    _ChargingSession.RemoveMe = true;
-
-                //}
-
-                #endregion
-
-                #region Try to find *Roaming Providers* who might kown anything about the given SessionId!
-
-                if (result == null ||
-                    result.Status == SendCDRsResultType.InvalidSessionId)
-                {
-
-                    foreach (var iRemoteSendChargeDetailRecord in _IRemoteSendChargeDetailRecord.
-                                                                      OrderBy(v => v.Key).
-                                                                      Select(v => v.Value).
-                                                                      ToArray())
+                    if (result == null ||
+                        result.Status == SendCDRsResultType.InvalidSessionId)
                     {
 
-                        //result = await OtherOperatorRoamingService.SendChargeDetailRecord(Timestamp,
-                        //                                                                  CancellationToken,
-                        //                                                                  EventTrackingId,
-                        //                                                                  ChargeDetailRecord,
-                        //                                                                  RequestTimeout);
+                        var results = await _IRemoteSendChargeDetailRecord.
+                                                WhenAll(iRemoteSendChargeDetailRecord => iRemoteSendChargeDetailRecord.
+                                                                                             SendChargeDetailRecords(ChargeDetailRecords,
+                                                                                                                     CancellationToken:  CancellationToken,
+                                                                                                                     EventTrackingId:    EventTrackingId));
 
-                        result = await iRemoteSendChargeDetailRecord.
-                                           SendChargeDetailRecords(ChargeDetailRecords,
-                                                                   CancellationToken: CancellationToken,
-                                                                   EventTrackingId: EventTrackingId);
+                        //foreach (var iRemoteSendChargeDetailRecord in _IRemoteSendChargeDetailRecord.
+                        //                                                  OrderBy(v => v.Key).
+                        //                                                  Select (v => v.Value).
+                        //                                                  ToArray())
+                        //{
+
+                        //    //result = await OtherOperatorRoamingService.SendChargeDetailRecord(Timestamp,
+                        //    //                                                                  CancellationToken,
+                        //    //                                                                  EventTrackingId,
+                        //    //                                                                  ChargeDetailRecord,
+                        //    //                                                                  RequestTimeout);
+
+                        //    result = await iRemoteSendChargeDetailRecord.
+                        //                       SendChargeDetailRecords(ChargeDetailRecords,
+                        //                                               CancellationToken: CancellationToken,
+                        //                                               EventTrackingId: EventTrackingId);
+
+                        //}
 
                     }
 
+                    #endregion
+
+                    #region ...else fail!
+
+                    if (result == null ||
+                        result.Status == SendCDRsResultType.InvalidSessionId)
+                    {
+
+                        return SendCDRsResult.NotForwared(Id,
+                                                          ChargeDetailRecords,
+                                                          "No authorization service returned a positiv result!");
+
+                    }
+
+                    #endregion
+
                 }
-
-                #endregion
-
-                #region ...else fail!
-
-                if (result == null ||
-                    result.Status == SendCDRsResultType.InvalidSessionId)
-                {
-
-                    return SendCDRsResult.NotForwared(Id,
-                                                      ChargeDetailRecords,
-                                                      "No authorization service returned a positiv result!");
-
-                }
-
-                #endregion
 
             }
 
