@@ -152,7 +152,14 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            this.AuthorizatorId           = AuthorizatorId  ?? throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
+            #region Initial checks
+
+            if (AuthorizatorId == null)
+                throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
+
+            #endregion
+
+            this.AuthorizatorId           = AuthorizatorId;
             this.ISendAuthorizeStartStop  = ISendAuthorizeStartStop;
             this.Result                   = Result;
             this.SessionId                = SessionId;
@@ -210,7 +217,14 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            this.AuthorizatorId              = AuthorizatorId  ?? throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
+            #region Initial checks
+
+            if (AuthorizatorId == null)
+                throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
+
+            #endregion
+
+            this.AuthorizatorId              = AuthorizatorId;
             this.IReceiveAuthorizeStartStop  = IReceiveAuthorizeStartStop;
             this.Result                      = Result;
             this.SessionId                   = SessionId;
