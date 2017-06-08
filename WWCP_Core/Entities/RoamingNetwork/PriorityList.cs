@@ -35,25 +35,25 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private readonly ConcurrentDictionary<UInt32, T> _Dictionary;
+        private readonly ConcurrentDictionary<UInt32, T> _Services;
 
         #endregion
 
         public PriorityList()
         {
 
-            this._Dictionary = new ConcurrentDictionary<UInt32, T>();
+            this._Services = new ConcurrentDictionary<UInt32, T>();
 
         }
 
 
         public void Add(T iRemoteAuthorizeStartStop)
         {
-            lock (_Dictionary)
+            lock (_Services)
             {
 
-                _Dictionary.TryAdd(_Dictionary.Count > 0
-                                       ? _Dictionary.Keys.Max() + 1
+                _Services.TryAdd(_Services.Count > 0
+                                       ? _Services.Keys.Max() + 1
                                        : 1,
                                    iRemoteAuthorizeStartStop);
 
@@ -64,9 +64,46 @@ namespace org.GraphDefined.WWCP
         public Task<T2[]> WhenAll<T2>(Func<T, Task<T2>> Work)
         {
 
-            return Task.WhenAll(_Dictionary.
+            return Task.WhenAll(_Services.
                                     OrderBy(kvp => kvp.Key).
-                                    Select(kvp => Work(kvp.Value)));
+                                    Select (kvp => Work(kvp.Value)));
+
+        }
+
+
+
+        public async Task<T2> WhenFirst<T2>(Func<T, Task<T2>>   Work,
+                                            Func<T2, Boolean>   Test,
+                                            Func<TimeSpan, T2>  Default)
+        {
+
+            var StartTime  = DateTime.Now;
+            T  service     = default(T);
+            T2 result      = default(T2);
+
+            foreach (var Service in _Services.
+                                        OrderBy(kvp => kvp.Key).
+                                        Select (kvp => kvp.Value))
+            {
+
+                try
+                {
+
+                    service  = Service;
+                    result   = await Work(Service).ConfigureAwait(false);
+
+                    if (Test(result))
+                        return result;
+
+                }
+                catch (Exception e)
+                {
+                    DebugX.LogT(e.Message);
+                }
+
+            }
+
+            return Default(DateTime.Now - StartTime);
 
         }
 
