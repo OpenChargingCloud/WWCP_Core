@@ -5334,11 +5334,11 @@ namespace org.GraphDefined.WWCP
                                              result2 => result2.Result == AuthStartResultType.Authorized ||
                                                         result2.Result == AuthStartResultType.Blocked,
 
-                                             runtime => AuthStartResult.Error(Id,
-                                                                              this,
-                                                                              SessionId,
-                                                                              "No authorization service returned a positiv result!",
-                                                                              runtime)).
+                                             runtime => AuthStartResult.NotAuthorized(Id,
+                                                                                      this,
+                                                                                      SessionId,
+                                                                                      Description:  "No authorization service returned a positiv result!",
+                                                                                      Runtime:      runtime)).
 
                                    ConfigureAwait(false);
 
@@ -5501,11 +5501,11 @@ namespace org.GraphDefined.WWCP
                                              result2 => result2.Result == AuthStartEVSEResultType.Authorized ||
                                                         result2.Result == AuthStartEVSEResultType.Blocked,
 
-                                             runtime => AuthStartEVSEResult.Error(Id,
-                                                                                  this,
-                                                                                  SessionId,
-                                                                                  "No authorization service returned a positiv result!",
-                                                                                  runtime)).
+                                             runtime => AuthStartEVSEResult.NotAuthorized(Id,
+                                                                                          this,
+                                                                                          SessionId,
+                                                                                          Description:  "No authorization service returned a positiv result!",
+                                                                                          Runtime:      runtime)).
 
                                    ConfigureAwait(false);
 
@@ -5670,11 +5670,11 @@ namespace org.GraphDefined.WWCP
                                              result2 => result2.Result == AuthStartChargingStationResultType.Authorized ||
                                                         result2.Result == AuthStartChargingStationResultType.Blocked,
 
-                                             runtime => AuthStartChargingStationResult.Error(Id,
-                                                                                             this,
-                                                                                             SessionId,
-                                                                                             "No authorization service returned a positiv result!",
-                                                                                             runtime)).
+                                             runtime => AuthStartChargingStationResult.NotAuthorized(Id,
+                                                                                                     this,
+                                                                                                     SessionId,
+                                                                                                     Description:  "No authorization service returned a positiv result!",
+                                                                                                     Runtime:      runtime)).
 
                                    ConfigureAwait(false);
 
@@ -5842,11 +5842,11 @@ namespace org.GraphDefined.WWCP
                                              result2 => result2.Result == AuthStartChargingPoolResultType.Authorized ||
                                                         result2.Result == AuthStartChargingPoolResultType.Blocked,
 
-                                             runtime => AuthStartChargingPoolResult.Error(Id,
-                                                                                          this,
-                                                                                          SessionId,
-                                                                                          "No authorization service returned a positiv result!",
-                                                                                          runtime)).
+                                             runtime => AuthStartChargingPoolResult.NotAuthorized(Id,
+                                                                                                  this,
+                                                                                                  SessionId,
+                                                                                                  Description:  "No authorization service returned a positiv result!",
+                                                                                                  Runtime:      runtime)).
 
                                    ConfigureAwait(false);
 
@@ -6092,11 +6092,13 @@ namespace org.GraphDefined.WWCP
                                              result2 => result2.Result == AuthStopResultType.Authorized ||
                                                         result2.Result == AuthStopResultType.Blocked,
 
-                                             runtime => AuthStopResult.Error(Id,
-                                                            //                 this,
-                                                                             SessionId,
-                                                                             "No authorization service returned a positiv result!",
-                                                                             runtime));
+                                             runtime => AuthStopResult.NotAuthorized(Id,
+                                                                                     //this,
+                                                                                     SessionId,
+                                                                                     Description:  "No authorization service returned a positiv result!",
+                                                                                     Runtime:      runtime)).
+
+                                   ConfigureAwait(false);
 
             #endregion
 
@@ -6249,11 +6251,11 @@ namespace org.GraphDefined.WWCP
                                              result2 => result2.Result == AuthStopEVSEResultType.Authorized ||
                                                         result2.Result == AuthStopEVSEResultType.Blocked,
 
-                                             runtime => AuthStopEVSEResult.Error(Id,
-                                                            //                     this,
-                                                                                 SessionId,
-                                                                                 "No authorization service returned a positiv result!",
-                                                                                 runtime)).
+                                             runtime => AuthStopEVSEResult.NotAuthorized(Id,
+                                                                                         //this,
+                                                                                         SessionId,
+                                                                                         Description:  "No authorization service returned a positiv result!",
+                                                                                         Runtime:      runtime)).
 
                                    ConfigureAwait(false);
 
@@ -6421,11 +6423,13 @@ namespace org.GraphDefined.WWCP
                                              result2 => result2.Result == AuthStopChargingStationResultType.Authorized ||
                                                         result2.Result == AuthStopChargingStationResultType.Blocked,
 
-                                             runtime => AuthStopChargingStationResult.Error(Id,
-                                                            //                                this,
-                                                                                            SessionId,
-                                                                                            "No authorization service returned a positiv result!",
-                                                                                            runtime));
+                                             runtime => AuthStopChargingStationResult.NotAuthorized(Id,
+                                                                                                    //this,
+                                                                                                    SessionId,
+                                                                                                    Description:  "No authorization service returned a positiv result!",
+                                                                                                    Runtime:      runtime)).
+
+                                   ConfigureAwait(false);
 
 
             //if (result == null || result.Result != AuthStopChargingStationResultType.Authorized)
@@ -6616,11 +6620,13 @@ namespace org.GraphDefined.WWCP
                                              result2 => result2.Result == AuthStopChargingPoolResultType.Authorized ||
                                                         result2.Result == AuthStopChargingPoolResultType.Blocked,
 
-                                             runtime => AuthStopChargingPoolResult.Error(Id,
-                                                            //                             this,
-                                                                                         SessionId,
-                                                                                         "No authorization service returned a positiv result!",
-                                                                                         runtime));
+                                             runtime => AuthStopChargingPoolResult.NotAuthorized(Id,
+                                                                                                 //this,
+                                                                                                 SessionId,
+                                                                                                 Description:  "No authorization service returned a positiv result!",
+                                                                                                 Runtime:      runtime)).
+
+                                   ConfigureAwait(false);
 
 
             //if (result == null || result.Result != AuthStopChargingPoolResultType.Authorized)

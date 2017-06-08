@@ -26,6 +26,7 @@ namespace org.GraphDefined.WWCP
 
     public enum TokenAuthorizationResultType
     {
+        Undefined,
         Authorized,
         NotAuthorized,
         Blocked
