@@ -259,7 +259,7 @@
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\ARoamingProvider.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\AChargingStationOperatorRoamingProvider.cs" />
     <Compile Include="Entities\StatusSchedule.cs" />
-    <Compile Include="CommonTypes\AuthInfo.cs" />
+    <Compile Include="CommonTypes\AuthIdentification.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargeDetailRecord\ChargeDetailRecord.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPool\ChargingPoolAdminStatusReport.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPool\ChargingPoolStatusReport.cs" />

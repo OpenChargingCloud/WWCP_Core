@@ -35,12 +35,12 @@ namespace org.GraphDefined.WWCP
 
         #region Id
 
-        private readonly AuthInfo _Id;
+        private readonly AuthIdentification _Id;
 
         /// <summary>
         /// The unique identification of an auth info.
         /// </summary>
-        public AuthInfo Id
+        public AuthIdentification Id
         {
             get
             {
@@ -76,7 +76,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthInfo">The unique identification of an auth info.</param>
         /// <param name="Status">The current status of an auth info.</param>
-        public AuthInfoStatus(AuthInfo            AuthInfo,
+        public AuthInfoStatus(AuthIdentification            AuthInfo,
                               AuthInfoStatusType  Status)
 
         {

@@ -59,10 +59,10 @@ namespace org.GraphDefined.WWCP
 
       //  Authorizator_Id AuthorizatorId { get; }
 
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AllTokens            { get; }
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> AuthorizedTokens     { get; }
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> NotAuthorizedTokens  { get; }
-        IEnumerable<KeyValuePair<Auth_Token, TokenAuthorizationResultType>> BlockedTokens        { get; }
+        IEnumerable<KeyValuePair<AuthIdentification, TokenAuthorizationResultType>> AllTokens            { get; }
+        IEnumerable<KeyValuePair<AuthIdentification, TokenAuthorizationResultType>> AuthorizedTokens     { get; }
+        IEnumerable<KeyValuePair<AuthIdentification, TokenAuthorizationResultType>> NotAuthorizedTokens  { get; }
+        IEnumerable<KeyValuePair<AuthIdentification, TokenAuthorizationResultType>> BlockedTokens        { get; }
 
     }
 

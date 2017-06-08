@@ -2710,12 +2710,12 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region AuthorizeStart(AuthToken,                    ChargingProduct = null, SessionId = null, OperatorId = null, ...)
+        #region AuthorizeStart(AuthIdentification,                    ChargingProduct = null, SessionId = null, OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize start request.
         /// </summary>
-        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="AuthIdentification">An user identification.</param>
         /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
@@ -2726,7 +2726,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStartResult>
 
-            AuthorizeStart(Auth_Token                   AuthToken,
+            AuthorizeStart(AuthIdentification           AuthIdentification,
                            ChargingProduct              ChargingProduct     = null,
                            ChargingSession_Id?          SessionId           = null,
                            ChargingStationOperator_Id?  OperatorId          = null,
@@ -2739,8 +2739,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (AuthToken == null)
-                throw new ArgumentNullException(nameof(AuthToken),   "The given authentication token must not be null!");
+            if (AuthIdentification == null)
+                throw new ArgumentNullException(nameof(AuthIdentification),   "The given authentication token must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -2774,7 +2774,7 @@ namespace org.GraphDefined.WWCP
                                                 EventTrackingId,
                                                 RoamingNetwork.Id,
                                                 OperatorId,
-                                                AuthToken,
+                                                AuthIdentification,
                                                 ChargingProduct,
                                                 SessionId,
                                                 RequestTimeout);
@@ -2789,7 +2789,7 @@ namespace org.GraphDefined.WWCP
 
 
             if (!DisableAuthentication && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.AuthorizeStart(AuthToken,
+                result = await RemoteEMobilityProvider.AuthorizeStart(AuthIdentification,
                                                                       null,
                                                                       null,
                                                                       null,
@@ -2820,7 +2820,7 @@ namespace org.GraphDefined.WWCP
                                                  EventTrackingId,
                                                  RoamingNetwork.Id,
                                                  OperatorId,
-                                                 AuthToken,
+                                                 AuthIdentification,
                                                  ChargingProduct,
                                                  SessionId,
                                                  RequestTimeout,
@@ -2841,12 +2841,12 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStart(AuthToken, EVSEId,            ChargingProduct = null, SessionId = null, OperatorId = null, ...)
+        #region AuthorizeStart(AuthIdentification, EVSEId,            ChargingProduct = null, SessionId = null, OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize start request at the given EVSE.
         /// </summary>
-        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="AuthIdentification">An user identification.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
@@ -2858,8 +2858,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStartEVSEResult>
 
-            AuthorizeStart(Auth_Token                   AuthToken,
-                           WWCP.EVSE_Id                 EVSEId,
+            AuthorizeStart(AuthIdentification           AuthIdentification,
+                           EVSE_Id                      EVSEId,
                            ChargingProduct              ChargingProduct     = null,
                            ChargingSession_Id?          SessionId           = null,
                            ChargingStationOperator_Id?  OperatorId          = null,
@@ -2873,8 +2873,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (AuthToken == null)
-                throw new ArgumentNullException(nameof(AuthToken),  "The given authentication token must not be null!");
+            if (AuthIdentification == null)
+                throw new ArgumentNullException(nameof(AuthIdentification),  "The given authentication token must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -2908,7 +2908,7 @@ namespace org.GraphDefined.WWCP
                                                     EventTrackingId,
                                                     RoamingNetwork.Id,
                                                     OperatorId,
-                                                    AuthToken,
+                                                    AuthIdentification,
                                                     EVSEId,
                                                     ChargingProduct,
                                                     SessionId,
@@ -2924,7 +2924,7 @@ namespace org.GraphDefined.WWCP
 
 
             if (!DisableAuthentication && RemoteEMobilityProvider != null)
-                result = await RemoteEMobilityProvider.AuthorizeStart(AuthToken,
+                result = await RemoteEMobilityProvider.AuthorizeStart(AuthIdentification,
                                                                       EVSEId,
                                                                       null,
                                                                       null,
@@ -2956,7 +2956,7 @@ namespace org.GraphDefined.WWCP
                                                      EventTrackingId,
                                                      RoamingNetwork.Id,
                                                      OperatorId,
-                                                     AuthToken,
+                                                     AuthIdentification,
                                                      EVSEId,
                                                      ChargingProduct,
                                                      SessionId,
@@ -2978,12 +2978,12 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStart(AuthToken, ChargingStationId, ChargingProduct = null, SessionId = null, OperatorId = null, ...)
+        #region AuthorizeStart(AuthIdentification, ChargingStationId, ChargingProduct = null, SessionId = null, OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize start request at the given charging station.
         /// </summary>
-        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="AuthIdentification">An user identification.</param>
         /// <param name="ChargingStationId">The unique identification charging station.</param>
         /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
@@ -2995,7 +2995,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStartChargingStationResult>
 
-            AuthorizeStart(Auth_Token                   AuthToken,
+            AuthorizeStart(AuthIdentification           AuthIdentification,
                            ChargingStation_Id           ChargingStationId,
                            ChargingProduct              ChargingProduct     = null,
                            ChargingSession_Id?          SessionId           = null,
@@ -3010,8 +3010,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (AuthToken == null)
-                throw new ArgumentNullException(nameof(AuthToken), "The given authentication token must not be null!");
+            if (AuthIdentification == null)
+                throw new ArgumentNullException(nameof(AuthIdentification), "The given authentication token must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -3042,7 +3042,7 @@ namespace org.GraphDefined.WWCP
                                                                EventTrackingId,
                                                                RoamingNetwork.Id,
                                                                OperatorId,
-                                                               AuthToken,
+                                                               AuthIdentification,
                                                                ChargingStationId,
                                                                ChargingProduct,
                                                                SessionId,
@@ -3079,7 +3079,7 @@ namespace org.GraphDefined.WWCP
                                                                 EventTrackingId,
                                                                 RoamingNetwork.Id,
                                                                 OperatorId,
-                                                                AuthToken,
+                                                                AuthIdentification,
                                                                 ChargingStationId,
                                                                 ChargingProduct,
                                                                 SessionId,
@@ -3101,12 +3101,12 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStart(AuthToken, ChargingPoolId,    ChargingProduct = null, SessionId = null, OperatorId = null, ...)
+        #region AuthorizeStart(AuthIdentification, ChargingPoolId,    ChargingProduct = null, SessionId = null, OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize start request at the given charging pool.
         /// </summary>
-        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="AuthIdentification">An user identification.</param>
         /// <param name="ChargingPoolId">The unique identification charging pool.</param>
         /// <param name="ChargingProduct">An optional charging product.</param>
         /// <param name="SessionId">An optional session identification.</param>
@@ -3118,7 +3118,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<AuthStartChargingPoolResult>
 
-            AuthorizeStart(Auth_Token                   AuthToken,
+            AuthorizeStart(AuthIdentification           AuthIdentification,
                            ChargingPool_Id              ChargingPoolId,
                            ChargingProduct              ChargingProduct     = null,
                            ChargingSession_Id?          SessionId           = null,
@@ -3133,8 +3133,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (AuthToken == null)
-                throw new ArgumentNullException(nameof(AuthToken), "The given authentication token must not be null!");
+            if (AuthIdentification == null)
+                throw new ArgumentNullException(nameof(AuthIdentification), "The given authentication token must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -3165,7 +3165,7 @@ namespace org.GraphDefined.WWCP
                                                             EventTrackingId,
                                                             RoamingNetwork.Id,
                                                             OperatorId,
-                                                            AuthToken,
+                                                            AuthIdentification,
                                                             ChargingPoolId,
                                                             ChargingProduct,
                                                             SessionId,
@@ -3202,7 +3202,7 @@ namespace org.GraphDefined.WWCP
                                                              EventTrackingId,
                                                              RoamingNetwork.Id,
                                                              OperatorId,
-                                                             AuthToken,
+                                                             AuthIdentification,
                                                              ChargingPoolId,
                                                              ChargingProduct,
                                                              SessionId,
@@ -3229,13 +3229,13 @@ namespace org.GraphDefined.WWCP
         //        UID than the UID which started the session!
         //        (e.g. car sharing)
 
-        #region AuthorizeStop(SessionId, AuthToken,                    OperatorId = null, ...)
+        #region AuthorizeStop(SessionId, AuthIdentification,                    OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize stop request.
         /// </summary>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
-        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="AuthIdentification">An user identification.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
@@ -3245,7 +3245,7 @@ namespace org.GraphDefined.WWCP
         public async Task<AuthStopResult>
 
             AuthorizeStop(ChargingSession_Id           SessionId,
-                          Auth_Token                   AuthToken,
+                          AuthIdentification           AuthIdentification,
                           ChargingStationOperator_Id?  OperatorId          = null,
 
                           DateTime?                    Timestamp           = null,
@@ -3256,8 +3256,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (AuthToken == null)
-                throw new ArgumentNullException(nameof(AuthToken),  "The given authentication token must not be null!");
+            if (AuthIdentification == null)
+                throw new ArgumentNullException(nameof(AuthIdentification),  "The given authentication token must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -3292,7 +3292,7 @@ namespace org.GraphDefined.WWCP
                                                RoamingNetwork.Id,
                                                OperatorId,
                                                SessionId,
-                                               AuthToken,
+                                               AuthIdentification,
                                                RequestTimeout);
 
             }
@@ -3306,7 +3306,7 @@ namespace org.GraphDefined.WWCP
 
             if (!DisableAuthentication && RemoteEMobilityProvider != null)
                 result = await RemoteEMobilityProvider.AuthorizeStop(SessionId,
-                                                                     AuthToken,
+                                                                     AuthIdentification,
                                                                      null,
 
                                                                      Timestamp,
@@ -3336,7 +3336,7 @@ namespace org.GraphDefined.WWCP
                                                 RoamingNetwork.Id,
                                                 OperatorId,
                                                 SessionId,
-                                                AuthToken,
+                                                AuthIdentification,
                                                 RequestTimeout,
                                                 result,
                                                 Runtime);
@@ -3355,13 +3355,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStop(SessionId, AuthToken, EVSEId,            OperatorId = null, ...)
+        #region AuthorizeStop(SessionId, AuthIdentification, EVSEId,            OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize stop request at the given EVSE.
         /// </summary>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
-        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="AuthIdentification">An user identification.</param>
         /// <param name="EVSEId">The unique identification of an EVSE.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
@@ -3372,8 +3372,8 @@ namespace org.GraphDefined.WWCP
         public async Task<AuthStopEVSEResult>
 
             AuthorizeStop(ChargingSession_Id           SessionId,
-                          Auth_Token                   AuthToken,
-                          WWCP.EVSE_Id                 EVSEId,
+                          AuthIdentification           AuthIdentification,
+                          EVSE_Id                      EVSEId,
                           ChargingStationOperator_Id?  OperatorId          = null,
 
                           DateTime?                    Timestamp           = null,
@@ -3384,8 +3384,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (AuthToken  == null)
-                throw new ArgumentNullException(nameof(AuthToken), "The given authentication token must not be null!");
+            if (AuthIdentification  == null)
+                throw new ArgumentNullException(nameof(AuthIdentification), "The given authentication token must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -3421,7 +3421,7 @@ namespace org.GraphDefined.WWCP
                                                    OperatorId,
                                                    EVSEId,
                                                    SessionId,
-                                                   AuthToken,
+                                                   AuthIdentification,
                                                    RequestTimeout);
 
             }
@@ -3435,7 +3435,7 @@ namespace org.GraphDefined.WWCP
 
             if (!DisableAuthentication && RemoteEMobilityProvider != null)
                 result = await RemoteEMobilityProvider.AuthorizeStop(SessionId,
-                                                                     AuthToken,
+                                                                     AuthIdentification,
                                                                      EVSEId,
                                                                      null,
 
@@ -3467,7 +3467,7 @@ namespace org.GraphDefined.WWCP
                                                     OperatorId,
                                                     EVSEId,
                                                     SessionId,
-                                                    AuthToken,
+                                                    AuthIdentification,
                                                     RequestTimeout,
                                                     result,
                                                     Runtime);
@@ -3486,13 +3486,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStop(SessionId, AuthToken, ChargingStationId, OperatorId = null, ...)
+        #region AuthorizeStop(SessionId, AuthIdentification, ChargingStationId, OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize stop request at the given charging station.
         /// </summary>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
-        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="AuthIdentification">An user identification.</param>
         /// <param name="ChargingStationId">The unique identification of a charging station.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
@@ -3503,7 +3503,7 @@ namespace org.GraphDefined.WWCP
         public async Task<AuthStopChargingStationResult>
 
             AuthorizeStop(ChargingSession_Id           SessionId,
-                          Auth_Token                   AuthToken,
+                          AuthIdentification           AuthIdentification,
                           ChargingStation_Id           ChargingStationId,
                           ChargingStationOperator_Id?  OperatorId          = null,
 
@@ -3516,8 +3516,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (AuthToken == null)
-                throw new ArgumentNullException(nameof(AuthToken), "The given authentication token must not be null!");
+            if (AuthIdentification == null)
+                throw new ArgumentNullException(nameof(AuthIdentification), "The given authentication token must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -3550,7 +3550,7 @@ namespace org.GraphDefined.WWCP
                                                               OperatorId,
                                                               ChargingStationId,
                                                               SessionId,
-                                                              AuthToken,
+                                                              AuthIdentification,
                                                               RequestTimeout);
 
             }
@@ -3586,7 +3586,7 @@ namespace org.GraphDefined.WWCP
                                                                OperatorId,
                                                                ChargingStationId,
                                                                SessionId,
-                                                               AuthToken,
+                                                               AuthIdentification,
                                                                RequestTimeout,
                                                                result,
                                                                Runtime);
@@ -3605,13 +3605,13 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AuthorizeStop(SessionId, AuthToken, ChargingPoolId,    OperatorId = null, ...)
+        #region AuthorizeStop(SessionId, AuthIdentification, ChargingPoolId,    OperatorId = null, ...)
 
         /// <summary>
         /// Create an authorize stop request at the given charging pool.
         /// </summary>
         /// <param name="SessionId">The session identification from the AuthorizeStart request.</param>
-        /// <param name="AuthToken">A (RFID) user identification.</param>
+        /// <param name="AuthIdentification">An user identification.</param>
         /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
         /// <param name="OperatorId">An optional charging station operator identification.</param>
         /// 
@@ -3622,7 +3622,7 @@ namespace org.GraphDefined.WWCP
         public async Task<AuthStopChargingPoolResult>
 
             AuthorizeStop(ChargingSession_Id           SessionId,
-                          Auth_Token                   AuthToken,
+                          AuthIdentification           AuthIdentification,
                           ChargingPool_Id              ChargingPoolId,
                           ChargingStationOperator_Id?  OperatorId          = null,
 
@@ -3635,8 +3635,8 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (AuthToken == null)
-                throw new ArgumentNullException(nameof(AuthToken), "The given authentication token must not be null!");
+            if (AuthIdentification == null)
+                throw new ArgumentNullException(nameof(AuthIdentification), "The given authentication token must not be null!");
 
 
             if (!Timestamp.HasValue)
@@ -3669,7 +3669,7 @@ namespace org.GraphDefined.WWCP
                                                            OperatorId,
                                                            ChargingPoolId,
                                                            SessionId,
-                                                           AuthToken,
+                                                           AuthIdentification,
                                                            RequestTimeout);
 
             }
@@ -3705,7 +3705,7 @@ namespace org.GraphDefined.WWCP
                                                             OperatorId,
                                                             ChargingPoolId,
                                                             SessionId,
-                                                            AuthToken,
+                                                            AuthIdentification,
                                                             RequestTimeout,
                                                             result,
                                                             Runtime);

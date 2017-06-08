@@ -110,13 +110,13 @@ namespace org.GraphDefined.WWCP
         /// The identification used for starting this charging process.
         /// </summary>
         [Optional]
-        public AuthInfo               IdentificationStart    { get; }
+        public AuthIdentification               IdentificationStart    { get; }
 
         /// <summary>
         /// The identification used for stopping this charging process.
         /// </summary>
         [Optional]
-        public AuthInfo               IdentificationStop     { get; }
+        public AuthIdentification               IdentificationStop     { get; }
 
         /// <summary>
         /// The identification of the e-mobility provider used for starting this charging process.
@@ -265,8 +265,8 @@ namespace org.GraphDefined.WWCP
                                   ChargingStationOperator_Id?          ChargingStationOperatorId   = null,
                                   ChargingProduct                      ChargingProduct             = null,
 
-                                  AuthInfo                             IdentificationStart         = null,
-                                  AuthInfo                             IdentificationStop          = null,
+                                  AuthIdentification                             IdentificationStart         = null,
+                                  AuthIdentification                             IdentificationStop          = null,
                                   eMobilityProvider_Id?                ProviderIdStart             = null,
                                   eMobilityProvider_Id?                ProviderIdStop              = null,
 

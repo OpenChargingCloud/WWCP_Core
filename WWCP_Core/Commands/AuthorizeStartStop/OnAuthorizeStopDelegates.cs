@@ -37,7 +37,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="AuthToken">A (RFID) user identification.</param>
+    /// <param name="AuthIdentification">An user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task OnAuthorizeStopRequestDelegate(DateTime                      LogTimestamp,
                                                         DateTime                      RequestTimestamp,
@@ -47,7 +47,7 @@ namespace org.GraphDefined.WWCP
                                                         RoamingNetwork_Id             RoamingNetworkId,
                                                         ChargingStationOperator_Id?   OperatorId,
                                                         ChargingSession_Id?           SessionId,
-                                                        Auth_Token                    AuthToken,
+                                                        AuthIdentification            AuthIdentification,
                                                         TimeSpan?                     RequestTimeout);
 
     /// <summary>
@@ -59,7 +59,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="AuthToken">A (RFID) user identification.</param>
+    /// <param name="AuthIdentification">An user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize stop result.</param>
     public delegate Task OnAuthorizeStopResponseDelegate(DateTime                      LogTimestamp,
@@ -70,7 +70,7 @@ namespace org.GraphDefined.WWCP
                                                          RoamingNetwork_Id             RoamingNetworkId,
                                                          ChargingStationOperator_Id?   OperatorId,
                                                          ChargingSession_Id?           SessionId,
-                                                         Auth_Token                    AuthToken,
+                                                         AuthIdentification            AuthIdentification,
                                                          TimeSpan?                     RequestTimeout,
                                                          AuthStopResult                Result,
                                                          TimeSpan                      Runtime);
@@ -89,7 +89,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="AuthToken">A (RFID) user identification.</param>
+    /// <param name="AuthIdentification">An user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task OnAuthorizeEVSEStopRequestDelegate(DateTime                      LogTimestamp,
                                                             DateTime                      RequestTimestamp,
@@ -100,7 +100,7 @@ namespace org.GraphDefined.WWCP
                                                             ChargingStationOperator_Id?   OperatorId,
                                                             EVSE_Id                       EVSEId,
                                                             ChargingSession_Id?           SessionId,
-                                                            Auth_Token                    AuthToken,
+                                                            AuthIdentification            AuthIdentification,
                                                             TimeSpan?                     RequestTimeout);
 
     /// <summary>
@@ -113,7 +113,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="AuthToken">A (RFID) user identification.</param>
+    /// <param name="AuthIdentification">An user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize stop result.</param>
     public delegate Task OnAuthorizeEVSEStopResponseDelegate(DateTime                      LogTimestamp,
@@ -125,7 +125,7 @@ namespace org.GraphDefined.WWCP
                                                              ChargingStationOperator_Id?   OperatorId,
                                                              EVSE_Id                       EVSEId,
                                                              ChargingSession_Id?           SessionId,
-                                                             Auth_Token                    AuthToken,
+                                                             AuthIdentification            AuthIdentification,
                                                              TimeSpan?                     RequestTimeout,
                                                              AuthStopEVSEResult            Result,
                                                              TimeSpan                      Runtime);
@@ -189,7 +189,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="ChargingStationId">The unique identification of a charging station.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="AuthToken">A (RFID) user identification.</param>
+    /// <param name="AuthIdentification">An user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task OnAuthorizeChargingStationStopRequestDelegate(DateTime                      LogTimestamp,
                                                                        DateTime                      RequestTimestamp,
@@ -200,7 +200,7 @@ namespace org.GraphDefined.WWCP
                                                                        ChargingStationOperator_Id?   OperatorId,
                                                                        ChargingStation_Id            ChargingStationId,
                                                                        ChargingSession_Id?           SessionId,
-                                                                       Auth_Token                    AuthToken,
+                                                                       AuthIdentification            AuthIdentification,
                                                                        TimeSpan?                     RequestTimeout);
 
     /// <summary>
@@ -213,19 +213,19 @@ namespace org.GraphDefined.WWCP
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="ChargingStationId">The unique identification of a charging station.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="AuthToken">A (RFID) user identification.</param>
+    /// <param name="AuthIdentification">An user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize stop result.</param>
     public delegate Task OnAuthorizeChargingStationStopResponseDelegate(DateTime                        LogTimestamp,
                                                                         DateTime                        RequestTimestamp,
                                                                         Object                          Sender,
-                                                                        String                        SenderId,
+                                                                        String                          SenderId,
                                                                         EventTracking_Id                EventTrackingId,
                                                                         RoamingNetwork_Id               RoamingNetworkId,
                                                                         ChargingStationOperator_Id?     OperatorId,
                                                                         ChargingStation_Id              ChargingStationId,
                                                                         ChargingSession_Id?             SessionId,
-                                                                        Auth_Token                      AuthToken,
+                                                                        AuthIdentification              AuthIdentification,
                                                                         TimeSpan?                       RequestTimeout,
                                                                         AuthStopChargingStationResult   Result,
                                                                         TimeSpan                        Runtime);
@@ -244,7 +244,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="AuthToken">A (RFID) user identification.</param>
+    /// <param name="AuthIdentification">An user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task OnAuthorizeChargingPoolStopRequestDelegate (DateTime                      LogTimestamp,
                                                                      DateTime                      RequestTimestamp,
@@ -255,7 +255,7 @@ namespace org.GraphDefined.WWCP
                                                                      ChargingStationOperator_Id?   OperatorId,
                                                                      ChargingPool_Id               ChargingPoolId,
                                                                      ChargingSession_Id?           SessionId,
-                                                                     Auth_Token                    AuthToken,
+                                                                     AuthIdentification            AuthIdentification,
                                                                      TimeSpan?                     RequestTimeout);
 
     /// <summary>
@@ -268,7 +268,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="OperatorId">An Charging Station Operator identification.</param>
     /// <param name="ChargingPoolId">The unique identification of a charging pool.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
-    /// <param name="AuthToken">A (RFID) user identification.</param>
+    /// <param name="AuthIdentification">An user identification.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize stop result.</param>
     public delegate Task OnAuthorizeChargingPoolStopResponseDelegate(DateTime                      LogTimestamp,
@@ -280,7 +280,7 @@ namespace org.GraphDefined.WWCP
                                                                      ChargingStationOperator_Id?   OperatorId,
                                                                      ChargingPool_Id               ChargingPoolId,
                                                                      ChargingSession_Id?           SessionId,
-                                                                     Auth_Token                    AuthToken,
+                                                                     AuthIdentification            AuthIdentification,
                                                                      TimeSpan?                     RequestTimeout,
                                                                      AuthStopChargingPoolResult    Result,
                                                                      TimeSpan                      Runtime);
