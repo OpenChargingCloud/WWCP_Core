@@ -2211,6 +2211,17 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region ChargingPoolIds
+
+        /// <summary>
+        /// Return all charging pool identifications registered within this roaming network.
+        /// </summary>
+        public IEnumerable<ChargingPool_Id> ChargingPoolids
+
+            => _ChargingStationOperators.SelectMany(cso => cso.ChargingPoolIds);
+
+        #endregion
+
         #region ChargingPoolAdminStatus
 
         /// <summary>
@@ -2529,7 +2540,18 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public IEnumerable<ChargingStation> ChargingStations
 
-            => _ChargingStationOperators.SelectMany(cso => cso.SelectMany(pool => pool));
+            => _ChargingStationOperators.SelectMany(cso => cso.ChargingStations);
+
+        #endregion
+
+        #region ChargingStationIds
+
+        /// <summary>
+        /// Return all charging station identifications registered within this roaming network.
+        /// </summary>
+        public IEnumerable<ChargingStation_Id> ChargingStationIds
+
+            => _ChargingStationOperators.SelectMany(cso => cso.ChargingStationIds);
 
         #endregion
 
@@ -2895,7 +2917,18 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public IEnumerable<EVSE> EVSEs
 
-            => _ChargingStationOperators.SelectMany(cso => cso.SelectMany(pool => pool.SelectMany(station => station)));
+            => _ChargingStationOperators.SelectMany(cso => cso.EVSEs);
+
+        #endregion
+
+        #region EVSEIds
+
+        /// <summary>
+        /// Return all EVSE identifications registered within this roaming network.
+        /// </summary>
+        public IEnumerable<EVSE_Id> EVSEIds
+
+            => _ChargingStationOperators.SelectMany(cso => cso.EVSEIds);
 
         #endregion
 
