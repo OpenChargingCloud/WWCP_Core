@@ -469,14 +469,14 @@ namespace org.GraphDefined.WWCP
         public ChargingStationOperator
 
             CreateChargingStationOperator(IEnumerable<ChargingStationOperator_Id>             ChargingStationOperatorIds,
-                                          I18NString                                          Name                                  = null,
-                                          I18NString                                          Description                           = null,
-                                          Action<ChargingStationOperator>                Configurator                          = null,
-                                          RemoteChargingStationOperatorCreatorDelegate        RemoteChargingStationOperatorCreator  = null,
-                                          ChargingStationOperatorAdminStatusType              AdminStatus                           = ChargingStationOperatorAdminStatusType.Operational,
-                                          ChargingStationOperatorStatusType                   Status                                = ChargingStationOperatorStatusType.Available,
-                                          Action<ChargingStationOperator>                OnSuccess                             = null,
-                                          Action<RoamingNetwork, ChargingStationOperator_Id>  OnError                               = null)
+                                          I18NString                                          Name                                   = null,
+                                          I18NString                                          Description                            = null,
+                                          Action<ChargingStationOperator>                     Configurator                           = null,
+                                          RemoteChargingStationOperatorCreatorDelegate        RemoteChargingStationOperatorCreator   = null,
+                                          ChargingStationOperatorAdminStatusType              AdminStatus                            = ChargingStationOperatorAdminStatusType.Operational,
+                                          ChargingStationOperatorStatusType                   Status                                 = ChargingStationOperatorStatusType.Available,
+                                          Action<ChargingStationOperator>                     OnSuccess                              = null,
+                                          Action<RoamingNetwork, ChargingStationOperator_Id>  OnError                                = null)
 
         {
 
