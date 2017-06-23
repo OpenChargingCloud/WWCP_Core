@@ -7241,6 +7241,8 @@ namespace org.GraphDefined.WWCP
 
                         //}
 
+                        result = results.FirstOrDefault();
+
                     }
 
                     #endregion
