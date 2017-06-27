@@ -70,6 +70,9 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         Boolean  DisableSendChargeDetailRecords   { get; set; }
 
+        IId Id { get; }
+
+        IEnumerable<IId> Ids { get; }
 
         /// <summary>
         /// Send a charge detail record.

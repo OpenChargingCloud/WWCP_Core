@@ -7217,10 +7217,23 @@ namespace org.GraphDefined.WWCP
                     {
 
                         var results = await _IRemoteSendChargeDetailRecord.
-                                                WhenAll(iRemoteSendChargeDetailRecord => iRemoteSendChargeDetailRecord.
-                                                                                             SendChargeDetailRecords(ChargeDetailRecords,
-                                                                                                                     CancellationToken:  CancellationToken,
-                                                                                                                     EventTrackingId:    EventTrackingId));
+                                                WhenAll(iRemoteSendChargeDetailRecord => {
+
+                                           //         var _FilteredCDRs = ChargeDetailRecords.Where(cdr => iRemoteSendChargeDetailRecord.Ids.Contains(cdr.IdentificationStart.QRCodeIdentification?.eMAId. ProviderId) ||
+                                           //                                                              iRemoteSendChargeDetailRecord.Ids.Contains(cdr.IdentificationStart.PlugAndChargeIdentification?.ProviderId) ||
+                                           //                                                              iRemoteSendChargeDetailRecord.Ids.Contains(cdr.IdentificationStart.RemoteIdentification?.       ProviderId)).
+                                           //                                                 ToArray();
+
+                                           //         if (_FilteredCDRs.Length > 0)
+                                                        return iRemoteSendChargeDetailRecord.
+                                                                   SendChargeDetailRecords(ChargeDetailRecords,
+                                                                                           CancellationToken: CancellationToken,
+                                                                                           EventTrackingId:   EventTrackingId);
+
+                                                   // else
+                                                   //     return null;
+
+                                                });
 
                         //foreach (var iRemoteSendChargeDetailRecord in _IRemoteSendChargeDetailRecord.
                         //                                                  OrderBy(v => v.Key).
@@ -7241,7 +7254,7 @@ namespace org.GraphDefined.WWCP
 
                         //}
 
-                        result = results.FirstOrDefault();
+                        result = results.Skip(1).FirstOrDefault();
 
                     }
 
