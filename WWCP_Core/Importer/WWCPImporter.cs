@@ -913,6 +913,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                         ContinueWith(ImporterTask => {
 
+                            //ToDo: Handle XML parser exceptions...
                             AddOrUpdateForwardingInfos(CreateForwardingTable(this,
                                                                              ImporterTask.Result,
                                                                              AllChargingStationOperators,
