@@ -218,13 +218,13 @@ namespace org.GraphDefined.WWCP.Importer
 
         #endregion
 
-        #region OnFinished
+        #region OnStartFinished
 
-        public delegate Task OnFinishedDelegate(DateTime         Timestamp,
-                                                WWCPImporter<T>  Importer,
-                                                String           Message);
+        public delegate Task OnStartFinishedDelegate(DateTime         Timestamp,
+                                                     WWCPImporter<T>  Importer,
+                                                     String           Message);
 
-        public event OnFinishedDelegate OnFinished;
+        public event OnStartFinishedDelegate OnStartFinished;
 
         #endregion
 
@@ -246,6 +246,16 @@ namespace org.GraphDefined.WWCP.Importer
                                                                           UInt64           NumberOfForwardingInfosLoaded);
 
         public event OnLoadForwardingDataFromFileFinishedDelegate OnLoadForwardingDataFromFileFinished;
+
+        #endregion
+
+        #region OnFinished
+
+        public delegate Task OnFinishedDelegate(DateTime         Timestamp,
+                                                WWCPImporter<T>  Importer,
+                                                String           Message);
+
+        public event OnFinishedDelegate OnFinished;
 
         #endregion
 
@@ -837,9 +847,9 @@ namespace org.GraphDefined.WWCP.Importer
 
                         #endif
 
-                        OnFinished?.Invoke(StartTime,
-                                           this,
-                                           "Importer finished");
+                        OnStartFinished?.Invoke(StartTime,
+                                                this,
+                                                "Importer finished its startup!");
 
                         #endregion
 
@@ -943,9 +953,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                         #if DEBUG
 
-                        var EndTime = DateTime.Now;
-
-                        DebugX.LogT("WWCP importer '" + Id + "' finished after " + (EndTime - StartTime).TotalSeconds + " seconds!");
+                        OnFinished?.Invoke(DateTime.Now, this, "WWCP importer '" + Id + "' finished after " + (DateTime.Now - StartTime).TotalSeconds + " seconds!");
 
                         #endif
 
