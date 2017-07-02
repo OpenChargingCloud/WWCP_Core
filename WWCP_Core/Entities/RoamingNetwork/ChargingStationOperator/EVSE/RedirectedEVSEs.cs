@@ -36,7 +36,8 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private readonly Dictionary<EVSE_Id, Tuple<RoamingNetwork_Id, RoamingNetwork_Id>> _RedirectedEVSEList;
+        private          Object                                                           Lock = new Object();
+        private readonly Dictionary<EVSE_Id, Tuple<RoamingNetwork_Id, RoamingNetwork_Id>> _RedirectedEVSEs;
 
         #endregion
 
@@ -45,7 +46,7 @@ namespace org.GraphDefined.WWCP
         private RedirectedEVSEs()
         {
 
-            _RedirectedEVSEList = new Dictionary<EVSE_Id, Tuple<RoamingNetwork_Id, RoamingNetwork_Id>>();
+            _RedirectedEVSEs = new Dictionary<EVSE_Id, Tuple<RoamingNetwork_Id, RoamingNetwork_Id>>();
 
         }
 
@@ -64,15 +65,18 @@ namespace org.GraphDefined.WWCP
         #region Add()
 
         public RedirectedEVSEs Add(EVSE_Id            EVSEId,
-                                      RoamingNetwork_Id  RoamingNetwork_From,
-                                      RoamingNetwork_Id  RoamingNetwork_To)
+                                   RoamingNetwork_Id  RoamingNetwork_From,
+                                   RoamingNetwork_Id  RoamingNetwork_To)
         {
+            lock (Lock)
+            {
 
-            if (!_RedirectedEVSEList.ContainsKey(EVSEId))
-                _RedirectedEVSEList.Add(EVSEId, new Tuple<RoamingNetwork_Id, RoamingNetwork_Id>(RoamingNetwork_From, RoamingNetwork_To));
+                if (!_RedirectedEVSEs.ContainsKey(EVSEId))
+                    _RedirectedEVSEs.Add(EVSEId, new Tuple<RoamingNetwork_Id, RoamingNetwork_Id>(RoamingNetwork_From, RoamingNetwork_To));
 
-            return this;
+                return this;
 
+            }
         }
 
         #endregion
@@ -81,11 +85,14 @@ namespace org.GraphDefined.WWCP
 
         public RedirectedEVSEs Clear()
         {
+            lock (Lock)
+            {
 
-            _RedirectedEVSEList.Clear();
+                _RedirectedEVSEs.Clear();
 
-            return this;
+                return this;
 
+            }
         }
 
         #endregion
@@ -93,7 +100,7 @@ namespace org.GraphDefined.WWCP
 
         public Boolean TryGet(EVSE_Id EVSEId, out Tuple<RoamingNetwork_Id, RoamingNetwork_Id> Redirection)
         {
-            return _RedirectedEVSEList.TryGetValue(EVSEId, out Redirection);
+            return _RedirectedEVSEs.TryGetValue(EVSEId, out Redirection);
         }
 
     }
