@@ -791,7 +791,7 @@ namespace org.GraphDefined.WWCP.Importer
         public WWCPImporter<T> Start()
         {
 
-            DebugX.Log("Starting WWCP importer '" + Id + "'!");
+            //DebugX.Log("Starting WWCP importer '" + Id + "'!");
 
             if (Monitor.TryEnter(ImporterRunLock))
             {
@@ -810,7 +810,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                         #if DEBUG
 
-                        DebugX.Log("WWCP importer '" + Id + "' Initital import started!");
+                        //DebugX.Log("WWCP importer '" + Id + "' Initital import started!");
 
                         #endif
 
@@ -843,7 +843,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                         #if DEBUG
 
-                        DebugX.Log("WWCP importer '" + Id + "' Initital import finished after " + (EndTime - StartTime).TotalSeconds + " seconds!");
+                        //DebugX.Log("WWCP importer '" + Id + "' Initital import finished after " + (EndTime - StartTime).TotalSeconds + " seconds!");
 
                         #endif
 
