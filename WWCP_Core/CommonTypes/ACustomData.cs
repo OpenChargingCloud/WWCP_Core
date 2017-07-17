@@ -90,10 +90,17 @@ namespace org.GraphDefined.WWCP
             if (_CustomData == null)
                 return default(T);
 
-            Object _Value;
+            try
+            {
 
-            if (Values.TryGetValue(Key, out _Value))
-                return (T) _Value;
+                if (Values.TryGetValue(Key, out Object _Value))
+                    return (T) _Value;
+
+            }
+#pragma warning disable RCS1075 // Avoid empty catch clause that catches System.Exception.
+            catch (Exception)
+            { }
+#pragma warning restore RCS1075 // Avoid empty catch clause that catches System.Exception.
 
             return default(T);
 
