@@ -251,6 +251,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EnergyMeteringValues">An optional enumeration of intermediate energy metering values.</param>
         /// <param name="MeteringSignature">An optional signature of the metering values.</param>
         /// 
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public ChargeDetailRecord(ChargingSession_Id                   SessionId,
                                   StartEndDateTime?                    SessionTime,
                                   TimeSpan?                            Duration                    = null,
@@ -265,8 +266,8 @@ namespace org.GraphDefined.WWCP
                                   ChargingStationOperator_Id?          ChargingStationOperatorId   = null,
                                   ChargingProduct                      ChargingProduct             = null,
 
-                                  AuthIdentification                             IdentificationStart         = null,
-                                  AuthIdentification                             IdentificationStop          = null,
+                                  AuthIdentification                   IdentificationStart         = null,
+                                  AuthIdentification                   IdentificationStop          = null,
                                   eMobilityProvider_Id?                ProviderIdStart             = null,
                                   eMobilityProvider_Id?                ProviderIdStop              = null,
 
@@ -282,8 +283,7 @@ namespace org.GraphDefined.WWCP
                                   IEnumerable<Timestamped<Single>>     EnergyMeteringValues        = null,
                                   String                               MeteringSignature           = null,
 
-                                  IReadOnlyDictionary<String, Object>  CustomData                  = null
-                                 )
+                                  IReadOnlyDictionary<String, Object>  CustomData                  = null)
 
             : base(CustomData)
 

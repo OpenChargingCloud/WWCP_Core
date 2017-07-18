@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 #endregion
 
@@ -30,28 +31,19 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private Dictionary<String, Object> _CustomData   { get; }
-
-        public IReadOnlyDictionary<String, Object> Values
-            => _CustomData;
+        private readonly IReadOnlyDictionary<String, Object> _CustomData;
 
         #endregion
 
         #region Constructor(s)
 
+        /// <summary>
+        /// Create a new data structure for customer specific data.
+        /// </summary>
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         protected ACustomData(IReadOnlyDictionary<String, Object> CustomData)
         {
-
-            if (CustomData != null && CustomData.Count > 0)
-            {
-
-                this._CustomData = new Dictionary<String, Object>();
-
-                foreach (var item in CustomData)
-                    _CustomData.Add(item.Key, item.Value);
-
-            }
-
+            this._CustomData = CustomData;
         }
 
         #endregion
@@ -63,9 +55,7 @@ namespace org.GraphDefined.WWCP
             if (_CustomData == null)
                 return false;
 
-            Object _Value;
-
-            return Values.TryGetValue(Key, out _Value);
+            return _CustomData.TryGetValue(Key, out Object _Value);
 
         }
 
@@ -75,9 +65,7 @@ namespace org.GraphDefined.WWCP
             if (_CustomData == null)
                 return null;
 
-            Object _Value;
-
-            if (Values.TryGetValue(Key, out _Value))
+            if (_CustomData.TryGetValue(Key, out Object _Value))
                 return _Value;
 
             return null;
@@ -93,7 +81,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                if (Values.TryGetValue(Key, out Object _Value))
+                if (_CustomData.TryGetValue(Key, out Object _Value))
                     return (T) _Value;
 
             }
@@ -115,9 +103,7 @@ namespace org.GraphDefined.WWCP
                 ValueDelegate == null)
                 return;
 
-            Object _Value;
-
-            if (Values.TryGetValue(Key, out _Value))
+            if (_CustomData.TryGetValue(Key, out Object _Value))
                 ValueDelegate(_Value);
 
         }
@@ -130,9 +116,7 @@ namespace org.GraphDefined.WWCP
                 ValueDelegate == null)
                 return;
 
-            Object _Value;
-
-            if (Values.TryGetValue(Key, out _Value))
+            if (_CustomData.TryGetValue(Key, out Object _Value))
                 ValueDelegate((T) _Value);
 
         }
@@ -145,92 +129,78 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private Dictionary<String, Object> _CustomData;
+        private readonly Dictionary<String, Object> _CustomData;
 
         #endregion
 
         #region Constructor(s)
 
+        /// <summary>
+        /// Create a new data structure for customer specific data.
+        /// </summary>
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         protected ACustomDataBuilder(Dictionary<String, Object> CustomData = null)
         {
-
-            this._CustomData = CustomData;
-
+            this._CustomData  = CustomData ?? new Dictionary<String, Object>();
         }
 
         #endregion
 
 
-        public void AddCustomData(String Key,
-                                  Object Value)
+        public void AddCustomData(String  Key,
+                                  Object  Value)
         {
-
-            if (_CustomData == null)
-                _CustomData = new Dictionary<String, Object>();
-
             _CustomData.Add(Key, Value);
-
         }
 
-        public Boolean IsDefined(String Key)
+        public Boolean IsDefined(String  Key)
+            => _CustomData.ContainsKey(Key);
+
+        public Object GetCustomData(String  Key)
         {
 
-            Object _Value;
-
-            return _CustomData.TryGetValue(Key, out _Value);
-
-        }
-
-        public Object GetCustomData(String Key)
-        {
-
-            Object _Value;
-
-            if (_CustomData.TryGetValue(Key, out _Value))
+            if (_CustomData.TryGetValue(Key, out Object _Value))
                 return _Value;
 
             return null;
 
         }
 
-        public T GetCustomDataAs<T>(String Key)
+        public T GetCustomDataAs<T>(String  Key)
         {
 
-            Object _Value;
-
-            if (_CustomData.TryGetValue(Key, out _Value))
-                return (T)_Value;
+            if (_CustomData.TryGetValue(Key, out Object _Value))
+                return (T) _Value;
 
             return default(T);
 
         }
 
 
-        public void IfDefined(String Key,
-                              Action<Object> ValueDelegate)
+        public void IfDefined(String          Key,
+                              Action<Object>  ValueDelegate)
         {
 
             if (ValueDelegate == null)
                 return;
 
-            Object _Value;
-
-            if (_CustomData.TryGetValue(Key, out _Value))
+            if (_CustomData.TryGetValue(Key, out Object _Value))
                 ValueDelegate(_Value);
 
         }
 
-        public void IfDefinedAs<T>(String Key,
-                                   Action<T> ValueDelegate)
+        public void IfDefinedAs<T>(String     Key,
+                                   Action<T>  ValueDelegate)
         {
 
             if (ValueDelegate == null)
                 return;
 
-            Object _Value;
-
-            if (_CustomData.TryGetValue(Key, out _Value))
+            if (_CustomData.TryGetValue(Key, out Object _Value) &&
+                _Value is T)
+            {
                 ValueDelegate((T)_Value);
+            }
 
         }
 

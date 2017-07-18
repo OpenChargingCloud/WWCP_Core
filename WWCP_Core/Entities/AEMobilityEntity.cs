@@ -33,7 +33,8 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// An abstract e-mobility entity.
     /// </summary>
-    public abstract class AEMobilityEntity<TId> : IEntity<TId>
+    public abstract class AEMobilityEntity<TId> : ACustomData,
+                                                  IEntity<TId>
 
         where TId : IId
 
@@ -102,7 +103,12 @@ namespace org.GraphDefined.WWCP
         /// Create a new abstract entity.
         /// </summary>
         /// <param name="Id">The unique entity identification.</param>
-        public AEMobilityEntity(TId Id)
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+        public AEMobilityEntity(TId                                  Id,
+                                IReadOnlyDictionary<String, Object>  CustomData   = null)
+
+            : base(CustomData)
+
         {
 
             #region Initial checks
@@ -126,7 +132,11 @@ namespace org.GraphDefined.WWCP
         /// Create a new abstract entity.
         /// </summary>
         /// <param name="Ids">The unique entity identifications.</param>
-        public AEMobilityEntity(IEnumerable<TId>  Ids)
+        public AEMobilityEntity(IEnumerable<TId>                     Ids,
+                                IReadOnlyDictionary<String, Object>  CustomData   = null)
+
+            : base(CustomData)
+
         {
 
             #region Initial checks

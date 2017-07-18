@@ -1034,16 +1034,20 @@ namespace org.GraphDefined.WWCP
         /// <param name="InitialStatus">An optional initial status of the EVSE.</param>
         /// <param name="MaxAdminStatusListSize">An optional max length of the admin staus list.</param>
         /// <param name="MaxStatusListSize">An optional max length of the staus list.</param>
-        public EVSE(EVSE_Id                             Id,
-                    ChargingStation                     ChargingStation,
-                    Action<EVSE>                        Configurator             = null,
-                    RemoteEVSECreatorDelegate           RemoteEVSECreator        = null,
-                    Timestamped<EVSEAdminStatusTypes>?  InitialAdminStatus       = null,
-                    Timestamped<EVSEStatusTypes>?       InitialStatus            = null,
-                    UInt16                              MaxStatusListSize        = DefaultMaxEVSEStatusListSize,
-                    UInt16                              MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize)
+        /// 
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+        public EVSE(EVSE_Id                              Id,
+                    ChargingStation                      ChargingStation,
+                    Action<EVSE>                         Configurator             = null,
+                    RemoteEVSECreatorDelegate            RemoteEVSECreator        = null,
+                    Timestamped<EVSEAdminStatusTypes>?   InitialAdminStatus       = null,
+                    Timestamped<EVSEStatusTypes>?        InitialStatus            = null,
+                    UInt16                               MaxStatusListSize        = DefaultMaxEVSEStatusListSize,
+                    UInt16                               MaxAdminStatusListSize   = DefaultMaxAdminStatusListSize,
+                    IReadOnlyDictionary<String, Object>  CustomData               = null)
 
-            : base(Id)
+            : base(Id,
+                   CustomData)
 
         {
 
@@ -1088,12 +1092,12 @@ namespace org.GraphDefined.WWCP
             if (this.RemoteEVSE != null)
             {
 
-                OnAdminStatusChanged               += async (Timestamp, EventTrackingId, EVSE,   OldStatus, NewStatus) => this.RemoteEVSE.AdminStatus      = NewStatus;
-                OnStatusChanged                    += async (Timestamp, EventTrackingId, EVSE,   OldStatus, NewStatus) => this.RemoteEVSE.Status           = NewStatus;
+                OnAdminStatusChanged                    += async (Timestamp, EventTrackingId, EVSE,   OldStatus, NewStatus) => this.RemoteEVSE.AdminStatus      = NewStatus;
+                OnStatusChanged                         += async (Timestamp, EventTrackingId, EVSE,   OldStatus, NewStatus) => this.RemoteEVSE.Status           = NewStatus;
 
-                OnNewReservation                   += (Timestamp, Sender, Reservation)                => this.RemoteEVSE.Reservation      = Reservation;
-                //_EVSE.OnReservationCancelled             += (Timestamp, Sender, Reservation, ReservationCancellation) => _EVSE.RemoteEVSE.Send
-                OnNewChargingSession               += (Timestamp, Sender, ChargingSession)            => this.RemoteEVSE.ChargingSession  = ChargingSession;
+                OnNewReservation                        += (Timestamp, Sender, Reservation)                => this.RemoteEVSE.Reservation      = Reservation;
+                //_EVSE.OnReservationCancelled                  += (Timestamp, Sender, Reservation, ReservationCancellation) => _EVSE.RemoteEVSE.Send
+                OnNewChargingSession                    += (Timestamp, Sender, ChargingSession)            => this.RemoteEVSE.ChargingSession  = ChargingSession;
 
                 this.RemoteEVSE.OnAdminStatusChanged    += async (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)  => AdminStatus                 = NewStatus;
                 this.RemoteEVSE.OnStatusChanged         += async (Timestamp, EventTrackingId, RemoteEVSE, OldStatus, NewStatus)  => Status                      = NewStatus;
