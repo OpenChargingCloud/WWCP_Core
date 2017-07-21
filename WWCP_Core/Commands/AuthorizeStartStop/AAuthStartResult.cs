@@ -114,7 +114,70 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region AAuthStartResult(AuthorizatorId, ISendAuthorizeStartStop, ...)
+        #region (private) AAuthStartResult(AuthorizatorId, ISendAuthorizeStartStop, Result, ...)
+
+        /// <summary>
+        /// Create a new abstract authorize start result.
+        /// </summary>
+        /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
+        /// <param name="Result">The authorize start result type.</param>
+        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="MaxkW">The optional maximum allowed charging current.</param>
+        /// <param name="MaxkWh">The optional maximum allowed charging energy.</param>
+        /// <param name="MaxDuration">The optional maximum allowed charging duration.</param>
+        /// <param name="ChargingTariffs">Optional charging tariff information.</param>
+        /// <param name="ListOfAuthStopTokens">An optional enumeration of authorize stop tokens.</param>
+        /// <param name="ListOfAuthStopPINs">An optional enumeration of authorize stop PINs.</param>
+        /// 
+        /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        private AAuthStartResult(IId                          AuthorizatorId,
+                                 T                            Result,
+                                 ChargingSession_Id?          SessionId              = null,
+                                 Single?                      MaxkW                  = null,
+                                 Single?                      MaxkWh                 = null,
+                                 TimeSpan?                    MaxDuration            = null,
+                                 IEnumerable<ChargingTariff>  ChargingTariffs        = null,
+                                 IEnumerable<Auth_Token>      ListOfAuthStopTokens   = null,
+                                 IEnumerable<UInt32>          ListOfAuthStopPINs     = null,
+
+                                 eMobilityProvider_Id?        ProviderId             = null,
+                                 String                       Description            = null,
+                                 String                       AdditionalInfo         = null,
+                                 TimeSpan?                    Runtime                = null)
+
+        {
+
+            #region Initial checks
+
+            if (AuthorizatorId == null)
+                throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
+
+            #endregion
+
+            this.AuthorizatorId           = AuthorizatorId;
+            this.ISendAuthorizeStartStop  = ISendAuthorizeStartStop;
+            this.Result                   = Result;
+            this.SessionId                = SessionId;
+            this.MaxkW                    = MaxkW;
+            this.MaxkWh                   = MaxkWh;
+            this.MaxDuration              = MaxDuration;
+            this.ChargingTariffs          = ChargingTariffs;
+            this.ListOfAuthStopTokens     = ListOfAuthStopTokens;
+            this.ListOfAuthStopPINs       = ListOfAuthStopPINs;
+
+            this.ProviderId               = ProviderId      ?? new eMobilityProvider_Id?();
+            this.Description              = Description;
+            this.AdditionalInfo           = AdditionalInfo;
+            this.Runtime                  = Runtime         ?? TimeSpan.FromSeconds(0);
+
+        }
+
+        #endregion
+
+        #region AAuthStartResult(AuthorizatorId, ISendAuthorizeStartStop,    Result, ...)
 
         /// <summary>
         /// Create a new abstract authorize start result.
@@ -150,36 +213,30 @@ namespace org.GraphDefined.WWCP
                                    String                       AdditionalInfo         = null,
                                    TimeSpan?                    Runtime                = null)
 
+            : this(AuthorizatorId,
+                   Result,
+                   SessionId,
+                   MaxkW,
+                   MaxkWh,
+                   MaxDuration,
+                   ChargingTariffs,
+                   ListOfAuthStopTokens,
+                   ListOfAuthStopPINs,
+
+                   ProviderId,
+                   Description,
+                   AdditionalInfo,
+                   Runtime)
+
         {
 
-            #region Initial checks
-
-            if (AuthorizatorId == null)
-                throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
-
-            #endregion
-
-            this.AuthorizatorId           = AuthorizatorId;
-            this.ISendAuthorizeStartStop  = ISendAuthorizeStartStop;
-            this.Result                   = Result;
-            this.SessionId                = SessionId;
-            this.MaxkW                    = MaxkW;
-            this.MaxkWh                   = MaxkWh;
-            this.MaxDuration              = MaxDuration;
-            this.ChargingTariffs          = ChargingTariffs;
-            this.ListOfAuthStopTokens     = ListOfAuthStopTokens;
-            this.ListOfAuthStopPINs       = ListOfAuthStopPINs;
-
-            this.ProviderId               = ProviderId      ?? new eMobilityProvider_Id?();
-            this.Description              = Description;
-            this.AdditionalInfo           = AdditionalInfo;
-            this.Runtime                  = Runtime         ?? TimeSpan.FromSeconds(0);
+            this.ISendAuthorizeStartStop = ISendAuthorizeStartStop;
 
         }
 
         #endregion
 
-        #region AAuthStartResult(AuthorizatorId, IReceiveAuthorizeStartStop, ...)
+        #region AAuthStartResult(AuthorizatorId, IReceiveAuthorizeStartStop, Result, ...)
 
         /// <summary>
         /// Create a new abstract authorize start result.
@@ -215,30 +272,24 @@ namespace org.GraphDefined.WWCP
                                    String                       AdditionalInfo         = null,
                                    TimeSpan?                    Runtime                = null)
 
+            : this(AuthorizatorId,
+                   Result,
+                   SessionId,
+                   MaxkW,
+                   MaxkWh,
+                   MaxDuration,
+                   ChargingTariffs,
+                   ListOfAuthStopTokens,
+                   ListOfAuthStopPINs,
+
+                   ProviderId,
+                   Description,
+                   AdditionalInfo,
+                   Runtime)
+
         {
 
-            #region Initial checks
-
-            if (AuthorizatorId == null)
-                throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
-
-            #endregion
-
-            this.AuthorizatorId              = AuthorizatorId;
-            this.IReceiveAuthorizeStartStop  = IReceiveAuthorizeStartStop;
-            this.Result                      = Result;
-            this.SessionId                   = SessionId;
-            this.MaxkW                       = MaxkW;
-            this.MaxkWh                      = MaxkWh;
-            this.MaxDuration                 = MaxDuration;
-            this.ChargingTariffs             = ChargingTariffs;
-            this.ListOfAuthStopTokens        = ListOfAuthStopTokens;
-            this.ListOfAuthStopPINs          = ListOfAuthStopPINs;
-
-            this.ProviderId                  = ProviderId      ?? new eMobilityProvider_Id?();
-            this.Description                 = Description;
-            this.AdditionalInfo              = AdditionalInfo;
-            this.Runtime                     = Runtime         ?? TimeSpan.FromSeconds(0);
+            this.IReceiveAuthorizeStartStop = IReceiveAuthorizeStartStop;
 
         }
 

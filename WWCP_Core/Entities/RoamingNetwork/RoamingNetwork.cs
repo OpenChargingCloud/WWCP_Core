@@ -6126,7 +6126,7 @@ namespace org.GraphDefined.WWCP
                                                         result2.Result == AuthStopResultType.Blocked,
 
                                              runtime => AuthStopResult.NotAuthorized(Id,
-                                                                                     //this,
+                                                                                     this,
                                                                                      SessionId,
                                                                                      Description:  "No authorization service returned a positiv result!",
                                                                                      Runtime:      runtime)).
@@ -6285,7 +6285,7 @@ namespace org.GraphDefined.WWCP
                                                         result2.Result == AuthStopEVSEResultType.Blocked,
 
                                              runtime => AuthStopEVSEResult.NotAuthorized(Id,
-                                                                                         //this,
+                                                                                         this,
                                                                                          SessionId,
                                                                                          Description:  "No authorization service returned a positiv result!",
                                                                                          Runtime:      runtime)).
@@ -6457,7 +6457,7 @@ namespace org.GraphDefined.WWCP
                                                         result2.Result == AuthStopChargingStationResultType.Blocked,
 
                                              runtime => AuthStopChargingStationResult.NotAuthorized(Id,
-                                                                                                    //this,
+                                                                                                    this,
                                                                                                     SessionId,
                                                                                                     Description:  "No authorization service returned a positiv result!",
                                                                                                     Runtime:      runtime)).
@@ -6654,7 +6654,7 @@ namespace org.GraphDefined.WWCP
                                                         result2.Result == AuthStopChargingPoolResultType.Blocked,
 
                                              runtime => AuthStopChargingPoolResult.NotAuthorized(Id,
-                                                                                                 //this,
+                                                                                                 this,
                                                                                                  SessionId,
                                                                                                  Description:  "No authorization service returned a positiv result!",
                                                                                                  Runtime:      runtime)).

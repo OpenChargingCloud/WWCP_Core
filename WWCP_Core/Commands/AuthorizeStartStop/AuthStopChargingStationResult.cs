@@ -32,10 +32,13 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
+        #region (private) AuthStopChargingStationResult(AuthorizatorId, ISendAuthorizeStartStop,    Result, ...)
+
         /// <summary>
         /// Create a new authorize stop result.
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="Result">The authorize stop result type.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
         /// 
@@ -44,6 +47,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         private AuthStopChargingStationResult(IId                                AuthorizatorId,
+                                              ISendAuthorizeStartStop            ISendAuthorizeStartStop,
                                               AuthStopChargingStationResultType  Result,
                                               ChargingSession_Id?                SessionId        = null,
 
@@ -53,6 +57,7 @@ namespace org.GraphDefined.WWCP
                                               TimeSpan?                          Runtime          = null)
 
             : base(AuthorizatorId,
+                   ISendAuthorizeStartStop,
                    Result,
                    SessionId,
                    ProviderId,
@@ -64,6 +69,45 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (private) AuthStopChargingStationResult(AuthorizatorId, IReceiveAuthorizeStartStop, Result, ...)
+
+        /// <summary>
+        /// Create a new authorize stop result.
+        /// </summary>
+        /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="Result">The authorize stop result type.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// 
+        /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        private AuthStopChargingStationResult(IId                                AuthorizatorId,
+                                              IReceiveAuthorizeStartStop         IReceiveAuthorizeStartStop,
+                                              AuthStopChargingStationResultType  Result,
+                                              ChargingSession_Id?                SessionId        = null,
+
+                                              eMobilityProvider_Id?              ProviderId       = null,
+                                              String                             Description      = null,
+                                              String                             AdditionalInfo   = null,
+                                              TimeSpan?                          Runtime          = null)
+
+            : base(AuthorizatorId,
+                   IReceiveAuthorizeStartStop,
+                   Result,
+                   SessionId,
+                   ProviderId,
+                   Description,
+                   AdditionalInfo,
+                   Runtime)
+
+        { }
+
+        #endregion
+
+        #endregion
+
 
         #region (static) Unspecified         (AuthorizatorId, SessionId = null, Runtime = null)
 
@@ -71,16 +115,95 @@ namespace org.GraphDefined.WWCP
         /// The result is unknown and/or should be ignored.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult Unspecified(IId                  AuthorizatorId,
-                                                                ChargingSession_Id?  SessionId  = null,
-                                                                TimeSpan?            Runtime    = null)
+        public static AuthStopChargingStationResult
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.Unspecified,
-                                                 SessionId,
-                                                 Runtime: Runtime);
+            Unspecified(IId                      AuthorizatorId,
+                        ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                        ChargingSession_Id?      SessionId  = null,
+                        TimeSpan?                Runtime    = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     ISendAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.Unspecified,
+                                                     SessionId,
+                                                     Runtime: Runtime);
+
+
+
+        /// <summary>
+        /// The result is unknown and/or should be ignored.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopChargingStationResult
+
+            Unspecified(IId                         AuthorizatorId,
+                        IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                        ChargingSession_Id?         SessionId  = null,
+                        TimeSpan?                   Runtime    = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     IReceiveAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.Unspecified,
+                                                     SessionId,
+                                                     Runtime: Runtime);
+
+        #endregion
+
+        #region (static) AdminDown           (AuthorizatorId, SessionId = null, Runtime = null)
+
+        /// <summary>
+        /// The authentication service was disabled by the administrator.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopChargingStationResult
+
+            AdminDown(IId                      AuthorizatorId,
+                      ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                      ChargingSession_Id?      SessionId  = null,
+                      TimeSpan?                Runtime    = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     ISendAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.AdminDown,
+                                                     SessionId,
+                                                     Description: "The authentication service was disabled by the administrator!",
+                                                     Runtime:     Runtime);
+
+
+
+        /// <summary>
+        /// The authentication service was disabled by the administrator.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopChargingStationResult
+
+            AdminDown(IId                         AuthorizatorId,
+                      IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                      ChargingSession_Id?         SessionId  = null,
+                      TimeSpan?                   Runtime    = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     IReceiveAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.AdminDown,
+                                                     SessionId,
+                                                     Description: "The authentication service was disabled by the administrator!",
+                                                     Runtime:     Runtime);
 
         #endregion
 
@@ -90,16 +213,45 @@ namespace org.GraphDefined.WWCP
         /// The given charging session identification is unknown or invalid.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult InvalidSessionId(IId                  AuthorizatorId,
-                                                                     ChargingSession_Id?  SessionId  = null,
-                                                                     TimeSpan?            Runtime    = null)
+        public static AuthStopChargingStationResult
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.InvalidSessionId,
-                                                 SessionId,
-                                                 Runtime: Runtime);
+            InvalidSessionId(IId                      AuthorizatorId,
+                             ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                             ChargingSession_Id?      SessionId  = null,
+                             TimeSpan?                Runtime    = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     ISendAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.InvalidSessionId,
+                                                     SessionId,
+                                                     Runtime: Runtime);
+
+
+
+        /// <summary>
+        /// The given charging session identification is unknown or invalid.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopChargingStationResult
+
+            InvalidSessionId(IId                         AuthorizatorId,
+                             IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                             ChargingSession_Id?         SessionId  = null,
+                             TimeSpan?                   Runtime    = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     IReceiveAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.InvalidSessionId,
+                                                     SessionId,
+                                                     Runtime: Runtime);
 
         #endregion
 
@@ -108,15 +260,48 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The charging station does not support this operation.
         /// </summary>
-        public static AuthStopChargingStationResult NotSupported(IId                  AuthorizatorId,
-                                                                 ChargingSession_Id?  SessionId  = null,
-                                                                 TimeSpan?            Runtime    = null)
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopChargingStationResult
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.NotSupported,
-                                                 SessionId,
-                                                 Description: "Operation not supported!",
-                                                 Runtime:     Runtime);
+            NotSupported(IId                      AuthorizatorId,
+                         ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                         ChargingSession_Id?      SessionId  = null,
+                         TimeSpan?                Runtime    = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     ISendAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.NotSupported,
+                                                     SessionId,
+                                                     Description: "Operation not supported!",
+                                                     Runtime:     Runtime);
+
+
+
+        /// <summary>
+        /// The charging station does not support this operation.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopChargingStationResult
+
+            NotSupported(IId                         AuthorizatorId,
+                         IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                         ChargingSession_Id?         SessionId  = null,
+                         TimeSpan?                   Runtime    = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     IReceiveAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.NotSupported,
+                                                     SessionId,
+                                                     Description: "Operation not supported!",
+                                                     Runtime:     Runtime);
 
         #endregion
 
@@ -126,17 +311,47 @@ namespace org.GraphDefined.WWCP
         /// The EVSE or charging station is out of service.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult OutOfService(IId                  AuthorizatorId,
-                                                                 ChargingSession_Id?  SessionId  = null,
-                                                                 TimeSpan?            Runtime    = null)
+        public static AuthStopChargingStationResult
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.OutOfService,
-                                                 SessionId,
-                                                 Description: "Out-of-service!",
-                                                 Runtime:     Runtime);
+            OutOfService(IId                      AuthorizatorId,
+                         ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                         ChargingSession_Id?      SessionId  = null,
+                         TimeSpan?                Runtime    = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     ISendAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.OutOfService,
+                                                     SessionId,
+                                                     Description: "Out-of-service!",
+                                                     Runtime:     Runtime);
+
+
+
+        /// <summary>
+        /// The EVSE or charging station is out of service.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopChargingStationResult
+
+            OutOfService(IId                         AuthorizatorId,
+                         IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                         ChargingSession_Id?         SessionId  = null,
+                         TimeSpan?                   Runtime    = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     IReceiveAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.OutOfService,
+                                                     SessionId,
+                                                     Description: "Out-of-service!",
+                                                     Runtime:     Runtime);
 
         #endregion
 
@@ -146,25 +361,63 @@ namespace org.GraphDefined.WWCP
         /// The authorize stop was successful.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult Authorized(IId                    AuthorizatorId,
-                                                               ChargingSession_Id?    SessionId        = null,
-                                                               eMobilityProvider_Id?  ProviderId       = null,
-                                                               String                 Description      = "Success",
-                                                               String                 AdditionalInfo   = null,
-                                                               TimeSpan?              Runtime          = null)
+        public static AuthStopChargingStationResult
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.Authorized,
-                                                 SessionId,
-                                                 ProviderId,
-                                                 Description,
-                                                 AdditionalInfo,
-                                                 Runtime: Runtime);
+            Authorized(IId                      AuthorizatorId,
+                       ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                       ChargingSession_Id?      SessionId        = null,
+                       eMobilityProvider_Id?    ProviderId       = null,
+                       String                   Description      = "Success",
+                       String                   AdditionalInfo   = null,
+                       TimeSpan?                Runtime          = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     ISendAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.Authorized,
+                                                     SessionId,
+                                                     ProviderId,
+                                                     Description,
+                                                     AdditionalInfo,
+                                                     Runtime: Runtime);
+
+
+
+        /// <summary>
+        /// The authorize stop was successful.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopChargingStationResult
+
+            Authorized(IId                         AuthorizatorId,
+                       IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                       ChargingSession_Id?         SessionId        = null,
+                       eMobilityProvider_Id?       ProviderId       = null,
+                       String                      Description      = "Success",
+                       String                      AdditionalInfo   = null,
+                       TimeSpan?                   Runtime          = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     IReceiveAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.Authorized,
+                                                     SessionId,
+                                                     ProviderId,
+                                                     Description,
+                                                     AdditionalInfo,
+                                                     Runtime: Runtime);
 
         #endregion
 
@@ -174,25 +427,63 @@ namespace org.GraphDefined.WWCP
         /// The authorize stop was not successful (e.g. ev customer is unkown).
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult NotAuthorized(IId                    AuthorizatorId,
-                                                                  ChargingSession_Id?    SessionId        = null,
-                                                                  eMobilityProvider_Id?  ProviderId       = null,
-                                                                  String                 Description      = "NotAuthorized",
-                                                                  String                 AdditionalInfo   = null,
-                                                                  TimeSpan?              Runtime          = null)
+        public static AuthStopChargingStationResult
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.NotAuthorized,
-                                                 SessionId,
-                                                 ProviderId,
-                                                 Description,
-                                                 AdditionalInfo,
-                                                 Runtime: Runtime);
+            NotAuthorized(IId                      AuthorizatorId,
+                          ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                          ChargingSession_Id?      SessionId        = null,
+                          eMobilityProvider_Id?    ProviderId       = null,
+                          String                   Description      = "NotAuthorized",
+                          String                   AdditionalInfo   = null,
+                          TimeSpan?                Runtime          = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     ISendAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.NotAuthorized,
+                                                     SessionId,
+                                                     ProviderId,
+                                                     Description,
+                                                     AdditionalInfo,
+                                                     Runtime: Runtime);
+
+
+
+        /// <summary>
+        /// The authorize stop was not successful (e.g. ev customer is unkown).
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopChargingStationResult
+
+            NotAuthorized(IId                         AuthorizatorId,
+                          IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                          ChargingSession_Id?         SessionId        = null,
+                          eMobilityProvider_Id?       ProviderId       = null,
+                          String                      Description      = "NotAuthorized",
+                          String                      AdditionalInfo   = null,
+                          TimeSpan?                   Runtime          = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     IReceiveAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.NotAuthorized,
+                                                     SessionId,
+                                                     ProviderId,
+                                                     Description,
+                                                     AdditionalInfo,
+                                                     Runtime: Runtime);
 
         #endregion
 
@@ -202,25 +493,63 @@ namespace org.GraphDefined.WWCP
         /// The authorize start operation is not allowed (ev customer is blocked).
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult Blocked(IId                    AuthorizatorId,
-                                                            ChargingSession_Id?    SessionId        = null,
-                                                            eMobilityProvider_Id?  ProviderId       = null,
-                                                            String                 Description      = null,
-                                                            String                 AdditionalInfo   = null,
-                                                            TimeSpan?              Runtime          = null)
+        public static AuthStopChargingStationResult
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.Blocked,
-                                                 SessionId,
-                                                 ProviderId,
-                                                 Description,
-                                                 AdditionalInfo,
-                                                 Runtime: Runtime);
+            Blocked(IId                      AuthorizatorId,
+                    ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                    ChargingSession_Id?      SessionId        = null,
+                    eMobilityProvider_Id?    ProviderId       = null,
+                    String                   Description      = null,
+                    String                   AdditionalInfo   = null,
+                    TimeSpan?                Runtime          = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     ISendAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.Blocked,
+                                                     SessionId,
+                                                     ProviderId,
+                                                     Description,
+                                                     AdditionalInfo,
+                                                     Runtime: Runtime);
+
+
+
+        /// <summary>
+        /// The authorize start operation is not allowed (ev customer is blocked).
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopChargingStationResult
+
+            Blocked(IId                         AuthorizatorId,
+                    IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                    ChargingSession_Id?         SessionId        = null,
+                    eMobilityProvider_Id?       ProviderId       = null,
+                    String                      Description      = null,
+                    String                      AdditionalInfo   = null,
+                    TimeSpan?                   Runtime          = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     IReceiveAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.Blocked,
+                                                     SessionId,
+                                                     ProviderId,
+                                                     Description,
+                                                     AdditionalInfo,
+                                                     Runtime: Runtime);
 
         #endregion
 
@@ -230,16 +559,45 @@ namespace org.GraphDefined.WWCP
         /// The authorize stop ran into a timeout between evse operator backend and charging station.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult CommunicationTimeout(IId                  AuthorizatorId,
-                                                                         ChargingSession_Id?  SessionId  = null,
-                                                                         TimeSpan?            Runtime    = null)
+        public static AuthStopChargingStationResult
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.CommunicationTimeout,
-                                                 SessionId,
-                                                 Runtime: Runtime);
+            CommunicationTimeout(IId                      AuthorizatorId,
+                                 ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                                 ChargingSession_Id?      SessionId  = null,
+                                 TimeSpan?                Runtime    = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     ISendAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.CommunicationTimeout,
+                                                     SessionId,
+                                                     Runtime: Runtime);
+
+
+
+        /// <summary>
+        /// The authorize stop ran into a timeout between evse operator backend and charging station.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopChargingStationResult
+
+            CommunicationTimeout(IId                         AuthorizatorId,
+                                 IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                                 ChargingSession_Id?         SessionId  = null,
+                                 TimeSpan?                   Runtime    = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     IReceiveAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.CommunicationTimeout,
+                                                     SessionId,
+                                                     Runtime: Runtime);
 
         #endregion
 
@@ -249,16 +607,45 @@ namespace org.GraphDefined.WWCP
         /// The authorize stop ran into a timeout between charging station and ev.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult StartChargingTimeout(IId                  AuthorizatorId,
-                                                                         ChargingSession_Id?  SessionId  = null,
-                                                                         TimeSpan?            Runtime    = null)
+        public static AuthStopChargingStationResult
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.StopChargingTimeout,
-                                                 SessionId,
-                                                 Runtime: Runtime);
+            StartChargingTimeout(IId                      AuthorizatorId,
+                                 ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                                 ChargingSession_Id?      SessionId  = null,
+                                 TimeSpan?                Runtime    = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     ISendAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.StopChargingTimeout,
+                                                     SessionId,
+                                                     Runtime: Runtime);
+
+
+
+        /// <summary>
+        /// The authorize stop ran into a timeout between charging station and ev.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopChargingStationResult
+
+            StartChargingTimeout(IId                         AuthorizatorId,
+                                 IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                                 ChargingSession_Id?         SessionId  = null,
+                                 TimeSpan?                   Runtime    = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     IReceiveAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.StopChargingTimeout,
+                                                     SessionId,
+                                                     Runtime: Runtime);
 
         #endregion
 
@@ -268,19 +655,51 @@ namespace org.GraphDefined.WWCP
         /// The authorize stop operation led to an error.
         /// </summary>
         /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification.</param>
         /// <param name="ErrorMessage">An error message.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public static AuthStopChargingStationResult Error(IId                  AuthorizatorId,
-                                                          ChargingSession_Id?  SessionId     = null,
-                                                          String               ErrorMessage  = null,
-                                                          TimeSpan?            Runtime       = null)
+        public static AuthStopChargingStationResult
 
-            => new AuthStopChargingStationResult(AuthorizatorId,
-                                                 AuthStopChargingStationResultType.Error,
-                                                 SessionId,
-                                                 Description: ErrorMessage,
-                                                 Runtime:     Runtime);
+            Error(IId                      AuthorizatorId,
+                  ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                  ChargingSession_Id?      SessionId     = null,
+                  String                   ErrorMessage  = null,
+                  TimeSpan?                Runtime       = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     ISendAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.Error,
+                                                     SessionId,
+                                                     Description: ErrorMessage,
+                                                     Runtime:     Runtime);
+
+
+
+        /// <summary>
+        /// The authorize stop operation led to an error.
+        /// </summary>
+        /// <param name="AuthorizatorId">An authorizator identification.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="SessionId">The optional charging session identification.</param>
+        /// <param name="ErrorMessage">An error message.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static AuthStopChargingStationResult
+
+            Error(IId                         AuthorizatorId,
+                  IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                  ChargingSession_Id?         SessionId     = null,
+                  String                      ErrorMessage  = null,
+                  TimeSpan?                   Runtime       = null)
+
+
+                => new AuthStopChargingStationResult(AuthorizatorId,
+                                                     IReceiveAuthorizeStartStop,
+                                                     AuthStopChargingStationResultType.Error,
+                                                     SessionId,
+                                                     Description: ErrorMessage,
+                                                     Runtime:     Runtime);
 
         #endregion
 
@@ -297,6 +716,11 @@ namespace org.GraphDefined.WWCP
         /// The result is unknown and/or should be ignored.
         /// </summary>
         Unspecified,
+
+        /// <summary>
+        /// The authentication service was disabled by the administrator.
+        /// </summary>
+        AdminDown,
 
         /// <summary>
         /// The charging station is unknown.

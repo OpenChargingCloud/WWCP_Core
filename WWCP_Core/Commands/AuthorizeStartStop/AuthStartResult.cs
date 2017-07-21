@@ -183,6 +183,25 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (static) AdminDown           (AuthorizatorId, SessionId = null, Runtime = null)
+
+        /// <summary>
+        /// The authentication service was disabled by the administrator.
+        /// </summary>
+        public static AuthStartResult AdminDown(IId                      AuthorizatorId,
+                                                ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                                                ChargingSession_Id?      SessionId  = null,
+                                                TimeSpan?                Runtime    = null)
+
+            => new AuthStartResult(AuthorizatorId,
+                                   ISendAuthorizeStartStop,
+                                   AuthStartResultType.AdminDown,
+                                   SessionId,
+                                   Description: "The authentication service was disabled by the administrator!",
+                                   Runtime:     Runtime);
+
+        #endregion
+
         #region (static) InvalidSessionId    (AuthorizatorId, SessionId = null, Runtime = null)
 
         /// <summary>
@@ -574,6 +593,11 @@ namespace org.GraphDefined.WWCP
         /// The result is unknown and/or should be ignored.
         /// </summary>
         Unspecified,
+
+        /// <summary>
+        /// The authentication service was disabled by the administrator.
+        /// </summary>
+        AdminDown,
 
         /// <summary>
         /// The given charging session identification is unknown or invalid.

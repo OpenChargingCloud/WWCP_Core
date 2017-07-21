@@ -3322,6 +3322,7 @@ namespace org.GraphDefined.WWCP
 
             else
                 result = AuthStopResult.OutOfService(Id,
+                                                     this,
                                                      SessionId,
                                                      TimeSpan.FromSeconds(0));
 
@@ -3452,6 +3453,7 @@ namespace org.GraphDefined.WWCP
 
             else
                 result = AuthStopEVSEResult.OutOfService(Id,
+                                                         this,
                                                          SessionId,
                                                          TimeSpan.FromSeconds(0));
 
@@ -3570,6 +3572,7 @@ namespace org.GraphDefined.WWCP
 
             var result   = AuthStopChargingStationResult.OutOfService(
                                Id,
+                               this,
                                SessionId,
                                TimeSpan.FromSeconds(0)
                            );
@@ -3689,6 +3692,7 @@ namespace org.GraphDefined.WWCP
 
             var result   = AuthStopChargingPoolResult.OutOfService(
                                Id,
+                               this,
                                SessionId,
                                TimeSpan.FromSeconds(0)
                            );

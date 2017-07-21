@@ -36,41 +36,53 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The identification of the authorizing entity.
         /// </summary>
-        public IId                    AuthorizatorId    { get; }
+        public IId                          AuthorizatorId                { get; }
+
+        /// <summary>
+        /// The entity asking for an authorization.
+        /// </summary>
+        public ISendAuthorizeStartStop      ISendAuthorizeStartStop       { get; }
+
+        /// <summary>
+        /// The entity giving an authorization.
+        /// </summary>
+        public IReceiveAuthorizeStartStop   IReceiveAuthorizeStartStop    { get; }
 
         /// <summary>
         /// The result of the authorize stop operation.
         /// </summary>
-        public T                      Result            { get; }
+        public T                            Result                        { get; }
 
         /// <summary>
         /// The optional charging session identification.
         /// </summary>
-        public ChargingSession_Id?    SessionId         { get; }
+        public ChargingSession_Id?          SessionId                     { get; }
 
         /// <summary>
         /// The unique identification of the e-mobility provider.
         /// </summary>
-        public eMobilityProvider_Id?  ProviderId        { get; }
+        public eMobilityProvider_Id?        ProviderId                    { get; }
 
         /// <summary>
         /// A optional description of the authorize stop result.
         /// </summary>
-        public String                 Description       { get; }
+        public String                       Description                   { get; }
 
         /// <summary>
         /// An optional additional message.
         /// </summary>
-        public String                 AdditionalInfo    { get; }
+        public String                       AdditionalInfo                { get; }
 
         /// <summary>
         /// The runtime of the request.
         /// </summary>
-        public TimeSpan?              Runtime           { get; }
+        public TimeSpan?                    Runtime                       { get; }
 
         #endregion
 
         #region Constructor(s)
+
+        #region (private) AAuthStopResult(AuthorizatorId, Result, ...)
 
         /// <summary>
         /// Create a new abstract authorize stop result.
@@ -83,13 +95,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        protected AAuthStopResult(IId                    AuthorizatorId,
-                                  T                      Result,
-                                  ChargingSession_Id?    SessionId        = null,
-                                  eMobilityProvider_Id?  ProviderId       = null,
-                                  String                 Description      = null,
-                                  String                 AdditionalInfo   = null,
-                                  TimeSpan?              Runtime          = null)
+        protected AAuthStopResult(IId                      AuthorizatorId,
+                                  T                        Result,
+                                  ChargingSession_Id?      SessionId        = null,
+                                  eMobilityProvider_Id?    ProviderId       = null,
+                                  String                   Description      = null,
+                                  String                   AdditionalInfo   = null,
+                                  TimeSpan?                Runtime          = null)
         {
 
             #region Initial checks
@@ -108,6 +120,86 @@ namespace org.GraphDefined.WWCP
             this.Runtime         = Runtime;
 
         }
+
+        #endregion
+
+        #region AAuthStopResult(AuthorizatorId, ISendAuthorizeStartStop,    Result, ...)
+
+        /// <summary>
+        /// Create a new abstract authorize stop result.
+        /// </summary>
+        /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
+        /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
+        /// <param name="Result">The authorize start result type.</param>
+        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// 
+        /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        protected AAuthStopResult(IId                      AuthorizatorId,
+                                  ISendAuthorizeStartStop  ISendAuthorizeStartStop,
+                                  T                        Result,
+                                  ChargingSession_Id?      SessionId        = null,
+                                  eMobilityProvider_Id?    ProviderId       = null,
+                                  String                   Description      = null,
+                                  String                   AdditionalInfo   = null,
+                                  TimeSpan?                Runtime          = null)
+
+            : this(AuthorizatorId,
+                   Result,
+                   SessionId,
+                   ProviderId,
+                   Description,
+                   AdditionalInfo,
+                   Runtime)
+
+        {
+
+            this.ISendAuthorizeStartStop = ISendAuthorizeStartStop;
+
+        }
+
+        #endregion
+
+        #region AAuthStopResult(AuthorizatorId, IReceiveAuthorizeStartStop, Result, ...)
+
+        /// <summary>
+        /// Create a new abstract authorize stop result.
+        /// </summary>
+        /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
+        /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
+        /// <param name="Result">The authorize start result type.</param>
+        /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// 
+        /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
+        /// <param name="Description">An optional description of the auth start result.</param>
+        /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        protected AAuthStopResult(IId                         AuthorizatorId,
+                                  IReceiveAuthorizeStartStop  IReceiveAuthorizeStartStop,
+                                  T                           Result,
+                                  ChargingSession_Id?         SessionId        = null,
+                                  eMobilityProvider_Id?       ProviderId       = null,
+                                  String                      Description      = null,
+                                  String                      AdditionalInfo   = null,
+                                  TimeSpan?                   Runtime          = null)
+
+            : this(AuthorizatorId,
+                   Result,
+                   SessionId,
+                   ProviderId,
+                   Description,
+                   AdditionalInfo,
+                   Runtime)
+
+        {
+
+            this.IReceiveAuthorizeStartStop = IReceiveAuthorizeStartStop;
+
+        }
+
+        #endregion
 
         #endregion
 
