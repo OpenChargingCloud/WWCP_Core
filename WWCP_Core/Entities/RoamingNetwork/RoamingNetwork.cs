@@ -3262,10 +3262,10 @@ namespace org.GraphDefined.WWCP
 
             var results = _ISendData.WhenAll(iSendData => iSendData.
                                                               UpdateStaticData(EVSE,
-                                                              PropertyName,
-                                                              OldValue,
-                                                              NewValue,
-                                                              EventTrackingId: EventTrackingId));
+                                                                               PropertyName,
+                                                                               OldValue,
+                                                                               NewValue,
+                                                                               EventTrackingId: EventTrackingId));
 
             var OnEVSEDataChangedLocal = OnEVSEDataChanged;
             if (OnEVSEDataChangedLocal != null)
@@ -3290,52 +3290,20 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEAdminStatus(DateTime                          Timestamp,
-                                                  EventTracking_Id                  EventTrackingId,
-                                                  EVSE                              EVSE,
+        internal async Task UpdateEVSEAdminStatus(DateTime                           Timestamp,
+                                                  EventTracking_Id                   EventTrackingId,
+                                                  EVSE                               EVSE,
                                                   Timestamped<EVSEAdminStatusTypes>  OldStatus,
                                                   Timestamped<EVSEAdminStatusTypes>  NewStatus)
         {
 
-            //Acknowledgement result = null;
-
-            //if (!DisableStatusUpdates)
-            //{
-
-            //    foreach (var AuthenticationService in _IeMobilityServiceProviders.
-            //                                              OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                              Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //    {
-
-            //        result = await AuthenticationService.PushEVSEAdminStatus(new EVSEAdminStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                                 ActionType.update,
-            //                                                                 EVSE.Operator.Id);
-
-            //    }
-
-            //    foreach (var OperatorRoamingService in _OperatorRoamingServices.
-            //                                              OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                              Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //    {
-
-            //        result = await OperatorRoamingService.PushEVSEAdminStatus(new EVSEAdminStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                                  ActionType.update,
-            //                                                                  EVSE.Operator.Id);
-
-            //    }
-
-            //    foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
-            //                                              OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                              Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //    {
-
-            //        result = await PushEVSEStatusService.PushEVSEAdminStatus(new EVSEAdminStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                                 ActionType.update,
-            //                                                                 EVSE.Operator.Id);
-
-            //    }
-
-            //}
+            var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.
+                                                                  UpdateAdminStatus(new EVSEAdminStatusUpdate[] {
+                                                                                        new EVSEAdminStatusUpdate(EVSE,
+                                                                                                                  OldStatus,
+                                                                                                                  NewStatus)
+                                                                                    },
+                                                                                    EventTrackingId: EventTrackingId));
 
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
             if (OnEVSEAdminStatusChangedLocal != null)
@@ -3367,9 +3335,12 @@ namespace org.GraphDefined.WWCP
         {
 
             var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.
-                                                              UpdateStatus(new EVSEStatusUpdate[] { new EVSEStatusUpdate(EVSE,
-                                                                                              OldStatus,
-                                                                                              NewStatus) }));
+                                                                  UpdateStatus(new EVSEStatusUpdate[] {
+                                                                                   new EVSEStatusUpdate(EVSE,
+                                                                                                        OldStatus,
+                                                                                                        NewStatus)
+                                                                               },
+                                                                               EventTrackingId: EventTrackingId));
 
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
             if (OnEVSEStatusChangedLocal != null)

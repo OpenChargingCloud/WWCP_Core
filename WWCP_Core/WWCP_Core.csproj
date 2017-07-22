@@ -260,7 +260,7 @@
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkDelegates.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\ARoamingProvider.cs" />
-    <Compile Include="Entities\RoamingNetwork\RoamingProvider\AChargingStationOperatorRoamingProvider.cs" />
+    <Compile Include="Entities\RoamingNetwork\RoamingProvider\AWWCPCPOAdapter.cs" />
     <Compile Include="Entities\StatusSchedule.cs" />
     <Compile Include="CommonTypes\AuthIdentification.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargeDetailRecord\ChargeDetailRecord.cs" />
