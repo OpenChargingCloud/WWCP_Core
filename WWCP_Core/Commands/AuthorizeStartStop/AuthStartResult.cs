@@ -52,6 +52,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         private AuthStartResult(IId                          AuthorizatorId,
                                 ISendAuthorizeStartStop      ISendAuthorizeStartStop,
@@ -67,6 +68,7 @@ namespace org.GraphDefined.WWCP
                                 eMobilityProvider_Id?        ProviderId             = null,
                                 String                       Description            = null,
                                 String                       AdditionalInfo         = null,
+                                Byte                         NumberOfRetries        = 0,
                                 TimeSpan?                    Runtime                = null)
 
             : base(AuthorizatorId,
@@ -83,6 +85,7 @@ namespace org.GraphDefined.WWCP
                    ProviderId,
                    Description,
                    AdditionalInfo,
+                   NumberOfRetries,
                    Runtime)
 
         { }
@@ -108,6 +111,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         private AuthStartResult(IId                          AuthorizatorId,
                                 IReceiveAuthorizeStartStop   IReceiveAuthorizeStartStop,
@@ -123,6 +127,7 @@ namespace org.GraphDefined.WWCP
                                 eMobilityProvider_Id?        ProviderId             = null,
                                 String                       Description            = null,
                                 String                       AdditionalInfo         = null,
+                                Byte                         NumberOfRetries        = 0,
                                 TimeSpan?                    Runtime                = null)
 
             : base(AuthorizatorId,
@@ -139,6 +144,7 @@ namespace org.GraphDefined.WWCP
                    ProviderId,
                    Description,
                    AdditionalInfo,
+                   NumberOfRetries,
                    Runtime)
 
         { }
@@ -410,6 +416,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
@@ -426,6 +433,7 @@ namespace org.GraphDefined.WWCP
                        eMobilityProvider_Id?        ProviderId             = null,
                        String                       Description            = "Success",
                        String                       AdditionalInfo         = null,
+                       Byte                         NumberOfRetries        = 0,
                        TimeSpan?                    Runtime                = null)
 
 
@@ -443,6 +451,7 @@ namespace org.GraphDefined.WWCP
                                        ProviderId,
                                        Description,
                                        AdditionalInfo,
+                                       NumberOfRetries,
                                        Runtime);
 
 
@@ -463,6 +472,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">The unique identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static AuthStartResult
 
@@ -479,6 +489,7 @@ namespace org.GraphDefined.WWCP
                        eMobilityProvider_Id?        ProviderId             = null,
                        String                       Description            = "Success",
                        String                       AdditionalInfo         = null,
+                       Byte                         NumberOfRetries        = 0,
                        TimeSpan?                    Runtime                = null)
 
 
@@ -496,6 +507,7 @@ namespace org.GraphDefined.WWCP
                                        ProviderId,
                                        Description,
                                        AdditionalInfo,
+                                       NumberOfRetries,
                                        Runtime);
 
         #endregion

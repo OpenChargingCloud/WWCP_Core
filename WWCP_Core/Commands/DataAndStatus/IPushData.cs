@@ -95,7 +95,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(EVSE                EVSE,
                           TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
@@ -119,7 +119,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(EVSE                EVSE,
                           TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
@@ -147,7 +147,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(EVSE                EVSE,
                              String              PropertyName        = null,
@@ -174,7 +174,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(EVSE                EVSE,
                              TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
@@ -199,7 +199,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(IEnumerable<EVSE>   EVSEs,
                           TransmissionTypes   TransmissionType   = TransmissionTypes.Enqueued,
@@ -223,7 +223,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(IEnumerable<EVSE>   EVSEs,
                           TransmissionTypes   TransmissionType   = TransmissionTypes.Enqueued,
@@ -247,7 +247,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(IEnumerable<EVSE>   EVSEs,
                              TransmissionTypes   TransmissionType   = TransmissionTypes.Enqueued,
@@ -271,7 +271,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(IEnumerable<EVSE>   EVSEs,
                              TransmissionTypes   TransmissionType   = TransmissionTypes.Enqueued,
@@ -299,7 +299,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(ChargingStation     ChargingStation,
                           TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
@@ -323,7 +323,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(ChargingStation     ChargingStation,
                           TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
@@ -350,7 +350,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(ChargingStation     ChargingStation,
                              String              PropertyName        = null,
@@ -376,7 +376,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(ChargingStation     ChargingStation,
 
@@ -399,7 +399,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(IEnumerable<ChargingStation>  ChargingStations,
 
@@ -421,7 +421,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(IEnumerable<ChargingStation>  ChargingStations,
 
@@ -443,7 +443,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(IEnumerable<ChargingStation>  ChargingStations,
 
@@ -465,7 +465,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(IEnumerable<ChargingStation>  ChargingStations,
 
@@ -492,7 +492,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(ChargingPool        ChargingPool,
                           TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
@@ -516,7 +516,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(ChargingPool        ChargingPool,
                           TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
@@ -543,7 +543,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(ChargingPool        ChargingPool,
                              String              PropertyName        = null,
@@ -569,7 +569,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(ChargingPool        ChargingPool,
 
@@ -592,7 +592,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(IEnumerable<ChargingPool>  ChargingPools,
 
@@ -614,7 +614,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(IEnumerable<ChargingPool>  ChargingPools,
 
@@ -636,7 +636,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(IEnumerable<ChargingPool>  ChargingPools,
 
@@ -658,7 +658,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(IEnumerable<ChargingPool>  ChargingPools,
 
@@ -684,7 +684,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(ChargingStationOperator  ChargingStationOperator,
 
@@ -706,7 +706,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(ChargingStationOperator  ChargingStationOperator,
 
@@ -728,7 +728,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(ChargingStationOperator  ChargingStationOperator,
 
@@ -750,7 +750,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(ChargingStationOperator  ChargingStationOperator,
 
@@ -773,7 +773,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
@@ -795,7 +795,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
@@ -817,7 +817,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
@@ -838,7 +838,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
@@ -864,7 +864,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(RoamingNetwork      RoamingNetwork,
 
@@ -886,7 +886,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(RoamingNetwork      RoamingNetwork,
 
@@ -908,7 +908,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(RoamingNetwork      RoamingNetwork,
 
@@ -930,7 +930,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(RoamingNetwork      RoamingNetwork,
 
@@ -981,7 +981,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(EVSE                EVSE,
 
@@ -1003,7 +1003,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(EVSE                EVSE,
 
@@ -1029,7 +1029,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(EVSE                EVSE,
                              String              PropertyName        = null,
@@ -1054,7 +1054,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(EVSE                EVSE,
 
@@ -1077,7 +1077,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(IEnumerable<EVSE>   EVSEs,
 
@@ -1099,7 +1099,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(IEnumerable<EVSE>   EVSEs,
 
@@ -1121,7 +1121,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(IEnumerable<EVSE>   EVSEs,
 
@@ -1143,7 +1143,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(IEnumerable<EVSE>   EVSEs,
 
@@ -1169,7 +1169,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(ChargingStation     ChargingStation,
 
@@ -1191,7 +1191,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(ChargingStation     ChargingStation,
 
@@ -1216,7 +1216,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(ChargingStation     ChargingStation,
                              String              PropertyName        = null,
@@ -1241,7 +1241,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(ChargingStation     ChargingStation,
 
@@ -1264,7 +1264,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(IEnumerable<ChargingStation>  ChargingStations,
 
@@ -1286,7 +1286,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(IEnumerable<ChargingStation>  ChargingStations,
 
@@ -1308,7 +1308,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(IEnumerable<ChargingStation>  ChargingStations,
 
@@ -1330,7 +1330,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(IEnumerable<ChargingStation>  ChargingStations,
 
@@ -1356,7 +1356,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(ChargingPool        ChargingPool,
 
@@ -1378,7 +1378,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(ChargingPool        ChargingPool,
 
@@ -1403,7 +1403,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(ChargingPool        ChargingPool,
                              String              PropertyName        = null,
@@ -1428,7 +1428,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(ChargingPool        ChargingPool,
 
@@ -1451,7 +1451,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(IEnumerable<ChargingPool>  ChargingPools,
 
@@ -1473,7 +1473,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(IEnumerable<ChargingPool>  ChargingPools,
 
@@ -1495,7 +1495,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(IEnumerable<ChargingPool>  ChargingPools,
 
@@ -1517,7 +1517,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(IEnumerable<ChargingPool>  ChargingPools,
 
@@ -1543,7 +1543,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(ChargingStationOperator  ChargingStationOperator,
 
@@ -1565,7 +1565,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(ChargingStationOperator  ChargingStationOperator,
 
@@ -1587,7 +1587,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(ChargingStationOperator  ChargingStationOperator,
 
@@ -1609,7 +1609,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(ChargingStationOperator  ChargingStationOperator,
 
@@ -1632,7 +1632,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
@@ -1654,7 +1654,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
@@ -1676,7 +1676,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
@@ -1697,7 +1697,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
@@ -1723,7 +1723,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             SetStaticData(RoamingNetwork      RoamingNetwork,
 
@@ -1745,7 +1745,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             AddStaticData(RoamingNetwork      RoamingNetwork,
 
@@ -1767,7 +1767,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             UpdateStaticData(RoamingNetwork      RoamingNetwork,
 
@@ -1789,7 +1789,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<Acknowledgement>
+        Task<PushDataResult>
 
             DeleteStaticData(RoamingNetwork      RoamingNetwork,
 

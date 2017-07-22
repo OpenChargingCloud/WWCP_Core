@@ -28,20 +28,10 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-    public enum ResultType
-    {
-        True,
-        NoOperation,
-        Enqueued,
-        LockTimeout,
-        False
-    }
-
-
     /// <summary>
     /// An acknowledgement.
     /// </summary>
-    public class Acknowledgement
+    public class PushStatusResult
     {
 
         #region Properties
@@ -49,7 +39,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The result of the operation.
         /// </summary>
-        public ResultType           Result          { get; }
+        public ResultTypes           Result          { get; }
 
         /// <summary>
         /// An optional description of the result code.
@@ -77,10 +67,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        public Acknowledgement(ResultType           Result,
-                               String               Description  = null,
-                               IEnumerable<String>  Warnings     = null,
-                               TimeSpan?            Runtime      = null)
+        public PushStatusResult(ResultTypes           Result,
+                                String               Description  = null,
+                                IEnumerable<String>  Warnings     = null,
+                                TimeSpan?            Runtime      = null)
         {
 
             this.Result       = Result;

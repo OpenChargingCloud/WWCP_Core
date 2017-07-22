@@ -45,64 +45,64 @@ namespace org.GraphDefined.WWCP
 
         }
 
-        public async Task<Acknowledgement> PushEVSEStatus(ILookup<ChargingStationOperator, EVSEStatus> GroupedEVSEStatus, ActionType ActionType = ActionType.update, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<PushDataResult> PushEVSEStatus(ILookup<ChargingStationOperator, EVSEStatus> GroupedEVSEStatus, ActionType ActionType = ActionType.update, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            return new Acknowledgement(ResultType.True);
+            return new PushDataResult(ResultTypes.True);
         }
 
-        public async Task<Acknowledgement> PushEVSEStatus(EVSEStatus EVSEStatus, ActionType ActionType = ActionType.update, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<PushDataResult> PushEVSEStatus(EVSEStatus EVSEStatus, ActionType ActionType = ActionType.update, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            return new Acknowledgement(ResultType.True);
+            return new PushDataResult(ResultTypes.True);
         }
 
-        public async Task<Acknowledgement> PushEVSEStatus(IEnumerable<EVSEStatus> EVSEStatus, ActionType ActionType = ActionType.update, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<PushDataResult> PushEVSEStatus(IEnumerable<EVSEStatus> EVSEStatus, ActionType ActionType = ActionType.update, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            return new Acknowledgement(ResultType.True);
+            return new PushDataResult(ResultTypes.True);
         }
 
-        public async Task<Acknowledgement> PushEVSEStatus(EVSE EVSE, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<PushDataResult> PushEVSEStatus(EVSE EVSE, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            return new Acknowledgement(ResultType.True);
+            return new PushDataResult(ResultTypes.True);
         }
 
-        public async Task<Acknowledgement> PushEVSEStatus(IEnumerable<EVSE> EVSEs, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<PushDataResult> PushEVSEStatus(IEnumerable<EVSE> EVSEs, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            return new Acknowledgement(ResultType.True);
+            return new PushDataResult(ResultTypes.True);
         }
 
-        public async Task<Acknowledgement> PushEVSEStatus(ChargingStation ChargingStation, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<PushDataResult> PushEVSEStatus(ChargingStation ChargingStation, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            return new Acknowledgement(ResultType.True);
+            return new PushDataResult(ResultTypes.True);
         }
 
-        public async Task<Acknowledgement> PushEVSEStatus(IEnumerable<ChargingStation> ChargingStations, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<PushDataResult> PushEVSEStatus(IEnumerable<ChargingStation> ChargingStations, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            return new Acknowledgement(ResultType.True);
+            return new PushDataResult(ResultTypes.True);
         }
 
-        public async Task<Acknowledgement> PushEVSEStatus(ChargingPool ChargingPool, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<PushDataResult> PushEVSEStatus(ChargingPool ChargingPool, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            return new Acknowledgement(ResultType.True);
+            return new PushDataResult(ResultTypes.True);
         }
 
-        public async Task<Acknowledgement> PushEVSEStatus(IEnumerable<ChargingPool> ChargingPools, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<PushDataResult> PushEVSEStatus(IEnumerable<ChargingPool> ChargingPools, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            return new Acknowledgement(ResultType.True);
+            return new PushDataResult(ResultTypes.True);
         }
 
-        public async Task<Acknowledgement> PushEVSEStatus(ChargingStationOperator EVSEOperator, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<PushDataResult> PushEVSEStatus(ChargingStationOperator EVSEOperator, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            return new Acknowledgement(ResultType.True);
+            return new PushDataResult(ResultTypes.True);
         }
 
-        public async Task<Acknowledgement> PushEVSEStatus(IEnumerable<ChargingStationOperator> EVSEOperators, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<PushDataResult> PushEVSEStatus(IEnumerable<ChargingStationOperator> EVSEOperators, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            return new Acknowledgement(ResultType.True);
+            return new PushDataResult(ResultTypes.True);
         }
 
-        public async Task<Acknowledgement> PushEVSEStatus(RoamingNetwork RoamingNetwork, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public async Task<PushDataResult> PushEVSEStatus(RoamingNetwork RoamingNetwork, ActionType ActionType = ActionType.update, IncludeEVSEDelegate IncludeEVSEs = null, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
-            return new Acknowledgement(ResultType.True);
+            return new PushDataResult(ResultTypes.True);
         }
 
         public async Task PushEVSEStatus(EVSEStatusDiff EVSEStatusDiff, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))

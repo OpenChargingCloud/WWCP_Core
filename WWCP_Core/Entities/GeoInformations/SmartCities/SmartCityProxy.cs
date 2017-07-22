@@ -615,7 +615,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.SetStaticData(EVSE                EVSE,
                                           TransmissionTypes   TransmissionType,
@@ -634,7 +634,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -652,7 +652,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.AddStaticData(EVSE                EVSE,
                                           TransmissionTypes   TransmissionType,
@@ -671,7 +671,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -693,7 +693,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.UpdateStaticData(EVSE                EVSE,
                                              String              PropertyName,
@@ -715,7 +715,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -733,7 +733,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.DeleteStaticData(EVSE                EVSE,
                                              TransmissionTypes   TransmissionType,
@@ -752,7 +752,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -770,7 +770,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.SetStaticData(IEnumerable<EVSE>   EVSEs,
                                     TransmissionTypes   TransmissionType,
@@ -789,7 +789,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -806,7 +806,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.AddStaticData(IEnumerable<EVSE>   EVSEs,
                                     TransmissionTypes   TransmissionType,
@@ -825,7 +825,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -842,7 +842,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.UpdateStaticData(IEnumerable<EVSE>   EVSEs,
                                        TransmissionTypes   TransmissionType,
@@ -861,7 +861,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -878,7 +878,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.DeleteStaticData(IEnumerable<EVSE>   EVSEs,
                                        TransmissionTypes   TransmissionType,
@@ -897,7 +897,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -915,7 +915,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushStatusResult>
 
             ISendStatus.UpdateAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
                                           TransmissionTypes                   TransmissionType,
@@ -927,7 +927,7 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushStatusResult(ResultTypes.NoOperation);
 
         }
 
@@ -944,7 +944,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushStatusResult>
 
             ISendStatus.UpdateStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
                                      TransmissionTypes              TransmissionType,
@@ -956,7 +956,7 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushStatusResult(ResultTypes.NoOperation);
 
         }
 
@@ -977,7 +977,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.SetStaticData(ChargingStation     ChargingStation,
                                                TransmissionTypes   TransmissionType,
@@ -996,7 +996,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1013,7 +1013,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.AddStaticData(ChargingStation     ChargingStation,
                                           TransmissionTypes   TransmissionType,
@@ -1032,7 +1032,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1049,7 +1049,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.UpdateStaticData(ChargingStation     ChargingStation,
                                              String              PropertyName,
@@ -1071,7 +1071,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1088,7 +1088,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.DeleteStaticData(ChargingStation     ChargingStation,
 
@@ -1106,7 +1106,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1124,7 +1124,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.SetStaticData(IEnumerable<ChargingStation>  ChargingStations,
 
@@ -1142,7 +1142,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1159,7 +1159,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.AddStaticData(IEnumerable<ChargingStation>  ChargingStations,
 
@@ -1177,7 +1177,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1194,7 +1194,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.UpdateStaticData(IEnumerable<ChargingStation>  ChargingStations,
 
@@ -1212,7 +1212,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1229,7 +1229,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.DeleteStaticData(IEnumerable<ChargingStation>  ChargingStations,
 
@@ -1247,7 +1247,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1265,7 +1265,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushStatusResult>
 
             ISendStatus.UpdateAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  AdminStatusUpdates,
                                                  TransmissionTypes                              TransmissionType,
@@ -1277,7 +1277,7 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushStatusResult(ResultTypes.NoOperation);
 
         }
 
@@ -1294,7 +1294,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushStatusResult>
 
             ISendStatus.UpdateStatus(IEnumerable<ChargingStationStatusUpdate>  StatusUpdates,
                                             TransmissionTypes                         TransmissionType,
@@ -1306,7 +1306,7 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushStatusResult(ResultTypes.NoOperation);
 
         }
 
@@ -1327,7 +1327,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.SetStaticData(ChargingPool        ChargingPool,
                                           TransmissionTypes   TransmissionType,
@@ -1346,7 +1346,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1363,7 +1363,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.AddStaticData(ChargingPool        ChargingPool,
                                           TransmissionTypes   TransmissionType,
@@ -1382,7 +1382,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1399,7 +1399,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.UpdateStaticData(ChargingPool        ChargingPool,
                                              String              PropertyName,
@@ -1421,7 +1421,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1438,7 +1438,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.DeleteStaticData(ChargingPool        ChargingPool,
 
@@ -1456,7 +1456,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1474,7 +1474,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.SetStaticData(IEnumerable<ChargingPool>  ChargingPools,
 
@@ -1492,7 +1492,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1509,7 +1509,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.AddStaticData(IEnumerable<ChargingPool>  ChargingPools,
 
@@ -1527,7 +1527,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1544,7 +1544,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.UpdateStaticData(IEnumerable<ChargingPool>  ChargingPools,
 
@@ -1562,7 +1562,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1579,7 +1579,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.DeleteStaticData(IEnumerable<ChargingPool>  ChargingPools,
 
@@ -1597,7 +1597,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1615,7 +1615,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushStatusResult>
 
             ISendStatus.UpdateAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  AdminStatusUpdates,
                                                  TransmissionTypes                           TransmissionType,
@@ -1627,7 +1627,7 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushStatusResult(ResultTypes.NoOperation);
 
         }
 
@@ -1644,7 +1644,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushStatusResult>
 
             ISendStatus.UpdateStatus(IEnumerable<ChargingPoolStatusUpdate>  StatusUpdates,
                                             TransmissionTypes                      TransmissionType,
@@ -1656,7 +1656,7 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushStatusResult(ResultTypes.NoOperation);
 
         }
 
@@ -1677,7 +1677,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.SetStaticData(ChargingStationOperator  ChargingStationOperator,
 
@@ -1695,7 +1695,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1712,7 +1712,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.AddStaticData(ChargingStationOperator  ChargingStationOperator,
 
@@ -1730,7 +1730,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1747,7 +1747,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.UpdateStaticData(ChargingStationOperator  ChargingStationOperator,
 
@@ -1765,7 +1765,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1782,7 +1782,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.DeleteStaticData(ChargingStationOperator  ChargingStationOperator,
 
@@ -1800,7 +1800,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1818,7 +1818,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.SetStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
@@ -1836,7 +1836,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1853,7 +1853,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.AddStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
@@ -1871,7 +1871,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
 
         }
@@ -1889,7 +1889,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.UpdateStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
@@ -1907,7 +1907,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1924,7 +1924,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.DeleteStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
@@ -1942,7 +1942,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -1960,7 +1960,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushStatusResult>
 
             ISendStatus.UpdateAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  AdminStatusUpdates,
                                                  TransmissionTypes                                      TransmissionType,
@@ -1972,7 +1972,7 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushStatusResult(ResultTypes.NoOperation);
 
         }
 
@@ -1989,7 +1989,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushStatusResult>
 
             ISendStatus.UpdateStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  StatusUpdates,
                                             TransmissionTypes                                 TransmissionType,
@@ -2001,7 +2001,7 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushStatusResult(ResultTypes.NoOperation);
 
         }
 
@@ -2022,7 +2022,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.SetStaticData(RoamingNetwork      RoamingNetwork,
 
@@ -2040,7 +2040,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -2057,7 +2057,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.AddStaticData(RoamingNetwork      RoamingNetwork,
 
@@ -2075,7 +2075,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -2092,7 +2092,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.UpdateStaticData(RoamingNetwork      RoamingNetwork,
 
@@ -2110,7 +2110,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -2127,7 +2127,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushDataResult>
 
             ISendData.DeleteStaticData(RoamingNetwork      RoamingNetwork,
 
@@ -2145,7 +2145,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushDataResult(ResultTypes.NoOperation);
 
         }
 
@@ -2163,7 +2163,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushStatusResult>
 
             ISendStatus.UpdateAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  AdminStatusUpdates,
                                                  TransmissionTypes                             TransmissionType,
@@ -2175,7 +2175,7 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushStatusResult(ResultTypes.NoOperation);
 
         }
 
@@ -2192,7 +2192,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<Acknowledgement>
+        async Task<PushStatusResult>
 
             ISendStatus.UpdateStatus(IEnumerable<RoamingNetworkStatusUpdate>  StatusUpdates,
                                             TransmissionTypes                        TransmissionType,
@@ -2204,7 +2204,7 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return new Acknowledgement(ResultType.NoOperation);
+            return new PushStatusResult(ResultTypes.NoOperation);
 
         }
 
@@ -2225,7 +2225,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">An EVSE.</param>
         /// <param name="OldStatus">The old status of the EVSE.</param>
         /// <param name="NewStatus">The new status of the EVSE.</param>
-        public Task<WWCP.Acknowledgement>
+        public Task<WWCP.PushDataResult>
 
             EnqueueEVSEStatusUpdate(EVSE                         EVSE,
                                     Timestamped<EVSEStatusTypes>  OldStatus,
@@ -2240,7 +2240,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return Task.FromResult(new WWCP.Acknowledgement(ResultType.True));
+            return Task.FromResult(new WWCP.PushDataResult(ResultTypes.True));
 
         }
 
@@ -2253,7 +2253,7 @@ namespace org.GraphDefined.WWCP
         /// Enqueue the given EVSE data for a delayed upload.
         /// </summary>
         /// <param name="ChargingPool">A charging station.</param>
-        public Task<WWCP.Acknowledgement>
+        public Task<WWCP.PushDataResult>
 
             EnqueueChargingPoolDataUpdate(ChargingPool  ChargingPool,
                                           String        PropertyName,
@@ -2269,7 +2269,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return Task.FromResult(new WWCP.Acknowledgement(ResultType.True));
+            return Task.FromResult(new WWCP.PushDataResult(ResultTypes.True));
 
         }
 
@@ -2281,7 +2281,7 @@ namespace org.GraphDefined.WWCP
         /// Enqueue the given EVSE data for a delayed upload.
         /// </summary>
         /// <param name="ChargingStation">A charging station.</param>
-        public Task<WWCP.Acknowledgement>
+        public Task<WWCP.PushDataResult>
 
             EnqueueChargingStationDataUpdate(ChargingStation  ChargingStation,
                                              String           PropertyName,
@@ -2297,7 +2297,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return Task.FromResult(new WWCP.Acknowledgement(ResultType.True));
+            return Task.FromResult(new WWCP.PushDataResult(ResultTypes.True));
 
         }
 
@@ -2538,32 +2538,32 @@ namespace org.GraphDefined.WWCP
 
             => "Smart City " + Id;
 
-        public Task<Acknowledgement> UpdateStaticData(ChargingStation ChargingStation, string PropertyName = null, object OldValue = null, object NewValue = null, TransmissionTypes TransmissionType = TransmissionTypes.Enqueued, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public Task<PushDataResult> UpdateStaticData(ChargingStation ChargingStation, string PropertyName = null, object OldValue = null, object NewValue = null, TransmissionTypes TransmissionType = TransmissionTypes.Enqueued, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
             throw new NotImplementedException();
         }
 
-        public Task<Acknowledgement> UpdateStaticData(ChargingPool ChargingPool, string PropertyName = null, object OldValue = null, object NewValue = null, TransmissionTypes TransmissionType = TransmissionTypes.Enqueued, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public Task<PushDataResult> UpdateStaticData(ChargingPool ChargingPool, string PropertyName = null, object OldValue = null, object NewValue = null, TransmissionTypes TransmissionType = TransmissionTypes.Enqueued, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
             throw new NotImplementedException();
         }
 
-        public Task<Acknowledgement> SetStaticData(ChargingStation ChargingStation, TransmissionTypes TransmissionType = TransmissionTypes.Enqueued, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public Task<PushDataResult> SetStaticData(ChargingStation ChargingStation, TransmissionTypes TransmissionType = TransmissionTypes.Enqueued, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
             throw new NotImplementedException();
         }
 
-        public Task<Acknowledgement> AddStaticData(ChargingStation ChargingStation, TransmissionTypes TransmissionType = TransmissionTypes.Enqueued, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public Task<PushDataResult> AddStaticData(ChargingStation ChargingStation, TransmissionTypes TransmissionType = TransmissionTypes.Enqueued, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
             throw new NotImplementedException();
         }
 
-        public Task<Acknowledgement> SetStaticData(ChargingPool ChargingPool, TransmissionTypes TransmissionType = TransmissionTypes.Enqueued, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public Task<PushDataResult> SetStaticData(ChargingPool ChargingPool, TransmissionTypes TransmissionType = TransmissionTypes.Enqueued, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
             throw new NotImplementedException();
         }
 
-        public Task<Acknowledgement> AddStaticData(ChargingPool ChargingPool, TransmissionTypes TransmissionType = TransmissionTypes.Enqueued, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
+        public Task<PushDataResult> AddStaticData(ChargingPool ChargingPool, TransmissionTypes TransmissionType = TransmissionTypes.Enqueued, DateTime? Timestamp = default(DateTime?), CancellationToken? CancellationToken = default(CancellationToken?), EventTracking_Id EventTrackingId = null, TimeSpan? RequestTimeout = default(TimeSpan?))
         {
             throw new NotImplementedException();
         }

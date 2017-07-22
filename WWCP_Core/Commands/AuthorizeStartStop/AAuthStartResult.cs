@@ -106,6 +106,11 @@ namespace org.GraphDefined.WWCP
         public String                       AdditionalInfo                { get; }
 
         /// <summary>
+        /// Number of transmission retries.
+        /// </summary>
+        public Byte                         NumberOfRetries               { get; }
+
+        /// <summary>
         /// The runtime of the request.
         /// </summary>
         public TimeSpan?                    Runtime                       { get; }
@@ -132,6 +137,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         private AAuthStartResult(IId                          AuthorizatorId,
                                  T                            Result,
@@ -146,6 +152,7 @@ namespace org.GraphDefined.WWCP
                                  eMobilityProvider_Id?        ProviderId             = null,
                                  String                       Description            = null,
                                  String                       AdditionalInfo         = null,
+                                 Byte                         NumberOfRetries        = 0,
                                  TimeSpan?                    Runtime                = null)
 
         {
@@ -171,6 +178,7 @@ namespace org.GraphDefined.WWCP
             this.ProviderId               = ProviderId      ?? new eMobilityProvider_Id?();
             this.Description              = Description;
             this.AdditionalInfo           = AdditionalInfo;
+            this.NumberOfRetries          = NumberOfRetries;
             this.Runtime                  = Runtime         ?? TimeSpan.FromSeconds(0);
 
         }
@@ -196,6 +204,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         protected AAuthStartResult(IId                          AuthorizatorId,
                                    ISendAuthorizeStartStop      ISendAuthorizeStartStop,
@@ -211,6 +220,7 @@ namespace org.GraphDefined.WWCP
                                    eMobilityProvider_Id?        ProviderId             = null,
                                    String                       Description            = null,
                                    String                       AdditionalInfo         = null,
+                                   Byte                         NumberOfRetries        = 0,
                                    TimeSpan?                    Runtime                = null)
 
             : this(AuthorizatorId,
@@ -226,6 +236,7 @@ namespace org.GraphDefined.WWCP
                    ProviderId,
                    Description,
                    AdditionalInfo,
+                   NumberOfRetries,
                    Runtime)
 
         {
@@ -255,6 +266,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ProviderId">An optional identification of the e-mobility provider.</param>
         /// <param name="Description">An optional description of the auth start result.</param>
         /// <param name="AdditionalInfo">An optional additional message.</param>
+        /// <param name="NumberOfRetries">Number of transmission retries.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         protected AAuthStartResult(IId                          AuthorizatorId,
                                    IReceiveAuthorizeStartStop   IReceiveAuthorizeStartStop,
@@ -270,6 +282,7 @@ namespace org.GraphDefined.WWCP
                                    eMobilityProvider_Id?        ProviderId             = null,
                                    String                       Description            = null,
                                    String                       AdditionalInfo         = null,
+                                   Byte                         NumberOfRetries        = 0,
                                    TimeSpan?                    Runtime                = null)
 
             : this(AuthorizatorId,
@@ -285,6 +298,7 @@ namespace org.GraphDefined.WWCP
                    ProviderId,
                    Description,
                    AdditionalInfo,
+                   NumberOfRetries,
                    Runtime)
 
         {
