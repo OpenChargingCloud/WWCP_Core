@@ -30,29 +30,6 @@ using org.GraphDefined.Vanaheimr.Illias;
 namespace org.GraphDefined.WWCP
 {
 
-
-    public interface IPushData
-    {
-
-        // Events
-
-        #region OnEVSEDataPush/-Pushed
-
-        ///// <summary>
-        ///// An event fired whenever new EVSE data will be send upstream.
-        ///// </summary>
-        //event OnPushEVSEDataRequestDelegate   OnPushEVSEDataRequest;
-
-        ///// <summary>
-        ///// An event fired whenever new EVSE data had been sent upstream.
-        ///// </summary>
-        //event OnPushEVSEDataResponseDelegate  OnPushEVSEDataResponse;
-
-        #endregion
-
-    }
-
-
     public interface ISendData
     {
 
@@ -95,7 +72,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             SetStaticData(EVSE                EVSE,
                           TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
@@ -119,7 +96,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             AddStaticData(EVSE                EVSE,
                           TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
@@ -147,7 +124,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             UpdateStaticData(EVSE                EVSE,
                              String              PropertyName        = null,
@@ -174,7 +151,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             DeleteStaticData(EVSE                EVSE,
                              TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
@@ -199,15 +176,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             SetStaticData(IEnumerable<EVSE>   EVSEs,
-                          TransmissionTypes   TransmissionType   = TransmissionTypes.Enqueued,
+                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
 
-                          DateTime?           Timestamp          = null,
-                          CancellationToken?  CancellationToken  = null,
-                          EventTracking_Id    EventTrackingId    = null,
-                          TimeSpan?           RequestTimeout     = null);
+                          DateTime?           Timestamp           = null,
+                          CancellationToken?  CancellationToken   = null,
+                          EventTracking_Id    EventTrackingId     = null,
+                          TimeSpan?           RequestTimeout      = null);
 
         #endregion
 
@@ -223,15 +200,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             AddStaticData(IEnumerable<EVSE>   EVSEs,
-                          TransmissionTypes   TransmissionType   = TransmissionTypes.Enqueued,
+                          TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
 
-                          DateTime?           Timestamp          = null,
-                          CancellationToken?  CancellationToken  = null,
-                          EventTracking_Id    EventTrackingId    = null,
-                          TimeSpan?           RequestTimeout     = null);
+                          DateTime?           Timestamp           = null,
+                          CancellationToken?  CancellationToken   = null,
+                          EventTracking_Id    EventTrackingId     = null,
+                          TimeSpan?           RequestTimeout      = null);
 
         #endregion
 
@@ -247,15 +224,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             UpdateStaticData(IEnumerable<EVSE>   EVSEs,
-                             TransmissionTypes   TransmissionType   = TransmissionTypes.Enqueued,
+                             TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
 
-                             DateTime?           Timestamp          = null,
-                             CancellationToken?  CancellationToken  = null,
-                             EventTracking_Id    EventTrackingId    = null,
-                             TimeSpan?           RequestTimeout     = null);
+                             DateTime?           Timestamp           = null,
+                             CancellationToken?  CancellationToken   = null,
+                             EventTracking_Id    EventTrackingId     = null,
+                             TimeSpan?           RequestTimeout      = null);
 
         #endregion
 
@@ -271,15 +248,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             DeleteStaticData(IEnumerable<EVSE>   EVSEs,
-                             TransmissionTypes   TransmissionType   = TransmissionTypes.Enqueued,
+                             TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
 
-                             DateTime?           Timestamp          = null,
-                             CancellationToken?  CancellationToken  = null,
-                             EventTracking_Id    EventTrackingId    = null,
-                             TimeSpan?           RequestTimeout     = null);
+                             DateTime?           Timestamp           = null,
+                             CancellationToken?  CancellationToken   = null,
+                             EventTracking_Id    EventTrackingId     = null,
+                             TimeSpan?           RequestTimeout      = null);
 
         #endregion
 
@@ -299,7 +276,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             SetStaticData(ChargingStation     ChargingStation,
                           TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
@@ -323,7 +300,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             AddStaticData(ChargingStation     ChargingStation,
                           TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
@@ -350,7 +327,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             UpdateStaticData(ChargingStation     ChargingStation,
                              String              PropertyName        = null,
@@ -377,7 +354,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             DeleteStaticData(ChargingStation     ChargingStation,
                              TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
@@ -402,7 +379,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             SetStaticData(IEnumerable<ChargingStation>  ChargingStations,
                           TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueued,
@@ -426,7 +403,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             AddStaticData(IEnumerable<ChargingStation>  ChargingStations,
                           TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueued,
@@ -450,7 +427,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             UpdateStaticData(IEnumerable<ChargingStation>  ChargingStations,
                              TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueued,
@@ -474,7 +451,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             DeleteStaticData(IEnumerable<ChargingStation>  ChargingStations,
                              TransmissionTypes             TransmissionType    = TransmissionTypes.Enqueued,
@@ -502,7 +479,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             SetStaticData(ChargingPool        ChargingPool,
                           TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
@@ -526,7 +503,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             AddStaticData(ChargingPool        ChargingPool,
                           TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
@@ -553,7 +530,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             UpdateStaticData(ChargingPool        ChargingPool,
                              String              PropertyName        = null,
@@ -580,7 +557,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             DeleteStaticData(ChargingPool        ChargingPool,
                              TransmissionTypes   TransmissionType    = TransmissionTypes.Enqueued,
@@ -605,7 +582,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             SetStaticData(IEnumerable<ChargingPool>  ChargingPools,
                           TransmissionTypes          TransmissionType    = TransmissionTypes.Enqueued,
@@ -629,7 +606,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             AddStaticData(IEnumerable<ChargingPool>  ChargingPools,
                           TransmissionTypes          TransmissionType    = TransmissionTypes.Enqueued,
@@ -653,7 +630,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             UpdateStaticData(IEnumerable<ChargingPool>  ChargingPools,
                              TransmissionTypes          TransmissionType    = TransmissionTypes.Enqueued,
@@ -677,7 +654,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             DeleteStaticData(IEnumerable<ChargingPool>  ChargingPools,
                              TransmissionTypes          TransmissionType    = TransmissionTypes.Enqueued,
@@ -704,7 +681,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             SetStaticData(ChargingStationOperator  ChargingStationOperator,
 
@@ -726,7 +703,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             AddStaticData(ChargingStationOperator  ChargingStationOperator,
 
@@ -748,7 +725,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             UpdateStaticData(ChargingStationOperator  ChargingStationOperator,
 
@@ -770,7 +747,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             DeleteStaticData(ChargingStationOperator  ChargingStationOperator,
 
@@ -793,7 +770,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             SetStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
@@ -815,7 +792,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             AddStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
@@ -837,7 +814,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             UpdateStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
@@ -858,7 +835,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             DeleteStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
 
@@ -884,7 +861,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             SetStaticData(RoamingNetwork      RoamingNetwork,
 
@@ -906,7 +883,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             AddStaticData(RoamingNetwork      RoamingNetwork,
 
@@ -928,7 +905,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             UpdateStaticData(RoamingNetwork      RoamingNetwork,
 
@@ -950,866 +927,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            DeleteStaticData(RoamingNetwork      RoamingNetwork,
-
-                             DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null);
-
-        #endregion
-
-        #endregion
-
-
-    }
-
-    public interface IReceiveData
-    {
-
-        // Events
-
-        #region OnEVSEDataPush/-Pushed
-
-        ///// <summary>
-        ///// An event fired whenever new EVSE data will be send upstream.
-        ///// </summary>
-        //event OnPushEVSEDataRequestDelegate OnPushEVSEDataRequest;
-
-        ///// <summary>
-        ///// An event fired whenever new EVSE data had been sent upstream.
-        ///// </summary>
-        //event OnPushEVSEDataResponseDelegate OnPushEVSEDataResponse;
-
-        #endregion
-
-
-        // Push data directly...
-
-        #region (Set/Add/Update/Delete) EVSE(s)...
-
-        #region SetStaticData   (EVSE, TransmissionType = Enqueued, ...)
-
-        /// <summary>
-        /// Upload the static data of the given EVSE.
-        /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            SetStaticData(EVSE                EVSE,
-
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null);
-
-        #endregion
-
-        #region AddStaticData   (EVSE, TransmissionType = Enqueued, ...)
-
-        /// <summary>
-        /// Upload the static data of the given EVSE.
-        /// </summary>
-        /// <param name="EVSE">An EVSE.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            AddStaticData(EVSE                EVSE,
-
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null);
-
-        #endregion
-
-        #region UpdateStaticData(EVSE, PropertyName = null, OldValue = null, NewValue = null, TransmissionType = Enqueued, ...)
-
-        /// <summary>
-        /// Update the static data of the given EVSE.
-        /// The EVSE can be uploaded as a whole, or just a single property of the EVSE.
-        /// </summary>
-        /// <param name="EVSE">An EVSE to update.</param>
-        /// <param name="PropertyName">The name of the EVSE property to update.</param>
-        /// <param name="OldValue">The old value of the EVSE property to update.</param>
-        /// <param name="NewValue">The new value of the EVSE property to update.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            UpdateStaticData(EVSE                EVSE,
-                             String              PropertyName        = null,
-                             Object              OldValue            = null,
-                             Object              NewValue            = null,
-
-                             DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null);
-
-        #endregion
-
-        #region DeleteStaticData(EVSE, TransmissionType = Enqueued, ...)
-
-        /// <summary>
-        /// Delete the static data of the given EVSE.
-        /// </summary>
-        /// <param name="EVSE">An EVSE to delete.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            DeleteStaticData(EVSE                EVSE,
-
-                             DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null);
-
-        #endregion
-
-
-        #region SetStaticData   (EVSEs, ...)
-
-        /// <summary>
-        /// Upload the static data of the given EVSEs.
-        /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            SetStaticData(IEnumerable<EVSE>   EVSEs,
-
-                          DateTime?           Timestamp          = null,
-                          CancellationToken?  CancellationToken  = null,
-                          EventTracking_Id    EventTrackingId    = null,
-                          TimeSpan?           RequestTimeout     = null);
-
-        #endregion
-
-        #region AddStaticData   (EVSEs, ...)
-
-        /// <summary>
-        /// Upload the static data of the given EVSEs.
-        /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            AddStaticData(IEnumerable<EVSE>   EVSEs,
-
-                          DateTime?           Timestamp          = null,
-                          CancellationToken?  CancellationToken  = null,
-                          EventTracking_Id    EventTrackingId    = null,
-                          TimeSpan?           RequestTimeout     = null);
-
-        #endregion
-
-        #region UpdateStaticData(EVSEs, ...)
-
-        /// <summary>
-        /// Upload the static data of the given EVSEs.
-        /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            UpdateStaticData(IEnumerable<EVSE>   EVSEs,
-
-                             DateTime?           Timestamp          = null,
-                             CancellationToken?  CancellationToken  = null,
-                             EventTracking_Id    EventTrackingId    = null,
-                             TimeSpan?           RequestTimeout     = null);
-
-        #endregion
-
-        #region DeleteStaticData(EVSEs, ...)
-
-        /// <summary>
-        /// Upload the static data of the given EVSEs.
-        /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            DeleteStaticData(IEnumerable<EVSE>   EVSEs,
-
-                             DateTime?           Timestamp          = null,
-                             CancellationToken?  CancellationToken  = null,
-                             EventTracking_Id    EventTrackingId    = null,
-                             TimeSpan?           RequestTimeout     = null);
-
-        #endregion
-
-        #endregion
-
-        #region (Set/Add/Update/Delete) Charging station(s)...
-
-        #region SetStaticData   (ChargingStation, TransmissionType = Enqueued, ...)
-
-        /// <summary>
-        /// Set the EVSE data of the given charging station as new static EVSE data.
-        /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            SetStaticData(ChargingStation     ChargingStation,
-
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null);
-
-        #endregion
-
-        #region AddStaticData   (ChargingStation, TransmissionType = Enqueued, ...)
-
-        /// <summary>
-        /// Add the EVSE data of the given charging station to the static EVSE data.
-        /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            AddStaticData(ChargingStation     ChargingStation,
-
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null);
-
-        #endregion
-
-        #region UpdateStaticData(ChargingStation, TransmissionType = Enqueued, ...)
-
-        /// <summary>
-        /// Update the EVSE data of the given charging station.
-        /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
-        /// <param name="PropertyName">The name of the charging station property to update.</param>
-        /// <param name="OldValue">The old value of the charging station property to update.</param>
-        /// <param name="NewValue">The new value of the charging station property to update.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            UpdateStaticData(ChargingStation     ChargingStation,
-                             String              PropertyName        = null,
-                             Object              OldValue            = null,
-                             Object              NewValue            = null,
-
-                             DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null);
-
-        #endregion
-
-        #region DeleteStaticData(ChargingStation, ...)
-
-        /// <summary>
-        /// Delete the EVSE data of the given charging station from the static EVSE data.
-        /// </summary>
-        /// <param name="ChargingStation">A charging station.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            DeleteStaticData(ChargingStation     ChargingStation,
-
-                             DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null);
-
-        #endregion
-
-
-        #region SetStaticData   (ChargingStations, ...)
-
-        /// <summary>
-        /// Set the EVSE data of the given enumeration of charging stations as new static EVSE data.
-        /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            SetStaticData(IEnumerable<ChargingStation>  ChargingStations,
-
-                          DateTime?                     Timestamp           = null,
-                          CancellationToken?            CancellationToken   = null,
-                          EventTracking_Id              EventTrackingId     = null,
-                          TimeSpan?                     RequestTimeout      = null);
-
-        #endregion
-
-        #region AddStaticData   (ChargingStations, ...)
-
-        /// <summary>
-        /// Add the EVSE data of the given enumeration of charging stations to the static EVSE data.
-        /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            AddStaticData(IEnumerable<ChargingStation>  ChargingStations,
-
-                          DateTime?                     Timestamp           = null,
-                          CancellationToken?            CancellationToken   = null,
-                          EventTracking_Id              EventTrackingId     = null,
-                          TimeSpan?                     RequestTimeout      = null);
-
-        #endregion
-
-        #region UpdateStaticData(ChargingStations, ...)
-
-        /// <summary>
-        /// Update the EVSE data of the given enumeration of charging stations.
-        /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            UpdateStaticData(IEnumerable<ChargingStation>  ChargingStations,
-
-                             DateTime?                     Timestamp           = null,
-                             CancellationToken?            CancellationToken   = null,
-                             EventTracking_Id              EventTrackingId     = null,
-                             TimeSpan?                     RequestTimeout      = null);
-
-        #endregion
-
-        #region DeleteStaticData(ChargingStations, ...)
-
-        /// <summary>
-        /// Delete the EVSE data of the given enumeration of charging stations from the static EVSE data.
-        /// </summary>
-        /// <param name="ChargingStations">An enumeration of charging stations.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            DeleteStaticData(IEnumerable<ChargingStation>  ChargingStations,
-
-                             DateTime?                     Timestamp           = null,
-                             CancellationToken?            CancellationToken   = null,
-                             EventTracking_Id              EventTrackingId     = null,
-                             TimeSpan?                     RequestTimeout      = null);
-
-        #endregion
-
-        #endregion
-
-        #region (Set/Add/Update/Delete) Charging pool(s)...
-
-        #region SetStaticData   (ChargingPool, TransmissionType = Enqueued, ...)
-
-        /// <summary>
-        /// Set the EVSE data of the given charging pool as new static EVSE data.
-        /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            SetStaticData(ChargingPool        ChargingPool,
-
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null);
-
-        #endregion
-
-        #region AddStaticData   (ChargingPool, TransmissionType = Enqueued, ...)
-
-        /// <summary>
-        /// Add the EVSE data of the given charging pool to the static EVSE data.
-        /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            AddStaticData(ChargingPool        ChargingPool,
-
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null);
-
-        #endregion
-
-        #region UpdateStaticData(ChargingPool, PropertyName = null, OldValue = null, NewValue = null, TransmissionType = Enqueued, ...)
-
-        /// <summary>
-        /// Update the data of the given charging pool.
-        /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        /// <param name="PropertyName">The name of the charging pool property to update.</param>
-        /// <param name="OldValue">The old value of the charging pool property to update.</param>
-        /// <param name="NewValue">The new value of the charging pool property to update.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            UpdateStaticData(ChargingPool        ChargingPool,
-                             String              PropertyName        = null,
-                             Object              OldValue            = null,
-                             Object              NewValue            = null,
-
-                             DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null);
-
-        #endregion
-
-        #region DeleteStaticData(ChargingPool, ...)
-
-        /// <summary>
-        /// Delete the EVSE data of the given charging pool from the static EVSE data.
-        /// </summary>
-        /// <param name="ChargingPool">A charging pool.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            DeleteStaticData(ChargingPool        ChargingPool,
-
-                             DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null);
-
-        #endregion
-
-
-        #region SetStaticData   (ChargingPools, ...)
-
-        /// <summary>
-        /// Set the EVSE data of the given enumeration of charging pools as new static EVSE data.
-        /// </summary>
-        /// <param name="ChargingPools">An enumeration of charging pools.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            SetStaticData(IEnumerable<ChargingPool>  ChargingPools,
-
-                          DateTime?                  Timestamp           = null,
-                          CancellationToken?         CancellationToken   = null,
-                          EventTracking_Id           EventTrackingId     = null,
-                          TimeSpan?                  RequestTimeout      = null);
-
-        #endregion
-
-        #region AddStaticData   (ChargingPools, ...)
-
-        /// <summary>
-        /// Add the EVSE data of the given enumeration of charging pools to the static EVSE data.
-        /// </summary>
-        /// <param name="ChargingPools">An enumeration of charging pools.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            AddStaticData(IEnumerable<ChargingPool>  ChargingPools,
-
-                          DateTime?                  Timestamp           = null,
-                          CancellationToken?         CancellationToken   = null,
-                          EventTracking_Id           EventTrackingId     = null,
-                          TimeSpan?                  RequestTimeout      = null);
-
-        #endregion
-
-        #region UpdateStaticData(ChargingPools, ...)
-
-        /// <summary>
-        /// Update the EVSE data of the given enumeration of charging pools.
-        /// </summary>
-        /// <param name="ChargingPools">An enumeration of charging pools.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            UpdateStaticData(IEnumerable<ChargingPool>  ChargingPools,
-
-                             DateTime?                  Timestamp           = null,
-                             CancellationToken?         CancellationToken   = null,
-                             EventTracking_Id           EventTrackingId     = null,
-                             TimeSpan?                  RequestTimeout      = null);
-
-        #endregion
-
-        #region DeleteStaticData(ChargingPools, ...)
-
-        /// <summary>
-        /// Delete the EVSE data of the given enumeration of charging pools from the static EVSE data.
-        /// </summary>
-        /// <param name="ChargingPools">An enumeration of charging pools.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            DeleteStaticData(IEnumerable<ChargingPool>  ChargingPools,
-
-                             DateTime?                  Timestamp           = null,
-                             CancellationToken?         CancellationToken   = null,
-                             EventTracking_Id           EventTrackingId     = null,
-                             TimeSpan?                  RequestTimeout      = null);
-
-        #endregion
-
-        #endregion
-
-        #region (Set/Add/Update/Delete) Charging station operator(s)...
-
-        #region SetStaticData   (ChargingStationOperator, ...)
-
-        /// <summary>
-        /// Set the EVSE data of the given charging station operator as new static EVSE data.
-        /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            SetStaticData(ChargingStationOperator  ChargingStationOperator,
-
-                          DateTime?                Timestamp           = null,
-                          CancellationToken?       CancellationToken   = null,
-                          EventTracking_Id         EventTrackingId     = null,
-                          TimeSpan?                RequestTimeout      = null);
-
-        #endregion
-
-        #region AddStaticData   (ChargingStationOperator, ...)
-
-        /// <summary>
-        /// Add the EVSE data of the given charging station operator to the static EVSE data.
-        /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            AddStaticData(ChargingStationOperator  ChargingStationOperator,
-
-                          DateTime?                Timestamp           = null,
-                          CancellationToken?       CancellationToken   = null,
-                          EventTracking_Id         EventTrackingId     = null,
-                          TimeSpan?                RequestTimeout      = null);
-
-        #endregion
-
-        #region UpdateStaticData(ChargingStationOperator, ...)
-
-        /// <summary>
-        /// Update the EVSE data of the given charging station operator.
-        /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            UpdateStaticData(ChargingStationOperator  ChargingStationOperator,
-
-                             DateTime?                Timestamp           = null,
-                             CancellationToken?       CancellationToken   = null,
-                             EventTracking_Id         EventTrackingId     = null,
-                             TimeSpan?                RequestTimeout      = null);
-
-        #endregion
-
-        #region DeleteStaticData(ChargingStationOperator, ...)
-
-        /// <summary>
-        /// Delete the EVSE data of the given charging station operator from the static EVSE data.
-        /// </summary>
-        /// <param name="ChargingStationOperator">A charging station operator.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            DeleteStaticData(ChargingStationOperator  ChargingStationOperator,
-
-                             DateTime?                Timestamp           = null,
-                             CancellationToken?       CancellationToken   = null,
-                             EventTracking_Id         EventTrackingId     = null,
-                             TimeSpan?                RequestTimeout      = null);
-
-        #endregion
-
-
-        #region SetStaticData   (ChargingStationOperators, ...)
-
-        /// <summary>
-        /// Set the EVSE data of the given enumeration of charging station operators as new static EVSE data.
-        /// </summary>
-        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            SetStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
-
-                          DateTime?                             Timestamp           = null,
-                          CancellationToken?                    CancellationToken   = null,
-                          EventTracking_Id                      EventTrackingId     = null,
-                          TimeSpan?                             RequestTimeout      = null);
-
-        #endregion
-
-        #region AddStaticData   (ChargingStationOperators, ...)
-
-        /// <summary>
-        /// Add the EVSE data of the given enumeration of charging station operators to the static EVSE data.
-        /// </summary>
-        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            AddStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
-
-                          DateTime?                             Timestamp           = null,
-                          CancellationToken?                    CancellationToken   = null,
-                          EventTracking_Id                      EventTrackingId     = null,
-                          TimeSpan?                             RequestTimeout      = null);
-
-        #endregion
-
-        #region UpdateStaticData(ChargingStationOperators, ...)
-
-        /// <summary>
-        /// Update the EVSE data of the given enumeration of charging station operators.
-        /// </summary>
-        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            UpdateStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
-
-                             DateTime?                             Timestamp           = null,
-                             CancellationToken?                    CancellationToken   = null,
-                             EventTracking_Id                      EventTrackingId     = null,
-                             TimeSpan?                             RequestTimeout      = null);
-        #endregion
-
-        #region DeleteStaticData(ChargingStationOperators, ...)
-
-        /// <summary>
-        /// Delete the EVSE data of the given enumeration of charging station operators from the static EVSE data.
-        /// </summary>
-        /// <param name="ChargingStationOperators">An enumeration of charging station operators.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            DeleteStaticData(IEnumerable<ChargingStationOperator>  ChargingStationOperators,
-
-                             DateTime?                             Timestamp           = null,
-                             CancellationToken?                    CancellationToken   = null,
-                             EventTracking_Id                      EventTrackingId     = null,
-                             TimeSpan?                             RequestTimeout      = null);
-
-        #endregion
-
-        #endregion
-
-        #region (Set/Add/Update/Delete) Roaming network...
-
-        #region SetStaticData   (RoamingNetwork, ...)
-
-        /// <summary>
-        /// Upload the EVSE data of the given roaming network.
-        /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            SetStaticData(RoamingNetwork      RoamingNetwork,
-
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null);
-
-        #endregion
-
-        #region AddStaticData   (RoamingNetwork, ...)
-
-        /// <summary>
-        /// Upload the EVSE data of the given roaming network.
-        /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            AddStaticData(RoamingNetwork      RoamingNetwork,
-
-                          DateTime?           Timestamp           = null,
-                          CancellationToken?  CancellationToken   = null,
-                          EventTracking_Id    EventTrackingId     = null,
-                          TimeSpan?           RequestTimeout      = null);
-
-        #endregion
-
-        #region UpdateStaticData(RoamingNetwork, ...)
-
-        /// <summary>
-        /// Upload the EVSE data of the given roaming network.
-        /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
-
-            UpdateStaticData(RoamingNetwork      RoamingNetwork,
-
-                             DateTime?           Timestamp           = null,
-                             CancellationToken?  CancellationToken   = null,
-                             EventTracking_Id    EventTrackingId     = null,
-                             TimeSpan?           RequestTimeout      = null);
-
-        #endregion
-
-        #region DeleteStaticData(RoamingNetwork, ...)
-
-        /// <summary>
-        /// Upload the EVSE data of the given roaming network.
-        /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushDataResult>
+        Task<PushEVSEDataResult>
 
             DeleteStaticData(RoamingNetwork      RoamingNetwork,
 

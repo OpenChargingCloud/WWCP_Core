@@ -20,7 +20,6 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 
 using org.GraphDefined.Vanaheimr.Illias;

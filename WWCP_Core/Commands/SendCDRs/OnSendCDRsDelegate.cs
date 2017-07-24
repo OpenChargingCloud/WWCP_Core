@@ -70,7 +70,6 @@ namespace org.GraphDefined.WWCP
     /// <param name="Sender">The sender of the request.</param>
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
     /// <param name="RoamingNetworkId">The unique identification for the roaming network.</param>
-    /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
     /// <param name="Result">The authorize stop result.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     public delegate Task OnSendCDRResponseDelegate(DateTime                         LogTimestamp,

@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod.DNS;
 
 #endregion
 
@@ -31,10 +32,12 @@ namespace org.GraphDefined.WWCP
 {
 
 
-    public abstract class AWWCPCPOAdapter : ABaseEMobilityEntity<CSORoamingProvider_Id>
+    public abstract class AWWCPCSOAdapter : ABaseEMobilityEntity<CSORoamingProvider_Id>
                                          //   ICSORoamingProvider,
                                          //   IComparable
     {
+
+        #region (class) PropertyUpdateInfos
 
         public class PropertyUpdateInfos
         {
@@ -64,6 +67,8 @@ namespace org.GraphDefined.WWCP
                                  "'!");
 
         }
+
+        #endregion
 
         #region Data
 
@@ -111,9 +116,21 @@ namespace org.GraphDefined.WWCP
         public I18NString  Name                              { get; }
 
         /// <summary>
+        /// An optional (multi-language) description of the charging station operator roaming provider.
+        /// </summary>
+        [Optional]
+        public I18NString  Description                       { get; }
+
+
+        /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
         public Boolean     DisablePushData                   { get; set; }
+
+        /// <summary>
+        /// This service can be disabled, e.g. for debugging reasons.
+        /// </summary>
+        public Boolean     DisablePushAdminStatus            { get; set; }
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
@@ -130,6 +147,11 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public Boolean     DisableSendChargeDetailRecords    { get; set; }
 
+
+        /// <summary>
+        /// The attached DNS service.
+        /// </summary>
+        public DNSClient   DNSClient                         { get; }
 
 
         #region FlushEVSEDataEvery
@@ -211,7 +233,7 @@ namespace org.GraphDefined.WWCP
         #region OnWWCPCPOAdapterException
 
         public delegate Task OnWWCPCPOAdapterExceptionDelegate(DateTime         Timestamp,
-                                                               AWWCPCPOAdapter  Sender,
+                                                               AWWCPCSOAdapter  Sender,
                                                                Exception        Exception);
 
         public event OnWWCPCPOAdapterExceptionDelegate OnWWCPCPOAdapterException;
@@ -219,51 +241,78 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        public delegate void FlushEVSEDataAndStatusQueuesStartedDelegate(AWWCPCPOAdapter Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
+        #region FlushEVSEDataAndStatusQueues
+
+        public delegate void FlushEVSEDataAndStatusQueuesStartedDelegate(AWWCPCSOAdapter Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEDataAndStatusQueuesStartedDelegate FlushEVSEDataAndStatusQueuesStartedEvent;
 
-        public delegate void FlushEVSEDataAndStatusQueuesFinishedDelegate(AWWCPCPOAdapter Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushEVSEDataAndStatusQueuesFinishedDelegate(AWWCPCSOAdapter Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEDataAndStatusQueuesFinishedDelegate FlushEVSEDataAndStatusQueuesFinishedEvent;
 
+        #endregion
 
-        public delegate void FlushEVSEFastStatusQueuesStartedDelegate(AWWCPCPOAdapter Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
+        #region FlushEVSEFastStatusQueues
+
+        public delegate void FlushEVSEFastStatusQueuesStartedDelegate(AWWCPCSOAdapter Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEFastStatusQueuesStartedDelegate FlushEVSEFastStatusQueuesStartedEvent;
 
-        public delegate void FlushEVSEFastStatusQueuesFinishedDelegate(AWWCPCPOAdapter Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushEVSEFastStatusQueuesFinishedDelegate(AWWCPCSOAdapter Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
 
         public event FlushEVSEFastStatusQueuesFinishedDelegate FlushEVSEFastStatusQueuesFinishedEvent;
 
+        #endregion
 
-        public delegate void FlushChargeDetailRecordsQueuesStartedDelegate(AWWCPCPOAdapter Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
+        #region FlushChargeDetailRecordsQueues
+
+        public delegate void FlushChargeDetailRecordsQueuesStartedDelegate(AWWCPCSOAdapter Sender, DateTime StartTime, TimeSpan Every, UInt64 RunId);
 
         public event FlushChargeDetailRecordsQueuesStartedDelegate FlushChargeDetailRecordsQueuesStartedEvent;
 
-        public delegate void FlushChargeDetailRecordsQueuesFinishedDelegate(AWWCPCPOAdapter Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
+        public delegate void FlushChargeDetailRecordsQueuesFinishedDelegate(AWWCPCSOAdapter Sender, DateTime StartTime, DateTime EndTime, TimeSpan Runtime, TimeSpan Every, UInt64 RunId);
 
         public event FlushChargeDetailRecordsQueuesFinishedDelegate FlushChargeDetailRecordsQueuesFinishedEvent;
 
+        #endregion
 
         #endregion
 
+        /// <summary>
+        /// Create a new WWCP wrapper for the OICP roaming client for Charging Station Operators/CPOs.
+        /// </summary>
+        /// <param name="Id">The unique identification of the roaming provider.</param>
+        /// <param name="Name">The offical (multi-language) name of the roaming provider.</param>
+        /// <param name="Description">An optional (multi-language) description of the charging station operator roaming provider.</param>
+        /// <param name="RoamingNetwork">A WWCP roaming network.</param>
+        /// 
+        /// <param name="ServiceCheckEvery">The service check intervall.</param>
+        /// <param name="StatusCheckEvery">The status check intervall.</param>
+        /// 
+        /// <param name="DisablePushData">This service can be disabled, e.g. for debugging reasons.</param>
+        /// <param name="DisablePushStatus">This service can be disabled, e.g. for debugging reasons.</param>
+        /// <param name="DisableAuthentication">This service can be disabled, e.g. for debugging reasons.</param>
+        /// <param name="DisableSendChargeDetailRecords">This service can be disabled, e.g. for debugging reasons.</param>
+        /// 
+        /// <param name="DNSClient">The attached DNS service.</param>
+        public AWWCPCSOAdapter(CSORoamingProvider_Id    Id,
+                               I18NString               Name,
+                               I18NString               Description,
+                               RoamingNetwork           RoamingNetwork,
 
-        public AWWCPCPOAdapter(CSORoamingProvider_Id                              Id,
-                               I18NString                                         Name,
-                               RoamingNetwork                                     RoamingNetwork,
+                               //IncludeEVSEIdDelegate    IncludeEVSEIds                   = null,
+                               //IncludeEVSEDelegate      IncludeEVSEs                     = null,
+                               TimeSpan?                ServiceCheckEvery                = null,
+                               TimeSpan?                StatusCheckEvery                 = null,
+                               TimeSpan?                CDRCheckEvery                    = null,
 
-                               //IncludeEVSEIdDelegate                              IncludeEVSEIds                                  = null,
-                               //IncludeEVSEDelegate                                IncludeEVSEs                                    = null,
-                               TimeSpan?                                          ServiceCheckEvery                               = null,
-                               TimeSpan?                                          StatusCheckEvery                                = null,
-                               TimeSpan?                                          CDRCheckEvery                                   = null,
+                               Boolean                  DisablePushData                  = false,
+                               Boolean                  DisablePushStatus                = false,
+                               Boolean                  DisableAuthentication            = false,
+                               Boolean                  DisableSendChargeDetailRecords   = false,
 
-                               Boolean                                            DisablePushData                                 = false,
-                               Boolean                                            DisablePushStatus                               = false,
-                               Boolean                                            DisableAuthentication                           = false,
-                               Boolean                                            DisableSendChargeDetailRecords                  = false
-                              )
+                               DNSClient                DNSClient                        = null)
 
             : base(Id,
                    RoamingNetwork)
@@ -271,12 +320,12 @@ namespace org.GraphDefined.WWCP
         {
 
             this.Name                                            = Name;
+            this.Description                                     = Description;
 
             this.DisablePushData                                 = DisablePushData;
             this.DisablePushStatus                               = DisablePushStatus;
             this.DisableAuthentication                           = DisableAuthentication;
             this.DisableSendChargeDetailRecords                  = DisableSendChargeDetailRecords;
-
 
             this._FlushEVSEDataAndStatusEvery                    = (UInt32) (ServiceCheckEvery.HasValue
                                                                       ? ServiceCheckEvery.Value. TotalMilliseconds
@@ -295,13 +344,13 @@ namespace org.GraphDefined.WWCP
                                                                         : DefaultCDRCheckEvery. TotalMilliseconds);
 
             this.FlushEVSEFastStatusLock                         = new Object();
-            this.StatusCheckTimer                                = new Timer(FlushEVSEFastStatus, null, 0, _FlushEVSEFastStatusEvery);
+            this.StatusCheckTimer                                = new Timer(FlushEVSEFastStatus,    null, 0, _FlushEVSEFastStatusEvery);
 
             this.EVSEsUpdateLog                                  = new Dictionary<EVSE,            List<PropertyUpdateInfos>>();
             this.ChargingStationsUpdateLog                       = new Dictionary<ChargingStation, List<PropertyUpdateInfos>>();
             this.ChargingPoolsUpdateLog                          = new Dictionary<ChargingPool,    List<PropertyUpdateInfos>>();
 
-
+            this.DNSClient                                       = DNSClient;
 
         }
 
@@ -309,7 +358,9 @@ namespace org.GraphDefined.WWCP
 
         #region (timer) FlushEVSEDataAndStatus(State)
 
-        protected abstract Task FlushEVSEDataAndStatusQueues();
+        protected abstract Boolean  SkipFlushEVSEDataAndStatusQueues();
+
+        protected abstract Task     FlushEVSEDataAndStatusQueues();
 
         private void FlushEVSEDataAndStatus(Object State)
         {
@@ -323,13 +374,8 @@ namespace org.GraphDefined.WWCP
                     try
                     {
 
-                        //if (EVSEsToAddQueue.              Count == 0 &&
-                        //    EVSEsToUpdateQueue.           Count == 0 &&
-                        //    EVSEStatusChangesDelayedQueue.Count == 0 &&
-                        //    EVSEsToRemoveQueue.           Count == 0)
-                        //{
-                        //    return;
-                        //}
+                        if (SkipFlushEVSEDataAndStatusQueues())
+                            return;
 
                         #region Send StartEvent...
 
@@ -395,7 +441,9 @@ namespace org.GraphDefined.WWCP
 
         #region (timer) FlushEVSEFastStatus(State)
 
-        protected abstract Task FlushEVSEFastStatusQueues();
+        protected abstract Boolean  SkipFlushEVSEFastStatusQueues();
+
+        protected abstract Task     FlushEVSEFastStatusQueues();
 
         private void FlushEVSEFastStatus(Object State)
         {
@@ -409,8 +457,8 @@ namespace org.GraphDefined.WWCP
                     try
                     {
 
-                        //if (EVSEStatusChangesFastQueue.Count == 0)
-                        //    return;
+                        if (SkipFlushEVSEFastStatusQueues())
+                            return;
 
                         #region Send StartEvent...
 
@@ -476,7 +524,9 @@ namespace org.GraphDefined.WWCP
 
         #region (timer) FlushChargeDetailRecords(State)
 
-        protected abstract Task FlushChargeDetailRecordsQueues();
+        protected abstract Boolean  SkipFlushChargeDetailRecordsQueues();
+
+        protected abstract Task     FlushChargeDetailRecordsQueues();
 
         private void FlushChargeDetailRecords(Object State)
         {
@@ -490,8 +540,8 @@ namespace org.GraphDefined.WWCP
                     try
                     {
 
-                        //if (ChargeDetailRecordQueue.Count == 0)
-                        //    return;
+                        if (SkipFlushChargeDetailRecordsQueues())
+                            return;
 
                         #region Send StartEvent...
 

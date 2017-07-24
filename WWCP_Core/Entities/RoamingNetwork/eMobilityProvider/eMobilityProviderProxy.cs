@@ -71,10 +71,10 @@ namespace org.GraphDefined.WWCP
         IId ISendAuthorizeStartStop.AuthId
             => Id;
 
-        IId ISend2RemoteChargeDetailRecords.Id
+        IId ISendChargeDetailRecords.Id
             => Id;
 
-        IEnumerable<IId> ISend2RemoteChargeDetailRecords.Ids
+        IEnumerable<IId> ISendChargeDetailRecords.Ids
             => Ids.Cast<IId>();
 
         #region Name
@@ -404,6 +404,8 @@ namespace org.GraphDefined.WWCP
 
 
         public eMobilityProviderPriority Priority { get; set; }
+
+        public Boolean DisablePushAdminStatus { get; set; }
 
         public Boolean DisablePushStatus { get; set; }
 
@@ -1866,9 +1868,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushStatusResult>
+        async Task<PushAdminStatusResult>
 
-            ISendStatus.UpdateAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
+            ISendAdminStatus.UpdateAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
                                                  TransmissionTypes                   TransmissionType,
 
                                                  DateTime?                           Timestamp,
@@ -1884,7 +1886,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException(nameof(AdminStatusUpdates), "The given enumeration of EVSE admin status updates must not be null!");
 
 
-            PushStatusResult result;
+            PushAdminStatusResult result;
 
             #endregion
 
@@ -1915,7 +1917,9 @@ namespace org.GraphDefined.WWCP
                                                                          RequestTimeout);
 
             else
-                result = new PushStatusResult(ResultTypes.NoOperation);
+                result = PushAdminStatusResult.OutOfService(Id,
+                                                            this,
+                                                            AdminStatusUpdates);
 
 
             #region Send OnUpdateEVSEStatusResponse event
@@ -1950,9 +1954,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushStatusResult>
+        async Task<PushAdminStatusResult>
 
-            ISendStatus.UpdateAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  AdminStatusUpdates,
+            ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  AdminStatusUpdates,
                                                  TransmissionTypes                              TransmissionType,
 
                                                  DateTime?                                      Timestamp,
@@ -1968,7 +1972,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException(nameof(AdminStatusUpdates), "The given enumeration of charging station admin status updates must not be null!");
 
 
-            PushStatusResult result;
+            PushAdminStatusResult result;
 
             #endregion
 
@@ -1999,7 +2003,9 @@ namespace org.GraphDefined.WWCP
                                                                         RequestTimeout);
 
             else
-                result = new PushStatusResult(ResultTypes.NoOperation);
+                result = PushAdminStatusResult.OutOfService(Id,
+                                                            this,
+                                                            AdminStatusUpdates);
 
 
             #region Send OnUpdateEVSEStatusResponse event
@@ -2034,9 +2040,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushStatusResult>
+        async Task<PushAdminStatusResult>
 
-            ISendStatus.UpdateAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  AdminStatusUpdates,
+            ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  AdminStatusUpdates,
                                                  TransmissionTypes                           TransmissionType,
 
                                                  DateTime?                                   Timestamp,
@@ -2052,7 +2058,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException(nameof(AdminStatusUpdates), "The given enumeration of charging pool admin status updates must not be null!");
 
 
-            PushStatusResult result;
+            PushAdminStatusResult result;
 
             #endregion
 
@@ -2083,7 +2089,9 @@ namespace org.GraphDefined.WWCP
                                                                          RequestTimeout);
 
             else
-                result = new PushStatusResult(ResultTypes.NoOperation);
+                result = PushAdminStatusResult.OutOfService(Id,
+                                                            this,
+                                                            AdminStatusUpdates);
 
 
             #region Send OnUpdateEVSEStatusResponse event
@@ -2118,9 +2126,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushStatusResult>
+        async Task<PushAdminStatusResult>
 
-            ISendStatus.UpdateAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  AdminStatusUpdates,
+            ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  AdminStatusUpdates,
                                                  TransmissionTypes                                      TransmissionType,
 
                                                  DateTime?                                              Timestamp,
@@ -2136,7 +2144,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException(nameof(AdminStatusUpdates), "The given enumeration of charging station operator admin status updates must not be null!");
 
 
-            PushStatusResult result;
+            PushAdminStatusResult result;
 
             #endregion
 
@@ -2167,7 +2175,9 @@ namespace org.GraphDefined.WWCP
                                                                          RequestTimeout);
 
             else
-                result = new PushStatusResult(ResultTypes.NoOperation);
+                result = PushAdminStatusResult.OutOfService(Id,
+                                                            this,
+                                                            AdminStatusUpdates);
 
 
             #region Send OnUpdateEVSEStatusResponse event
@@ -2202,9 +2212,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushStatusResult>
+        async Task<PushAdminStatusResult>
 
-            ISendStatus.UpdateAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  AdminStatusUpdates,
+            ISendAdminStatus.UpdateAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  AdminStatusUpdates,
                                                  TransmissionTypes                             TransmissionType,
 
                                                  DateTime?                                     Timestamp,
@@ -2220,7 +2230,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException(nameof(AdminStatusUpdates), "The given enumeration of roaming network admin status updates must not be null!");
 
 
-            PushStatusResult result;
+            PushAdminStatusResult result;
 
             #endregion
 
@@ -2251,7 +2261,9 @@ namespace org.GraphDefined.WWCP
                                                                          RequestTimeout);
 
             else
-                result = new PushStatusResult(ResultTypes.NoOperation);
+                result = PushAdminStatusResult.OutOfService(Id,
+                                                            this,
+                                                            AdminStatusUpdates);
 
 
             #region Send OnUpdateEVSEStatusResponse event
@@ -2338,7 +2350,7 @@ namespace org.GraphDefined.WWCP
                                                                     RequestTimeout);
 
             else
-                result = new PushStatusResult(ResultTypes.NoOperation);
+                result = PushStatusResult.NoOperation(Id, this);
 
 
             #region Send OnUpdateEVSEStatusResponse event
@@ -2422,7 +2434,7 @@ namespace org.GraphDefined.WWCP
                                                                     RequestTimeout);
 
             else
-                result = new PushStatusResult(ResultTypes.NoOperation);
+                result = PushStatusResult.NoOperation(Id, this);
 
 
             #region Send OnUpdateEVSEStatusResponse event
@@ -2506,7 +2518,7 @@ namespace org.GraphDefined.WWCP
                                                                     RequestTimeout);
 
             else
-                result = new PushStatusResult(ResultTypes.NoOperation);
+                result = PushStatusResult.NoOperation(Id, this);
 
 
             #region Send OnUpdateEVSEStatusResponse event
@@ -2590,7 +2602,7 @@ namespace org.GraphDefined.WWCP
                                                                     RequestTimeout);
 
             else
-                result = new PushStatusResult(ResultTypes.NoOperation);
+                result = PushStatusResult.NoOperation(Id, this);
 
 
             #region Send OnUpdateEVSEStatusResponse event
@@ -2674,7 +2686,7 @@ namespace org.GraphDefined.WWCP
                                                                     RequestTimeout);
 
             else
-                result = new PushStatusResult(ResultTypes.NoOperation);
+                result = PushStatusResult.NoOperation(Id, this);
 
 
             #region Send OnUpdateEVSEStatusResponse event
@@ -3767,7 +3779,7 @@ namespace org.GraphDefined.WWCP
                                                                              EventTrackingId,
                                                                              RequestTimeout);
 
-            return SendCDRsResult.OutOfService(Id);
+            return SendCDRsResult.OutOfService(Id, this, ChargeDetailRecords);
 
         }
 

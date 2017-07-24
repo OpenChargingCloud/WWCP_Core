@@ -35,44 +35,19 @@ namespace org.GraphDefined.WWCP
     public interface ISendChargeDetailRecords
     {
 
-        #region SendChargeDetailRecord(...ChargeDetailRecord, ...)
+        IId Id { get; }
 
-        /// <summary>
-        /// Send a charge detail record.
-        /// </summary>
-        /// <param name="ChargeDetailRecord">A charge detail record.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<SendCDRsResult>
+        IEnumerable<IId> Ids { get; }
 
-            SendChargeDetailRecord(ChargeDetailRecord  ChargeDetailRecord,
-
-                                   DateTime?           Timestamp          = null,
-                                   CancellationToken?  CancellationToken  = null,
-                                   EventTracking_Id    EventTrackingId    = null,
-                                   TimeSpan?           RequestTimeout     = null);
-
-        #endregion
-
-    }
-
-    /// <summary>
-    /// The interface for sending charge detail records.
-    /// </summary>
-    public interface ISend2RemoteChargeDetailRecords
-    {
 
         /// <summary>
         /// This service can be disabled, e.g. for debugging reasons.
         /// </summary>
         Boolean  DisableSendChargeDetailRecords   { get; set; }
 
-        IId Id { get; }
 
-        IEnumerable<IId> Ids { get; }
+        // Events?
+
 
         /// <summary>
         /// Send a charge detail record.
@@ -88,33 +63,6 @@ namespace org.GraphDefined.WWCP
 
             SendChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
                                     TransmissionTypes                TransmissionType    = TransmissionTypes.Enqueued,
-
-                                    DateTime?                        Timestamp           = null,
-                                    CancellationToken?               CancellationToken   = null,
-                                    EventTracking_Id                 EventTrackingId     = null,
-                                    TimeSpan?                        RequestTimeout      = null);
-
-    }
-
-
-    /// <summary>
-    /// The interface for receiving charge detail records.
-    /// </summary>
-    public interface IRemoteSendChargeDetailRecords
-    {
-
-        /// <summary>
-        /// Send a charge detail record.
-        /// </summary>
-        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
-        /// 
-        /// <param name="Timestamp">The optional timestamp of the request.</param>
-        /// <param name="CancellationToken">An optional token to cancel this request.</param>
-        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
-        /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<SendCDRsResult>
-
-            SendChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
 
                                     DateTime?                        Timestamp           = null,
                                     CancellationToken?               CancellationToken   = null,

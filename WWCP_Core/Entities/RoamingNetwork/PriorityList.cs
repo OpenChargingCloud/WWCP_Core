@@ -24,13 +24,14 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Collections;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
-    public class PriorityList<T>
+    public class PriorityList<T> : IEnumerable<T>
     {
 
         #region Data
@@ -59,6 +60,7 @@ namespace org.GraphDefined.WWCP
 
             }
         }
+
 
 
         public Task<T2[]> WhenAll<T2>(Func<T, Task<T2>> Work)
@@ -107,6 +109,29 @@ namespace org.GraphDefined.WWCP
 
         }
 
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+
+            foreach (var service in _Services.
+                                        OrderBy(kvp => kvp.Key).
+                                        Select (kvp => kvp.Value))
+            {
+                yield return service;
+            }
+
+        }
+
+        public IEnumerator<T> GetEnumerator()
+        {
+
+            foreach (var service in _Services.
+                                        OrderBy(kvp => kvp.Key).
+                                        Select (kvp => kvp.Value))
+            {
+                yield return service;
+            }
+
+        }
 
     }
 

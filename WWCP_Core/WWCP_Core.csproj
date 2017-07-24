@@ -49,7 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\AdminStatus\IReceiveAdminStatus.cs" />
+    <Compile Include="Commands\AdminStatus\ISendAdminStatus.cs" />
+    <Compile Include="Commands\AuthenticationData\IReceiveAuthenticationData.cs" />
+    <Compile Include="Commands\AuthenticationData\ISendAuthenticationData.cs" />
     <Compile Include="Commands\AuthenticationData\OnPushAuthenticationData.cs" />
+    <Compile Include="Commands\AuthenticationData\PushAuthenticationDataResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStartChargingPoolResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStartChargingStationResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AAuthStartResult.cs" />
@@ -59,14 +64,16 @@
     <Compile Include="Commands\AuthorizeStartStop\AAuthStopResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStopResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\IAAuthStartResult.cs" />
-    <Compile Include="Commands\DataAndStatus\IPullData.cs" />
-    <Compile Include="Commands\DataAndStatus\IPullStatus.cs" />
-    <Compile Include="Commands\SendCDR\ISendChargeDetailRecords.cs" />
+    <Compile Include="Commands\StaticData\IPullData.cs" />
+    <Compile Include="Commands\StaticData\ISendData.cs" />
+    <Compile Include="Commands\Status\IPullStatus.cs" />
+    <Compile Include="Commands\SendCDRs\IReceiveChargeDetailRecords.cs" />
+    <Compile Include="Commands\SendCDRs\ISendChargeDetailRecords.cs" />
     <Compile Include="Commands\AuthorizeStartStop\IAuthorizeStartStop.cs" />
-    <Compile Include="Commands\DataAndStatus\IPushData.cs" />
-    <Compile Include="Commands\DataAndStatus\IRemotePushStatusExtentions.cs" />
-    <Compile Include="Commands\DataAndStatus\IPushStatus.cs" />
-    <Compile Include="Commands\IGeneralServices.cs" />
+    <Compile Include="Commands\StaticData\IReceiveData.cs" />
+    <Compile Include="Commands\Status\IReceiveStatus.cs" />
+    <Compile Include="Commands\Status\IRemotePushStatusExtentions.cs" />
+    <Compile Include="Commands\Status\ISendStatus.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStopDelegates.cs" />
     <Compile Include="Commands\AuthorizeStartStop\OnAuthorizeStartDelegates.cs" />
     <Compile Include="Commands\RemoteStartStop\OnRemoteStartEVSEDelegates.cs" />
@@ -75,7 +82,7 @@
     <Compile Include="Commands\Reserve\ReserveEVSEDelegates.cs" />
     <Compile Include="Commands\Reserve\CancelReservationDelegates.cs" />
     <Compile Include="Commands\Reserve\ReserveChargingPoolDelegates.cs" />
-    <Compile Include="Commands\SendCDR\OnGetCDRsDelegate.cs" />
+    <Compile Include="Commands\SendCDRs\OnGetCDRsDelegate.cs" />
     <Compile Include="CommonTypes\ACustomData.cs" />
     <Compile Include="CommonTypes\ICustomData.cs" />
     <Compile Include="CommonTypes\TransmissionTypes.cs" />
@@ -166,7 +173,8 @@
     <Compile Include="Entities\GeoInformations\NavigationProvider\INavigationProvider.cs" />
     <Compile Include="Entities\GeoInformations\NavigationProvider\IRemoteNavigationProvider.cs" />
     <Compile Include="Entities\RoamingNetwork\PriorityList.cs" />
-    <Compile Include="Entities\RoamingNetwork\RoamingProvider\EMPRoamingProvider_Id.cs" />
+    <Compile Include="Entities\RoamingNetwork\RoamingProvider\CSO\CSORoamingProviderLogger.cs" />
+    <Compile Include="Entities\RoamingNetwork\RoamingProvider\EMP\EMPRoamingProvider_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\Exceptions.cs" />
     <Compile Include="Entities\GeoInformations\SmartCities\ISmartCity.cs" />
     <Compile Include="Entities\GeoInformations\SmartCities\IRemoteSmartCity.cs" />
@@ -205,24 +213,24 @@
     <Compile Include="Entities\UserDefinedDictionary.cs" />
     <Compile Include="Entities\GeoInformations\NavigationProvider\Beacon\Beacon.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationOperatorDelegates.cs" />
-    <Compile Include="Entities\RoamingNetwork\RoamingProvider\IEMPRoamingProvider.cs" />
-    <Compile Include="Entities\RoamingNetwork\RoamingProvider\ICSORoamingProvider.cs" />
-    <Compile Include="Commands\DataAndStatus\AnonymousPushEVSEStatusService.cs" />
-    <Compile Include="Commands\DataAndStatus\PushDataAndStatusDelegates.cs" />
+    <Compile Include="Entities\RoamingNetwork\RoamingProvider\EMP\IEMPRoamingProvider.cs" />
+    <Compile Include="Entities\RoamingNetwork\RoamingProvider\CSO\ICSORoamingProvider.cs" />
+    <Compile Include="Commands\Status\AnonymousPushEVSEStatusService.cs" />
+    <Compile Include="Commands\StaticData\PushDataAndStatusDelegates.cs" />
     <Compile Include="Commands\RemoteStartStop\OnRemoteStopChargingStationDelegates.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStartChargingStationResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopChargingStationResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopResult.cs" />
     <Compile Include="Commands\Reserve\CancelReservationResult.cs" />
-    <Compile Include="Commands\SendCDR\OnSendCDRsDelegate.cs" />
+    <Compile Include="Commands\SendCDRs\OnSendCDRsDelegate.cs" />
     <Compile Include="CommonTypes\ActionType.cs" />
     <Compile Include="CommonTypes\Attributes\InternalUseOnly.cs" />
     <Compile Include="CommonTypes\AuthInfoStatus.cs" />
     <Compile Include="CommonTypes\eMAIdStatus.cs" />
     <Compile Include="CommonTypes\eMAIdWithPIN.cs" />
-    <Compile Include="Responses\PushStatusResult.cs" />
-    <Compile Include="Responses\ResultTypes.cs" />
-    <Compile Include="Responses\PushDataResult.cs" />
+    <Compile Include="Commands\Status\PushStatusResult.cs" />
+    <Compile Include="Commands\AdminStatus\PushAdminStatusResult.cs" />
+    <Compile Include="Commands\StaticData\PushDataResult.cs" />
     <Compile Include="CommonTypes\AuthTokenStatus.cs" />
     <Compile Include="CommonTypes\ExceptionalPeriod.cs" />
     <Compile Include="CommonTypes\HourMin.cs" />
@@ -260,7 +268,7 @@
     <Compile Include="Entities\RoamingNetwork\RoamingNetworkDelegates.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingNetworks.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\ARoamingProvider.cs" />
-    <Compile Include="Entities\RoamingNetwork\RoamingProvider\AWWCPCPOAdapter.cs" />
+    <Compile Include="Entities\RoamingNetwork\RoamingProvider\CSO\AWWCPCSOAdapter.cs" />
     <Compile Include="Entities\StatusSchedule.cs" />
     <Compile Include="CommonTypes\AuthIdentification.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargeDetailRecord\ChargeDetailRecord.cs" />
@@ -322,7 +330,6 @@
     <Compile Include="CommonTypes\OpeningTimes.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\ChargingStation.cs" />
     <Compile Include="Entities\AEMobilityEntity.cs" />
-    <Compile Include="Entities\IId.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\UIFeatures.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\EVSEStatusTypes.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\PlugTypes.cs" />
@@ -368,12 +375,12 @@
     <Compile Include="JSON_IO\SmartCities.cs" />
     <Compile Include="JSON_IO\SocketOutlets.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Entities\RoamingNetwork\RoamingProvider\AEMPRoamingProvider.cs" />
-    <Compile Include="Entities\RoamingNetwork\RoamingProvider\CSORoamingProvider_Id.cs" />
+    <Compile Include="Entities\RoamingNetwork\RoamingProvider\EMP\AEMPRoamingProvider.cs" />
+    <Compile Include="Entities\RoamingNetwork\RoamingProvider\CSO\CSORoamingProvider_Id.cs" />
     <Compile Include="Commands\AuthorizeStartStop\TokenAuthorizationResultType.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStartEVSEResult.cs" />
     <Compile Include="Commands\AuthorizeStartStop\AuthStopEVSEResult.cs" />
-    <Compile Include="Commands\SendCDR\SendCDRsResult.cs" />
+    <Compile Include="Commands\SendCDRs\SendCDRsResult.cs" />
     <Compile Include="InternalsVisibleTo.cs" />
     <Compile Include="Semantics.cs" />
     <Compile Include="Version.cs" />
@@ -405,12 +412,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Commands\SendChargingSession\" />
     <Folder Include="Entities\GeoInformations\Energy\PV\" />
     <Folder Include="Entities\GeoInformations\Energy\Storage\" />
     <Folder Include="Entities\GeoInformations\Energy\Wind\" />
     <Folder Include="Entities\GeoInformations\SmartCities\ConstructionSite\" />
     <Folder Include="Entities\GeoInformations\SmartCities\Street\" />
     <Folder Include="Entities\GeoInformations\SmartCities\WLAN\" />
+    <Folder Include="Responses\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

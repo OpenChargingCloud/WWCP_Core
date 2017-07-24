@@ -30,9 +30,10 @@ namespace org.GraphDefined.WWCP
     /// The interface of all charging station roaming providers.
     /// </summary>
     public interface ICSORoamingProvider : ISendData,
+                                           ISendAdminStatus,
                                            ISendStatus,
                                            ISendAuthorizeStartStop,
-                                           ISend2RemoteChargeDetailRecords
+                                           ISendChargeDetailRecords
 
     {
 
