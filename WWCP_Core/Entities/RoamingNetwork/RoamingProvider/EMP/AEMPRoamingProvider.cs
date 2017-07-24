@@ -215,7 +215,7 @@
 //                                          CancellationToken,
 //                                          EventTrackingId,
 //                                          ChargeDetailRecord,
-//                                          RequestTimeout) => RoamingNetwork.SendChargeDetailRecord(DateTime.Now,
+//                                          RequestTimeout) => RoamingNetwork.SendChargeDetailRecord(DateTime.UtcNow,
 //                                                                                                   Timestamp,
 //                                                                                                   CancellationToken,
 //                                                                                                   EventTrackingId,

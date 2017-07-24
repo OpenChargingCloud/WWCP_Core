@@ -79,7 +79,7 @@ namespace org.GraphDefined.WWCP
                                             Func<TimeSpan, T2>  Default)
         {
 
-            var StartTime  = DateTime.Now;
+            var StartTime  = DateTime.UtcNow;
             T  service     = default(T);
             T2 result      = default(T2);
 
@@ -105,7 +105,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            return Default(DateTime.Now - StartTime);
+            return Default(DateTime.UtcNow - StartTime);
 
         }
 

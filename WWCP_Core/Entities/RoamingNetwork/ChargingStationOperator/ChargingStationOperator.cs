@@ -822,13 +822,13 @@ namespace org.GraphDefined.WWCP
                                    Homepage);
 
 
-            if (BrandAddition.SendVoting(DateTime.Now, this, _Brand))
+            if (BrandAddition.SendVoting(DateTime.UtcNow, this, _Brand))
             {
                 if (_Brands.TryAdd(_Brand))
                 {
 
                     OnSuccess?.Invoke(_Brand);
-                    BrandAddition.SendNotification(DateTime.Now, this, _Brand);
+                    BrandAddition.SendNotification(DateTime.UtcNow, this, _Brand);
                     return _Brand;
 
                 }
@@ -1011,7 +1011,7 @@ namespace org.GraphDefined.WWCP
                                                  MaxStatusListSize);
 
 
-            if (ChargingPoolAddition.SendVoting(DateTime.Now, this, _ChargingPool) &&
+            if (ChargingPoolAddition.SendVoting(DateTime.UtcNow, this, _ChargingPool) &&
                 _ChargingPools.TryAdd(_ChargingPool))
             {
 
@@ -1042,7 +1042,7 @@ namespace org.GraphDefined.WWCP
                 _ChargingPool.OnNewChargeDetailRecord                   += SendNewChargeDetailRecord;
 
                 OnSuccess?.Invoke(_ChargingPool);
-                ChargingPoolAddition.SendNotification(DateTime.Now, this, _ChargingPool);
+                ChargingPoolAddition.SendNotification(DateTime.UtcNow, this, _ChargingPool);
 
                 return _ChargingPool;
 
@@ -1172,13 +1172,13 @@ namespace org.GraphDefined.WWCP
             if (TryGetChargingPoolbyId(ChargingPoolId, out _ChargingPool))
             {
 
-                if (ChargingPoolRemoval.SendVoting(DateTime.Now, this, _ChargingPool))
+                if (ChargingPoolRemoval.SendVoting(DateTime.UtcNow, this, _ChargingPool))
                 {
 
                     if (_ChargingPools.TryRemove(ChargingPoolId, out _ChargingPool))
                     {
 
-                        ChargingPoolRemoval.SendNotification(DateTime.Now, this, _ChargingPool);
+                        ChargingPoolRemoval.SendNotification(DateTime.UtcNow, this, _ChargingPool);
 
                         return _ChargingPool;
 
@@ -1202,13 +1202,13 @@ namespace org.GraphDefined.WWCP
             if (TryGetChargingPoolbyId(ChargingPoolId, out ChargingPool))
             {
 
-                if (ChargingPoolRemoval.SendVoting(DateTime.Now, this, ChargingPool))
+                if (ChargingPoolRemoval.SendVoting(DateTime.UtcNow, this, ChargingPool))
                 {
 
                     if (_ChargingPools.TryRemove(ChargingPoolId, out ChargingPool))
                     {
 
-                        ChargingPoolRemoval.SendNotification(DateTime.Now, this, ChargingPool);
+                        ChargingPoolRemoval.SendNotification(DateTime.UtcNow, this, ChargingPool);
 
                         return true;
 
@@ -1271,7 +1271,7 @@ namespace org.GraphDefined.WWCP
             //{
             //
             //    RoamingNetwork.
-            //        SendChargingPoolAdminStatusDiff(new ChargingPoolAdminStatusDiff(DateTime.Now,
+            //        SendChargingPoolAdminStatusDiff(new ChargingPoolAdminStatusDiff(DateTime.UtcNow,
             //                                               ChargingStationOperatorId:    Id,
             //                                               ChargingStationOperatorName:  Name,
             //                                               NewStatus:         new List<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusType>>(),
@@ -1609,7 +1609,7 @@ namespace org.GraphDefined.WWCP
             //{
             //
             //    RoamingNetwork.
-            //        SendChargingStationAdminStatusDiff(new ChargingStationAdminStatusDiff(DateTime.Now,
+            //        SendChargingStationAdminStatusDiff(new ChargingStationAdminStatusDiff(DateTime.UtcNow,
             //                                               ChargingStationOperatorId:    Id,
             //                                               ChargingStationOperatorName:  Name,
             //                                               NewStatus:         new List<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusType>>(),
@@ -1871,7 +1871,7 @@ namespace org.GraphDefined.WWCP
                                                                  MaxGroupStatusListSize);
 
 
-            if (ChargingStationGroupAddition.SendVoting(DateTime.Now, this, _ChargingStationGroup))
+            if (ChargingStationGroupAddition.SendVoting(DateTime.UtcNow, this, _ChargingStationGroup))
             {
                 if (_ChargingStationGroups.TryAdd(_ChargingStationGroup))
                 {
@@ -1888,7 +1888,7 @@ namespace org.GraphDefined.WWCP
                     //_ChargingStationGroup.OnAdminStatusChanged                          += UpdateChargingStationGroupAdminStatus;
 
                     OnSuccess?.Invoke(_ChargingStationGroup);
-                    ChargingStationGroupAddition.SendNotification(DateTime.Now, this, _ChargingStationGroup);
+                    ChargingStationGroupAddition.SendNotification(DateTime.UtcNow, this, _ChargingStationGroup);
                     return _ChargingStationGroup;
 
                 }
@@ -2327,11 +2327,11 @@ namespace org.GraphDefined.WWCP
         {
 
             if (EVSEStatus == null || EVSEStatus.Count == 0)
-                return new EVSEStatusDiff(DateTime.Now, Id, Name);
+                return new EVSEStatusDiff(DateTime.UtcNow, Id, Name);
 
             #region Get data...
 
-            var EVSEStatusDiff     = new EVSEStatusDiff(DateTime.Now, Id, Name);
+            var EVSEStatusDiff     = new EVSEStatusDiff(DateTime.UtcNow, Id, Name);
 
             // Only ValidEVSEIds!
             // Do nothing with manual EVSE Ids!
@@ -2397,7 +2397,7 @@ namespace org.GraphDefined.WWCP
             }
 
             // empty!
-            return new EVSEStatusDiff(DateTime.Now, Id, Name);
+            return new EVSEStatusDiff(DateTime.UtcNow, Id, Name);
 
         }
 
@@ -2725,7 +2725,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2745,7 +2745,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnReserveEVSERequest?.Invoke(DateTime.Now,
+                OnReserveEVSERequest?.Invoke(DateTime.UtcNow,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -2800,7 +2800,7 @@ namespace org.GraphDefined.WWCP
 
                     //result.Reservation.ChargingStationOperator = this;
 
-                    OnNewReservation?.Invoke(DateTime.Now,
+                    OnNewReservation?.Invoke(DateTime.UtcNow,
                                              this,
                                              result.Reservation);
 
@@ -2863,7 +2863,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnReserveEVSEResponse?.Invoke(DateTime.Now,
+                OnReserveEVSEResponse?.Invoke(DateTime.UtcNow,
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
@@ -2939,7 +2939,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2959,7 +2959,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnReserveChargingStationRequest?.Invoke(DateTime.Now,
+                OnReserveChargingStationRequest?.Invoke(DateTime.UtcNow,
                                                         Timestamp.Value,
                                                         this,
                                                         EventTrackingId,
@@ -3026,7 +3026,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnReserveChargingStationResponse?.Invoke(DateTime.Now,
+                OnReserveChargingStationResponse?.Invoke(DateTime.UtcNow,
                                                          Timestamp.Value,
                                                          this,
                                                          EventTrackingId,
@@ -3102,7 +3102,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3122,7 +3122,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnReserveChargingPoolRequest?.Invoke(DateTime.Now,
+                OnReserveChargingPoolRequest?.Invoke(DateTime.UtcNow,
                                                      Timestamp.Value,
                                                      this,
                                                      EventTrackingId,
@@ -3187,7 +3187,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnReserveChargingPoolResponse?.Invoke(DateTime.Now,
+                OnReserveChargingPoolResponse?.Invoke(DateTime.UtcNow,
                                                       Timestamp.Value,
                                                       this,
                                                       EventTrackingId,
@@ -3291,7 +3291,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3491,7 +3491,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3511,7 +3511,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteStartEVSERequest?.Invoke(DateTime.Now,
+                OnRemoteStartEVSERequest?.Invoke(DateTime.UtcNow,
                                                  Timestamp.Value,
                                                  this,
                                                  EventTrackingId,
@@ -3558,7 +3558,7 @@ namespace org.GraphDefined.WWCP
 
                     result.Session.Operator = this;
 
-                    OnNewChargingSession?.Invoke(DateTime.Now,
+                    OnNewChargingSession?.Invoke(DateTime.UtcNow,
                                                  this,
                                                  result.Session);
 
@@ -3621,7 +3621,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteStartEVSEResponse?.Invoke(DateTime.Now,
+                OnRemoteStartEVSEResponse?.Invoke(DateTime.UtcNow,
                                                   Timestamp.Value,
                                                   this,
                                                   EventTrackingId,
@@ -3685,7 +3685,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3705,7 +3705,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteChargingStationStartRequest?.Invoke(DateTime.Now,
+                OnRemoteChargingStationStartRequest?.Invoke(DateTime.UtcNow,
                                                             Timestamp.Value,
                                                             this,
                                                             EventTrackingId,
@@ -3752,7 +3752,7 @@ namespace org.GraphDefined.WWCP
 
                     result.Session.Operator = this;
 
-                    OnNewChargingSession?.Invoke(DateTime.Now, this, result.Session);
+                    OnNewChargingSession?.Invoke(DateTime.UtcNow, this, result.Session);
 
                 }
 
@@ -3808,7 +3808,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteChargingStationStartResponse?.Invoke(DateTime.Now,
+                OnRemoteChargingStationStartResponse?.Invoke(DateTime.UtcNow,
                                                              Timestamp.Value,
                                                              this,
                                                              EventTrackingId,
@@ -3929,7 +3929,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3950,7 +3950,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteStopRequest?.Invoke(DateTime.Now,
+                OnRemoteStopRequest?.Invoke(DateTime.UtcNow,
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
@@ -3994,7 +3994,7 @@ namespace org.GraphDefined.WWCP
                     if (result.ChargeDetailRecord != null)
                     {
 
-                        OnNewChargeDetailRecord?.Invoke(DateTime.Now, this, result.ChargeDetailRecord);
+                        OnNewChargeDetailRecord?.Invoke(DateTime.UtcNow, this, result.ChargeDetailRecord);
 
                     }
 
@@ -4044,7 +4044,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteStopResponse?.Invoke(DateTime.Now,
+                OnRemoteStopResponse?.Invoke(DateTime.UtcNow,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -4104,7 +4104,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -4125,7 +4125,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteEVSEStopRequest?.Invoke(DateTime.Now,
+                OnRemoteEVSEStopRequest?.Invoke(DateTime.UtcNow,
                                                 Timestamp.Value,
                                                 this,
                                                 EventTrackingId,
@@ -4172,7 +4172,7 @@ namespace org.GraphDefined.WWCP
                     if (result.ChargeDetailRecord != null)
                     {
 
-                        OnNewChargeDetailRecord?.Invoke(DateTime.Now,
+                        OnNewChargeDetailRecord?.Invoke(DateTime.UtcNow,
                                                         this,
                                                         result.ChargeDetailRecord);
 
@@ -4248,7 +4248,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteEVSEStopResponse?.Invoke(DateTime.Now,
+                OnRemoteEVSEStopResponse?.Invoke(DateTime.UtcNow,
                                                  Timestamp.Value,
                                                  this,
                                                  EventTrackingId,
@@ -4309,7 +4309,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -4330,7 +4330,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteChargingStationStopRequest?.Invoke(DateTime.Now,
+                OnRemoteChargingStationStopRequest?.Invoke(DateTime.UtcNow,
                                                     Timestamp.Value,
                                                     this,
                                                     EventTrackingId,
@@ -4376,7 +4376,7 @@ namespace org.GraphDefined.WWCP
                     if (result.ChargeDetailRecord != null)
                     {
 
-                        OnNewChargeDetailRecord?.Invoke(DateTime.Now,
+                        OnNewChargeDetailRecord?.Invoke(DateTime.UtcNow,
                                                         this,
                                                         result.ChargeDetailRecord);
 
@@ -4430,7 +4430,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteChargingStationStopResponse?.Invoke(DateTime.Now,
+                OnRemoteChargingStationStopResponse?.Invoke(DateTime.UtcNow,
                                                        Timestamp.Value,
                                                        this,
                                                        EventTrackingId,

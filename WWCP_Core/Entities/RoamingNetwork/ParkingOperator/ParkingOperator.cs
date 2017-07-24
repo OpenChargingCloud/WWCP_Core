@@ -837,7 +837,7 @@ namespace org.GraphDefined.WWCP
         //                                         Status);
 
 
-        //    if (ParkingGarageAddition.SendVoting(DateTime.Now, this, _ParkingGarage))
+        //    if (ParkingGarageAddition.SendVoting(DateTime.UtcNow, this, _ParkingGarage))
         //    {
         //        if (_ParkingGarages.TryAdd(_ParkingGarage))
         //        {
@@ -861,7 +861,7 @@ namespace org.GraphDefined.WWCP
 
 
         //            OnSuccess?.Invoke(_ParkingGarage);
-        //            ParkingGarageAddition.SendNotification(DateTime.Now, this, _ParkingGarage);
+        //            ParkingGarageAddition.SendNotification(DateTime.UtcNow, this, _ParkingGarage);
 
         //            return _ParkingGarage;
 
@@ -925,13 +925,13 @@ namespace org.GraphDefined.WWCP
         //    if (TryGetParkingGaragebyId(ParkingGarageId, out _ParkingGarage))
         //    {
 
-        //        if (ParkingGarageRemoval.SendVoting(DateTime.Now, this, _ParkingGarage))
+        //        if (ParkingGarageRemoval.SendVoting(DateTime.UtcNow, this, _ParkingGarage))
         //        {
 
         //            if (_ParkingGarages.TryRemove(ParkingGarageId, out _ParkingGarage))
         //            {
 
-        //                ParkingGarageRemoval.SendNotification(DateTime.Now, this, _ParkingGarage);
+        //                ParkingGarageRemoval.SendNotification(DateTime.UtcNow, this, _ParkingGarage);
 
         //                return _ParkingGarage;
 
@@ -955,13 +955,13 @@ namespace org.GraphDefined.WWCP
             if (TryGetParkingGaragebyId(ParkingGarageId, out ParkingGarage))
             {
 
-                if (ParkingGarageRemoval.SendVoting(DateTime.Now, this, ParkingGarage))
+                if (ParkingGarageRemoval.SendVoting(DateTime.UtcNow, this, ParkingGarage))
                 {
 
                     if (_ParkingGarages.TryRemove(ParkingGarageId, out ParkingGarage))
                     {
 
-                        ParkingGarageRemoval.SendNotification(DateTime.Now, this, ParkingGarage);
+                        ParkingGarageRemoval.SendNotification(DateTime.UtcNow, this, ParkingGarage);
 
                         return true;
 
@@ -1024,7 +1024,7 @@ namespace org.GraphDefined.WWCP
         //    //{
         //    //
         //    //    RoamingNetwork.
-        //    //        SendParkingGarageAdminStatusDiff(new ParkingGarageAdminStatusDiff(DateTime.Now,
+        //    //        SendParkingGarageAdminStatusDiff(new ParkingGarageAdminStatusDiff(DateTime.UtcNow,
         //    //                                               ParkingOperatorId:    Id,
         //    //                                               ParkingOperatorName:  Name,
         //    //                                               NewStatus:         new List<KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusType>>(),
@@ -1347,7 +1347,7 @@ namespace org.GraphDefined.WWCP
         //    //{
         //    //
         //    //    RoamingNetwork.
-        //    //        SendParkingGarageAdminStatusDiff(new ParkingGarageAdminStatusDiff(DateTime.Now,
+        //    //        SendParkingGarageAdminStatusDiff(new ParkingGarageAdminStatusDiff(DateTime.UtcNow,
         //    //                                               ParkingOperatorId:    Id,
         //    //                                               ParkingOperatorName:  Name,
         //    //                                               NewStatus:         new List<KeyValuePair<ParkingGarage_Id, ParkingGarageAdminStatusType>>(),
@@ -1561,7 +1561,7 @@ namespace org.GraphDefined.WWCP
         //    if (Configurator != null)
         //        Configurator(_ParkingGarageGroup);
 
-        //    if (ParkingGarageGroupAddition.SendVoting(DateTime.Now, this, _ParkingGarageGroup))
+        //    if (ParkingGarageGroupAddition.SendVoting(DateTime.UtcNow, this, _ParkingGarageGroup))
         //    {
         //        if (_ParkingGarageGroups.TryAdd(_ParkingGarageGroup))
         //        {
@@ -1578,7 +1578,7 @@ namespace org.GraphDefined.WWCP
         //            //_ParkingGarageGroup.OnAdminStatusChanged                          += UpdateParkingGarageGroupAdminStatus;
 
         //            OnSuccess?.Invoke(_ParkingGarageGroup);
-        //            ParkingGarageGroupAddition.SendNotification(DateTime.Now, this, _ParkingGarageGroup);
+        //            ParkingGarageGroupAddition.SendNotification(DateTime.UtcNow, this, _ParkingGarageGroup);
         //            return _ParkingGarageGroup;
 
         //        }
@@ -1816,11 +1816,11 @@ namespace org.GraphDefined.WWCP
         //{
 
         //    if (ParkingSpaceStatus == null || ParkingSpaceStatus.Count == 0)
-        //        return new ParkingSpaceStatusDiff(DateTime.Now, Id, Name);
+        //        return new ParkingSpaceStatusDiff(DateTime.UtcNow, Id, Name);
 
         //    #region Get data...
 
-        //    var ParkingSpaceStatusDiff     = new ParkingSpaceStatusDiff(DateTime.Now, Id, Name);
+        //    var ParkingSpaceStatusDiff     = new ParkingSpaceStatusDiff(DateTime.UtcNow, Id, Name);
 
         //    // Only ValidParkingSpaceIds!
         //    // Do nothing with manual ParkingSpace Ids!
@@ -1886,7 +1886,7 @@ namespace org.GraphDefined.WWCP
         //    }
 
         //    // empty!
-        //    return new ParkingSpaceStatusDiff(DateTime.Now, Id, Name);
+        //    return new ParkingSpaceStatusDiff(DateTime.UtcNow, Id, Name);
 
         //}
 
@@ -2239,7 +2239,7 @@ namespace org.GraphDefined.WWCP
         //    ReservationResult result = null;
 
         //    if (!Timestamp.HasValue)
-        //        Timestamp = DateTime.Now;
+        //        Timestamp = DateTime.UtcNow;
 
         //    if (EventTrackingId == null)
         //        EventTrackingId = EventTracking_Id.New;
@@ -2253,7 +2253,7 @@ namespace org.GraphDefined.WWCP
         //    try
         //    {
 
-        //        OnReserveParkingSpaceRequest?.Invoke(DateTime.Now,
+        //        OnReserveParkingSpaceRequest?.Invoke(DateTime.UtcNow,
         //                                             Timestamp.Value,
         //                                             this,
         //                                             EventTrackingId,
@@ -2308,7 +2308,7 @@ namespace org.GraphDefined.WWCP
 
         //            //result.Reservation.ParkingOperator = this;
 
-        //            OnNewReservation?.Invoke(DateTime.Now, this, result.Reservation);
+        //            OnNewReservation?.Invoke(DateTime.UtcNow, this, result.Reservation);
 
         //        }
 
@@ -2368,7 +2368,7 @@ namespace org.GraphDefined.WWCP
         //    try
         //    {
 
-        //        OnParkingSpaceReserved?.Invoke(DateTime.Now,
+        //        OnParkingSpaceReserved?.Invoke(DateTime.UtcNow,
         //                               Timestamp.Value,
         //                               this,
         //                               EventTrackingId,
@@ -2449,7 +2449,7 @@ namespace org.GraphDefined.WWCP
         //    ReservationResult result = null;
 
         //    if (!Timestamp.HasValue)
-        //        Timestamp = DateTime.Now;
+        //        Timestamp = DateTime.UtcNow;
 
         //    if (EventTrackingId == null)
         //        EventTrackingId = EventTracking_Id.New;
@@ -2463,7 +2463,7 @@ namespace org.GraphDefined.WWCP
         //    try
         //    {
 
-        //        OnReserveParkingGarage?.Invoke(DateTime.Now,
+        //        OnReserveParkingGarage?.Invoke(DateTime.UtcNow,
         //                                         Timestamp.Value,
         //                                         this,
         //                                         EventTrackingId,
@@ -2529,7 +2529,7 @@ namespace org.GraphDefined.WWCP
         //    try
         //    {
 
-        //        OnParkingGarageReserved?.Invoke(DateTime.Now,
+        //        OnParkingGarageReserved?.Invoke(DateTime.UtcNow,
         //                                          Timestamp.Value,
         //                                          this,
         //                                          EventTrackingId,
@@ -2610,7 +2610,7 @@ namespace org.GraphDefined.WWCP
         //    ReservationResult result = null;
 
         //    if (!Timestamp.HasValue)
-        //        Timestamp = DateTime.Now;
+        //        Timestamp = DateTime.UtcNow;
 
         //    if (EventTrackingId == null)
         //        EventTrackingId = EventTracking_Id.New;
@@ -2624,7 +2624,7 @@ namespace org.GraphDefined.WWCP
         //    try
         //    {
 
-        //        OnReserveParkingGarage?.Invoke(DateTime.Now,
+        //        OnReserveParkingGarage?.Invoke(DateTime.UtcNow,
         //                                      Timestamp.Value,
         //                                      this,
         //                                      EventTrackingId,
@@ -2688,7 +2688,7 @@ namespace org.GraphDefined.WWCP
         //    try
         //    {
 
-        //        OnParkingGarageReserved?.Invoke(DateTime.Now,
+        //        OnParkingGarageReserved?.Invoke(DateTime.UtcNow,
         //                                       Timestamp.Value,
         //                                       this,
         //                                       EventTrackingId,
@@ -2790,7 +2790,7 @@ namespace org.GraphDefined.WWCP
         //{
 
         //    if (!Timestamp.HasValue)
-        //        Timestamp = DateTime.Now;
+        //        Timestamp = DateTime.UtcNow;
 
         //    if (EventTrackingId == null)
         //        EventTrackingId = EventTracking_Id.New;
@@ -2976,7 +2976,7 @@ namespace org.GraphDefined.WWCP
         //    RemoteStartParkingSpaceResult result = null;
 
         //    if (!Timestamp.HasValue)
-        //        Timestamp       = DateTime.Now;
+        //        Timestamp       = DateTime.UtcNow;
 
         //    if (EventTrackingId == null)
         //        EventTrackingId = EventTracking_Id.New;
@@ -2990,7 +2990,7 @@ namespace org.GraphDefined.WWCP
         //    try
         //    {
 
-        //        OnRemoteParkingSpaceStart?.Invoke(DateTime.Now,
+        //        OnRemoteParkingSpaceStart?.Invoke(DateTime.UtcNow,
         //                                  Timestamp.Value,
         //                                  this,
         //                                  EventTrackingId,
@@ -3040,7 +3040,7 @@ namespace org.GraphDefined.WWCP
 
         //     //       result.Session.ParkingOperator = this;
 
-        //            OnNewChargingSession?.Invoke(DateTime.Now, this, result.Session);
+        //            OnNewChargingSession?.Invoke(DateTime.UtcNow, this, result.Session);
 
         //        }
 
@@ -3103,7 +3103,7 @@ namespace org.GraphDefined.WWCP
         //    try
         //    {
 
-        //        OnRemoteParkingSpaceStarted?.Invoke(DateTime.Now,
+        //        OnRemoteParkingSpaceStarted?.Invoke(DateTime.UtcNow,
         //                                    Timestamp.Value,
         //                                    this,
         //                                    EventTrackingId,
@@ -3174,7 +3174,7 @@ namespace org.GraphDefined.WWCP
         //    RemoteStartParkingGarageResult result = null;
 
         //    if (!Timestamp.HasValue)
-        //        Timestamp = DateTime.Now;
+        //        Timestamp = DateTime.UtcNow;
 
         //    if (EventTrackingId == null)
         //        EventTrackingId = EventTracking_Id.New;
@@ -3188,7 +3188,7 @@ namespace org.GraphDefined.WWCP
         //    try
         //    {
 
-        //        OnRemoteParkingGarageStart?.Invoke(DateTime.Now,
+        //        OnRemoteParkingGarageStart?.Invoke(DateTime.UtcNow,
         //                                             Timestamp.Value,
         //                                             this,
         //                                             EventTrackingId,
@@ -3234,7 +3234,7 @@ namespace org.GraphDefined.WWCP
 
         //            //result.Session.ParkingOperator = this;
 
-        //            OnNewChargingSession?.Invoke(DateTime.Now, this, result.Session);
+        //            OnNewChargingSession?.Invoke(DateTime.UtcNow, this, result.Session);
 
         //        }
 
@@ -3290,7 +3290,7 @@ namespace org.GraphDefined.WWCP
         //    try
         //    {
 
-        //        OnRemoteParkingGarageStarted?.Invoke(DateTime.Now,
+        //        OnRemoteParkingGarageStarted?.Invoke(DateTime.UtcNow,
         //                                               Timestamp.Value,
         //                                               this,
         //                                               EventTrackingId,
@@ -3409,7 +3409,7 @@ namespace org.GraphDefined.WWCP
         //    ParkingGarage    _ParkingGarage  = null;
 
         //    if (!Timestamp.HasValue)
-        //        Timestamp = DateTime.Now;
+        //        Timestamp = DateTime.UtcNow;
 
         //    if (EventTrackingId == null)
         //        EventTrackingId = EventTracking_Id.New;
@@ -3423,7 +3423,7 @@ namespace org.GraphDefined.WWCP
         //    try
         //    {
 
-        //        OnRemoteStop?.Invoke(DateTime.Now,
+        //        OnRemoteStop?.Invoke(DateTime.UtcNow,
         //                             Timestamp.Value,
         //                             this,
         //                             EventTrackingId,
@@ -3467,7 +3467,7 @@ namespace org.GraphDefined.WWCP
         //            if (result.ChargeDetailRecord != null)
         //            {
 
-        //                OnNewChargeDetailRecord?.Invoke(DateTime.Now, this, result.ChargeDetailRecord);
+        //                OnNewChargeDetailRecord?.Invoke(DateTime.UtcNow, this, result.ChargeDetailRecord);
 
         //            }
 
@@ -3517,7 +3517,7 @@ namespace org.GraphDefined.WWCP
         //    try
         //    {
 
-        //        OnRemoteStopped?.Invoke(DateTime.Now,
+        //        OnRemoteStopped?.Invoke(DateTime.UtcNow,
         //                                Timestamp.Value,
         //                                this,
         //                                EventTrackingId,
@@ -3586,7 +3586,7 @@ namespace org.GraphDefined.WWCP
         //    ParkingGarage        _ParkingGarage  = null;
 
         //    if (!Timestamp.HasValue)
-        //        Timestamp = DateTime.Now;
+        //        Timestamp = DateTime.UtcNow;
 
         //    if (EventTrackingId == null)
         //        EventTrackingId = EventTracking_Id.New;
@@ -3600,7 +3600,7 @@ namespace org.GraphDefined.WWCP
         //    try
         //    {
 
-        //        OnRemoteParkingSpaceStop?.Invoke(DateTime.Now,
+        //        OnRemoteParkingSpaceStop?.Invoke(DateTime.UtcNow,
         //                                 Timestamp.Value,
         //                                 this,
         //                                 EventTrackingId,
@@ -3647,7 +3647,7 @@ namespace org.GraphDefined.WWCP
         //            if (result.ChargeDetailRecord != null)
         //            {
 
-        //                OnNewChargeDetailRecord?.Invoke(DateTime.Now,
+        //                OnNewChargeDetailRecord?.Invoke(DateTime.UtcNow,
         //                                                this,
         //                                                result.ChargeDetailRecord);
 
@@ -3723,7 +3723,7 @@ namespace org.GraphDefined.WWCP
         //    try
         //    {
 
-        //        OnRemoteParkingSpaceStopped?.Invoke(DateTime.Now,
+        //        OnRemoteParkingSpaceStopped?.Invoke(DateTime.UtcNow,
         //                                    Timestamp.Value,
         //                                    this,
         //                                    EventTrackingId,
@@ -3793,7 +3793,7 @@ namespace org.GraphDefined.WWCP
         //    ParkingGarage                   _ParkingGarage  = null;
 
         //    if (!Timestamp.HasValue)
-        //        Timestamp = DateTime.Now;
+        //        Timestamp = DateTime.UtcNow;
 
         //    if (EventTrackingId == null)
         //        EventTrackingId = EventTracking_Id.New;
@@ -3807,7 +3807,7 @@ namespace org.GraphDefined.WWCP
         //    try
         //    {
 
-        //        OnRemoteParkingGarageStop?.Invoke(DateTime.Now,
+        //        OnRemoteParkingGarageStop?.Invoke(DateTime.UtcNow,
         //                                            Timestamp.Value,
         //                                            this,
         //                                            EventTrackingId,
@@ -3853,7 +3853,7 @@ namespace org.GraphDefined.WWCP
         //            if (result.ChargeDetailRecord != null)
         //            {
 
-        //                OnNewChargeDetailRecord?.Invoke(DateTime.Now,
+        //                OnNewChargeDetailRecord?.Invoke(DateTime.UtcNow,
         //                                                this,
         //                                                result.ChargeDetailRecord);
 
@@ -3907,7 +3907,7 @@ namespace org.GraphDefined.WWCP
         //    try
         //    {
 
-        //        OnRemoteParkingGarageStopped?.Invoke(DateTime.Now,
+        //        OnRemoteParkingGarageStopped?.Invoke(DateTime.UtcNow,
         //                                               Timestamp.Value,
         //                                               this,
         //                                               EventTrackingId,

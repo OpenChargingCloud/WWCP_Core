@@ -114,7 +114,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                 _ForwardedToChargingStationOperator = value;
 
-                this._OnForwardingChanged(DateTime.Now,
+                this._OnForwardingChanged(DateTime.UtcNow,
                                           this,
                                           Old_ForwardedToChargingStationOperator != null ? Old_ForwardedToChargingStationOperator.RoamingNetwork.Id : new RoamingNetwork_Id?(),
                                           value                                  != null ? value.RoamingNetwork.Id                                  : new RoamingNetwork_Id?());
@@ -192,7 +192,7 @@ namespace org.GraphDefined.WWCP.Importer
             this.StationGeoCoordinate        = StationGeoCoordinate;
             this._AdminStatus                = AdminStatus           != null ? AdminStatus.Value             : new Timestamped<ChargingStationAdminStatusTypes>(ChargingStationAdminStatusTypes.Operational);
             this.PhoneNumber                 = PhoneNumber;
-            this.Created                     = Created               != null ? Created.Value                 : DateTime.Now;
+            this.Created                     = Created               != null ? Created.Value                 : DateTime.UtcNow;
             this.OutOfService                = OutOfService;
             this.LastTimeSeen                = this.Created;
             this._ForwardedToChargingStationOperator    = ForwardedToOperator;
@@ -215,7 +215,7 @@ namespace org.GraphDefined.WWCP.Importer
 
         public void UpdateTimestamp()
         {
-            this.LastTimeSeen  = DateTime.Now;
+            this.LastTimeSeen  = DateTime.UtcNow;
             this.OutOfService  = false;
         }
 

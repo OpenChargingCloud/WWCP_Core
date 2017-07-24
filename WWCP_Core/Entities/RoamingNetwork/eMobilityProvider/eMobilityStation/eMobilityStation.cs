@@ -926,7 +926,7 @@ namespace org.GraphDefined.WWCP
                                          Status);
 
 
-            if (eVehicleAddition.SendVoting(DateTime.Now, this, _eVehicle))
+            if (eVehicleAddition.SendVoting(DateTime.UtcNow, this, _eVehicle))
             {
                 if (_eVehicles.TryAdd(_eVehicle))
                 {
@@ -942,7 +942,7 @@ namespace org.GraphDefined.WWCP
 
 
                     OnSuccess?.Invoke(_eVehicle);
-                    eVehicleAddition.SendNotification(DateTime.Now, this, _eVehicle);
+                    eVehicleAddition.SendNotification(DateTime.UtcNow, this, _eVehicle);
 
                     return _eVehicle;
 
@@ -1006,13 +1006,13 @@ namespace org.GraphDefined.WWCP
             if (TryGetEVehicleById(eVehicleId, out _eVehicle))
             {
 
-                if (eVehicleRemoval.SendVoting(DateTime.Now, this, _eVehicle))
+                if (eVehicleRemoval.SendVoting(DateTime.UtcNow, this, _eVehicle))
                 {
 
                     if (_eVehicles.TryRemove(eVehicleId, out _eVehicle))
                     {
 
-                        eVehicleRemoval.SendNotification(DateTime.Now, this, _eVehicle);
+                        eVehicleRemoval.SendNotification(DateTime.UtcNow, this, _eVehicle);
 
                         return _eVehicle;
 
@@ -1036,13 +1036,13 @@ namespace org.GraphDefined.WWCP
             if (TryGetEVehicleById(eVehicleId, out eVehicle))
             {
 
-                if (eVehicleRemoval.SendVoting(DateTime.Now, this, eVehicle))
+                if (eVehicleRemoval.SendVoting(DateTime.UtcNow, this, eVehicle))
                 {
 
                     if (_eVehicles.TryRemove(eVehicleId, out eVehicle))
                     {
 
-                        eVehicleRemoval.SendNotification(DateTime.Now, this, eVehicle);
+                        eVehicleRemoval.SendNotification(DateTime.UtcNow, this, eVehicle);
 
                         return true;
 
@@ -1105,7 +1105,7 @@ namespace org.GraphDefined.WWCP
             //{
             //
             //    RoamingNetwork.
-            //        SendeVehicleAdminStatusDiff(new eVehicleAdminStatusDiff(DateTime.Now,
+            //        SendeVehicleAdminStatusDiff(new eVehicleAdminStatusDiff(DateTime.UtcNow,
             //                                               ChargingStationOperatorId:    Id,
             //                                               ChargingStationOperatorName:  Name,
             //                                               NewStatus:         new List<KeyValuePair<eVehicle_Id, eVehicleAdminStatusType>>(),

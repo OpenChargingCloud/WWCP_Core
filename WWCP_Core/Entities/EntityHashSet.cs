@@ -117,7 +117,7 @@ namespace org.GraphDefined.WWCP
             lock (Lock)
             {
 
-                if (_Addition.SendVoting(DateTime.Now, _Host, Entity))
+                if (_Addition.SendVoting(DateTime.UtcNow, _Host, Entity))
                 {
 
                     _Lookup.Add(Entity.Id, Entity);
@@ -125,7 +125,7 @@ namespace org.GraphDefined.WWCP
                     foreach (var Id in Entity.Ids)
                         _MultiIdLookup.Add(Id, Entity);
 
-                    _Addition.SendNotification(DateTime.Now, _Host, Entity);
+                    _Addition.SendNotification(DateTime.UtcNow, _Host, Entity);
 
                     return true;
 
@@ -169,7 +169,7 @@ namespace org.GraphDefined.WWCP
                 if (TryAdd(Entity))
                 {
 
-                    OnSuccess?.Invoke(DateTime.Now, Entity);
+                    OnSuccess?.Invoke(DateTime.UtcNow, Entity);
 
                     return true;
 
@@ -191,7 +191,7 @@ namespace org.GraphDefined.WWCP
                 if (TryAdd(Entity))
                 {
 
-                    OnSuccess?.Invoke(DateTime.Now, _Host, Entity);
+                    OnSuccess?.Invoke(DateTime.UtcNow, _Host, Entity);
 
                     return true;
 
@@ -401,12 +401,12 @@ namespace org.GraphDefined.WWCP
             lock (Lock)
             {
 
-                if (_Addition.SendVoting(DateTime.Now, _Host, Entity))
+                if (_Addition.SendVoting(DateTime.UtcNow, _Host, Entity))
                 {
 
                     _Lookup.Add(Entity.Id, Entity);
 
-                    _Addition.SendNotification(DateTime.Now, _Host, Entity);
+                    _Addition.SendNotification(DateTime.UtcNow, _Host, Entity);
 
                     return true;
 
@@ -450,7 +450,7 @@ namespace org.GraphDefined.WWCP
                 if (TryAdd(Entity))
                 {
 
-                    OnSuccess?.Invoke(DateTime.Now, Entity);
+                    OnSuccess?.Invoke(DateTime.UtcNow, Entity);
 
                     return true;
 
@@ -472,7 +472,7 @@ namespace org.GraphDefined.WWCP
                 if (TryAdd(Entity))
                 {
 
-                    OnSuccess?.Invoke(DateTime.Now, _Host, Entity);
+                    OnSuccess?.Invoke(DateTime.UtcNow, _Host, Entity);
 
                     return true;
 

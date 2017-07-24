@@ -640,7 +640,7 @@ namespace org.GraphDefined.WWCP
 
                         //SetStatus(EVSEStatusType.Reserved);
 
-                        OnNewReservation?.Invoke(DateTime.Now, this, _Reservation);
+                        OnNewReservation?.Invoke(DateTime.UtcNow, this, _Reservation);
 
                     }
 
@@ -720,7 +720,7 @@ namespace org.GraphDefined.WWCP
 
                         //SetStatus(EVSEStatusType.Charging);
 
-                        OnNewChargingSession?.Invoke(DateTime.Now, this, _ChargingSession);
+                        OnNewChargingSession?.Invoke(DateTime.UtcNow, this, _ChargingSession);
 
                     }
 
@@ -1427,7 +1427,7 @@ namespace org.GraphDefined.WWCP
             ReservationResult result = null;
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -1441,7 +1441,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnReserveRequest?.Invoke(DateTime.Now,
+                OnReserveRequest?.Invoke(DateTime.UtcNow,
                                          Timestamp.Value,
                                          this,
                                          EventTrackingId,
@@ -1495,7 +1495,7 @@ namespace org.GraphDefined.WWCP
                     if (result.Result == ReservationResultType.Success)
                     {
 
-                        OnNewReservation?.Invoke(DateTime.Now,
+                        OnNewReservation?.Invoke(DateTime.UtcNow,
                                                  this,
                                                  result.Reservation);
 
@@ -1529,7 +1529,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnReserveResponse?.Invoke(DateTime.Now,
+                OnReserveResponse?.Invoke(DateTime.UtcNow,
                                           Timestamp.Value,
                                           this,
                                           EventTrackingId,
@@ -1590,7 +1590,7 @@ namespace org.GraphDefined.WWCP
             CancelReservationResult result = null;
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -1620,7 +1620,7 @@ namespace org.GraphDefined.WWCP
                                                          SavedReservation,
                                                          TimeSpan.FromMilliseconds(5));
 
-                SendOnReservationCancelled(DateTime.Now,
+                SendOnReservationCancelled(DateTime.UtcNow,
                                            Timestamp.Value,
                                            this,
                                            EventTrackingId,
@@ -1738,7 +1738,7 @@ namespace org.GraphDefined.WWCP
             RemoteStartEVSEResult result = null;
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -1752,7 +1752,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteStartRequest?.Invoke(DateTime.Now,
+                OnRemoteStartRequest?.Invoke(DateTime.UtcNow,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -1826,7 +1826,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteStartResponse?.Invoke(DateTime.Now,
+                OnRemoteStartResponse?.Invoke(DateTime.UtcNow,
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
@@ -1904,7 +1904,7 @@ namespace org.GraphDefined.WWCP
             RemoteStopEVSEResult result = null;
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -1918,7 +1918,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteStopRequest?.Invoke(DateTime.Now,
+                OnRemoteStopRequest?.Invoke(DateTime.UtcNow,
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
@@ -1987,7 +1987,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteStopResponse?.Invoke(DateTime.Now,
+                OnRemoteStopResponse?.Invoke(DateTime.UtcNow,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,

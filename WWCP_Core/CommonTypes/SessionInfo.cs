@@ -89,7 +89,7 @@ namespace org.GraphDefined.WWCP
 
         public SessionInfo(Auth_Token Token)
         {
-            this._Created               = DateTime.Now;
+            this._Created               = DateTime.UtcNow;
             this._ListOfAuthStopTokens  = new List<Auth_Token>() { Token };
         }
 

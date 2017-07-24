@@ -146,7 +146,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="NewStatus">A new status.</param>
         public void Insert(T NewStatus)
         {
-            Insert(NewStatus, DateTime.Now);
+            Insert(NewStatus, DateTime.UtcNow);
         }
 
         #endregion
@@ -272,12 +272,12 @@ namespace org.GraphDefined.WWCP
             {
 
                 var _OldStatus   = OldStatus.HasValue ? OldStatus.Value : _CurrentStatus;
-                var Now          = DateTime.Now;
+                var Now          = DateTime.UtcNow;
 
                 var HistoryList  = _StatusSchedule.Where(status => status.Timestamp <= Now).ToArray();
                 _CurrentStatus   = HistoryList.Any()
                                        ? HistoryList.First()
-                                       : new Timestamped<T>(DateTime.Now, default(T));
+                                       : new Timestamped<T>(DateTime.UtcNow, default(T));
 
                 var FutureList   = _StatusSchedule.Where(status => status.Timestamp > Now).ToArray();
                 _NextStatus      = FutureList.Any()
@@ -285,7 +285,7 @@ namespace org.GraphDefined.WWCP
                                        : new Timestamped<T>?();
 
                 if (!EqualityComparer<T>.Default.Equals(_CurrentStatus.Value, _OldStatus.Value))
-                    OnStatusChanged?.Invoke(DateTime.Now,
+                    OnStatusChanged?.Invoke(DateTime.UtcNow,
                                             EventTracking_Id.New,
                                             this,
                                             _OldStatus,
