@@ -2931,6 +2931,7 @@ namespace org.GraphDefined.WWCP
                                                     EVSEId,
                                                     ChargingProduct,
                                                     SessionId,
+                                                    new ISendAuthorizeStartStop[0],
                                                     RequestTimeout);
 
             }
@@ -2980,6 +2981,7 @@ namespace org.GraphDefined.WWCP
                                                      EVSEId,
                                                      ChargingProduct,
                                                      SessionId,
+                                                     new ISendAuthorizeStartStop[0],
                                                      RequestTimeout,
                                                      result,
                                                      Runtime);

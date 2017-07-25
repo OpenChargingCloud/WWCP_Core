@@ -5494,6 +5494,7 @@ namespace org.GraphDefined.WWCP
                                                     EVSEId,
                                                     ChargingProduct,
                                                     SessionId,
+                                                    _ISend2RemoteAuthorizeStartStop,
                                                     RequestTimeout);
 
             }
@@ -5586,6 +5587,7 @@ namespace org.GraphDefined.WWCP
                                                      EVSEId,
                                                      ChargingProduct,
                                                      SessionId,
+                                                     _ISend2RemoteAuthorizeStartStop,
                                                      RequestTimeout,
                                                      result,
                                                      Endtime - StartTime);

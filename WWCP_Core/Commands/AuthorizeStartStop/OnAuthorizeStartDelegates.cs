@@ -21,6 +21,7 @@ using System;
 using System.Threading.Tasks;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using System.Collections.Generic;
 
 #endregion
 
@@ -98,19 +99,21 @@ namespace org.GraphDefined.WWCP
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="ChargingProduct">The choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="ISendAuthorizeStartStops">The ISendAuthorizeStartStops entities to be asked.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task OnAuthorizeEVSEStartRequestDelegate (DateTime                      LogTimestamp,
-                                                              DateTime                      RequestTimestamp,
-                                                              Object                        Sender,
-                                                              String                        SenderId,
-                                                              EventTracking_Id              EventTrackingId,
-                                                              RoamingNetwork_Id             RoamingNetworkId,
-                                                              ChargingStationOperator_Id?   OperatorId,
-                                                              AuthIdentification            AuthIdentification,
-                                                              EVSE_Id                       EVSEId,
-                                                              ChargingProduct               ChargingProduct,
-                                                              ChargingSession_Id?           SessionId,
-                                                              TimeSpan?                     RequestTimeout);
+    public delegate Task OnAuthorizeEVSEStartRequestDelegate (DateTime                               LogTimestamp,
+                                                              DateTime                               RequestTimestamp,
+                                                              Object                                 Sender,
+                                                              String                                 SenderId,
+                                                              EventTracking_Id                       EventTrackingId,
+                                                              RoamingNetwork_Id                      RoamingNetworkId,
+                                                              ChargingStationOperator_Id?            OperatorId,
+                                                              AuthIdentification                     AuthIdentification,
+                                                              EVSE_Id                                EVSEId,
+                                                              ChargingProduct                        ChargingProduct,
+                                                              ChargingSession_Id?                    SessionId,
+                                                              IEnumerable<ISendAuthorizeStartStop>   ISendAuthorizeStartStops,
+                                                              TimeSpan?                              RequestTimeout);
 
 
     /// <summary>
@@ -125,23 +128,25 @@ namespace org.GraphDefined.WWCP
     /// <param name="EVSEId">The unique identification of an EVSE.</param>
     /// <param name="ChargingProduct">The choosen charging product.</param>
     /// <param name="SessionId">The unique identification for this charging session.</param>
+    /// <param name="ISendAuthorizeStartStops">The ISendAuthorizeStartStops entities to be asked.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
     /// <param name="Result">The authorize start result.</param>
     /// <param name="Runtime">The runtime of the request.</param>
-    public delegate Task OnAuthorizeEVSEStartResponseDelegate(DateTime                      LogTimestamp,
-                                                              DateTime                      RequestTimestamp,
-                                                              Object                        Sender,
-                                                              String                        SenderId,
-                                                              EventTracking_Id              EventTrackingId,
-                                                              RoamingNetwork_Id             RoamingNetworkId,
-                                                              ChargingStationOperator_Id?   OperatorId,
-                                                              AuthIdentification            AuthIdentification,
-                                                              EVSE_Id                       EVSEId,
-                                                              ChargingProduct               ChargingProduct,
-                                                              ChargingSession_Id?           SessionId,
-                                                              TimeSpan?                     RequestTimeout,
-                                                              AuthStartEVSEResult           Result,
-                                                              TimeSpan                      Runtime);
+    public delegate Task OnAuthorizeEVSEStartResponseDelegate(DateTime                               LogTimestamp,
+                                                              DateTime                               RequestTimestamp,
+                                                              Object                                 Sender,
+                                                              String                                 SenderId,
+                                                              EventTracking_Id                       EventTrackingId,
+                                                              RoamingNetwork_Id                      RoamingNetworkId,
+                                                              ChargingStationOperator_Id?            OperatorId,
+                                                              AuthIdentification                     AuthIdentification,
+                                                              EVSE_Id                                EVSEId,
+                                                              ChargingProduct                        ChargingProduct,
+                                                              ChargingSession_Id?                    SessionId,
+                                                              IEnumerable<ISendAuthorizeStartStop>   ISendAuthorizeStartStops,
+                                                              TimeSpan?                              RequestTimeout,
+                                                              AuthStartEVSEResult                    Result,
+                                                              TimeSpan                               Runtime);
 
     #endregion
 
