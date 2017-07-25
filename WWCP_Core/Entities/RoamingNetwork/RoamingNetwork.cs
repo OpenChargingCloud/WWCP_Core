@@ -5505,6 +5505,9 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
+            DebugX.LogT("RN AuthStart: " + AuthIdentification);
+            DebugX.LogT(_ISend2RemoteAuthorizeStartStop.Select(_ => _.AuthId).AggregateWith(", "));
+
             var result = await _ISend2RemoteAuthorizeStartStop.
                                    WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
                                                                               AuthorizeStart(AuthIdentification,
@@ -5529,6 +5532,9 @@ namespace org.GraphDefined.WWCP
 
                                    ConfigureAwait(false);
 
+
+
+            DebugX.LogT("CITM API AuthStart: " + AuthIdentification + " => " + result);
 
             #region If Authorized...
 
