@@ -4254,15 +4254,13 @@ namespace org.GraphDefined.WWCP
                 try
                 {
 
-                    if (ChargeDetailRecordQueue.       Count == 0)
-                    {
+                    if (ChargeDetailRecordQueue.Count == 0)
                         return;
-                    }
 
                     _FlushEVSEDataRunId++;
 
                     // Copy 'EVSEs to remove', remove originals...
-                    ChargeDetailRecordQueueCopy.Value        = new List<ChargeDetailRecord>(ChargeDetailRecordQueue);
+                    ChargeDetailRecordQueueCopy.Value = new List<ChargeDetailRecord>(ChargeDetailRecordQueue);
                     ChargeDetailRecordQueue.Clear();
 
                     // Stop the timer. Will be rescheduled by next EVSE data/status change...
