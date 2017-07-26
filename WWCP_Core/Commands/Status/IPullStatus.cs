@@ -42,7 +42,11 @@ namespace org.GraphDefined.WWCP
         {
 
             this.EVSEStatus  = EVSEStatus ?? new EVSEStatus[0];
-            this.Warnings    = Warnings   ?? new String[0];
+            this.Warnings    = Warnings != null
+                                   ? Warnings.Where     (warning => warning != null).
+                                              SafeSelect(warning => warning.Trim()).
+                                              Where     (warning => warning.IsNotNullOrEmpty())
+                                   : new String[0];
 
         }
 

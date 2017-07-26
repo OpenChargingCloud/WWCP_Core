@@ -88,7 +88,7 @@ namespace org.GraphDefined.WWCP
                                     ? Warnings.Where     (warning => warning != null).
                                                SafeSelect(warning => warning.Trim()).
                                                Where     (warning => warning.IsNotNullOrEmpty())
-                                    : null;
+                                    : new String[0];
 
             this.Runtime      = Runtime;
 
@@ -124,7 +124,7 @@ namespace org.GraphDefined.WWCP
                                     ? Warnings.Where     (warning => warning != null).
                                                SafeSelect(warning => warning.Trim()).
                                                Where     (warning => warning.IsNotNullOrEmpty())
-                                    : null;
+                                    : new String[0];
 
             this.Runtime      = Runtime;
 

@@ -43,7 +43,11 @@ namespace org.GraphDefined.WWCP
 
             this.ChargeDetailRecord  = ChargeDetailRecord;
             this.Result              = Result;
-            this.Warnings            = Warnings ?? new String[0];
+            this.Warnings            = Warnings != null
+                                           ? Warnings.Where     (warning => warning != null).
+                                                      SafeSelect(warning => warning.Trim()).
+                                                      Where     (warning => warning.IsNotNullOrEmpty())
+                                           : new String[0];
 
         }
 
@@ -128,7 +132,11 @@ namespace org.GraphDefined.WWCP
             this.Result                       = Result;
             this.RejectedChargeDetailRecords  = RejectedChargeDetailRecords ?? new SendCDRResult[0];
             this.Description                  = Description;
-            this.Warnings                     = Warnings;
+            this.Warnings                     = Warnings != null
+                                                    ? Warnings.Where     (warning => warning != null).
+                                                               SafeSelect(warning => warning.Trim()).
+                                                               Where     (warning => warning.IsNotNullOrEmpty())
+                                                    : new String[0];
             this.Runtime                      = Runtime;
 
         }
@@ -161,7 +169,11 @@ namespace org.GraphDefined.WWCP
             this.Result                       = Result;
             this.RejectedChargeDetailRecords  = RejectedChargeDetailRecords ?? new SendCDRResult[0];
             this.Description                  = Description;
-            this.Warnings                     = Warnings;
+            this.Warnings                     = Warnings != null
+                                                    ? Warnings.Where     (warning => warning != null).
+                                                               SafeSelect(warning => warning.Trim()).
+                                                               Where     (warning => warning.IsNotNullOrEmpty())
+                                                    : new String[0];
             this.Runtime                      = Runtime;
 
         }
