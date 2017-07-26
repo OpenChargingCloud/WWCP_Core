@@ -3804,7 +3804,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="StartTime">The starting time of the reservation.</param>
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
-        /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
+        /// <param name="Identification">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProduct">The charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
@@ -3820,7 +3820,7 @@ namespace org.GraphDefined.WWCP
                     DateTime?                         StartTime           = null,
                     TimeSpan?                         Duration            = null,
                     ChargingReservation_Id?           ReservationId       = null,
-                    eMobilityAccount_Id?              eMAId               = null,
+                    AuthIdentification                Identification      = null,
                     ChargingProduct                   ChargingProduct     = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
@@ -3863,7 +3863,7 @@ namespace org.GraphDefined.WWCP
                                              StartTime,
                                              Duration,
                                              Id,
-                                             eMAId,
+                                             Identification,
                                              ChargingProduct,
                                              AuthTokens,
                                              eMAIds,
@@ -3885,7 +3885,7 @@ namespace org.GraphDefined.WWCP
                                              Duration,
                                              ReservationId,
                                              Id,
-                                             eMAId,
+                                             Identification,
                                              ChargingProduct,
                                              AuthTokens,
                                              eMAIds,
@@ -3914,7 +3914,7 @@ namespace org.GraphDefined.WWCP
                                               StartTime,
                                               Duration,
                                               Id,
-                                              eMAId,
+                                              Identification,
                                               ChargingProduct,
                                               AuthTokens,
                                               eMAIds,

@@ -175,7 +175,7 @@ namespace org.GraphDefined.WWCP
         public eMobilityProvider_Id?  ProviderId          { get; }
 
         [Optional]
-        public eMobilityAccount_Id?   eMAId               { get; }
+        public AuthIdentification     Identification      { get; }
 
         [Optional]
         public RoamingNetwork         RoamingNetwork      { get; }
@@ -277,7 +277,7 @@ namespace org.GraphDefined.WWCP
                                    ChargingReservationLevel          ReservationLevel,
 
                                    eMobilityProvider_Id?             ProviderId          = null,
-                                   eMobilityAccount_Id?              eMAId               = null,
+                                   AuthIdentification                Identification      = null,
 
                                    RoamingNetwork                    RoamingNetwork      = null,
                                    ChargingPool_Id?                  ChargingPoolId      = null,
@@ -300,7 +300,7 @@ namespace org.GraphDefined.WWCP
             this._ReservationLevel         = ReservationLevel;
 
             this.ProviderId                = ProviderId;
-            this.eMAId                     = eMAId;
+            this.Identification            = Identification;
 
             this.RoamingNetwork            = RoamingNetwork;
             this.ChargingPoolId            = ChargingPoolId;

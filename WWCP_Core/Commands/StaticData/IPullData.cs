@@ -85,12 +85,17 @@ namespace org.GraphDefined.WWCP
 
         // Push data directly...
 
-        #region PullEVSEData   (EVSEs, ...)
+        #region PullEVSEData   (LastCall, SearchCenter, DistanceKM, ...)
 
         /// <summary>
         /// Upload the static data of the given EVSEs.
         /// </summary>
-        /// <param name="EVSEs">An enumeration of EVSEs.</param>
+        /// <param name="LastCall">An optional timestamp of the last call. Cannot be combined with 'SearchCenter'.</param>
+        /// <param name="SearchCenter">An optional geo coordinate of the search center.</param>
+        /// <param name="DistanceKM">An optional search distance relative to the search center.</param>
+        /// <param name="ProviderId">The unique identification of the EVSP.</param>
+        /// <param name="OperatorIdFilter">Only return EVSEs belonging to the given optional enumeration of EVSE operators.</param>
+        /// <param name="CountryCodeFilter">An optional enumeration of countries whose EVSE's a provider wants to retrieve.</param>
         /// 
         /// <param name="Timestamp">The optional timestamp of the request.</param>
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
@@ -98,15 +103,17 @@ namespace org.GraphDefined.WWCP
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
         Task<EVSEDataPull>
 
-            PullEVSEData(DateTime?              LastCall            = null,
-                         GeoCoordinate?         SearchCenter        = null,
-                         Single                 DistanceKM          = 0f,
-                         eMobilityProvider_Id?  ProviderId          = null,
+            PullEVSEData(DateTime?                                LastCall            = null,
+                         GeoCoordinate?                           SearchCenter        = null,
+                         Single                                   DistanceKM          = 0f,
+                         eMobilityProvider_Id?                    ProviderId          = null,
+                         IEnumerable<ChargingStationOperator_Id>  OperatorIdFilter    = null,
+                         IEnumerable<Country>                     CountryCodeFilter   = null,
 
-                         DateTime?              Timestamp           = null,
-                         CancellationToken?     CancellationToken   = null,
-                         EventTracking_Id       EventTrackingId     = null,
-                         TimeSpan?              RequestTimeout      = null);
+                         DateTime?                                Timestamp           = null,
+                         CancellationToken?                       CancellationToken   = null,
+                         EventTracking_Id                         EventTrackingId     = null,
+                         TimeSpan?                                RequestTimeout      = null);
 
         #endregion
 
