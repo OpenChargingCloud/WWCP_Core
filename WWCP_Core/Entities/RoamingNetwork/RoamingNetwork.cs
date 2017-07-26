@@ -5548,19 +5548,19 @@ namespace org.GraphDefined.WWCP
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the charge detail record was sent!
 
-                    var NewChargingSession = new ChargingSession(result.SessionId.Value) {
-                                                 AuthorizatorId   = result.AuthorizatorId,
-                                                 AuthService      = result.ISendAuthorizeStartStop,
-                                                 OperatorId       = OperatorId,
-                                                 EVSEId           = EVSEId,
-                                                 AuthTokenStart   = AuthIdentification?.AuthToken,
-                                                 ChargingProduct  = ChargingProduct
-                                             };
+                    //var NewChargingSession = new ChargingSession(result.SessionId.Value) {
+                    //                             AuthorizatorId   = result.AuthorizatorId,
+                    //                             AuthService      = result.ISendAuthorizeStartStop,
+                    //                             OperatorId       = OperatorId,
+                    //                             EVSEId           = EVSEId,
+                    //                             AuthTokenStart   = AuthIdentification?.AuthToken,
+                    //                             ChargingProduct  = ChargingProduct
+                    //                         };
 
-                    if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
-                        RegisterExternalChargingSession(DateTime.UtcNow,
-                                                        this,
-                                                        NewChargingSession);
+                    //if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
+                    //    RegisterExternalChargingSession(DateTime.UtcNow,
+                    //                                    this,
+                    //                                    NewChargingSession);
 
                 }
 
