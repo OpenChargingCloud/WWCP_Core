@@ -75,29 +75,32 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The default service check intervall.
         /// </summary>
-        public readonly static TimeSpan                                                         DefaultServiceCheckEvery    = TimeSpan.FromSeconds(31);
+        public readonly static TimeSpan                                                         DefaultServiceCheckEvery          = TimeSpan.FromSeconds(31);
 
         /// <summary>
         /// The default status check intervall.
         /// </summary>
-        public readonly static TimeSpan                                                         DefaultStatusCheckEvery     = TimeSpan.FromSeconds(3);
+        public readonly static TimeSpan                                                         DefaultStatusCheckEvery           = TimeSpan.FromSeconds(3);
 
         /// <summary>
         /// The default CDR check intervall.
         /// </summary>
-        public readonly static TimeSpan                                                         DefaultCDRCheckEvery        = TimeSpan.FromSeconds(15);
+        public readonly static TimeSpan                                                         DefaultCDRCheckEvery              = TimeSpan.FromSeconds(15);
 
 
         protected              UInt64                                                           _FlushEVSEDataRunId;
         protected              UInt64                                                           _StatusRunId;
 
+        protected readonly     SemaphoreSlim                                                    DataAndStatusLock                 = new SemaphoreSlim(1, 1);
 
-        protected readonly     Object                                                           FlushEVSEDataAndStatusLock;
-        protected readonly     Timer                                                            FlushEVSEDataTimer;
-        protected readonly     Object                                                           DataAndStatusLock;
-        protected readonly     Object                                                           FlushEVSEFastStatusLock;
-        protected readonly     Timer                                                            StatusCheckTimer;
-        protected readonly     Object                                                           FlushChargeDetailRecordsLock;
+        protected readonly     SemaphoreSlim                                                    FlushEVSEDataAndStatusLock        = new SemaphoreSlim(1, 1);
+        protected readonly     Timer                                                            FlushEVSEDataAndStatusTimer;
+
+        protected readonly     SemaphoreSlim                                                    FlushEVSEFastStatusLock           = new SemaphoreSlim(1, 1);
+        protected readonly     Timer                                                            FlushEVSEFastStatusTimer;
+
+        protected readonly     SemaphoreSlim                                                    FlushChargeDetailRecordsLock      = new SemaphoreSlim(1, 1);
+        protected readonly     Timer                                                            FlushChargeDetailRecordsTimer;
 
         protected readonly     Dictionary<EVSE,                    List<PropertyUpdateInfos>>   EVSEsUpdateLog;
         protected readonly     Dictionary<ChargingStation,         List<PropertyUpdateInfos>>   ChargingStationsUpdateLog;
@@ -279,6 +282,8 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Constructor(s)
+
         /// <summary>
         /// Create a new WWCP wrapper for the OICP roaming client for Charging Station Operators/CPOs.
         /// </summary>
@@ -331,9 +336,7 @@ namespace org.GraphDefined.WWCP
                                                                       ? ServiceCheckEvery.Value. TotalMilliseconds
                                                                       : DefaultServiceCheckEvery.TotalMilliseconds);
 
-            this.FlushEVSEDataAndStatusLock                      = new Object();
-            this.FlushEVSEDataTimer                              = new Timer(FlushEVSEDataAndStatus, null, 0, _FlushEVSEDataAndStatusEvery);
-            this.DataAndStatusLock                               = new Object();
+            this.FlushEVSEDataAndStatusTimer                              = new Timer(FlushEVSEDataAndStatus, null, 0, _FlushEVSEDataAndStatusEvery);
 
             this._FlushEVSEFastStatusEvery                       = (UInt32) (StatusCheckEvery.HasValue
                                                                         ? StatusCheckEvery.Value.  TotalMilliseconds
@@ -343,8 +346,9 @@ namespace org.GraphDefined.WWCP
                                                                         ? CDRCheckEvery.Value.  TotalMilliseconds
                                                                         : DefaultCDRCheckEvery. TotalMilliseconds);
 
-            this.FlushEVSEFastStatusLock                         = new Object();
-            this.StatusCheckTimer                                = new Timer(FlushEVSEFastStatus,    null, 0, _FlushEVSEFastStatusEvery);
+            this.FlushEVSEFastStatusTimer                                = new Timer(FlushEVSEFastStatus,      null, 0, _FlushEVSEFastStatusEvery);
+
+            this.FlushChargeDetailRecordsTimer                   = new Timer(FlushChargeDetailRecords, null, 0, _FlushChargeDetailRecordsEvery);
 
             this.EVSEsUpdateLog                                  = new Dictionary<EVSE,            List<PropertyUpdateInfos>>();
             this.ChargingStationsUpdateLog                       = new Dictionary<ChargingStation, List<PropertyUpdateInfos>>();
@@ -354,6 +358,7 @@ namespace org.GraphDefined.WWCP
 
         }
 
+        #endregion
 
 
         #region (timer) FlushEVSEDataAndStatus(State)
@@ -364,74 +369,75 @@ namespace org.GraphDefined.WWCP
 
         private void FlushEVSEDataAndStatus(Object State)
         {
-
             if (!DisablePushData)
+                FlushEVSEDataAndStatus2().Wait();
+        }
+
+        private async Task FlushEVSEDataAndStatus2()
+        {
+
+            var LockTaken = await FlushEVSEDataAndStatusLock.WaitAsync(0);
+
+            try
             {
 
-                if (Monitor.TryEnter(FlushEVSEDataAndStatusLock))
+                DebugX.LogT("FlushEVSEDataAndStatusLock entered!");
+
+                if (SkipFlushEVSEDataAndStatusQueues())
+                    return;
+
+                #region Send StartEvent...
+
+                var StartTime = DateTime.UtcNow;
+
+                FlushEVSEDataAndStatusQueuesStartedEvent?.Invoke(this,
+                                                                 StartTime,
+                                                                 TimeSpan.FromMilliseconds(_FlushEVSEDataAndStatusEvery),
+                                                                 _FlushEVSEDataRunId++);
+
+                #endregion
+
+                await FlushEVSEDataAndStatusQueues();
+
+                #region Send Finished Event...
+
+                var EndTime = DateTime.UtcNow;
+
+                FlushEVSEDataAndStatusQueuesFinishedEvent?.Invoke(this,
+                                                                  StartTime,
+                                                                  EndTime,
+                                                                  EndTime - StartTime,
+                                                                  TimeSpan.FromMilliseconds(_FlushEVSEDataAndStatusEvery),
+                                                                  _FlushEVSEDataRunId);
+
+                #endregion
+
+            }
+            catch (Exception e)
+            {
+
+                while (e.InnerException != null)
+                    e = e.InnerException;
+
+                DebugX.LogT(GetType().Name + ".FlushEVSEDataAndStatus '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+
+                OnWWCPCPOAdapterException?.Invoke(DateTime.UtcNow,
+                                                  this,
+                                                  e);
+
+            }
+
+            finally
+            {
+
+                if (LockTaken)
                 {
-
-                    try
-                    {
-
-                        if (SkipFlushEVSEDataAndStatusQueues())
-                            return;
-
-                        #region Send StartEvent...
-
-                        var StartTime = DateTime.UtcNow;
-
-                        FlushEVSEDataAndStatusQueuesStartedEvent?.Invoke(this,
-                                                                         StartTime,
-                                                                         TimeSpan.FromMilliseconds(_FlushEVSEDataAndStatusEvery),
-                                                                         _FlushEVSEDataRunId++);
-
-                        #endregion
-
-                        FlushEVSEDataAndStatusQueues().Wait();
-
-                        #region Send Finished Event...
-
-                        var EndTime = DateTime.UtcNow;
-
-                        FlushEVSEDataAndStatusQueuesFinishedEvent?.Invoke(this,
-                                                                          StartTime,
-                                                                          EndTime,
-                                                                          EndTime - StartTime,
-                                                                          TimeSpan.FromMilliseconds(_FlushEVSEDataAndStatusEvery),
-                                                                          _FlushEVSEDataRunId);
-
-                        #endregion
-
-                    }
-                    catch (Exception e)
-                    {
-
-                        while (e.InnerException != null)
-                            e = e.InnerException;
-
-                        DebugX.LogT(GetType().Name + ".FlushEVSEDataAndStatus '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
-
-                        OnWWCPCPOAdapterException?.Invoke(DateTime.UtcNow,
-                                                          this,
-                                                          e);
-
-                    }
-
-                    finally
-                    {
-                        Monitor.Exit(FlushEVSEDataAndStatusLock);
-                    }
-
+                    FlushEVSEDataAndStatusLock.Release();
+                    DebugX.LogT("FlushEVSEDataAndStatusLock released!");
                 }
 
                 else
-                {
-
-                    DebugX.LogT("FlushEVSEDataAndStatusLock missed!");
-                    FlushEVSEDataTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
-
-                }
+                    DebugX.LogT("FlushEVSEDataAndStatusLock exited!");
 
             }
 
@@ -447,74 +453,76 @@ namespace org.GraphDefined.WWCP
 
         private void FlushEVSEFastStatus(Object State)
         {
-
             if (!DisablePushStatus)
+                FlushEVSEFastStatus2().Wait();
+        }
+
+        private async Task FlushEVSEFastStatus2()
+        {
+
+            var LockTaken = await FlushEVSEFastStatusLock.WaitAsync(0);
+
+            try
             {
 
-                if (Monitor.TryEnter(FlushEVSEFastStatusLock))
+                DebugX.LogT("FlushEVSEFastStatusLock entered!");
+
+
+                if (SkipFlushEVSEFastStatusQueues())
+                    return;
+
+                #region Send StartEvent...
+
+                var StartTime = DateTime.UtcNow;
+
+                FlushEVSEFastStatusQueuesStartedEvent?.Invoke(this,
+                                                              StartTime,
+                                                              TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
+                                                              _StatusRunId++);
+
+                #endregion
+
+                await FlushEVSEFastStatusQueues();
+
+                #region Send Finished Event...
+
+                var EndTime = DateTime.UtcNow;
+
+                FlushEVSEFastStatusQueuesFinishedEvent?.Invoke(this,
+                                                               StartTime,
+                                                               EndTime,
+                                                               EndTime - StartTime,
+                                                               TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
+                                                               _StatusRunId);
+
+                #endregion
+
+            }
+            catch (Exception e)
+            {
+
+                while (e.InnerException != null)
+                    e = e.InnerException;
+
+                DebugX.LogT(GetType().Name + ".FlushEVSEFastStatus '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+
+                OnWWCPCPOAdapterException?.Invoke(DateTime.UtcNow,
+                                                  this,
+                                                  e);
+
+            }
+
+            finally
+            {
+
+                if (LockTaken)
                 {
-
-                    try
-                    {
-
-                        if (SkipFlushEVSEFastStatusQueues())
-                            return;
-
-                        #region Send StartEvent...
-
-                        var StartTime = DateTime.UtcNow;
-
-                        FlushEVSEFastStatusQueuesStartedEvent?.Invoke(this,
-                                                                      StartTime,
-                                                                      TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
-                                                                      _StatusRunId++);
-
-                        #endregion
-
-                        FlushEVSEFastStatusQueues().Wait();
-
-                        #region Send Finished Event...
-
-                        var EndTime = DateTime.UtcNow;
-
-                        FlushEVSEFastStatusQueuesFinishedEvent?.Invoke(this,
-                                                                       StartTime,
-                                                                       EndTime,
-                                                                       EndTime - StartTime,
-                                                                       TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
-                                                                       _StatusRunId);
-
-                        #endregion
-
-                    }
-                    catch (Exception e)
-                    {
-
-                        while (e.InnerException != null)
-                            e = e.InnerException;
-
-                        DebugX.LogT(GetType().Name + ".FlushEVSEFastStatus '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
-
-                        OnWWCPCPOAdapterException?.Invoke(DateTime.UtcNow,
-                                                          this,
-                                                          e);
-
-                    }
-
-                    finally
-                    {
-                        Monitor.Exit(FlushEVSEFastStatusLock);
-                    }
-
+                    FlushEVSEFastStatusLock.Release();
+                    DebugX.LogT("FlushEVSEFastStatusLock released!");
                 }
 
                 else
-                {
-
-                    DebugX.LogT("FlushEVSEFastStatusLock missed!");
-                    StatusCheckTimer.Change(_FlushEVSEFastStatusEvery, Timeout.Infinite);
-
-                }
+                    DebugX.LogT("FlushEVSEFastStatusLock exited!");
 
             }
 
@@ -530,74 +538,75 @@ namespace org.GraphDefined.WWCP
 
         private void FlushChargeDetailRecords(Object State)
         {
-
             if (!DisableSendChargeDetailRecords)
+                FlushEVSEDataAndStatus2().Wait();
+        }
+
+        private async Task FlushChargeDetailRecords2()
+        {
+
+            var LockTaken = await FlushEVSEDataAndStatusLock.WaitAsync(0);
+
+            try
             {
 
-                if (Monitor.TryEnter(FlushChargeDetailRecordsLock))
+                DebugX.LogT("FlushChargeDetailRecordsLock entered!");
+
+                if (SkipFlushChargeDetailRecordsQueues())
+                    return;
+
+                #region Send StartEvent...
+
+                var StartTime = DateTime.UtcNow;
+
+                FlushChargeDetailRecordsQueuesStartedEvent?.Invoke(this,
+                                                                   StartTime,
+                                                                   TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
+                                                                   _StatusRunId++);
+
+                #endregion
+
+                FlushChargeDetailRecordsQueues().Wait();
+
+                #region Send Finished Event...
+
+                var EndTime = DateTime.UtcNow;
+
+                FlushChargeDetailRecordsQueuesFinishedEvent?.Invoke(this,
+                                                                    StartTime,
+                                                                    EndTime,
+                                                                    EndTime - StartTime,
+                                                                    TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
+                                                                    _StatusRunId);
+
+                #endregion
+
+            }
+            catch (Exception e)
+            {
+
+                while (e.InnerException != null)
+                    e = e.InnerException;
+
+                DebugX.LogT(GetType().Name + ".FlushChargeDetailRecords '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+
+                OnWWCPCPOAdapterException?.Invoke(DateTime.UtcNow,
+                                                  this,
+                                                  e);
+
+            }
+
+            finally
+            {
+
+                if (LockTaken)
                 {
-
-                    try
-                    {
-
-                        if (SkipFlushChargeDetailRecordsQueues())
-                            return;
-
-                        #region Send StartEvent...
-
-                        var StartTime = DateTime.UtcNow;
-
-                        FlushChargeDetailRecordsQueuesStartedEvent?.Invoke(this,
-                                                                           StartTime,
-                                                                           TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
-                                                                           _StatusRunId++);
-
-                        #endregion
-
-                        FlushChargeDetailRecordsQueues().Wait();
-
-                        #region Send Finished Event...
-
-                        var EndTime = DateTime.UtcNow;
-
-                        FlushChargeDetailRecordsQueuesFinishedEvent?.Invoke(this,
-                                                                            StartTime,
-                                                                            EndTime,
-                                                                            EndTime - StartTime,
-                                                                            TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
-                                                                            _StatusRunId);
-
-                        #endregion
-
-                    }
-                    catch (Exception e)
-                    {
-
-                        while (e.InnerException != null)
-                            e = e.InnerException;
-
-                        DebugX.LogT(GetType().Name + ".FlushChargeDetailRecords '" + Id + "' led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
-
-                        OnWWCPCPOAdapterException?.Invoke(DateTime.UtcNow,
-                                                          this,
-                                                          e);
-
-                    }
-
-                    finally
-                    {
-                        Monitor.Exit(FlushChargeDetailRecordsLock);
-                    }
-
+                    FlushChargeDetailRecordsLock.Release();
+                    DebugX.LogT("FlushChargeDetailRecordsLock released!");
                 }
 
                 else
-                {
-
-                    DebugX.LogT("FlushChargeDetailRecordsLock missed!");
-                    StatusCheckTimer.Change(_FlushChargeDetailRecordsEvery, Timeout.Infinite);
-
-                }
+                    DebugX.LogT("FlushChargeDetailRecordsLock exited!");
 
             }
 

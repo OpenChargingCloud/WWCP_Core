@@ -376,6 +376,7 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
+                //var LockTaken = await DataAndStatusLock.WaitAsync(0);
                 lock (DataAndStatusLock)
                 {
 
@@ -385,7 +386,7 @@ namespace org.GraphDefined.WWCP
 
                         EVSEsToAddQueue.Add(EVSE);
 
-                        FlushEVSEDataTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+                        FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
 
                     }
 
@@ -469,7 +470,7 @@ namespace org.GraphDefined.WWCP
 
                         EVSEsToAddQueue.Add(EVSE);
 
-                        FlushEVSEDataTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+                        FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
 
                     }
 
@@ -576,7 +577,7 @@ namespace org.GraphDefined.WWCP
 
                         EVSEsToUpdateQueue.Add(EVSE);
 
-                        FlushEVSEDataTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+                        FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
 
                     }
 
@@ -661,7 +662,7 @@ namespace org.GraphDefined.WWCP
 
                         EVSEsToRemoveQueue.Add(EVSE);
 
-                        FlushEVSEDataTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+                        FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
 
                     }
 
@@ -751,7 +752,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var EVSE in FilteredEVSEs)
                             EVSEsToAddQueue.Add(EVSE);
 
-                        FlushEVSEDataTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+                        FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
 
                         return Task.FromResult(PushEVSEDataResult.Enqueued(Id, this));
 
@@ -841,7 +842,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var EVSE in FilteredEVSEs)
                             EVSEsToAddQueue.Add(EVSE);
 
-                        FlushEVSEDataTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+                        FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
 
                         return Task.FromResult(PushEVSEDataResult.Enqueued(Id, this));
 
@@ -931,7 +932,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var EVSE in FilteredEVSEs)
                             EVSEsToUpdateQueue.Add(EVSE);
 
-                        FlushEVSEDataTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+                        FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
 
                         return Task.FromResult(PushEVSEDataResult.Enqueued(Id, this));
 
@@ -1021,7 +1022,7 @@ namespace org.GraphDefined.WWCP
                         foreach (var EVSE in FilteredEVSEs)
                             EVSEsToRemoveQueue.Add(EVSE);
 
-                        FlushEVSEDataTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+                        FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
 
                         return Task.FromResult(PushEVSEDataResult.Enqueued(Id, this));
 
@@ -1160,7 +1161,7 @@ namespace org.GraphDefined.WWCP
 
                         }
 
-                        StatusCheckTimer.Change(_FlushEVSEFastStatusEvery, Timeout.Infinite);
+                        FlushEVSEFastStatusTimer.Change(_FlushEVSEFastStatusEvery, Timeout.Infinite);
 
                         return Task.FromResult(PushStatusResult.Enqueued(Id, this));
 
@@ -1253,7 +1254,7 @@ namespace org.GraphDefined.WWCP
 
                             EVSEsToAddQueue.Add(evse);
 
-                            FlushEVSEDataTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+                            FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
 
                         }
 
@@ -1342,7 +1343,7 @@ namespace org.GraphDefined.WWCP
 
                             EVSEsToAddQueue.Add(evse);
 
-                            FlushEVSEDataTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+                            FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
 
                         }
 
@@ -1453,7 +1454,7 @@ namespace org.GraphDefined.WWCP
                             ChargingStationsUpdateLog.Add(ChargingStation, List);
                         }
 
-                        FlushEVSEDataTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+                        FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
 
                     }
 
@@ -1808,7 +1809,7 @@ namespace org.GraphDefined.WWCP
 
                             EVSEsToAddQueue.Add(evse);
 
-                            FlushEVSEDataTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+                            FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
 
                         }
 
@@ -1897,7 +1898,7 @@ namespace org.GraphDefined.WWCP
 
                             EVSEsToAddQueue.Add(evse);
 
-                            FlushEVSEDataTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+                            FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
 
                         }
 
@@ -2008,7 +2009,7 @@ namespace org.GraphDefined.WWCP
                             ChargingPoolsUpdateLog.Add(ChargingPool, List);
                         }
 
-                        FlushEVSEDataTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+                        FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
 
                     }
 
@@ -3941,7 +3942,7 @@ namespace org.GraphDefined.WWCP
 
                     ChargeDetailRecordQueue.AddRange(ChargeDetailRecords);
 
-                    FlushEVSEDataTimer.Change(_FlushChargeDetailRecordsEvery, Timeout.Infinite);
+                    FlushEVSEDataAndStatusTimer.Change(_FlushChargeDetailRecordsEvery, Timeout.Infinite);
 
                 }
 
@@ -4082,7 +4083,7 @@ namespace org.GraphDefined.WWCP
 
 
                 // Stop the timer. Will be rescheduled by next EVSE data/status change...
-                FlushEVSEDataTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                FlushEVSEDataAndStatusTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
             }
 
@@ -4208,7 +4209,7 @@ namespace org.GraphDefined.WWCP
                 EVSEStatusChangesFastQueue.Clear();
 
                 // Stop the timer. Will be rescheduled by next EVSE status change...
-                StatusCheckTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                FlushEVSEFastStatusTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
             }
 
@@ -4264,7 +4265,7 @@ namespace org.GraphDefined.WWCP
                     ChargeDetailRecordQueue.Clear();
 
                     // Stop the timer. Will be rescheduled by next EVSE data/status change...
-                    FlushEVSEDataTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                    FlushEVSEDataAndStatusTimer.Change(Timeout.Infinite, Timeout.Infinite);
 
                 }
                 catch (Exception e)
@@ -4288,7 +4289,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 Console.WriteLine("ServiceCheckLock missed!");
-                FlushEVSEDataTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+                FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
 
             }
 
