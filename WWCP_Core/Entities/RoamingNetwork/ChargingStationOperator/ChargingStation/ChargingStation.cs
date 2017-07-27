@@ -1433,7 +1433,7 @@ namespace org.GraphDefined.WWCP
             #region Init data and properties
 
             InitialAdminStatus = InitialAdminStatus ?? new Timestamped<ChargingStationAdminStatusTypes>(ChargingStationAdminStatusTypes.Operational);
-            InitialStatus      = InitialStatus      ?? new Timestamped<ChargingStationStatusTypes>(ChargingStationStatusTypes.Available);
+            InitialStatus      = InitialStatus      ?? new Timestamped<ChargingStationStatusTypes>     (ChargingStationStatusTypes.     Available);
 
             this._Name                       = new I18NString();
             this._Description                = new I18NString();

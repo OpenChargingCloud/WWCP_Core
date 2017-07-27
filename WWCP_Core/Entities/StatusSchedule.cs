@@ -328,6 +328,16 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region (override) ToString()
+
+        /// <summary>
+        /// Return a string representation of this object.
+        /// </summary>
+        public override String ToString()
+            => CurrentStatus.ToString();
+
+        #endregion
+
     }
 
 }
