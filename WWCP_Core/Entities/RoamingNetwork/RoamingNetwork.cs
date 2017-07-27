@@ -5358,9 +5358,7 @@ namespace org.GraphDefined.WWCP
                                                                                       this,
                                                                                       SessionId,
                                                                                       Description:  "No authorization service returned a positiv result!",
-                                                                                      Runtime:      runtime)).
-
-                                   ConfigureAwait(false);
+                                                                                      Runtime:      runtime));
 
 
             #region If Authorized...
@@ -5506,7 +5504,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            DebugX.LogT("RN AuthStart: " + AuthIdentification);
+            DebugX.LogT("RN AuthStart Request: " + AuthIdentification);
             DebugX.LogT(_ISend2RemoteAuthorizeStartStop.Select(_ => _.AuthId).AggregateWith(", "));
 
             var result = await _ISend2RemoteAuthorizeStartStop.
@@ -5529,13 +5527,10 @@ namespace org.GraphDefined.WWCP
                                                                                           this,
                                                                                           SessionId,
                                                                                           Description:  "No authorization service returned a positiv result!",
-                                                                                          Runtime:      runtime)).
-
-                                   ConfigureAwait(false);
+                                                                                          Runtime:      runtime));
 
 
-
-            DebugX.LogT("CITM API AuthStart: " + AuthIdentification + " => " + result);
+            DebugX.LogT("RN AuthStart Response: " + result.ISendAuthorizeStartStop.AuthId + ": " + AuthIdentification + " => " + result);
 
             #region If Authorized...
 

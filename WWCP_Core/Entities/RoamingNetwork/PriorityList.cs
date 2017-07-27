@@ -73,37 +73,65 @@ namespace org.GraphDefined.WWCP
         }
 
 
+        //private async Task<Tuple<T, T2>> Create<T, T2>(T TA, Task<T2> TB)
+        //{
+        //    return new Tuple<T, T2>(TA, await TB);
+        //}
 
-        public async Task<T2> WhenFirst<T2>(Func<T, Task<T2>>   Work,
-                                            Func<T2, Boolean>   Test,
-                                            Func<TimeSpan, T2>  Default)
+
+        public async Task<T2>
+
+            WhenFirst<T2>(Func<T, Task<T2>>   Work,
+                          Func<T2, Boolean>   Test,
+                          Func<TimeSpan, T2>  Default)
+
         {
 
             var StartTime  = DateTime.UtcNow;
             T  service     = default(T);
             T2 result      = default(T2);
 
-            foreach (var Service in _Services.
-                                        OrderBy(kvp => kvp.Key).
-                                        Select (kvp => kvp.Value))
+            var AllTasks = _Services.
+                            OrderBy(kvp => kvp.Key).
+                            Select (kvp => Work(kvp.Value)).
+                            ToList();
+
+            Task<T2> Result;
+
+            do
             {
 
-                try
-                {
+                Result = await Task.WhenAny(AllTasks);
 
-                    service  = Service;
-                    result   = await Work(Service).ConfigureAwait(false);
+                AllTasks.Remove(Result);
 
-                    if (Test(result))
-                        return result;
-
-                }
-                catch (Exception e)
-                {
-                    DebugX.LogT(e.Message);
-                }
+                if (Test(Result.Result))
+                    return Result.Result;
 
             }
+            while (AllTasks.Count > 0);
+
+            //foreach (var Service in _Services.
+            //                OrderBy(kvp => kvp.Key).
+            //                Select(kvp => kvp.Value))
+            //{
+
+            //    try
+            //    {
+
+            //        service  = Service;
+            //        result   = await Work(Service).ConfigureAwait(false);
+
+            //        if (Test(result))
+            //            return result;
+
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        DebugX.LogT(e.Message);
+            //    }
+
+            //}
 
             return Default(DateTime.UtcNow - StartTime);
 

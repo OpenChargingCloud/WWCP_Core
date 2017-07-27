@@ -381,36 +381,41 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                DebugX.LogT("FlushEVSEDataAndStatusLock entered!");
+                if (LockTaken)
+                {
 
-                if (SkipFlushEVSEDataAndStatusQueues())
-                    return;
+                    //DebugX.LogT("FlushEVSEDataAndStatusLock entered!");
 
-                #region Send StartEvent...
+                    if (SkipFlushEVSEDataAndStatusQueues())
+                        return;
 
-                var StartTime = DateTime.UtcNow;
+                    #region Send StartEvent...
 
-                FlushEVSEDataAndStatusQueuesStartedEvent?.Invoke(this,
-                                                                 StartTime,
-                                                                 TimeSpan.FromMilliseconds(_FlushEVSEDataAndStatusEvery),
-                                                                 _FlushEVSEDataRunId++);
+                    var StartTime = DateTime.UtcNow;
 
-                #endregion
+                    FlushEVSEDataAndStatusQueuesStartedEvent?.Invoke(this,
+                                                                     StartTime,
+                                                                     TimeSpan.FromMilliseconds(_FlushEVSEDataAndStatusEvery),
+                                                                     _FlushEVSEDataRunId++);
 
-                await FlushEVSEDataAndStatusQueues();
+                    #endregion
 
-                #region Send Finished Event...
+                    await FlushEVSEDataAndStatusQueues();
 
-                var EndTime = DateTime.UtcNow;
+                    #region Send Finished Event...
 
-                FlushEVSEDataAndStatusQueuesFinishedEvent?.Invoke(this,
-                                                                  StartTime,
-                                                                  EndTime,
-                                                                  EndTime - StartTime,
-                                                                  TimeSpan.FromMilliseconds(_FlushEVSEDataAndStatusEvery),
-                                                                  _FlushEVSEDataRunId);
+                    var EndTime = DateTime.UtcNow;
 
-                #endregion
+                    FlushEVSEDataAndStatusQueuesFinishedEvent?.Invoke(this,
+                                                                      StartTime,
+                                                                      EndTime,
+                                                                      EndTime - StartTime,
+                                                                      TimeSpan.FromMilliseconds(_FlushEVSEDataAndStatusEvery),
+                                                                      _FlushEVSEDataRunId);
+
+                    #endregion
+
+                }
 
             }
             catch (Exception e)
@@ -433,7 +438,7 @@ namespace org.GraphDefined.WWCP
                 if (LockTaken)
                 {
                     FlushEVSEDataAndStatusLock.Release();
-                    DebugX.LogT("FlushEVSEDataAndStatusLock released!");
+               //     DebugX.LogT("FlushEVSEDataAndStatusLock released!");
                 }
 
                 else
@@ -465,37 +470,41 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                DebugX.LogT("FlushEVSEFastStatusLock entered!");
+                if (LockTaken)
+                {
 
+                    //DebugX.LogT("FlushEVSEFastStatusLock entered!");
 
-                if (SkipFlushEVSEFastStatusQueues())
-                    return;
+                    if (SkipFlushEVSEFastStatusQueues())
+                        return;
 
-                #region Send StartEvent...
+                    #region Send StartEvent...
 
-                var StartTime = DateTime.UtcNow;
+                    var StartTime = DateTime.UtcNow;
 
-                FlushEVSEFastStatusQueuesStartedEvent?.Invoke(this,
-                                                              StartTime,
-                                                              TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
-                                                              _StatusRunId++);
+                    FlushEVSEFastStatusQueuesStartedEvent?.Invoke(this,
+                                                                  StartTime,
+                                                                  TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
+                                                                  _StatusRunId++);
 
-                #endregion
+                    #endregion
 
-                await FlushEVSEFastStatusQueues();
+                    await FlushEVSEFastStatusQueues();
 
-                #region Send Finished Event...
+                    #region Send Finished Event...
 
-                var EndTime = DateTime.UtcNow;
+                    var EndTime = DateTime.UtcNow;
 
-                FlushEVSEFastStatusQueuesFinishedEvent?.Invoke(this,
-                                                               StartTime,
-                                                               EndTime,
-                                                               EndTime - StartTime,
-                                                               TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
-                                                               _StatusRunId);
+                    FlushEVSEFastStatusQueuesFinishedEvent?.Invoke(this,
+                                                                   StartTime,
+                                                                   EndTime,
+                                                                   EndTime - StartTime,
+                                                                   TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
+                                                                   _StatusRunId);
 
-                #endregion
+                    #endregion
+
+                }
 
             }
             catch (Exception e)
@@ -518,7 +527,7 @@ namespace org.GraphDefined.WWCP
                 if (LockTaken)
                 {
                     FlushEVSEFastStatusLock.Release();
-                    DebugX.LogT("FlushEVSEFastStatusLock released!");
+                 //   DebugX.LogT("FlushEVSEFastStatusLock released!");
                 }
 
                 else
@@ -550,36 +559,41 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                DebugX.LogT("FlushChargeDetailRecordsLock entered!");
+                if (LockTaken)
+                {
 
-                if (SkipFlushChargeDetailRecordsQueues())
-                    return;
+                    //DebugX.LogT("FlushChargeDetailRecordsLock entered!");
 
-                #region Send StartEvent...
+                    if (SkipFlushChargeDetailRecordsQueues())
+                        return;
 
-                var StartTime = DateTime.UtcNow;
+                    #region Send StartEvent...
 
-                FlushChargeDetailRecordsQueuesStartedEvent?.Invoke(this,
-                                                                   StartTime,
-                                                                   TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
-                                                                   _StatusRunId++);
+                    var StartTime = DateTime.UtcNow;
 
-                #endregion
+                    FlushChargeDetailRecordsQueuesStartedEvent?.Invoke(this,
+                                                                       StartTime,
+                                                                       TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
+                                                                       _StatusRunId++);
 
-                FlushChargeDetailRecordsQueues().Wait();
+                    #endregion
 
-                #region Send Finished Event...
+                    await FlushChargeDetailRecordsQueues();
 
-                var EndTime = DateTime.UtcNow;
+                    #region Send Finished Event...
 
-                FlushChargeDetailRecordsQueuesFinishedEvent?.Invoke(this,
-                                                                    StartTime,
-                                                                    EndTime,
-                                                                    EndTime - StartTime,
-                                                                    TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
-                                                                    _StatusRunId);
+                    var EndTime = DateTime.UtcNow;
 
-                #endregion
+                    FlushChargeDetailRecordsQueuesFinishedEvent?.Invoke(this,
+                                                                        StartTime,
+                                                                        EndTime,
+                                                                        EndTime - StartTime,
+                                                                        TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
+                                                                        _StatusRunId);
+
+                    #endregion
+
+                }
 
             }
             catch (Exception e)
