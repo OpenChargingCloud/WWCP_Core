@@ -7186,7 +7186,16 @@ namespace org.GraphDefined.WWCP
                                                                SendCDRResultTypes.Filtered,
                                                                FilterResult));
 
-                            await OnCDRWasFiltered.Invoke(ChargeDetailRecord, FilterResult);
+                            try
+                            {
+                                await OnCDRWasFiltered.Invoke(ChargeDetailRecord, FilterResult);
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log("OnCDRWasFiltered event throw an exception: " +
+                                           e.Message + Environment.NewLine +
+                                           e.StackTrace);
+                            }
 
                             RemainingCDRsToSend.Remove(ChargeDetailRecord);
 
