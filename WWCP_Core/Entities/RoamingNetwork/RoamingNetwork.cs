@@ -6982,6 +6982,17 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region OnCDRWasFiltered
+
+        public delegate Task OnCDRWasFilteredDelegate(ChargeDetailRecord ChargeDetailRecord, IEnumerable<String> Reason);
+
+        /// <summary>
+        /// An event fired whenever a CDR was filtered.
+        /// </summary>
+        public event OnCDRWasFilteredDelegate OnCDRWasFiltered;
+
+        #endregion
+
         #region SendChargeDetailRecords(ChargeDetailRecords, ...)
 
         #region IReceiveChargeDetailRecords.SendChargeDetailRecords(ChargeDetailRecords, ...)
@@ -7174,6 +7185,8 @@ namespace org.GraphDefined.WWCP
                             FilteredCDRs.Add(new SendCDRResult(ChargeDetailRecord,
                                                                SendCDRResultTypes.Filtered,
                                                                FilterResult));
+
+                            await OnCDRWasFiltered.Invoke(ChargeDetailRecord, FilterResult);
 
                             RemainingCDRsToSend.Remove(ChargeDetailRecord);
 
