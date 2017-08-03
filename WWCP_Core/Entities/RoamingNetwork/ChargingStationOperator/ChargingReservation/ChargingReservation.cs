@@ -107,7 +107,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                var _TimeLeft = _EndTime - DateTime.UtcNow.ToUniversalTime();// _StartTime + _Duration - DateTime.UtcNow;
+                var _TimeLeft = _EndTime - DateTime.UtcNow;// _StartTime + _Duration - DateTime.UtcNow;
 
                 return _ChargingSession == null
                            ? _TimeLeft.TotalSeconds > 0 ? _TimeLeft : TimeSpan.FromSeconds(0)
@@ -323,13 +323,10 @@ namespace org.GraphDefined.WWCP
         /// Returns true if the reservation is expired.
         /// </summary>
         public Boolean IsExpired()
-        {
 
-            return _ChargingSession == null
-                       ? DateTime.UtcNow.ToUniversalTime() > _EndTime
-                       : false;
-
-        }
+            => _ChargingSession == null
+                   ? DateTime.UtcNow > _EndTime
+                   : false;
 
         #endregion
 
@@ -339,9 +336,8 @@ namespace org.GraphDefined.WWCP
         /// Returns true if the reservation is expired.
         /// </summary>
         public Boolean IsExpired(TimeSpan ReservationSelfCancelAfter)
-        {
-            return DateTime.UtcNow.ToUniversalTime() > (_EndTime + ReservationSelfCancelAfter);
-        }
+
+            => DateTime.UtcNow > (_EndTime + ReservationSelfCancelAfter);
 
         #endregion
 
