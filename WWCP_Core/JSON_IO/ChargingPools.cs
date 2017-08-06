@@ -45,44 +45,94 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                      Boolean            ExpandChargingStationIds  = true,
                                      Boolean            ExpandOperatorId          = false,
                                      Boolean            ExpandBrandId             = false)
-        {
 
-            #region Initial checks
+            => ChargingPool == null
+                   ? null
+                   : Embedded
 
-            if (ChargingPool == null)
-                throw new ArgumentNullException(nameof(ChargingPool), "The given charging pool must not be null!");
+                         // Embedded means it is served as a substructure of e.g. a charging station operator
+                         ? JSONObject.Create(
 
-            #endregion
+                               ChargingPool.Id.         ToJSON("Id"),
+                               ChargingPool.Name.       ToJSON("Name"),
+                               ChargingPool.Description.ToJSON("Description"),
 
-            return JSONObject.Create(
-                       ChargingPool.Id.         ToJSON("Id"),
-                       ChargingPool.Name.       ToJSON("Name"),
-                       ChargingPool.Description.ToJSON("Description"),
+                               ExpandOperatorId
+                                       ? new JProperty("Operator",    ChargingPool.Operator.ToJSON())
+                                       : new JProperty("OperatorId",  ChargingPool.Operator.Id.ToString()),
 
-                       ExpandOperatorId
-                               ? new JProperty("Operator",          ChargingPool.Operator.ToJSON())
-                               : new JProperty("OperatorId",        ChargingPool.Operator.Id.ToString()),
+                               ChargingPool.Brand != null
+                                   ? ExpandBrandId
+                                         ? ChargingPool.Brand.       ToJSON("Brand")
+                                         : new JProperty("BrandId",  ChargingPool.Brand.Id.ToString())
+                                   : null,
 
-                       //    ChargingStation.Brand != null
-                       //        ? ExpandBrandId
-                       //              ? ChargingStation.Brand.       ToJSON("Brand")
-                       //              : new JProperty("BrandId",     ChargingStation.Brand.Id.ToString())
-                       //        : null,
+                               ChargingPool.GeoLocation.        ToJSON("GeoLocation"),
+                               ChargingPool.Address.            ToJSON("Address"),
+                               ChargingPool.AuthenticationModes.ToJSON("AuthenticationModes"),
+                               ChargingPool.OpeningTimes.       ToJSON("OpeningTimes"),
 
-                       ChargingPool.GeoLocation.Value.ToJSON("GeoLocation"),
-                       ChargingPool.Address.          ToJSON("Address"),
-                       ChargingPool.AuthenticationModes.Any()
-                           ? ChargingPool.AuthenticationModes.ToJSON("AuthenticationModes")
-                           : null,
-                       ChargingPool.OpeningTimes.   ToJSON("OpeningTimes"),
+                               ExpandChargingStationIds
 
-                       ExpandChargingStationIds
-                           ? new JProperty("ChargingStations",   new JArray(ChargingPool.ChargingStations.  OrderBy(station   => station.Id).Select(station   => station.  ToJSON(Embedded: true, ExpandEVSEIds: true))))
-                           : new JProperty("ChargingStationIds", new JArray(ChargingPool.ChargingStationIds.OrderBy(stationId => stationId ).Select(stationId => stationId.ToString())))
+                                   ? new JProperty("ChargingStations",
+                                                   ChargingPool.ChargingStations.SafeAny()
+                                                       ? new JArray(ChargingPool.ChargingStations.
+                                                                                 OrderBy(station   => station.Id).
+                                                                                 Select (station   => station.  ToJSON(Embedded:      true,
+                                                                                                                       ExpandEVSEIds: true)))
+                                                       : new JArray())
 
-                   );
+                                   : new JProperty("ChargingStationIds",
+                                                   ChargingPool.ChargingStationIds.SafeAny()
+                                                       ? new JArray(ChargingPool.ChargingStationIds.
+                                                                                 OrderBy(stationId => stationId ).
+                                                                                 Select (stationId => stationId.ToString()))
+                                                       : new JArray())
 
-        }
+                           )
+
+
+                         : JSONObject.Create(
+
+                               new JProperty("@context", "https://open.charging.cloud/contexts/ChargingPool"),
+
+                               ChargingPool.Id.         ToJSON("Id"),
+                               ChargingPool.Name.       ToJSON("Name"),
+                               ChargingPool.Description.ToJSON("Description"),
+
+                               ExpandOperatorId
+                                       ? new JProperty("Operator",    ChargingPool.Operator.ToJSON())
+                                       : new JProperty("OperatorId",  ChargingPool.Operator.Id.ToString()),
+
+                               ChargingPool.Brand != null
+                                   ? ExpandBrandId
+                                         ? ChargingPool.Brand.       ToJSON("Brand")
+                                         : new JProperty("BrandId",  ChargingPool.Brand.Id.ToString())
+                                   : null,
+
+                               ChargingPool.GeoLocation.        ToJSON("GeoLocation"),
+                               ChargingPool.Address.            ToJSON("Address"),
+                               ChargingPool.AuthenticationModes.ToJSON("AuthenticationModes"),
+                               ChargingPool.OpeningTimes.       ToJSON("OpeningTimes"),
+
+                               ExpandChargingStationIds
+
+                                   ? new JProperty("ChargingStations",
+                                                   ChargingPool.ChargingStations.SafeAny()
+                                                       ? new JArray(ChargingPool.ChargingStations.
+                                                                                 OrderBy(station   => station.Id).
+                                                                                 Select (station   => station.  ToJSON(Embedded:      true,
+                                                                                                                       ExpandEVSEIds: true)))
+                                                       : new JArray())
+
+                                   : new JProperty("ChargingStationIds",
+                                                   ChargingPool.ChargingStationIds.SafeAny()
+                                                       ? new JArray(ChargingPool.ChargingStationIds.
+                                                                                 OrderBy(stationId => stationId ).
+                                                                                 Select (stationId => stationId.ToString()))
+                                                       : new JArray())
+
+                           );
 
         #endregion
 
@@ -93,16 +143,15 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
             #region Initial checks
 
-            if (ChargingPool == null)
-                throw new ArgumentNullException(nameof(ChargingPool),  "The given charging pool must not be null!");
-
             if (JPropertyKey.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(JPropertyKey),  "The given json property key must not be null or empty!");
 
             #endregion
 
-            return new JObject(JPropertyKey,
-                               ChargingPool.ToJSON());
+            return ChargingPool != null
+                       ? new JObject(JPropertyKey,
+                                     ChargingPool.ToJSON())
+                       : null;
 
         }
 
@@ -131,7 +180,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
             #region Initial checks
 
-            if (ChargingPools == null)
+            if (ChargingPools == null || !ChargingPools.Any())
                 return new JArray();
 
             #endregion
@@ -161,7 +210,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
             #endregion
 
-            return ChargingPools != null
+            return ChargingPools != null && ChargingPools.Any()
                        ? new JProperty(JPropertyKey, ChargingPools.ToJSON())
                        : null;
 
@@ -172,9 +221,9 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         #region ToJSON(this ChargingPoolAdminStatus, Skip = 0, Take = 0)
 
         public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>>  ChargingPoolAdminStatus,
-                                     UInt64                                                                                                  Skip         = 0,
-                                     UInt64                                                                                                  Take         = 0,
-                                     UInt64                                                                                                  HistorySize  = 1)
+                                     UInt64                                                                                                   Skip         = 0,
+                                     UInt64                                                                                                   Take         = 0,
+                                     UInt64                                                                                                   HistorySize  = 1)
         {
 
             if (ChargingPoolAdminStatus == null)
@@ -205,9 +254,9 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         #region ToJSON(this ChargingPoolStatus, Skip = 0, Take = 0)
 
         public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>>  ChargingPoolStatus,
-                                     UInt64                                                                                             Skip         = 0,
-                                     UInt64                                                                                             Take         = 0,
-                                     UInt64                                                                                             HistorySize  = 1)
+                                     UInt64                                                                                              Skip         = 0,
+                                     UInt64                                                                                              Take         = 0,
+                                     UInt64                                                                                              HistorySize  = 1)
         {
 
             if (ChargingPoolStatus == null)

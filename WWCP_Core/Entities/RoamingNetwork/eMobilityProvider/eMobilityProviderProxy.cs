@@ -185,7 +185,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value == null)
-                    value = new Address();
+                    _Address = value;
 
                 if (_Address != value)
                     SetProperty(ref _Address, value);

@@ -64,10 +64,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         public static JProperty ToJSON(this GeoCoordinate Location, String JPropertyKey)
         {
 
-            if (Location == null)
-                return null;
-
-            if (Location.Longitude.Value == 0 && Location.Latitude.Value == 0)
+            if (Location == default(GeoCoordinate))
                 return null;
 
             return new JProperty(JPropertyKey,
@@ -76,6 +73,27 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                      new JProperty("lat", Location.Latitude. Value),
                                      new JProperty("lng", Location.Longitude.Value),
                                      Location.Altitude.HasValue                      ? new JProperty("altitude",   Location.Altitude.Value.Value)  : null)
+                                );
+
+        }
+
+        /// <summary>
+        /// Create a JSON representation of the given GeoLocation.
+        /// </summary>
+        /// <param name="Location">A GeoLocation.</param>
+        /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
+        public static JProperty ToJSON(this GeoCoordinate? Location, String JPropertyKey)
+        {
+
+            if (!Location.HasValue)
+                return null;
+
+            return new JProperty(JPropertyKey,
+                                 JSONObject.Create(
+                                     Location.Value.Projection != GravitationalModel.WGS84 ? new JProperty("projection", Location.Value.Projection.ToString()) : null,
+                                     new JProperty("lat", Location.Value.Latitude. Value),
+                                     new JProperty("lng", Location.Value.Longitude.Value),
+                                     Location.Value.Altitude.HasValue                      ? new JProperty("altitude",   Location.Value.Altitude.Value.Value)  : null)
                                 );
 
         }
@@ -139,8 +157,10 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         public static JProperty ToJSON(this ReactiveSet<AuthenticationModes> AuthenticationModes, String JPropertyKey)
 
-            => new JProperty(JPropertyKey,
-                             new JArray(AuthenticationModes.SafeSelect(mode => mode.ToJSON())));
+            => AuthenticationModes != null
+                   ? new JProperty(JPropertyKey,
+                                   new JArray(AuthenticationModes.SafeSelect(mode => mode.ToJSON())))
+                   : null;
 
         #endregion
 

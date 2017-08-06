@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -29,7 +30,10 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// A WWCP address.
     /// </summary>
-    public class Address : IEquatable<Address>
+    public class Address : ACustomData,
+                           IEquatable<Address>,
+                           IComparable<Address>,
+                           IComparable
     {
 
         #region Properties
@@ -78,59 +82,6 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region Address()
-
-        /// <summary>
-        /// Create a new address.
-        /// </summary>
-        public Address()
-        {
-
-            this.FloorLevel     = "";
-            this.HouseNumber    = "";
-            this.Street         = "";
-            this.PostalCode     = "";
-            this.PostalCodeSub  = "";
-            this.City           = new I18NString();
-            this.Country        = Country.unknown;
-            this.Comment        = new I18NString();
-
-        }
-
-        #endregion
-
-        #region Address(Country, PostalCode, City, Street, HouseNumber)
-
-        /// <summary>
-        /// Create a new minimal address.
-        /// </summary>
-        /// <param name="Country">The country.</param>
-        /// <param name="PostalCode">The postal code</param>
-        /// <param name="City">The city.</param>
-        /// <param name="Street">The name of the street.</param>
-        /// <param name="HouseNumber">The house number.</param>
-        public Address(Country     Country,
-                       String      PostalCode,
-                       I18NString  City,
-                       String      Street,
-                       String      HouseNumber)
-        {
-
-            this.FloorLevel     = "";
-            this.HouseNumber    = HouseNumber;
-            this.Street         = Street;
-            this.PostalCode     = PostalCode;
-            this.PostalCodeSub  = "";
-            this.City           = City;
-            this.Country        = Country;
-            this.Comment        = new I18NString();
-
-        }
-
-        #endregion
-
-        #region Address(Street, HouseNumber, FloorLevel, PostalCode, PostalCodeSub, City, Country, FreeText = null)
-
         /// <summary>
         /// Create a new address.
         /// </summary>
@@ -142,14 +93,20 @@ namespace org.GraphDefined.WWCP
         /// <param name="City">The city.</param>
         /// <param name="Country">The country.</param>
         /// <param name="Comment">An optional text/comment to describe the address.</param>
-        public Address(String      Street,
-                       String      HouseNumber,
-                       String      FloorLevel,
-                       String      PostalCode,
-                       String      PostalCodeSub,
-                       I18NString  City,
-                       Country     Country,
-                       I18NString  Comment = null)
+        /// 
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+        private Address(String                               Street,
+                        String                               HouseNumber,
+                        String                               FloorLevel,
+                        String                               PostalCode,
+                        String                               PostalCodeSub,
+                        I18NString                           City,
+                        Country                              Country,
+                        I18NString                           Comment      = null,
+
+                        IReadOnlyDictionary<String, Object>  CustomData   = null)
+
+            : base(CustomData)
 
         {
 
@@ -160,16 +117,14 @@ namespace org.GraphDefined.WWCP
             this.PostalCodeSub  = PostalCodeSub;
             this.City           = City;
             this.Country        = Country;
-            this.Comment        = Comment != null ? Comment : new I18NString();
+            this.Comment        = Comment ?? new I18NString();
 
         }
 
         #endregion
 
-        #endregion
 
-
-        #region (static) Create(Country, PostalCode, City, Street, HouseNumber)
+        #region (static) Create(Country, PostalCode, City, Street, HouseNumber, CustomData = null)
 
         /// <summary>
         /// Create a new minimal address.
@@ -179,17 +134,28 @@ namespace org.GraphDefined.WWCP
         /// <param name="City">The city.</param>
         /// <param name="Street">The name of the street.</param>
         /// <param name="HouseNumber">The house number.</param>
-        public static Address Create(Country     Country,
-                                     String      PostalCode,
-                                     I18NString  City,
-                                     String      Street,
-                                     String      HouseNumber)
+        /// <param name="FloorLevel">The floor level.</param>
+        /// 
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+        public static Address Create(Country                              Country,
+                                     String                               PostalCode,
+                                     I18NString                           City,
+                                     String                               Street,
+                                     String                               HouseNumber,
+                                     String                               FloorLevel   = null,
 
-            => new Address(Country,
+                                     IReadOnlyDictionary<String, Object>  CustomData   = null)
+
+
+            => new Address(Street,
+                           HouseNumber,
+                           FloorLevel,
                            PostalCode,
+                           "",
                            City,
-                           Street,
-                           HouseNumber);
+                           Country,
+                           new I18NString(),
+                           CustomData);
 
         #endregion
 
@@ -235,6 +201,128 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Operator <  (Address1, Address2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Address1">An address.</param>
+        /// <param name="Address2">Another address.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator < (Address Address1, Address Address2)
+        {
+
+            if ((Object) Address1 == null)
+                throw new ArgumentNullException(nameof(Address1), "The given Address1 must not be null!");
+
+            return Address1.CompareTo(Address2) < 0;
+
+        }
+
+        #endregion
+
+        #region Operator <= (Address1, Address2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Address1">An address.</param>
+        /// <param name="Address2">Another address.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator <= (Address Address1, Address Address2)
+            => !(Address1 > Address2);
+
+        #endregion
+
+        #region Operator >  (Address1, Address2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Address1">An address.</param>
+        /// <param name="Address2">Another address.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator > (Address Address1, Address Address2)
+        {
+
+            if ((Object)Address1 == null)
+                throw new ArgumentNullException(nameof(Address1), "The given Address1 must not be null!");
+
+            return Address1.CompareTo(Address2) > 0;
+
+        }
+
+        #endregion
+
+        #region Operator >= (Address1, Address2)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Address1">An address.</param>
+        /// <param name="Address2">Another address.</param>
+        /// <returns>true|false</returns>
+        public static Boolean operator >= (Address Address1, Address Address2)
+            => !(Address1 < Address2);
+
+        #endregion
+
+        #endregion
+
+        #region IComparable<Address> Members
+
+        #region CompareTo(Object)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Object">An object to compare with.</param>
+        public Int32 CompareTo(Object Object)
+        {
+
+            if (Object == null)
+                throw new ArgumentNullException(nameof(Object), "The given object must not be null!");
+
+            var Address = Object as Address;
+            if ((Object)Address == null)
+                throw new ArgumentException("The given object is not an address identification!", nameof(Object));
+
+            return CompareTo(Address);
+
+        }
+
+        #endregion
+
+        #region CompareTo(Address)
+
+        /// <summary>
+        /// Compares two instances of this object.
+        /// </summary>
+        /// <param name="Address">An object to compare with.</param>
+        public Int32 CompareTo(Address Address)
+        {
+
+            if ((Object) Address == null)
+                throw new ArgumentNullException(nameof(Address), "The given address must not be null!");
+
+            var c = Country.     CompareTo(Address.Country);
+            if (c != 0)
+                return c;
+
+            c = PostalCode.      CompareTo(Address.PostalCode);
+            if (c != 0)
+                return c;
+
+            c = City.FirstText().CompareTo(Address.City.FirstText());
+            if (c != 0)
+                return c;
+
+            return Street.       CompareTo(Address.Street);
+
+        }
+
+        #endregion
+
         #endregion
 
         #region IEquatable<Address> Members
@@ -276,12 +364,12 @@ namespace org.GraphDefined.WWCP
             if ((Object) Address == null)
                 return false;
 
-            return Street.        Equals(Address.Street) &&
-                   HouseNumber.   Equals(Address.HouseNumber) &&
-                   FloorLevel.    Equals(Address.FloorLevel) &&
-                   PostalCode.    Equals(Address.PostalCode) &&
+            return Street.        Equals(Address.Street)        &&
+                   HouseNumber.   Equals(Address.HouseNumber)   &&
+                   FloorLevel.    Equals(Address.FloorLevel)    &&
+                   PostalCode.    Equals(Address.PostalCode)    &&
                    PostalCodeSub. Equals(Address.PostalCodeSub) &&
-                   City.          Equals(Address.City) &&
+                   City.          Equals(Address.City)          &&
                    Country.       Equals(Address.Country);
 
         }

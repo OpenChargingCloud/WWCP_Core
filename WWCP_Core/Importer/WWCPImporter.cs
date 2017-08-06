@@ -522,18 +522,18 @@ namespace org.GraphDefined.WWCP.Importer
 
                                                                 _AllForwardingInfos.Add(ChargingStationId,
                                                                                         new ImporterForwardingInfo(
-                                                                                            OnChangedCallback: SendOnForwardingChanged,
-                                                                                            ChargingStationOperators: GetChargingStationOperators(ChargingStationId),
-                                                                                            StationId: ChargingStationId,
-                                                                                            StationName: "",
-                                                                                            StationServiceTag: "",
-                                                                                            StationAddress: new Address(),
-                                                                                            StationGeoCoordinate: null,
-                                                                                            PhoneNumber: PhoneNumber,
-                                                                                            AdminStatus: AdminStatus,
-                                                                                            Created: DateTime.UtcNow,
-                                                                                            OutOfService: true,
-                                                                                            ForwardedToOperator: CurrentEVSEOperator)
+                                                                                            OnChangedCallback:          SendOnForwardingChanged,
+                                                                                            ChargingStationOperators:   GetChargingStationOperators(ChargingStationId),
+                                                                                            StationId:                  ChargingStationId,
+                                                                                            StationName:                "",
+                                                                                            StationServiceTag:          "",
+                                                                                            StationAddress:             null,//new Address(),
+                                                                                            StationGeoCoordinate:       null,
+                                                                                            PhoneNumber:                PhoneNumber,
+                                                                                            AdminStatus:                AdminStatus,
+                                                                                            Created:                    DateTime.UtcNow,
+                                                                                            OutOfService:               true,
+                                                                                            ForwardedToOperator:        CurrentEVSEOperator)
                                                                                        );
 
                                                             }
