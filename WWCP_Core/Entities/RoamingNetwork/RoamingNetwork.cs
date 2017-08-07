@@ -7121,7 +7121,7 @@ namespace org.GraphDefined.WWCP
                 Runtime  = Endtime - StartTime;
                 result   = SendCDRsResult.NoOperation(Id,
                                                       this as ISendChargeDetailRecords,
-                                                      ChargeDetailRecords.Select(cdr => new SendCDRResult(cdr, SendCDRResultTypes.Filtered)),
+                                                      new SendCDRResult[0],
                                                       Runtime: Runtime);
 
             }
@@ -7144,18 +7144,16 @@ namespace org.GraphDefined.WWCP
                     if (ChargeDetailRecord.EVSEId.HasValue)
                     {
 
-                        EVSE _EVSE = null;
-
-                        if (TryGetEVSEbyId(ChargeDetailRecord.EVSEId.Value, out _EVSE))
+                        if (TryGetEVSEbyId(ChargeDetailRecord.EVSEId.Value, out EVSE _EVSE))
                         {
 
-                            if (_EVSE.ChargingSession != null &&
+                            if (_EVSE.ChargingSession    != null &&
                                 _EVSE.ChargingSession.Id == ChargeDetailRecord.SessionId)
                             {
 
                                 //_EVSE.Status = EVSEStatusType.Available;
-                                _EVSE.ChargingSession = null;
-                                _EVSE.Reservation = null;
+                                _EVSE.ChargingSession  = null;
+                                _EVSE.Reservation      = null;
 
                             }
 
