@@ -336,7 +336,7 @@ namespace org.GraphDefined.WWCP
                                                                       ? ServiceCheckEvery.Value. TotalMilliseconds
                                                                       : DefaultServiceCheckEvery.TotalMilliseconds);
 
-            this.FlushEVSEDataAndStatusTimer                              = new Timer(FlushEVSEDataAndStatus, null, 0, _FlushEVSEDataAndStatusEvery);
+            this.FlushEVSEDataAndStatusTimer                     = new Timer(FlushEVSEDataAndStatus);
 
             this._FlushEVSEFastStatusEvery                       = (UInt32) (StatusCheckEvery.HasValue
                                                                         ? StatusCheckEvery.Value.  TotalMilliseconds
@@ -346,9 +346,9 @@ namespace org.GraphDefined.WWCP
                                                                         ? CDRCheckEvery.Value.  TotalMilliseconds
                                                                         : DefaultCDRCheckEvery. TotalMilliseconds);
 
-            this.FlushEVSEFastStatusTimer                                = new Timer(FlushEVSEFastStatus,      null, 0, _FlushEVSEFastStatusEvery);
+            this.FlushEVSEFastStatusTimer                        = new Timer(FlushEVSEFastStatus);
 
-            this.FlushChargeDetailRecordsTimer                   = new Timer(FlushChargeDetailRecords, null, 0, _FlushChargeDetailRecordsEvery);
+            this.FlushChargeDetailRecordsTimer                   = new Timer(FlushChargeDetailRecords);
 
             this.EVSEsUpdateLog                                  = new Dictionary<EVSE,            List<PropertyUpdateInfos>>();
             this.ChargingStationsUpdateLog                       = new Dictionary<ChargingStation, List<PropertyUpdateInfos>>();
@@ -548,7 +548,7 @@ namespace org.GraphDefined.WWCP
         private void FlushChargeDetailRecords(Object State)
         {
             if (!DisableSendChargeDetailRecords)
-                FlushEVSEDataAndStatus2().Wait();
+                FlushChargeDetailRecords2().Wait();
         }
 
         private async Task FlushChargeDetailRecords2()
