@@ -110,14 +110,14 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            this.Street         = Street;
-            this.HouseNumber    = HouseNumber;
-            this.FloorLevel     = FloorLevel;
-            this.PostalCode     = PostalCode;
-            this.PostalCodeSub  = PostalCodeSub;
-            this.City           = City;
+            this.Street         = Street        ?? "";
+            this.HouseNumber    = HouseNumber   ?? "";
+            this.FloorLevel     = FloorLevel    ?? "";
+            this.PostalCode     = PostalCode    ?? "";
+            this.PostalCodeSub  = PostalCodeSub ?? "";
+            this.City           = City          ?? I18NString.Empty;
             this.Country        = Country;
-            this.Comment        = Comment ?? new I18NString();
+            this.Comment        = Comment       ?? I18NString.Empty;
 
         }
 
@@ -364,6 +364,9 @@ namespace org.GraphDefined.WWCP
             if ((Object) Address == null)
                 return false;
 
+            try
+            {
+
             return Street.        Equals(Address.Street)        &&
                    HouseNumber.   Equals(Address.HouseNumber)   &&
                    FloorLevel.    Equals(Address.FloorLevel)    &&
@@ -371,6 +374,12 @@ namespace org.GraphDefined.WWCP
                    PostalCodeSub. Equals(Address.PostalCodeSub) &&
                    City.          Equals(Address.City)          &&
                    Country.       Equals(Address.Country);
+
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
 
         }
 
