@@ -554,7 +554,7 @@ namespace org.GraphDefined.WWCP
         private async Task FlushChargeDetailRecords2()
         {
 
-            var LockTaken = await FlushEVSEDataAndStatusLock.WaitAsync(0);
+            var LockTaken = await FlushChargeDetailRecordsLock.WaitAsync(0);
 
             try
             {
