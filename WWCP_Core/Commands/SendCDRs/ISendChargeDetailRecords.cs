@@ -62,7 +62,7 @@ namespace org.GraphDefined.WWCP
         Task<SendCDRsResult>
 
             SendChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                                    TransmissionTypes                TransmissionType    = TransmissionTypes.Enqueued,
+                                    TransmissionTypes                TransmissionType    = TransmissionTypes.Enqueue,
 
                                     DateTime?                        Timestamp           = null,
                                     CancellationToken?               CancellationToken   = null,

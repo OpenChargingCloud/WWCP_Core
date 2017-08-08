@@ -217,12 +217,12 @@ namespace org.GraphDefined.WWCP
 
             get
             {
-                return TimeSpan.FromSeconds(_FlushChargeDetailRecordsEvery);
+                return TimeSpan.FromMilliseconds(_FlushChargeDetailRecordsEvery);
             }
 
             set
             {
-                _FlushChargeDetailRecordsEvery = (UInt32)value.TotalSeconds;
+                _FlushChargeDetailRecordsEvery = (UInt32) value.TotalMilliseconds;
             }
 
         }

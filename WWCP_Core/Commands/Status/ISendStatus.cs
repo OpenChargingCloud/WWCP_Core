@@ -54,7 +54,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region UpdateEVSEStatus                        (StatusUpdates,      TransmissionType = Enqueued, ...)
+        #region UpdateEVSEStatus                        (StatusUpdates,      TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of EVSE status updates.
@@ -69,7 +69,7 @@ namespace org.GraphDefined.WWCP
         Task<PushStatusResult>
 
             UpdateStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
-                         TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueued,
+                         TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
 
                          DateTime?                      Timestamp           = null,
                          CancellationToken?             CancellationToken   = null,
@@ -78,7 +78,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region UpdateChargingStationStatus             (StatusUpdates,      TransmissionType = Enqueued, ...)
+        #region UpdateChargingStationStatus             (StatusUpdates,      TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging station status updates.
@@ -93,7 +93,7 @@ namespace org.GraphDefined.WWCP
         Task<PushStatusResult>
 
             UpdateStatus(IEnumerable<ChargingStationStatusUpdate>  StatusUpdates,
-                         TransmissionTypes                         TransmissionType    = TransmissionTypes.Enqueued,
+                         TransmissionTypes                         TransmissionType    = TransmissionTypes.Enqueue,
 
                          DateTime?                                 Timestamp           = null,
                          CancellationToken?                        CancellationToken   = null,
@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region UpdateChargingPoolStatus                (StatusUpdates,      TransmissionType = Enqueued, ...)
+        #region UpdateChargingPoolStatus                (StatusUpdates,      TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging pool status updates.
@@ -117,7 +117,7 @@ namespace org.GraphDefined.WWCP
         Task<PushStatusResult>
 
             UpdateStatus(IEnumerable<ChargingPoolStatusUpdate>  StatusUpdates,
-                         TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueued,
+                         TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueue,
 
                          DateTime?                              Timestamp           = null,
                          CancellationToken?                     CancellationToken   = null,
@@ -126,7 +126,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region UpdateChargingStationOperatorStatus     (StatusUpdates,      TransmissionType = Enqueued, ...)
+        #region UpdateChargingStationOperatorStatus     (StatusUpdates,      TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging station operator status updates.
@@ -141,7 +141,7 @@ namespace org.GraphDefined.WWCP
         Task<PushStatusResult>
 
             UpdateStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  StatusUpdates,
-                         TransmissionTypes                                 TransmissionType    = TransmissionTypes.Enqueued,
+                         TransmissionTypes                                 TransmissionType    = TransmissionTypes.Enqueue,
 
                          DateTime?                                         Timestamp           = null,
                          CancellationToken?                                CancellationToken   = null,
@@ -150,7 +150,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region UpdateRoamingNetworkStatus              (StatusUpdates,      TransmissionType = Enqueued, ...)
+        #region UpdateRoamingNetworkStatus              (StatusUpdates,      TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of roaming network status updates.
@@ -165,7 +165,7 @@ namespace org.GraphDefined.WWCP
         Task<PushStatusResult>
 
             UpdateStatus(IEnumerable<RoamingNetworkStatusUpdate>  StatusUpdates,
-                         TransmissionTypes                        TransmissionType    = TransmissionTypes.Enqueued,
+                         TransmissionTypes                        TransmissionType    = TransmissionTypes.Enqueue,
 
                          DateTime?                                Timestamp           = null,
                          CancellationToken?                       CancellationToken   = null,

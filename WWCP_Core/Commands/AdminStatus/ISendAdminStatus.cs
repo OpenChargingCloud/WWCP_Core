@@ -54,7 +54,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region UpdateEVSEAdminStatus                   (AdminStatusUpdates, TransmissionType = Enqueued, ...)
+        #region UpdateEVSEAdminStatus                   (AdminStatusUpdates, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of EVSE admin status updates.
@@ -69,7 +69,7 @@ namespace org.GraphDefined.WWCP
         Task<PushAdminStatusResult>
 
             UpdateAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
-                              TransmissionTypes                   TransmissionType    = TransmissionTypes.Enqueued,
+                              TransmissionTypes                   TransmissionType    = TransmissionTypes.Enqueue,
 
                               DateTime?                           Timestamp           = null,
                               CancellationToken?                  CancellationToken   = null,
@@ -78,7 +78,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region UpdateChargingStationAdminStatus        (AdminStatusUpdates, TransmissionType = Enqueued, ...)
+        #region UpdateChargingStationAdminStatus        (AdminStatusUpdates, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging station admin status updates.
@@ -93,7 +93,7 @@ namespace org.GraphDefined.WWCP
         Task<PushAdminStatusResult>
 
             UpdateAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  AdminStatusUpdates,
-                              TransmissionTypes                              TransmissionType    = TransmissionTypes.Enqueued,
+                              TransmissionTypes                              TransmissionType    = TransmissionTypes.Enqueue,
 
                               DateTime?                                      Timestamp           = null,
                               CancellationToken?                             CancellationToken   = null,
@@ -102,7 +102,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region UpdateChargingPoolAdminStatus           (AdminStatusUpdates, TransmissionType = Enqueued, ...)
+        #region UpdateChargingPoolAdminStatus           (AdminStatusUpdates, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging pool admin status updates.
@@ -117,7 +117,7 @@ namespace org.GraphDefined.WWCP
         Task<PushAdminStatusResult>
 
             UpdateAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  AdminStatusUpdates,
-                              TransmissionTypes                           TransmissionType    = TransmissionTypes.Enqueued,
+                              TransmissionTypes                           TransmissionType    = TransmissionTypes.Enqueue,
 
                               DateTime?                                   Timestamp           = null,
                               CancellationToken?                          CancellationToken   = null,
@@ -126,7 +126,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region UpdateChargingStationOperatorAdminStatus(AdminStatusUpdates, TransmissionType = Enqueued, ...)
+        #region UpdateChargingStationOperatorAdminStatus(AdminStatusUpdates, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of charging station operator admin status updates.
@@ -141,7 +141,7 @@ namespace org.GraphDefined.WWCP
         Task<PushAdminStatusResult>
 
             UpdateAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  AdminStatusUpdates,
-                              TransmissionTypes                                      TransmissionType    = TransmissionTypes.Enqueued,
+                              TransmissionTypes                                      TransmissionType    = TransmissionTypes.Enqueue,
 
                               DateTime?                                              Timestamp           = null,
                               CancellationToken?                                     CancellationToken   = null,
@@ -150,7 +150,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region UpdateRoamingNetworkAdminStatus         (AdminStatusUpdates, TransmissionType = Enqueued, ...)
+        #region UpdateRoamingNetworkAdminStatus         (AdminStatusUpdates, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the given enumeration of roaming network admin status updates.
@@ -165,7 +165,7 @@ namespace org.GraphDefined.WWCP
         Task<PushAdminStatusResult>
 
             UpdateAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  AdminStatusUpdates,
-                              TransmissionTypes                             TransmissionType    = TransmissionTypes.Enqueued,
+                              TransmissionTypes                             TransmissionType    = TransmissionTypes.Enqueue,
 
                               DateTime?                                     Timestamp           = null,
                               CancellationToken?                            CancellationToken   = null,

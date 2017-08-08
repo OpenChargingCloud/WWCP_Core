@@ -7016,7 +7016,7 @@ namespace org.GraphDefined.WWCP
                                                                 TimeSpan?                        RequestTimeout)
 
                 => SendChargeDetailRecords(ChargeDetailRecords,
-                                           TransmissionTypes.Enqueued,
+                                           TransmissionTypes.Enqueue,
 
                                            Timestamp,
                                            CancellationToken,
@@ -7038,7 +7038,7 @@ namespace org.GraphDefined.WWCP
         public async Task<SendCDRsResult>
 
             SendChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
-                                    TransmissionTypes                TransmissionType    = TransmissionTypes.Enqueued,
+                                    TransmissionTypes                TransmissionType    = TransmissionTypes.Enqueue,
 
                                     DateTime?                        Timestamp           = null,
                                     CancellationToken?               CancellationToken   = null,
@@ -7367,7 +7367,7 @@ namespace org.GraphDefined.WWCP
         {
 
             SendChargeDetailRecords(new ChargeDetailRecord[] { ChargeDetailRecord },
-                                    TransmissionTypes.Enqueued,
+                                    TransmissionTypes.Enqueue,
 
                                     Timestamp,
                                     new CancellationTokenSource().Token,

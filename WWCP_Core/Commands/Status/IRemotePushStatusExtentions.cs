@@ -35,7 +35,7 @@ namespace org.GraphDefined.WWCP
     //public static class IRemotePushStatusExtentions
     //{
 
-    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, EVSEAdminStatusUpdate,    TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, EVSEAdminStatusUpdate,    TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given EVSE admin status update.
@@ -72,7 +72,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, EVSE,                     TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, EVSE,                     TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the status of the given EVSE.
@@ -119,7 +119,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, EVSEs,                    TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, EVSEs,                    TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given enumeration of EVSE admin status.
@@ -166,7 +166,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, ChargingStation,          TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, ChargingStation,          TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all EVSE admin status of the given charging station.
@@ -213,7 +213,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, ChargingStations,         TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, ChargingStations,         TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all EVSE admin status of the given enumeration of charging station.
@@ -262,7 +262,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, ChargingPool,             TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, ChargingPool,             TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all EVSE admin status of the given charging pool.
@@ -309,7 +309,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, ChargingPools,            TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, ChargingPools,            TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all EVSE admin status of the given enumeration of charging pools.
@@ -358,7 +358,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, ChargingStationOperator,  TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, ChargingStationOperator,  TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all EVSE admin status of the given charging station operator.
@@ -405,7 +405,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, ChargingStationOperators, TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, ChargingStationOperators, TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all EVSE admin status of the given enumeration of charging station operators.
@@ -454,7 +454,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, RoamingNetwork,           TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEAdminStatus(this IRemotePushStatus, RoamingNetwork,           TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all EVSE admin status of the given roaming network.
@@ -502,7 +502,7 @@ namespace org.GraphDefined.WWCP
     //    #endregion
 
 
-    //    #region UpdateEVSEStatus(this IRemotePushStatus, EVSEStatusUpdate,         TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEStatus(this IRemotePushStatus, EVSEStatusUpdate,         TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given EVSE status update.
@@ -539,7 +539,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEStatus(this IRemotePushStatus, EVSE,                     TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEStatus(this IRemotePushStatus, EVSE,                     TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the status of the given EVSE.
@@ -586,7 +586,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEStatus(this IRemotePushStatus, EVSEs,                    TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEStatus(this IRemotePushStatus, EVSEs,                    TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given enumeration of EVSE status.
@@ -633,7 +633,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEStatus(this IRemotePushStatus, ChargingStation,          TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEStatus(this IRemotePushStatus, ChargingStation,          TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all EVSE status of the given charging station.
@@ -680,7 +680,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEStatus(this IRemotePushStatus, ChargingStations,         TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEStatus(this IRemotePushStatus, ChargingStations,         TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all EVSE status of the given enumeration of charging station.
@@ -729,7 +729,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEStatus(this IRemotePushStatus, ChargingPool,             TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEStatus(this IRemotePushStatus, ChargingPool,             TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all EVSE status of the given charging pool.
@@ -776,7 +776,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEStatus(this IRemotePushStatus, ChargingPools,            TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEStatus(this IRemotePushStatus, ChargingPools,            TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all EVSE status of the given enumeration of charging pools.
@@ -825,7 +825,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEStatus(this IRemotePushStatus, ChargingStationOperator,  TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEStatus(this IRemotePushStatus, ChargingStationOperator,  TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all EVSE status of the given charging station operator.
@@ -872,7 +872,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEStatus(this IRemotePushStatus, ChargingStationOperators, TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEStatus(this IRemotePushStatus, ChargingStationOperators, TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all EVSE status of the given enumeration of charging station operators.
@@ -921,7 +921,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateEVSEStatus(this IRemotePushStatus, RoamingNetwork,           TransmissionType = Enqueued, ...)
+    //    #region UpdateEVSEStatus(this IRemotePushStatus, RoamingNetwork,           TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all EVSE status of the given roaming network.
@@ -970,7 +970,7 @@ namespace org.GraphDefined.WWCP
 
 
 
-    //    #region UpdateChargingStationAdminStatus(this IRemotePushStatus, ChargingStationAdminStatusUpdate, TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationAdminStatus(this IRemotePushStatus, ChargingStationAdminStatusUpdate, TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given charging station admin status update.
@@ -1007,7 +1007,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationAdminStatus(this IRemotePushStatus, ChargingStation,                  TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationAdminStatus(this IRemotePushStatus, ChargingStation,                  TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the status of the given charging station.
@@ -1054,7 +1054,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationAdminStatus(this IRemotePushStatus, ChargingStations,                 TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationAdminStatus(this IRemotePushStatus, ChargingStations,                 TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given enumeration of charging station admin status.
@@ -1101,7 +1101,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationAdminStatus(this IRemotePushStatus, ChargingPool,                     TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationAdminStatus(this IRemotePushStatus, ChargingPool,                     TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging station admin status of the given charging pool.
@@ -1148,7 +1148,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationAdminStatus(this IRemotePushStatus, ChargingPools,                    TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationAdminStatus(this IRemotePushStatus, ChargingPools,                    TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging station admin status of the given enumeration of charging pools.
@@ -1197,7 +1197,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationAdminStatus(this IRemotePushStatus, ChargingStationOperator,          TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationAdminStatus(this IRemotePushStatus, ChargingStationOperator,          TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging station admin status of the given charging station operator.
@@ -1244,7 +1244,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationAdminStatus(this IRemotePushStatus, ChargingStationOperators,         TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationAdminStatus(this IRemotePushStatus, ChargingStationOperators,         TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging station admin status of the given enumeration of charging station operators.
@@ -1293,7 +1293,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationAdminStatus(this IRemotePushStatus, RoamingNetwork,                   TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationAdminStatus(this IRemotePushStatus, RoamingNetwork,                   TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging station admin status of the given roaming network.
@@ -1341,7 +1341,7 @@ namespace org.GraphDefined.WWCP
     //    #endregion
 
 
-    //    #region UpdateChargingStationStatus(this IRemotePushStatus, ChargingStationStatusUpdate, TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationStatus(this IRemotePushStatus, ChargingStationStatusUpdate, TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given charging station status update.
@@ -1378,7 +1378,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationStatus(this IRemotePushStatus, ChargingStation,             TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationStatus(this IRemotePushStatus, ChargingStation,             TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the status of the given charging station.
@@ -1425,7 +1425,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationStatus(this IRemotePushStatus, ChargingStations,            TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationStatus(this IRemotePushStatus, ChargingStations,            TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given enumeration of charging station status.
@@ -1472,7 +1472,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationStatus(this IRemotePushStatus, ChargingPool,                TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationStatus(this IRemotePushStatus, ChargingPool,                TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging station status of the given charging pool.
@@ -1519,7 +1519,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationStatus(this IRemotePushStatus, ChargingPools,               TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationStatus(this IRemotePushStatus, ChargingPools,               TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging station status of the given enumeration of charging pools.
@@ -1568,7 +1568,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationStatus(this IRemotePushStatus, ChargingStationOperator,     TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationStatus(this IRemotePushStatus, ChargingStationOperator,     TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging station status of the given charging station operator.
@@ -1615,7 +1615,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationStatus(this IRemotePushStatus, ChargingStationOperators,    TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationStatus(this IRemotePushStatus, ChargingStationOperators,    TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging station status of the given enumeration of charging station operators.
@@ -1664,7 +1664,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationStatus(this IRemotePushStatus, RoamingNetwork,              TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationStatus(this IRemotePushStatus, RoamingNetwork,              TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging station status of the given roaming network.
@@ -1713,7 +1713,7 @@ namespace org.GraphDefined.WWCP
 
 
 
-    //    #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, ChargingPoolAdminStatusUpdate, TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, ChargingPoolAdminStatusUpdate, TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given charging pool admin status update.
@@ -1750,7 +1750,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, ChargingPool,                  TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, ChargingPool,                  TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the admin status of the given charging pool.
@@ -1797,7 +1797,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, ChargingPools,                 TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, ChargingPools,                 TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given enumeration of charging pool admin status.
@@ -1844,7 +1844,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, ChargingStationOperator,       TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, ChargingStationOperator,       TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging pool admin status of the given charging station operator.
@@ -1891,7 +1891,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, ChargingStationOperators,      TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, ChargingStationOperators,      TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging pool admin status of the given enumeration of charging station operators.
@@ -1940,7 +1940,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, RoamingNetwork,                TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingPoolAdminStatus(this IRemotePushStatus, RoamingNetwork,                TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging pool admin status of the given roaming network.
@@ -1988,7 +1988,7 @@ namespace org.GraphDefined.WWCP
     //    #endregion
 
 
-    //    #region UpdateChargingPoolStatus(this IRemotePushStatus, ChargingPoolStatusUpdate, TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingPoolStatus(this IRemotePushStatus, ChargingPoolStatusUpdate, TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given charging pool status update.
@@ -2025,7 +2025,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingPoolStatus(this IRemotePushStatus, ChargingPool,             TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingPoolStatus(this IRemotePushStatus, ChargingPool,             TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the status of the given charging pool.
@@ -2072,7 +2072,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingPoolStatus(this IRemotePushStatus, ChargingPools,            TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingPoolStatus(this IRemotePushStatus, ChargingPools,            TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given enumeration of charging pool status.
@@ -2119,7 +2119,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingPoolStatus(this IRemotePushStatus, ChargingStationOperator,  TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingPoolStatus(this IRemotePushStatus, ChargingStationOperator,  TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging pool status of the given charging station operator.
@@ -2166,7 +2166,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingPoolStatus(this IRemotePushStatus, ChargingStationOperators, TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingPoolStatus(this IRemotePushStatus, ChargingStationOperators, TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging pool status of the given enumeration of charging station operators.
@@ -2215,7 +2215,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingPoolStatus(this IRemotePushStatus, RoamingNetwork,           TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingPoolStatus(this IRemotePushStatus, RoamingNetwork,           TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging pool status of the given roaming network.
@@ -2264,7 +2264,7 @@ namespace org.GraphDefined.WWCP
 
 
 
-    //    #region UpdateChargingStationOperatorAdminStatus(this IRemotePushStatus, ChargingStationOperatorAdminStatusUpdate, TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationOperatorAdminStatus(this IRemotePushStatus, ChargingStationOperatorAdminStatusUpdate, TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given charging station operator admin status update.
@@ -2301,7 +2301,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationOperatorAdminStatus(this IRemotePushStatus, ChargingStationOperator,                  TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationOperatorAdminStatus(this IRemotePushStatus, ChargingStationOperator,                  TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the admin status of the given charging station operator.
@@ -2348,7 +2348,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationOperatorAdminStatus(this IRemotePushStatus, ChargingStationOperators,                 TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationOperatorAdminStatus(this IRemotePushStatus, ChargingStationOperators,                 TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given enumeration of charging station operator admin status.
@@ -2395,7 +2395,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationOperatorAdminStatus(this IRemotePushStatus, RoamingNetwork,                           TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationOperatorAdminStatus(this IRemotePushStatus, RoamingNetwork,                           TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging station operator admin status of the given roaming network.
@@ -2443,7 +2443,7 @@ namespace org.GraphDefined.WWCP
     //    #endregion
 
 
-    //    #region UpdateChargingStationOperatorStatus(this IRemotePushStatus, ChargingStationOperatorStatusUpdate, TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationOperatorStatus(this IRemotePushStatus, ChargingStationOperatorStatusUpdate, TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given charging station operator status update.
@@ -2480,7 +2480,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationOperatorStatus(this IRemotePushStatus, ChargingStationOperator,             TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationOperatorStatus(this IRemotePushStatus, ChargingStationOperator,             TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the status of the given charging station operator.
@@ -2527,7 +2527,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationOperatorStatus(this IRemotePushStatus, ChargingStationOperators,            TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationOperatorStatus(this IRemotePushStatus, ChargingStationOperators,            TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given enumeration of charging station operator status.
@@ -2574,7 +2574,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateChargingStationOperatorStatus(this IRemotePushStatus, RoamingNetwork,                      TransmissionType = Enqueued, ...)
+    //    #region UpdateChargingStationOperatorStatus(this IRemotePushStatus, RoamingNetwork,                      TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update all charging station operator status of the given roaming network.
@@ -2623,7 +2623,7 @@ namespace org.GraphDefined.WWCP
 
 
 
-    //    #region UpdateRoamingNetworkAdminStatus(this IRemotePushStatus, RoamingNetworkAdminStatusUpdate, TransmissionType = Enqueued, ...)
+    //    #region UpdateRoamingNetworkAdminStatus(this IRemotePushStatus, RoamingNetworkAdminStatusUpdate, TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given roaming network admin status update.
@@ -2660,7 +2660,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateRoamingNetworkAdminStatus(this IRemotePushStatus, RoamingNetwork,                  TransmissionType = Enqueued, ...)
+    //    #region UpdateRoamingNetworkAdminStatus(this IRemotePushStatus, RoamingNetwork,                  TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the admin status of the given roaming network.
@@ -2708,7 +2708,7 @@ namespace org.GraphDefined.WWCP
     //    #endregion
 
 
-    //    #region UpdateRoamingNetworkStatus(this IRemotePushStatus, RoamingNetworkStatusUpdate, TransmissionType = Enqueued, ...)
+    //    #region UpdateRoamingNetworkStatus(this IRemotePushStatus, RoamingNetworkStatusUpdate, TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the given roaming network status update.
@@ -2745,7 +2745,7 @@ namespace org.GraphDefined.WWCP
 
     //    #endregion
 
-    //    #region UpdateRoamingNetworkStatus(this IRemotePushStatus, RoamingNetwork,             TransmissionType = Enqueued, ...)
+    //    #region UpdateRoamingNetworkStatus(this IRemotePushStatus, RoamingNetwork,             TransmissionType = Enqueue, ...)
 
     //    /// <summary>
     //    /// Update the status of the given roaming network.

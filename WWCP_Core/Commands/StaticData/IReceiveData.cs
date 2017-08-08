@@ -54,7 +54,7 @@ namespace org.GraphDefined.WWCP
 
         #region (Set/Add/Update/Delete) EVSE(s)...
 
-        #region SetStaticData   (EVSE, TransmissionType = Enqueued, ...)
+        #region SetStaticData   (EVSE, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Upload the static data of the given EVSE.
@@ -76,7 +76,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AddStaticData   (EVSE, TransmissionType = Enqueued, ...)
+        #region AddStaticData   (EVSE, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Upload the static data of the given EVSE.
@@ -98,7 +98,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region UpdateStaticData(EVSE, PropertyName = null, OldValue = null, NewValue = null, TransmissionType = Enqueued, ...)
+        #region UpdateStaticData(EVSE, PropertyName = null, OldValue = null, NewValue = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the static data of the given EVSE.
@@ -127,7 +127,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region DeleteStaticData(EVSE, TransmissionType = Enqueued, ...)
+        #region DeleteStaticData(EVSE, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Delete the static data of the given EVSE.
@@ -242,7 +242,7 @@ namespace org.GraphDefined.WWCP
 
         #region (Set/Add/Update/Delete) Charging station(s)...
 
-        #region SetStaticData   (ChargingStation, TransmissionType = Enqueued, ...)
+        #region SetStaticData   (ChargingStation, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Set the EVSE data of the given charging station as new static EVSE data.
@@ -264,7 +264,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AddStaticData   (ChargingStation, TransmissionType = Enqueued, ...)
+        #region AddStaticData   (ChargingStation, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the EVSE data of the given charging station to the static EVSE data.
@@ -286,7 +286,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region UpdateStaticData(ChargingStation, TransmissionType = Enqueued, ...)
+        #region UpdateStaticData(ChargingStation, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the EVSE data of the given charging station.
@@ -429,7 +429,7 @@ namespace org.GraphDefined.WWCP
 
         #region (Set/Add/Update/Delete) Charging pool(s)...
 
-        #region SetStaticData   (ChargingPool, TransmissionType = Enqueued, ...)
+        #region SetStaticData   (ChargingPool, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Set the EVSE data of the given charging pool as new static EVSE data.
@@ -451,7 +451,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AddStaticData   (ChargingPool, TransmissionType = Enqueued, ...)
+        #region AddStaticData   (ChargingPool, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Add the EVSE data of the given charging pool to the static EVSE data.
@@ -473,7 +473,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region UpdateStaticData(ChargingPool, PropertyName = null, OldValue = null, NewValue = null, TransmissionType = Enqueued, ...)
+        #region UpdateStaticData(ChargingPool, PropertyName = null, OldValue = null, NewValue = null, TransmissionType = Enqueue, ...)
 
         /// <summary>
         /// Update the data of the given charging pool.

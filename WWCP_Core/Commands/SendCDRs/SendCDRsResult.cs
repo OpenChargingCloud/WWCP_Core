@@ -38,6 +38,16 @@ namespace org.GraphDefined.WWCP
 
         public SendCDRResult(ChargeDetailRecord   ChargeDetailRecord,
                              SendCDRResultTypes   Result,
+                             String               Warning)
+
+            : this(ChargeDetailRecord,
+                   Result,
+                   new string[] { Warning })
+
+        { }
+
+        public SendCDRResult(ChargeDetailRecord   ChargeDetailRecord,
+                             SendCDRResultTypes   Result,
                              IEnumerable<String>  Warnings = null)
         {
 
@@ -295,7 +305,7 @@ namespace org.GraphDefined.WWCP
                 => new SendCDRsResult(AuthorizatorId,
                                       ISendChargeDetailRecords,
                                       SendCDRsResultTypes.AdminDown,
-                                      RejectedChargeDetailRecords.Select(cdr => new SendCDRResult(cdr, SendCDRResultTypes.OutOfService)),
+                                      RejectedChargeDetailRecords.SafeSelect(cdr => new SendCDRResult(cdr, SendCDRResultTypes.AdminDown)),
                                       Description,
                                       Warnings,
                                       Runtime);
@@ -351,7 +361,7 @@ namespace org.GraphDefined.WWCP
                 => new SendCDRsResult(AuthorizatorId,
                                       IReceiveChargeDetailRecords,
                                       SendCDRsResultTypes.AdminDown,
-                                      RejectedChargeDetailRecords.Select(cdr => new SendCDRResult(cdr, SendCDRResultTypes.OutOfService)),
+                                      RejectedChargeDetailRecords.Select(cdr => new SendCDRResult(cdr, SendCDRResultTypes.AdminDown)),
                                       Description,
                                       Warnings,
                                       Runtime);
@@ -484,17 +494,18 @@ namespace org.GraphDefined.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Enqueued(IId                       AuthorizatorId,
-                     ISendChargeDetailRecords  ISendChargeDetailRecords,
-                     String                    Description   = null,
-                     IEnumerable<String>       Warnings      = null,
-                     TimeSpan?                 Runtime       = null)
+            Enqueued(IId                         AuthorizatorId,
+                     ISendChargeDetailRecords    ISendChargeDetailRecords,
+                     String                      Description                  = null,
+                     IEnumerable<SendCDRResult>  RejectedChargeDetailRecords  = null,
+                     IEnumerable<String>         Warnings                     = null,
+                     TimeSpan?                   Runtime                      = null)
 
 
                 => new SendCDRsResult(AuthorizatorId,
                                       ISendChargeDetailRecords,
                                       SendCDRsResultTypes.Enqueued,
-                                      new SendCDRResult[0],
+                                      RejectedChargeDetailRecords ?? new SendCDRResult[0],
                                       Description,
                                       Warnings,
                                       Runtime);
@@ -660,11 +671,17 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         Unspecified,
 
+        AdminDown,
+
         Filtered,
+
+        Enqueued,
 
         Success,
 
         InvalidSessionId,
+
+        CouldNotConvertCDRFormat,
 
         UnknownEVSE,
 
