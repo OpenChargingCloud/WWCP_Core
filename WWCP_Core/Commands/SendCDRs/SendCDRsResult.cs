@@ -42,7 +42,9 @@ namespace org.GraphDefined.WWCP
 
             : this(ChargeDetailRecord,
                    Result,
-                   new string[] { Warning })
+                   Warning.IsNeitherNullNorEmpty()
+                       ? new String[] { Warning }
+                       : null)
 
         { }
 
