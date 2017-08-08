@@ -513,17 +513,18 @@ namespace org.GraphDefined.WWCP
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Timeout(IId                       AuthorizatorId,
-                    ISendChargeDetailRecords  ISendChargeDetailRecords,
-                    String                    Description   = null,
-                    IEnumerable<String>       Warnings      = null,
-                    TimeSpan?                 Runtime       = null)
+            Timeout(IId                         AuthorizatorId,
+                    ISendChargeDetailRecords    ISendChargeDetailRecords,
+                    String                      Description                  = null,
+                    IEnumerable<SendCDRResult>  RejectedChargeDetailRecords  = null,
+                    IEnumerable<String>         Warnings                     = null,
+                    TimeSpan?                   Runtime                      = null)
 
 
                 => new SendCDRsResult(AuthorizatorId,
                                       ISendChargeDetailRecords,
                                       SendCDRsResultTypes.Timeout,
-                                      new SendCDRResult[0],
+                                      RejectedChargeDetailRecords ?? new SendCDRResult[0],
                                       Description,
                                       Warnings,
                                       Runtime);
@@ -666,6 +667,8 @@ namespace org.GraphDefined.WWCP
         InvalidSessionId,
 
         UnknownEVSE,
+
+        Timeout,
 
 
         /// <summary>
