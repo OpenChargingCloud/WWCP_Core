@@ -958,6 +958,13 @@ namespace org.GraphDefined.WWCP
         [Optional]
         public ChargingStationOperator  Operator            { get; }
 
+        /// <summary>
+        /// The roaming network of this charging pool.
+        /// </summary>
+        [InternalUseOnly]
+        public RoamingNetwork RoamingNetwork
+            => Operator?.RoamingNetwork;
+
         #endregion
 
         #region Constructor(s)

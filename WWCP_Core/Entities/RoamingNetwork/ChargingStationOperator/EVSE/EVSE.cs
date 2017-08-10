@@ -990,6 +990,13 @@ namespace org.GraphDefined.WWCP
         public ChargingStationOperator  Operator
             => ChargingStation?.ChargingPool?.Operator;
 
+        /// <summary>
+        /// The roaming network of this EVSE.
+        /// </summary>
+        [InternalUseOnly]
+        public RoamingNetwork           RoamingNetwork
+            => ChargingStation?.ChargingPool?.Operator?.RoamingNetwork;
+
         #endregion
 
         #region Constructor(s)

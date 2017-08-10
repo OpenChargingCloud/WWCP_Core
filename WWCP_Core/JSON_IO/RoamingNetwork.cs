@@ -87,19 +87,12 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
         public static JObject ToJSON(this RoamingNetwork RoamingNetwork)
-        {
 
-            #region Initial checks
+            => RoamingNetwork == null
+                   ? null
 
-            if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(RoamingNetwork),  "The given roaming network must not be null!");
-
-            #endregion
-
-            return JSONObject.Create(RoamingNetwork.Id.            ToJSON("RoamingNetworkId"),
-                                     new JProperty("description",  RoamingNetwork.Description.ToJSON()));
-
-        }
+                   : JSONObject.Create(RoamingNetwork.Id.            ToJSON("RoamingNetworkId"),
+                                       new JProperty("description",  RoamingNetwork.Description.ToJSON()));
 
         #endregion
 
