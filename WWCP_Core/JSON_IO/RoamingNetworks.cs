@@ -67,7 +67,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                        UInt64                Take  = 0)
 
             => RoamingNetworks != null && RoamingNetworks.Any()
-                    ? RoamingNetworks.AsEnumerable().ToJSON(JPropertyKey, Skip, Take)
+                    ? new JProperty(JPropertyKey, RoamingNetworks.AsEnumerable().ToJSON(Skip, Take))
                     : null;
 
         #endregion

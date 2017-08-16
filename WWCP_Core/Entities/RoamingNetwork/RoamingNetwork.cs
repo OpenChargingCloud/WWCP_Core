@@ -403,11 +403,22 @@ namespace org.GraphDefined.WWCP
         private readonly EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator> _ChargingStationOperators;
 
         /// <summary>
-        /// Return all Charging Station Operators registered within this roaming network.
+        /// Return all charging station operators registered within this roaming network.
         /// </summary>
         public IEnumerable<ChargingStationOperator> ChargingStationOperators
 
             => _ChargingStationOperators;
+
+        #endregion
+
+        #region ChargingStationOperatorIds
+
+        /// <summary>
+        /// Return all charging station operator identifications registered within this roaming network.
+        /// </summary>
+        public IEnumerable<ChargingStationOperator_Id> ChargingStationOperatorIds
+
+            => _ChargingStationOperators.SafeSelect(cso => cso.Id);
 
         #endregion
 
@@ -1178,10 +1189,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the admin status of all e-mobility providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusType>>>> EMobilityProviderAdminStatus
+        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>> EMobilityProviderAdminStatus
 
             => _eMobilityProviders.
-                   Select(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusType>>>(emp.Id, emp.AdminStatusSchedule));
+                   Select(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>(emp.Id, emp.AdminStatusSchedule));
 
         #endregion
 
@@ -1190,10 +1201,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the status of all e-mobility providers registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusType>>>> EMobilityProviderStatus
+        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>> EMobilityProviderStatus
 
             => _eMobilityProviders.
-                   Select(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusType>>>(emp.Id, emp.StatusSchedule));
+                   Select(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>(emp.Id, emp.StatusSchedule));
 
         #endregion
 
@@ -1237,8 +1248,8 @@ namespace org.GraphDefined.WWCP
                                                             eMobilityProviderPriority                     Priority                        = null,
                                                             Action<eMobilityProvider>                     Configurator                    = null,
                                                             RemoteEMobilityProviderCreatorDelegate        RemoteEMobilityProviderCreator  = null,
-                                                            eMobilityProviderAdminStatusType              AdminStatus                     = eMobilityProviderAdminStatusType.Operational,
-                                                            eMobilityProviderStatusType                   Status                          = eMobilityProviderStatusType.Available,
+                                                            eMobilityProviderAdminStatusTypes              AdminStatus                     = eMobilityProviderAdminStatusTypes.Operational,
+                                                            eMobilityProviderStatusTypes                   Status                          = eMobilityProviderStatusTypes.Available,
                                                             Action<eMobilityProvider>                     OnSuccess                       = null,
                                                             Action<RoamingNetwork, eMobilityProvider_Id>  OnError                         = null)
         {
@@ -2245,7 +2256,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return all charging pool identifications registered within this roaming network.
         /// </summary>
-        public IEnumerable<ChargingPool_Id> ChargingPoolids
+        public IEnumerable<ChargingPool_Id> ChargingPoolIds
 
             => _ChargingStationOperators.SelectMany(cso => cso.ChargingPoolIds);
 

@@ -37,51 +37,97 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
     public static partial class JSON_IO
     {
 
-        #region ToJSON(this RoamingNetwork)
+        #region ToJSON(this RoamingNetwork,                      Embedded = false, ...)
 
         /// <summary>
         /// Return a JSON representation of the given roaming network.
         /// </summary>
         /// <param name="RoamingNetwork">A roaming network.</param>
-        public static JObject ToJSON(this RoamingNetwork RoamingNetwork)
+        /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
+        public static JObject ToJSON(this RoamingNetwork  RoamingNetwork,
+                                     Boolean              Embedded                           = false,
+                                     InfoStatus           ExpandChargingStationOperatorIds   = InfoStatus.ShowIdOnly,
+                                     InfoStatus           ExpandChargingPoolIds              = InfoStatus.ShowIdOnly,
+                                     InfoStatus           ExpandChargingStationIds           = InfoStatus.ShowIdOnly,
+                                     InfoStatus           ExpandEVSEIds                      = InfoStatus.ShowIdOnly,
+                                     InfoStatus           ExpandBrandIds                     = InfoStatus.ShowIdOnly,
+                                     InfoStatus           ExpandDataLicenses                 = InfoStatus.ShowIdOnly,
+
+                                     InfoStatus           ExpandEMobilityProviderId          = InfoStatus.ShowIdOnly)
+
 
             => RoamingNetwork == null
+
                    ? null
 
-                   : JSONObject.Create(RoamingNetwork.Id.            ToJSON("RoamingNetworkId"),
-                                       new JProperty("description",  RoamingNetwork.Description.ToJSON()));
+                   : JSONObject.Create(
+
+                         new JProperty("@id",  RoamingNetwork.Id.ToString()),
+
+                         Embedded
+                             ? null
+                             : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/RoamingNetwork"),
+
+                         new JProperty("name", RoamingNetwork.Name.ToJSON()),
+
+                         RoamingNetwork.Description.IsNeitherNullNorEmpty()
+                             ? RoamingNetwork.Description.ToJSON("description")
+                             : null,
+
+                         ExpandChargingStationOperatorIds.Switch(
+                                   new JProperty("chargingStationOperatorIds",  new JArray(RoamingNetwork.ChargingStationOperatorIds.Select(id => id.ToString()))),
+                                   new JProperty("chargingStationOperators",    new JArray(RoamingNetwork.ChargingStationOperators.  ToJSON(Embedded:                         true,
+                                                                                                                                            ExpandRoamingNetworkId:           InfoStatus.Hidden,
+                                                                                                                                            ExpandChargingPoolIds:            InfoStatus.Hidden,
+                                                                                                                                            ExpandChargingStationIds:         InfoStatus.Hidden,
+                                                                                                                                            ExpandEVSEIds:                    InfoStatus.Hidden,
+                                                                                                                                            ExpandBrandIds:                   ExpandBrandIds,
+                                                                                                                                            ExpandDataLicenses:               ExpandDataLicenses)))),
+
+                         ExpandChargingPoolIds.Switch(
+                                   new JProperty("chargingPoolIds",             new JArray(RoamingNetwork.ChargingPoolIds.           Select(id => id.ToString()))),
+                                   new JProperty("chargingPools",               new JArray(RoamingNetwork.ChargingPools.             ToJSON(Embedded:                         true,
+                                                                                                                                            ExpandRoamingNetworkId:           InfoStatus.Hidden,
+                                                                                                                                            ExpandChargingStationOperatorId:  InfoStatus.Hidden,
+                                                                                                                                            ExpandChargingStationIds:         InfoStatus.Hidden,
+                                                                                                                                            ExpandEVSEIds:                    InfoStatus.Hidden,
+                                                                                                                                            ExpandBrandIds:                   ExpandBrandIds,
+                                                                                                                                            ExpandDataLicenses:               ExpandDataLicenses)))),
+
+                         ExpandChargingStationIds.Switch(
+                                   new JProperty("chargingStationIds",          new JArray(RoamingNetwork.ChargingStationIds.        Select(id => id.ToString()))),
+                                   new JProperty("chargingStations",            new JArray(RoamingNetwork.ChargingStations.          ToJSON(Embedded:                         true,
+                                                                                                                                            ExpandRoamingNetworkId:           InfoStatus.Hidden,
+                                                                                                                                            ExpandChargingStationOperatorId:  InfoStatus.Hidden,
+                                                                                                                                            ExpandChargingPoolId:             InfoStatus.Hidden,
+                                                                                                                                            ExpandEVSEIds:                    InfoStatus.Hidden,
+                                                                                                                                            ExpandBrandIds:                   ExpandBrandIds,
+                                                                                                                                            ExpandDataLicenses:               ExpandDataLicenses)))),
+
+                         ExpandEVSEIds.Switch(
+                                   new JProperty("EVSEIds",                     new JArray(RoamingNetwork.EVSEIds.                   Select(id => id.ToString()))),
+                                   new JProperty("EVSEs",                       new JArray(RoamingNetwork.EVSEs.                     ToJSON(Embedded:                         true,
+                                                                                                                                            ExpandRoamingNetworkId:           InfoStatus.Hidden,
+                                                                                                                                            ExpandChargingStationOperatorId:  InfoStatus.Hidden,
+                                                                                                                                            ExpandChargingPoolId:             InfoStatus.Hidden,
+                                                                                                                                            ExpandChargingStationId:          InfoStatus.Hidden,
+                                                                                                                                            ExpandBrandIds:                   ExpandBrandIds,
+                                                                                                                                            ExpandDataLicenses:               ExpandDataLicenses)))),
+
+
+                         ExpandEMobilityProviderId.Switch(
+                                   new JProperty("eMobilityProviderIds",        new JArray(RoamingNetwork.ChargingStationOperatorIds.Select(id => id.ToString()))),
+                                   new JProperty("eMobilityProviders",          new JArray(RoamingNetwork.eMobilityProviders.        ToJSON(Embedded:                         true,
+                                                                                                                                            ExpandRoamingNetworkId:           InfoStatus.Hidden,
+                                                                                                                                            ExpandBrandIds:                   ExpandBrandIds,
+                                                                                                                                            ExpandDataLicenses:               ExpandDataLicenses))))
+
+
+                     );
 
         #endregion
 
-        #region ToJSON(this RoamingNetwork, JPropertyKey)
-
-        /// <summary>
-        /// Return a JSON representation of the given roaming network
-        /// using the given JSON property key.
-        /// </summary>
-        /// <param name="RoamingNetwork">A roaming network.</param>
-        /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
-        public static JProperty ToJSON(this RoamingNetwork RoamingNetwork, String JPropertyKey)
-        {
-
-            #region Initial checks
-
-            if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(RoamingNetwork),  "The given roaming network must not be null!");
-
-            if (JPropertyKey.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(JPropertyKey),    "The given json property key must not be null or empty!");
-
-            #endregion
-
-            return new JProperty(JPropertyKey,
-                                 RoamingNetwork.ToJSON());
-
-        }
-
-        #endregion
-
-        #region ToJSON(this RoamingNetworks, Skip = 0, Take = 0)
+        #region ToJSON(this RoamingNetworks, Skip = 0, Take = 0, Embedded = false, ...)
 
         /// <summary>
         /// Return a JSON representation for the given enumeration of roaming networks.
@@ -89,58 +135,40 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="RoamingNetworks">An enumeration of roaming networks.</param>
         /// <param name="Skip">The optional number of roaming networks to skip.</param>
         /// <param name="Take">The optional number of roaming networks to return.</param>
+        /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
         public static JArray ToJSON(this IEnumerable<RoamingNetwork>  RoamingNetworks,
-                                    UInt64                            Skip  = 0,
-                                    UInt64                            Take  = 0)
-        {
+                                    UInt64                            Skip                               = 0,
+                                    UInt64                            Take                               = 0,
+                                    Boolean                           Embedded                           = false,
+                                    InfoStatus                        ExpandChargingStationOperatorIds   = InfoStatus.ShowIdOnly,
+                                    InfoStatus                        ExpandChargingPoolIds              = InfoStatus.ShowIdOnly,
+                                    InfoStatus                        ExpandChargingStationIds           = InfoStatus.ShowIdOnly,
+                                    InfoStatus                        ExpandEVSEIds                      = InfoStatus.ShowIdOnly,
+                                    InfoStatus                        ExpandBrandIds                     = InfoStatus.ShowIdOnly,
+                                    InfoStatus                        ExpandDataLicenses                 = InfoStatus.ShowIdOnly,
 
-            #region Initial checks
+                                    InfoStatus                        ExpandEMobilityProviderId          = InfoStatus.ShowIdOnly)
 
-            if (RoamingNetworks == null)
-                return new JArray();
 
-            #endregion
+        => RoamingNetworks == null || !RoamingNetworks.Any()
 
-            return new JArray(RoamingNetworks.
-                                  Where     (roamingnetwork => roamingnetwork != null).
-                                  OrderBy   (roamingnetwork => roamingnetwork.Id).
-                                  SkipTakeFilter(Skip, Take).
-                                  SafeSelect(roamingnetwork => roamingnetwork.ToJSON()));
+                   ? new JArray()
 
-        }
-
-        #endregion
-
-        #region ToJSON(this RoamingNetworks, JPropertyKey, Skip = 0, Take = 0)
-
-        /// <summary>
-        /// Return a JSON representation for the given enumeration of roaming networks
-        /// using the given JSON property key.
-        /// </summary>
-        /// <param name="RoamingNetworks">An enumeration of roaming networks.</param>
-        /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
-        /// <param name="Skip">The optional number of roaming networks to skip.</param>
-        /// <param name="Take">The optional number of roaming networks to return.</param>
-        public static JProperty ToJSON(this IEnumerable<RoamingNetwork>  RoamingNetworks,
-                                       String                            JPropertyKey,
-                                       UInt64                            Skip  = 0,
-                                       UInt64                            Take  = 0)
-        {
-
-            #region Initial checks
-
-            if (JPropertyKey.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(JPropertyKey),  "The given json property key must not be null or empty!");
-
-            #endregion
-
-            return RoamingNetworks != null
-                       ? new JProperty(JPropertyKey, RoamingNetworks.ToJSON(Skip, Take))
-                       : null;
-
-        }
+                   : new JArray(RoamingNetworks.
+                                    Where     (roamingnetwork => roamingnetwork != null).
+                                    OrderBy   (roamingnetwork => roamingnetwork.Id).
+                                    SkipTakeFilter(Skip, Take).
+                                    SafeSelect(roamingnetwork => roamingnetwork.ToJSON(Embedded,
+                                                                                       ExpandChargingStationOperatorIds,
+                                                                                       ExpandChargingPoolIds,
+                                                                                       ExpandChargingStationIds,
+                                                                                       ExpandEVSEIds,
+                                                                                       ExpandBrandIds,
+                                                                                       ExpandDataLicenses,
+                                                                                       ExpandEMobilityProviderId)));
 
         #endregion
+
 
         #region ToJSON(this RoamingNetworkAdminStatus, Skip = 0, Take = 0, HistorySize = 1)
 
@@ -238,6 +266,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         }
 
         #endregion
+
 
         #region ToJSON(this RoamingNetworkStatus,      Skip = 0, Take = 0, HistorySize = 1)
 

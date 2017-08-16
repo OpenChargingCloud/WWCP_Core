@@ -25,7 +25,6 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -38,119 +37,241 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
     public static partial class JSON_IO
     {
 
-        #region ToJSON(this EMobilityProvider, Embedded = false, ExpandChargingRoamingNetworkId = false)
+        #region ToJSON(this eMobilityProvider,                      Embedded = false, ...)
 
-        public static JObject ToJSON(this eMobilityProvider  EMobilityProvider,
-                                     Boolean                 Embedded                        = false,
-                                     Boolean                 ExpandChargingRoamingNetworkId  = false)
+        /// <summary>
+        /// Return a JSON representation for the given e-mobility provider.
+        /// </summary>
+        /// <param name="eMobilityProvider">An e-mobility provider.</param>
+        /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a roaming network.</param>
+        public static JObject ToJSON(this eMobilityProvider  eMobilityProvider,
+                                     Boolean                 Embedded                 = false,
+                                     InfoStatus              ExpandRoamingNetworkId   = InfoStatus.ShowIdOnly,
+                                     InfoStatus              ExpandBrandIds           = InfoStatus.ShowIdOnly,
+                                     InfoStatus              ExpandDataLicenses       = InfoStatus.ShowIdOnly)
 
-            => EMobilityProvider != null
-                   ? JSONObject.Create(
 
-                         new JProperty("id",                        EMobilityProvider.Id.ToString()),
+            => eMobilityProvider == null
+
+                   ? null
+
+                   : JSONObject.Create(
+
+                         new JProperty("@id",  eMobilityProvider.Id.ToString()),
 
                          Embedded
                              ? null
-                             : ExpandChargingRoamingNetworkId
-                                   ? new JProperty("roamingNetwork",      EMobilityProvider.RoamingNetwork.ToJSON())
-                                   : new JProperty("roamingNetworkId",    EMobilityProvider.RoamingNetwork.Id.ToString()),
+                             : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/eMobilityProvider"),
 
-                         new JProperty("name",                  EMobilityProvider.Name.       ToJSON()),
-                         new JProperty("description",           EMobilityProvider.Description.ToJSON()),
+                         new JProperty("name",  eMobilityProvider.Name.ToJSON()),
+
+                         eMobilityProvider.Description.IsNeitherNullNorEmpty()
+                             ? eMobilityProvider.Description.ToJSON("description")
+                             : null,
+
+                         eMobilityProvider.DataSource.  ToJSON("DataSource"),
+
+                         ExpandDataLicenses.Switch(
+                             new JProperty("DataLicenseIds",  new JArray(eMobilityProvider.DataLicenses.SafeSelect(license => license.Id.ToString()))),
+                             new JProperty("DataLicenses",    eMobilityProvider.DataLicenses.ToJSON())),
+
+                         #region Embedded means it is served as a substructure of e.g. a charging station operator
+
+                         Embedded
+                             ? null
+                             : ExpandRoamingNetworkId.Switch(
+                                   new JProperty("roamingNetworkId",   eMobilityProvider.RoamingNetwork.Id. ToString()),
+                                   new JProperty("roamingNetwork",     eMobilityProvider.RoamingNetwork.    ToJSON(Embedded:                   true,
+                                                                                                                   ExpandEMobilityProviderId:  InfoStatus.Hidden,
+                                                                                                                   ExpandChargingPoolIds:      InfoStatus.Hidden,
+                                                                                                                   ExpandChargingStationIds:   InfoStatus.Hidden,
+                                                                                                                   ExpandEVSEIds:              InfoStatus.Hidden,
+                                                                                                                   ExpandBrandIds:             ExpandBrandIds,
+                                                                                                                   ExpandDataLicenses:         ExpandDataLicenses))),
+
+                         #endregion
 
                          // Address
                          // LogoURI
-                         // API - RobotKeys, Endpoints, DNS SRV
+                         // API
                          // MainKeys
+                         // RobotKeys
+                         // Endpoints
+                         // DNS SRV
 
-                         EMobilityProvider.Logo.IsNotNullOrEmpty()
+                         eMobilityProvider.Logo.IsNotNullOrEmpty()
                              ? new JProperty("logos",               JSONArray.Create(
                                                                         JSONObject.Create(
-                                                                            new JProperty("uri",          EMobilityProvider.Logo),
+                                                                            new JProperty("uri",          eMobilityProvider.Logo),
                                                                             new JProperty("description",  I18NString.Empty.ToJSON())
                                                                         )
                                                                     ))
                              : null,
 
-                         EMobilityProvider.Homepage.IsNotNullOrEmpty()
-                             ? new JProperty("homepage",            EMobilityProvider.Homepage)
+                         eMobilityProvider.Homepage.IsNotNullOrEmpty()
+                             ? new JProperty("homepage",            eMobilityProvider.Homepage)
                              : null,
 
-                         EMobilityProvider.HotlinePhoneNumber.IsNotNullOrEmpty()
-                             ? new JProperty("hotline",             EMobilityProvider.HotlinePhoneNumber)
+                         eMobilityProvider.HotlinePhoneNumber.IsNotNullOrEmpty()
+                             ? new JProperty("hotline",             eMobilityProvider.HotlinePhoneNumber)
                              : null,
 
-                         EMobilityProvider.DataLicenses.Any()
-                             ? new JProperty("dataLicenses",        new JArray(EMobilityProvider.DataLicenses.Select(license => license.ToJSON())))
+                         eMobilityProvider.DataLicenses.Any()
+                             ? new JProperty("dataLicenses",        new JArray(eMobilityProvider.DataLicenses.Select(license => license.ToJSON())))
                              : null
 
-                     )
-                   : null;
+                     );
 
         #endregion
 
-        #region ToJSON(this EMobilityProvider, JPropertyKey)
-
-        public static JProperty ToJSON(this eMobilityProvider EMobilityProvider, String JPropertyKey)
-
-            => EMobilityProvider != null
-                   ? new JProperty(JPropertyKey, EMobilityProvider.ToJSON())
-                   : null;
-
-        #endregion
-
-        #region ToJSON(this EMobilityProviders, Skip = 0, Take = 0, Embedded = false, ExpandChargingRoamingNetworkId = false)
+        #region ToJSON(this eMobilityProviders, Skip = 0, Take = 0, Embedded = false, ...)
 
         /// <summary>
         /// Return a JSON representation for the given enumeration of e-mobility providers.
         /// </summary>
-        /// <param name="EMobilityProviders">An enumeration of e-mobility providers.</param>
+        /// <param name="eMobilityProviders">An enumeration of e-mobility providers.</param>
         /// <param name="Skip">The optional number of e-mobility providers to skip.</param>
         /// <param name="Take">The optional number of e-mobility providers to return.</param>
-        public static JArray ToJSON(this IEnumerable<eMobilityProvider>  EMobilityProviders,
-                                    UInt64                               Skip                            = 0,
-                                    UInt64                               Take                            = 0,
-                                    Boolean                              Embedded                        = false,
-                                    Boolean                              ExpandChargingRoamingNetworkId  = false)
+        public static JArray ToJSON(this IEnumerable<eMobilityProvider>  eMobilityProviders,
+                                    UInt64                               Skip                     = 0,
+                                    UInt64                               Take                     = 0,
+                                    Boolean                              Embedded                 = false,
+                                    InfoStatus                           ExpandRoamingNetworkId   = InfoStatus.ShowIdOnly,
+                                    InfoStatus                           ExpandBrandIds           = InfoStatus.ShowIdOnly,
+                                    InfoStatus                           ExpandDataLicenses       = InfoStatus.ShowIdOnly)
+
+
+            => eMobilityProviders == null
+
+                   ? new JArray()
+
+                   : new JArray(eMobilityProviders.
+                                    Where     (emp => emp != null).
+                                    OrderBy   (emp => emp.Id).
+                                    SkipTakeFilter(Skip, Take).
+                                    SafeSelect(emp => emp.ToJSON(Embedded,
+                                                                 ExpandRoamingNetworkId,
+                                                                 ExpandBrandIds,
+                                                                 ExpandDataLicenses)));
+
+        #endregion
+
+
+        #region ToJSON(this eMobilityProviderAdminStatus, Skip = 0, Take = 0, HistorySize = 1)
+
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>>  eMobilityProviderAdminStatus,
+                                     UInt64                                                                                                             Skip         = 0,
+                                     UInt64                                                                                                             Take         = 0,
+                                     UInt64                                                                                                             HistorySize  = 1)
+
         {
 
             #region Initial checks
 
-            if (EMobilityProviders == null)
-                return new JArray();
+            if (eMobilityProviderAdminStatus == null || !eMobilityProviderAdminStatus.Any())
+                return new JObject();
+
+            var _eMobilityProviderAdminStatus = new Dictionary<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>();
 
             #endregion
 
-            return new JArray(EMobilityProviders.
-                                  Where     (cso => cso != null).
-                                  OrderBy   (cso => cso.Id).
-                                  SkipTakeFilter(Skip, Take).
-                                  SafeSelect(cso => cso.ToJSON(Embedded,
-                                                               ExpandChargingRoamingNetworkId)));
+            #region Maybe there are duplicate eMobilityProvider identifications in the enumeration... take the newest one!
+
+            foreach (var csostatus in Take == 0 ? eMobilityProviderAdminStatus.Skip(Skip)
+                                                : eMobilityProviderAdminStatus.Skip(Skip).Take(Take))
+            {
+
+                if (!_eMobilityProviderAdminStatus.ContainsKey(csostatus.Key))
+                    _eMobilityProviderAdminStatus.Add(csostatus.Key, csostatus.Value);
+
+                else if (csostatus.Value.FirstOrDefault().Timestamp > _eMobilityProviderAdminStatus[csostatus.Key].FirstOrDefault().Timestamp)
+                    _eMobilityProviderAdminStatus[csostatus.Key] = csostatus.Value;
+
+            }
+
+            #endregion
+
+            return _eMobilityProviderAdminStatus.Count == 0
+
+                   ? new JObject()
+
+                   : new JObject(_eMobilityProviderAdminStatus.
+                                     SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
+                                                                  new JObject(statuslist.Value.
+
+                                                                              // Will filter multiple cso status having the exact same ISO 8601 timestamp!
+                                                                              GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
+                                                                              Select           (group => group.First()).
+
+                                                                              OrderByDescending(tsv   => tsv.Timestamp).
+                                                                              Take             (HistorySize).
+                                                                              Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
+                                                                                                                       tsv.Value.    ToString())))
+
+                                                              )));
 
         }
 
         #endregion
 
-        #region ToJSON(this EMobilityProviders, JPropertyKey)
 
-        public static JProperty ToJSON(this IEnumerable<eMobilityProvider> EMobilityProviders, String JPropertyKey)
+        #region ToJSON(this eMobilityProviderStatus,      Skip = 0, Take = 0, HistorySize = 1)
+
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>>  eMobilityProviderStatus,
+                                     UInt64                                                                                                        Skip         = 0,
+                                     UInt64                                                                                                        Take         = 0,
+                                     UInt64                                                                                                        HistorySize  = 1)
+
         {
 
             #region Initial checks
 
-            if (JPropertyKey.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(JPropertyKey), "The json property key must not be null or empty!");
+            if (eMobilityProviderStatus == null || !eMobilityProviderStatus.Any())
+                return new JObject();
+
+            var _eMobilityProviderStatus = new Dictionary<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>();
 
             #endregion
 
-            return EMobilityProviders != null
-                       ? new JProperty(JPropertyKey, EMobilityProviders.ToJSON())
-                       : null;
+            #region Maybe there are duplicate eMobilityProvider identifications in the enumeration... take the newest one!
+
+            foreach (var csostatus in Take == 0 ? eMobilityProviderStatus.Skip(Skip)
+                                                 : eMobilityProviderStatus.Skip(Skip).Take(Take))
+            {
+
+                if (!_eMobilityProviderStatus.ContainsKey(csostatus.Key))
+                    _eMobilityProviderStatus.Add(csostatus.Key, csostatus.Value);
+
+                else if (csostatus.Value.FirstOrDefault().Timestamp > _eMobilityProviderStatus[csostatus.Key].FirstOrDefault().Timestamp)
+                    _eMobilityProviderStatus[csostatus.Key] = csostatus.Value;
+
+            }
+
+            #endregion
+
+            return _eMobilityProviderStatus.Count == 0
+
+                   ? new JObject()
+
+                   : new JObject(_eMobilityProviderStatus.
+                                     SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
+                                                                  new JObject(statuslist.Value.
+
+                                                                              // Will filter multiple cso status having the exact same ISO 8601 timestamp!
+                                                                              GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
+                                                                              Select           (group => group.First()).
+
+                                                                              OrderByDescending(tsv   => tsv.Timestamp).
+                                                                              Take             (HistorySize).
+                                                                              Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
+                                                                                                                       tsv.Value.    ToString())))
+
+                                                              )));
 
         }
 
         #endregion
+
 
     }
 

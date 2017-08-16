@@ -21,7 +21,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The status of an e-mobility provider.
     /// </summary>
-    public enum eMobilityProviderStatusType
+    public enum eMobilityProviderStatusTypes
     {
 
         /// <summary>

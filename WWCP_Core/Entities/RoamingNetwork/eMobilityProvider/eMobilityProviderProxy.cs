@@ -165,6 +165,54 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region DataLicense
+
+        private ReactiveSet<DataLicense> _DataLicenses;
+
+        /// <summary>
+        /// The license of the charging station operator data.
+        /// </summary>
+        [Mandatory]
+        public ReactiveSet<DataLicense> DataLicenses
+        {
+
+            get
+            {
+
+                return _DataLicenses != null && _DataLicenses.Any()
+                           ? _DataLicenses
+                           : RoamingNetwork?.DataLicenses;
+
+            }
+
+            set
+            {
+
+                if (value != _DataLicenses && value != RoamingNetwork?.DataLicenses)
+                {
+
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _DataLicenses);
+
+                    else
+                    {
+
+                        if (_DataLicenses == null)
+                            SetProperty(ref _DataLicenses, value);
+
+                        else
+                            SetProperty(ref _DataLicenses, _DataLicenses.Set(value));
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
         #region Address
 
         private Address _Address;
@@ -332,27 +380,13 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region DataLicense
-
-        private List<DataLicense> _DataLicenses;
-
-        /// <summary>
-        /// The license of the charging station operator data.
-        /// </summary>
-        [Mandatory]
-        public IEnumerable<DataLicense> DataLicenses
-            => _DataLicenses;
-
-        #endregion
-
-
         #region AdminStatus
 
         /// <summary>
         /// The current admin status.
         /// </summary>
         [Optional]
-        public Timestamped<eMobilityProviderAdminStatusType> AdminStatus
+        public Timestamped<eMobilityProviderAdminStatusTypes> AdminStatus
 
             => _AdminStatusSchedule.CurrentStatus;
 
@@ -360,13 +394,13 @@ namespace org.GraphDefined.WWCP
 
         #region AdminStatusSchedule
 
-        private StatusSchedule<eMobilityProviderAdminStatusType> _AdminStatusSchedule;
+        private StatusSchedule<eMobilityProviderAdminStatusTypes> _AdminStatusSchedule;
 
         /// <summary>
         /// The admin status schedule.
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<eMobilityProviderAdminStatusType>> AdminStatusSchedule
+        public IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>> AdminStatusSchedule
 
             => _AdminStatusSchedule;
 
@@ -379,7 +413,7 @@ namespace org.GraphDefined.WWCP
         /// The current status.
         /// </summary>
         [Optional]
-        public Timestamped<eMobilityProviderStatusType> Status
+        public Timestamped<eMobilityProviderStatusTypes> Status
 
             => _StatusSchedule.CurrentStatus;
 
@@ -387,13 +421,13 @@ namespace org.GraphDefined.WWCP
 
         #region StatusSchedule
 
-        private StatusSchedule<eMobilityProviderStatusType> _StatusSchedule;
+        private StatusSchedule<eMobilityProviderStatusTypes> _StatusSchedule;
 
         /// <summary>
         /// The status schedule.
         /// </summary>
         [Optional]
-        public IEnumerable<Timestamped<eMobilityProviderStatusType>> StatusSchedule
+        public IEnumerable<Timestamped<eMobilityProviderStatusTypes>> StatusSchedule
 
             => _StatusSchedule;
 
@@ -645,16 +679,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique e-mobility provider identification.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
         internal eMobilityProvider(eMobilityProvider_Id                    Id,
-                                        RoamingNetwork                          RoamingNetwork,
-                                        Action<eMobilityProvider>          Configurator                    = null,
-                                        RemoteEMobilityProviderCreatorDelegate  RemoteEMobilityProviderCreator  = null,
-                                        I18NString                              Name                            = null,
-                                        I18NString                              Description                     = null,
-                                        eMobilityProviderPriority               Priority                        = null,
-                                        eMobilityProviderAdminStatusType        AdminStatus                     = eMobilityProviderAdminStatusType.Operational,
-                                        eMobilityProviderStatusType             Status                          = eMobilityProviderStatusType.Available,
-                                        UInt16                                  MaxAdminStatusListSize          = DefaultMaxAdminStatusListSize,
-                                        UInt16                                  MaxStatusListSize               = DefaultMaxStatusListSize)
+                                   RoamingNetwork                          RoamingNetwork,
+                                   Action<eMobilityProvider>               Configurator                     = null,
+                                   RemoteEMobilityProviderCreatorDelegate  RemoteEMobilityProviderCreator   = null,
+                                   I18NString                              Name                             = null,
+                                   I18NString                              Description                      = null,
+                                   eMobilityProviderPriority               Priority                         = null,
+                                   eMobilityProviderAdminStatusTypes        AdminStatus                      = eMobilityProviderAdminStatusTypes.Operational,
+                                   eMobilityProviderStatusTypes             Status                           = eMobilityProviderStatusTypes.Available,
+                                   UInt16                                  MaxAdminStatusListSize           = DefaultMaxAdminStatusListSize,
+                                   UInt16                                  MaxStatusListSize                = DefaultMaxStatusListSize)
 
             : base(Id,
                    RoamingNetwork)
@@ -672,14 +706,14 @@ namespace org.GraphDefined.WWCP
 
             this._Name                        = Name        ?? new I18NString();
             this._Description                 = Description ?? new I18NString();
-            this._DataLicenses                = new List<DataLicense>();
+            this._DataLicenses                = new ReactiveSet<DataLicense>();
 
             this.Priority                     = Priority    ?? new eMobilityProviderPriority(0);
 
-            this._AdminStatusSchedule         = new StatusSchedule<eMobilityProviderAdminStatusType>();
+            this._AdminStatusSchedule         = new StatusSchedule<eMobilityProviderAdminStatusTypes>();
             this._AdminStatusSchedule.Insert(AdminStatus);
 
-            this._StatusSchedule              = new StatusSchedule<eMobilityProviderStatusType>();
+            this._StatusSchedule              = new StatusSchedule<eMobilityProviderStatusTypes>();
             this._StatusSchedule.Insert(Status);
 
             #endregion

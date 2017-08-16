@@ -17,25 +17,49 @@
 
 #region Usings
 
-using System.Collections.Generic;
+using System;
+
+using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
 
-    /// <summary>
-    /// An e-mobility provider admin status report.
-    /// </summary>
-    public class eMobilityProviderAdminStatusReport : StatusReport<eMobilityProvider, eMobilityProviderAdminStatusTypes>
+    public enum InfoStatus
     {
 
-        public eMobilityProviderAdminStatusReport(IEnumerable<eMobilityProvider> EMobilityProviders)
+        Expand,
+        ShowIdOnly,
+        Hidden
 
-            : base(EMobilityProviders,
-                   provider => provider.AdminStatus.Value)
+    }
 
-        { }
+
+    public static class InfoStatusExtentions
+    {
+
+        public static JProperty Switch(this InfoStatus  Status,
+                                       JProperty        WhenShowIdOnly,
+                                       JProperty        WhenExpand)
+        {
+
+            switch (Status)
+            {
+
+                case InfoStatus.ShowIdOnly:
+                    return WhenShowIdOnly;
+
+                case InfoStatus.Expand:
+                    return WhenExpand;
+
+                default:
+                    return null;
+
+            }
+
+        }
 
     }
 

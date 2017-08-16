@@ -85,6 +85,7 @@
     <Compile Include="Commands\SendCDRs\OnGetCDRsDelegate.cs" />
     <Compile Include="CommonTypes\ACustomData.cs" />
     <Compile Include="CommonTypes\DataLicense_Id.cs" />
+    <Compile Include="CommonTypes\InfoStatus.cs" />
     <Compile Include="CommonTypes\ICustomData.cs" />
     <Compile Include="CommonTypes\TransmissionTypes.cs" />
     <Compile Include="CommonTypes\Signature.cs" />
@@ -203,8 +204,8 @@
     <Compile Include="Entities\RoamingNetwork\ParkingOperator\ParkingSensor\ParkingSensor_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\ParkingOperator\ParkingSensor\ParkingSensorStatusType.cs" />
     <Compile Include="Entities\EntityHashSet.cs" />
-    <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityProviderAdminStatusType.cs" />
-    <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityProviderStatusType.cs" />
+    <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityProviderAdminStatusTypes.cs" />
+    <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityProviderStatusTypes.cs" />
     <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityProviderAdminStatusReport.cs" />
     <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityProviderDelegates.cs" />
     <Compile Include="Entities\RoamingNetwork\eMobilityProvider\eMobilityProviderExceptions.cs" />
