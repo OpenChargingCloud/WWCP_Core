@@ -52,7 +52,7 @@ namespace org.GraphDefined.WWCP
                                            IReserveRemoteStartStop,
                                            IEquatable<ChargingStationOperator>, IComparable<ChargingStationOperator>, IComparable,
                                            IEnumerable<ChargingPool>,
-                                           IStatus<ChargingStationOperatorStatusType>
+                                           IStatus<ChargingStationOperatorStatusTypes>
     {
 
         #region Data
@@ -102,6 +102,15 @@ namespace org.GraphDefined.WWCP
 
         }
 
+        public I18NString SetName(Languages Language, String Text)
+            => _Name = I18NString.Create(Language, Text);
+
+        public I18NString SetName(I18NString I18NText)
+            => _Name = I18NText;
+
+        public I18NString AddName(Languages Language, String Text)
+            => _Name.Add(Language, Text);
+
         #endregion
 
         #region Description
@@ -132,6 +141,15 @@ namespace org.GraphDefined.WWCP
             }
 
         }
+
+        public I18NString SetDescription(Languages Language, String Text)
+            => _Description = I18NString.Create(Language, Text);
+
+        public I18NString SetDescription(I18NString I18NText)
+            => _Description = I18NText;
+
+        public I18NString AddDescription(Languages Language, String Text)
+            => _Description.Add(Language, Text);
 
         #endregion
 
@@ -348,7 +366,7 @@ namespace org.GraphDefined.WWCP
         /// The current admin status.
         /// </summary>
         [Optional]
-        public Timestamped<ChargingStationOperatorAdminStatusType> AdminStatus
+        public Timestamped<ChargingStationOperatorAdminStatusTypes> AdminStatus
 
             => _AdminStatusSchedule.CurrentStatus;
 
@@ -356,12 +374,12 @@ namespace org.GraphDefined.WWCP
 
         #region AdminStatusSchedule
 
-        private StatusSchedule<ChargingStationOperatorAdminStatusType> _AdminStatusSchedule;
+        private StatusSchedule<ChargingStationOperatorAdminStatusTypes> _AdminStatusSchedule;
 
         /// <summary>
         /// The admin status schedule.
         /// </summary>
-        public IEnumerable<Timestamped<ChargingStationOperatorAdminStatusType>> AdminStatusSchedule(UInt64? HistorySize = null)
+        public IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>> AdminStatusSchedule(UInt64? HistorySize = null)
         {
 
             if (HistorySize.HasValue)
@@ -380,7 +398,7 @@ namespace org.GraphDefined.WWCP
         /// The current status.
         /// </summary>
         [Optional]
-        public Timestamped<ChargingStationOperatorStatusType> Status
+        public Timestamped<ChargingStationOperatorStatusTypes> Status
 
             => _StatusSchedule.CurrentStatus;
 
@@ -388,12 +406,12 @@ namespace org.GraphDefined.WWCP
 
         #region StatusSchedule
 
-        private StatusSchedule<ChargingStationOperatorStatusType> _StatusSchedule;
+        private StatusSchedule<ChargingStationOperatorStatusTypes> _StatusSchedule;
 
         /// <summary>
         /// The status schedule.
         /// </summary>
-        public IEnumerable<Timestamped<ChargingStationOperatorStatusType>> StatusSchedule(UInt64? HistorySize = null)
+        public IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>> StatusSchedule(UInt64? HistorySize = null)
         {
 
             if (HistorySize.HasValue)
@@ -467,8 +485,8 @@ namespace org.GraphDefined.WWCP
                                        RemoteChargingStationOperatorCreatorDelegate          RemoteChargingStationOperatorCreator  = null,
                                        I18NString                                            Name                                  = null,
                                        I18NString                                            Description                           = null,
-                                       Timestamped<ChargingStationOperatorAdminStatusType>?  InitialAdminStatus                    = null,
-                                       Timestamped<ChargingStationOperatorStatusType>?       InitialStatus                         = null,
+                                       Timestamped<ChargingStationOperatorAdminStatusTypes>?  InitialAdminStatus                    = null,
+                                       Timestamped<ChargingStationOperatorStatusTypes>?       InitialStatus                         = null,
                                        UInt16                                                MaxAdminStatusListSize                = DefaultMaxAdminStatusListSize,
                                        UInt16                                                MaxStatusListSize                     = DefaultMaxStatusListSize)
 
@@ -482,8 +500,8 @@ namespace org.GraphDefined.WWCP
             if (RoamingNetwork == null)
                 throw new ArgumentNullException(nameof(RoamingNetwork),  "The roaming network must not be null!");
 
-            InitialAdminStatus = InitialAdminStatus ?? new Timestamped<ChargingStationOperatorAdminStatusType>(ChargingStationOperatorAdminStatusType.Operational);
-            InitialStatus      = InitialStatus      ?? new Timestamped<ChargingStationOperatorStatusType>     (ChargingStationOperatorStatusType.Available);
+            InitialAdminStatus = InitialAdminStatus ?? new Timestamped<ChargingStationOperatorAdminStatusTypes>(ChargingStationOperatorAdminStatusTypes.Operational);
+            InitialStatus      = InitialStatus      ?? new Timestamped<ChargingStationOperatorStatusTypes>     (ChargingStationOperatorStatusTypes.Available);
 
             #endregion
 
@@ -510,10 +528,10 @@ namespace org.GraphDefined.WWCP
             this._ChargingPools               = new EntityHashSet <ChargingStationOperator, ChargingPool_Id,         ChargingPool>        (this);
             this._ChargingStationGroups       = new EntityHashSet <ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
 
-            this._AdminStatusSchedule         = new StatusSchedule<ChargingStationOperatorAdminStatusType>(MaxAdminStatusListSize);
+            this._AdminStatusSchedule         = new StatusSchedule<ChargingStationOperatorAdminStatusTypes>(MaxAdminStatusListSize);
             this._AdminStatusSchedule.Insert(InitialAdminStatus.Value);
 
-            this._StatusSchedule              = new StatusSchedule<ChargingStationOperatorStatusType>(MaxStatusListSize);
+            this._StatusSchedule              = new StatusSchedule<ChargingStationOperatorStatusTypes>(MaxStatusListSize);
             this._StatusSchedule.Insert(InitialStatus.Value);
 
             this._ChargingReservations        = new ConcurrentDictionary<ChargingReservation_Id, ChargingPool>();
@@ -591,7 +609,7 @@ namespace org.GraphDefined.WWCP
         /// Set the admin status.
         /// </summary>
         /// <param name="NewAdminStatus">A new admin status.</param>
-        public void SetAdminStatus(ChargingStationOperatorAdminStatusType  NewAdminStatus)
+        public void SetAdminStatus(ChargingStationOperatorAdminStatusTypes  NewAdminStatus)
         {
 
             _AdminStatusSchedule.Insert(NewAdminStatus);
@@ -606,7 +624,7 @@ namespace org.GraphDefined.WWCP
         /// Set the admin status.
         /// </summary>
         /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<ChargingStationOperatorAdminStatusType> NewTimestampedAdminStatus)
+        public void SetAdminStatus(Timestamped<ChargingStationOperatorAdminStatusTypes> NewTimestampedAdminStatus)
         {
 
             _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
@@ -622,7 +640,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="NewAdminStatus">A new admin status.</param>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetAdminStatus(ChargingStationOperatorAdminStatusType  NewAdminStatus,
+        public void SetAdminStatus(ChargingStationOperatorAdminStatusTypes  NewAdminStatus,
                                    DateTime                     Timestamp)
         {
 
@@ -639,7 +657,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
         /// <param name="ChangeMethod">The change mode.</param>
-        public void SetAdminStatus(IEnumerable<Timestamped<ChargingStationOperatorAdminStatusType>>  NewAdminStatusList,
+        public void SetAdminStatus(IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>  NewAdminStatusList,
                                    ChangeMethods                                          ChangeMethod = ChangeMethods.Replace)
         {
 
@@ -684,8 +702,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
         internal async Task UpdateStatus(DateTime                             Timestamp,
-                                         Timestamped<ChargingStationOperatorStatusType>  OldStatus,
-                                         Timestamped<ChargingStationOperatorStatusType>  NewStatus)
+                                         Timestamped<ChargingStationOperatorStatusTypes>  OldStatus,
+                                         Timestamped<ChargingStationOperatorStatusTypes>  NewStatus)
         {
 
             var OnStatusChangedLocal = OnStatusChanged;
@@ -705,8 +723,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="OldStatus">The old charging station admin status.</param>
         /// <param name="NewStatus">The new charging station admin status.</param>
         internal async Task UpdateAdminStatus(DateTime                                  Timestamp,
-                                              Timestamped<ChargingStationOperatorAdminStatusType>  OldStatus,
-                                              Timestamped<ChargingStationOperatorAdminStatusType>  NewStatus)
+                                              Timestamped<ChargingStationOperatorAdminStatusTypes>  OldStatus,
+                                              Timestamped<ChargingStationOperatorAdminStatusTypes>  NewStatus)
         {
 
             var OnAdminStatusChangedLocal = OnAdminStatusChanged;

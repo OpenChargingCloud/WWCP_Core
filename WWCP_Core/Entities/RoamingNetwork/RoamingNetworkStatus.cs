@@ -43,7 +43,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The current status of the roaming network.
         /// </summary>
-        public RoamingNetworkStatusType  Status      { get; }
+        public RoamingNetworkStatusTypes  Status      { get; }
 
         /// <summary>
         /// The timestamp of the current status of the roaming network.
@@ -53,8 +53,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The timestamped status of the roaming network.
         /// </summary>
-        public Timestamped<RoamingNetworkStatusType> Combined
-            => new Timestamped<RoamingNetworkStatusType>(Timestamp, Status);
+        public Timestamped<RoamingNetworkStatusTypes> Combined
+            => new Timestamped<RoamingNetworkStatusTypes>(Timestamp, Status);
 
         #endregion
 
@@ -67,7 +67,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Status">The current status of the roaming network.</param>
         /// <param name="Timestamp">The timestamp of the current status of the roaming network.</param>
         public RoamingNetworkStatus(RoamingNetwork_Id         Id,
-                                    RoamingNetworkStatusType  Status,
+                                    RoamingNetworkStatusTypes  Status,
                                     DateTime                  Timestamp)
 
         {

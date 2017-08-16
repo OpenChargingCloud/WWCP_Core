@@ -88,9 +88,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                    : JSONObject.Create(
 
+                         ChargingPool.Id.ToJSON("@id"),
                          new JProperty("@context", "https://open.charging.cloud/contexts/ChargingPool"),
-
-                         ChargingPool.Id.         ToJSON("Id"),
 
                          #region Embedded means it is served as a substructure of e.g. a charging station operator
 
@@ -119,6 +118,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                          ChargingPool.Name.       ToJSON("Name"),
                          ChargingPool.Description.ToJSON("Description"),
+                         ChargingPool.DataSource. ToJSON("DataSource"),
 
                          ChargingPool.Brand != null
                              ? ExpandBrandId.Switch(
@@ -243,14 +243,36 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                      UInt64                                                                                                   HistorySize  = 1)
         {
 
-            if (ChargingPoolAdminStatus == null)
+            #region Initial checks
+
+            if (ChargingPoolAdminStatus == null || !ChargingPoolAdminStatus.Any())
                 return new JObject();
 
-            var _ChargingPoolAdminStatus = Take == 0
-                                              ? ChargingPoolAdminStatus.Skip(Skip)
-                                              : ChargingPoolAdminStatus.Skip(Skip).Take(Take);
+            var _ChargingPoolAdminStatus = new Dictionary<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>();
 
-            return new JObject(_ChargingPoolAdminStatus.
+            #endregion
+
+            #region Maybe there are duplicate charging pool identifications in the enumeration... take the newest one!
+
+            foreach (var poolstatus in Take == 0 ? _ChargingPoolAdminStatus.Skip(Skip)
+                                                 : _ChargingPoolAdminStatus.Skip(Skip).Take(Take))
+            {
+
+                if (!_ChargingPoolAdminStatus.ContainsKey(poolstatus.Key))
+                    _ChargingPoolAdminStatus.Add(poolstatus.Key, poolstatus.Value);
+
+                else if (poolstatus.Value.FirstOrDefault().Timestamp > _ChargingPoolAdminStatus[poolstatus.Key].FirstOrDefault().Timestamp)
+                    _ChargingPoolAdminStatus[poolstatus.Key] = poolstatus.Value;
+
+            }
+
+            #endregion
+
+            return _ChargingPoolAdminStatus.Count == 0
+
+                   ? new JObject()
+
+                   : new JObject(_ChargingPoolAdminStatus.
                                    SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
                                                                 new JObject(statuslist.Value.
 
@@ -276,14 +298,36 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                      UInt64                                                                                              HistorySize  = 1)
         {
 
-            if (ChargingPoolStatus == null)
+            #region Initial checks
+
+            if (ChargingPoolStatus == null || !ChargingPoolStatus.Any())
                 return new JObject();
 
-            var _ChargingPoolStatus = Take == 0
-                                          ? ChargingPoolStatus.Skip(Skip)
-                                          : ChargingPoolStatus.Skip(Skip).Take(Take);
+            var _ChargingPoolStatus = new Dictionary<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>();
 
-            return new JObject(_ChargingPoolStatus.
+            #endregion
+
+            #region Maybe there are duplicate charging pool identifications in the enumeration... take the newest one!
+
+            foreach (var poolstatus in Take == 0 ? _ChargingPoolStatus.Skip(Skip)
+                                                 : _ChargingPoolStatus.Skip(Skip).Take(Take))
+            {
+
+                if (!_ChargingPoolStatus.ContainsKey(poolstatus.Key))
+                    _ChargingPoolStatus.Add(poolstatus.Key, poolstatus.Value);
+
+                else if (poolstatus.Value.FirstOrDefault().Timestamp > _ChargingPoolStatus[poolstatus.Key].FirstOrDefault().Timestamp)
+                    _ChargingPoolStatus[poolstatus.Key] = poolstatus.Value;
+
+            }
+
+            #endregion
+
+            return _ChargingPoolStatus.Count == 0
+
+                   ? new JObject()
+
+                   : new JObject(_ChargingPoolStatus.
                                    SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
                                                                 new JObject(statuslist.Value.
 

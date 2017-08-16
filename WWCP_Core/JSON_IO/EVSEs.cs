@@ -231,17 +231,36 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         {
 
-            if (EVSEAdminStatus == null)
+            #region Initial checks
+
+            if (EVSEAdminStatus == null || !EVSEAdminStatus.Any())
                 return new JObject();
 
-            var _EVSEAdminStatus = Take == 0
-                                      ? EVSEAdminStatus.Skip(Skip).           ToArray()
-                                      : EVSEAdminStatus.Skip(Skip).Take(Take).ToArray();
+            var _EVSEAdminStatus = new Dictionary<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>();
 
-            if (_EVSEAdminStatus.Length == 0)
-                return new JObject();
+            #endregion
 
-            return new JObject(_EVSEAdminStatus.
+            #region Maybe there are duplicate EVSE identifications in the enumeration... take the newest one!
+
+            foreach (var evsestatus in Take == 0 ? EVSEAdminStatus.Skip(Skip)
+                                                 : EVSEAdminStatus.Skip(Skip).Take(Take))
+            {
+
+                if (!_EVSEAdminStatus.ContainsKey(evsestatus.Key))
+                    _EVSEAdminStatus.Add(evsestatus.Key, evsestatus.Value);
+
+                else if (evsestatus.Value.FirstOrDefault().Timestamp > _EVSEAdminStatus[evsestatus.Key].FirstOrDefault().Timestamp)
+                    _EVSEAdminStatus[evsestatus.Key] = evsestatus.Value;
+
+            }
+
+            #endregion
+
+            return _EVSEAdminStatus.Count == 0
+
+                   ? new JObject()
+
+                   : new JObject(_EVSEAdminStatus.
                                    SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
                                                                 new JObject(statuslist.Value.
 
@@ -263,36 +282,55 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         #region ToJSON(this EVSEStatus, Skip = 0, Take = 0, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>>  EVSEStatus,
-                                     UInt64                                                                             Skip         = 0,
-                                     UInt64                                                                             Take         = 0,
-                                     UInt64                                                                             HistorySize  = 1)
+                                     UInt64                                                                              Skip         = 0,
+                                     UInt64                                                                              Take         = 0,
+                                     UInt64                                                                              HistorySize  = 1)
 
         {
 
-            if (EVSEStatus == null)
+            #region Initial checks
+
+            if (EVSEStatus == null || !EVSEStatus.Any())
                 return new JObject();
 
-            var _EVSEStatus = Take == 0
-                                  ? EVSEStatus.Skip(Skip).           ToArray()
-                                  : EVSEStatus.Skip(Skip).Take(Take).ToArray();
+            var _EVSEStatus = new Dictionary<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>();
 
-            if (_EVSEStatus.Length == 0)
-                return new JObject();
+            #endregion
 
-            return new JObject(_EVSEStatus.
-                                   SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
-                                                                new JObject(statuslist.Value.
+            #region Maybe there are duplicate EVSE identifications in the enumeration... take the newest one!
 
-                                                                            // Will filter multiple evse status having the exact same ISO 8601 timestamp!
-                                                                            GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                            Select           (group => group.First()).
+            foreach (var evsestatus in Take == 0 ? EVSEStatus.Skip(Skip)
+                                                 : EVSEStatus.Skip(Skip).Take(Take))
+            {
 
-                                                                            OrderByDescending(tsv   => tsv.Timestamp).
-                                                                            Take             (HistorySize).
-                                                                            Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                     tsv.Value.    ToString())))
+                if (!_EVSEStatus.ContainsKey(evsestatus.Key))
+                    _EVSEStatus.Add(evsestatus.Key, evsestatus.Value);
 
-                                                            )));
+                else if (evsestatus.Value.FirstOrDefault().Timestamp > _EVSEStatus[evsestatus.Key].FirstOrDefault().Timestamp)
+                    _EVSEStatus[evsestatus.Key] = evsestatus.Value;
+
+            }
+
+            #endregion
+
+            return _EVSEStatus.Count == 0
+
+                   ? new JObject()
+
+                   : new JObject(_EVSEStatus.
+                                     SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
+                                                                  new JObject(statuslist.Value.
+
+                                                                              // Will filter multiple evse status having the exact same ISO 8601 timestamp!
+                                                                              GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
+                                                                              Select           (group => group.First()).
+
+                                                                              OrderByDescending(tsv   => tsv.Timestamp).
+                                                                              Take             (HistorySize).
+                                                                              Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
+                                                                                                                       tsv.Value.    ToString())))
+
+                                                              )));
 
         }
 

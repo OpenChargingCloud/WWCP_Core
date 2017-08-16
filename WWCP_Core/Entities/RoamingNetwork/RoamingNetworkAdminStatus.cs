@@ -38,23 +38,23 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the roaming network.
         /// </summary>
-        public RoamingNetwork_Id              Id            { get; }
+        public RoamingNetwork_Id               Id             { get; }
 
         /// <summary>
         /// The current admin status of the roaming network.
         /// </summary>
-        public RoamingNetworkAdminStatusType  AdminStatus   { get; }
+        public RoamingNetworkAdminStatusTypes  AdminStatus    { get; }
 
         /// <summary>
         /// The timestamp of the current admin status of the roaming network.
         /// </summary>
-        public DateTime                       Timestamp     { get; }
+        public DateTime                        Timestamp      { get; }
 
         /// <summary>
         /// The timestamped admin status of the roaming network.
         /// </summary>
-        public Timestamped<RoamingNetworkAdminStatusType> Combined
-            => new Timestamped<RoamingNetworkAdminStatusType>(Timestamp, AdminStatus);
+        public Timestamped<RoamingNetworkAdminStatusTypes> Combined
+            => new Timestamped<RoamingNetworkAdminStatusTypes>(Timestamp, AdminStatus);
 
         #endregion
 
@@ -66,9 +66,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique identification of the roaming network.</param>
         /// <param name="Status">The current admin status of the roaming network.</param>
         /// <param name="Timestamp">The timestamp of the current admin status of the roaming network.</param>
-        public RoamingNetworkAdminStatus(RoamingNetwork_Id              Id,
-                                         RoamingNetworkAdminStatusType  Status,
-                                         DateTime                       Timestamp)
+        public RoamingNetworkAdminStatus(RoamingNetwork_Id               Id,
+                                         RoamingNetworkAdminStatusTypes  Status,
+                                         DateTime                        Timestamp)
 
         {
 

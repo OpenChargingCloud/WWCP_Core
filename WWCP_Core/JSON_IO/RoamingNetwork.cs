@@ -24,10 +24,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Hermod;
-using System.Globalization;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -39,46 +36,6 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
     /// </summary>
     public static partial class JSON_IO
     {
-
-        #region ToJSON(this RoamingNetworks, Skip = 0, Take = 0)
-
-        /// <summary>
-        /// Return a JSON representation for the given roaming networks collection.
-        /// </summary>
-        /// <param name="RoamingNetworks">An enumeration of roaming networks.</param>
-        /// <param name="Skip">The optional number of roaming networks to skip.</param>
-        /// <param name="Take">The optional number of roaming networks to return.</param>
-        public static JArray ToJSON(this RoamingNetworks  RoamingNetworks,
-                                    UInt64                Skip  = 0,
-                                    UInt64                Take  = 0)
-
-            => (RoamingNetworks != null && RoamingNetworks.Any())
-                    ? new JArray(RoamingNetworks.AsEnumerable().ToJSON(Skip, Take))
-                    : new JArray();
-
-        #endregion
-
-        #region ToJSON(this RoamingNetworks, JPropertyKey, Skip = 0, Take = 0)
-
-        /// <summary>
-        /// Return a JSON representation for the given roaming networks collection
-        /// using the given JSON property key.
-        /// </summary>
-        /// <param name="RoamingNetworks">An enumeration of roaming networks.</param>
-        /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
-        /// <param name="Skip">The optional number of roaming networks to skip.</param>
-        /// <param name="Take">The optional number of roaming networks to return.</param>
-        public static JProperty ToJSON(this RoamingNetworks  RoamingNetworks,
-                                       String                JPropertyKey,
-                                       UInt64                Skip  = 0,
-                                       UInt64                Take  = 0)
-
-            => (RoamingNetworks != null && RoamingNetworks.Any())
-                    ? RoamingNetworks.AsEnumerable().ToJSON(JPropertyKey, Skip, Take)
-                    : null;
-
-        #endregion
-
 
         #region ToJSON(this RoamingNetwork)
 
@@ -187,10 +144,10 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #region ToJSON(this RoamingNetworkAdminStatus, Skip = 0, Take = 0, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<Timestamped<RoamingNetworkAdminStatusType>>  RoamingNetworkAdminStatus,
-                                     UInt64                                                        Skip         = 0,
-                                     UInt64                                                        Take         = 0,
-                                     UInt64                                                        HistorySize  = 1)
+        public static JObject ToJSON(this IEnumerable<Timestamped<RoamingNetworkAdminStatusTypes>>  RoamingNetworkAdminStatus,
+                                     UInt64                                                         Skip         = 0,
+                                     UInt64                                                         Take         = 0,
+                                     UInt64                                                         HistorySize  = 1)
 
         {
 
@@ -227,24 +184,43 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #region ToJSON(this RoamingNetworkAdminStatus, Skip = 0, Take = 0, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<RoamingNetwork_Id, IEnumerable<Timestamped<RoamingNetworkAdminStatusType>>>>  RoamingNetworkAdminStatus,
-                                     UInt64                                                                                                      Skip         = 0,
-                                     UInt64                                                                                                      Take         = 0,
-                                     UInt64                                                                                                      HistorySize  = 1)
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<RoamingNetwork_Id, IEnumerable<Timestamped<RoamingNetworkAdminStatusTypes>>>>  RoamingNetworkAdminStatus,
+                                     UInt64                                                                                                       Skip         = 0,
+                                     UInt64                                                                                                       Take         = 0,
+                                     UInt64                                                                                                       HistorySize  = 1)
 
         {
 
-            if (RoamingNetworkAdminStatus == null)
+            #region Initial checks
+
+            if (RoamingNetworkAdminStatus == null || !RoamingNetworkAdminStatus.Any())
                 return new JObject();
 
-            try
+            var _RoamingNetworkAdminStatus = new Dictionary<RoamingNetwork_Id, IEnumerable<Timestamped<RoamingNetworkAdminStatusTypes>>>();
+
+            #endregion
+
+            #region Maybe there are duplicate RoamingNetwork identifications in the enumeration... take the newest one!
+
+            foreach (var networkstatus in Take == 0 ? RoamingNetworkAdminStatus.Skip(Skip)
+                                                : RoamingNetworkAdminStatus.Skip(Skip).Take(Take))
             {
 
-                var _StatusHistory = Take == 0
-                                         ? RoamingNetworkAdminStatus.Skip(Skip)
-                                         : RoamingNetworkAdminStatus.Skip(Skip).Take(Take);
+                if (!_RoamingNetworkAdminStatus.ContainsKey(networkstatus.Key))
+                    _RoamingNetworkAdminStatus.Add(networkstatus.Key, networkstatus.Value);
 
-                return new JObject(_StatusHistory.
+                else if (networkstatus.Value.FirstOrDefault().Timestamp > _RoamingNetworkAdminStatus[networkstatus.Key].FirstOrDefault().Timestamp)
+                    _RoamingNetworkAdminStatus[networkstatus.Key] = networkstatus.Value;
+
+            }
+
+            #endregion
+
+            return _RoamingNetworkAdminStatus.Count == 0
+
+                   ? new JObject()
+
+                   : new JObject(_RoamingNetworkAdminStatus.
                                        SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
                                                                     new JObject(statuslist.Value.
 
@@ -259,23 +235,16 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                                                           )));
 
-            }
-            catch (Exception)
-            {
-                // e.g. when a Stack behind RoamingNetworkStatus is empty!
-                return new JObject();
-            }
-
         }
 
         #endregion
 
         #region ToJSON(this RoamingNetworkStatus,      Skip = 0, Take = 0, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<Timestamped<RoamingNetworkStatusType>>  RoamingNetworkStatus,
-                                     UInt64                                                   Skip         = 0,
-                                     UInt64                                                   Take         = 0,
-                                     UInt64                                                   HistorySize  = 1)
+        public static JObject ToJSON(this IEnumerable<Timestamped<RoamingNetworkStatusTypes>>  RoamingNetworkStatus,
+                                     UInt64                                                    Skip         = 0,
+                                     UInt64                                                    Take         = 0,
+                                     UInt64                                                    HistorySize  = 1)
 
         {
 
@@ -312,24 +281,43 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #region ToJSON(this RoamingNetworkStatus,      Skip = 0, Take = 0, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<RoamingNetwork_Id, IEnumerable<Timestamped<RoamingNetworkStatusType>>>>  RoamingNetworkStatus,
-                                     UInt64                                                                                                 Skip         = 0,
-                                     UInt64                                                                                                 Take         = 0,
-                                     UInt64                                                                                                 HistorySize  = 1)
+        public static JObject ToJSON(this IEnumerable<KeyValuePair<RoamingNetwork_Id, IEnumerable<Timestamped<RoamingNetworkStatusTypes>>>>  RoamingNetworkStatus,
+                                     UInt64                                                                                                  Skip         = 0,
+                                     UInt64                                                                                                  Take         = 0,
+                                     UInt64                                                                                                  HistorySize  = 1)
 
         {
 
-            if (RoamingNetworkStatus == null)
+            #region Initial checks
+
+            if (RoamingNetworkStatus == null || !RoamingNetworkStatus.Any())
                 return new JObject();
 
-            try
+            var _RoamingNetworkStatus = new Dictionary<RoamingNetwork_Id, IEnumerable<Timestamped<RoamingNetworkStatusTypes>>>();
+
+            #endregion
+
+            #region Maybe there are duplicate RoamingNetwork identifications in the enumeration... take the newest one!
+
+            foreach (var networkstatus in Take == 0 ? RoamingNetworkStatus.Skip(Skip)
+                                                : RoamingNetworkStatus.Skip(Skip).Take(Take))
             {
 
-                var _RoamingNetworkStatus = Take == 0
-                                                ? RoamingNetworkStatus.Skip(Skip)
-                                                : RoamingNetworkStatus.Skip(Skip).Take(Take);
+                if (!_RoamingNetworkStatus.ContainsKey(networkstatus.Key))
+                    _RoamingNetworkStatus.Add(networkstatus.Key, networkstatus.Value);
 
-                return new JObject(_RoamingNetworkStatus.
+                else if (networkstatus.Value.FirstOrDefault().Timestamp > _RoamingNetworkStatus[networkstatus.Key].FirstOrDefault().Timestamp)
+                    _RoamingNetworkStatus[networkstatus.Key] = networkstatus.Value;
+
+            }
+
+            #endregion
+
+            return _RoamingNetworkStatus.Count == 0
+
+                   ? new JObject()
+
+                   : new JObject(_RoamingNetworkStatus.
                                        SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
                                                                     new JObject(statuslist.Value.
 
@@ -343,13 +331,6 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                                                                                                          tsv.Value.    ToString())))
 
                                                                 )));
-
-            }
-            catch (Exception)
-            {
-                // e.g. when a Stack behind RoamingNetworkStatus is empty!
-                return new JObject();
-            }
 
         }
 

@@ -44,12 +44,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The old timestamped status of the roaming network.
         /// </summary>
-        public Timestamped<RoamingNetworkStatusType>  OldStatus   { get; }
+        public Timestamped<RoamingNetworkStatusTypes>  OldStatus   { get; }
 
         /// <summary>
         /// The new timestamped status of the roaming network.
         /// </summary>
-        public Timestamped<RoamingNetworkStatusType>  NewStatus   { get; }
+        public Timestamped<RoamingNetworkStatusTypes>  NewStatus   { get; }
 
         #endregion
 
@@ -64,8 +64,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="OldStatus">The old timestamped status of the roaming network.</param>
         /// <param name="NewStatus">The new timestamped status of the roaming network.</param>
         public RoamingNetworkStatusUpdate(RoamingNetwork_Id                      Id,
-                                          Timestamped<RoamingNetworkStatusType>  OldStatus,
-                                          Timestamped<RoamingNetworkStatusType>  NewStatus)
+                                          Timestamped<RoamingNetworkStatusTypes>  OldStatus,
+                                          Timestamped<RoamingNetworkStatusTypes>  NewStatus)
 
         {
 

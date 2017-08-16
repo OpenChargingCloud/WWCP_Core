@@ -55,8 +55,8 @@ namespace org.GraphDefined.WWCP
     public delegate Task OnRoamingNetworkAdminStatusChangedDelegate(DateTime                                    Timestamp,
                                                                     EventTracking_Id                            EventTrackingId,
                                                                     RoamingNetwork                              RoamingNetwork,
-                                                                    Timestamped<RoamingNetworkAdminStatusType>  OldStatus,
-                                                                    Timestamped<RoamingNetworkAdminStatusType>  NewStatus);
+                                                                    Timestamped<RoamingNetworkAdminStatusTypes>  OldStatus,
+                                                                    Timestamped<RoamingNetworkAdminStatusTypes>  NewStatus);
 
 
     /// <summary>
@@ -70,7 +70,7 @@ namespace org.GraphDefined.WWCP
     public delegate Task OnRoamingNetworkStatusChangedDelegate(DateTime                               Timestamp,
                                                                EventTracking_Id                       EventTrackingId,
                                                                RoamingNetwork                         RoamingNetwork,
-                                                               Timestamped<RoamingNetworkStatusType>  OldStatus,
-                                                               Timestamped<RoamingNetworkStatusType>  NewStatus);
+                                                               Timestamped<RoamingNetworkStatusTypes>  OldStatus,
+                                                               Timestamped<RoamingNetworkStatusTypes>  NewStatus);
 
 }

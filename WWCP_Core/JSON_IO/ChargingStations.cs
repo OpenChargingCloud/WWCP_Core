@@ -202,14 +202,36 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                      UInt64                                                                                                         HistorySize  = 1)
         {
 
-            if (ChargingStationAdminStatus == null)
+            #region Initial checks
+
+            if (ChargingStationAdminStatus == null || !ChargingStationAdminStatus.Any())
                 return new JObject();
 
-            var _ChargingStationAdminStatus = Take == 0
-                                                  ? ChargingStationAdminStatus.Skip(Skip)
-                                                  : ChargingStationAdminStatus.Skip(Skip).Take(Take);
+            var _ChargingStationAdminStatus = new Dictionary<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>();
 
-            return new JObject(_ChargingStationAdminStatus.
+            #endregion
+
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
+
+            foreach (var stationstatus in Take == 0 ? _ChargingStationAdminStatus.Skip(Skip)
+                                                    : _ChargingStationAdminStatus.Skip(Skip).Take(Take))
+            {
+
+                if (!_ChargingStationAdminStatus.ContainsKey(stationstatus.Key))
+                    _ChargingStationAdminStatus.Add(stationstatus.Key, stationstatus.Value);
+
+                else if (stationstatus.Value.FirstOrDefault().Timestamp > _ChargingStationAdminStatus[stationstatus.Key].FirstOrDefault().Timestamp)
+                    _ChargingStationAdminStatus[stationstatus.Key] = stationstatus.Value;
+
+            }
+
+            #endregion
+
+            return _ChargingStationAdminStatus.Count == 0
+
+                   ? new JObject()
+
+                   : new JObject(_ChargingStationAdminStatus.
                                    SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
                                                                 new JObject(statuslist.Value.
 
@@ -237,27 +259,49 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         {
 
-            if (ChargingStationStatus == null)
+            #region Initial checks
+
+            if (ChargingStationStatus == null || !ChargingStationStatus.Any())
                 return new JObject();
 
-            var _ChargingStationStatus = Take == 0
-                                             ? ChargingStationStatus.Skip(Skip)
-                                             : ChargingStationStatus.Skip(Skip).Take(Take);
+            var _ChargingStationStatus = new Dictionary<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>();
 
-            return new JObject(_ChargingStationStatus.
-                                   SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
-                                                                new JObject(statuslist.Value.
+            #endregion
 
-                                                                            // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
-                                                                            GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                            Select           (group => group.First()).
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-                                                                            OrderByDescending(tsv   => tsv.Timestamp).
-                                                                            Take             (HistorySize).
-                                                                            Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                     tsv.Value.    ToString())))
+            foreach (var stationstatus in Take == 0 ? _ChargingStationStatus.Skip(Skip)
+                                                    : _ChargingStationStatus.Skip(Skip).Take(Take))
+            {
 
-                                                            )));
+                if (!_ChargingStationStatus.ContainsKey(stationstatus.Key))
+                    _ChargingStationStatus.Add(stationstatus.Key, stationstatus.Value);
+
+                else if (stationstatus.Value.FirstOrDefault().Timestamp > _ChargingStationStatus[stationstatus.Key].FirstOrDefault().Timestamp)
+                    _ChargingStationStatus[stationstatus.Key] = stationstatus.Value;
+
+            }
+
+            #endregion
+
+            return _ChargingStationStatus.Count == 0
+
+                   ? new JObject()
+
+                   : new JObject(_ChargingStationStatus.
+                                     SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
+                                                                  new JObject(statuslist.Value.
+
+                                                                              // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
+                                                                              GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
+                                                                              Select           (group => group.First()).
+
+                                                                              OrderByDescending(tsv   => tsv.Timestamp).
+                                                                              Take             (HistorySize).
+                                                                              Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
+                                                                                                                       tsv.Value.    ToString())))
+
+                                                              )));
 
         }
 

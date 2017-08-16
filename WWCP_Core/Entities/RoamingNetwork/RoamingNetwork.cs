@@ -38,7 +38,7 @@ namespace org.GraphDefined.WWCP
     /// The common interface of all roaming networks.
     /// </summary>
     public interface IRoamingNetwork : IEquatable<RoamingNetwork>, IComparable<RoamingNetwork>, IComparable,
-                                       IStatus<RoamingNetworkStatusType>,
+                                       IStatus<RoamingNetworkStatusTypes>,
                                        ISendAuthorizeStartStop,
                                        IReceiveChargeDetailRecords,
                                        ISendChargeDetailRecords
@@ -146,7 +146,7 @@ namespace org.GraphDefined.WWCP
         /// The current admin status.
         /// </summary>
         [Optional]
-        public Timestamped<RoamingNetworkAdminStatusType> AdminStatus
+        public Timestamped<RoamingNetworkAdminStatusTypes> AdminStatus
 
             => _AdminStatusSchedule.CurrentStatus;
 
@@ -154,12 +154,12 @@ namespace org.GraphDefined.WWCP
 
         #region AdminStatusSchedule
 
-        private StatusSchedule<RoamingNetworkAdminStatusType> _AdminStatusSchedule;
+        private StatusSchedule<RoamingNetworkAdminStatusTypes> _AdminStatusSchedule;
 
         /// <summary>
         /// The admin status schedule.
         /// </summary>
-        public IEnumerable<Timestamped<RoamingNetworkAdminStatusType>> AdminStatusSchedule(UInt64? HistorySize = null)
+        public IEnumerable<Timestamped<RoamingNetworkAdminStatusTypes>> AdminStatusSchedule(UInt64? HistorySize = null)
         {
 
             if (HistorySize.HasValue)
@@ -178,7 +178,7 @@ namespace org.GraphDefined.WWCP
         /// The current status.
         /// </summary>
         [Optional]
-        public Timestamped<RoamingNetworkStatusType> Status
+        public Timestamped<RoamingNetworkStatusTypes> Status
 
             => _StatusSchedule.CurrentStatus;
 
@@ -186,12 +186,12 @@ namespace org.GraphDefined.WWCP
 
         #region StatusSchedule
 
-        private StatusSchedule<RoamingNetworkStatusType> _StatusSchedule;
+        private StatusSchedule<RoamingNetworkStatusTypes> _StatusSchedule;
 
         /// <summary>
         /// The status schedule.
         /// </summary>
-        public IEnumerable<Timestamped<RoamingNetworkStatusType>> StatusSchedule(UInt64? HistorySize = null)
+        public IEnumerable<Timestamped<RoamingNetworkStatusTypes>> StatusSchedule(UInt64? HistorySize = null)
         {
 
             if (HistorySize.HasValue)
@@ -239,8 +239,8 @@ namespace org.GraphDefined.WWCP
         public RoamingNetwork(RoamingNetwork_Id                         Id,
                               I18NString                                Name                                       = null,
                               I18NString                                Description                                = null,
-                              RoamingNetworkAdminStatusType             AdminStatus                                = RoamingNetworkAdminStatusType.Operational,
-                              RoamingNetworkStatusType                  Status                                     = RoamingNetworkStatusType.Available,
+                              RoamingNetworkAdminStatusTypes             AdminStatus                                = RoamingNetworkAdminStatusTypes.Operational,
+                              RoamingNetworkStatusTypes                  Status                                     = RoamingNetworkStatusTypes.Available,
                               UInt16                                    MaxAdminStatusListSize                     = DefaultMaxAdminStatusListSize,
                               UInt16                                    MaxStatusListSize                          = DefaultMaxStatusListSize,
                               ChargingStationSignatureDelegate          ChargingStationSignatureGenerator          = null,
@@ -275,10 +275,10 @@ namespace org.GraphDefined.WWCP
             this._ChargingSessions                                  = new ConcurrentDictionary<ChargingSession_Id, ChargingSession>();
             this._ChargeDetailRecords                               = new ConcurrentDictionary<ChargingSession_Id, ChargeDetailRecord>();
 
-            this._AdminStatusSchedule                               = new StatusSchedule<RoamingNetworkAdminStatusType>(MaxAdminStatusListSize);
+            this._AdminStatusSchedule                               = new StatusSchedule<RoamingNetworkAdminStatusTypes>(MaxAdminStatusListSize);
             this._AdminStatusSchedule.Insert(AdminStatus);
 
-            this._StatusSchedule                                    = new StatusSchedule<RoamingNetworkStatusType>(MaxStatusListSize);
+            this._StatusSchedule                                    = new StatusSchedule<RoamingNetworkStatusTypes>(MaxStatusListSize);
             this._StatusSchedule.Insert(Status);
 
             this.ChargingStationSignatureGenerator                  = ChargingStationSignatureGenerator;
@@ -403,11 +403,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the admin status of all charging station operators registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusType>>>> ChargingStationOperatorAdminStatus
+        public IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>> ChargingStationOperatorAdminStatus
 
             => _ChargingStationOperators.
-                   Select(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusType>>>(cso.Id,
-                                                                                                                                                cso.AdminStatusSchedule()));
+                   SafeSelect(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>(cso.Id,
+                                                                                                                                                     cso.AdminStatusSchedule()));
 
         #endregion
 
@@ -416,11 +416,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the status of all charging station operators registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusType>>>> ChargingStationOperatorStatus
+        public IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>> ChargingStationOperatorStatus
 
             => _ChargingStationOperators.
-                   Select(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusType>>>(cso.Id,
-                                                                                                                                           cso.StatusSchedule()));
+                   SafeSelect(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>(cso.Id,
+                                                                                                                                                cso.StatusSchedule()));
 
         #endregion
 
@@ -455,8 +455,8 @@ namespace org.GraphDefined.WWCP
                                           I18NString                                          Description                           = null,
                                           Action<ChargingStationOperator>                Configurator                          = null,
                                           RemoteChargingStationOperatorCreatorDelegate        RemoteChargingStationOperatorCreator  = null,
-                                          ChargingStationOperatorAdminStatusType              AdminStatus                           = ChargingStationOperatorAdminStatusType.Operational,
-                                          ChargingStationOperatorStatusType                   Status                                = ChargingStationOperatorStatusType.Available,
+                                          ChargingStationOperatorAdminStatusTypes              AdminStatus                           = ChargingStationOperatorAdminStatusTypes.Operational,
+                                          ChargingStationOperatorStatusTypes                   Status                                = ChargingStationOperatorStatusTypes.Available,
                                           Action<ChargingStationOperator>                OnSuccess                             = null,
                                           Action<RoamingNetwork, ChargingStationOperator_Id>  OnError                               = null)
 
@@ -488,8 +488,8 @@ namespace org.GraphDefined.WWCP
                                           I18NString                                          Description                            = null,
                                           Action<ChargingStationOperator>                     Configurator                           = null,
                                           RemoteChargingStationOperatorCreatorDelegate        RemoteChargingStationOperatorCreator   = null,
-                                          ChargingStationOperatorAdminStatusType              AdminStatus                            = ChargingStationOperatorAdminStatusType.Operational,
-                                          ChargingStationOperatorStatusType                   Status                                 = ChargingStationOperatorStatusType.Available,
+                                          ChargingStationOperatorAdminStatusTypes              AdminStatus                            = ChargingStationOperatorAdminStatusTypes.Operational,
+                                          ChargingStationOperatorStatusTypes                   Status                                 = ChargingStationOperatorStatusTypes.Available,
                                           Action<ChargingStationOperator>                     OnSuccess                              = null,
                                           Action<RoamingNetwork, ChargingStationOperator_Id>  OnError                                = null)
 
@@ -711,8 +711,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="NewStatus">The new aggreagted Charging Station Operator status.</param>
         internal async Task UpdateCSOStatus(DateTime                             Timestamp,
                                             ChargingStationOperator                         cso,
-                                            Timestamped<ChargingStationOperatorStatusType>  OldStatus,
-                                            Timestamped<ChargingStationOperatorStatusType>  NewStatus)
+                                            Timestamped<ChargingStationOperatorStatusTypes>  OldStatus,
+                                            Timestamped<ChargingStationOperatorStatusTypes>  NewStatus)
         {
 
             // Send Charging Station Operator status change upstream
@@ -758,8 +758,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="NewStatus">The new aggreagted Charging Station Operator status.</param>
         internal async Task UpdateCSOAdminStatus(DateTime                                             Timestamp,
                                                  ChargingStationOperator                              cso,
-                                                 Timestamped<ChargingStationOperatorAdminStatusType>  OldStatus,
-                                                 Timestamped<ChargingStationOperatorAdminStatusType>  NewStatus)
+                                                 Timestamped<ChargingStationOperatorAdminStatusTypes>  OldStatus,
+                                                 Timestamped<ChargingStationOperatorAdminStatusTypes>  NewStatus)
         {
 
             // Send Charging Station Operator admin status change upstream

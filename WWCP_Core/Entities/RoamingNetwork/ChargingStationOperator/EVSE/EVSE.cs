@@ -107,6 +107,15 @@ namespace org.GraphDefined.WWCP
 
         }
 
+        public I18NString SetDescription(Languages Language, String Text)
+            => _Description = I18NString.Create(Language, Text);
+
+        public I18NString SetDescription(I18NString I18NText)
+            => _Description = I18NText;
+
+        public I18NString AddDescription(Languages Language, String Text)
+            => _Description.Add(Language, Text);
+
         #endregion
 
         #region ChargingModes

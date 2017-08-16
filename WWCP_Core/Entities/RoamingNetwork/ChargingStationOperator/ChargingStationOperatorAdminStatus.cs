@@ -43,7 +43,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The current admin status of the charging station operator.
         /// </summary>
-        public ChargingStationOperatorAdminStatusType  AdminStatus   { get; }
+        public ChargingStationOperatorAdminStatusTypes  AdminStatus   { get; }
 
         /// <summary>
         /// The timestamp of the current admin status of the charging station operator.
@@ -53,8 +53,8 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The timestamped admin status of the charging station operator.
         /// </summary>
-        public Timestamped<ChargingStationOperatorAdminStatusType> Combined
-            => new Timestamped<ChargingStationOperatorAdminStatusType>(Timestamp, AdminStatus);
+        public Timestamped<ChargingStationOperatorAdminStatusTypes> Combined
+            => new Timestamped<ChargingStationOperatorAdminStatusTypes>(Timestamp, AdminStatus);
 
         #endregion
 
@@ -67,7 +67,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Status">The current admin status of the charging station operator.</param>
         /// <param name="Timestamp">The timestamp of the current admin status of the charging station operator.</param>
         public ChargingStationOperatorAdminStatus(ChargingStationOperator_Id              Id,
-                                                  ChargingStationOperatorAdminStatusType  Status,
+                                                  ChargingStationOperatorAdminStatusTypes  Status,
                                                   DateTime                                Timestamp)
 
         {

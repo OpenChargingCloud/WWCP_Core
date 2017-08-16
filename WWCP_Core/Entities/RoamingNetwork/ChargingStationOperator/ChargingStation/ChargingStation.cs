@@ -104,6 +104,15 @@ namespace org.GraphDefined.WWCP
 
         }
 
+        public I18NString SetName(Languages Language, String Text)
+            => _Name = I18NString.Create(Language, Text);
+
+        public I18NString SetName(I18NString I18NText)
+            => _Name = I18NText;
+
+        public I18NString AddName(Languages Language, String Text)
+            => _Name.Add(Language, Text);
+
         #endregion
 
         #region Description
@@ -143,6 +152,15 @@ namespace org.GraphDefined.WWCP
             }
 
         }
+
+        public I18NString SetDescription(Languages Language, String Text)
+            => _Description = I18NString.Create(Language, Text);
+
+        public I18NString SetDescription(I18NString I18NText)
+            => _Description = I18NText;
+
+        public I18NString AddDescription(Languages Language, String Text)
+            => _Description.Add(Language, Text);
 
         #endregion
 
