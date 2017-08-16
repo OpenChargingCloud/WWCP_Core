@@ -72,11 +72,11 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                              ? ChargingStationOperator.Description.ToJSON("description")
                              : null,
 
-                         ChargingStationOperator.DataSource.  ToJSON("DataSource"),
+                         ChargingStationOperator.DataSource.ToJSON("DataSource"),
 
                          ExpandDataLicenses.Switch(
-                             new JProperty("DataLicenseIds",  new JArray(ChargingStationOperator.DataLicenses.SafeSelect(license => license.Id.ToString()))),
-                             new JProperty("DataLicenses",    ChargingStationOperator.DataLicenses.ToJSON())),
+                             new JProperty("dataLicenseIds",  new JArray(ChargingStationOperator.DataLicenses.SafeSelect(license => license.Id.ToString()))),
+                             new JProperty("dataLicenses",    ChargingStationOperator.DataLicenses.ToJSON())),
 
                          #region Embedded means it is served as a substructure of e.g. a charging station operator
 
@@ -94,8 +94,10 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-                         // Address
-                         // LogoURI
+                         ChargingStationOperator.Address != null
+                             ? ChargingStationOperator.Address.ToJSON("address")
+                             : null,
+
                          // API
                          // MainKeys
                          // RobotKeys
@@ -117,10 +119,6 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                          ChargingStationOperator.HotlinePhoneNumber.IsNotNullOrEmpty()
                              ? new JProperty("hotline",             ChargingStationOperator.HotlinePhoneNumber)
-                             : null,
-
-                         ChargingStationOperator.DataLicenses.Any()
-                             ? new JProperty("dataLicenses",        new JArray(ChargingStationOperator.DataLicenses.Select(license => license.ToJSON())))
                              : null,
 
 

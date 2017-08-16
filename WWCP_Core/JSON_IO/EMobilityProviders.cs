@@ -72,8 +72,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                          eMobilityProvider.DataSource.  ToJSON("DataSource"),
 
                          ExpandDataLicenses.Switch(
-                             new JProperty("DataLicenseIds",  new JArray(eMobilityProvider.DataLicenses.SafeSelect(license => license.Id.ToString()))),
-                             new JProperty("DataLicenses",    eMobilityProvider.DataLicenses.ToJSON())),
+                             new JProperty("dataLicenseIds",  new JArray(eMobilityProvider.DataLicenses.SafeSelect(license => license.Id.ToString()))),
+                             new JProperty("dataLicenses",    eMobilityProvider.DataLicenses.ToJSON())),
 
                          #region Embedded means it is served as a substructure of e.g. a charging station operator
 
@@ -89,9 +89,12 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                                                                                                    ExpandBrandIds:             ExpandBrandIds,
                                                                                                                    ExpandDataLicenses:         ExpandDataLicenses))),
 
-                         #endregion
+        #endregion
 
-                         // Address
+                         eMobilityProvider.Address != null
+                             ? eMobilityProvider.Address.ToJSON("address")
+                             : null,
+
                          // LogoURI
                          // API
                          // MainKeys
