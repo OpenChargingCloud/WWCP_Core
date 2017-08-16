@@ -83,7 +83,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return _Description.IsNotNullOrEmpty()
+                return _Description.IsNeitherNullNorEmpty()
                            ? _Description
                            : ChargingStation?.Description;
 
@@ -117,6 +117,91 @@ namespace org.GraphDefined.WWCP
             => _Description.Add(Language, Text);
 
         #endregion
+
+        #region Brand
+
+        private Brand _Brand;
+
+        /// <summary>
+        /// A (multi-language) brand name for this EVSE.
+        /// </summary>
+        [Optional]
+        public Brand Brand
+        {
+
+            get
+            {
+                return _Brand ?? ChargingStation?.Brand;
+            }
+
+            set
+            {
+
+                if (value != _Brand && value != ChargingStation?.Brand)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _Brand);
+
+                    else
+                        SetProperty(ref _Brand, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region DataLicense
+
+        private ReactiveSet<DataLicense> _DataLicenses;
+
+        /// <summary>
+        /// The license of the EVSE data.
+        /// </summary>
+        [Mandatory]
+        public ReactiveSet<DataLicense> DataLicenses
+        {
+
+            get
+            {
+
+                return _DataLicenses != null && _DataLicenses.Any()
+                           ? _DataLicenses
+                           : ChargingPool?.DataLicenses;
+
+            }
+
+            set
+            {
+
+                if (value != _DataLicenses && value != ChargingPool?.DataLicenses)
+                {
+
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _DataLicenses);
+
+                    else
+                    {
+
+                        if (_DataLicenses == null)
+                            SetProperty(ref _DataLicenses, value);
+
+                        else
+                            SetProperty(ref _DataLicenses, _DataLicenses.Set(value));
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
 
         #region ChargingModes
 

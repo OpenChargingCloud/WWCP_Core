@@ -164,6 +164,27 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
+        #region ToJSON(this DataLicenses)
+
+        public static JArray ToJSON(this ReactiveSet<DataLicense> DataLicenses)
+
+            => DataLicenses != null
+                   ? new JArray(DataLicenses.SafeSelect(license => license.ToJSON()))
+                   : null;
+
+        #endregion
+
+        #region ToJSON(this DataLicenses, JPropertyKey)
+
+        public static JProperty ToJSON(this ReactiveSet<DataLicense> DataLicenses, String JPropertyKey)
+
+            => DataLicenses != null
+                   ? new JProperty(JPropertyKey,
+                                   new JArray(DataLicenses.SafeSelect(license => license.ToJSON())))
+                   : null;
+
+        #endregion
+
         #region ToJSON(this Text, JPropertyKey)
 
         public static JProperty ToJSON(this String Text, String JPropertyKey)
@@ -213,7 +234,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
             => DataLicense != null
                    ? JSONObject.Create(
-                         new JProperty("id",           DataLicense.Id),
+                         new JProperty("@id",          DataLicense.Id.ToString()),
+                         new JProperty("@context",     "https://open.charging.cloud/contexts/DataLicense"),
                          new JProperty("description",  DataLicense.Description),
                          new JProperty("uris",         new JArray(DataLicense.URIs))
                      )

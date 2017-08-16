@@ -38,28 +38,40 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
     public static partial class JSON_IO
     {
 
-        #region ToJSON(this ChargingStationOperator, Embedded = false, ExpandChargingRoamingNetworkId = false, ExpandChargingStationIds = false, ExpandChargingStationIds = false, ExpandEVSEIds = false)
+        #region ToJSON(this ChargingStationOperator, Embedded = false, ExpandRoamingNetworkId = false, ExpandChargingStationIds = false, ExpandChargingStationIds = false, ExpandEVSEIds = false)
 
         public static JObject ToJSON(this ChargingStationOperator  ChargingStationOperator,
-                                     Boolean                       Embedded                        = false,
-                                     Boolean                       ExpandChargingRoamingNetworkId  = false,
-                                     Boolean                       ExpandChargingPoolIds           = false,
-                                     Boolean                       ExpandChargingStationIds        = false,
-                                     Boolean                       ExpandEVSEIds                   = false)
+                                     Boolean                       Embedded                  = false,
+                                     Boolean                       ExpandRoamingNetworkId    = false,
+                                     Boolean                       ExpandChargingPoolIds     = false,
+                                     Boolean                       ExpandChargingStationIds  = false,
+                                     Boolean                       ExpandEVSEIds             = false)
 
-            => ChargingStationOperator != null
-                   ? JSONObject.Create(
+            => ChargingStationOperator == null
+                   ? null
 
-                         new JProperty("id",                        ChargingStationOperator.Id.ToString()),
+                   : JSONObject.Create(
+
+                         new JProperty("@id",  ChargingStationOperator.Id.ToString()),
 
                          Embedded
                              ? null
-                             : ExpandChargingRoamingNetworkId
+                             : new JProperty("@context", "https://open.charging.cloud/contexts/ChargingStationOperator"),
+
+                         new JProperty("name",  ChargingStationOperator.Name.ToJSON()),
+
+                         ChargingStationOperator.Description.IsNeitherNullNorEmpty()
+                             ? ChargingStationOperator.Description.ToJSON("description")
+                             : null,
+
+
+                         Embedded
+                             ? null
+                             : ExpandRoamingNetworkId
                                    ? new JProperty("roamingNetwork",      ChargingStationOperator.RoamingNetwork.ToJSON())
                                    : new JProperty("roamingNetworkId",    ChargingStationOperator.RoamingNetwork.Id.ToString()),
 
-                         new JProperty("name",                  ChargingStationOperator.Name.       ToJSON()),
-                         new JProperty("description",           ChargingStationOperator.Description.ToJSON()),
+
 
                          // Address
                          // LogoURI
@@ -99,8 +111,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                                                     ? new JArray(ChargingStationOperator.EVSEs.             ToJSON(Embedded: true))
                                                                     : new JArray(ChargingStationOperator.EVSEIds.           Select(id => id.ToString())))
 
-                     )
-                   : null;
+                     );
 
         #endregion
 

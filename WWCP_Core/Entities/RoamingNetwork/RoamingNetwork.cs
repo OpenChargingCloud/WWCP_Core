@@ -139,6 +139,19 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region DataLicense
+
+        private ReactiveSet<DataLicense> _DataLicenses;
+
+        /// <summary>
+        /// The license of the roaming network data.
+        /// </summary>
+        [Mandatory]
+        public ReactiveSet<DataLicense> DataLicenses
+            => _DataLicenses;
+
+        #endregion
+
 
         #region AdminStatus
 

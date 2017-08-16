@@ -179,6 +179,54 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region DataLicense
+
+        private ReactiveSet<DataLicense> _DataLicenses;
+
+        /// <summary>
+        /// The license of the charging station operator data.
+        /// </summary>
+        [Mandatory]
+        public ReactiveSet<DataLicense> DataLicenses
+        {
+
+            get
+            {
+
+                return _DataLicenses != null && _DataLicenses.Any()
+                           ? _DataLicenses
+                           : RoamingNetwork?.DataLicenses;
+
+            }
+
+            set
+            {
+
+                if (value != _DataLicenses && value != RoamingNetwork?.DataLicenses)
+                {
+
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _DataLicenses);
+
+                    else
+                    {
+
+                        if (_DataLicenses == null)
+                            SetProperty(ref _DataLicenses, value);
+
+                        else
+                            SetProperty(ref _DataLicenses, _DataLicenses.Set(value));
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
         #region Address
 
         private Address _Address;
@@ -346,20 +394,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region DataLicense
-
-        private List<DataLicense> _DataLicenses;
-
-        /// <summary>
-        /// The license of the charging station operator data.
-        /// </summary>
-        [Mandatory]
-        public IEnumerable<DataLicense> DataLicenses
-            => _DataLicenses;
-
-        #endregion
-
-
         #region AdminStatus
 
         /// <summary>
@@ -509,7 +543,7 @@ namespace org.GraphDefined.WWCP
 
             this._Name                        = Name        ?? new I18NString();
             this._Description                 = Description ?? new I18NString();
-            this._DataLicenses                = new List<DataLicense>();
+            this._DataLicenses                = new ReactiveSet<DataLicense>();
 
             #region InvalidEVSEIds
 

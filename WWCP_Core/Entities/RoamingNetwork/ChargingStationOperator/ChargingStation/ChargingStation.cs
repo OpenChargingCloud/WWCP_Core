@@ -80,7 +80,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return _Name.IsNotNullOrEmpty()
+                return _Name.IsNeitherNullNorEmpty()
                            ? _Name
                            : ChargingPool?.Name;
 
@@ -129,7 +129,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return _Description.IsNotNullOrEmpty()
+                return _Description.IsNeitherNullNorEmpty()
                            ? _Description
                            : ChargingPool?.Description;
 
@@ -169,8 +169,7 @@ namespace org.GraphDefined.WWCP
         private Brand _Brand;
 
         /// <summary>
-        /// A brand for this charging station
-        /// is this is different from the Charging Station Operator.
+        /// A (multi-language) brand name for this charging station.
         /// </summary>
         [Optional]
         public Brand Brand
@@ -192,6 +191,54 @@ namespace org.GraphDefined.WWCP
 
                     else
                         SetProperty(ref _Brand, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region DataLicense
+
+        private ReactiveSet<DataLicense> _DataLicenses;
+
+        /// <summary>
+        /// The license of the charging station data.
+        /// </summary>
+        [Mandatory]
+        public ReactiveSet<DataLicense> DataLicenses
+        {
+
+            get
+            {
+
+                return _DataLicenses != null && _DataLicenses.Any()
+                           ? _DataLicenses
+                           : ChargingPool?.DataLicenses;
+
+            }
+
+            set
+            {
+
+                if (value != _DataLicenses && value != ChargingPool?.DataLicenses)
+                {
+
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _DataLicenses);
+
+                    else
+                    {
+
+                        if (_DataLicenses == null)
+                            SetProperty(ref _DataLicenses, value);
+
+                        else
+                            SetProperty(ref _DataLicenses, _DataLicenses.Set(value));
+
+                    }
 
                 }
 
@@ -400,7 +447,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return _ArrivalInstructions.IsNotNullOrEmpty()
+                return _ArrivalInstructions.IsNeitherNullNorEmpty()
                            ? _ArrivalInstructions
                            : ChargingPool?.ArrivalInstructions;
 
@@ -733,7 +780,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return _HotlinePhoneNumber.IsNotNullOrEmpty()
+                return _HotlinePhoneNumber.IsNeitherNullNorEmpty()
                            ? _HotlinePhoneNumber
                            : ChargingPool?.HotlinePhoneNumber;
 
@@ -1382,8 +1429,14 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         [InternalUseOnly]
         public ChargingStationOperator  Operator
-
             => ChargingPool?.Operator;
+
+        /// <summary>
+        /// The roaming network of this charging station.
+        /// </summary>
+        [InternalUseOnly]
+        public RoamingNetwork RoamingNetwork
+            => Operator?.RoamingNetwork;
 
         #endregion
 

@@ -38,7 +38,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the data license.
         /// </summary>
-        public String               Id            { get; }
+        public DataLicense_Id       Id            { get; }
 
         /// <summary>
         /// The description of the data license.
@@ -59,16 +59,13 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the data license.</param>
         /// <param name="Description">The description of the data license.</param>
-        /// <param name="URI">Optional URIs for more information.</param>
-        public DataLicense(String           Id,
+        /// <param name="URIs">Optional URIs for more information.</param>
+        public DataLicense(DataLicense_Id   Id,
                            String           Description,
                            params String[]  URIs)
         {
 
             #region Initial checks
-
-            if (Id.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Id),           "The unique identification of the data license must not be null or empty!");
 
             if (Description.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(Description),  "The description of the data license must not be null or empty!");
@@ -89,7 +86,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// No license, ask the data source for more details.
         /// </summary>
-        public static readonly DataLicense None                              = new DataLicense("None", "None", "");
+        public static readonly DataLicense None                              = new DataLicense(DataLicense_Id.Parse("None"), "None", "");
 
 
 
@@ -98,14 +95,14 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Open Data Commons: Public Domain Dedication and License (PDDL)
         /// </summary>
-        public static readonly DataLicense PublicDomainDedicationAndLicense  = new DataLicense("PDDL",
+        public static readonly DataLicense PublicDomainDedicationAndLicense  = new DataLicense(DataLicense_Id.Parse("PDDL"),
                                                                                                "Open Data Commons: Public Domain Dedication and License",
                                                                                                "http://opendatacommons.org/licenses/pddl/");
 
         /// <summary>
         /// Open Data Commons: Attribution License (ODC-By)
         /// </summary>
-        public static readonly DataLicense AttributionLicense                = new DataLicense("ODC-By",
+        public static readonly DataLicense AttributionLicense                = new DataLicense(DataLicense_Id.Parse("ODC-By"),
                                                                                                "Open Data Commons: Attribution License",
                                                                                                "http://opendatacommons.org/licenses/by/");
 
@@ -113,7 +110,7 @@ namespace org.GraphDefined.WWCP
         /// Open Data Commons: Open Data Commons Open Database License (ODbL)
         /// Attribution and Share-Alike for Data/Databases
         /// </summary>
-        public static readonly DataLicense OpenDatabaseLicense               = new DataLicense("ODbL",
+        public static readonly DataLicense OpenDatabaseLicense               = new DataLicense(DataLicense_Id.Parse("ODbL"),
                                                                                                "Open Data Commons: Open Data Commons Open Database License",
                                                                                                "http://opendatacommons.org/licenses/odbl/",
                                                                                                "http://opendatacommons.org/licenses/odbl/summary/",
@@ -127,21 +124,21 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Datenlizenz Deutschland – Namensnennung – Version 2.0
         /// </summary>
-        public static readonly DataLicense DatenlizenzDeutschland_BY_2       = new DataLicense("dl-de/by-2-0",
+        public static readonly DataLicense DatenlizenzDeutschland_BY_2       = new DataLicense(DataLicense_Id.Parse("dl-de/by-2-0"),
                                                                                                "Datenlizenz Deutschland – Namensnennung – Version 2.0",
                                                                                                "https://www.govdata.de/dl-de/by-2-0");
 
         /// <summary>
         /// Datenlizenz Deutschland – Namensnennung – Version 2.0
         /// </summary>
-        public static readonly DataLicense DatenlizenzDeutschland_Zero_2     = new DataLicense("dl-de/zero-2-0",
+        public static readonly DataLicense DatenlizenzDeutschland_Zero_2     = new DataLicense(DataLicense_Id.Parse("dl-de/zero-2-0"),
                                                                                                "Datenlizenz Deutschland – Namensnennung – Version 2.0",
                                                                                                "https://www.govdata.de/dl-de/zero-2-0");
 
         /// <summary>
         /// GeoLizenz V1.3 – Open
         /// </summary>
-        public static readonly DataLicense GeoLizenz_OpenData_1_3_1          = new DataLicense("GeoLizenz_V1.3",
+        public static readonly DataLicense GeoLizenz_OpenData_1_3_1          = new DataLicense(DataLicense_Id.Parse("GeoLizenz_V1.3"),
                                                                                                "GeoLizenz V1.3 – Open",
                                                                                                "https://www.geolizenz.org/index/page.php?p=GL/opendata",
                                                                                                "https://www.geolizenz.org/modules/geolizenz/docs/1.3.1/GeoLizenz_V1.3_Open_050615_V1.pdf",
@@ -155,7 +152,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Creative Commons Attribution 4.0 International (CC BY 4.0)
         /// </summary>
-        public static readonly DataLicense CreativeCommons_BY_4              = new DataLicense("CC BY 4.0",
+        public static readonly DataLicense CreativeCommons_BY_4              = new DataLicense(DataLicense_Id.Parse("CC BY 4.0"),
                                                                                                "Creative Commons Attribution 4.0 International",
                                                                                                "http://creativecommons.org/licenses/by/4.0/",
                                                                                                "http://creativecommons.org/licenses/by/4.0/legalcode");
@@ -163,7 +160,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)
         /// </summary>
-        public static readonly DataLicense CreativeCommons_BY_SA_4           = new DataLicense("CC BY-SA 4.0",
+        public static readonly DataLicense CreativeCommons_BY_SA_4           = new DataLicense(DataLicense_Id.Parse("CC BY-SA 4.0"),
                                                                                                "Creative Commons Attribution-ShareAlike 4.0 International",
                                                                                                "http://creativecommons.org/licenses/by-sa/4.0/",
                                                                                                "http://creativecommons.org/licenses/by-sa/4.0/legalcode");
@@ -171,7 +168,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Creative Commons Attribution-NoDerivs 4.0 International (CC BY-ND 4.0)
         /// </summary>
-        public static readonly DataLicense CreativeCommons_BY_ND_4           = new DataLicense("CC BY-ND 4.0",
+        public static readonly DataLicense CreativeCommons_BY_ND_4           = new DataLicense(DataLicense_Id.Parse("CC BY-ND 4.0"),
                                                                                                "Creative Commons Attribution-NoDerivs 4.0 International",
                                                                                                "http://creativecommons.org/licenses/by-nd/4.0/",
                                                                                                "http://creativecommons.org/licenses/by-nd/4.0/legalcode");
@@ -179,7 +176,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)
         /// </summary>
-        public static readonly DataLicense CreativeCommons_BY_NC_4           = new DataLicense("CC BY-NC 4.0",
+        public static readonly DataLicense CreativeCommons_BY_NC_4           = new DataLicense(DataLicense_Id.Parse("CC BY-NC 4.0"),
                                                                                                "Creative Commons Attribution-NonCommercial 4.0 International",
                                                                                                "http://creativecommons.org/licenses/by-nc/4.0/",
                                                                                                "http://creativecommons.org/licenses/by-nc/4.0/legalcode");
@@ -187,7 +184,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
         /// </summary>
-        public static readonly DataLicense CreativeCommons_BY_NC_SA_4        = new DataLicense("CC BY-NC-SA 4.0",
+        public static readonly DataLicense CreativeCommons_BY_NC_SA_4        = new DataLicense(DataLicense_Id.Parse("CC BY-NC-SA 4.0"),
                                                                                                "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International",
                                                                                                "http://creativecommons.org/licenses/by-nc-sa/4.0/",
                                                                                                "http://creativecommons.org/licenses/by-nc-sa/4.0/legalcode");
@@ -195,7 +192,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International (CC BY-NC-ND 4.0)
         /// </summary>
-        public static readonly DataLicense CreativeCommons_BY_NC_ND_4        = new DataLicense("CC BY-NC-ND 4.0",
+        public static readonly DataLicense CreativeCommons_BY_NC_ND_4        = new DataLicense(DataLicense_Id.Parse("CC BY-NC-ND 4.0"),
                                                                                                "Creative Commons Attribution-NonCommercial-NoDerivs 4.0 International",
                                                                                                "http://creativecommons.org/licenses/by-nc-nd/4.0/",
                                                                                                "http://creativecommons.org/licenses/by-nc-nd/4.0/legalcode");

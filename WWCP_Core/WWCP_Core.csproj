@@ -84,6 +84,7 @@
     <Compile Include="Commands\Reserve\ReserveChargingPoolDelegates.cs" />
     <Compile Include="Commands\SendCDRs\OnGetCDRsDelegate.cs" />
     <Compile Include="CommonTypes\ACustomData.cs" />
+    <Compile Include="CommonTypes\DataLicense_Id.cs" />
     <Compile Include="CommonTypes\ICustomData.cs" />
     <Compile Include="CommonTypes\TransmissionTypes.cs" />
     <Compile Include="CommonTypes\Signature.cs" />

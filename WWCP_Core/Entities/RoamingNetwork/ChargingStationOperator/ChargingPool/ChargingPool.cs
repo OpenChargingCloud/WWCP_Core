@@ -164,8 +164,7 @@ namespace org.GraphDefined.WWCP
         private Brand _Brand;
 
         /// <summary>
-        /// A (multi-language) brand name for this charging pool
-        /// is this is different from the Charging Station Operator.
+        /// A (multi-language) brand name for this charging pool.
         /// </summary>
         [Optional]
         public Brand Brand
@@ -190,6 +189,54 @@ namespace org.GraphDefined.WWCP
 
                     // Delete inherited GeoLocations
                     _ChargingStations.ForEach(station => station.Brand = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region DataLicense
+
+        private ReactiveSet<DataLicense> _DataLicenses;
+
+        /// <summary>
+        /// The license of the charging pool data.
+        /// </summary>
+        [Mandatory]
+        public ReactiveSet<DataLicense> DataLicenses
+        {
+
+            get
+            {
+
+                return _DataLicenses != null && _DataLicenses.Any()
+                           ? _DataLicenses
+                           : Operator?.DataLicenses;
+
+            }
+
+            set
+            {
+
+                if (value != _DataLicenses && value != Operator?.DataLicenses)
+                {
+
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _DataLicenses);
+
+                    else
+                    {
+
+                        if (_DataLicenses == null)
+                            SetProperty(ref _DataLicenses, value);
+
+                        else
+                            SetProperty(ref _DataLicenses, _DataLicenses.Set(value));
+
+                    }
 
                 }
 
