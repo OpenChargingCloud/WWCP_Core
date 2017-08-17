@@ -64,10 +64,13 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                          ChargingStation.Id.ToJSON("@id"),
 
                          Embedded
-                             ? null
-                             : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/ChargingStation"),
+                             ? new JProperty("@context",  "https://open.charging.cloud/contexts/wwcp+json/ChargingStation")
+                             : null,
 
-                         ChargingStation.Name.        ToJSON("name"),
+                         ChargingStation.Name.       IsNeitherNullNorEmpty()
+                             ? ChargingStation.Name.       ToJSON("name")
+                             : null,
+
                          ChargingStation.Description.IsNeitherNullNorEmpty()
                              ? ChargingStation.Description.ToJSON("description")
                              : null,
@@ -78,11 +81,15 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                    new JProperty("brand",    ChargingStation.Brand.   ToJSON()))
                              : null,
 
-                         ChargingStation.DataSource.  ToJSON("dataSource"),
+                         (!Embedded || ChargingStation.DataSource != ChargingStation.ChargingPool.DataSource)
+                             ? ChargingStation.DataSource.ToJSON("dataSource")
+                             : null,
 
-                         ExpandDataLicenses.Switch(
-                             new JProperty("dataLicenseIds",  new JArray(ChargingStation.DataLicenses.SafeSelect(license => license.Id.ToString()))),
-                             new JProperty("dataLicenses",    ChargingStation.DataLicenses.ToJSON())),
+                         (!Embedded || ChargingStation.DataLicenses != ChargingStation.ChargingPool.DataLicenses)
+                             ? ExpandDataLicenses.Switch(
+                                 new JProperty("dataLicenseIds",  new JArray(ChargingStation.DataLicenses.SafeSelect(license => license.Id.ToString()))),
+                                 new JProperty("dataLicenses",    ChargingStation.DataLicenses.ToJSON()))
+                             : null,
 
                          #region Embedded means it is served as a substructure of e.g. a charging station operator
 
@@ -134,7 +141,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                            ChargingStation.EVSEIds.SafeAny()
                                                ? new JArray(ChargingStation.EVSEIds.
                                                                             OrderBy(evseid => evseid).
-                                                                            Select(evseid => evseid.ToString()))
+                                                                            Select (evseid => evseid.ToString()))
                                                : null),
 
                              new JProperty("EVSEs",

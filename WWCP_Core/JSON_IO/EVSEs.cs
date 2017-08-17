@@ -63,8 +63,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                          EVSE.Id.ToJSON("@id"),
 
                          Embedded
-                             ? null
-                             : new JProperty("@context",               "https://open.charging.cloud/contexts/wwcp+json/EVSE"),
+                             ? new JProperty("@context",  "https://open.charging.cloud/contexts/wwcp+json/EVSE")
+                             : null,
 
                          EVSE.Description.IsNeitherNullNorEmpty()
                              ? EVSE.Description.ToJSON("description")
@@ -76,11 +76,15 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                    new JProperty("brand",    EVSE.Brand.   ToJSON()))
                              : null,
 
-                         EVSE.DataSource.ToJSON("dataSource"),
+                         (!Embedded || EVSE.DataSource != EVSE.ChargingStation.DataSource)
+                             ? EVSE.DataSource.ToJSON("dataSource")
+                             : null,
 
-                         ExpandDataLicenses.Switch(
-                             new JProperty("dataLicenseIds",  new JArray(EVSE.DataLicenses.SafeSelect(license => license.Id.ToString()))),
-                             new JProperty("dataLicenses",    EVSE.DataLicenses.ToJSON())),
+                         (!Embedded || EVSE.DataLicenses != EVSE.ChargingStation.DataLicenses)
+                             ? ExpandDataLicenses.Switch(
+                                   new JProperty("dataLicenseIds",  new JArray(EVSE.DataLicenses.SafeSelect(license => license.Id.ToString()))),
+                                   new JProperty("dataLicenses",    EVSE.DataLicenses.ToJSON()))
+                             : null,
 
                          #region Embedded means it is served as a substructure, e.g. of a charging station
 

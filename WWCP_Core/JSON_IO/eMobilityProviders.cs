@@ -60,8 +60,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                          new JProperty("@id",  eMobilityProvider.Id.ToString()),
 
                          Embedded
-                             ? null
-                             : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/eMobilityProvider"),
+                             ? new JProperty("@context",  "https://open.charging.cloud/contexts/wwcp+json/eMobilityProvider")
+                             : null,
 
                          new JProperty("name",  eMobilityProvider.Name.ToJSON()),
 

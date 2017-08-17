@@ -62,11 +62,14 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                          ChargingPool.Id.ToJSON("@id"),
 
-                         Embedded
-                             ? null
-                             : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/ChargingPool"),
+                         !Embedded
+                             ? new JProperty("@context",  "https://open.charging.cloud/contexts/wwcp+json/ChargingPool")
+                             : null,
 
-                         ChargingPool.Name.        ToJSON("name"),
+                         ChargingPool.Name.       IsNeitherNullNorEmpty()
+                             ? ChargingPool.Name.       ToJSON("name")
+                             : null,
+
                          ChargingPool.Description.IsNeitherNullNorEmpty()
                              ? ChargingPool.Description.ToJSON("description")
                              : null,
@@ -77,7 +80,9 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                                    new JProperty("brand",    ChargingPool.Brand.   ToJSON()))
                              : null,
 
-                         ChargingPool.DataSource.  ToJSON("DataSource"),
+                         (!Embedded || ChargingPool.DataSource != ChargingPool.Operator.DataSource)
+                             ? ChargingPool.DataSource.ToJSON("DataSource")
+                             : null,
 
                          ExpandDataLicenses.Switch(
                              new JProperty("DataLicenseIds",  new JArray(ChargingPool.DataLicenses.SafeSelect(license => license.Id.ToString()))),
@@ -120,36 +125,37 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                          ExpandChargingStationIds.Switch(
                              new JProperty("chargingStationIds",
-                                             ChargingPool.ChargingStationIds.SafeAny()
-                                                 ? new JArray(ChargingPool.ChargingStationIds.
-                                                                           OrderBy(stationId => stationId ).
-                                                                           Select (stationId => stationId.ToString()))
-                                                 : new JArray()),
+                                           ChargingPool.ChargingStationIds.SafeAny()
+                                               ? new JArray(ChargingPool.ChargingStationIds.
+                                                                         OrderBy(stationId => stationId).
+                                                                         Select (stationId => stationId.ToString()))
+                                               : new JArray()),
 
                              new JProperty("chargingStations",
                                            ChargingPool.ChargingStations.SafeAny()
                                                ? new JArray(ChargingPool.ChargingStations.
                                                                          OrderBy(station   => station.Id).
-                                                                         Select (station   => station.  ToJSON(Embedded:      true,
-                                                                                                               ExpandEVSEIds: InfoStatus.Expand)))
+                                                                         ToJSON (Embedded:      true,
+                                                                                 ExpandEVSEIds: InfoStatus.Expand))
                                                : new JArray())),
 
 
-                         ExpandEVSEIds.Switch(
-                             new JProperty("EVSEIds",
-                                             ChargingPool.ChargingStationIds.SafeAny()
-                                                 ? new JArray(ChargingPool.ChargingStationIds.
-                                                                           OrderBy(stationId => stationId ).
-                                                                           Select (stationId => stationId.ToString()))
-                                                 : new JArray()),
+                         ExpandChargingStationIds == InfoStatus.Expand
+                             ? null
+                             : ExpandEVSEIds.Switch(
+                                   new JProperty("EVSEIds",
+                                                 ChargingPool.EVSEIds.SafeAny()
+                                                     ? new JArray(ChargingPool.EVSEIds.
+                                                                               OrderBy(evseId => evseId).
+                                                                               Select (evseId => evseId.ToString()))
+                                                     : new JArray()),
 
-                             new JProperty("EVSEs",
-                                           ChargingPool.ChargingStations.SafeAny()
-                                               ? new JArray(ChargingPool.ChargingStations.
-                                                                         OrderBy(station   => station.Id).
-                                                                         Select (station   => station.  ToJSON(Embedded:      true,
-                                                                                                               ExpandEVSEIds: InfoStatus.Expand)))
-                                               : new JArray()))
+                                   new JProperty("EVSEs",
+                                                 ChargingPool.EVSEs.SafeAny()
+                                                     ? new JArray(ChargingPool.EVSEs.
+                                                                               OrderBy(evse => evse.Id).
+                                                                               Select (evse => evse.ToJSON(Embedded: true)))
+                                                     : new JArray()))
 
                      );
 
