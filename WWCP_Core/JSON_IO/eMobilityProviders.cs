@@ -72,24 +72,24 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                          eMobilityProvider.DataSource.  ToJSON("DataSource"),
 
                          ExpandDataLicenses.Switch(
-                             new JProperty("dataLicenseIds",  new JArray(eMobilityProvider.DataLicenses.SafeSelect(license => license.Id.ToString()))),
-                             new JProperty("dataLicenses",    eMobilityProvider.DataLicenses.ToJSON())),
+                             () => new JProperty("dataLicenseIds",  new JArray(eMobilityProvider.DataLicenses.SafeSelect(license => license.Id.ToString()))),
+                             () => new JProperty("dataLicenses",    eMobilityProvider.DataLicenses.ToJSON())),
 
                          #region Embedded means it is served as a substructure of e.g. a charging station operator
 
                          Embedded
                              ? null
                              : ExpandRoamingNetworkId.Switch(
-                                   new JProperty("roamingNetworkId",   eMobilityProvider.RoamingNetwork.Id. ToString()),
-                                   new JProperty("roamingNetwork",     eMobilityProvider.RoamingNetwork.    ToJSON(Embedded:                   true,
-                                                                                                                   ExpandEMobilityProviderId:  InfoStatus.Hidden,
-                                                                                                                   ExpandChargingPoolIds:      InfoStatus.Hidden,
-                                                                                                                   ExpandChargingStationIds:   InfoStatus.Hidden,
-                                                                                                                   ExpandEVSEIds:              InfoStatus.Hidden,
-                                                                                                                   ExpandBrandIds:             ExpandBrandIds,
-                                                                                                                   ExpandDataLicenses:         ExpandDataLicenses))),
+                                   () => new JProperty("roamingNetworkId",   eMobilityProvider.RoamingNetwork.Id. ToString()),
+                                   () => new JProperty("roamingNetwork",     eMobilityProvider.RoamingNetwork.    ToJSON(Embedded:                   true,
+                                                                                                                         ExpandEMobilityProviderId:  InfoStatus.Hidden,
+                                                                                                                         ExpandChargingPoolIds:      InfoStatus.Hidden,
+                                                                                                                         ExpandChargingStationIds:   InfoStatus.Hidden,
+                                                                                                                         ExpandEVSEIds:              InfoStatus.Hidden,
+                                                                                                                         ExpandBrandIds:             InfoStatus.Hidden,
+                                                                                                                         ExpandDataLicenses:         InfoStatus.Hidden))),
 
-        #endregion
+                         #endregion
 
                          eMobilityProvider.Address != null
                              ? eMobilityProvider.Address.ToJSON("address")

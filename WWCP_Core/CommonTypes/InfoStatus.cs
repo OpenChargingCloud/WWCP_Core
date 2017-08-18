@@ -41,18 +41,18 @@ namespace org.GraphDefined.WWCP
     {
 
         public static JProperty Switch(this InfoStatus  Status,
-                                       JProperty        WhenShowIdOnly,
-                                       JProperty        WhenExpand)
+                                       Func<JProperty>  WhenShowIdOnly,
+                                       Func<JProperty>  WhenExpand)
         {
 
             switch (Status)
             {
 
                 case InfoStatus.ShowIdOnly:
-                    return WhenShowIdOnly;
+                    return WhenShowIdOnly();
 
                 case InfoStatus.Expand:
-                    return WhenExpand;
+                    return WhenExpand();
 
                 default:
                     return null;
