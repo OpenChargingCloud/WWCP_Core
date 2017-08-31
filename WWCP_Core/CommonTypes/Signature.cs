@@ -25,7 +25,7 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// A WWCP crypto signature.
+    /// A cryptographical signature.
     /// </summary>
     public class Signature : IEquatable<Signature>
     {
@@ -33,7 +33,7 @@ namespace org.GraphDefined.WWCP
         #region Properties
 
         /// <summary>
-        /// The value of the signature as text.
+        /// The value of the cryptographical signature as text.
         /// </summary>
         public String SignatureText { get; }
 
@@ -42,7 +42,7 @@ namespace org.GraphDefined.WWCP
         #region Constructor(s)
 
         /// <summary>
-        /// Create a new WWCP crypto signature.
+        /// Create a new cryptographical signature.
         /// </summary>
         /// <param name="SignatureText">The value of the signature as text.</param>
         public Signature(String SignatureText)

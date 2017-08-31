@@ -285,7 +285,7 @@ namespace org.GraphDefined.WWCP
                    DisableAuthentication,
                    DisableSendChargeDetailRecords,
 
-                   DNSClient)
+                   DNSClient: DNSClient)
 
         {
 

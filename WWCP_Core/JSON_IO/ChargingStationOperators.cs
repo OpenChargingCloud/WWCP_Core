@@ -144,6 +144,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                              : ExpandChargingStationIds.Switch(
                                    () => new JProperty("chargingStationIds",
                                                        new JArray(ChargingStationOperator.ChargingStationIds.
+                                                                                          OrderBy(stationid => stationid).
                                                                                           Select (stationid => stationid.ToString()))),
 
                                    () => new JProperty("chargingStations",
@@ -206,16 +207,16 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                    ? new JArray()
 
                    : new JArray(ChargingStationOperators.
-                                    Where     (cso => cso != null).
-                                    OrderBy   (cso => cso.Id).
+                                    Where         (cso => cso != null).
+                                    OrderBy       (cso => cso.Id).
                                     SkipTakeFilter(Skip, Take).
-                                    SafeSelect(cso => cso.ToJSON(Embedded,
-                                                                 ExpandRoamingNetworkId,
-                                                                 ExpandChargingPoolIds,
-                                                                 ExpandChargingStationIds,
-                                                                 ExpandEVSEIds,
-                                                                 ExpandBrandIds,
-                                                                 ExpandDataLicenses)));
+                                    SafeSelect    (cso => cso.ToJSON(Embedded,
+                                                                     ExpandRoamingNetworkId,
+                                                                     ExpandChargingPoolIds,
+                                                                     ExpandChargingStationIds,
+                                                                     ExpandEVSEIds,
+                                                                     ExpandBrandIds,
+                                                                     ExpandDataLicenses)));
 
         #endregion
 
