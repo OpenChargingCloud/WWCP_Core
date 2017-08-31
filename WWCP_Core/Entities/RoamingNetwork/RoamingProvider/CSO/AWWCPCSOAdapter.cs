@@ -88,8 +88,9 @@ namespace org.GraphDefined.WWCP
         public readonly static TimeSpan                                                         DefaultCDRCheckEvery              = TimeSpan.FromSeconds(15);
 
 
-        protected              UInt64                                                           _FlushEVSEDataRunId;
-        protected              UInt64                                                           _StatusRunId;
+        protected              UInt64                                                           _FlushEVSEDataRunId               = 1;
+        protected              UInt64                                                           _StatusRunId                      = 1;
+        protected              UInt64                                                           _CDRRunId                         = 1;
 
         protected readonly     SemaphoreSlim                                                    DataAndStatusLock                 = new SemaphoreSlim(1, 1);
 
@@ -280,6 +281,10 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        public delegate Task OnWarningsDelegate(DateTime Timestamp, String Class, String Method, IEnumerable<Warning> Warnings);
+
+        public event OnWarningsDelegate OnWarnings;
+
         #endregion
 
         #region Constructor(s)
@@ -396,7 +401,7 @@ namespace org.GraphDefined.WWCP
                     FlushEVSEDataAndStatusQueuesStartedEvent?.Invoke(this,
                                                                      StartTime,
                                                                      TimeSpan.FromMilliseconds(_FlushEVSEDataAndStatusEvery),
-                                                                     _FlushEVSEDataRunId++);
+                                                                     _FlushEVSEDataRunId);
 
                     #endregion
 
@@ -414,6 +419,8 @@ namespace org.GraphDefined.WWCP
                                                                       _FlushEVSEDataRunId);
 
                     #endregion
+
+                    _StatusRunId++;
 
                 }
 
@@ -485,7 +492,7 @@ namespace org.GraphDefined.WWCP
                     FlushEVSEFastStatusQueuesStartedEvent?.Invoke(this,
                                                                   StartTime,
                                                                   TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
-                                                                  _StatusRunId++);
+                                                                  _StatusRunId);
 
                     #endregion
 
@@ -503,6 +510,8 @@ namespace org.GraphDefined.WWCP
                                                                    _StatusRunId);
 
                     #endregion
+
+                    _StatusRunId++;
 
                 }
 
@@ -574,7 +583,7 @@ namespace org.GraphDefined.WWCP
                     FlushChargeDetailRecordsQueuesStartedEvent?.Invoke(this,
                                                                        StartTime,
                                                                        TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
-                                                                       _StatusRunId++);
+                                                                       _CDRRunId);
 
                     #endregion
 
@@ -589,9 +598,11 @@ namespace org.GraphDefined.WWCP
                                                                         EndTime,
                                                                         EndTime - StartTime,
                                                                         TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
-                                                                        _StatusRunId);
+                                                                        _CDRRunId);
 
                     #endregion
+
+                    _CDRRunId++;
 
                 }
 
@@ -629,6 +640,20 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+
+        protected void SendOnWarnings(DateTime              Timestamp,
+                                      String                Class,
+                                      String                Method,
+                                      IEnumerable<Warning>  Warnings)
+        {
+
+            if (Warnings != null && Warnings.Any())
+                OnWarnings?.Invoke(Timestamp,
+                                   Class,
+                                   Method,
+                                   Warnings);
+
+        }
 
     }
 

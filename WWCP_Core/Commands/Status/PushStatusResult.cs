@@ -49,7 +49,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Warnings or additional information.
         /// </summary>
-        public IEnumerable<String>    Warnings        { get; }
+        public IEnumerable<Warning>   Warnings        { get; }
 
         /// <summary>
         /// The runtime of the request.
@@ -74,7 +74,7 @@ namespace org.GraphDefined.WWCP
                                  PushStatusResultTypes          Result,
                                  IEnumerable<EVSEStatusUpdate>  RejectedEVSEStatusUpdates,
                                  String                         Description  = null,
-                                 IEnumerable<String>            Warnings     = null,
+                                 IEnumerable<Warning>           Warnings     = null,
                                  TimeSpan?                      Runtime      = null)
         {
 
@@ -85,10 +85,8 @@ namespace org.GraphDefined.WWCP
                                     : null;
 
             this.Warnings     = Warnings != null
-                                    ? Warnings.Where     (warning => warning != null).
-                                               SafeSelect(warning => warning.Trim()).
-                                               Where     (warning => warning.IsNotNullOrEmpty())
-                                    : new String[0];
+                                    ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                    : new Warning[0];
 
             this.Runtime      = Runtime;
 
@@ -110,7 +108,7 @@ namespace org.GraphDefined.WWCP
                                  PushStatusResultTypes          Result,
                                  IEnumerable<EVSEStatusUpdate>  RejectedEVSEStatusUpdates,
                                  String                         Description  = null,
-                                 IEnumerable<String>            Warnings     = null,
+                                 IEnumerable<Warning>           Warnings     = null,
                                  TimeSpan?                      Runtime      = null)
         {
 
@@ -121,10 +119,8 @@ namespace org.GraphDefined.WWCP
                                     : null;
 
             this.Warnings     = Warnings != null
-                                    ? Warnings.Where     (warning => warning != null).
-                                               SafeSelect(warning => warning.Trim()).
-                                               Where     (warning => warning.IsNotNullOrEmpty())
-                                    : new String[0];
+                                    ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                    : new Warning[0];
 
             this.Runtime      = Runtime;
 
@@ -138,11 +134,13 @@ namespace org.GraphDefined.WWCP
 
         #region Success
 
-        public static PushStatusResult Success(IId                  AuthId,
-                                               ISendStatus          ISendStatus,
-                                               String               Description    = null,
-                                               IEnumerable<String>  Warnings       = null,
-                                               TimeSpan?            Runtime        = null)
+        public static PushStatusResult
+
+            Success(IId                   AuthId,
+                    ISendStatus           ISendStatus,
+                    String                Description    = null,
+                    IEnumerable<Warning>  Warnings       = null,
+                    TimeSpan?             Runtime        = null)
 
             => new PushStatusResult(AuthId,
                                     ISendStatus,
@@ -154,11 +152,13 @@ namespace org.GraphDefined.WWCP
 
 
 
-        public static PushStatusResult Success(IId                  AuthId,
-                                               IReceiveStatus       IReceiveStatus,
-                                               String               Description    = null,
-                                               IEnumerable<String>  Warnings       = null,
-                                               TimeSpan?            Runtime        = null)
+        public static PushStatusResult
+
+            Success(IId                   AuthId,
+                    IReceiveStatus        IReceiveStatus,
+                    String                Description    = null,
+                    IEnumerable<Warning>  Warnings       = null,
+                    TimeSpan?             Runtime        = null)
 
             => new PushStatusResult(AuthId,
                                     IReceiveStatus,
@@ -173,11 +173,13 @@ namespace org.GraphDefined.WWCP
 
         #region Enqueued
 
-        public static PushStatusResult Enqueued(IId                  AuthId,
-                                                ISendStatus          ISendStatus,
-                                                String               Description    = null,
-                                                IEnumerable<String>  Warnings       = null,
-                                                TimeSpan?            Runtime        = null)
+        public static PushStatusResult
+
+            Enqueued(IId                   AuthId,
+                     ISendStatus           ISendStatus,
+                     String                Description    = null,
+                     IEnumerable<Warning>  Warnings       = null,
+                     TimeSpan?             Runtime        = null)
 
             => new PushStatusResult(AuthId,
                                     ISendStatus,
@@ -191,11 +193,13 @@ namespace org.GraphDefined.WWCP
 
         #region NoOperation
 
-        public static PushStatusResult NoOperation(IId                  AuthId,
-                                                   ISendStatus          ISendStatus,
-                                                   String               Description    = null,
-                                                   IEnumerable<String>  Warnings       = null,
-                                                   TimeSpan?            Runtime        = null)
+        public static PushStatusResult
+
+            NoOperation(IId                   AuthId,
+                        ISendStatus           ISendStatus,
+                        String                Description    = null,
+                        IEnumerable<Warning>  Warnings       = null,
+                        TimeSpan?             Runtime        = null)
 
             => new PushStatusResult(AuthId,
                                     ISendStatus,
@@ -207,11 +211,13 @@ namespace org.GraphDefined.WWCP
 
 
 
-        public static PushStatusResult NoOperation(IId                  AuthId,
-                                                   IReceiveStatus       IReceiveStatus,
-                                                   String               Description    = null,
-                                                   IEnumerable<String>  Warnings       = null,
-                                                   TimeSpan?            Runtime        = null)
+        public static PushStatusResult
+
+            NoOperation(IId                   AuthId,
+                        IReceiveStatus        IReceiveStatus,
+                        String                Description    = null,
+                        IEnumerable<Warning>  Warnings       = null,
+                        TimeSpan?             Runtime        = null)
 
             => new PushStatusResult(AuthId,
                                     IReceiveStatus,
@@ -225,12 +231,14 @@ namespace org.GraphDefined.WWCP
 
         #region OutOfService
 
-        public static PushStatusResult OutOfService(IId                            AuthId,
-                                                    ISendStatus                    ISendStatus,
-                                                    IEnumerable<EVSEStatusUpdate>  RejectedEVSEStatusUpdates,
-                                                    String                         Description    = null,
-                                                    IEnumerable<String>            Warnings       = null,
-                                                    TimeSpan?                      Runtime        = null)
+        public static PushStatusResult
+
+            OutOfService(IId                            AuthId,
+                         ISendStatus                    ISendStatus,
+                         IEnumerable<EVSEStatusUpdate>  RejectedEVSEStatusUpdates,
+                         String                         Description    = null,
+                         IEnumerable<Warning>           Warnings       = null,
+                         TimeSpan?                      Runtime        = null)
 
             => new PushStatusResult(AuthId,
                                     ISendStatus,
@@ -242,12 +250,14 @@ namespace org.GraphDefined.WWCP
 
 
 
-        public static PushStatusResult OutOfService(IId                            AuthId,
-                                                    IReceiveStatus                 IReceiveStatus,
-                                                    IEnumerable<EVSEStatusUpdate>  RejectedEVSEStatusUpdates,
-                                                    String                         Description    = null,
-                                                    IEnumerable<String>            Warnings       = null,
-                                                    TimeSpan?                      Runtime        = null)
+        public static PushStatusResult
+
+            OutOfService(IId                            AuthId,
+                         IReceiveStatus                 IReceiveStatus,
+                         IEnumerable<EVSEStatusUpdate>  RejectedEVSEStatusUpdates,
+                         String                         Description    = null,
+                         IEnumerable<Warning>           Warnings       = null,
+                         TimeSpan?                      Runtime        = null)
 
             => new PushStatusResult(AuthId,
                                     IReceiveStatus,
@@ -259,12 +269,14 @@ namespace org.GraphDefined.WWCP
 
 
 
-        public static PushStatusResult OutOfService(IId                            AuthId,
-                                                    ISendStatus                    ISendStatus,
-                                                    IEnumerable<ChargingStationStatusUpdate>  RejectedEVSEStatusUpdates,
-                                                    String                         Description    = null,
-                                                    IEnumerable<String>            Warnings       = null,
-                                                    TimeSpan?                      Runtime        = null)
+        public static PushStatusResult
+
+            OutOfService(IId                                       AuthId,
+                         ISendStatus                               ISendStatus,
+                         IEnumerable<ChargingStationStatusUpdate>  RejectedEVSEStatusUpdates,
+                         String                                    Description    = null,
+                         IEnumerable<Warning>                      Warnings       = null,
+                         TimeSpan?                                 Runtime        = null)
 
             => new PushStatusResult(AuthId,
                                     ISendStatus,
@@ -276,12 +288,14 @@ namespace org.GraphDefined.WWCP
 
 
 
-        public static PushStatusResult OutOfService(IId                            AuthId,
-                                                    IReceiveStatus                 IReceiveStatus,
-                                                    IEnumerable<ChargingStationStatusUpdate>  RejectedEVSEStatusUpdates,
-                                                    String                         Description    = null,
-                                                    IEnumerable<String>            Warnings       = null,
-                                                    TimeSpan?                      Runtime        = null)
+        public static PushStatusResult
+
+            OutOfService(IId                                       AuthId,
+                         IReceiveStatus                            IReceiveStatus,
+                         IEnumerable<ChargingStationStatusUpdate>  RejectedEVSEStatusUpdates,
+                         String                                    Description    = null,
+                         IEnumerable<Warning>                      Warnings       = null,
+                         TimeSpan?                                 Runtime        = null)
 
             => new PushStatusResult(AuthId,
                                     IReceiveStatus,
@@ -293,12 +307,14 @@ namespace org.GraphDefined.WWCP
 
 
 
-        public static PushStatusResult OutOfService(IId                            AuthId,
-                                                    ISendStatus                    ISendStatus,
-                                                    IEnumerable<ChargingPoolStatusUpdate>  RejectedEVSEStatusUpdates,
-                                                    String                         Description    = null,
-                                                    IEnumerable<String>            Warnings       = null,
-                                                    TimeSpan?                      Runtime        = null)
+        public static PushStatusResult
+
+            OutOfService(IId                                    AuthId,
+                         ISendStatus                            ISendStatus,
+                         IEnumerable<ChargingPoolStatusUpdate>  RejectedEVSEStatusUpdates,
+                         String                                 Description    = null,
+                         IEnumerable<Warning>                   Warnings       = null,
+                         TimeSpan?                              Runtime        = null)
 
             => new PushStatusResult(AuthId,
                                     ISendStatus,
@@ -310,12 +326,14 @@ namespace org.GraphDefined.WWCP
 
 
 
-        public static PushStatusResult OutOfService(IId                            AuthId,
-                                                    IReceiveStatus                 IReceiveStatus,
-                                                    IEnumerable<ChargingPoolStatusUpdate>  RejectedEVSEStatusUpdates,
-                                                    String                         Description    = null,
-                                                    IEnumerable<String>            Warnings       = null,
-                                                    TimeSpan?                      Runtime        = null)
+        public static PushStatusResult
+
+            OutOfService(IId                                    AuthId,
+                         IReceiveStatus                         IReceiveStatus,
+                         IEnumerable<ChargingPoolStatusUpdate>  RejectedEVSEStatusUpdates,
+                         String                                 Description    = null,
+                         IEnumerable<Warning>                   Warnings       = null,
+                         TimeSpan?                              Runtime        = null)
 
             => new PushStatusResult(AuthId,
                                     IReceiveStatus,
@@ -330,12 +348,14 @@ namespace org.GraphDefined.WWCP
 
         #region Error
 
-        public static PushStatusResult Error(IId                            AuthId,
-                                             ISendStatus                    ISendStatus,
-                                             IEnumerable<EVSEStatusUpdate>  RejectedEVSEs  = null,
-                                             String                         Description    = null,
-                                             IEnumerable<String>            Warnings       = null,
-                                             TimeSpan?                      Runtime        = null)
+        public static PushStatusResult
+
+            Error(IId                            AuthId,
+                  ISendStatus                    ISendStatus,
+                  IEnumerable<EVSEStatusUpdate>  RejectedEVSEs  = null,
+                  String                         Description    = null,
+                  IEnumerable<Warning>           Warnings       = null,
+                  TimeSpan?                      Runtime        = null)
 
             => new PushStatusResult(AuthId,
                                     ISendStatus,
@@ -350,7 +370,7 @@ namespace org.GraphDefined.WWCP
                                              IReceiveStatus                 IReceiveStatus,
                                              IEnumerable<EVSEStatusUpdate>  RejectedEVSEs  = null,
                                              String                         Description    = null,
-                                             IEnumerable<String>            Warnings       = null,
+                                             IEnumerable<Warning>           Warnings       = null,
                                              TimeSpan?                      Runtime        = null)
 
             => new PushStatusResult(AuthId,
@@ -365,11 +385,11 @@ namespace org.GraphDefined.WWCP
 
         #region Enqueued
 
-        public static PushStatusResult LockTimeout(IId                  AuthId,
-                                                   ISendStatus          ISendStatus,
-                                                   String               Description    = null,
-                                                   IEnumerable<String>  Warnings       = null,
-                                                   TimeSpan?            Runtime        = null)
+        public static PushStatusResult LockTimeout(IId                   AuthId,
+                                                   ISendStatus           ISendStatus,
+                                                   String                Description    = null,
+                                                   IEnumerable<Warning>  Warnings       = null,
+                                                   TimeSpan?             Runtime        = null)
 
             => new PushStatusResult(AuthId,
                                     ISendStatus,

@@ -63,20 +63,18 @@ namespace org.GraphDefined.WWCP
 
         public ChargingStation            ChargingStation    { get; }
         public PushSingleDataResultTypes  Result             { get; }
-        public IEnumerable<String>        Warnings           { get; }
+        public IEnumerable<Warning>       Warnings           { get; }
 
         public PushSingleChargingStationDataResult(ChargingStation            ChargingStation,
                                                    PushSingleDataResultTypes  Result,
-                                                   IEnumerable<String>        Warnings)
+                                                   IEnumerable<Warning>       Warnings)
         {
 
             this.ChargingStation  = ChargingStation;
             this.Result           = Result;
             this.Warnings         = Warnings != null
-                                        ? Warnings.Where     (warning => warning != null).
-                                                   SafeSelect(warning => warning.Trim()).
-                                                   Where     (warning => warning.IsNotNullOrEmpty())
-                                        : new String[0];
+                                        ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                        : new Warning[0];
 
         }
 
@@ -94,22 +92,22 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The result of the operation.
         /// </summary>
-        public PushDataResultTypes  Result          { get; }
+        public PushDataResultTypes   Result          { get; }
 
         /// <summary>
         /// An optional description of the result code.
         /// </summary>
-        public String               Description     { get; }
+        public String                Description     { get; }
 
         /// <summary>
         /// Warnings or additional information.
         /// </summary>
-        public IEnumerable<String>  Warnings        { get; }
+        public IEnumerable<Warning>  Warnings        { get; }
 
         /// <summary>
         /// The runtime of the request.
         /// </summary>
-        public TimeSpan?            Runtime         { get;  }
+        public TimeSpan?             Runtime         { get;  }
 
         #endregion
 
@@ -124,13 +122,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushEVSEDataResult(IId                  AuthId,
-                                    ISendData            ISendData,
-                                    PushDataResultTypes  Result,
-                                    IEnumerable<EVSE>    RejectedEVSEs  = null,
-                                    String               Description    = null,
-                                    IEnumerable<String>  Warnings       = null,
-                                    TimeSpan?            Runtime        = null)
+        internal PushEVSEDataResult(IId                   AuthId,
+                                    ISendData             ISendData,
+                                    PushDataResultTypes   Result,
+                                    IEnumerable<EVSE>     RejectedEVSEs  = null,
+                                    String                Description    = null,
+                                    IEnumerable<Warning>  Warnings       = null,
+                                    TimeSpan?             Runtime        = null)
         {
 
             this.Result       = Result;
@@ -140,10 +138,8 @@ namespace org.GraphDefined.WWCP
                                     : null;
 
             this.Warnings     = Warnings != null
-                                    ? Warnings.Where     (warning => warning != null).
-                                               SafeSelect(warning => warning.Trim()).
-                                               Where     (warning => warning.IsNotNullOrEmpty())
-                                    : new String[0];
+                                    ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                    : new Warning[0];
 
             this.Runtime      = Runtime;
 
@@ -160,13 +156,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushEVSEDataResult(IId                  AuthId,
-                                    IReceiveData         IReceiveData,
-                                    PushDataResultTypes  Result,
-                                    IEnumerable<EVSE>    RejectedEVSEs   = null,
-                                    String               Description     = null,
-                                    IEnumerable<String>  Warnings        = null,
-                                    TimeSpan?            Runtime         = null)
+        internal PushEVSEDataResult(IId                   AuthId,
+                                    IReceiveData          IReceiveData,
+                                    PushDataResultTypes   Result,
+                                    IEnumerable<EVSE>     RejectedEVSEs   = null,
+                                    String                Description     = null,
+                                    IEnumerable<Warning>  Warnings        = null,
+                                    TimeSpan?             Runtime         = null)
         {
 
             this.Result       = Result;
@@ -176,10 +172,8 @@ namespace org.GraphDefined.WWCP
                                     : null;
 
             this.Warnings     = Warnings != null
-                                    ? Warnings.Where     (warning => warning != null).
-                                               SafeSelect(warning => warning.Trim()).
-                                               Where     (warning => warning.IsNotNullOrEmpty())
-                                    : new String[0];
+                                    ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                    : new Warning[0];
 
             this.Runtime      = Runtime;
 
@@ -192,79 +186,89 @@ namespace org.GraphDefined.WWCP
 
         #region AdminDown
 
-        public static PushEVSEDataResult AdminDown(IId                  AuthId,
-                                               ISendData            ISendData,
-                                               IEnumerable<EVSE>    RejectedEVSEs  = null,
-                                               String               Description    = null,
-                                               IEnumerable<String>  Warnings       = null,
-                                               TimeSpan?            Runtime        = null)
+        public static PushEVSEDataResult
+
+            AdminDown(IId                   AuthId,
+                      ISendData             ISendData,
+                      IEnumerable<EVSE>     RejectedEVSEs  = null,
+                      String                Description    = null,
+                      IEnumerable<Warning>  Warnings       = null,
+                      TimeSpan?             Runtime        = null)
 
             => new PushEVSEDataResult(AuthId,
-                                  ISendData,
-                                  PushDataResultTypes.AdminDown,
-                                  RejectedEVSEs,
-                                  Description,
-                                  Warnings,
-                                  Runtime);
+                                      ISendData,
+                                      PushDataResultTypes.AdminDown,
+                                      RejectedEVSEs,
+                                      Description,
+                                      Warnings,
+                                      Runtime);
 
 
-        public static PushEVSEDataResult AdminDown(IId                  AuthId,
-                                               IReceiveData         IReceiveData,
-                                               IEnumerable<EVSE>    RejectedEVSEs  = null,
-                                               String               Description    = null,
-                                               IEnumerable<String>  Warnings       = null,
-                                               TimeSpan?            Runtime        = null)
+        public static PushEVSEDataResult
+
+            AdminDown(IId                   AuthId,
+                      IReceiveData          IReceiveData,
+                      IEnumerable<EVSE>     RejectedEVSEs  = null,
+                      String                Description    = null,
+                      IEnumerable<Warning>  Warnings       = null,
+                      TimeSpan?             Runtime        = null)
 
             => new PushEVSEDataResult(AuthId,
-                                  IReceiveData,
-                                  PushDataResultTypes.AdminDown,
-                                  RejectedEVSEs,
-                                  Description,
-                                  Warnings,
-                                  Runtime);
+                                      IReceiveData,
+                                      PushDataResultTypes.AdminDown,
+                                      RejectedEVSEs,
+                                      Description,
+                                      Warnings,
+                                      Runtime);
 
         #endregion
 
         #region Success
 
-        public static PushEVSEDataResult Success(IId                  AuthId,
-                                             ISendData            ISendData,
-                                             String               Description    = null,
-                                             IEnumerable<String>  Warnings       = null,
-                                             TimeSpan?            Runtime        = null)
+        public static PushEVSEDataResult
+
+            Success(IId                   AuthId,
+                    ISendData             ISendData,
+                    String                Description    = null,
+                    IEnumerable<Warning>  Warnings       = null,
+                    TimeSpan?             Runtime        = null)
 
             => new PushEVSEDataResult(AuthId,
-                                  ISendData,
-                                  PushDataResultTypes.Success,
-                                  new EVSE[0],
-                                  Description,
-                                  Warnings,
-                                  Runtime);
+                                      ISendData,
+                                      PushDataResultTypes.Success,
+                                      new EVSE[0],
+                                      Description,
+                                      Warnings,
+                                      Runtime);
 
 
-        public static PushEVSEDataResult Success(IId                  AuthId,
-                                             IReceiveData         IReceiveData,
-                                             String               Description    = null,
-                                             IEnumerable<String>  Warnings       = null,
-                                             TimeSpan?            Runtime        = null)
+        public static PushEVSEDataResult
+
+            Success(IId                   AuthId,
+                    IReceiveData          IReceiveData,
+                    String                Description    = null,
+                    IEnumerable<Warning>  Warnings       = null,
+                    TimeSpan?             Runtime        = null)
 
             => new PushEVSEDataResult(AuthId,
-                                  IReceiveData,
-                                  PushDataResultTypes.Success,
-                                  new EVSE[0],
-                                  Description,
-                                  Warnings,
-                                  Runtime);
+                                      IReceiveData,
+                                      PushDataResultTypes.Success,
+                                      new EVSE[0],
+                                      Description,
+                                      Warnings,
+                                      Runtime);
 
         #endregion
 
         #region Enqueued
 
-        public static PushEVSEDataResult Enqueued(IId                  AuthId,
-                                              ISendData            ISendData,
-                                              String               Description    = null,
-                                              IEnumerable<String>  Warnings       = null,
-                                              TimeSpan?            Runtime        = null)
+        public static PushEVSEDataResult
+
+            Enqueued(IId                   AuthId,
+                     ISendData             ISendData,
+                     String                Description    = null,
+                     IEnumerable<Warning>  Warnings       = null,
+                     TimeSpan?             Runtime        = null)
 
             => new PushEVSEDataResult(AuthId,
                                   ISendData,
@@ -278,46 +282,52 @@ namespace org.GraphDefined.WWCP
 
         #region NoOperation
 
-        public static PushEVSEDataResult NoOperation(IId                  AuthId,
-                                                     ISendData            ISendData,
-                                                     String               Description    = null,
-                                                     IEnumerable<String>  Warnings       = null,
-                                                     TimeSpan?            Runtime        = null)
+        public static PushEVSEDataResult
+
+            NoOperation(IId                   AuthId,
+                        ISendData             ISendData,
+                        String                Description    = null,
+                        IEnumerable<Warning>  Warnings       = null,
+                        TimeSpan?             Runtime        = null)
 
             => new PushEVSEDataResult(AuthId,
-                                  ISendData,
-                                  PushDataResultTypes.NoOperation,
-                                  new EVSE[0],
-                                  Description,
-                                  Warnings,
-                                  Runtime);
+                                      ISendData,
+                                      PushDataResultTypes.NoOperation,
+                                      new EVSE[0],
+                                      Description,
+                                      Warnings,
+                                      Runtime);
 
 
-         public static PushEVSEDataResult NoOperation(IId                  AuthId,
-                                                      IReceiveData         IReceiveData,
-                                                      String               Description    = null,
-                                                      IEnumerable<String>  Warnings       = null,
-                                                      TimeSpan?            Runtime        = null)
+         public static PushEVSEDataResult
+
+            NoOperation(IId                   AuthId,
+                        IReceiveData          IReceiveData,
+                        String                Description    = null,
+                        IEnumerable<Warning>  Warnings       = null,
+                        TimeSpan?             Runtime        = null)
 
             => new PushEVSEDataResult(AuthId,
-                                  IReceiveData,
-                                  PushDataResultTypes.NoOperation,
-                                  new EVSE[0],
-                                  Description,
-                                  Warnings,
-                                  Runtime);
+                                      IReceiveData,
+                                      PushDataResultTypes.NoOperation,
+                                      new EVSE[0],
+                                      Description,
+                                      Warnings,
+                                      Runtime);
 
         #endregion
 
 
         #region Error
 
-        public static PushEVSEDataResult Error(IId                  AuthId,
-                                           ISendData            ISendData,
-                                           IEnumerable<EVSE>    RejectedEVSEs  = null,
-                                           String               Description    = null,
-                                           IEnumerable<String>  Warnings       = null,
-                                           TimeSpan?            Runtime        = null)
+        public static PushEVSEDataResult
+
+            Error(IId                   AuthId,
+                  ISendData             ISendData,
+                  IEnumerable<EVSE>     RejectedEVSEs  = null,
+                  String                Description    = null,
+                  IEnumerable<Warning>  Warnings       = null,
+                  TimeSpan?             Runtime        = null)
 
             => new PushEVSEDataResult(AuthId,
                                   ISendData,
@@ -328,20 +338,22 @@ namespace org.GraphDefined.WWCP
                                   Runtime);
 
 
-        public static PushEVSEDataResult Error(IId                  AuthId,
-                                           IReceiveData         IReceiveData,
-                                           IEnumerable<EVSE>    RejectedEVSEs  = null,
-                                           String               Description    = null,
-                                           IEnumerable<String>  Warnings       = null,
-                                           TimeSpan?            Runtime        = null)
+        public static PushEVSEDataResult
+
+            Error(IId                   AuthId,
+                  IReceiveData          IReceiveData,
+                  IEnumerable<EVSE>     RejectedEVSEs  = null,
+                  String                Description    = null,
+                  IEnumerable<Warning>  Warnings       = null,
+                  TimeSpan?             Runtime        = null)
 
             => new PushEVSEDataResult(AuthId,
-                                  IReceiveData,
-                                  PushDataResultTypes.Error,
-                                  RejectedEVSEs,
-                                  Description,
-                                  Warnings,
-                                  Runtime);
+                                      IReceiveData,
+                                      PushDataResultTypes.Error,
+                                      RejectedEVSEs,
+                                      Description,
+                                      Warnings,
+                                      Runtime);
 
         #endregion
 
@@ -378,22 +390,22 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The result of the operation.
         /// </summary>
-        public PushDataResultTypes  Result          { get; }
+        public PushDataResultTypes   Result          { get; }
 
         /// <summary>
         /// An optional description of the result code.
         /// </summary>
-        public String               Description     { get; }
+        public String                Description     { get; }
 
         /// <summary>
         /// Warnings or additional information.
         /// </summary>
-        public IEnumerable<String>  Warnings        { get; }
+        public IEnumerable<Warning>  Warnings        { get; }
 
         /// <summary>
         /// The runtime of the request.
         /// </summary>
-        public TimeSpan?            Runtime         { get;  }
+        public TimeSpan?             Runtime         { get;  }
 
         #endregion
 
@@ -413,7 +425,7 @@ namespace org.GraphDefined.WWCP
                                               PushDataResultTypes                               Result,
                                               IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs   = null,
                                               String                                            Description     = null,
-                                              IEnumerable<String>                               Warnings        = null,
+                                              IEnumerable<Warning>                              Warnings        = null,
                                               TimeSpan?                                         Runtime         = null)
         {
 
@@ -428,10 +440,8 @@ namespace org.GraphDefined.WWCP
                                     : null;
 
             this.Warnings     = Warnings != null
-                                    ? Warnings.Where     (warning => warning != null).
-                                               SafeSelect(warning => warning.Trim()).
-                                               Where     (warning => warning.IsNotNullOrEmpty())
-                                    : null;
+                                    ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                    : new Warning[0];
 
             this.Runtime      = Runtime;
 
@@ -453,7 +463,7 @@ namespace org.GraphDefined.WWCP
                                               PushDataResultTypes                               Result,
                                               IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs   = null,
                                               String                                            Description     = null,
-                                              IEnumerable<String>                               Warnings        = null,
+                                              IEnumerable<Warning>                              Warnings        = null,
                                               TimeSpan?                                         Runtime         = null)
         {
 
@@ -468,10 +478,8 @@ namespace org.GraphDefined.WWCP
                                      : null;
 
             this.Warnings      = Warnings != null
-                                     ? Warnings.Where     (warning => warning != null).
-                                                SafeSelect(warning => warning.Trim()).
-                                                Where     (warning => warning.IsNotNullOrEmpty())
-                                     : new String[0];
+                                     ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                     : new Warning[0];
 
             this.Runtime       = Runtime;
 
@@ -484,12 +492,14 @@ namespace org.GraphDefined.WWCP
 
         #region AdminDown
 
-        public static PushChargingStationDataResult AdminDown(IId                                               AuthId,
-                                                              ISendData                                         ISendData,
-                                                              IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs   = null,
-                                                              String                                            Description     = null,
-                                                              IEnumerable<String>                               Warnings        = null,
-                                                              TimeSpan?                                         Runtime         = null)
+        public static PushChargingStationDataResult
+
+            AdminDown(IId                                               AuthId,
+                      ISendData                                         ISendData,
+                      IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs   = null,
+                      String                                            Description     = null,
+                      IEnumerable<Warning>                              Warnings        = null,
+                      TimeSpan?                                         Runtime         = null)
 
             => new PushChargingStationDataResult(AuthId,
                                                  ISendData,
@@ -500,12 +510,14 @@ namespace org.GraphDefined.WWCP
                                                  Runtime);
 
 
-        public static PushChargingStationDataResult AdminDown(IId                                               AuthId,
-                                                              IReceiveData                                      IReceiveData,
-                                                              IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs   = null,
-                                                              String                                            Description     = null,
-                                                              IEnumerable<String>                               Warnings        = null,
-                                                              TimeSpan?                                         Runtime         = null)
+        public static PushChargingStationDataResult
+
+            AdminDown(IId                                               AuthId,
+                      IReceiveData                                      IReceiveData,
+                      IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs   = null,
+                      String                                            Description     = null,
+                      IEnumerable<Warning>                              Warnings        = null,
+                      TimeSpan?                                         Runtime         = null)
 
             => new PushChargingStationDataResult(AuthId,
                                                  IReceiveData,
@@ -519,11 +531,13 @@ namespace org.GraphDefined.WWCP
 
         #region Success
 
-        public static PushChargingStationDataResult Success(IId                  AuthId,
-                                             ISendData            ISendData,
-                                             String               Description    = null,
-                                             IEnumerable<String>  Warnings       = null,
-                                             TimeSpan?            Runtime        = null)
+        public static PushChargingStationDataResult
+
+            Success(IId                   AuthId,
+                    ISendData             ISendData,
+                    String                Description    = null,
+                    IEnumerable<Warning>  Warnings       = null,
+                    TimeSpan?             Runtime        = null)
 
             => new PushChargingStationDataResult(AuthId,
                                                  ISendData,
@@ -534,11 +548,13 @@ namespace org.GraphDefined.WWCP
                                                  Runtime);
 
 
-        public static PushChargingStationDataResult Success(IId                  AuthId,
-                                                            IReceiveData         IReceiveData,
-                                                            String               Description    = null,
-                                                            IEnumerable<String>  Warnings       = null,
-                                                            TimeSpan?            Runtime        = null)
+        public static PushChargingStationDataResult
+
+            Success(IId                   AuthId,
+                    IReceiveData          IReceiveData,
+                    String                Description    = null,
+                    IEnumerable<Warning>  Warnings       = null,
+                    TimeSpan?             Runtime        = null)
 
             => new PushChargingStationDataResult(AuthId,
                                                  IReceiveData,
@@ -552,11 +568,13 @@ namespace org.GraphDefined.WWCP
 
         #region Enqueued
 
-        public static PushChargingStationDataResult Enqueued(IId                  AuthId,
-                                                             ISendData            ISendData,
-                                                             String               Description    = null,
-                                                             IEnumerable<String>  Warnings       = null,
-                                                             TimeSpan?            Runtime        = null)
+        public static PushChargingStationDataResult
+
+            Enqueued(IId                   AuthId,
+                     ISendData             ISendData,
+                     String                Description    = null,
+                     IEnumerable<Warning>  Warnings       = null,
+                     TimeSpan?             Runtime        = null)
 
             => new PushChargingStationDataResult(AuthId,
                                                  ISendData,
@@ -570,11 +588,13 @@ namespace org.GraphDefined.WWCP
 
         #region NoOperation
 
-        public static PushChargingStationDataResult NoOperation(IId                  AuthId,
-                                                                ISendData            ISendData,
-                                                                String               Description    = null,
-                                                                IEnumerable<String>  Warnings       = null,
-                                                                TimeSpan?            Runtime        = null)
+        public static PushChargingStationDataResult
+
+            NoOperation(IId                   AuthId,
+                        ISendData             ISendData,
+                        String                Description    = null,
+                        IEnumerable<Warning>  Warnings       = null,
+                        TimeSpan?             Runtime        = null)
 
             => new PushChargingStationDataResult(AuthId,
                                                  ISendData,
@@ -585,11 +605,13 @@ namespace org.GraphDefined.WWCP
                                                  Runtime);
 
 
-         public static PushChargingStationDataResult NoOperation(IId                  AuthId,
-                                                                 IReceiveData         IReceiveData,
-                                                                 String               Description    = null,
-                                                                 IEnumerable<String>  Warnings       = null,
-                                                                 TimeSpan?            Runtime        = null)
+         public static PushChargingStationDataResult
+
+            NoOperation(IId                   AuthId,
+                        IReceiveData          IReceiveData,
+                        String                Description    = null,
+                        IEnumerable<Warning>  Warnings       = null,
+                        TimeSpan?             Runtime        = null)
 
             => new PushChargingStationDataResult(AuthId,
                                                  IReceiveData,
@@ -603,12 +625,14 @@ namespace org.GraphDefined.WWCP
 
         #region Error
 
-        public static PushChargingStationDataResult Error(IId                                               AuthId,
-                                                          ISendData                                         ISendData,
-                                                          IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs   = null,
-                                                          String                                            Description     = null,
-                                                          IEnumerable<String>                               Warnings        = null,
-                                                          TimeSpan?                                         Runtime         = null)
+        public static PushChargingStationDataResult
+
+            Error(IId                                               AuthId,
+                  ISendData                                         ISendData,
+                  IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs   = null,
+                  String                                            Description     = null,
+                  IEnumerable<Warning>                              Warnings        = null,
+                  TimeSpan?                                         Runtime         = null)
 
             => new PushChargingStationDataResult(AuthId,
                                                  ISendData,
@@ -619,12 +643,14 @@ namespace org.GraphDefined.WWCP
                                                  Runtime);
 
 
-        public static PushChargingStationDataResult Error(IId                                               AuthId,
-                                                          IReceiveData                                      IReceiveData,
-                                                          IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs   = null,
-                                                          String                                            Description     = null,
-                                                          IEnumerable<String>                               Warnings        = null,
-                                                          TimeSpan?                                         Runtime         = null)
+        public static PushChargingStationDataResult
+
+            Error(IId                                               AuthId,
+                  IReceiveData                                      IReceiveData,
+                  IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs   = null,
+                  String                                            Description     = null,
+                  IEnumerable<Warning>                              Warnings        = null,
+                  TimeSpan?                                         Runtime         = null)
 
             => new PushChargingStationDataResult(AuthId,
                                                  IReceiveData,
