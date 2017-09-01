@@ -55,8 +55,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                                      InfoStatus           ExpandEMobilityProviderId          = InfoStatus.ShowIdOnly)
 
-            => RoamingNetwork == null
 
+            => RoamingNetwork == null
                    ? null
 
                    : JSONObject.Create(
