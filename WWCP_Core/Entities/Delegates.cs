@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 

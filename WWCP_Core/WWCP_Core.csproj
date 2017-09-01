@@ -83,12 +83,8 @@
     <Compile Include="Commands\Reserve\CancelReservationDelegates.cs" />
     <Compile Include="Commands\Reserve\ReserveChargingPoolDelegates.cs" />
     <Compile Include="Commands\SendCDRs\OnGetCDRsDelegate.cs" />
-    <Compile Include="CommonTypes\ACustomData.cs" />
-    <Compile Include="CommonTypes\DataLicense_Id.cs" />
     <Compile Include="CommonTypes\InfoStatus.cs" />
-    <Compile Include="CommonTypes\ICustomData.cs" />
     <Compile Include="CommonTypes\TransmissionTypes.cs" />
-    <Compile Include="CommonTypes\Signature.cs" />
     <Compile Include="Entities\ABaseEMobilityEntity.cs" />
     <Compile Include="Entities\ACryptoEMobilityEntity.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPoolGroup\ChargingPoolGroupAdminStatusType.cs" />
@@ -238,7 +234,6 @@
     <Compile Include="CommonTypes\HourMin.cs" />
     <Compile Include="CommonTypes\RegularHours.cs" />
     <Compile Include="CommonTypes\StatusDiff.cs" />
-    <Compile Include="CommonTypes\DataLicenses.cs" />
     <Compile Include="CommonTypes\ChangeMethods.cs" />
     <Compile Include="CommonTypes\IStatus.cs" />
     <Compile Include="CommonTypes\StatusReport.cs" />
@@ -316,7 +311,6 @@
     <Compile Include="CommonTypes\Attributes\ChargeWithContract.cs" />
     <Compile Include="CommonTypes\Attributes\ChargeWithoutContract.cs" />
     <Compile Include="CommonTypes\Attributes\FreeCharge.cs" />
-    <Compile Include="CommonTypes\Address.cs" />
     <Compile Include="CommonTypes\WWCPException.cs" />
     <Compile Include="Entities\RoamingNetwork\GridOperator\ChargingServicePlan\ChargingServicePlan.cs" />
     <Compile Include="Entities\RoamingNetwork\GridOperator\ChargingServicePlan\ChargingServicePlan_Id.cs" />
@@ -360,7 +354,6 @@
     <Compile Include="Commands\RemoteStartStop\RemoteStartEVSEResult.cs" />
     <Compile Include="Commands\RemoteStartStop\RemoteStopEVSEResult.cs" />
     <Compile Include="CommonTypes\SessionInfo.cs" />
-    <Compile Include="JSON_IO\Address.cs" />
     <Compile Include="JSON_IO\ChargeDetailRecords.cs" />
     <Compile Include="JSON_IO\ChargingPools.cs" />
     <Compile Include="JSON_IO\ChargingReservations.cs" />

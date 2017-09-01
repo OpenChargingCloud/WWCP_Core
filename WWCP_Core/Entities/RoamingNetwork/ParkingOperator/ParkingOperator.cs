@@ -30,6 +30,7 @@ using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
 using System.Collections;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 

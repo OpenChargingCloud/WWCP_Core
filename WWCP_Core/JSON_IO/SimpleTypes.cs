@@ -39,67 +39,6 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
     public static partial class JSON_IO
     {
 
-        #region ToJSON(this Id, JPropertyKey)
-
-        /// <summary>
-        /// Create a JSON representation of the given identificator.
-        /// </summary>
-        /// <param name="Id">An identificator.</param>
-        /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
-        public static JProperty ToJSON(this IId Id, String JPropertyKey)
-
-            => Id != null
-                   ? new JProperty(JPropertyKey, Id.ToString())
-                   : null;
-
-        #endregion
-
-        #region ToJSON(this Location, JPropertyKey)
-
-        /// <summary>
-        /// Create a JSON representation of the given GeoLocation.
-        /// </summary>
-        /// <param name="Location">A GeoLocation.</param>
-        /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
-        public static JProperty ToJSON(this GeoCoordinate Location, String JPropertyKey)
-        {
-
-            if (Location == default(GeoCoordinate))
-                return null;
-
-            return new JProperty(JPropertyKey,
-                                 JSONObject.Create(
-                                     Location.Projection != GravitationalModel.WGS84 ? new JProperty("projection", Location.Projection.ToString()) : null,
-                                     new JProperty("lat", Location.Latitude. Value),
-                                     new JProperty("lng", Location.Longitude.Value),
-                                     Location.Altitude.HasValue                      ? new JProperty("altitude",   Location.Altitude.Value.Value)  : null)
-                                );
-
-        }
-
-        /// <summary>
-        /// Create a JSON representation of the given GeoLocation.
-        /// </summary>
-        /// <param name="Location">A GeoLocation.</param>
-        /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
-        public static JProperty ToJSON(this GeoCoordinate? Location, String JPropertyKey)
-        {
-
-            if (!Location.HasValue)
-                return null;
-
-            return new JProperty(JPropertyKey,
-                                 JSONObject.Create(
-                                     Location.Value.Projection != GravitationalModel.WGS84 ? new JProperty("projection", Location.Value.Projection.ToString()) : null,
-                                     new JProperty("lat", Location.Value.Latitude. Value),
-                                     new JProperty("lng", Location.Value.Longitude.Value),
-                                     Location.Value.Altitude.HasValue                      ? new JProperty("altitude",   Location.Value.Altitude.Value.Value)  : null)
-                                );
-
-        }
-
-        #endregion
-
         #region ToJSON(this OpeningTimes)
 
         public static JObject ToJSON(this OpeningTimes OpeningTimes)
@@ -164,37 +103,6 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this DataLicenses)
-
-        public static JArray ToJSON(this ReactiveSet<DataLicense> DataLicenses)
-
-            => DataLicenses != null
-                   ? new JArray(DataLicenses.SafeSelect(license => license.ToJSON()))
-                   : null;
-
-        #endregion
-
-        #region ToJSON(this DataLicenses, JPropertyKey)
-
-        public static JProperty ToJSON(this ReactiveSet<DataLicense> DataLicenses, String JPropertyKey)
-
-            => DataLicenses != null
-                   ? new JProperty(JPropertyKey,
-                                   new JArray(DataLicenses.SafeSelect(license => license.ToJSON())))
-                   : null;
-
-        #endregion
-
-        #region ToJSON(this Text, JPropertyKey)
-
-        public static JProperty ToJSON(this String Text, String JPropertyKey)
-
-            => Text.IsNotNullOrEmpty()
-                   ? new JProperty(JPropertyKey, Text)
-                   : null;
-
-        #endregion
-
         #region ToJSON(this Brand)
 
         public static JObject ToJSON(this Brand Brand)
@@ -224,21 +132,6 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
             => Brand != null
                    ? new JProperty(JPropertyKey, Brand.ToJSON())
-                   : null;
-
-        #endregion
-
-        #region ToJSON(this DataLicense)
-
-        public static JObject ToJSON(this DataLicense DataLicense)
-
-            => DataLicense != null
-                   ? JSONObject.Create(
-                         new JProperty("@id",          DataLicense.Id.ToString()),
-                         new JProperty("@context",     "https://open.charging.cloud/contexts/DataLicense"),
-                         new JProperty("description",  DataLicense.Description),
-                         new JProperty("uris",         new JArray(DataLicense.URIs))
-                     )
                    : null;
 
         #endregion
