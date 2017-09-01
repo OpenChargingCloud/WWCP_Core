@@ -83,7 +83,6 @@
     <Compile Include="Commands\Reserve\CancelReservationDelegates.cs" />
     <Compile Include="Commands\Reserve\ReserveChargingPoolDelegates.cs" />
     <Compile Include="Commands\SendCDRs\OnGetCDRsDelegate.cs" />
-    <Compile Include="CommonTypes\InfoStatus.cs" />
     <Compile Include="CommonTypes\TransmissionTypes.cs" />
     <Compile Include="Entities\ABaseEMobilityEntity.cs" />
     <Compile Include="Entities\ACryptoEMobilityEntity.cs" />
