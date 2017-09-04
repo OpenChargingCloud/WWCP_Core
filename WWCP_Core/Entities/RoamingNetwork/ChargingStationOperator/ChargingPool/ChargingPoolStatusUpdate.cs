@@ -39,7 +39,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the charging pool.
         /// </summary>
-        public ChargingPool_Id                      Id          { get; }
+        public ChargingPool_Id                       Id          { get; }
 
         /// <summary>
         /// The old timestamped status of the charging pool.
@@ -55,15 +55,13 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region ChargingPoolStatusUpdate(Id, OldStatus, NewStatus)
-
         /// <summary>
         /// Create a new charging pool status update.
         /// </summary>
         /// <param name="Id">The unique identification of the charging pool.</param>
         /// <param name="OldStatus">The old timestamped status of the charging pool.</param>
         /// <param name="NewStatus">The new timestamped status of the charging pool.</param>
-        public ChargingPoolStatusUpdate(ChargingPool_Id                      Id,
+        public ChargingPoolStatusUpdate(ChargingPool_Id                       Id,
                                         Timestamped<ChargingPoolStatusTypes>  OldStatus,
                                         Timestamped<ChargingPoolStatusTypes>  NewStatus)
 
@@ -74,30 +72,6 @@ namespace org.GraphDefined.WWCP
             this.NewStatus  = NewStatus;
 
         }
-
-        #endregion
-
-        #region ChargingPoolStatusUpdate(Id, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Create a new charging pool status update.
-        /// </summary>
-        /// <param name="Id">The unique identification of the charging pool.</param>
-        /// <param name="OldStatus">The old timestamped status of the charging pool.</param>
-        /// <param name="NewStatus">The new timestamped status of the charging pool.</param>
-        public ChargingPoolStatusUpdate(ChargingPool_Id     Id,
-                                        ChargingPoolStatus  OldStatus,
-                                        ChargingPoolStatus  NewStatus)
-
-        {
-
-            this.Id         = Id;
-            this.OldStatus  = OldStatus.Combined;
-            this.NewStatus  = NewStatus.Combined;
-
-        }
-
-        #endregion
 
         #endregion
 

@@ -41,23 +41,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id          Id          { get; }
+        public EVSE_Id                       Id       { get; }
 
         /// <summary>
         /// The current status of the EVSE.
         /// </summary>
-        public EVSEStatusTypes  Status      { get; }
-
-        /// <summary>
-        /// The timestamp of the current status of the EVSE.
-        /// </summary>
-        public DateTime         Timestamp   { get; }
-
-        /// <summary>
-        /// The timestamped status of the EVSE.
-        /// </summary>
-        public Timestamped<EVSEStatusTypes> Combined
-            => new Timestamped<EVSEStatusTypes>(Timestamp, Status);
+        public Timestamped<EVSEStatusTypes>  Status   { get; }
 
         #endregion
 
@@ -68,20 +57,17 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the EVSE.</param>
         /// <param name="Status">The current status of the EVSE.</param>
-        /// <param name="Timestamp">The timestamp of the current status of the EVSE.</param>
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public EVSEStatus(EVSE_Id                              Id,
-                          EVSEStatusTypes                      Status,
-                          DateTime                             Timestamp,
-
+                          Timestamped<EVSEStatusTypes>         Status,
                           IReadOnlyDictionary<String, Object>  CustomData  = null)
 
             : base(CustomData)
 
         {
 
-            this.Id         = Id;
-            this.Status     = Status;
-            this.Timestamp  = Timestamp;
+            this.Id      = Id;
+            this.Status  = Status;
 
         }
 
@@ -97,8 +83,7 @@ namespace org.GraphDefined.WWCP
         public static EVSEStatus Snapshot(EVSE EVSE)
 
             => new EVSEStatus(EVSE.Id,
-                              EVSE.Status.Value,
-                              EVSE.Status.Timestamp);
+                              EVSE.Status);
 
         #endregion
 
@@ -299,9 +284,8 @@ namespace org.GraphDefined.WWCP
             if ((Object) EVSEStatus == null)
                 return false;
 
-            return Id.       Equals(EVSEStatus.Id)     &&
-                   Status.   Equals(EVSEStatus.Status) &&
-                   Timestamp.Equals(EVSEStatus.Timestamp);
+            return Id.    Equals(EVSEStatus.Id) &&
+                   Status.Equals(EVSEStatus.Status);
 
         }
 
@@ -320,9 +304,8 @@ namespace org.GraphDefined.WWCP
             unchecked
             {
 
-                return Id.       GetHashCode() * 7 ^
-                       Status.   GetHashCode() * 5 ^
-                       Timestamp.GetHashCode();
+                return Id.    GetHashCode() * 5 ^
+                       Status.GetHashCode();
 
             }
         }
@@ -337,9 +320,9 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
 
             => String.Concat(Id, " -> ",
-                             Status,
+                             Status.Value,
                              " since ",
-                             Timestamp.ToIso8601());
+                             Status.Timestamp.ToIso8601());
 
         #endregion
 

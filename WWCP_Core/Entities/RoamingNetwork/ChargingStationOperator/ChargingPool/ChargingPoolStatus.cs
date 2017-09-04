@@ -18,8 +18,10 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -29,8 +31,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current status of a charging pool.
     /// </summary>
-    public struct ChargingPoolStatus : IEquatable <ChargingPoolStatus>,
-                                       IComparable<ChargingPoolStatus>
+    public class ChargingPoolStatus : ACustomData,
+                                      IEquatable <ChargingPoolStatus>,
+                                      IComparable<ChargingPoolStatus>
     {
 
         #region Properties
@@ -38,23 +41,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the charging pool.
         /// </summary>
-        public ChargingPool_Id         Id          { get; }
+        public ChargingPool_Id                       Id       { get; }
 
         /// <summary>
         /// The current status of the charging pool.
         /// </summary>
-        public ChargingPoolStatusTypes  Status      { get; }
-
-        /// <summary>
-        /// The timestamp of the current status of the charging pool.
-        /// </summary>
-        public DateTime                Timestamp   { get; }
-
-        /// <summary>
-        /// The timestamped status of the charging pool.
-        /// </summary>
-        public Timestamped<ChargingPoolStatusTypes> Combined
-            => new Timestamped<ChargingPoolStatusTypes>(Timestamp, Status);
+        public Timestamped<ChargingPoolStatusTypes>  Status   { get; }
 
         #endregion
 
@@ -65,16 +57,17 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique identification of the charging pool.</param>
         /// <param name="Status">The current status of the charging pool.</param>
-        /// <param name="Timestamp">The timestamp of the current status of the charging pool.</param>
-        public ChargingPoolStatus(ChargingPool_Id         Id,
-                                  ChargingPoolStatusTypes  Status,
-                                  DateTime                Timestamp)
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+        public ChargingPoolStatus(ChargingPool_Id                       Id,
+                                  Timestamped<ChargingPoolStatusTypes>  Status,
+                                  IReadOnlyDictionary<String, Object>   CustomData  = null)
+
+            : base(CustomData)
 
         {
 
-            this.Id         = Id;
-            this.Status     = Status;
-            this.Timestamp  = Timestamp;
+            this.Id      = Id;
+            this.Status  = Status;
 
         }
 
@@ -90,8 +83,7 @@ namespace org.GraphDefined.WWCP
         public static ChargingPoolStatus Snapshot(ChargingPool ChargingPool)
 
             => new ChargingPoolStatus(ChargingPool.Id,
-                                      ChargingPool.Status.Value,
-                                      ChargingPool.Status.Timestamp);
+                                      ChargingPool.Status);
 
         #endregion
 
@@ -273,7 +265,7 @@ namespace org.GraphDefined.WWCP
             if (!(Object is ChargingPoolStatus))
                 return false;
 
-            return this.Equals((ChargingPoolStatus) Object);
+            return Equals((ChargingPoolStatus) Object);
 
         }
 
@@ -292,9 +284,8 @@ namespace org.GraphDefined.WWCP
             if ((Object) ChargingPoolStatus == null)
                 return false;
 
-            return Id.       Equals(ChargingPoolStatus.Id)     &&
-                   Status.   Equals(ChargingPoolStatus.Status) &&
-                   Timestamp.Equals(ChargingPoolStatus.Timestamp);
+            return Id.    Equals(ChargingPoolStatus.Id) &&
+                   Status.Equals(ChargingPoolStatus.Status);
 
         }
 
@@ -313,9 +304,8 @@ namespace org.GraphDefined.WWCP
             unchecked
             {
 
-                return Id.       GetHashCode() * 7 ^
-                       Status.   GetHashCode() * 5 ^
-                       Timestamp.GetHashCode();
+                return Id.    GetHashCode() * 5 ^
+                       Status.GetHashCode();
 
             }
         }
@@ -330,9 +320,9 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
 
             => String.Concat(Id, " -> ",
-                             Status,
+                             Status.Value,
                              " since ",
-                             Timestamp.ToIso8601());
+                             Status.Timestamp.ToIso8601());
 
         #endregion
 

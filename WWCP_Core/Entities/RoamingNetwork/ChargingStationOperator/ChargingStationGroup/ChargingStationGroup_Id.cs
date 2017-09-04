@@ -132,9 +132,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentException("Illegal text representation of a charging station group identification: '" + Text + "'!",
                                             nameof(Text));
 
-            ChargingStationOperator_Id _OperatorId;
-
-            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out _OperatorId))
+            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out ChargingStationOperator_Id _OperatorId))
                 return new ChargingStationGroup_Id(_OperatorId,
                                                    MatchCollection[0].Groups[2].Value);
 
@@ -187,9 +185,7 @@ namespace org.GraphDefined.WWCP
                 if (_MatchCollection.Count != 1)
                     return false;
 
-                ChargingStationOperator_Id _OperatorId;
-
-                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out _OperatorId))
+                if (ChargingStationOperator_Id.TryParse(_MatchCollection[0].Groups[1].Value, out ChargingStationOperator_Id _OperatorId))
                 {
 
                     ChargingStationGroupId = new ChargingStationGroup_Id(_OperatorId,

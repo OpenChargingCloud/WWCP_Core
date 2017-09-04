@@ -67,8 +67,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                           EVSE.Id.ToJSON("@id"),
 
                           Embedded
-                              ? new JProperty("@context",  "https://open.charging.cloud/contexts/wwcp+json/EVSE")
-                              : null,
+                              ? null
+                              : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/EVSE"),
 
                           EVSE.Description.IsNeitherNullNorEmpty()
                               ? EVSE.Description.ToJSON("description")
@@ -219,14 +219,32 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
+        #region ToJSON(this EVSEs, JPropertyKey)
 
-        #region ToJSON(this EVSEAdminStatus, Skip = 0, Take = 0, HistorySize = 1)
+        public static JProperty ToJSON(this IEnumerable<EVSE> EVSEs, String JPropertyKey)
+        {
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>>  EVSEAdminStatus,
-                                     UInt64                                                                                  Skip         = 0,
-                                     UInt64                                                                                  Take         = 0,
-                                     UInt64                                                                                  HistorySize  = 1)
+            #region Initial checks
 
+            if (JPropertyKey.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(JPropertyKey), "The json property key must not be null or empty!");
+
+            #endregion
+
+            return EVSEs?.Any() == true
+                       ? new JProperty(JPropertyKey, EVSEs.ToJSON())
+                       : null;
+
+        }
+
+        #endregion
+
+
+        #region ToJSON(this EVSEAdminStatus,          Skip = 0, Take = 0)
+
+        public static JObject ToJSON(this IEnumerable<EVSEAdminStatus>  EVSEAdminStatus,
+                                     UInt64                             Skip  = 0,
+                                     UInt64                             Take  = 0)
         {
 
             #region Initial checks
@@ -234,57 +252,100 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             if (EVSEAdminStatus == null || !EVSEAdminStatus.Any())
                 return new JObject();
 
-            var _EVSEAdminStatus = new Dictionary<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>();
-
             #endregion
 
-            #region Maybe there are duplicate EVSE identifications in the enumeration... take the newest one!
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            foreach (var evsestatus in Take == 0 ? EVSEAdminStatus.Skip(Skip)
-                                                 : EVSEAdminStatus.Skip(Skip).Take(Take))
+            var _FilteredStatus = new Dictionary<EVSE_Id, EVSEAdminStatus>();
+
+            foreach (var status in EVSEAdminStatus)
             {
 
-                if (!_EVSEAdminStatus.ContainsKey(evsestatus.Key))
-                    _EVSEAdminStatus.Add(evsestatus.Key, evsestatus.Value);
+                if (!_FilteredStatus.ContainsKey(status.Id))
+                    _FilteredStatus.Add(status.Id, status);
 
-                else if (evsestatus.Value.FirstOrDefault().Timestamp > _EVSEAdminStatus[evsestatus.Key].FirstOrDefault().Timestamp)
-                    _EVSEAdminStatus[evsestatus.Key] = evsestatus.Value;
+                else if (_FilteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    _FilteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
-            return _EVSEAdminStatus.Count == 0
 
-                   ? new JObject()
+            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
+                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
 
-                   : new JObject(_EVSEAdminStatus.
-                                   SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
-                                                                new JObject(statuslist.Value.
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
+                                                                          kvp.Value.Status.Value.    ToString())
+                                                              )));
 
-                                                                            // Will filter multiple evse status having the exact same ISO 8601 timestamp!
-                                                                            GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                            Select           (group => group.First()).
+        }
 
-                                                                            OrderByDescending(tsv   => tsv.Timestamp).
-                                                                            Take             (HistorySize).
-                                                                            Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                     tsv.Value.    ToString())))
+        #endregion
 
-                                                            )));
+        #region ToJSON(this EVSEAdminStatusSchedules, Skip = 0, Take = 0, HistorySize = 1)
+
+        public static JObject ToJSON(this IEnumerable<EVSEAdminStatusSchedule>  EVSEAdminStatusSchedules,
+                                     UInt64                                     Skip         = 0,
+                                     UInt64                                     Take         = 0,
+                                     UInt64                                     HistorySize  = 1)
+        {
+
+            #region Initial checks
+
+            if (EVSEAdminStatusSchedules == null || !EVSEAdminStatusSchedules.Any())
+                return new JObject();
+
+            #endregion
+
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
+
+            var _FilteredStatus = new Dictionary<EVSE_Id, EVSEAdminStatusSchedule>();
+
+            foreach (var status in EVSEAdminStatusSchedules)
+            {
+
+                if (!_FilteredStatus.ContainsKey(status.Id))
+                    _FilteredStatus.Add(status.Id, status);
+
+                else if (_FilteredStatus[status.Id].StatusSchedule.Any() &&
+                         _FilteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
+                         _FilteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
+                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JObject(
+                                                                   kvp.Value.StatusSchedule.
+
+                                                                             // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
+                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
+                                                                             Select           (group => group.First()).
+
+                                                                             OrderByDescending(tsv   => tsv.Timestamp).
+                                                                             Take             (HistorySize).
+                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
+                                                                                                                      tsv.Value.    ToString())))
+
+                                                              )));
 
         }
 
         #endregion
 
 
-        #region ToJSON(this EVSEStatus, Skip = 0, Take = 0, HistorySize = 1)
+        #region ToJSON(this EVSEStatus,               Skip = 0, Take = 0)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>>  EVSEStatus,
-                                     UInt64                                                                              Skip         = 0,
-                                     UInt64                                                                              Take         = 0,
-                                     UInt64                                                                              HistorySize  = 1)
-
+        public static JObject ToJSON(this IEnumerable<EVSEStatus>  EVSEStatus,
+                                     UInt64                        Skip  = 0,
+                                     UInt64                        Take  = 0)
         {
 
             #region Initial checks
@@ -292,48 +353,94 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             if (EVSEStatus == null || !EVSEStatus.Any())
                 return new JObject();
 
-            var _EVSEStatus = new Dictionary<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>();
-
             #endregion
 
-            #region Maybe there are duplicate EVSE identifications in the enumeration... take the newest one!
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            foreach (var evsestatus in Take == 0 ? EVSEStatus.Skip(Skip)
-                                                 : EVSEStatus.Skip(Skip).Take(Take))
+            var _FilteredStatus = new Dictionary<EVSE_Id, EVSEStatus>();
+
+            foreach (var status in EVSEStatus)
             {
 
-                if (!_EVSEStatus.ContainsKey(evsestatus.Key))
-                    _EVSEStatus.Add(evsestatus.Key, evsestatus.Value);
+                if (!_FilteredStatus.ContainsKey(status.Id))
+                    _FilteredStatus.Add(status.Id, status);
 
-                else if (evsestatus.Value.FirstOrDefault().Timestamp > _EVSEStatus[evsestatus.Key].FirstOrDefault().Timestamp)
-                    _EVSEStatus[evsestatus.Key] = evsestatus.Value;
+                else if (_FilteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    _FilteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
-            return _EVSEStatus.Count == 0
 
-                   ? new JObject()
+            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
+                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
 
-                   : new JObject(_EVSEStatus.
-                                     SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
-                                                                  new JObject(statuslist.Value.
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
+                                                                          kvp.Value.Status.Value.    ToString())
+                                                              )));
 
-                                                                              // Will filter multiple evse status having the exact same ISO 8601 timestamp!
-                                                                              GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                              Select           (group => group.First()).
+        }
 
-                                                                              OrderByDescending(tsv   => tsv.Timestamp).
-                                                                              Take             (HistorySize).
-                                                                              Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                       tsv.Value.    ToString())))
+        #endregion
+
+        #region ToJSON(this EVSEAdminStatusSchedules, Skip = 0, Take = 0, HistorySize = 1)
+
+        public static JObject ToJSON(this IEnumerable<EVSEStatusSchedule>  EVSEStatusSchedules,
+                                     UInt64                                Skip         = 0,
+                                     UInt64                                Take         = 0,
+                                     UInt64                                HistorySize  = 1)
+        {
+
+            #region Initial checks
+
+            if (EVSEStatusSchedules == null || !EVSEStatusSchedules.Any())
+                return new JObject();
+
+            #endregion
+
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
+
+            var _FilteredStatus = new Dictionary<EVSE_Id, EVSEStatusSchedule>();
+
+            foreach (var status in EVSEStatusSchedules)
+            {
+
+                if (!_FilteredStatus.ContainsKey(status.Id))
+                    _FilteredStatus.Add(status.Id, status);
+
+                else if (_FilteredStatus[status.Id].StatusSchedule.Any() &&
+                         _FilteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
+                         _FilteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
+                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JObject(
+                                                                   kvp.Value.StatusSchedule.
+
+                                                                             // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
+                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
+                                                                             Select           (group => group.First()).
+
+                                                                             OrderByDescending(tsv   => tsv.Timestamp).
+                                                                             Take             (HistorySize).
+                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
+                                                                                                                      tsv.Value.    ToString())))
 
                                                               )));
 
         }
 
         #endregion
+
 
     }
 

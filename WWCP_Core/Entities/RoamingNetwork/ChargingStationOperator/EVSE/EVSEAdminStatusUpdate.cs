@@ -92,8 +92,8 @@ namespace org.GraphDefined.WWCP
         {
 
             this.EVSE       = EVSE;
-            this.OldStatus  = OldStatus.Combined;
-            this.NewStatus  = NewStatus.Combined;
+            this.OldStatus  = OldStatus.Status;
+            this.NewStatus  = NewStatus.Status;
 
         }
 

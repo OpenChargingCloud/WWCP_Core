@@ -28,6 +28,7 @@ using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
 using System.Threading.Tasks;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -578,10 +579,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Set the timestamped admin status.
         /// </summary>
-        /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
+        /// <param name="NewStatusList">A list of new timestamped admin status.</param>
         /// <param name="ChangeMethod">The change mode.</param>
         public void SetAdminStatus(IEnumerable<Timestamped<ChargingStationGroupAdminStatusType>>  NewStatusList,
-                                   ChangeMethods                                          ChangeMethod = ChangeMethods.Replace)
+                                   ChangeMethods                                                  ChangeMethod = ChangeMethods.Replace)
         {
 
             _AdminStatusSchedule.Insert(NewStatusList, ChangeMethod);

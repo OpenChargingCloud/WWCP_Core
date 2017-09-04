@@ -42,7 +42,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Status">An charging station status.</param>
         public static Boolean Contains(this IEnumerable<ChargingStationStatus>  ChargingStationStatus,
                                        ChargingStation_Id                       Id,
-                                       ChargingStationStatusTypes                Status)
+                                       ChargingStationStatusTypes               Status)
         {
 
             foreach (var status in ChargingStationStatus)

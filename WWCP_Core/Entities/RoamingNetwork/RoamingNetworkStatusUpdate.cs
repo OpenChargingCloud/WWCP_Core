@@ -39,7 +39,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the roaming network.
         /// </summary>
-        public RoamingNetwork_Id                      Id          { get; }
+        public RoamingNetwork_Id                       Id          { get; }
 
         /// <summary>
         /// The old timestamped status of the roaming network.
@@ -55,15 +55,13 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region RoamingNetworkStatusUpdate(Id, OldStatus, NewStatus)
-
         /// <summary>
         /// Create a new roaming network status update.
         /// </summary>
         /// <param name="Id">The unique identification of the roaming network.</param>
         /// <param name="OldStatus">The old timestamped status of the roaming network.</param>
         /// <param name="NewStatus">The new timestamped status of the roaming network.</param>
-        public RoamingNetworkStatusUpdate(RoamingNetwork_Id                      Id,
+        public RoamingNetworkStatusUpdate(RoamingNetwork_Id                       Id,
                                           Timestamped<RoamingNetworkStatusTypes>  OldStatus,
                                           Timestamped<RoamingNetworkStatusTypes>  NewStatus)
 
@@ -74,30 +72,6 @@ namespace org.GraphDefined.WWCP
             this.NewStatus  = NewStatus;
 
         }
-
-        #endregion
-
-        #region RoamingNetworkStatusUpdate(Id, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Create a new roaming network status update.
-        /// </summary>
-        /// <param name="Id">The unique identification of the roaming network.</param>
-        /// <param name="OldStatus">The old timestamped status of the roaming network.</param>
-        /// <param name="NewStatus">The new timestamped status of the roaming network.</param>
-        public RoamingNetworkStatusUpdate(RoamingNetwork_Id     Id,
-                                          RoamingNetworkStatus  OldStatus,
-                                          RoamingNetworkStatus  NewStatus)
-
-        {
-
-            this.Id         = Id;
-            this.OldStatus  = OldStatus.Combined;
-            this.NewStatus  = NewStatus.Combined;
-
-        }
-
-        #endregion
 
         #endregion
 

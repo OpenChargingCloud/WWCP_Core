@@ -18,8 +18,10 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -29,8 +31,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current status of a charging station.
     /// </summary>
-    public struct ChargingStationStatus : IEquatable <ChargingStationStatus>,
-                                          IComparable<ChargingStationStatus>
+    public class ChargingStationStatus : ACustomData,
+                                         IEquatable <ChargingStationStatus>,
+                                         IComparable<ChargingStationStatus>
     {
 
         #region Properties
@@ -38,23 +41,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the charging station.
         /// </summary>
-        public ChargingStation_Id         Id          { get; }
+        public ChargingStation_Id                       Id       { get; }
 
         /// <summary>
-        /// The current status of the charging station.
+        /// The current timestamped status of the charging station.
         /// </summary>
-        public ChargingStationStatusTypes  Status      { get; }
-
-        /// <summary>
-        /// The timestamp of the current status of the charging station.
-        /// </summary>
-        public DateTime                   Timestamp   { get; }
-
-        /// <summary>
-        /// The timestamped status of the charging station.
-        /// </summary>
-        public Timestamped<ChargingStationStatusTypes> Combined
-            => new Timestamped<ChargingStationStatusTypes>(Timestamp, Status);
+        public Timestamped<ChargingStationStatusTypes>  Status   { get; }
 
         #endregion
 
@@ -64,17 +56,18 @@ namespace org.GraphDefined.WWCP
         /// Create a new charging station status.
         /// </summary>
         /// <param name="Id">The unique identification of the charging station.</param>
-        /// <param name="Status">The current status of the charging station.</param>
-        /// <param name="Timestamp">The timestamp of the current status of the charging station.</param>
-        public ChargingStationStatus(ChargingStation_Id         Id,
-                                     ChargingStationStatusTypes  Status,
-                                     DateTime                   Timestamp)
+        /// <param name="Status">The current timestamped status of the charging station.</param>
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+        public ChargingStationStatus(ChargingStation_Id                       Id,
+                                     Timestamped<ChargingStationStatusTypes>  Status,
+                                     IReadOnlyDictionary<String, Object>      CustomData  = null)
+
+            : base(CustomData)
 
         {
 
-            this.Id         = Id;
-            this.Status     = Status;
-            this.Timestamp  = Timestamp;
+            this.Id      = Id;
+            this.Status  = Status;
 
         }
 
@@ -90,8 +83,7 @@ namespace org.GraphDefined.WWCP
         public static ChargingStationStatus Snapshot(ChargingStation ChargingStation)
 
             => new ChargingStationStatus(ChargingStation.Id,
-                                         ChargingStation.Status.Value,
-                                         ChargingStation.Status.Timestamp);
+                                         ChargingStation.Status);
 
         #endregion
 
@@ -273,7 +265,7 @@ namespace org.GraphDefined.WWCP
             if (!(Object is ChargingStationStatus))
                 return false;
 
-            return this.Equals((ChargingStationStatus) Object);
+            return Equals((ChargingStationStatus) Object);
 
         }
 
@@ -292,9 +284,8 @@ namespace org.GraphDefined.WWCP
             if ((Object) ChargingStationStatus == null)
                 return false;
 
-            return Id.       Equals(ChargingStationStatus.Id)     &&
-                   Status.   Equals(ChargingStationStatus.Status) &&
-                   Timestamp.Equals(ChargingStationStatus.Timestamp);
+            return Id.       Equals(ChargingStationStatus.Id) &&
+                   Status.   Equals(ChargingStationStatus.Status);
 
         }
 
@@ -313,9 +304,8 @@ namespace org.GraphDefined.WWCP
             unchecked
             {
 
-                return Id.       GetHashCode() * 7 ^
-                       Status.   GetHashCode() * 5 ^
-                       Timestamp.GetHashCode();
+                return Id.    GetHashCode() * 5 ^
+                       Status.GetHashCode();
 
             }
         }
@@ -330,9 +320,9 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
 
             => String.Concat(Id, " -> ",
-                             Status,
+                             Status.Value,
                              " since ",
-                             Timestamp.ToIso8601());
+                             Status.Timestamp.ToIso8601());
 
         #endregion
 

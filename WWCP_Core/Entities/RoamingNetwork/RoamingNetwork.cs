@@ -1185,27 +1185,40 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EMobilityProviderAdminStatus
+        #region eMobilityProviderIds
 
         /// <summary>
-        /// Return the admin status of all e-mobility providers registered within this roaming network.
+        /// Return all e-mobility providers identifications registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>> EMobilityProviderAdminStatus
+        public IEnumerable<eMobilityProvider_Id> eMobilityProviderIds
 
-            => _eMobilityProviders.
-                   Select(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>(emp.Id, emp.AdminStatusSchedule));
+            => _eMobilityProviders.SafeSelect(emp => emp.Id);
 
         #endregion
 
-        #region EMobilityProviderStatus
+        #region eMobilityProviderAdminStatus
 
         /// <summary>
-        /// Return the status of all e-mobility providers registered within this roaming network.
+        /// Return the admin status of all e-mobility providerss registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>> EMobilityProviderStatus
+        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>> eMobilityProviderAdminStatus
 
             => _eMobilityProviders.
-                   Select(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>(emp.Id, emp.StatusSchedule));
+                   SafeSelect(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>(emp.Id,
+                                                                                                                                         emp.AdminStatusSchedule));
+
+        #endregion
+
+        #region eMobilityProviderStatus
+
+        /// <summary>
+        /// Return the status of all e-mobility providerss registered within this roaming network.
+        /// </summary>
+        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>> eMobilityProviderStatus
+
+            => _eMobilityProviders.
+                   SafeSelect(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>(emp.Id,
+                                                                                                                                     emp.StatusSchedule));
 
         #endregion
 
@@ -2252,40 +2265,42 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChargingPoolIds
+        #region ChargingPoolIds        (IncludePools = null)
 
         /// <summary>
         /// Return all charging pool identifications registered within this roaming network.
         /// </summary>
-        public IEnumerable<ChargingPool_Id> ChargingPoolIds
+        /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPool_Id> ChargingPoolIds(IncludeChargingPoolDelegate IncludePools = null)
 
-            => _ChargingStationOperators.SelectMany(cso => cso.ChargingPoolIds);
+            => _ChargingStationOperators.
+                   SelectMany(cso => cso.ChargingPoolIds(IncludePools));
 
         #endregion
 
-        #region ChargingPoolAdminStatus
+        #region ChargingPoolAdminStatus(IncludePools = null)
 
         /// <summary>
         /// Return the admin status of all charging pools registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>> ChargingPoolAdminStatus
+        /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPoolAdminStatus> ChargingPoolAdminStatus(IncludeChargingPoolDelegate IncludePools = null)
 
             => _ChargingStationOperators.
-                   SelectMany(cso => cso.Select(pool => new KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>(pool.Id,
-                                                                                                                                                 pool.AdminStatusSchedule())));
+                   SelectMany(cso => cso.ChargingPoolAdminStatus(IncludePools));
 
         #endregion
 
-        #region ChargingPoolStatus
+        #region ChargingPoolStatus     (IncludePools = null)
 
         /// <summary>
         /// Return the status of all charging pools registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>> ChargingPoolStatus
+        /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPoolStatus> ChargingPoolStatus(IncludeChargingPoolDelegate IncludePools = null)
 
             => _ChargingStationOperators.
-                   SelectMany(cso => cso.Select(pool => new KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>(pool.Id,
-                                                                                                                                            pool.StatusSchedule())));
+                   SelectMany(cso => cso.ChargingPoolStatus(IncludePools));
 
         #endregion
 
@@ -2585,54 +2600,42 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChargingStationIds
+        #region ChargingStationIds        (IncludeStations = null)
 
         /// <summary>
         /// Return all charging station identifications registered within this roaming network.
         /// </summary>
-        public IEnumerable<ChargingStation_Id> ChargingStationIds
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStation_Id> ChargingStationIds(IncludeChargingStationDelegate IncludeStations = null)
 
-            => _ChargingStationOperators.SelectMany(cso => cso.ChargingStationIds);
+            => _ChargingStationOperators.
+                   SelectMany(cso => cso.ChargingStationIds(IncludeStations));
 
         #endregion
 
-        #region ChargingStationAdminStatus
+        #region ChargingStationAdminStatus(IncludeStations = null)
 
         /// <summary>
         /// Return the admin status of all charging stations registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>> ChargingStationAdminStatus
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStationAdminStatus> ChargingStationAdminStatus(IncludeChargingStationDelegate IncludeStations = null)
 
             => _ChargingStationOperators.
-                   SelectMany(cso =>
-                       cso.SelectMany(pool =>
-                           pool.Select(station =>
-
-                                   new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>(
-                                       station.Id,
-                                       station.AdminStatusSchedule())
-
-                               )));
+                   SelectMany(cso => cso.ChargingStationAdminStatus(IncludeStations));
 
         #endregion
 
-        #region ChargingStationStatus
+        #region ChargingStationStatus     (IncludeStations = null)
 
         /// <summary>
         /// Return the status of all charging stations registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>> ChargingStationStatus
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStationStatus> ChargingStationStatus(IncludeChargingStationDelegate IncludeStations = null)
 
             => _ChargingStationOperators.
-                   SelectMany(cso =>
-                       cso.SelectMany(pool =>
-                           pool.Select(station =>
-
-                                   new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>(
-                                       station.Id,
-                                       station.StatusSchedule())
-
-                               )));
+                   SelectMany(cso => cso.ChargingStationStatus(IncludeStations));
 
         #endregion
 
@@ -2962,57 +2965,55 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEIds
+        #region EVSEIds                (IncludeEVSEs = null)
 
         /// <summary>
         /// Return all EVSE identifications registered within this roaming network.
         /// </summary>
-        public IEnumerable<EVSE_Id> EVSEIds
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSE_Id> EVSEIds(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _ChargingStationOperators.SelectMany(cso => cso.EVSEIds);
+            => _ChargingStationOperators.
+                   SelectMany(cso => cso.EVSEIds(IncludeEVSEs));
 
         #endregion
 
-        #region EVSEAdminStatus
+        #region EVSEAdminStatus        (IncludeEVSEs = null)
 
         /// <summary>
         /// Return the admin status of all EVSEs registered within this roaming network.
         /// </summary>
-
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>> EVSEAdminStatus(UInt64 HistorySize)
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate IncludeEVSEs = null)
 
             => _ChargingStationOperators.
-                   SelectMany(cso =>
-                       cso.SelectMany(pool =>
-                           pool.SelectMany(station =>
-                               station.Select(evse =>
-
-                                   new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>(
-                                       evse.Id,
-                                       evse.AdminStatusSchedule(HistorySize))
-
-                               ))));
+                   SelectMany(cso => cso.EVSEAdminStatus(IncludeEVSEs));
 
         #endregion
 
-        #region EVSEStatus
+        #region EVSEAdminStatusSchedule(IncludeEVSEs = null)
+
+        /// <summary>
+        /// Return the admin status of all EVSEs registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEAdminStatus> EVSEAdminStatusSchedule(IncludeEVSEDelegate IncludeEVSEs = null)
+
+            => _ChargingStationOperators.
+                   SelectMany(cso => cso.EVSEAdminStatus(IncludeEVSEs));
+
+        #endregion
+
+        #region EVSEStatus             (IncludeEVSEs = null)
 
         /// <summary>
         /// Return the status of all EVSEs registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>> EVSEStatus(UInt64 HistorySize)
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEStatus> EVSEStatus(IncludeEVSEDelegate IncludeEVSEs = null)
 
             => _ChargingStationOperators.
-                   SelectMany(cso =>
-                       cso.SelectMany(pool =>
-                           pool.SelectMany(station =>
-                               station.Select(evse =>
-
-                                   new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>(
-                                       evse.Id,
-                                       evse.StatusSchedule(HistorySize))
-
-                               ))));
+                   SelectMany(cso => cso.EVSEStatus(IncludeEVSEs));
 
         #endregion
 

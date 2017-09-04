@@ -24,13 +24,42 @@ using System;
 namespace org.GraphDefined.WWCP
 {
 
+    /// <summary>
+    /// A delegate for filtering EVSE identifications.
+    /// </summary>
+    /// <param name="EVSEId">An EVSE identification to include.</param>
     public delegate Boolean IncludeEVSEIdDelegate           (EVSE_Id             EVSEId);
+
+    /// <summary>
+    /// A delegate for filtering EVSEs.
+    /// </summary>
+    /// <param name="EVSE">An EVSE to include.</param>
     public delegate Boolean IncludeEVSEDelegate             (EVSE                EVSE);
 
+
+    /// <summary>
+    /// A delegate for filtering charging station identifications.
+    /// </summary>
+    /// <param name="ChargingStationId">A charging station identification to include.</param>
     public delegate Boolean IncludeChargingStationIdDelegate(ChargingStation_Id  ChargingStationId);
+
+    /// <summary>
+    /// A delegate for filtering charging stations.
+    /// </summary>
+    /// <param name="ChargingStation">A charging station to include.</param>
     public delegate Boolean IncludeChargingStationDelegate  (ChargingStation     ChargingStation);
 
+
+    /// <summary>
+    /// A delegate for filtering charging pool identifications.
+    /// </summary>
+    /// <param name="ChargingPoolId">A charging pool identification to include.</param>
     public delegate Boolean IncludeChargingPoolIdDelegate   (ChargingPool_Id     ChargingPoolId);
+
+    /// <summary>
+    /// A delegate for filtering charging pools.
+    /// </summary>
+    /// <param name="ChargingPool">A charging pool to include.</param>
     public delegate Boolean IncludeChargingPoolDelegate     (ChargingPool        ChargingPool);
 
 }

@@ -18,8 +18,10 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -29,8 +31,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current admin status of a roaming network.
     /// </summary>
-    public struct RoamingNetworkAdminStatus : IEquatable <RoamingNetworkAdminStatus>,
-                                              IComparable<RoamingNetworkAdminStatus>
+    public class RoamingNetworkAdminStatus : ACustomData,
+                                             IEquatable <RoamingNetworkAdminStatus>,
+                                             IComparable<RoamingNetworkAdminStatus>
     {
 
         #region Properties
@@ -38,23 +41,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the roaming network.
         /// </summary>
-        public RoamingNetwork_Id               Id             { get; }
+        public RoamingNetwork_Id                            Id        { get; }
 
         /// <summary>
-        /// The current admin status of the roaming network.
+        /// The current timestamped admin status of the roaming network.
         /// </summary>
-        public RoamingNetworkAdminStatusTypes  AdminStatus    { get; }
-
-        /// <summary>
-        /// The timestamp of the current admin status of the roaming network.
-        /// </summary>
-        public DateTime                        Timestamp      { get; }
-
-        /// <summary>
-        /// The timestamped admin status of the roaming network.
-        /// </summary>
-        public Timestamped<RoamingNetworkAdminStatusTypes> Combined
-            => new Timestamped<RoamingNetworkAdminStatusTypes>(Timestamp, AdminStatus);
+        public Timestamped<RoamingNetworkAdminStatusTypes>  Status    { get; }
 
         #endregion
 
@@ -64,17 +56,18 @@ namespace org.GraphDefined.WWCP
         /// Create a new roaming network admin status.
         /// </summary>
         /// <param name="Id">The unique identification of the roaming network.</param>
-        /// <param name="Status">The current admin status of the roaming network.</param>
-        /// <param name="Timestamp">The timestamp of the current admin status of the roaming network.</param>
-        public RoamingNetworkAdminStatus(RoamingNetwork_Id               Id,
-                                         RoamingNetworkAdminStatusTypes  Status,
-                                         DateTime                        Timestamp)
+        /// <param name="Status">The current timestamped admin status of the roaming network.</param>
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+        public RoamingNetworkAdminStatus(RoamingNetwork_Id                            Id,
+                                         Timestamped<RoamingNetworkAdminStatusTypes>  Status,
+                                         IReadOnlyDictionary<String, Object>          CustomData  = null)
+
+            : base(CustomData)
 
         {
 
-            this.Id           = Id;
-            this.AdminStatus  = Status;
-            this.Timestamp    = Timestamp;
+            this.Id      = Id;
+            this.Status  = Status;
 
         }
 
@@ -90,8 +83,7 @@ namespace org.GraphDefined.WWCP
         public static RoamingNetworkAdminStatus Snapshot(RoamingNetwork RoamingNetwork)
 
             => new RoamingNetworkAdminStatus(RoamingNetwork.Id,
-                                             RoamingNetwork.AdminStatus.Value,
-                                             RoamingNetwork.AdminStatus.Timestamp);
+                                             RoamingNetwork.AdminStatus.Value);
 
         #endregion
 
@@ -245,7 +237,7 @@ namespace org.GraphDefined.WWCP
 
             // If equal: Compare RoamingNetwork status
             if (_Result == 0)
-                _Result = AdminStatus.CompareTo(RoamingNetworkAdminStatus.AdminStatus);
+                _Result = Status.CompareTo(RoamingNetworkAdminStatus.Status);
 
             return _Result;
 
@@ -273,7 +265,7 @@ namespace org.GraphDefined.WWCP
             if (!(Object is RoamingNetworkAdminStatus))
                 return false;
 
-            return this.Equals((RoamingNetworkAdminStatus) Object);
+            return Equals((RoamingNetworkAdminStatus) Object);
 
         }
 
@@ -292,9 +284,8 @@ namespace org.GraphDefined.WWCP
             if ((Object) RoamingNetworkAdminStatus == null)
                 return false;
 
-            return Id.         Equals(RoamingNetworkAdminStatus.Id)          &&
-                   AdminStatus.Equals(RoamingNetworkAdminStatus.AdminStatus) &&
-                   Timestamp.  Equals(RoamingNetworkAdminStatus.Timestamp);
+            return Id.    Equals(RoamingNetworkAdminStatus.Id) &&
+                   Status.Equals(RoamingNetworkAdminStatus.Status);
 
         }
 
@@ -313,9 +304,8 @@ namespace org.GraphDefined.WWCP
             unchecked
             {
 
-                return Id.         GetHashCode() * 7 ^
-                       AdminStatus.GetHashCode() * 5 ^
-                       Timestamp.  GetHashCode();
+                return Id.    GetHashCode() * 5 ^
+                       Status.GetHashCode();
 
             }
         }
@@ -330,9 +320,9 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
 
             => String.Concat(Id, " -> ",
-                             AdminStatus,
+                             Status.Value,
                              " since ",
-                             Timestamp.ToIso8601());
+                             Status.Timestamp.ToIso8601());
 
         #endregion
 

@@ -72,7 +72,7 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-      //  public IEnumerable<ChargingStationOperator_Id> OperatedIds { get; }
+        //  public IEnumerable<ChargingStationOperator_Id> OperatedIds { get; }
 
         #region Name
 
@@ -514,16 +514,16 @@ namespace org.GraphDefined.WWCP
         /// <param name="Name">The offical (multi-language) name of the EVSE Operator.</param>
         /// <param name="Description">An optional (multi-language) description of the EVSE Operator.</param>
         /// <param name="RoamingNetwork">The associated roaming network.</param>
-        public ChargingStationOperator(IEnumerable<ChargingStationOperator_Id>               Ids,
-                                       RoamingNetwork                                        RoamingNetwork,
-                                       Action<ChargingStationOperator>                       Configurator                          = null,
-                                       RemoteChargingStationOperatorCreatorDelegate          RemoteChargingStationOperatorCreator  = null,
-                                       I18NString                                            Name                                  = null,
-                                       I18NString                                            Description                           = null,
-                                       Timestamped<ChargingStationOperatorAdminStatusTypes>?  InitialAdminStatus                    = null,
-                                       Timestamped<ChargingStationOperatorStatusTypes>?       InitialStatus                         = null,
-                                       UInt16                                                MaxAdminStatusListSize                = DefaultMaxAdminStatusListSize,
-                                       UInt16                                                MaxStatusListSize                     = DefaultMaxStatusListSize)
+        public ChargingStationOperator(IEnumerable<ChargingStationOperator_Id>                Ids,
+                                       RoamingNetwork                                         RoamingNetwork,
+                                       Action<ChargingStationOperator>                        Configurator                           = null,
+                                       RemoteChargingStationOperatorCreatorDelegate           RemoteChargingStationOperatorCreator   = null,
+                                       I18NString                                             Name                                   = null,
+                                       I18NString                                             Description                            = null,
+                                       Timestamped<ChargingStationOperatorAdminStatusTypes>?  InitialAdminStatus                     = null,
+                                       Timestamped<ChargingStationOperatorStatusTypes>?       InitialStatus                          = null,
+                                       UInt16                                                 MaxAdminStatusListSize                 = DefaultMaxAdminStatusListSize,
+                                       UInt16                                                 MaxStatusListSize                      = DefaultMaxStatusListSize)
 
             : base(Ids,
                    RoamingNetwork)
@@ -574,8 +574,6 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            Configurator?.Invoke(this);
-
             #region Init events
 
             this.BrandAddition                 = new VotingNotificator<DateTime, ChargingStationOperator,    Brand,                Boolean>(() => new VetoVote(), true);
@@ -610,6 +608,8 @@ namespace org.GraphDefined.WWCP
             LocalEVSEIds = new ReactiveSet<EVSE_Id>();
 
             this.RemoteChargingStationOperator = RemoteChargingStationOperatorCreator?.Invoke(this);
+
+            Configurator?.Invoke(this);
 
         }
 
@@ -777,13 +777,18 @@ namespace org.GraphDefined.WWCP
         public ChargingStationOperator AddDataLicense(params DataLicense[] DataLicenses)
         {
 
-            if (DataLicenses.Length > 0)
+            lock (_DataLicenses)
             {
-                foreach (var license in DataLicenses.Where(license => license != null))
-                    _DataLicenses.Add(license);
-            }
 
-            return this;
+                if (DataLicenses.Length > 0)
+                {
+                    foreach (var license in DataLicenses.Where(license => license != null))
+                        _DataLicenses.Add(license);
+                }
+
+                return this;
+
+            }
 
         }
 
@@ -801,33 +806,6 @@ namespace org.GraphDefined.WWCP
         public IVotingSender<DateTime, ChargingStationOperator, Brand, Boolean> OnBrandAddition
 
             => BrandAddition;
-
-        #endregion
-
-        #region BrandRemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, Brand, Boolean> BrandRemoval;
-
-        /// <summary>
-        /// Called whenever a brand will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, Brand, Boolean> OnBrandRemoval
-
-            => BrandRemoval;
-
-        #endregion
-
-
-        #region Brands
-
-        private readonly SpecialHashSet<ChargingStationOperator, Brand_Id, Brand> _Brands;
-
-        /// <summary>
-        /// All brands registered within this charging station operator.
-        /// </summary>
-        public IEnumerable<Brand> Brands
-
-            => _Brands;
 
         #endregion
 
@@ -849,45 +827,57 @@ namespace org.GraphDefined.WWCP
                                  String                                     Logo        = null,
                                  String                                     Homepage    = null,
 
-                                 Action<Brand>                              OnSuccess   = null,
+                                 Action<ChargingStationOperator, Brand>     OnSuccess   = null,
                                  Action<ChargingStationOperator, Brand_Id>  OnError     = null)
 
         {
 
-            #region Initial checks
-
-            if (_Brands.ContainsId(Id))
+            lock (_Brands)
             {
 
-                if (OnError != null)
-                    OnError?.Invoke(this, Id);
+                #region Initial checks
 
-                else
-                    throw new BrandAlreadyExists(this, Id);
-
-            }
-
-            #endregion
-
-            var _Brand = new Brand(Id,
-                                   Name,
-                                   Logo,
-                                   Homepage);
-
-
-            if (BrandAddition.SendVoting(DateTime.UtcNow, this, _Brand))
-            {
-                if (_Brands.TryAdd(_Brand))
+                if (_Brands.ContainsId(Id))
                 {
 
-                    OnSuccess?.Invoke(_Brand);
-                    BrandAddition.SendNotification(DateTime.UtcNow, this, _Brand);
+                    if (OnError != null)
+                        OnError?.Invoke(this, Id);
+
+                    else
+                        throw new BrandAlreadyExists(this, Id);
+
+                }
+
+                if (Name.IsNullOrEmpty())
+                    throw new ArgumentNullException(nameof(Name), "The name of the brand must not be null or empty!");
+
+                #endregion
+
+                var _Brand = new Brand(Id,
+                                       Name,
+                                       Logo,
+                                       Homepage);
+
+
+                if (BrandAddition.SendVoting(DateTime.UtcNow,
+                                             this,
+                                             _Brand) &&
+                    _Brands.TryAdd(_Brand))
+                {
+
+                    OnSuccess?.Invoke(this, _Brand);
+
+                    BrandAddition.SendNotification(DateTime.UtcNow,
+                                                   this,
+                                                   _Brand);
+
                     return _Brand;
 
                 }
-            }
 
-            return null;
+                return null;
+
+            }
 
         }
 
@@ -911,28 +901,61 @@ namespace org.GraphDefined.WWCP
                                       String                                     Logo        = null,
                                       String                                     Homepage    = null,
 
-                                      Action<Brand>                              OnSuccess   = null,
+                                      Action<ChargingStationOperator, Brand>     OnSuccess   = null,
                                       Action<ChargingStationOperator, Brand_Id>  OnError     = null)
 
         {
 
-            Brand _Brand;
+            lock (_Brands)
+            {
 
-            if (_Brands.TryGet(Id, out _Brand))
-                return _Brand;
+                #region Initial checks
 
-            return CreateBrand(Id,
-                               Name,
-                               Logo,
-                               Homepage,
+                if (Name.IsNullOrEmpty())
+                    throw new ArgumentNullException(nameof(Name), "The name of the brand must not be null or empty!");
 
-                               OnSuccess,
-                               OnError);
+                #endregion
+
+                if (_Brands.TryGet(Id, out Brand _Brand))
+                    return _Brand;
+
+                return CreateBrand(Id,
+                                   Name,
+                                   Logo,
+                                   Homepage,
+
+                                   OnSuccess,
+                                   OnError);
+
+
+            }
 
         }
 
         #endregion
 
+
+        #region Brands
+
+        private readonly SpecialHashSet<ChargingStationOperator, Brand_Id, Brand> _Brands;
+
+        /// <summary>
+        /// All brands registered within this charging station operator.
+        /// </summary>
+        public IEnumerable<Brand> Brands
+            => _Brands;
+
+        #endregion
+
+        #region BrandIds
+
+        /// <summary>
+        /// All brand identifications registered within this charging station operator.
+        /// </summary>
+        public IEnumerable<Brand_Id> BrandIds
+            => _Brands.Select(brand => brand.Id);
+
+        #endregion
 
         #region TryGetBrand(Id, out Brand)
 
@@ -945,6 +968,105 @@ namespace org.GraphDefined.WWCP
                                    out Brand  Brand)
 
             => _Brands.TryGet(Id, out Brand);
+
+        #endregion
+
+
+        #region BrandRemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, Brand, Boolean> BrandRemoval;
+
+        /// <summary>
+        /// Called whenever a brand will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStationOperator, Brand, Boolean> OnBrandRemoval
+
+            => BrandRemoval;
+
+        #endregion
+
+        #region RemoveBrand(BrandId, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// All brands registered within this charging station operator.
+        /// </summary>
+        /// <param name="BrandId">The unique identification of the brand to be removed.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
+        public Brand RemoveBrand(Brand_Id                                   BrandId,
+                                 Action<ChargingStationOperator, Brand>     OnSuccess   = null,
+                                 Action<ChargingStationOperator, Brand_Id>  OnError     = null)
+        {
+
+            lock (_Brands)
+            {
+
+                if (_Brands.TryGet(BrandId, out Brand Brand) &&
+                    BrandRemoval.SendVoting(DateTime.UtcNow,
+                                            this,
+                                            Brand) &&
+                    _Brands.TryRemove(BrandId, out Brand _Brand))
+                {
+
+                    OnSuccess?.Invoke(this, Brand);
+
+                    BrandRemoval.SendNotification(DateTime.UtcNow,
+                                                  this,
+                                                  _Brand);
+
+                    return _Brand;
+
+                }
+
+                OnError?.Invoke(this, BrandId);
+
+                return null;
+
+            }
+
+        }
+
+        #endregion
+
+        #region RemoveBrand(Brand,   OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// All brands registered within this charging station operator.
+        /// </summary>
+        /// <param name="Brand">The brand to remove.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new brand after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the brand failed.</param>
+        public Brand RemoveBrand(Brand                                   Brand,
+                                 Action<ChargingStationOperator, Brand>  OnSuccess   = null,
+                                 Action<ChargingStationOperator, Brand>  OnError     = null)
+        {
+
+            lock (_Brands)
+            {
+
+                if (BrandRemoval.SendVoting(DateTime.UtcNow,
+                                            this,
+                                            Brand) &&
+                    _Brands.TryRemove(Brand.Id, out Brand _Brand))
+                {
+
+                    OnSuccess?.Invoke(this, _Brand);
+
+                    BrandRemoval.SendNotification(DateTime.UtcNow,
+                                                  this,
+                                                  _Brand);
+
+                    return _Brand;
+
+                }
+
+                OnError?.Invoke(this, Brand);
+
+                return Brand;
+
+            }
+
+        }
 
         #endregion
 
@@ -964,50 +1086,6 @@ namespace org.GraphDefined.WWCP
             => ChargingPoolAddition;
 
         #endregion
-
-        #region ChargingPoolRemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean> ChargingPoolRemoval;
-
-        /// <summary>
-        /// Called whenever an charging pool will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, ChargingPool, Boolean> OnChargingPoolRemoval
-
-            => ChargingPoolRemoval;
-
-        #endregion
-
-
-        #region ChargingPools
-
-        private EntityHashSet<ChargingStationOperator, ChargingPool_Id, ChargingPool> _ChargingPools;
-
-        public IEnumerable<ChargingPool> ChargingPools
-
-            => _ChargingPools;
-
-        #endregion
-
-        #region ChargingPoolIds
-
-        public IEnumerable<ChargingPool_Id> ChargingPoolIds
-
-            => _ChargingPools.Ids;
-
-        #endregion
-
-        #region ChargingPoolAdminStatus(IncludePool = null)
-
-        public IEnumerable<KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusTypes>> ChargingPoolAdminStatus(Func<ChargingPool, Boolean> IncludePool = null)
-
-            => _ChargingPools.
-                   Where  (pool => IncludePool == null || IncludePool(pool)).
-                   OrderBy(pool => pool.Id).
-                   Select (pool => new KeyValuePair<ChargingPool_Id, ChargingPoolAdminStatusTypes>(pool.Id, pool.AdminStatus.Value));
-
-        #endregion
-
 
         #region CreateChargingPool        (ChargingPoolId, Configurator = null, OnSuccess = null, OnError = null)
 
@@ -1171,6 +1249,74 @@ namespace org.GraphDefined.WWCP
             }
 
         }
+
+        #endregion
+
+
+        #region ChargingPools
+
+        private EntityHashSet<ChargingStationOperator, ChargingPool_Id, ChargingPool> _ChargingPools;
+
+        public IEnumerable<ChargingPool> ChargingPools
+
+            => _ChargingPools;
+
+        #endregion
+
+        #region ChargingPoolIds        (IncludePools = null)
+
+        /// <summary>
+        /// Return an enumeration of all charging pool identifications.
+        /// </summary>
+        /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPool_Id> ChargingPoolIds(IncludeChargingPoolDelegate IncludePools = null)
+
+            => IncludePools == null
+
+                   ? _ChargingPools.
+                         Select    (pool => pool.Id)
+
+                   : _ChargingPools.
+                         Where     (pool => IncludePools(pool)).
+                         Select    (pool => pool.Id);
+
+        #endregion
+
+        #region ChargingPoolAdminStatus(IncludePools = null)
+
+        /// <summary>
+        /// Return an enumeration of all charging pool admin status.
+        /// </summary>
+        /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPoolAdminStatus> ChargingPoolAdminStatus(IncludeChargingPoolDelegate IncludePools = null)
+
+            => IncludePools == null
+
+                   ? _ChargingPools.
+                         Select(pool => new ChargingPoolAdminStatus(pool.Id, pool.AdminStatus))
+
+                   : _ChargingPools.
+                         Where (pool => IncludePools(pool)).
+                         Select(pool => new ChargingPoolAdminStatus(pool.Id, pool.AdminStatus));
+
+        #endregion
+
+        #region ChargingPoolStatus     (IncludePools = null)
+
+        /// <summary>
+        /// Return an enumeration of all charging pool status.
+        /// </summary>
+        /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPoolStatus> ChargingPoolStatus(IncludeChargingPoolDelegate IncludePools = null)
+
+            => IncludePools == null
+
+                   ? _ChargingPools.
+                         Select(pool => new ChargingPoolStatus(pool.Id, pool.Status))
+
+                   : _ChargingPools.
+                         Where (pool => IncludePools(pool)).
+                         Select(pool => new ChargingPoolStatus(pool.Id, pool.Status));
 
         #endregion
 
@@ -1359,32 +1505,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChargingStationAddition
-
-        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
-
-        /// <summary>
-        /// Called whenever a charging station will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
-
-            => ChargingStationAddition;
-
-        #endregion
-
-        #region ChargingStationRemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationRemoval;
-
-        /// <summary>
-        /// Called whenever a charging station will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationRemoval
-
-            => ChargingStationRemoval;
-
-        #endregion
-
 
         #region (internal) UpdateChargingPoolData       (Timestamp, EventTrackingId, ChargingPool, PropertyName, OldValue, NewValue)
 
@@ -1489,12 +1609,43 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region ChargingPoolRemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingPool, Boolean> ChargingPoolRemoval;
+
+        /// <summary>
+        /// Called whenever an charging pool will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStationOperator, ChargingPool, Boolean> OnChargingPoolRemoval
+
+            => ChargingPoolRemoval;
+
+        #endregion
+
         #endregion
 
         #region Charging stations
 
+        #region ChargingStationAddition
+
+        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationAddition;
+
+        /// <summary>
+        /// Called whenever a charging station will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationAddition
+
+            => ChargingStationAddition;
+
+        #endregion
+
+
         #region ChargingStations
 
+        /// <summary>
+        /// Return an enumeration of all charging stations.
+        /// </summary>
         public IEnumerable<ChargingStation> ChargingStations
 
             => _ChargingPools.
@@ -1502,25 +1653,66 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChargingStationIds
+        #region ChargingStationIds        (IncludeStations = null)
 
-        public IEnumerable<ChargingStation_Id> ChargingStationIds
+        /// <summary>
+        /// Return an enumeration of all charging station identifications.
+        /// </summary>
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStation_Id> ChargingStationIds(IncludeChargingStationDelegate IncludeStations = null)
 
-            => _ChargingPools.
-                   SelectMany(pool    => pool.   ChargingStations).
-                   Select    (station => station.Id);
+            => IncludeStations == null
+
+                   ? _ChargingPools.
+                         SelectMany(pool    => pool.ChargingStations).
+                         Select    (station => station.Id)
+
+                   : _ChargingPools.
+                         SelectMany(pool    => pool.ChargingStations).
+                         Where     (station => IncludeStations(station)).
+                         Select    (station => station.Id);
 
         #endregion
 
-        #region ChargingStationAdminStatus(IncludeStation = null)
+        #region ChargingStationAdminStatus(IncludeStations = null)
 
-        public IEnumerable<KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusTypes>> ChargingStationAdminStatus(Func<ChargingStation, Boolean> IncludeStation = null)
+        /// <summary>
+        /// Return an enumeration of all charging station admin status.
+        /// </summary>
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStationAdminStatus> ChargingStationAdminStatus(IncludeChargingStationDelegate IncludeStations = null)
 
-            => _ChargingPools.
-                   SelectMany(pool    => pool.ChargingStations).
-                   Where     (station => IncludeStation == null || IncludeStation(station)).
-                   OrderBy   (station => station.Id).
-                   Select    (station => new KeyValuePair<ChargingStation_Id, ChargingStationAdminStatusTypes>(station.Id, station.AdminStatus.Value));
+            => IncludeStations == null
+
+                   ? _ChargingPools.
+                         SelectMany(pool    => pool.ChargingStations).
+                         Select    (station => new ChargingStationAdminStatus(station.Id, station.AdminStatus))
+
+                   : _ChargingPools.
+                         SelectMany(pool    => pool.ChargingStations).
+                         Where     (station => IncludeStations(station)).
+                         Select    (station => new ChargingStationAdminStatus(station.Id, station.AdminStatus));
+
+        #endregion
+
+        #region ChargingStationStatus     (IncludeStations = null)
+
+        /// <summary>
+        /// Return an enumeration of all charging station status.
+        /// </summary>
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStationStatus> ChargingStationStatus(IncludeChargingStationDelegate IncludeStations = null)
+
+            => IncludeStations == null
+
+                   ? _ChargingPools.
+                         SelectMany(pool    => pool.ChargingStations).
+                         Select    (station => new ChargingStationStatus(station.Id, station.Status))
+
+                   : _ChargingPools.
+                         SelectMany(pool    => pool.ChargingStations).
+                         Where     (station => IncludeStations(station)).
+                         Select    (station => new ChargingStationStatus(station.Id, station.Status));
 
         #endregion
 
@@ -1697,32 +1889,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEAddition
-
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
-
-        /// <summary>
-        /// Called whenever an EVSE will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
-
-            => EVSEAddition;
-
-        #endregion
-
-        #region EVSERemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
-
-        /// <summary>
-        /// Called whenever an EVSE will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
-
-            => EVSERemoval;
-
-        #endregion
-
 
         #region (internal) UpdateChargingStationData       (Timestamp, EventTrackingId, ChargingStation, PropertyName, OldValue, NewValue)
 
@@ -1814,6 +1980,20 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region ChargingStationRemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingPool, ChargingStation, Boolean> ChargingStationRemoval;
+
+        /// <summary>
+        /// Called whenever a charging station will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingPool, ChargingStation, Boolean> OnChargingStationRemoval
+
+            => ChargingStationRemoval;
+
+        #endregion
+
         #endregion
 
         #region Charging station groups
@@ -1828,33 +2008,6 @@ namespace org.GraphDefined.WWCP
         public IVotingSender<DateTime, ChargingStationOperator, ChargingStationGroup, Boolean> OnChargingStationGroupAddition
 
             => ChargingStationGroupAddition;
-
-        #endregion
-
-        #region ChargingStationGroupRemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingStationGroup, Boolean> ChargingStationGroupRemoval;
-
-        /// <summary>
-        /// Called whenever a charging station group will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, ChargingStationGroup, Boolean> OnChargingStationGroupRemoval
-
-            => ChargingStationGroupRemoval;
-
-        #endregion
-
-
-        #region ChargingStationGroups
-
-        private readonly EntityHashSet<ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup> _ChargingStationGroups;
-
-        /// <summary>
-        /// All charging station groups registered within this charging station operator.
-        /// </summary>
-        public IEnumerable<ChargingStationGroup> ChargingStationGroups
-
-            => _ChargingStationGroups;
 
         #endregion
 
@@ -1895,38 +2048,40 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            #region Initial checks
-
-            if (Name.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(Name), "The name of the charging station group must not be null or empty!");
-
-            if (_ChargingStationGroups.ContainsId(Id))
+            lock (_ChargingStationGroups)
             {
 
-                if (OnError != null)
-                    OnError?.Invoke(this, Id);
+                #region Initial checks
 
-                throw new ChargingStationGroupAlreadyExists(this, Id);
+                if (_ChargingStationGroups.ContainsId(Id))
+                {
 
-            }
+                    if (OnError != null)
+                        OnError?.Invoke(this, Id);
 
-            #endregion
+                    throw new ChargingStationGroupAlreadyExists(this, Id);
 
-            var _ChargingStationGroup = new ChargingStationGroup(Id,
-                                                                 this,
-                                                                 Name,
-                                                                 Description,
-                                                                 Members,
-                                                                 MemberIds,
-                                                                 AutoIncludeStations,
-                                                                 StatusAggregationDelegate,
-                                                                 MaxGroupAdminStatusListSize,
-                                                                 MaxGroupStatusListSize);
+                }
+
+                if (Name.IsNullOrEmpty())
+                    throw new ArgumentNullException(nameof(Name), "The name of the charging station group must not be null or empty!");
+
+                #endregion
+
+                var _ChargingStationGroup = new ChargingStationGroup(Id,
+                                                                     this,
+                                                                     Name,
+                                                                     Description,
+                                                                     Members,
+                                                                     MemberIds,
+                                                                     AutoIncludeStations,
+                                                                     StatusAggregationDelegate,
+                                                                     MaxGroupAdminStatusListSize,
+                                                                     MaxGroupStatusListSize);
 
 
-            if (ChargingStationGroupAddition.SendVoting(DateTime.UtcNow, this, _ChargingStationGroup))
-            {
-                if (_ChargingStationGroups.TryAdd(_ChargingStationGroup))
+                if (ChargingStationGroupAddition.SendVoting(DateTime.UtcNow, this, _ChargingStationGroup) &&
+                    _ChargingStationGroups.TryAdd(_ChargingStationGroup))
                 {
 
                     _ChargingStationGroup.OnEVSEDataChanged                             += UpdateEVSEData;
@@ -1941,13 +2096,18 @@ namespace org.GraphDefined.WWCP
                     //_ChargingStationGroup.OnAdminStatusChanged                          += UpdateChargingStationGroupAdminStatus;
 
                     OnSuccess?.Invoke(_ChargingStationGroup);
-                    ChargingStationGroupAddition.SendNotification(DateTime.UtcNow, this, _ChargingStationGroup);
+
+                    ChargingStationGroupAddition.SendNotification(DateTime.UtcNow,
+                                                                  this,
+                                                                  _ChargingStationGroup);
+
                     return _ChargingStationGroup;
 
                 }
-            }
 
-            return null;
+                return null;
+
+            }
 
         }
 
@@ -2050,29 +2210,32 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            #region Initial checks
+            lock (_ChargingStationGroups)
+            {
 
-            if (IEnumerableExtensions.IsNullOrEmpty(Name))
-                throw new ArgumentNullException(nameof(Name), "The name of the charging station group must not be null or empty!");
+                #region Initial checks
 
-            #endregion
+                if (Name.IsNullOrEmpty())
+                    throw new ArgumentNullException(nameof(Name), "The name of the charging station group must not be null or empty!");
 
-            ChargingStationGroup _ChargingStationGroup = null;
+                #endregion
 
-            if (_ChargingStationGroups.TryGet(Id, out _ChargingStationGroup))
-                return _ChargingStationGroup;
+                if (_ChargingStationGroups.TryGet(Id, out ChargingStationGroup _ChargingStationGroup))
+                    return _ChargingStationGroup;
 
-            return CreateChargingStationGroup(Id,
-                                              Name,
-                                              Description,
-                                              Members,
-                                              MemberIds,
-                                              AutoIncludeStations,
-                                              StatusAggregationDelegate,
-                                              MaxGroupAdminStatusListSize,
-                                              MaxGroupStatusListSize,
-                                              OnSuccess,
-                                              OnError);
+                return CreateChargingStationGroup(Id,
+                                                  Name,
+                                                  Description,
+                                                  Members,
+                                                  MemberIds,
+                                                  AutoIncludeStations,
+                                                  StatusAggregationDelegate,
+                                                  MaxGroupAdminStatusListSize,
+                                                  MaxGroupStatusListSize,
+                                                  OnSuccess,
+                                                  OnError);
+
+            }
 
         }
 
@@ -2139,6 +2302,20 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region ChargingStationGroups
+
+        private readonly EntityHashSet<ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup> _ChargingStationGroups;
+
+        /// <summary>
+        /// All charging station groups registered within this charging station operator.
+        /// </summary>
+        public IEnumerable<ChargingStationGroup> ChargingStationGroups
+
+            => _ChargingStationGroups;
+
+        #endregion
+
         #region TryGetChargingStationGroup(Id, out ChargingStationGroup)
 
         /// <summary>
@@ -2153,9 +2330,121 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region ChargingStationGroupRemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingStationGroup, Boolean> ChargingStationGroupRemoval;
+
+        /// <summary>
+        /// Called whenever a charging station group will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStationOperator, ChargingStationGroup, Boolean> OnChargingStationGroupRemoval
+
+            => ChargingStationGroupRemoval;
+
+        #endregion
+
+        #region RemoveChargingStationGroup(ChargingStationGroupId, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// All charging station groups registered within this charging station operator.
+        /// </summary>
+        /// <param name="ChargingStationGroupId">The unique identification of the charging station group to be removed.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging station group after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the charging station group failed.</param>
+        public ChargingStationGroup RemoveChargingStationGroup(ChargingStationGroup_Id                                   ChargingStationGroupId,
+                                                               Action<ChargingStationOperator, ChargingStationGroup>     OnSuccess   = null,
+                                                               Action<ChargingStationOperator, ChargingStationGroup_Id>  OnError     = null)
+        {
+
+            lock (_ChargingStationGroups)
+            {
+
+                if (_ChargingStationGroups.TryGet(ChargingStationGroupId, out ChargingStationGroup ChargingStationGroup) &&
+                    ChargingStationGroupRemoval.SendVoting(DateTime.UtcNow,
+                                                           this,
+                                                           ChargingStationGroup) &&
+                    _ChargingStationGroups.TryRemove(ChargingStationGroupId, out ChargingStationGroup _ChargingStationGroup))
+                {
+
+                    OnSuccess?.Invoke(this, ChargingStationGroup);
+
+                    ChargingStationGroupRemoval.SendNotification(DateTime.UtcNow,
+                                                                 this,
+                                                                 _ChargingStationGroup);
+
+                    return _ChargingStationGroup;
+
+                }
+
+                OnError?.Invoke(this, ChargingStationGroupId);
+
+                return null;
+
+            }
+
+        }
+
+        #endregion
+
+        #region RemoveChargingStationGroup(ChargingStationGroup,   OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// All charging station groups registered within this charging station operator.
+        /// </summary>
+        /// <param name="ChargingStationGroup">The charging station group to remove.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging station group after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the charging station group failed.</param>
+        public ChargingStationGroup RemoveChargingStationGroup(ChargingStationGroup                                   ChargingStationGroup,
+                                                               Action<ChargingStationOperator, ChargingStationGroup>  OnSuccess   = null,
+                                                               Action<ChargingStationOperator, ChargingStationGroup>  OnError     = null)
+        {
+
+            lock (_ChargingStationGroups)
+            {
+
+                if (ChargingStationGroupRemoval.SendVoting(DateTime.UtcNow,
+                                                           this,
+                                                           ChargingStationGroup) &&
+                    _ChargingStationGroups.TryRemove(ChargingStationGroup.Id, out ChargingStationGroup _ChargingStationGroup))
+                {
+
+                    OnSuccess?.Invoke(this, _ChargingStationGroup);
+
+                    ChargingStationGroupRemoval.SendNotification(DateTime.UtcNow,
+                                                                 this,
+                                                                 _ChargingStationGroup);
+
+                    return _ChargingStationGroup;
+
+                }
+
+                OnError?.Invoke(this, ChargingStationGroup);
+
+                return ChargingStationGroup;
+
+            }
+
+        }
+
+        #endregion
+
         #endregion
 
         #region EVSEs
+
+        #region EVSEAddition
+
+        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
+
+            => EVSEAddition;
+
+        #endregion
 
         #region EVSEs
 
@@ -2167,27 +2456,120 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEIds
+        #region EVSEIds                (IncludeEVSEs = null)
 
-        public IEnumerable<EVSE_Id> EVSEIds
+        /// <summary>
+        /// Return an enumeration of all EVSE identifications.
+        /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSE_Id> EVSEIds(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _ChargingPools.
-                   SelectMany(v => v.ChargingStations).
-                   SelectMany(v => v.EVSEs).
-                   Select    (v => v.Id);
+            => IncludeEVSEs == null
+
+                   ? _ChargingPools.
+                         SelectMany(pool    => pool.EVSEs).
+                         Select    (station => station.Id)
+
+                   : _ChargingPools.
+                         SelectMany(pool    => pool.EVSEs).
+                         Where     (station => IncludeEVSEs(station)).
+                         Select    (station => station.Id);
 
         #endregion
 
-        #region AllEVSEStatus(IncludeEVSE = null)
+        #region EVSEAdminStatus        (IncludeEVSEs = null)
 
-        public IEnumerable<KeyValuePair<EVSE_Id, EVSEStatusTypes>> AllEVSEStatus(Func<EVSE, Boolean>  IncludeEVSE = null)
+        /// <summary>
+        /// Return an enumeration of all EVSE admin status.
+        /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _ChargingPools.
-                   SelectMany(pool    => pool.ChargingStations).
-                   SelectMany(station => station.EVSEs).
-                   Where     (evse    => IncludeEVSE == null || IncludeEVSE(evse)).
-                   OrderBy   (evse    => evse.Id).
-                   Select    (evse    => new KeyValuePair<EVSE_Id, EVSEStatusTypes>(evse.Id, evse.Status.Value));
+            => IncludeEVSEs == null
+
+                   ? _ChargingPools.
+                         SelectMany(pool    => pool.EVSEs).
+                         Select    (station => new EVSEAdminStatus(station.Id,
+                                                                   station.AdminStatus))
+
+                   : _ChargingPools.
+                         SelectMany(pool    => pool.EVSEs).
+                         Where     (station => IncludeEVSEs(station)).
+                         Select    (station => new EVSEAdminStatus(station.Id,
+                                                                   station.AdminStatus));
+
+        #endregion
+
+        #region EVSEAdminStatusSchedule(IncludeEVSEs = null)
+
+        /// <summary>
+        /// Return an enumeration of all EVSE admin status.
+        /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        /// <param name="HistorySize">The size of the history.</param>
+        public IEnumerable<EVSEAdminStatusSchedule> EVSEAdminStatusSchedule(IncludeEVSEDelegate  IncludeEVSEs   = null,
+                                                                            UInt64?              HistorySize    = null)
+
+            => IncludeEVSEs == null
+
+                   ? _ChargingPools.
+                         SelectMany(pool    => pool.EVSEs).
+                         Select    (station => new EVSEAdminStatusSchedule(station.Id,
+                                                                           station.AdminStatusSchedule(HistorySize)))
+
+                   : _ChargingPools.
+                         SelectMany(pool    => pool.EVSEs).
+                         Where     (station => IncludeEVSEs(station)).
+                         Select    (station => new EVSEAdminStatusSchedule(station.Id,
+                                                                           station.AdminStatusSchedule(HistorySize)));
+
+        #endregion
+
+        #region EVSEStatus             (IncludeEVSEs = null)
+
+        /// <summary>
+        /// Return an enumeration of all EVSE status.
+        /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEStatus> EVSEStatus(IncludeEVSEDelegate IncludeEVSEs = null)
+
+            => IncludeEVSEs == null
+
+                   ? _ChargingPools.
+                         SelectMany(pool    => pool.EVSEs).
+                         Select    (station => new EVSEStatus(station.Id,
+                                                              station.Status))
+
+                   : _ChargingPools.
+                         SelectMany(pool    => pool.EVSEs).
+                         Where     (station => IncludeEVSEs(station)).
+                         Select    (station => new EVSEStatus(station.Id,
+                                                              station.Status));
+
+        #endregion
+
+        #region EVSEStatusSchedule     (IncludeEVSEs = null)
+
+        /// <summary>
+        /// Return an enumeration of all EVSE status.
+        /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        /// <param name="HistorySize">The size of the history.</param>
+        public IEnumerable<EVSEStatusSchedule> EVSEStatusSchedule(IncludeEVSEDelegate  IncludeEVSEs   = null,
+                                                                  UInt64?              HistorySize    = null)
+
+            => IncludeEVSEs == null
+
+                   ? _ChargingPools.
+                         SelectMany(pool    => pool.EVSEs).
+                         Select    (station => new EVSEStatusSchedule(station.Id,
+                                                                      station.StatusSchedule(HistorySize)))
+
+                   : _ChargingPools.
+                         SelectMany(pool    => pool.EVSEs).
+                         Where     (station => IncludeEVSEs(station)).
+                         Select    (station => new EVSEStatusSchedule(station.Id,
+                                                                      station.StatusSchedule(HistorySize)));
 
         #endregion
 
@@ -2375,84 +2757,84 @@ namespace org.GraphDefined.WWCP
 
         #region CalcEVSEStatusDiff(EVSEStatus, IncludeEVSE = null)
 
-        public EVSEStatusDiff CalcEVSEStatusDiff(Dictionary<EVSE_Id, EVSEStatusTypes>  EVSEStatus,
-                                                 Func<EVSE, Boolean>                  IncludeEVSE  = null)
-        {
+        //public EVSEStatusDiff CalcEVSEStatusDiff(Dictionary<EVSE_Id, EVSEStatusTypes>  EVSEStatus,
+        //                                         Func<EVSE, Boolean>                  IncludeEVSE  = null)
+        //{
 
-            if (EVSEStatus == null || EVSEStatus.Count == 0)
-                return new EVSEStatusDiff(DateTime.UtcNow, Id, Name);
+        //    if (EVSEStatus == null || EVSEStatus.Count == 0)
+        //        return new EVSEStatusDiff(DateTime.UtcNow, Id, Name);
 
-            #region Get data...
+        //    #region Get data...
 
-            var EVSEStatusDiff     = new EVSEStatusDiff(DateTime.UtcNow, Id, Name);
+        //    var EVSEStatusDiff     = new EVSEStatusDiff(DateTime.UtcNow, Id, Name);
 
-            // Only ValidEVSEIds!
-            // Do nothing with manual EVSE Ids!
-            var CurrentEVSEStates  = AllEVSEStatus(IncludeEVSE).
-                                         //Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
-                                         //            !ManualEVSEIds.Contains(KVP.Key)).
-                                         ToDictionary(v => v.Key, v => v.Value);
+        //    // Only ValidEVSEIds!
+        //    // Do nothing with manual EVSE Ids!
+        //    var CurrentEVSEStates  = AllEVSEStatus(IncludeEVSE).
+        //                                 //Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
+        //                                 //            !ManualEVSEIds.Contains(KVP.Key)).
+        //                                 ToDictionary(v => v.Key, v => v.Value);
 
-            var OldEVSEIds         = new List<EVSE_Id>(CurrentEVSEStates.Keys);
+        //    var OldEVSEIds         = new List<EVSE_Id>(CurrentEVSEStates.Keys);
 
-            #endregion
+        //    #endregion
 
-            try
-            {
+        //    try
+        //    {
 
-                #region Find new and changed EVSE states
+        //        #region Find new and changed EVSE states
 
-                // Only for ValidEVSEIds!
-                // Do nothing with manual EVSE Ids!
-                foreach (var NewEVSEStatus in EVSEStatus)
-                                                  //Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
-                                                  //            !ManualEVSEIds.Contains(KVP.Key)))
-                {
+        //        // Only for ValidEVSEIds!
+        //        // Do nothing with manual EVSE Ids!
+        //        foreach (var NewEVSEStatus in EVSEStatus)
+        //                                          //Where(KVP => ValidEVSEIds. Contains(KVP.Key) &&
+        //                                          //            !ManualEVSEIds.Contains(KVP.Key)))
+        //        {
 
-                    // Add to NewEVSEStates, if new EVSE was found!
-                    if (!CurrentEVSEStates.ContainsKey(NewEVSEStatus.Key))
-                        EVSEStatusDiff.AddNewStatus(NewEVSEStatus);
+        //            // Add to NewEVSEStates, if new EVSE was found!
+        //            if (!CurrentEVSEStates.ContainsKey(NewEVSEStatus.Key))
+        //                EVSEStatusDiff.AddNewStatus(NewEVSEStatus);
 
-                    else
-                    {
+        //            else
+        //            {
 
-                        // Add to CHANGED, if state of known EVSE changed!
-                        if (CurrentEVSEStates[NewEVSEStatus.Key] != NewEVSEStatus.Value)
-                            EVSEStatusDiff.AddChangedStatus(NewEVSEStatus);
+        //                // Add to CHANGED, if state of known EVSE changed!
+        //                if (CurrentEVSEStates[NewEVSEStatus.Key] != NewEVSEStatus.Value)
+        //                    EVSEStatusDiff.AddChangedStatus(NewEVSEStatus);
 
-                        // Remove EVSEId, as it was processed...
-                        OldEVSEIds.Remove(NewEVSEStatus.Key);
+        //                // Remove EVSEId, as it was processed...
+        //                OldEVSEIds.Remove(NewEVSEStatus.Key);
 
-                    }
+        //            }
 
-                }
+        //        }
 
-                #endregion
+        //        #endregion
 
-                #region Delete what is left in OldEVSEIds!
+        //        #region Delete what is left in OldEVSEIds!
 
-                EVSEStatusDiff.AddRemovedId(OldEVSEIds);
+        //        EVSEStatusDiff.AddRemovedId(OldEVSEIds);
 
-                #endregion
+        //        #endregion
 
-                return EVSEStatusDiff;
+        //        return EVSEStatusDiff;
 
-            }
+        //    }
 
-            catch (Exception e)
-            {
+        //    catch (Exception e)
+        //    {
 
-                while (e.InnerException != null)
-                    e = e.InnerException;
+        //        while (e.InnerException != null)
+        //            e = e.InnerException;
 
-                DebugX.Log("GetEVSEStatusDiff led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
+        //        DebugX.Log("GetEVSEStatusDiff led to an exception: " + e.Message + Environment.NewLine + e.StackTrace);
 
-            }
+        //    }
 
-            // empty!
-            return new EVSEStatusDiff(DateTime.UtcNow, Id, Name);
+        //    // empty!
+        //    return new EVSEStatusDiff(DateTime.UtcNow, Id, Name);
 
-        }
+        //}
 
         #endregion
 
@@ -2674,6 +3056,20 @@ namespace org.GraphDefined.WWCP
                                                NewStatus);
 
         }
+
+        #endregion
+
+
+        #region EVSERemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
+
+            => EVSERemoval;
 
         #endregion
 

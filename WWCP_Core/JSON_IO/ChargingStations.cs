@@ -65,8 +65,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                          ChargingStation.Id.ToJSON("@id"),
 
                          Embedded
-                             ? new JProperty("@context",  "https://open.charging.cloud/contexts/wwcp+json/ChargingStation")
-                             : null,
+                             ? null
+                             : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/ChargingStation"),
 
                          ChargingStation.Name.       IsNeitherNullNorEmpty()
                              ? ChargingStation.Name.       ToJSON("name")
@@ -207,7 +207,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
             #endregion
 
-            return ChargingStations != null && ChargingStations.Any()
+            return ChargingStations?.Any() == true
                        ? new JProperty(JPropertyKey, ChargingStations.ToJSON())
                        : null;
 
@@ -215,12 +215,12 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this ChargingStationAdminStatus, Skip = 0, Take = 0, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>>  ChargingStationAdminStatus,
-                                     UInt64                                                                                                         Skip         = 0,
-                                     UInt64                                                                                                         Take         = 0,
-                                     UInt64                                                                                                         HistorySize  = 1)
+        #region ToJSON(this ChargingStationAdminStatus,          Skip = 0, Take = 0)
+
+        public static JObject ToJSON(this IEnumerable<ChargingStationAdminStatus>  ChargingStationAdminStatus,
+                                     UInt64                                        Skip  = 0,
+                                     UInt64                                        Take  = 0)
         {
 
             #region Initial checks
@@ -228,56 +228,100 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             if (ChargingStationAdminStatus == null || !ChargingStationAdminStatus.Any())
                 return new JObject();
 
-            var _ChargingStationAdminStatus = new Dictionary<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>();
-
             #endregion
 
             #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            foreach (var stationstatus in Take == 0 ? _ChargingStationAdminStatus.Skip(Skip)
-                                                    : _ChargingStationAdminStatus.Skip(Skip).Take(Take))
+            var _FilteredStatus = new Dictionary<ChargingStation_Id, ChargingStationAdminStatus>();
+
+            foreach (var status in ChargingStationAdminStatus)
             {
 
-                if (!_ChargingStationAdminStatus.ContainsKey(stationstatus.Key))
-                    _ChargingStationAdminStatus.Add(stationstatus.Key, stationstatus.Value);
+                if (!_FilteredStatus.ContainsKey(status.Id))
+                    _FilteredStatus.Add(status.Id, status);
 
-                else if (stationstatus.Value.FirstOrDefault().Timestamp > _ChargingStationAdminStatus[stationstatus.Key].FirstOrDefault().Timestamp)
-                    _ChargingStationAdminStatus[stationstatus.Key] = stationstatus.Value;
+                else if (_FilteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    _FilteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
-            return _ChargingStationAdminStatus.Count == 0
 
-                   ? new JObject()
+            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
+                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
 
-                   : new JObject(_ChargingStationAdminStatus.
-                                   SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
-                                                                new JObject(statuslist.Value.
-
-                                                                            // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
-                                                                            GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                            Select           (group => group.First()).
-
-                                                                            OrderByDescending(tsv   => tsv.Timestamp).
-                                                                            Take             (HistorySize).
-                                                                            Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                     tsv.Value.    ToString())))
-
-                                                            )));
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
+                                                                          kvp.Value.Status.Value.    ToString())
+                                                              )));
 
         }
 
         #endregion
 
-        #region ToJSON(this ChargingStationStatus, Skip = 0, Take = 0, HistorySize = 1)
+        #region ToJSON(this ChargingStationAdminStatusSchedules, Skip = 0, Take = 0, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>>  ChargingStationStatus,
-                                     UInt64                                                                                                   Skip         = 0,
-                                     UInt64                                                                                                   Take         = 0,
-                                     UInt64                                                                                                   HistorySize  = 1)
+        public static JObject ToJSON(this IEnumerable<ChargingStationAdminStatusSchedule>  ChargingStationAdminStatusSchedules,
+                                     UInt64                                                Skip         = 0,
+                                     UInt64                                                Take         = 0,
+                                     UInt64                                                HistorySize  = 1)
+        {
 
+            #region Initial checks
+
+            if (ChargingStationAdminStatusSchedules == null || !ChargingStationAdminStatusSchedules.Any())
+                return new JObject();
+
+            #endregion
+
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
+
+            var _FilteredStatus = new Dictionary<ChargingStation_Id, ChargingStationAdminStatusSchedule>();
+
+            foreach (var status in ChargingStationAdminStatusSchedules)
+            {
+
+                if (!_FilteredStatus.ContainsKey(status.Id))
+                    _FilteredStatus.Add(status.Id, status);
+
+                else if (_FilteredStatus[status.Id].StatusSchedule.Any() &&
+                         _FilteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
+                         _FilteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
+                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JObject(
+                                                                   kvp.Value.StatusSchedule.
+
+                                                                             // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
+                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
+                                                                             Select           (group => group.First()).
+
+                                                                             OrderByDescending(tsv   => tsv.Timestamp).
+                                                                             Take             (HistorySize).
+                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
+                                                                                                                      tsv.Value.    ToString())))
+
+                                                              )));
+
+        }
+
+        #endregion
+
+
+        #region ToJSON(this ChargingStationStatus,               Skip = 0, Take = 0)
+
+        public static JObject ToJSON(this IEnumerable<ChargingStationStatus>  ChargingStationStatus,
+                                     UInt64                                   Skip  = 0,
+                                     UInt64                                   Take  = 0)
         {
 
             #region Initial checks
@@ -285,42 +329,87 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             if (ChargingStationStatus == null || !ChargingStationStatus.Any())
                 return new JObject();
 
-            var _ChargingStationStatus = new Dictionary<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>();
-
             #endregion
 
             #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            foreach (var stationstatus in Take == 0 ? _ChargingStationStatus.Skip(Skip)
-                                                    : _ChargingStationStatus.Skip(Skip).Take(Take))
+            var _FilteredStatus = new Dictionary<ChargingStation_Id, ChargingStationStatus>();
+
+            foreach (var status in ChargingStationStatus)
             {
 
-                if (!_ChargingStationStatus.ContainsKey(stationstatus.Key))
-                    _ChargingStationStatus.Add(stationstatus.Key, stationstatus.Value);
+                if (!_FilteredStatus.ContainsKey(status.Id))
+                    _FilteredStatus.Add(status.Id, status);
 
-                else if (stationstatus.Value.FirstOrDefault().Timestamp > _ChargingStationStatus[stationstatus.Key].FirstOrDefault().Timestamp)
-                    _ChargingStationStatus[stationstatus.Key] = stationstatus.Value;
+                else if (_FilteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    _FilteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
-            return _ChargingStationStatus.Count == 0
 
-                   ? new JObject()
+            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
+                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
 
-                   : new JObject(_ChargingStationStatus.
-                                     SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
-                                                                  new JObject(statuslist.Value.
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
+                                                                          kvp.Value.Status.Value.    ToString())
+                                                              )));
 
-                                                                              // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
-                                                                              GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                              Select           (group => group.First()).
+        }
 
-                                                                              OrderByDescending(tsv   => tsv.Timestamp).
-                                                                              Take             (HistorySize).
-                                                                              Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                       tsv.Value.    ToString())))
+        #endregion
+
+        #region ToJSON(this ChargingStationAdminStatusSchedules, Skip = 0, Take = 0, HistorySize = 1)
+
+        public static JObject ToJSON(this IEnumerable<ChargingStationStatusSchedule>  ChargingStationStatusSchedules,
+                                     UInt64                                           Skip         = 0,
+                                     UInt64                                           Take         = 0,
+                                     UInt64                                           HistorySize  = 1)
+        {
+
+            #region Initial checks
+
+            if (ChargingStationStatusSchedules == null || !ChargingStationStatusSchedules.Any())
+                return new JObject();
+
+            #endregion
+
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
+
+            var _FilteredStatus = new Dictionary<ChargingStation_Id, ChargingStationStatusSchedule>();
+
+            foreach (var status in ChargingStationStatusSchedules)
+            {
+
+                if (!_FilteredStatus.ContainsKey(status.Id))
+                    _FilteredStatus.Add(status.Id, status);
+
+                else if (_FilteredStatus[status.Id].StatusSchedule.Any() &&
+                         _FilteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
+                         _FilteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
+                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JObject(
+                                                                   kvp.Value.StatusSchedule.
+
+                                                                             // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
+                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
+                                                                             Select           (group => group.First()).
+
+                                                                             OrderByDescending(tsv   => tsv.Timestamp).
+                                                                             Take             (HistorySize).
+                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
+                                                                                                                      tsv.Value.    ToString())))
 
                                                               )));
 

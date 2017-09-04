@@ -18,8 +18,10 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -29,7 +31,8 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current admin status of an EVSE.
     /// </summary>
-    public class EVSEAdminStatus : IEquatable<EVSEAdminStatus>,
+    public class EVSEAdminStatus : ACustomData,
+                                   IEquatable<EVSEAdminStatus>,
                                    IComparable<EVSEAdminStatus>
     {
 
@@ -38,23 +41,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the EVSE.
         /// </summary>
-        public EVSE_Id               Id            { get; }
+        public EVSE_Id                            Id       { get; }
 
         /// <summary>
-        /// The current admin status of the EVSE.
+        /// The current timestamped admin status of the EVSE.
         /// </summary>
-        public EVSEAdminStatusTypes  AdminStatus   { get; }
-
-        /// <summary>
-        /// The timestamp of the current admin status of the EVSE.
-        /// </summary>
-        public DateTime              Timestamp     { get; }
-
-        /// <summary>
-        /// The timestamped admin status of the EVSE.
-        /// </summary>
-        public Timestamped<EVSEAdminStatusTypes> Combined
-            => new Timestamped<EVSEAdminStatusTypes>(Timestamp, AdminStatus);
+        public Timestamped<EVSEAdminStatusTypes>  Status   { get; }
 
         #endregion
 
@@ -64,17 +56,18 @@ namespace org.GraphDefined.WWCP
         /// Create a new EVSE admin status.
         /// </summary>
         /// <param name="Id">The unique identification of the EVSE.</param>
-        /// <param name="AdminStatus">The current admin status of the EVSE.</param>
-        /// <param name="Timestamp">The timestamp of the current admin status of the EVSE.</param>
-        public EVSEAdminStatus(EVSE_Id               Id,
-                               EVSEAdminStatusTypes  AdminStatus,
-                               DateTime              Timestamp)
+        /// <param name="Status">The current timestamped admin status of the EVSE.</param>
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+        public EVSEAdminStatus(EVSE_Id                              Id,
+                               Timestamped<EVSEAdminStatusTypes>    Status,
+                               IReadOnlyDictionary<String, Object>  CustomData  = null)
+
+            : base(CustomData)
 
         {
 
-            this.Id           = Id;
-            this.AdminStatus  = AdminStatus;
-            this.Timestamp    = Timestamp;
+            this.Id      = Id;
+            this.Status  = Status;
 
         }
 
@@ -90,8 +83,7 @@ namespace org.GraphDefined.WWCP
         public static EVSEAdminStatus Snapshot(EVSE EVSE)
 
             => new EVSEAdminStatus(EVSE.Id,
-                                   EVSE.AdminStatus.Value,
-                                   EVSE.AdminStatus.Timestamp);
+                                   EVSE.AdminStatus);
 
         #endregion
 
@@ -245,7 +237,7 @@ namespace org.GraphDefined.WWCP
 
             // If equal: Compare EVSE status
             if (_Result == 0)
-                _Result = AdminStatus.CompareTo(EVSEAdminStatus.AdminStatus);
+                _Result = Status.CompareTo(EVSEAdminStatus.Status);
 
             return _Result;
 
@@ -273,7 +265,7 @@ namespace org.GraphDefined.WWCP
             if (!(Object is EVSEAdminStatus))
                 return false;
 
-            return this.Equals((EVSEAdminStatus) Object);
+            return Equals((EVSEAdminStatus) Object);
 
         }
 
@@ -292,9 +284,8 @@ namespace org.GraphDefined.WWCP
             if ((Object) EVSEAdminStatus == null)
                 return false;
 
-            return Id.         Equals(EVSEAdminStatus.Id)          &&
-                   AdminStatus.Equals(EVSEAdminStatus.AdminStatus) &&
-                   Timestamp.  Equals(EVSEAdminStatus.Timestamp);
+            return Id.         Equals(EVSEAdminStatus.Id) &&
+                   Status.Equals(EVSEAdminStatus.Status);
 
         }
 
@@ -313,9 +304,8 @@ namespace org.GraphDefined.WWCP
             unchecked
             {
 
-                return Id.         GetHashCode() * 7 ^
-                       AdminStatus.GetHashCode() * 5 ^
-                       Timestamp.  GetHashCode();
+                return Id.    GetHashCode() * 5 ^
+                       Status.GetHashCode();
 
             }
         }
@@ -330,9 +320,9 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
 
             => String.Concat(Id, " -> ",
-                             AdminStatus,
+                             Status.Value,
                              " since ",
-                             Timestamp.ToIso8601());
+                             Status.Timestamp.ToIso8601());
 
         #endregion
 

@@ -1044,12 +1044,12 @@ namespace org.GraphDefined.WWCP
         /// <param name="MaxPoolStatusListSize">The default size of the charging pool (aggregated charging station) status list.</param>
         /// <param name="MaxPoolAdminStatusListSize">The default size of the charging pool admin status list.</param>
         public ChargingPool(ChargingPool_Id                             Id,
-                            Action<ChargingPool>                        Configurator                = null,
-                            RemoteChargingPoolCreatorDelegate           RemoteChargingPoolCreator   = null,
-                            Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus          = null,
-                            Timestamped<ChargingPoolStatusTypes>?       InitialStatus               = null,
-                            UInt16                                      MaxPoolAdminStatusListSize  = DefaultMaxAdminStatusListSize,
-                            UInt16                                      MaxPoolStatusListSize       = DefaultMaxStatusListSize)
+                            Action<ChargingPool>                        Configurator                 = null,
+                            RemoteChargingPoolCreatorDelegate           RemoteChargingPoolCreator    = null,
+                            Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus           = null,
+                            Timestamped<ChargingPoolStatusTypes>?       InitialStatus                = null,
+                            UInt16                                      MaxPoolAdminStatusListSize   = DefaultMaxAdminStatusListSize,
+                            UInt16                                      MaxPoolStatusListSize        = DefaultMaxStatusListSize)
 
             : this(Id,
                    null,
@@ -1075,12 +1075,12 @@ namespace org.GraphDefined.WWCP
         /// <param name="MaxPoolAdminStatusListSize">The default size of the charging pool admin status list.</param>
         public ChargingPool(ChargingPool_Id                             Id,
                             ChargingStationOperator                     Operator,
-                            Action<ChargingPool>                        Configurator                = null,
-                            RemoteChargingPoolCreatorDelegate           RemoteChargingPoolCreator   = null,
-                            Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus          = null,
-                            Timestamped<ChargingPoolStatusTypes>?       InitialStatus               = null,
-                            UInt16                                      MaxPoolAdminStatusListSize  = DefaultMaxAdminStatusListSize,
-                            UInt16                                      MaxPoolStatusListSize       = DefaultMaxStatusListSize)
+                            Action<ChargingPool>                        Configurator                 = null,
+                            RemoteChargingPoolCreatorDelegate           RemoteChargingPoolCreator    = null,
+                            Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus           = null,
+                            Timestamped<ChargingPoolStatusTypes>?       InitialStatus                = null,
+                            UInt16                                      MaxPoolAdminStatusListSize   = DefaultMaxAdminStatusListSize,
+                            UInt16                                      MaxPoolStatusListSize        = DefaultMaxStatusListSize)
 
             : base(Id)
 
@@ -1091,7 +1091,7 @@ namespace org.GraphDefined.WWCP
             this.Operator                    = Operator;
 
             InitialAdminStatus               = InitialAdminStatus ?? new Timestamped<ChargingPoolAdminStatusTypes>(ChargingPoolAdminStatusTypes.Operational);
-            InitialStatus                    = InitialStatus      ?? new Timestamped<ChargingPoolStatusTypes>(ChargingPoolStatusTypes.Available);
+            InitialStatus                    = InitialStatus      ?? new Timestamped<ChargingPoolStatusTypes>     (ChargingPoolStatusTypes.     Available);
 
             this._Name                       = new I18NString();
             this._Description                = new I18NString();
@@ -1346,49 +1346,60 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChargingStationIds
+        #region ChargingStationIds        (IncludeStations = null)
 
         /// <summary>
-        /// Return all charging station Ids registered within this charing pool.
+        /// Return an enumeration of all charging station identifications.
         /// </summary>
-        public IEnumerable<ChargingStation_Id> ChargingStationIds
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStation_Id> ChargingStationIds(IncludeChargingStationDelegate IncludeStations = null)
 
-            =>_ChargingStations.Ids;
+            => IncludeStations == null
+
+                   ? _ChargingStations.
+                         Select    (station => station.Id)
+
+                   : _ChargingStations.
+                         Where     (station => IncludeStations(station)).
+                         Select    (station => station.Id);
 
         #endregion
 
-        #region ChargingStationAdminStatus
+        #region ChargingStationAdminStatus(IncludeStations = null)
 
         /// <summary>
-        /// Return the admin status of all charging stations registered within this charging pool.
+        /// Return an enumeration of all charging station admin status.
         /// </summary>
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStationAdminStatus> ChargingStationAdminStatus(IncludeChargingStationDelegate IncludeStations = null)
 
-        public IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>> ChargingStationAdminStatus
+            => IncludeStations == null
 
-            => _ChargingStations.Select(station =>
+                   ? _ChargingStations.
+                         Select    (station => new ChargingStationAdminStatus(station.Id, station.AdminStatus))
 
-                                     new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>(
-                                         station.Id,
-                                         station.AdminStatusSchedule())
-
-                                 );
+                   : _ChargingStations.
+                         Where     (station => IncludeStations(station)).
+                         Select    (station => new ChargingStationAdminStatus(station.Id, station.AdminStatus));
 
         #endregion
 
-        #region ChargingStationStatus
+        #region ChargingStationStatus     (IncludeStations = null)
 
         /// <summary>
-        /// Return the status of all charging stations registered within this charging pool.
+        /// Return an enumeration of all charging station status.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>> ChargingStationStatus
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStationStatus> ChargingStationStatus(IncludeChargingStationDelegate IncludeStations = null)
 
-            => _ChargingStations.Select(station =>
+            => IncludeStations == null
 
-                                     new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>(
-                                         station.Id,
-                                         station.StatusSchedule())
+                   ? _ChargingStations.
+                         Select    (station => new ChargingStationStatus(station.Id, station.Status))
 
-                                 );
+                   : _ChargingStations.
+                         Where     (station => IncludeStations(station)).
+                         Select    (station => new ChargingStationStatus(station.Id, station.Status));
 
         #endregion
 
@@ -1752,32 +1763,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEAddition
-
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
-
-        /// <summary>
-        /// Called whenever an EVSE will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
-
-            => EVSEAddition;
-
-        #endregion
-
-        #region EVSERemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
-
-        /// <summary>
-        /// Called whenever an EVSE will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
-
-            => EVSERemoval;
-
-        #endregion
-
 
         #region (internal) UpdateChargingStationData        (Timestamp, EventTrackingId, ChargingStation, PropertyName, OldValue, NewValue)
 
@@ -1894,6 +1879,19 @@ namespace org.GraphDefined.WWCP
 
         #region EVSEs
 
+        #region EVSEAddition
+
+        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
+
+            => EVSEAddition;
+
+        #endregion
+
         #region EVSEs
 
         /// <summary>
@@ -1921,38 +1919,55 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEAdminStatus
+        #region EVSEAdminStatus        (IncludeEVSEs = null)
 
         /// <summary>
-        /// Return the admin status of all EVSEs registered within this charging pool.
+        /// Return the admin status of all EVSEs registered within this roaming network.
         /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate IncludeEVSEs = null)
 
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>> EVSEAdminStatus(UInt64 HistorySize)
-
-            => _ChargingStations.SelectMany(station => station.Select(evse =>
-
-                                     new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>(
-                                         evse.Id,
-                                         evse.AdminStatusSchedule(HistorySize))
-
-                                 ));
+            => _ChargingStations.
+                   SelectMany(station => station.EVSEAdminStatus(IncludeEVSEs));
 
         #endregion
 
-        #region EVSEStatus
+        #region EVSEAdminStatusSchedule(IncludeEVSEs = null)
 
         /// <summary>
-        /// Return the status of all EVSEs registered within this charging pool.
+        /// Return the admin status of all EVSEs registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>> EVSEStatus(UInt64 HistorySize)
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEAdminStatus> EVSEAdminStatusSchedule(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _ChargingStations.SelectMany(station => station.Select(evse =>
+            => _ChargingStations.
+                   SelectMany(station => station.EVSEAdminStatus(IncludeEVSEs));
 
-                                     new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>(
-                                         evse.Id,
-                                         evse.StatusSchedule(HistorySize))
+        #endregion
 
-                                 ));
+        #region EVSEStatus             (IncludeEVSEs = null)
+
+        /// <summary>
+        /// Return the admin status of all EVSEs registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEStatus> EVSEStatus(IncludeEVSEDelegate IncludeEVSEs = null)
+
+            => _ChargingStations.
+                   SelectMany(station => station.EVSEStatus(IncludeEVSEs));
+
+        #endregion
+
+        #region EVSEStatusSchedule     (IncludeEVSEs = null)
+
+        /// <summary>
+        /// Return the admin status of all EVSEs registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEStatus> EVSEStatusSchedule(IncludeEVSEDelegate IncludeEVSEs = null)
+
+            => _ChargingStations.
+                   SelectMany(station => station.EVSEStatus(IncludeEVSEs));
 
         #endregion
 
@@ -2051,6 +2066,20 @@ namespace org.GraphDefined.WWCP
         //    => SocketOutletRemoval;
 
         //#endregion
+
+
+        #region EVSERemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
+
+            => EVSERemoval;
+
+        #endregion
 
 
         #region (internal) UpdateEVSEData       (Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)

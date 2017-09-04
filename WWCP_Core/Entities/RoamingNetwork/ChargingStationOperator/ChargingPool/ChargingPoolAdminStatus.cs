@@ -18,8 +18,10 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -29,8 +31,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current admin status of a charging pool.
     /// </summary>
-    public struct ChargingPoolAdminStatus : IEquatable <ChargingPoolAdminStatus>,
-                                            IComparable<ChargingPoolAdminStatus>
+    public class ChargingPoolAdminStatus : ACustomData,
+                                           IEquatable <ChargingPoolAdminStatus>,
+                                           IComparable<ChargingPoolAdminStatus>
     {
 
         #region Properties
@@ -38,23 +41,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the charging pool.
         /// </summary>
-        public ChargingPool_Id              Id            { get; }
+        public ChargingPool_Id                            Id       { get; }
 
         /// <summary>
         /// The current admin status of the charging pool.
         /// </summary>
-        public ChargingPoolAdminStatusTypes  AdminStatus   { get; }
-
-        /// <summary>
-        /// The timestamp of the current admin status of the charging pool.
-        /// </summary>
-        public DateTime                     Timestamp     { get; }
-
-        /// <summary>
-        /// The timestamped admin status of the charging pool.
-        /// </summary>
-        public Timestamped<ChargingPoolAdminStatusTypes> Combined
-            => new Timestamped<ChargingPoolAdminStatusTypes>(Timestamp, AdminStatus);
+        public Timestamped<ChargingPoolAdminStatusTypes>  Status   { get; }
 
         #endregion
 
@@ -64,17 +56,18 @@ namespace org.GraphDefined.WWCP
         /// Create a new charging pool admin status.
         /// </summary>
         /// <param name="Id">The unique identification of the charging pool.</param>
-        /// <param name="Status">The current admin status of the charging pool.</param>
-        /// <param name="Timestamp">The timestamp of the current admin status of the charging pool.</param>
-        public ChargingPoolAdminStatus(ChargingPool_Id              Id,
-                                       ChargingPoolAdminStatusTypes  Status,
-                                       DateTime                     Timestamp)
+        /// <param name="Status">The current timestamped admin status of the charging pool.</param>
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+        public ChargingPoolAdminStatus(ChargingPool_Id                            Id,
+                                       Timestamped<ChargingPoolAdminStatusTypes>  Status,
+                                       IReadOnlyDictionary<String, Object>        CustomData  = null)
+
+            : base(CustomData)
 
         {
 
-            this.Id           = Id;
-            this.AdminStatus  = Status;
-            this.Timestamp    = Timestamp;
+            this.Id      = Id;
+            this.Status  = Status;
 
         }
 
@@ -90,8 +83,7 @@ namespace org.GraphDefined.WWCP
         public static ChargingPoolAdminStatus Snapshot(ChargingPool ChargingPool)
 
             => new ChargingPoolAdminStatus(ChargingPool.Id,
-                                           ChargingPool.AdminStatus.Value,
-                                           ChargingPool.AdminStatus.Timestamp);
+                                           ChargingPool.AdminStatus);
 
         #endregion
 
@@ -245,7 +237,7 @@ namespace org.GraphDefined.WWCP
 
             // If equal: Compare ChargingPool status
             if (_Result == 0)
-                _Result = AdminStatus.CompareTo(ChargingPoolAdminStatus.AdminStatus);
+                _Result = Status.CompareTo(ChargingPoolAdminStatus.Status);
 
             return _Result;
 
@@ -273,7 +265,7 @@ namespace org.GraphDefined.WWCP
             if (!(Object is ChargingPoolAdminStatus))
                 return false;
 
-            return this.Equals((ChargingPoolAdminStatus) Object);
+            return Equals((ChargingPoolAdminStatus) Object);
 
         }
 
@@ -292,9 +284,8 @@ namespace org.GraphDefined.WWCP
             if ((Object) ChargingPoolAdminStatus == null)
                 return false;
 
-            return Id.         Equals(ChargingPoolAdminStatus.Id)          &&
-                   AdminStatus.Equals(ChargingPoolAdminStatus.AdminStatus) &&
-                   Timestamp.  Equals(ChargingPoolAdminStatus.Timestamp);
+            return Id.    Equals(ChargingPoolAdminStatus.Id) &&
+                   Status.Equals(ChargingPoolAdminStatus.Status);
 
         }
 
@@ -313,9 +304,8 @@ namespace org.GraphDefined.WWCP
             unchecked
             {
 
-                return Id.         GetHashCode() * 7 ^
-                       AdminStatus.GetHashCode() * 5 ^
-                       Timestamp.  GetHashCode();
+                return Id.    GetHashCode() * 5 ^
+                       Status.GetHashCode();
 
             }
         }
@@ -330,9 +320,9 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
 
             => String.Concat(Id, " -> ",
-                             AdminStatus,
+                             Status.Value,
                              " since ",
-                             Timestamp.ToIso8601());
+                             Status.Timestamp.ToIso8601());
 
         #endregion
 

@@ -63,9 +63,9 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                          ChargingPool.Id.ToJSON("@id"),
 
-                         !Embedded
-                             ? new JProperty("@context",  "https://open.charging.cloud/contexts/wwcp+json/ChargingPool")
-                             : null,
+                         Embedded
+                             ? null
+                             : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/ChargingPool"),
 
                          ChargingPool.Name.       IsNeitherNullNorEmpty()
                              ? ChargingPool.Name.       ToJSON("name")
@@ -126,8 +126,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
                          ExpandChargingStationIds.Switch(
                              () => new JProperty("chargingStationIds",
-                                                 ChargingPool.ChargingStationIds.SafeAny()
-                                                     ? new JArray(ChargingPool.ChargingStationIds.
+                                                 ChargingPool.ChargingStationIds().SafeAny()
+                                                     ? new JArray(ChargingPool.ChargingStationIds().
                                                                                OrderBy(stationId => stationId).
                                                                                Select (stationId => stationId.ToString()))
                                                      : new JArray()),
@@ -202,13 +202,32 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
+        #region ToJSON(this ChargingPools, JPropertyKey)
 
-        #region ToJSON(this ChargingPoolAdminStatus, Skip = 0, Take = 0)
+        public static JProperty ToJSON(this IEnumerable<ChargingPool> ChargingPools, String JPropertyKey)
+        {
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>>  ChargingPoolAdminStatus,
-                                     UInt64                                                                                                   Skip         = 0,
-                                     UInt64                                                                                                   Take         = 0,
-                                     UInt64                                                                                                   HistorySize  = 1)
+            #region Initial checks
+
+            if (JPropertyKey.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(JPropertyKey), "The json property key must not be null or empty!");
+
+            #endregion
+
+            return ChargingPools?.Any() == true
+                       ? new JProperty(JPropertyKey, ChargingPools.ToJSON())
+                       : null;
+
+        }
+
+        #endregion
+
+
+        #region ToJSON(this ChargingPoolAdminStatus,          Skip = 0, Take = 0)
+
+        public static JObject ToJSON(this IEnumerable<ChargingPoolAdminStatus>  ChargingPoolAdminStatus,
+                                     UInt64                                     Skip  = 0,
+                                     UInt64                                     Take  = 0)
         {
 
             #region Initial checks
@@ -216,55 +235,100 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             if (ChargingPoolAdminStatus == null || !ChargingPoolAdminStatus.Any())
                 return new JObject();
 
-            var _ChargingPoolAdminStatus = new Dictionary<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>();
-
             #endregion
 
-            #region Maybe there are duplicate charging pool identifications in the enumeration... take the newest one!
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            foreach (var poolstatus in Take == 0 ? _ChargingPoolAdminStatus.Skip(Skip)
-                                                 : _ChargingPoolAdminStatus.Skip(Skip).Take(Take))
+            var _FilteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolAdminStatus>();
+
+            foreach (var status in ChargingPoolAdminStatus)
             {
 
-                if (!_ChargingPoolAdminStatus.ContainsKey(poolstatus.Key))
-                    _ChargingPoolAdminStatus.Add(poolstatus.Key, poolstatus.Value);
+                if (!_FilteredStatus.ContainsKey(status.Id))
+                    _FilteredStatus.Add(status.Id, status);
 
-                else if (poolstatus.Value.FirstOrDefault().Timestamp > _ChargingPoolAdminStatus[poolstatus.Key].FirstOrDefault().Timestamp)
-                    _ChargingPoolAdminStatus[poolstatus.Key] = poolstatus.Value;
+                else if (_FilteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    _FilteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
-            return _ChargingPoolAdminStatus.Count == 0
 
-                   ? new JObject()
+            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
+                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
 
-                   : new JObject(_ChargingPoolAdminStatus.
-                                   SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
-                                                                new JObject(statuslist.Value.
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
+                                                                          kvp.Value.Status.Value.    ToString())
+                                                              )));
 
-                                                                            // Will filter multiple charging pool status having the exact same ISO 8601 timestamp!
-                                                                            GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                            Select           (group => group.First()).
+        }
 
-                                                                            OrderByDescending(tsv   => tsv.Timestamp).
-                                                                            Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                     tsv.Value.    ToString())))
+        #endregion
 
-                                                            )));
+        #region ToJSON(this ChargingPoolAdminStatusSchedules, Skip = 0, Take = 0, HistorySize = 1)
+
+        public static JObject ToJSON(this IEnumerable<ChargingPoolAdminStatusSchedule>  ChargingPoolAdminStatusSchedules,
+                                     UInt64                                             Skip         = 0,
+                                     UInt64                                             Take         = 0,
+                                     UInt64                                             HistorySize  = 1)
+        {
+
+            #region Initial checks
+
+            if (ChargingPoolAdminStatusSchedules == null || !ChargingPoolAdminStatusSchedules.Any())
+                return new JObject();
+
+            #endregion
+
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
+
+            var _FilteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolAdminStatusSchedule>();
+
+            foreach (var status in ChargingPoolAdminStatusSchedules)
+            {
+
+                if (!_FilteredStatus.ContainsKey(status.Id))
+                    _FilteredStatus.Add(status.Id, status);
+
+                else if (_FilteredStatus[status.Id].StatusSchedule.Any() &&
+                         _FilteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
+                         _FilteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
+                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JObject(
+                                                                   kvp.Value.StatusSchedule.
+
+                                                                             // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
+                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
+                                                                             Select           (group => group.First()).
+
+                                                                             OrderByDescending(tsv   => tsv.Timestamp).
+                                                                             Take             (HistorySize).
+                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
+                                                                                                                      tsv.Value.    ToString())))
+
+                                                              )));
 
         }
 
         #endregion
 
 
-        #region ToJSON(this ChargingPoolStatus, Skip = 0, Take = 0)
+        #region ToJSON(this ChargingPoolStatus,               Skip = 0, Take = 0)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>>  ChargingPoolStatus,
-                                     UInt64                                                                                              Skip         = 0,
-                                     UInt64                                                                                              Take         = 0,
-                                     UInt64                                                                                              HistorySize  = 1)
+        public static JObject ToJSON(this IEnumerable<ChargingPoolStatus>  ChargingPoolStatus,
+                                     UInt64                                Skip  = 0,
+                                     UInt64                                Take  = 0)
         {
 
             #region Initial checks
@@ -272,47 +336,94 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             if (ChargingPoolStatus == null || !ChargingPoolStatus.Any())
                 return new JObject();
 
-            var _ChargingPoolStatus = new Dictionary<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>();
-
             #endregion
 
-            #region Maybe there are duplicate charging pool identifications in the enumeration... take the newest one!
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-            foreach (var poolstatus in Take == 0 ? _ChargingPoolStatus.Skip(Skip)
-                                                 : _ChargingPoolStatus.Skip(Skip).Take(Take))
+            var _FilteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolStatus>();
+
+            foreach (var status in ChargingPoolStatus)
             {
 
-                if (!_ChargingPoolStatus.ContainsKey(poolstatus.Key))
-                    _ChargingPoolStatus.Add(poolstatus.Key, poolstatus.Value);
+                if (!_FilteredStatus.ContainsKey(status.Id))
+                    _FilteredStatus.Add(status.Id, status);
 
-                else if (poolstatus.Value.FirstOrDefault().Timestamp > _ChargingPoolStatus[poolstatus.Key].FirstOrDefault().Timestamp)
-                    _ChargingPoolStatus[poolstatus.Key] = poolstatus.Value;
+                else if (_FilteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    _FilteredStatus[status.Id] = status;
 
             }
 
             #endregion
 
-            return _ChargingPoolStatus.Count == 0
 
-                   ? new JObject()
+            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
+                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
 
-                   : new JObject(_ChargingPoolStatus.
-                                   SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
-                                                                new JObject(statuslist.Value.
-
-                                                                            // Will filter multiple charging pool status having the exact same ISO 8601 timestamp!
-                                                                            GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                            Select           (group => group.First()).
-
-                                                                            OrderByDescending(tsv   => tsv.Timestamp).
-                                                                            Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                     tsv.Value.    ToString())))
-
-                                                            )));
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
+                                                                          kvp.Value.Status.Value.    ToString())
+                                                              )));
 
         }
 
         #endregion
+
+        #region ToJSON(this ChargingPoolStatusSchedules,      Skip = 0, Take = 0, HistorySize = 1)
+
+        public static JObject ToJSON(this IEnumerable<ChargingPoolStatusSchedule>  ChargingPoolStatusSchedules,
+                                     UInt64                                        Skip         = 0,
+                                     UInt64                                        Take         = 0,
+                                     UInt64                                        HistorySize  = 1)
+        {
+
+            #region Initial checks
+
+            if (ChargingPoolStatusSchedules == null || !ChargingPoolStatusSchedules.Any())
+                return new JObject();
+
+            #endregion
+
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
+
+            var _FilteredStatus = new Dictionary<ChargingPool_Id, ChargingPoolStatusSchedule>();
+
+            foreach (var status in ChargingPoolStatusSchedules)
+            {
+
+                if (!_FilteredStatus.ContainsKey(status.Id))
+                    _FilteredStatus.Add(status.Id, status);
+
+                else if (_FilteredStatus[status.Id].StatusSchedule.Any() &&
+                         _FilteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
+                         _FilteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
+                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JObject(
+                                                                   kvp.Value.StatusSchedule.
+
+                                                                             // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
+                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
+                                                                             Select           (group => group.First()).
+
+                                                                             OrderByDescending(tsv   => tsv.Timestamp).
+                                                                             Take             (HistorySize).
+                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
+                                                                                                                      tsv.Value.    ToString())))
+
+                                                              )));
+
+        }
+
+        #endregion
+
 
     }
 

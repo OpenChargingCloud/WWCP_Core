@@ -1728,6 +1728,19 @@ namespace org.GraphDefined.WWCP
 
         #region EVSEs
 
+        #region EVSEAddition
+
+        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
+
+            => EVSEAddition;
+
+        #endregion
+
         #region EVSEs
 
         private readonly EntityHashSet<ChargingStation, EVSE_Id, EVSE> _EVSEs;
@@ -1754,54 +1767,33 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEAdminStatus
+        #region EVSEAdminStatus(IncludeEVSEs = null)
 
         /// <summary>
-        /// Return the admin status of all EVSEs registered within this charging station.
+        /// Return the admin status of all EVSEs registered within this roaming network.
         /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate IncludeEVSEs = null)
 
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>> EVSEAdminStatus(UInt64 HistorySize)
-
-            => _EVSEs.Select(evse => new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>(evse.Id,
-                                                                                                              evse.AdminStatusSchedule(HistorySize)));
+            => _EVSEs.
+                   Where (evse => IncludeEVSEs(evse)).
+                   Select(evse => new EVSEAdminStatus(evse.Id,
+                                                      evse.AdminStatus));
 
         #endregion
 
-        #region EVSEStatus
+        #region EVSEStatus     (IncludeEVSEs = null)
 
         /// <summary>
-        /// Return the status of all EVSEs registered within this charging station.
+        /// Return the admin status of all EVSEs registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>> EVSEStatus(UInt64 HistorySize)
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEStatus> EVSEStatus(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _EVSEs.Select(evse => new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>(evse.Id,
-                                                                                                         evse.StatusSchedule(HistorySize)));
-
-        #endregion
-
-        #region EVSEAddition
-
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
-
-        /// <summary>
-        /// Called whenever an EVSE will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
-
-            => EVSEAddition;
-
-        #endregion
-
-        #region EVSERemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
-
-        /// <summary>
-        /// Called whenever an EVSE will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
-
-            => EVSERemoval;
+            => _EVSEs.
+                   Where (evse => IncludeEVSEs(evse)).
+                   Select(evse => new EVSEStatus(evse.Id,
+                                                 evse.Status));
 
         #endregion
 
@@ -2152,6 +2144,19 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region EVSERemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
+
+            => EVSERemoval;
+
+        #endregion
 
         #region IEnumerable<EVSE> Members
 

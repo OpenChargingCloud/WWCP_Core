@@ -860,13 +860,14 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AdminStatusSchedule
+        #region AdminStatusSchedule(HistorySize = null)
 
         private readonly StatusSchedule<EVSEAdminStatusTypes> _AdminStatusSchedule;
 
         /// <summary>
         /// The EVSE admin status schedule.
         /// </summary>
+        /// <param name="HistorySize">The size of the history.</param>
         public IEnumerable<Timestamped<EVSEAdminStatusTypes>> AdminStatusSchedule(UInt64? HistorySize = null)
         {
 
@@ -930,13 +931,14 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region StatusSchedule
+        #region StatusSchedule(HistorySize = null)
 
         private readonly StatusSchedule<EVSEStatusTypes> _StatusSchedule;
 
         /// <summary>
         /// The EVSE status schedule.
         /// </summary>
+        /// <param name="HistorySize">The size of the history.</param>
         public IEnumerable<Timestamped<EVSEStatusTypes>> StatusSchedule(UInt64? HistorySize = null)
         {
 
