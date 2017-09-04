@@ -253,8 +253,8 @@ namespace org.GraphDefined.WWCP
         public RoamingNetwork(RoamingNetwork_Id                         Id,
                               I18NString                                Name                                       = null,
                               I18NString                                Description                                = null,
-                              RoamingNetworkAdminStatusTypes             AdminStatus                                = RoamingNetworkAdminStatusTypes.Operational,
-                              RoamingNetworkStatusTypes                  Status                                     = RoamingNetworkStatusTypes.Available,
+                              RoamingNetworkAdminStatusTypes            AdminStatus                                = RoamingNetworkAdminStatusTypes.Operational,
+                              RoamingNetworkStatusTypes                 Status                                     = RoamingNetworkStatusTypes.Available,
                               UInt16                                    MaxAdminStatusListSize                     = DefaultMaxAdminStatusListSize,
                               UInt16                                    MaxStatusListSize                          = DefaultMaxStatusListSize,
                               ChargingStationSignatureDelegate          ChargingStationSignatureGenerator          = null,
@@ -267,8 +267,9 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this._Name                                              = Description ?? new I18NString();
+            this._Name                                              = Name        ?? new I18NString();
             this._Description                                       = Description ?? new I18NString();
+            this._DataLicenses                                      = new ReactiveSet<DataLicense>();
 
             this._ChargingStationOperators                          = new EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator>(this);
             this._ParkingOperators                                  = new EntityHashSet<RoamingNetwork, ParkingOperator_Id,         ParkingOperator>        (this);
