@@ -427,7 +427,7 @@ namespace org.GraphDefined.WWCP
 
                     #endregion
 
-                    _StatusRunId++;
+                    _FlushEVSEDataRunId++;
 
                 }
 
