@@ -121,6 +121,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                          ChargingPool.GeoLocation.        ToJSON("geoLocation"),
                          ChargingPool.Address.            ToJSON("address"),
                          ChargingPool.AuthenticationModes.ToJSON("authenticationModes"),
+                         ChargingPool.HotlinePhoneNumber. ToJSON("hotlinePhoneNumber"),
                          ChargingPool.OpeningTimes.       ToJSON("openingTimes"),
 
 
