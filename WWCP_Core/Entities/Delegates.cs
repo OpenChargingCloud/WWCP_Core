@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using Org.BouncyCastle.Bcpg.OpenPgp;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Hermod.Mail;
 
 #endregion
 
@@ -55,5 +56,13 @@ namespace org.GraphDefined.WWCP
     /// A delegate called whenever a charging station operator should be signed.
     /// </summary>
     public delegate Signature ChargingStationOperatorSignatureDelegate(ChargingStationOperator ChargingStationOperator, PgpSecretKey SecretKey);
+
+
+
+    #region OnEVSEStatusDiffEMailCreator
+
+    public delegate EMail OnEVSEStatusDiffEMailCreatorDelegate(EVSEStatusDiff EVSEStatusDiff);
+
+    #endregion
 
 }
