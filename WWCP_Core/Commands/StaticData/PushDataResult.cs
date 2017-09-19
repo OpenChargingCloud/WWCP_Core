@@ -381,31 +381,36 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
-        public IId Id { get; }
+        public IId                                               Id                 { get; }
 
-        public ISendData ISendData { get; }
+        public ISendData                                         ISendData          { get; }
 
-        public IReceiveData IReceiveData { get; }
-
-        /// <summary>
-        /// The result of the operation.
-        /// </summary>
-        public PushDataResultTypes   Result          { get; }
-
-        /// <summary>
-        /// An optional description of the result code.
-        /// </summary>
-        public String                Description     { get; }
+        public IReceiveData                                      IReceiveData       { get; }
 
         /// <summary>
         /// Warnings or additional information.
         /// </summary>
-        public IEnumerable<Warning>  Warnings        { get; }
+        public IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs      { get; }
+
+        /// <summary>
+        /// The result of the operation.
+        /// </summary>
+        public PushDataResultTypes                               Result             { get; }
+
+        /// <summary>
+        /// An optional description of the result code.
+        /// </summary>
+        public String                                            Description        { get; }
+
+        /// <summary>
+        /// Warnings or additional information.
+        /// </summary>
+        public IEnumerable<Warning>                              Warnings           { get; }
 
         /// <summary>
         /// The runtime of the request.
         /// </summary>
-        public TimeSpan?             Runtime         { get;  }
+        public TimeSpan?                                         Runtime            { get;  }
 
         #endregion
 
@@ -429,21 +434,23 @@ namespace org.GraphDefined.WWCP
                                               TimeSpan?                                         Runtime         = null)
         {
 
-            this.Id           = Id;
+            this.Id             = Id;
 
-            this.ISendData    = ISendData;
+            this.ISendData      = ISendData;
 
-            this.Result       = Result;
+            this.Result         = Result;
 
-            this.Description  = Description.IsNotNullOrEmpty()
-                                    ? Description.Trim()
-                                    : null;
+            this.RejectedEVSEs  = RejectedEVSEs ?? new PushSingleChargingStationDataResult[0];
 
-            this.Warnings     = Warnings != null
-                                    ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
-                                    : new Warning[0];
+            this.Description    = Description.IsNotNullOrEmpty()
+                                      ? Description.Trim()
+                                      : null;
 
-            this.Runtime      = Runtime;
+            this.Warnings       = Warnings != null
+                                      ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                      : new Warning[0];
+
+            this.Runtime        = Runtime;
 
         }
 
@@ -458,7 +465,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional description of the result code.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private PushChargingStationDataResult(IId                                               AuthId,
+        private PushChargingStationDataResult(IId                                               Id,
                                               IReceiveData                                      IReceiveData,
                                               PushDataResultTypes                               Result,
                                               IEnumerable<PushSingleChargingStationDataResult>  RejectedEVSEs   = null,
@@ -467,21 +474,23 @@ namespace org.GraphDefined.WWCP
                                               TimeSpan?                                         Runtime         = null)
         {
 
-            this.Id            = Id;
+            this.Id             = Id;
 
-            this.IReceiveData  = IReceiveData;
+            this.IReceiveData   = IReceiveData;
 
-            this.Result        = Result;
+            this.Result         = Result;
 
-            this.Description   = Description.IsNotNullOrEmpty()
-                                     ? Description.Trim()
-                                     : null;
+            this.RejectedEVSEs  = RejectedEVSEs ?? new PushSingleChargingStationDataResult[0];
 
-            this.Warnings      = Warnings != null
-                                     ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
-                                     : new Warning[0];
+            this.Description    = Description.IsNotNullOrEmpty()
+                                      ? Description.Trim()
+                                      : null;
 
-            this.Runtime       = Runtime;
+            this.Warnings       = Warnings != null
+                                      ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                      : new Warning[0];
+
+            this.Runtime        = Runtime;
 
         }
 
@@ -670,7 +679,7 @@ namespace org.GraphDefined.WWCP
                    ? new PushEVSEDataResult(Id,
                                             ISendData,
                                             Result,
-                                            null, 
+                                            null,
                                             Description,
                                             Warnings,
                                             Runtime)
