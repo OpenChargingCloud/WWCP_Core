@@ -2050,6 +2050,11 @@ namespace org.GraphDefined.WWCP
                                                                I18NString                                                          Name,
                                                                I18NString                                                          Description                   = null,
 
+                                                               Brand                                                               Brand                         = null,
+                                                               Priority?                                                           Priority                      = null,
+                                                               ChargingTariff                                                      Tariff                        = null,
+                                                               IEnumerable<DataLicense>                                            DataLicenses                  = null,
+
                                                                IEnumerable<ChargingStation>                                        Members                       = null,
                                                                IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
                                                                Func<ChargingStation, Boolean>                                      AutoIncludeStations           = null,
@@ -2087,6 +2092,12 @@ namespace org.GraphDefined.WWCP
                                                                      this,
                                                                      Name,
                                                                      Description,
+
+                                                                     Brand,
+                                                                     Priority,
+                                                                     Tariff,
+                                                                     DataLicenses,
+
                                                                      Members,
                                                                      MemberIds,
                                                                      AutoIncludeStations,

@@ -106,8 +106,45 @@ namespace org.GraphDefined.WWCP
         /// Create a new charging tariff having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charging tariff pool.</param>
-        internal ChargingTariff(ChargingTariff_Id        Id,
-                                ChargingStationOperator  Operator)
+        public ChargingTariff(ChargingTariff_Id                   Id,
+                              I18NString                          Name,
+                              I18NString                          Description,
+                              Brand                               Brand,
+                              Uri                                 TariffUrl,
+                              Currency                            Currency,
+                              EnergyMix                           EnergyMix,
+                              IEnumerable<ChargingTariffElement>  TariffElements)
+
+
+                              /// <summary>
+                              /// The offical (multi-language) name of this charging tariff.
+                              /// </summary>
+
+        /// <summary>
+        /// An optional (multi-language) description of this charging tariff.
+        /// </summary>
+
+        /// <summary>
+        /// An optional brand for this charging tariff.
+        /// </summary>
+
+        /// <summary>
+        /// An URI for more information about this tariff.
+        /// </summary>
+
+        /// <summary>
+        /// ISO 4217 code of the currency used for this tariff.
+        /// </summary>
+
+        /// <summary>
+        /// The energy mix.
+        /// </summary>
+
+        /// <summary>
+        /// An enumeration of tariff elements.
+        /// </summary>
+
+        
 
             : base(Id)
 
@@ -115,12 +152,12 @@ namespace org.GraphDefined.WWCP
 
             #region Initial checks
 
-            if (Operator == null)
-                throw new ArgumentNullException(nameof(Operator), "The given charging station operator must not be null!");
+            //if (Operator == null)
+            //    throw new ArgumentNullException(nameof(Operator), "The given charging station operator must not be null!");
 
             #endregion
 
-            this.Operator = Operator;
+            //this.Operator = Operator;
 
         }
 
