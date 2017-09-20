@@ -19,29 +19,29 @@ namespace org.GraphDefined.WWCP
 {
 
     /// <summary>
-    /// The admin status of a charging pool group.
+    /// The admin status of a charging station group.
     /// </summary>
-    public enum ChargingPoolGroupAdminStatusType
+    public enum ChargingStationGroupAdminStatusTypes
     {
 
         /// <summary>
-        /// Unclear or unknown admin status of the charging pool group.
+        /// Unclear or unknown admin status of the charging station group.
         /// </summary>
         Unknown             = 0,
 
         /// <summary>
-        /// The charging pool group is out-of-service.
+        /// The charging station group is out-of-service.
         /// </summary>
         OutOfService        = 1,
 
         /// <summary>
-        /// The charging pool group is available.
+        /// The charging station group is available.
         /// </summary>
         Available           = 2,
 
 
         /// <summary>
-        /// The charging pool group was not found!
+        /// The charging station group was not found!
         /// (Only valid within batch-processing)
         /// </summary>
         UnknownGroup        = 3

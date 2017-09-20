@@ -2011,6 +2011,21 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+
+        #region ChargingStationGroups
+
+        private readonly EntityHashSet<ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup> _ChargingStationGroups;
+
+        /// <summary>
+        /// All charging station groups registered within this charging station operator.
+        /// </summary>
+        public IEnumerable<ChargingStationGroup> ChargingStationGroups
+
+            => _ChargingStationGroups;
+
+        #endregion
+
+
         #region CreateChargingStationGroup     (Id,       Name, Description = null, ..., OnSuccess = null, OnError = null)
 
         /// <summary>
@@ -2039,7 +2054,7 @@ namespace org.GraphDefined.WWCP
                                                                IEnumerable<ChargingStation_Id>                                    MemberIds                     = null,
                                                                Func<ChargingStation, Boolean>                                     AutoIncludeStations           = null,
 
-                                                               Func<ChargingStationStatusReport, ChargingStationGroupStatusType>  StatusAggregationDelegate     = null,
+                                                               Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
                                                                UInt16                                                             MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
                                                                UInt16                                                             MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -2141,7 +2156,7 @@ namespace org.GraphDefined.WWCP
                                                                IEnumerable<ChargingStation_Id>                                    MemberIds                     = null,
                                                                Func<ChargingStation, Boolean>                                     AutoIncludeStations           = null,
 
-                                                               Func<ChargingStationStatusReport, ChargingStationGroupStatusType>  StatusAggregationDelegate     = null,
+                                                               Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
                                                                UInt16                                                             MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
                                                                UInt16                                                             MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -2201,7 +2216,7 @@ namespace org.GraphDefined.WWCP
                                                                     IEnumerable<ChargingStation_Id>                                    MemberIds                     = null,
                                                                     Func<ChargingStation, Boolean>                                     AutoIncludeStations           = null,
 
-                                                                    Func<ChargingStationStatusReport, ChargingStationGroupStatusType>  StatusAggregationDelegate     = null,
+                                                                    Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
                                                                     UInt16                                                             MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
                                                                     UInt16                                                             MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -2269,7 +2284,7 @@ namespace org.GraphDefined.WWCP
                                                                     IEnumerable<ChargingStation_Id>                                    MemberIds                     = null,
                                                                     Func<ChargingStation, Boolean>                                     AutoIncludeStations           = null,
 
-                                                                    Func<ChargingStationStatusReport, ChargingStationGroupStatusType>  StatusAggregationDelegate     = null,
+                                                                    Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
                                                                     UInt16                                                             MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
                                                                     UInt16                                                             MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
@@ -2302,19 +2317,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-
-        #region ChargingStationGroups
-
-        private readonly EntityHashSet<ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup> _ChargingStationGroups;
-
-        /// <summary>
-        /// All charging station groups registered within this charging station operator.
-        /// </summary>
-        public IEnumerable<ChargingStationGroup> ChargingStationGroups
-
-            => _ChargingStationGroups;
-
-        #endregion
 
         #region TryGetChargingStationGroup(Id, out ChargingStationGroup)
 
@@ -3070,6 +3072,443 @@ namespace org.GraphDefined.WWCP
         public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
 
             => EVSERemoval;
+
+        #endregion
+
+        #endregion
+
+        #region EVSE groups
+
+        #region EVSEGroupAddition
+
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, EVSEGroup, Boolean> EVSEGroupAddition;
+
+        /// <summary>
+        /// Called whenever a EVSE group will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStationOperator, EVSEGroup, Boolean> OnEVSEGroupAddition
+
+            => EVSEGroupAddition;
+
+        #endregion
+
+
+        #region EVSEGroups
+
+        private readonly EntityHashSet<ChargingStationOperator, EVSEGroup_Id, EVSEGroup> _EVSEGroups;
+
+        /// <summary>
+        /// All EVSE groups registered within this charging station operator.
+        /// </summary>
+        public IEnumerable<EVSEGroup> EVSEGroups
+
+            => _EVSEGroups;
+
+        #endregion
+
+
+        #region CreateEVSEGroup     (Id,       Name, Description = null, ..., OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create and register a new charging group having the given
+        /// unique charging group identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charing station group.</param>
+        /// <param name="Name">The offical (multi-language) name of this EVSE group.</param>
+        /// <param name="Description">An optional (multi-language) description of this EVSE group.</param>
+        /// 
+        /// <param name="Members">An enumeration of EVSEs member building this EVSE group.</param>
+        /// <param name="MemberIds">An enumeration of EVSE identifications which are building this EVSE group.</param>
+        /// <param name="AutoIncludeStations">A delegate deciding whether to include new EVSEs automatically into this group.</param>
+        /// 
+        /// <param name="StatusAggregationDelegate">A delegate called to aggregate the dynamic status of all subordinated EVSEs.</param>
+        /// <param name="MaxGroupStatusListSize">The default size of the EVSE group status list.</param>
+        /// <param name="MaxGroupAdminStatusListSize">The default size of the EVSE group admin status list.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to configure the new charging group after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging group failed.</param>
+        public EVSEGroup CreateEVSEGroup(EVSEGroup_Id                                   Id,
+                                         I18NString                                     Name,
+                                         I18NString                                     Description                   = null,
+
+                                         IEnumerable<EVSE>                              Members                       = null,
+                                         IEnumerable<EVSE_Id>                           MemberIds                     = null,
+                                         Func<EVSE, Boolean>                            AutoIncludeStations           = null,
+
+                                         Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
+                                         UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
+                                         UInt16                                         MaxGroupAdminStatusListSize   = EVSEGroup.DefaultMaxGroupAdminStatusListSize,
+
+                                         Action<EVSEGroup>                              OnSuccess                     = null,
+                                         Action<ChargingStationOperator, EVSEGroup_Id>  OnError                       = null)
+
+        {
+
+            lock (_EVSEGroups)
+            {
+
+                #region Initial checks
+
+                if (_EVSEGroups.ContainsId(Id))
+                {
+
+                    if (OnError != null)
+                        OnError?.Invoke(this, Id);
+
+                    throw new EVSEGroupAlreadyExists(this, Id);
+
+                }
+
+                if (Name.IsNullOrEmpty())
+                    throw new ArgumentNullException(nameof(Name), "The name of the EVSE group must not be null or empty!");
+
+                #endregion
+
+                var _EVSEGroup = new EVSEGroup(Id,
+                                               this,
+                                               Name,
+                                               Description,
+                                               Members,
+                                               MemberIds,
+                                               AutoIncludeStations,
+                                               StatusAggregationDelegate,
+                                               MaxGroupAdminStatusListSize,
+                                               MaxGroupStatusListSize);
+
+
+                if (EVSEGroupAddition.SendVoting(DateTime.UtcNow, this, _EVSEGroup) &&
+                    _EVSEGroups.TryAdd(_EVSEGroup))
+                {
+
+                    _EVSEGroup.OnEVSEDataChanged                             += UpdateEVSEData;
+                    _EVSEGroup.OnEVSEStatusChanged                           += UpdateEVSEStatus;
+                    _EVSEGroup.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
+
+                    _EVSEGroup.OnEVSEDataChanged                  += UpdateEVSEData;
+                    _EVSEGroup.OnEVSEStatusChanged                += UpdateEVSEStatus;
+                    _EVSEGroup.OnEVSEAdminStatusChanged           += UpdateEVSEAdminStatus;
+
+                    //_EVSEGroup.OnDataChanged                                 += UpdateEVSEGroupData;
+                    //_EVSEGroup.OnAdminStatusChanged                          += UpdateEVSEGroupAdminStatus;
+
+                    OnSuccess?.Invoke(_EVSEGroup);
+
+                    EVSEGroupAddition.SendNotification(DateTime.UtcNow,
+                                                                  this,
+                                                                  _EVSEGroup);
+
+                    return _EVSEGroup;
+
+                }
+
+                return null;
+
+            }
+
+        }
+
+        #endregion
+
+        #region CreateEVSEGroup     (IdSuffix, Name, Description = null, ..., OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create and register a new charging group having the given
+        /// unique charging group identification.
+        /// </summary>
+        /// <param name="IdSuffix">The suffix of the unique identification of the new charging group.</param>
+        /// <param name="Name">The offical (multi-language) name of this EVSE group.</param>
+        /// <param name="Description">An optional (multi-language) description of this EVSE group.</param>
+        /// 
+        /// <param name="Members">An enumeration of EVSEs member building this EVSE group.</param>
+        /// <param name="MemberIds">An enumeration of EVSE identifications which are building this EVSE group.</param>
+        /// <param name="AutoIncludeStations">A delegate deciding whether to include new EVSEs automatically into this group.</param>
+        /// 
+        /// <param name="StatusAggregationDelegate">A delegate called to aggregate the dynamic status of all subordinated EVSEs.</param>
+        /// <param name="MaxGroupStatusListSize">The default size of the EVSE group status list.</param>
+        /// <param name="MaxGroupAdminStatusListSize">The default size of the EVSE group admin status list.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to configure the new charging group after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging group failed.</param>
+        public EVSEGroup CreateEVSEGroup(String                                         IdSuffix,
+                                         I18NString                                     Name,
+                                         I18NString                                     Description                   = null,
+
+                                         IEnumerable<EVSE>                              Members                       = null,
+                                         IEnumerable<EVSE_Id>                           MemberIds                     = null,
+                                         Func<EVSE, Boolean>                            AutoIncludeStations           = null,
+
+                                         Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
+                                         UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
+                                         UInt16                                         MaxGroupAdminStatusListSize   = EVSEGroup.DefaultMaxGroupAdminStatusListSize,
+
+                                         Action<EVSEGroup>                              OnSuccess                     = null,
+                                         Action<ChargingStationOperator, EVSEGroup_Id>  OnError                       = null)
+
+        {
+
+            #region Initial checks
+
+            if (IdSuffix.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(IdSuffix), "The given suffix of the unique identification of the new charging group must not be null or empty!");
+
+            #endregion
+
+            return CreateEVSEGroup(EVSEGroup_Id.Parse(Id, IdSuffix.Trim().ToUpper()),
+                                              Name,
+                                              Description,
+                                              Members,
+                                              MemberIds,
+                                              AutoIncludeStations,
+                                              StatusAggregationDelegate,
+                                              MaxGroupAdminStatusListSize,
+                                              MaxGroupStatusListSize,
+                                              OnSuccess,
+                                              OnError);
+
+        }
+
+        #endregion
+
+        #region GetOrCreateEVSEGroup(Id,       Name, Description = null, ..., OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Get or create and register a new charging group having the given
+        /// unique charging group identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charing station group.</param>
+        /// <param name="Name">The offical (multi-language) name of this EVSE group.</param>
+        /// <param name="Description">An optional (multi-language) description of this EVSE group.</param>
+        /// 
+        /// <param name="Members">An enumeration of EVSEs member building this EVSE group.</param>
+        /// <param name="MemberIds">An enumeration of EVSE identifications which are building this EVSE group.</param>
+        /// <param name="AutoIncludeStations">A delegate deciding whether to include new EVSEs automatically into this group.</param>
+        /// 
+        /// <param name="StatusAggregationDelegate">A delegate called to aggregate the dynamic status of all subordinated EVSEs.</param>
+        /// <param name="MaxGroupStatusListSize">The default size of the EVSE group status list.</param>
+        /// <param name="MaxGroupAdminStatusListSize">The default size of the EVSE group admin status list.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to configure the new charging group after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging group failed.</param>
+        public EVSEGroup GetOrCreateEVSEGroup(EVSEGroup_Id                                   Id,
+                                              I18NString                                     Name,
+                                              I18NString                                     Description                   = null,
+
+                                              IEnumerable<EVSE>                              Members                       = null,
+                                              IEnumerable<EVSE_Id>                           MemberIds                     = null,
+                                              Func<EVSE, Boolean>                            AutoIncludeStations           = null,
+
+                                              Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
+                                              UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
+                                              UInt16                                         MaxGroupAdminStatusListSize   = EVSEGroup.DefaultMaxGroupAdminStatusListSize,
+
+                                              Action<EVSEGroup>                              OnSuccess                     = null,
+                                              Action<ChargingStationOperator, EVSEGroup_Id>  OnError                       = null)
+
+        {
+
+            lock (_EVSEGroups)
+            {
+
+                #region Initial checks
+
+                if (Name.IsNullOrEmpty())
+                    throw new ArgumentNullException(nameof(Name), "The name of the EVSE group must not be null or empty!");
+
+                #endregion
+
+                if (_EVSEGroups.TryGet(Id, out EVSEGroup _EVSEGroup))
+                    return _EVSEGroup;
+
+                return CreateEVSEGroup(Id,
+                                       Name,
+                                       Description,
+                                       Members,
+                                       MemberIds,
+                                       AutoIncludeStations,
+                                       StatusAggregationDelegate,
+                                       MaxGroupAdminStatusListSize,
+                                       MaxGroupStatusListSize,
+                                       OnSuccess,
+                                       OnError);
+
+            }
+
+        }
+
+        #endregion
+
+        #region GetOrCreateEVSEGroup(IdSuffix, Name, Description = null, ..., OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Get or create and register a new charging group having the given
+        /// unique charging group identification.
+        /// </summary>
+        /// <param name="IdSuffix">The suffix of the unique identification of the new charging group.</param>
+        /// <param name="Name">The offical (multi-language) name of this EVSE group.</param>
+        /// <param name="Description">An optional (multi-language) description of this EVSE group.</param>
+        /// 
+        /// <param name="Members">An enumeration of EVSEs member building this EVSE group.</param>
+        /// <param name="MemberIds">An enumeration of EVSE identifications which are building this EVSE group.</param>
+        /// <param name="AutoIncludeStations">A delegate deciding whether to include new EVSEs automatically into this group.</param>
+        /// 
+        /// <param name="StatusAggregationDelegate">A delegate called to aggregate the dynamic status of all subordinated EVSEs.</param>
+        /// <param name="MaxGroupStatusListSize">The default size of the EVSE group status list.</param>
+        /// <param name="MaxGroupAdminStatusListSize">The default size of the EVSE group admin status list.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to configure the new charging group after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging group failed.</param>
+        public EVSEGroup GetOrCreateEVSEGroup(String                                         IdSuffix,
+                                              I18NString                                     Name,
+                                              I18NString                                     Description                   = null,
+
+                                              IEnumerable<EVSE>                              Members                       = null,
+                                              IEnumerable<EVSE_Id>                           MemberIds                     = null,
+                                              Func<EVSE, Boolean>                            AutoIncludeStations           = null,
+
+                                              Func<EVSEStatusReport, EVSEGroupStatusTypes>   StatusAggregationDelegate     = null,
+                                              UInt16                                         MaxGroupStatusListSize        = EVSEGroup.DefaultMaxGroupStatusListSize,
+                                              UInt16                                         MaxGroupAdminStatusListSize   = EVSEGroup.DefaultMaxGroupAdminStatusListSize,
+
+                                              Action<EVSEGroup>                              OnSuccess                     = null,
+                                              Action<ChargingStationOperator, EVSEGroup_Id>  OnError                       = null)
+
+
+        {
+
+            #region Initial checks
+
+            if (IdSuffix.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(IdSuffix), "The given suffix of the unique identification of the new charging group must not be null or empty!");
+
+            #endregion
+
+            return GetOrCreateEVSEGroup(EVSEGroup_Id.Parse(Id, IdSuffix.Trim().ToUpper()),
+                                        Name,
+                                        Description,
+                                        Members,
+                                        MemberIds,
+                                        AutoIncludeStations,
+                                        StatusAggregationDelegate,
+                                        MaxGroupAdminStatusListSize,
+                                        MaxGroupStatusListSize,
+                                        OnSuccess,
+                                        OnError);
+
+        }
+
+        #endregion
+
+
+        #region TryGetEVSEGroup(Id, out EVSEGroup)
+
+        /// <summary>
+        /// Try to return to EVSE group for the given EVSE group identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charing station group.</param>
+        /// <param name="EVSEGroup">The charing station group.</param>
+        public Boolean TryGetEVSEGroup(EVSEGroup_Id   Id,
+                                                  out EVSEGroup  EVSEGroup)
+
+            => _EVSEGroups.TryGet(Id, out EVSEGroup);
+
+        #endregion
+
+
+        #region EVSEGroupRemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, EVSEGroup, Boolean> EVSEGroupRemoval;
+
+        /// <summary>
+        /// Called whenever a EVSE group will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStationOperator, EVSEGroup, Boolean> OnEVSEGroupRemoval
+
+            => EVSEGroupRemoval;
+
+        #endregion
+
+        #region RemoveEVSEGroup(EVSEGroupId, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// All EVSE groups registered within this charging station operator.
+        /// </summary>
+        /// <param name="EVSEGroupId">The unique identification of the EVSE group to be removed.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new EVSE group after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the EVSE group failed.</param>
+        public EVSEGroup RemoveEVSEGroup(EVSEGroup_Id                                   EVSEGroupId,
+                                                               Action<ChargingStationOperator, EVSEGroup>     OnSuccess   = null,
+                                                               Action<ChargingStationOperator, EVSEGroup_Id>  OnError     = null)
+        {
+
+            lock (_EVSEGroups)
+            {
+
+                if (_EVSEGroups.TryGet(EVSEGroupId, out EVSEGroup EVSEGroup) &&
+                    EVSEGroupRemoval.SendVoting(DateTime.UtcNow,
+                                                           this,
+                                                           EVSEGroup) &&
+                    _EVSEGroups.TryRemove(EVSEGroupId, out EVSEGroup _EVSEGroup))
+                {
+
+                    OnSuccess?.Invoke(this, EVSEGroup);
+
+                    EVSEGroupRemoval.SendNotification(DateTime.UtcNow,
+                                                                 this,
+                                                                 _EVSEGroup);
+
+                    return _EVSEGroup;
+
+                }
+
+                OnError?.Invoke(this, EVSEGroupId);
+
+                return null;
+
+            }
+
+        }
+
+        #endregion
+
+        #region RemoveEVSEGroup(EVSEGroup,   OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// All EVSE groups registered within this charging station operator.
+        /// </summary>
+        /// <param name="EVSEGroup">The EVSE group to remove.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new EVSE group after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the EVSE group failed.</param>
+        public EVSEGroup RemoveEVSEGroup(EVSEGroup                                   EVSEGroup,
+                                                               Action<ChargingStationOperator, EVSEGroup>  OnSuccess   = null,
+                                                               Action<ChargingStationOperator, EVSEGroup>  OnError     = null)
+        {
+
+            lock (_EVSEGroups)
+            {
+
+                if (EVSEGroupRemoval.SendVoting(DateTime.UtcNow,
+                                                           this,
+                                                           EVSEGroup) &&
+                    _EVSEGroups.TryRemove(EVSEGroup.Id, out EVSEGroup _EVSEGroup))
+                {
+
+                    OnSuccess?.Invoke(this, _EVSEGroup);
+
+                    EVSEGroupRemoval.SendNotification(DateTime.UtcNow,
+                                                                 this,
+                                                                 _EVSEGroup);
+
+                    return _EVSEGroup;
+
+                }
+
+                OnError?.Invoke(this, EVSEGroup);
+
+                return EVSEGroup;
+
+            }
+
+        }
 
         #endregion
 

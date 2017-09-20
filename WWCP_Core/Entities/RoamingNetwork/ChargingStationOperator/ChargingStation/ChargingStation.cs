@@ -1387,29 +1387,6 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Events
-
-        #region OnData/(Admin)StatusChanged
-
-        /// <summary>
-        /// An event fired whenever the static data changed.
-        /// </summary>
-        public event OnChargingStationDataChangedDelegate         OnDataChanged;
-
-        /// <summary>
-        /// An event fired whenever the dynamic status changed.
-        /// </summary>
-        public event OnChargingStationStatusChangedDelegate       OnStatusChanged;
-
-        /// <summary>
-        /// An event fired whenever the admin status changed.
-        /// </summary>
-        public event OnChargingStationAdminStatusChangedDelegate  OnAdminStatusChanged;
-
-        #endregion
-
-        #endregion
-
         #region Links
 
         /// <summary>
@@ -1438,6 +1415,29 @@ namespace org.GraphDefined.WWCP
         [InternalUseOnly]
         public RoamingNetwork RoamingNetwork
             => Operator?.RoamingNetwork;
+
+        #endregion
+
+        #region Events
+
+        #region OnData/(Admin)StatusChanged
+
+        /// <summary>
+        /// An event fired whenever the static data changed.
+        /// </summary>
+        public event OnChargingStationDataChangedDelegate         OnDataChanged;
+
+        /// <summary>
+        /// An event fired whenever the dynamic status changed.
+        /// </summary>
+        public event OnChargingStationStatusChangedDelegate       OnStatusChanged;
+
+        /// <summary>
+        /// An event fired whenever the admin status changed.
+        /// </summary>
+        public event OnChargingStationAdminStatusChangedDelegate  OnAdminStatusChanged;
+
+        #endregion
 
         #endregion
 
