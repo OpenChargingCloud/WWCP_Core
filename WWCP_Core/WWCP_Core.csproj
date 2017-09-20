@@ -87,6 +87,10 @@
     <Compile Include="CommonTypes\TransmissionTypes.cs" />
     <Compile Include="Entities\ABaseEMobilityEntity.cs" />
     <Compile Include="Entities\ACryptoEMobilityEntity.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingDimensionTypes.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingTariffElement.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingPriceComponent.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingTariffRestrictions.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSEGroup\EVSEGroupExceptions.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSEGroup\EVSEGroupStatusTypes.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSEGroup\EVSEGroup.cs" />

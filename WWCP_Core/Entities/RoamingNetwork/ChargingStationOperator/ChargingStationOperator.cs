@@ -2046,20 +2046,20 @@ namespace org.GraphDefined.WWCP
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new charging group after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging group failed.</param>
-        public ChargingStationGroup CreateChargingStationGroup(ChargingStationGroup_Id                                            Id,
-                                                               I18NString                                                         Name,
-                                                               I18NString                                                         Description                   = null,
+        public ChargingStationGroup CreateChargingStationGroup(ChargingStationGroup_Id                                             Id,
+                                                               I18NString                                                          Name,
+                                                               I18NString                                                          Description                   = null,
 
-                                                               IEnumerable<ChargingStation>                                       Members                       = null,
-                                                               IEnumerable<ChargingStation_Id>                                    MemberIds                     = null,
-                                                               Func<ChargingStation, Boolean>                                     AutoIncludeStations           = null,
+                                                               IEnumerable<ChargingStation>                                        Members                       = null,
+                                                               IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
+                                                               Func<ChargingStation, Boolean>                                      AutoIncludeStations           = null,
 
                                                                Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
-                                                               UInt16                                                             MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
-                                                               UInt16                                                             MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
+                                                               UInt16                                                              MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
+                                                               UInt16                                                              MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
-                                                               Action<ChargingStationGroup>                                       OnSuccess                     = null,
-                                                               Action<ChargingStationOperator, ChargingStationGroup_Id>           OnError                       = null)
+                                                               Action<ChargingStationGroup>                                        OnSuccess                     = null,
+                                                               Action<ChargingStationOperator, ChargingStationGroup_Id>            OnError                       = null)
 
         {
 

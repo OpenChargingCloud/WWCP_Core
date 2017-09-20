@@ -121,15 +121,21 @@ namespace org.GraphDefined.WWCP
         public I18NString               Description    { get; }
 
         /// <summary>
-        /// The priority of this group relative to all other groups.
-        /// </summary>
-        public Priority                 Priority       { get; }
-
-        /// <summary>
-        /// A (multi-language) brand name for this charging station group.
+        /// An optional (multi-language) brand name for this charging station group.
         /// </summary>
         [Optional]
         public Brand                    Brand          { get; }
+
+        /// <summary>
+        /// The priority of this group relative to all other groups.
+        /// </summary>
+        public Priority?                Priority       { get; }
+
+        /// <summary>
+        /// An optional charging tariff.
+        /// </summary>
+        [Optional]
+        public ChargingTariff           Tariff         { get; }
 
         #region DataLicense
 
@@ -182,6 +188,7 @@ namespace org.GraphDefined.WWCP
 
 
 
+
         private List<ChargingStation_Id> _AllowedMemberIds;
 
         public IEnumerable<ChargingStation_Id> AllowedMemberIds
@@ -190,6 +197,7 @@ namespace org.GraphDefined.WWCP
         public Func<ChargingStation, Boolean> AutoIncludeStations { get; }
 
 
+        public ChargingStationGroup     ParentGroup    { get; }
 
         #region ChargingStations
 
@@ -206,21 +214,21 @@ namespace org.GraphDefined.WWCP
         /// Return all charging station identifications registered within this charing station group.
         /// </summary>
         public IEnumerable<ChargingStation_Id> ChargingStationIds
-            => ChargingStations.Select(station => station.Id);
+            => ChargingStations.SafeSelect(station => station.Id);
 
         /// <summary>
         /// Return all EVSEs registered within this charing station group.
         /// </summary>
         public IEnumerable<EVSE> EVSEs
-            => ChargingStations.SelectMany(station => station.EVSEs);
+            => ChargingStations.SafeSelectMany(station => station.EVSEs);
 
         /// <summary>
         /// Return all EVSE identifications registered within this charing station group.
         /// </summary>
         public IEnumerable<EVSE_Id> EVSEIds
             => ChargingStations.
-                   SelectMany(station => station.EVSEs).
-                   Select    (evse    => evse.Id);
+                   SafeSelectMany(station => station.EVSEs).
+                   SafeSelect    (evse    => evse.Id);
 
         #endregion
 
@@ -446,18 +454,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="StatusAggregationDelegate">A delegate called to aggregate the dynamic status of all subordinated charging stations.</param>
         /// <param name="MaxGroupStatusListSize">The default size of the charging station group status list.</param>
         /// <param name="MaxGroupAdminStatusListSize">The default size of the charging station group admin status list.</param>
-        internal ChargingStationGroup(ChargingStationGroup_Id                                            Id,
-                                      ChargingStationOperator                                            Operator,
-                                      I18NString                                                         Name,
-                                      I18NString                                                         Description                  = null,
+        internal ChargingStationGroup(ChargingStationGroup_Id                                             Id,
+                                      ChargingStationOperator                                             Operator,
+                                      I18NString                                                          Name,
+                                      I18NString                                                          Description                   = null,
 
-                                      IEnumerable<ChargingStation>                                       Members                      = null,
-                                      IEnumerable<ChargingStation_Id>                                    MemberIds                    = null,
-                                      Func<ChargingStation, Boolean>                                     AutoIncludeStations          = null,
+                                      Brand                                                               Brand                         = null,
+                                      Priority?                                                           Priority                      = null,
+                                      ChargingTariff                                                      Tariff                        = null,
+                                      IEnumerable<DataLicense>                                            DataLicenses                  = null,
 
-                                      Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate    = null,
-                                      UInt16                                                             MaxGroupStatusListSize       = DefaultMaxGroupStatusListSize,
-                                      UInt16                                                             MaxGroupAdminStatusListSize  = DefaultMaxGroupAdminStatusListSize)
+                                      IEnumerable<ChargingStation>                                        Members                       = null,
+                                      IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
+                                      Func<ChargingStation, Boolean>                                      AutoIncludeStations           = null,
+
+                                      Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
+                                      UInt16                                                              MaxGroupStatusListSize        = DefaultMaxGroupStatusListSize,
+                                      UInt16                                                              MaxGroupAdminStatusListSize   = DefaultMaxGroupAdminStatusListSize)
 
             : base(Id)
 
@@ -478,6 +491,11 @@ namespace org.GraphDefined.WWCP
             this.Operator                    = Operator;
             this.Name                        = Name;
             this.Description                 = Description ?? new I18NString();
+
+            this.Brand                       = Brand;
+            this.Priority                    = Priority;
+            this.Tariff                      = Tariff;
+            this.DataLicenses                = DataLicenses?.Any() == true ? new ReactiveSet<DataLicense>(DataLicenses) : new ReactiveSet<DataLicense>();
 
             this._AllowedMemberIds           = MemberIds != null ? new List<ChargingStation_Id>(MemberIds) : new List<ChargingStation_Id>();
             this.AutoIncludeStations         = AutoIncludeStations ?? (station => true);

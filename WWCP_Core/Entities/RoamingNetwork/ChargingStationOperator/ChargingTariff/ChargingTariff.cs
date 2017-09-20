@@ -49,19 +49,44 @@ namespace org.GraphDefined.WWCP
         /// The offical (multi-language) name of this charging tariff.
         /// </summary>
         [Mandatory]
-        public I18NString  Name          { get; }
+        public I18NString  Name           { get; }
 
         /// <summary>
         /// An optional (multi-language) description of this charging tariff.
         /// </summary>
         [Optional]
-        public I18NString  Description   { get; }
+        public I18NString  Description    { get; }
 
         /// <summary>
         /// An optional brand for this charging tariff.
         /// </summary>
         [Optional]
-        public Brand       Brand         { get; }
+        public Brand       Brand          { get; }
+
+        /// <summary>
+        /// An URI for more information about this tariff.
+        /// </summary>
+        [Optional]
+        public Uri         TariffUrl      { get; }
+
+        /// <summary>
+        /// ISO 4217 code of the currency used for this tariff.
+        /// </summary>
+        [Mandatory]
+        public Currency    Currency       { get; }
+
+        /// <summary>
+        /// The energy mix.
+        /// </summary>
+        [Optional]
+        public EnergyMix   EnergyMix      { get;  }
+
+                /// <summary>
+        /// An enumeration of tariff elements.
+        /// </summary>
+        [Mandatory]
+        public IEnumerable<ChargingTariffElement>  TariffElements    { get; }
+
 
         #endregion
 
