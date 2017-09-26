@@ -88,6 +88,7 @@
     <Compile Include="Entities\ABaseEMobilityEntity.cs" />
     <Compile Include="Entities\ACryptoEMobilityEntity.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingDimensionTypes.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingTariffExceptions.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingTariffElement.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingPriceComponent.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingTariffRestrictions.cs" />
@@ -371,6 +372,7 @@
     <Compile Include="JSON_IO\ChargingPools.cs" />
     <Compile Include="JSON_IO\ChargingReservations.cs" />
     <Compile Include="JSON_IO\ChargingSessions.cs" />
+    <Compile Include="JSON_IO\ChargingTariffs.cs" />
     <Compile Include="JSON_IO\EVSEGroups.cs" />
     <Compile Include="JSON_IO\ChargingStationOperators.cs" />
     <Compile Include="JSON_IO\ChargingStationGroups.cs" />

@@ -106,34 +106,42 @@ namespace org.GraphDefined.WWCP
         #region Properties
 
         /// <summary>
-        /// The offical (multi-language) name of this EVSE group.
+        /// The offical (multi-language) name of this group.
         /// </summary>
         [Mandatory]
         public I18NString               Name           { get; }
 
         /// <summary>
-        /// An optional (multi-language) description of this EVSE group.
+        /// An optional (multi-language) description of this group.
         /// </summary>
         [Optional]
         public I18NString               Description    { get; }
 
-        /// <summary>
-        /// The priority of this group relative to all other groups.
-        /// </summary>
-        public Priority                 Priority       { get; }
+
 
         /// <summary>
-        /// A (multi-language) brand name for this EVSE group.
+        /// An optional (multi-language) brand name for this group.
         /// </summary>
         [Optional]
         public Brand                    Brand          { get; }
+
+        /// <summary>
+        /// The priority of this group relative to all other groups.
+        /// </summary>
+        public Priority?                Priority       { get; }
+
+        /// <summary>
+        /// An optional charging tariff.
+        /// </summary>
+        [Optional]
+        public ChargingTariff           Tariff         { get; }
 
         #region DataLicense
 
         private ReactiveSet<DataLicense> _DataLicenses;
 
         /// <summary>
-        /// The license of the EVSE group data.
+        /// The license of the group data.
         /// </summary>
         [Mandatory]
         public ReactiveSet<DataLicense> DataLicenses
@@ -178,8 +186,7 @@ namespace org.GraphDefined.WWCP
 
 
 
-
-        private List<EVSE_Id> _AllowedMemberIds;
+        private HashSet<EVSE_Id> _AllowedMemberIds;
 
         public IEnumerable<EVSE_Id> AllowedMemberIds
             => _AllowedMemberIds;
@@ -378,6 +385,11 @@ namespace org.GraphDefined.WWCP
                            I18NString                                    Name,
                            I18NString                                    Description                  = null,
 
+                           Brand                                         Brand                        = null,
+                           Priority?                                     Priority                     = null,
+                           ChargingTariff                                Tariff                       = null,
+                           IEnumerable<DataLicense>                      DataLicenses                 = null,
+
                            IEnumerable<EVSE>                             Members                      = null,
                            IEnumerable<EVSE_Id>                          MemberIds                    = null,
                            Func<EVSE, Boolean>                           AutoIncludeStations          = null,
@@ -406,8 +418,13 @@ namespace org.GraphDefined.WWCP
             this.Name                        = Name;
             this.Description                 = Description ?? new I18NString();
 
-            this._AllowedMemberIds           = MemberIds != null ? new List<EVSE_Id>(MemberIds) : new List<EVSE_Id>();
-            this.AutoIncludeStations         = AutoIncludeStations ?? (station => true);
+            this.Brand                       = Brand;
+            this.Priority                    = Priority;
+            this.Tariff                      = Tariff;
+            this.DataLicenses                = DataLicenses?.Any() == true ? new ReactiveSet<DataLicense>(DataLicenses) : new ReactiveSet<DataLicense>();
+
+            this._AllowedMemberIds           = MemberIds != null ? new HashSet<EVSE_Id>(MemberIds) : new HashSet<EVSE_Id>();
+            this.AutoIncludeStations         = AutoIncludeStations ?? (MemberIds == null ? (Func<EVSE, Boolean>) (evse => true) : evse => false);
             this._EVSEs                      = new ConcurrentDictionary<EVSE_Id, EVSE>();
 
             this.StatusAggregationDelegate   = StatusAggregationDelegate;
@@ -452,7 +469,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (Members != null && Members.Any())
+            if (Members?.Any() == true)
                 Members.ForEach(evse => Add(evse));
 
         }

@@ -44,7 +44,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The regular expression for parsing a charging pool group identification.
         /// </summary>
-        public  static readonly Regex  ChargingPoolGroupId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?GP([A-Z0-9][A-Z0-9\*]{0,30})$",
+        public  static readonly Regex  ChargingPoolGroupId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?GP([a-zA-Z0-9_][a-zA-Z0-9_\*\-\.€\$]{0,50})$",
                                                                                  RegexOptions.IgnorePatternWhitespace);
 
         #endregion

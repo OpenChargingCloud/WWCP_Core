@@ -44,7 +44,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The regular expression for parsing an EVSE group identification.
         /// </summary>
-        public  static readonly Regex  EVSEGroupId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?GE([A-Z0-9][A-Z0-9\*]{0,30})$",
+        public  static readonly Regex  EVSEGroupId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?GE([a-zA-Z0-9_][a-zA-Z0-9_\*\-\.€\$]{0,50})$",
                                                                       RegexOptions.IgnorePatternWhitespace);
 
         #endregion
@@ -134,9 +134,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentException("Illegal text representation of an EVSE group identification: '" + Text + "'!",
                                             nameof(Text));
 
-            ChargingStationOperator_Id _OperatorId;
-
-            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out _OperatorId))
+            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out ChargingStationOperator_Id _OperatorId))
                 return new EVSEGroup_Id(_OperatorId,
                                         MatchCollection[0].Groups[2].Value);
 

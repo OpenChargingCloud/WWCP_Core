@@ -109,19 +109,20 @@ namespace org.GraphDefined.WWCP
         #region Properties
 
         /// <summary>
-        /// The offical (multi-language) name of this charging station group.
+        /// The offical (multi-language) name of this group.
         /// </summary>
         [Mandatory]
         public I18NString               Name           { get; }
 
         /// <summary>
-        /// An optional (multi-language) description of this charging station group.
+        /// An optional (multi-language) description of this group.
         /// </summary>
         [Optional]
         public I18NString               Description    { get; }
 
+
         /// <summary>
-        /// An optional (multi-language) brand name for this charging station group.
+        /// An optional (multi-language) brand name for this group.
         /// </summary>
         [Optional]
         public Brand                    Brand          { get; }
@@ -142,7 +143,7 @@ namespace org.GraphDefined.WWCP
         private ReactiveSet<DataLicense> _DataLicenses;
 
         /// <summary>
-        /// The license of the charging station group data.
+        /// The license of the group data.
         /// </summary>
         [Mandatory]
         public ReactiveSet<DataLicense> DataLicenses
@@ -186,10 +187,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-
-
-
-        private List<ChargingStation_Id> _AllowedMemberIds;
+        private HashSet<ChargingStation_Id> _AllowedMemberIds;
 
         public IEnumerable<ChargingStation_Id> AllowedMemberIds
             => _AllowedMemberIds;
@@ -497,8 +495,8 @@ namespace org.GraphDefined.WWCP
             this.Tariff                      = Tariff;
             this.DataLicenses                = DataLicenses?.Any() == true ? new ReactiveSet<DataLicense>(DataLicenses) : new ReactiveSet<DataLicense>();
 
-            this._AllowedMemberIds           = MemberIds != null ? new List<ChargingStation_Id>(MemberIds) : new List<ChargingStation_Id>();
-            this.AutoIncludeStations         = AutoIncludeStations ?? (station => true);
+            this._AllowedMemberIds           = MemberIds != null ? new HashSet<ChargingStation_Id>(MemberIds) : new HashSet<ChargingStation_Id>();
+            this.AutoIncludeStations         = AutoIncludeStations ?? (MemberIds == null ? (Func<ChargingStation, Boolean>) (station => true) : station => false);
             this._ChargingStations           = new ConcurrentDictionary<ChargingStation_Id, ChargingStation>();
 
             this.StatusAggregationDelegate   = StatusAggregationDelegate;
@@ -547,7 +545,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (Members != null && Members.Any())
+            if (Members?.Any() == true)
                 Members.ForEach(station => Add(station));
 
         }

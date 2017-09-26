@@ -195,34 +195,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region ToJSON()
-
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
-        public JObject ToJSON()
-        {
-
-            return JSONObject.Create(//new JProperty("type",       _Type.    ToString()),
-                                     //new JProperty("type", _Type.ToString()),
-                                     //new JProperty("price",      _Price.   ToString()),
-
-                                     Time. HasValue && Time. Value.StartTime.HasValue ? new JProperty("start_time",   Time.Value.StartTime.Value.ToString())       : null,
-                                     Time. HasValue && Time. Value.EndTime.  HasValue ? new JProperty("end_time",     Time.Value.EndTime.  Value.ToString())       : null,
-
-                                     kWh.  HasValue && kWh.  Value.Min.      HasValue  ? new JProperty("min_kWh",      kWh.Value.Min.      Value.ToString("0.00")) : null,
-                                     kWh.  HasValue && kWh.  Value.Max.      HasValue  ? new JProperty("max_kWh",      kWh.Value.Max.      Value.ToString("0.00")) : null,
-
-                                     Power.HasValue && Power.Value.Min.      HasValue ? new JProperty("min_power",   Power.Value.Min.      Value.ToString("0.00")) : null,
-                                     Power.HasValue && Power.Value.Max.      HasValue ? new JProperty("max_power",   Power.Value.Max.      Value.ToString("0.00")) : null,
-
-                                     DayOfWeek.Any()                                  ? new JProperty("day_of_week", new JArray(DayOfWeek.Select(day => day.ToString().ToUpper()))) : null);
-
-        }
-
-        #endregion
-
-
         #region GetHashCode()
 
         /// <summary>

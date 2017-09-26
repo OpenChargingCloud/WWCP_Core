@@ -562,6 +562,9 @@ namespace org.GraphDefined.WWCP
 
             this._ChargingPools               = new EntityHashSet <ChargingStationOperator, ChargingPool_Id,         ChargingPool>        (this);
             this._ChargingStationGroups       = new EntityHashSet <ChargingStationOperator, ChargingStationGroup_Id, ChargingStationGroup>(this);
+            this._EVSEGroups                  = new EntityHashSet <ChargingStationOperator, EVSEGroup_Id,            EVSEGroup>           (this);
+
+            this._ChargingTariffs             = new EntityHashSet <ChargingStationOperator, ChargingTariff_Id,       ChargingTariff>      (this);
 
             this._AdminStatusSchedule         = new StatusSchedule<ChargingStationOperatorAdminStatusTypes>(MaxAdminStatusListSize);
             this._AdminStatusSchedule.Insert(InitialAdminStatus.Value);
@@ -576,20 +579,26 @@ namespace org.GraphDefined.WWCP
 
             #region Init events
 
-            this.BrandAddition                 = new VotingNotificator<DateTime, ChargingStationOperator,    Brand,                Boolean>(() => new VetoVote(), true);
-            this.BrandRemoval                  = new VotingNotificator<DateTime, ChargingStationOperator,    Brand,                Boolean>(() => new VetoVote(), true);
-
             this.ChargingPoolAddition          = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
             this.ChargingPoolRemoval           = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingPool,         Boolean>(() => new VetoVote(), true);
-
-            this.ChargingStationGroupAddition  = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
-            this.ChargingStationGroupRemoval   = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
+            //this.ChargingPoolGroupAddition     = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingPoolGroup,    Boolean>(() => new VetoVote(), true);
+            //this.ChargingPoolGroupRemoval      = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingPoolGroup,    Boolean>(() => new VetoVote(), true);
 
             this.ChargingStationAddition       = new VotingNotificator<DateTime, ChargingPool,               ChargingStation,      Boolean>(() => new VetoVote(), true);
             this.ChargingStationRemoval        = new VotingNotificator<DateTime, ChargingPool,               ChargingStation,      Boolean>(() => new VetoVote(), true);
+            this.ChargingStationGroupAddition  = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
+            this.ChargingStationGroupRemoval   = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingStationGroup, Boolean>(() => new VetoVote(), true);
 
             this.EVSEAddition                  = new VotingNotificator<DateTime, ChargingStation,            EVSE,                 Boolean>(() => new VetoVote(), true);
             this.EVSERemoval                   = new VotingNotificator<DateTime, ChargingStation,            EVSE,                 Boolean>(() => new VetoVote(), true);
+            this.EVSEGroupAddition             = new VotingNotificator<DateTime, ChargingStationOperator,    EVSEGroup,            Boolean>(() => new VetoVote(), true);
+            this.EVSEGroupRemoval              = new VotingNotificator<DateTime, ChargingStationOperator,    EVSEGroup,            Boolean>(() => new VetoVote(), true);
+
+            this.BrandAddition                 = new VotingNotificator<DateTime, ChargingStationOperator,    Brand,                Boolean>(() => new VetoVote(), true);
+            this.BrandRemoval                  = new VotingNotificator<DateTime, ChargingStationOperator,    Brand,                Boolean>(() => new VetoVote(), true);
+
+            this.ChargingTariffAddition        = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariff,       Boolean>(() => new VetoVote(), true);
+            this.ChargingTariffRemoval         = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariff,       Boolean>(() => new VetoVote(), true);
 
             #endregion
 
@@ -2159,20 +2168,20 @@ namespace org.GraphDefined.WWCP
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new charging group after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging group failed.</param>
-        public ChargingStationGroup CreateChargingStationGroup(String                                                             IdSuffix,
-                                                               I18NString                                                         Name,
-                                                               I18NString                                                         Description                   = null,
+        public ChargingStationGroup CreateChargingStationGroup(String                                                              IdSuffix,
+                                                               I18NString                                                          Name,
+                                                               I18NString                                                          Description                   = null,
 
-                                                               IEnumerable<ChargingStation>                                       Members                       = null,
-                                                               IEnumerable<ChargingStation_Id>                                    MemberIds                     = null,
-                                                               Func<ChargingStation, Boolean>                                     AutoIncludeStations           = null,
+                                                               IEnumerable<ChargingStation>                                        Members                       = null,
+                                                               IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
+                                                               Func<ChargingStation, Boolean>                                      AutoIncludeStations           = null,
 
                                                                Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
-                                                               UInt16                                                             MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
-                                                               UInt16                                                             MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
+                                                               UInt16                                                              MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
+                                                               UInt16                                                              MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
-                                                               Action<ChargingStationGroup>                                       OnSuccess                     = null,
-                                                               Action<ChargingStationOperator, ChargingStationGroup_Id>           OnError                       = null)
+                                                               Action<ChargingStationGroup>                                        OnSuccess                     = null,
+                                                               Action<ChargingStationOperator, ChargingStationGroup_Id>            OnError                       = null)
 
         {
 
@@ -2183,9 +2192,16 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return CreateChargingStationGroup(ChargingStationGroup_Id.Parse(Id, IdSuffix.Trim().ToUpper()),
+            return CreateChargingStationGroup(ChargingStationGroup_Id.Parse(Id,
+                                                                            IdSuffix.Trim().ToUpper()),
                                               Name,
                                               Description,
+
+                                              null,
+                                              new Priority(0),
+                                              null,
+                                              null,
+
                                               Members,
                                               MemberIds,
                                               AutoIncludeStations,
@@ -2219,20 +2235,20 @@ namespace org.GraphDefined.WWCP
         /// 
         /// <param name="OnSuccess">An optional delegate to configure the new charging group after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging group failed.</param>
-        public ChargingStationGroup GetOrCreateChargingStationGroup(ChargingStationGroup_Id                                            Id,
-                                                                    I18NString                                                         Name,
-                                                                    I18NString                                                         Description                   = null,
+        public ChargingStationGroup GetOrCreateChargingStationGroup(ChargingStationGroup_Id                                             Id,
+                                                                    I18NString                                                          Name,
+                                                                    I18NString                                                          Description                   = null,
 
-                                                                    IEnumerable<ChargingStation>                                       Members                       = null,
-                                                                    IEnumerable<ChargingStation_Id>                                    MemberIds                     = null,
-                                                                    Func<ChargingStation, Boolean>                                     AutoIncludeStations           = null,
+                                                                    IEnumerable<ChargingStation>                                        Members                       = null,
+                                                                    IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
+                                                                    Func<ChargingStation, Boolean>                                      AutoIncludeStations           = null,
 
                                                                     Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
-                                                                    UInt16                                                             MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
-                                                                    UInt16                                                             MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
+                                                                    UInt16                                                              MaxGroupStatusListSize        = ChargingStationGroup.DefaultMaxGroupStatusListSize,
+                                                                    UInt16                                                              MaxGroupAdminStatusListSize   = ChargingStationGroup.DefaultMaxGroupAdminStatusListSize,
 
-                                                                    Action<ChargingStationGroup>                                       OnSuccess                     = null,
-                                                                    Action<ChargingStationOperator, ChargingStationGroup_Id>           OnError                       = null)
+                                                                    Action<ChargingStationGroup>                                        OnSuccess                     = null,
+                                                                    Action<ChargingStationOperator, ChargingStationGroup_Id>            OnError                       = null)
 
         {
 
@@ -2252,6 +2268,12 @@ namespace org.GraphDefined.WWCP
                 return CreateChargingStationGroup(Id,
                                                   Name,
                                                   Description,
+
+                                                  null,
+                                                  new Priority(0),
+                                                  null,
+                                                  null,
+
                                                   Members,
                                                   MemberIds,
                                                   AutoIncludeStations,
@@ -2312,7 +2334,8 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return GetOrCreateChargingStationGroup(ChargingStationGroup_Id.Parse(Id, IdSuffix.Trim().ToUpper()),
+            return GetOrCreateChargingStationGroup(ChargingStationGroup_Id.Parse(Id,
+                                                                                 IdSuffix.Trim().ToUpper()),
                                                    Name,
                                                    Description,
                                                    Members,
@@ -3142,6 +3165,11 @@ namespace org.GraphDefined.WWCP
                                          I18NString                                     Name,
                                          I18NString                                     Description                   = null,
 
+                                         Brand                                          Brand                         = null,
+                                         Priority?                                      Priority                      = null,
+                                         ChargingTariff                                 Tariff                        = null,
+                                         IEnumerable<DataLicense>                       DataLicenses                  = null,
+
                                          IEnumerable<EVSE>                              Members                       = null,
                                          IEnumerable<EVSE_Id>                           MemberIds                     = null,
                                          Func<EVSE, Boolean>                            AutoIncludeStations           = null,
@@ -3179,6 +3207,12 @@ namespace org.GraphDefined.WWCP
                                                this,
                                                Name,
                                                Description,
+
+                                               Brand,
+                                               Priority,
+                                               Tariff,
+                                               DataLicenses,
+
                                                Members,
                                                MemberIds,
                                                AutoIncludeStations,
@@ -3244,6 +3278,11 @@ namespace org.GraphDefined.WWCP
                                          I18NString                                     Name,
                                          I18NString                                     Description                   = null,
 
+                                         Brand                                          Brand                         = null,
+                                         Priority?                                      Priority                      = null,
+                                         ChargingTariff                                 Tariff                        = null,
+                                         IEnumerable<DataLicense>                       DataLicenses                  = null,
+
                                          IEnumerable<EVSE>                              Members                       = null,
                                          IEnumerable<EVSE_Id>                           MemberIds                     = null,
                                          Func<EVSE, Boolean>                            AutoIncludeStations           = null,
@@ -3264,17 +3303,24 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return CreateEVSEGroup(EVSEGroup_Id.Parse(Id, IdSuffix.Trim().ToUpper()),
-                                              Name,
-                                              Description,
-                                              Members,
-                                              MemberIds,
-                                              AutoIncludeStations,
-                                              StatusAggregationDelegate,
-                                              MaxGroupAdminStatusListSize,
-                                              MaxGroupStatusListSize,
-                                              OnSuccess,
-                                              OnError);
+            return CreateEVSEGroup(EVSEGroup_Id.Parse(Id,
+                                                      IdSuffix.Trim().ToUpper()),
+                                   Name,
+                                   Description,
+
+                                   Brand,
+                                   Priority,
+                                   Tariff,
+                                   DataLicenses,
+
+                                   Members,
+                                   MemberIds,
+                                   AutoIncludeStations,
+                                   StatusAggregationDelegate,
+                                   MaxGroupAdminStatusListSize,
+                                   MaxGroupStatusListSize,
+                                   OnSuccess,
+                                   OnError);
 
         }
 
@@ -3303,6 +3349,11 @@ namespace org.GraphDefined.WWCP
         public EVSEGroup GetOrCreateEVSEGroup(EVSEGroup_Id                                   Id,
                                               I18NString                                     Name,
                                               I18NString                                     Description                   = null,
+
+                                              Brand                                          Brand                         = null,
+                                              Priority?                                      Priority                      = null,
+                                              ChargingTariff                                 Tariff                        = null,
+                                              IEnumerable<DataLicense>                       DataLicenses                  = null,
 
                                               IEnumerable<EVSE>                              Members                       = null,
                                               IEnumerable<EVSE_Id>                           MemberIds                     = null,
@@ -3333,6 +3384,12 @@ namespace org.GraphDefined.WWCP
                 return CreateEVSEGroup(Id,
                                        Name,
                                        Description,
+
+                                       Brand,
+                                       Priority,
+                                       Tariff,
+                                       DataLicenses,
+
                                        Members,
                                        MemberIds,
                                        AutoIncludeStations,
@@ -3372,6 +3429,11 @@ namespace org.GraphDefined.WWCP
                                               I18NString                                     Name,
                                               I18NString                                     Description                   = null,
 
+                                              Brand                                          Brand                         = null,
+                                              Priority?                                      Priority                      = null,
+                                              ChargingTariff                                 Tariff                        = null,
+                                              IEnumerable<DataLicense>                       DataLicenses                  = null,
+
                                               IEnumerable<EVSE>                              Members                       = null,
                                               IEnumerable<EVSE_Id>                           MemberIds                     = null,
                                               Func<EVSE, Boolean>                            AutoIncludeStations           = null,
@@ -3396,6 +3458,12 @@ namespace org.GraphDefined.WWCP
             return GetOrCreateEVSEGroup(EVSEGroup_Id.Parse(Id, IdSuffix.Trim().ToUpper()),
                                         Name,
                                         Description,
+
+                                        Brand,
+                                        Priority,
+                                        Tariff,
+                                        DataLicenses,
+
                                         Members,
                                         MemberIds,
                                         AutoIncludeStations,
@@ -3516,6 +3584,401 @@ namespace org.GraphDefined.WWCP
                 OnError?.Invoke(this, EVSEGroup);
 
                 return EVSEGroup;
+
+            }
+
+        }
+
+        #endregion
+
+        #endregion
+
+
+        #region ChargingTariffs
+
+        #region ChargingTariffAddition
+
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariff, Boolean> ChargingTariffAddition;
+
+        /// <summary>
+        /// Called whenever a charging tariff will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStationOperator, ChargingTariff, Boolean> OnChargingTariffAddition
+
+            => ChargingTariffAddition;
+
+        #endregion
+
+
+        #region ChargingTariffs
+
+        private readonly EntityHashSet<ChargingStationOperator, ChargingTariff_Id, ChargingTariff> _ChargingTariffs;
+
+        /// <summary>
+        /// All charging tariffs registered within this charging station operator.
+        /// </summary>
+        public IEnumerable<ChargingTariff> ChargingTariffs
+
+            => _ChargingTariffs;
+
+        #endregion
+
+
+        #region CreateChargingTariff     (Id,       Name, Description = null, ..., OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create and register a new charging tariff having the given
+        /// unique charging tariff identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charing tariff.</param>
+        /// <param name="Name">The offical (multi-language) name of this charging tariff.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
+        public ChargingTariff CreateChargingTariff(ChargingTariff_Id                                   Id,
+                                                   I18NString                                          Name,
+                                                   I18NString                                          Description,
+                                                   Brand                                               Brand,
+                                                   Uri                                                 TariffUrl,
+                                                   Currency                                            Currency,
+                                                   EnergyMix                                           EnergyMix,
+                                                   IEnumerable<ChargingTariffElement>                  TariffElements,
+
+                                                   Action<ChargingTariff>                              OnSuccess  = null,
+                                                   Action<ChargingStationOperator, ChargingTariff_Id>  OnError    = null)
+
+        {
+
+            lock (_ChargingTariffs)
+            {
+
+                #region Initial checks
+
+                if (_ChargingTariffs.ContainsId(Id))
+                {
+
+                    if (OnError != null)
+                        OnError?.Invoke(this, Id);
+
+                    throw new ChargingTariffAlreadyExists(this, Id);
+
+                }
+
+                if (Name.IsNullOrEmpty())
+                    throw new ArgumentNullException(nameof(Name), "The name of the charging station group must not be null or empty!");
+
+                #endregion
+
+                var _ChargingTariff = new ChargingTariff(Id,
+                                                         this,
+                                                         Name,
+                                                         Description,
+                                                         Brand,
+                                                         TariffUrl,
+                                                         Currency,
+                                                         EnergyMix,
+                                                         TariffElements);
+
+
+                if (ChargingTariffAddition.SendVoting(DateTime.UtcNow, this, _ChargingTariff) &&
+                    _ChargingTariffs.TryAdd(_ChargingTariff))
+                {
+
+                    //_ChargingTariff.OnEVSEDataChanged                             += UpdateEVSEData;
+                    //_ChargingTariff.OnEVSEStatusChanged                           += UpdateEVSEStatus;
+                    //_ChargingTariff.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
+
+                    //_ChargingTariff.OnChargingStationDataChanged                  += UpdateChargingStationData;
+                    //_ChargingTariff.OnChargingStationStatusChanged                += UpdateChargingStationStatus;
+                    //_ChargingTariff.OnChargingStationAdminStatusChanged           += UpdateChargingStationAdminStatus;
+
+                    ////_ChargingTariff.OnDataChanged                                 += UpdateChargingTariffData;
+                    ////_ChargingTariff.OnAdminStatusChanged                          += UpdateChargingTariffAdminStatus;
+
+                    OnSuccess?.Invoke(_ChargingTariff);
+
+                    ChargingTariffAddition.SendNotification(DateTime.UtcNow,
+                                                            this,
+                                                            _ChargingTariff);
+
+                    return _ChargingTariff;
+
+                }
+
+                return null;
+
+            }
+
+        }
+
+        #endregion
+
+        #region CreateChargingTariff     (IdSuffix, Name, Description = null, ..., OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create and register a new charging tariff having the given
+        /// unique charging tariff identification.
+        /// </summary>
+        /// <param name="IdSuffix">The suffix of the unique identification of the new charging tariff.</param>
+        /// <param name="Name">The offical (multi-language) name of this charging tariff.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
+        public ChargingTariff CreateChargingTariff(String                                                        IdSuffix,
+                                                   I18NString                                                    Name,
+                                                   I18NString                                                    Description,
+                                                   Brand                                                         Brand,
+                                                   Uri                                                           TariffUrl,
+                                                   Currency                                                      Currency,
+                                                   EnergyMix                                                     EnergyMix,
+                                                   IEnumerable<ChargingTariffElement>                            TariffElements,
+
+                                                   Action<ChargingTariff>                                        OnSuccess                     = null,
+                                                   Action<ChargingStationOperator, ChargingTariff_Id>            OnError                       = null)
+
+        {
+
+            #region Initial checks
+
+            if (IdSuffix.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(IdSuffix), "The given suffix of the unique identification of the new charging tariff must not be null or empty!");
+
+            #endregion
+
+            return CreateChargingTariff(ChargingTariff_Id.Parse(Id,
+                                                                IdSuffix.Trim().ToUpper()),
+                                        Name,
+                                        Description,
+                                        Brand,
+                                        TariffUrl,
+                                        Currency,
+                                        EnergyMix,
+                                        TariffElements,
+
+                                        OnSuccess,
+                                        OnError);
+
+        }
+
+        #endregion
+
+        #region GetOrCreateChargingTariff(Id,       Name, Description = null, ..., OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Get or create and register a new charging tariff having the given
+        /// unique charging tariff identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charing tariff.</param>
+        /// <param name="Name">The offical (multi-language) name of this charging tariff.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
+        public ChargingTariff GetOrCreateChargingTariff(ChargingTariff_Id                                   Id,
+                                                        I18NString                                          Name,
+                                                        I18NString                                          Description,
+                                                        Brand                                               Brand,
+                                                        Uri                                                 TariffUrl,
+                                                        Currency                                            Currency,
+                                                        EnergyMix                                           EnergyMix,
+                                                        IEnumerable<ChargingTariffElement>                  TariffElements,
+
+                                                        Action<ChargingTariff>                              OnSuccess  = null,
+                                                        Action<ChargingStationOperator, ChargingTariff_Id>  OnError    = null)
+
+        {
+
+            lock (_ChargingTariffs)
+            {
+
+                #region Initial checks
+
+                if (Name.IsNullOrEmpty())
+                    throw new ArgumentNullException(nameof(Name), "The name of the charging tariff must not be null or empty!");
+
+                #endregion
+
+                if (_ChargingTariffs.TryGet(Id, out ChargingTariff _ChargingTariff))
+                    return _ChargingTariff;
+
+                return CreateChargingTariff(Id,
+                                            Name,
+                                            Description,
+                                            Brand,
+                                            TariffUrl,
+                                            Currency,
+                                            EnergyMix,
+                                            TariffElements,
+
+                                            OnSuccess,
+                                            OnError);
+
+            }
+
+        }
+
+        #endregion
+
+        #region GetOrCreateChargingTariff(IdSuffix, Name, Description = null, ..., OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Get or create and register a new charging tariff having the given
+        /// unique charging tariff identification.
+        /// </summary>
+        /// <param name="IdSuffix">The suffix of the unique identification of the new charging tariff.</param>
+        /// <param name="Name">The offical (multi-language) name of this charging tariff.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
+        /// 
+        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
+        public ChargingTariff GetOrCreateChargingTariff(String                                              IdSuffix,
+                                                        I18NString                                          Name,
+                                                        I18NString                                          Description,
+                                                        Brand                                               Brand,
+                                                        Uri                                                 TariffUrl,
+                                                        Currency                                            Currency,
+                                                        EnergyMix                                           EnergyMix,
+                                                        IEnumerable<ChargingTariffElement>                  TariffElements,
+
+                                                        Action<ChargingTariff>                              OnSuccess  = null,
+                                                        Action<ChargingStationOperator, ChargingTariff_Id>  OnError    = null)
+
+
+        {
+
+            #region Initial checks
+
+            if (IdSuffix.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(IdSuffix), "The given suffix of the unique identification of the new charging tariff must not be null or empty!");
+
+            #endregion
+
+            return GetOrCreateChargingTariff(ChargingTariff_Id.Parse(Id,
+                                                                     IdSuffix.Trim().ToUpper()),
+                                             Name,
+                                             Description,
+                                             Brand,
+                                             TariffUrl,
+                                             Currency,
+                                             EnergyMix,
+                                             TariffElements,
+
+                                             OnSuccess,
+                                             OnError);
+
+        }
+
+        #endregion
+
+
+        #region TryGetChargingTariff(Id, out ChargingTariff)
+
+        /// <summary>
+        /// Try to return to charging tariff for the given charging tariff identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charing tariff.</param>
+        /// <param name="ChargingTariff">The charing tariff.</param>
+        public Boolean TryGetChargingTariff(ChargingTariff_Id   Id,
+                                            out ChargingTariff  ChargingTariff)
+
+            => _ChargingTariffs.TryGet(Id, out ChargingTariff);
+
+        #endregion
+
+
+        #region ChargingTariffRemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariff, Boolean> ChargingTariffRemoval;
+
+        /// <summary>
+        /// Called whenever a charging tariff will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStationOperator, ChargingTariff, Boolean> OnChargingTariffRemoval
+
+            => ChargingTariffRemoval;
+
+        #endregion
+
+        #region RemoveChargingTariff(ChargingTariffId, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// All charging tariffs registered within this charging station operator.
+        /// </summary>
+        /// <param name="ChargingTariffId">The unique identification of the charging tariff to be removed.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the charging tariff failed.</param>
+        public ChargingTariff RemoveChargingTariff(ChargingTariff_Id                                   ChargingTariffId,
+                                                               Action<ChargingStationOperator, ChargingTariff>     OnSuccess   = null,
+                                                               Action<ChargingStationOperator, ChargingTariff_Id>  OnError     = null)
+        {
+
+            lock (_ChargingTariffs)
+            {
+
+                if (_ChargingTariffs.TryGet(ChargingTariffId, out ChargingTariff ChargingTariff) &&
+                    ChargingTariffRemoval.SendVoting(DateTime.UtcNow,
+                                                           this,
+                                                           ChargingTariff) &&
+                    _ChargingTariffs.TryRemove(ChargingTariffId, out ChargingTariff _ChargingTariff))
+                {
+
+                    OnSuccess?.Invoke(this, ChargingTariff);
+
+                    ChargingTariffRemoval.SendNotification(DateTime.UtcNow,
+                                                                 this,
+                                                                 _ChargingTariff);
+
+                    return _ChargingTariff;
+
+                }
+
+                OnError?.Invoke(this, ChargingTariffId);
+
+                return null;
+
+            }
+
+        }
+
+        #endregion
+
+        #region RemoveChargingTariff(ChargingTariff,   OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// All charging tariffs registered within this charging station operator.
+        /// </summary>
+        /// <param name="ChargingTariff">The charging tariff to remove.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the charging tariff failed.</param>
+        public ChargingTariff RemoveChargingTariff(ChargingTariff                                   ChargingTariff,
+                                                               Action<ChargingStationOperator, ChargingTariff>  OnSuccess   = null,
+                                                               Action<ChargingStationOperator, ChargingTariff>  OnError     = null)
+        {
+
+            lock (_ChargingTariffs)
+            {
+
+                if (ChargingTariffRemoval.SendVoting(DateTime.UtcNow,
+                                                           this,
+                                                           ChargingTariff) &&
+                    _ChargingTariffs.TryRemove(ChargingTariff.Id, out ChargingTariff _ChargingTariff))
+                {
+
+                    OnSuccess?.Invoke(this, _ChargingTariff);
+
+                    ChargingTariffRemoval.SendNotification(DateTime.UtcNow,
+                                                                 this,
+                                                                 _ChargingTariff);
+
+                    return _ChargingTariff;
+
+                }
+
+                OnError?.Invoke(this, ChargingTariff);
+
+                return ChargingTariff;
 
             }
 

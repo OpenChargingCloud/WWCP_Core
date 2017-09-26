@@ -124,19 +124,7 @@ namespace org.GraphDefined.WWCP
 
         #region ToJSON()
 
-        /// <summary>
-        /// Return a JSON representation of this object.
-        /// </summary>
-        public JObject ToJSON()
-        {
-
-            return JSONObject.Create(new JProperty("price_components", new JArray(ChargingPriceComponents.Select(ChargingPriceComponent => ChargingPriceComponent.ToJSON()))),
-
-                                     (ChargingTariffRestrictions != null && ChargingTariffRestrictions.Any())
-                                         ? new JProperty("restrictions", new JArray(ChargingTariffRestrictions.Select(ChargingTariffRestriction => ChargingTariffRestriction.ToJSON())))
-                                         : null);
-
-        }
+        
 
         #endregion
 

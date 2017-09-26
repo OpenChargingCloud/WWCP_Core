@@ -44,7 +44,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The regular expression for parsing a charging station group identification.
         /// </summary>
-        public  static readonly Regex  ChargingStationGroupId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?GS([A-Z0-9][A-Z0-9\*]{0,30})$",
+        public  static readonly Regex  ChargingStationGroupId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?GS([a-zA-Z0-9_][a-zA-Z0-9_\*\-\.€\$]{0,50})$",
                                                                                  RegexOptions.IgnorePatternWhitespace);
 
         #endregion

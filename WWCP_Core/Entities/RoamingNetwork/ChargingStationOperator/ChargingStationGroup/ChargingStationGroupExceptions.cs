@@ -26,6 +26,7 @@ using System.Collections.Concurrent;
 namespace org.GraphDefined.WWCP
 {
 
+
     #region ChargingStationGroupAlreadyExists
 
     /// <summary>
@@ -75,13 +76,6 @@ namespace org.GraphDefined.WWCP
 
 
 
-
-
-
-
-
-
-
     #region ChargingStationAlreadyExistsInGroup
 
     /// <summary>
@@ -101,14 +95,5 @@ namespace org.GraphDefined.WWCP
     }
 
     #endregion
-
-
-
-
-
-
-
-
-
 
 }
