@@ -3873,6 +3873,24 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region GetChargingTariff(Id)
+
+        /// <summary>
+        /// Return to charging tariff for the given charging tariff identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charing tariff.</param>
+        public ChargingTariff GetChargingTariff(ChargingTariff_Id Id)
+        {
+
+            if (_ChargingTariffs.TryGet(Id, out ChargingTariff Tariff))
+                return Tariff;
+
+            return null;
+
+        }
+
+        #endregion
+
         #region TryGetChargingTariff(Id, out ChargingTariff)
 
         /// <summary>

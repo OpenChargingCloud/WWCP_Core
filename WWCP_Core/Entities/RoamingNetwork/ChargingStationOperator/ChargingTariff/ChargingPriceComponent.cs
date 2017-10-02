@@ -139,13 +139,10 @@ namespace org.GraphDefined.WWCP
         /// Return a JSON representation of this object.
         /// </summary>
         public JObject ToJSON()
-        {
 
-            return new JObject(new JProperty("type",       Type. ToString()),
-                               new JProperty("price",      Price.ToString("0.00")),
-                               new JProperty("step_size",  StepSize));
-
-        }
+            => new JObject(new JProperty("type",       Type. ToString()),
+                           new JProperty("price",      Price.ToString("0.00")),
+                           new JProperty("step_size",  StepSize));
 
         #endregion
 

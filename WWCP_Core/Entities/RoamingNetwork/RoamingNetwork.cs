@@ -3028,9 +3028,7 @@ namespace org.GraphDefined.WWCP
         public Boolean ContainsEVSE(EVSE EVSE)
         {
 
-            ChargingStationOperator _ChargingStationOperator  = null;
-
-            if (TryGetChargingStationOperatorById(EVSE.Operator.Id, out _ChargingStationOperator))
+            if (TryGetChargingStationOperatorById(EVSE.Operator.Id, out ChargingStationOperator _ChargingStationOperator))
                 return _ChargingStationOperator.ContainsEVSE(EVSE.Id);
 
             return false;
@@ -3048,9 +3046,7 @@ namespace org.GraphDefined.WWCP
         public Boolean ContainsEVSE(EVSE_Id EVSEId)
         {
 
-            ChargingStationOperator _ChargingStationOperator  = null;
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _ChargingStationOperator))
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _ChargingStationOperator))
                 return _ChargingStationOperator.ContainsEVSE(EVSEId);
 
             return false;
@@ -3064,11 +3060,8 @@ namespace org.GraphDefined.WWCP
         public EVSE GetEVSEbyId(EVSE_Id EVSEId)
         {
 
-            EVSE                    _EVSE                     = null;
-            ChargingStationOperator _ChargingStationOperator  = null;
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _ChargingStationOperator) &&
-                _ChargingStationOperator.TryGetEVSEbyId(EVSEId, out _EVSE))
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _ChargingStationOperator) &&
+                _ChargingStationOperator.TryGetEVSEbyId(EVSEId, out EVSE _EVSE))
                     return _EVSE;
 
             return null;
@@ -3082,9 +3075,7 @@ namespace org.GraphDefined.WWCP
         public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
         {
 
-            ChargingStationOperator _ChargingStationOperator  = null;
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _ChargingStationOperator))
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _ChargingStationOperator))
                 return _ChargingStationOperator.TryGetEVSEbyId(EVSEId, out EVSE);
 
             EVSE = null;
