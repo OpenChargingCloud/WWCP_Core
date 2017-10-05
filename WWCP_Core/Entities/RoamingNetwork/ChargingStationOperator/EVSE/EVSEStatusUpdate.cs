@@ -39,17 +39,17 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The EVSE.
         /// </summary>
-        public EVSE                          EVSE        { get; }
+        public EVSE                          EVSE         { get; }
 
         /// <summary>
         /// The old timestamped status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEStatusTypes>  OldStatus   { get; }
+        public Timestamped<EVSEStatusTypes>  OldStatus    { get; }
 
         /// <summary>
         /// The new timestamped status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEStatusTypes>  NewStatus   { get; }
+        public Timestamped<EVSEStatusTypes>  NewStatus    { get; }
 
         #endregion
 
@@ -60,7 +60,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a new EVSE status update.
         /// </summary>
-        /// <param name="EVSE">The EVSE.</param>
+        /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old timestamped status of the EVSE.</param>
         /// <param name="NewStatus">The new timestamped status of the EVSE.</param>
         public EVSEStatusUpdate(EVSE                          EVSE,
@@ -92,8 +92,8 @@ namespace org.GraphDefined.WWCP
         {
 
             this.EVSE       = EVSE;
-            this.OldStatus  = OldStatus.Combined;
-            this.NewStatus  = NewStatus.Combined;
+            this.OldStatus  = OldStatus.Status;
+            this.NewStatus  = NewStatus.Status;
 
         }
 

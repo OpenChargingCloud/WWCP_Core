@@ -20,10 +20,10 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -120,7 +120,7 @@ namespace org.GraphDefined.WWCP
 
             this._Ids            = new List<TId> { Id };
             this.DataSource      = String.Empty;
-            this.LastChange      = DateTime.Now;
+            this.LastChange      = DateTime.UtcNow;
             this._UserDefined    = new UserDefinedDictionary();
 
             this._UserDefined.OnPropertyChanged += (timestamp, eventtrackingid, sender, key, oldValue, newValue)
@@ -148,7 +148,7 @@ namespace org.GraphDefined.WWCP
 
             this._Ids            = new List<TId>(Ids);
             this.DataSource      = String.Empty;
-            this.LastChange      = DateTime.Now;
+            this.LastChange      = DateTime.UtcNow;
             this._UserDefined    = new UserDefinedDictionary();
 
             this._UserDefined.OnPropertyChanged += (timestamp, eventtrackingid, sender, key, oldValue, newValue)
@@ -268,7 +268,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this.LastChange = DateTime.Now;
+            this.LastChange = DateTime.UtcNow;
 
             OnPropertyChanged?.Invoke(LastChange,
                                       EventTrackingId,

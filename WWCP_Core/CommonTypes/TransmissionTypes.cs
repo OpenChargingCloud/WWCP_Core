@@ -24,7 +24,7 @@ namespace org.GraphDefined.WWCP
     public enum TransmissionTypes
     {
         Direct,
-        Enqueued
+        Enqueue
     }
 
 }

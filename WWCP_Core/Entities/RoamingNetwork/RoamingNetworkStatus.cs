@@ -18,8 +18,10 @@
 #region Usings
 
 using System;
+using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -29,8 +31,9 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The current status of a roaming network.
     /// </summary>
-    public struct RoamingNetworkStatus : IEquatable <RoamingNetworkStatus>,
-                                         IComparable<RoamingNetworkStatus>
+    public class RoamingNetworkStatus : ACustomData,
+                                        IEquatable <RoamingNetworkStatus>,
+                                        IComparable<RoamingNetworkStatus>
     {
 
         #region Properties
@@ -38,23 +41,12 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the roaming network.
         /// </summary>
-        public RoamingNetwork_Id         Id          { get; }
+        public RoamingNetwork_Id                       Id       { get; }
 
         /// <summary>
-        /// The current status of the roaming network.
+        /// The current timestamped status of the roaming network.
         /// </summary>
-        public RoamingNetworkStatusType  Status      { get; }
-
-        /// <summary>
-        /// The timestamp of the current status of the roaming network.
-        /// </summary>
-        public DateTime                  Timestamp   { get; }
-
-        /// <summary>
-        /// The timestamped status of the roaming network.
-        /// </summary>
-        public Timestamped<RoamingNetworkStatusType> Combined
-            => new Timestamped<RoamingNetworkStatusType>(Timestamp, Status);
+        public Timestamped<RoamingNetworkStatusTypes>  Status   { get; }
 
         #endregion
 
@@ -64,17 +56,18 @@ namespace org.GraphDefined.WWCP
         /// Create a new roaming network status.
         /// </summary>
         /// <param name="Id">The unique identification of the roaming network.</param>
-        /// <param name="Status">The current status of the roaming network.</param>
-        /// <param name="Timestamp">The timestamp of the current status of the roaming network.</param>
-        public RoamingNetworkStatus(RoamingNetwork_Id         Id,
-                                    RoamingNetworkStatusType  Status,
-                                    DateTime                  Timestamp)
+        /// <param name="Status">The current timestamped status of the roaming network.</param>
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+        public RoamingNetworkStatus(RoamingNetwork_Id                       Id,
+                                    Timestamped<RoamingNetworkStatusTypes>  Status,
+                                    IReadOnlyDictionary<String, Object>     CustomData  = null)
+
+            : base(CustomData)
 
         {
 
             this.Id         = Id;
             this.Status     = Status;
-            this.Timestamp  = Timestamp;
 
         }
 
@@ -90,8 +83,7 @@ namespace org.GraphDefined.WWCP
         public static RoamingNetworkStatus Snapshot(RoamingNetwork RoamingNetwork)
 
             => new RoamingNetworkStatus(RoamingNetwork.Id,
-                                        RoamingNetwork.Status.Value,
-                                        RoamingNetwork.Status.Timestamp);
+                                        RoamingNetwork.Status.Value);
 
         #endregion
 
@@ -273,7 +265,7 @@ namespace org.GraphDefined.WWCP
             if (!(Object is RoamingNetworkStatus))
                 return false;
 
-            return this.Equals((RoamingNetworkStatus) Object);
+            return Equals((RoamingNetworkStatus) Object);
 
         }
 
@@ -292,9 +284,8 @@ namespace org.GraphDefined.WWCP
             if ((Object) RoamingNetworkStatus == null)
                 return false;
 
-            return Id.       Equals(RoamingNetworkStatus.Id)     &&
-                   Status.   Equals(RoamingNetworkStatus.Status) &&
-                   Timestamp.Equals(RoamingNetworkStatus.Timestamp);
+            return Id.       Equals(RoamingNetworkStatus.Id) &&
+                   Status.   Equals(RoamingNetworkStatus.Status);
 
         }
 
@@ -313,9 +304,8 @@ namespace org.GraphDefined.WWCP
             unchecked
             {
 
-                return Id.       GetHashCode() * 7 ^
-                       Status.   GetHashCode() * 5 ^
-                       Timestamp.GetHashCode();
+                return Id.    GetHashCode() * 5 ^
+                       Status.GetHashCode();
 
             }
         }
@@ -330,9 +320,9 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
 
             => String.Concat(Id, " -> ",
-                             Status,
+                             Status.Value,
                              " since ",
-                             Timestamp.ToIso8601());
+                             Status.Timestamp.ToIso8601());
 
         #endregion
 

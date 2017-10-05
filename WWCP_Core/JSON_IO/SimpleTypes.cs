@@ -39,49 +39,6 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
     public static partial class JSON_IO
     {
 
-        #region ToJSON(this Id, JPropertyKey)
-
-        /// <summary>
-        /// Create a JSON representation of the given identificator.
-        /// </summary>
-        /// <param name="Id">An identificator.</param>
-        /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
-        public static JProperty ToJSON(this IId Id, String JPropertyKey)
-
-            => Id != null
-                   ? new JProperty(JPropertyKey, Id.ToString())
-                   : null;
-
-        #endregion
-
-        #region ToJSON(this Location, JPropertyKey)
-
-        /// <summary>
-        /// Create a JSON representation of the given GeoLocation.
-        /// </summary>
-        /// <param name="Location">A GeoLocation.</param>
-        /// <param name="JPropertyKey">The name of the JSON property key to use.</param>
-        public static JProperty ToJSON(this GeoCoordinate Location, String JPropertyKey)
-        {
-
-            if (Location == null)
-                return null;
-
-            if (Location.Longitude.Value == 0 && Location.Latitude.Value == 0)
-                return null;
-
-            return new JProperty(JPropertyKey,
-                                 JSONObject.Create(
-                                     Location.Projection != GravitationalModel.WGS84 ? new JProperty("projection", Location.Projection.ToString()) : null,
-                                     new JProperty("lat", Location.Latitude. Value),
-                                     new JProperty("lng", Location.Longitude.Value),
-                                     Location.Altitude.HasValue                      ? new JProperty("altitude",   Location.Altitude.Value.Value)  : null)
-                                );
-
-        }
-
-        #endregion
-
         #region ToJSON(this OpeningTimes)
 
         public static JObject ToJSON(this OpeningTimes OpeningTimes)
@@ -139,29 +96,26 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         public static JProperty ToJSON(this ReactiveSet<AuthenticationModes> AuthenticationModes, String JPropertyKey)
 
-            => new JProperty(JPropertyKey,
-                             new JArray(AuthenticationModes.SafeSelect(mode => mode.ToJSON())));
-
-        #endregion
-
-        #region ToJSON(this Text, JPropertyKey)
-
-        public static JProperty ToJSON(this String Text, String JPropertyKey)
-
-            => Text.IsNotNullOrEmpty()
-                   ? new JProperty(JPropertyKey, Text)
+            => AuthenticationModes != null
+                   ? new JProperty(JPropertyKey,
+                                   new JArray(AuthenticationModes.SafeSelect(mode => mode.ToJSON())))
                    : null;
 
         #endregion
 
         #region ToJSON(this Brand)
 
-        public static JObject ToJSON(this Brand Brand)
+        public static JObject ToJSON(this Brand               Brand,
+                                     Boolean                  Embedded                   = false,
+                                     InfoStatus               ExpandChargingPoolIds      = InfoStatus.Hidden,
+                                     InfoStatus               ExpandChargingStationIds   = InfoStatus.Hidden,
+                                     InfoStatus               ExpandEVSEIds              = InfoStatus.Hidden,
+                                     InfoStatus               ExpandDataLicenses         = InfoStatus.ShowIdOnly)
 
             => Brand != null
                    ? JSONObject.Create(
 
-                         new JProperty("Id",    Brand.Id.ToString()),
+                         new JProperty("Id",    Brand.Id.  ToString()),
                          new JProperty("Name",  Brand.Name.ToJSON()),
 
                          Brand.LogoURI.IsNotNullOrEmpty()
@@ -177,26 +131,47 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
+        #region ToJSON(this Brands, Skip = 0, Take = 0, Embedded = false, ...)
+
+        /// <summary>
+        /// Return a JSON representation for the given enumeration of brands.
+        /// </summary>
+        /// <param name="Brands">An enumeration of brands.</param>
+        /// <param name="Skip">The optional number of charging station operators to skip.</param>
+        /// <param name="Take">The optional number of charging station operators to return.</param>
+        /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
+        public static JArray ToJSON(this IEnumerable<Brand>   Brands,
+                                    UInt64                    Skip                       = 0,
+                                    UInt64                    Take                       = 0,
+                                    Boolean                   Embedded                   = false,
+                                    InfoStatus                ExpandChargingPoolIds      = InfoStatus.Hidden,
+                                    InfoStatus                ExpandChargingStationIds   = InfoStatus.Hidden,
+                                    InfoStatus                ExpandEVSEIds              = InfoStatus.Hidden,
+                                    InfoStatus                ExpandDataLicenses         = InfoStatus.ShowIdOnly)
+
+
+            => Brands == null || !Brands.Any()
+
+                   ? new JArray()
+
+                   : new JArray(Brands.
+                                    Where         (brand => brand != null).
+                                    OrderBy       (brand => brand.Id).
+                                    SkipTakeFilter(Skip, Take).
+                                    SafeSelect    (brand => brand.ToJSON(Embedded,
+                                                                         ExpandChargingPoolIds,
+                                                                         ExpandChargingStationIds,
+                                                                         ExpandEVSEIds,
+                                                                         ExpandDataLicenses)));
+
+        #endregion
+
         #region ToJSON(this Brand, JPropertyKey)
 
         public static JProperty ToJSON(this Brand Brand, String JPropertyKey)
 
             => Brand != null
                    ? new JProperty(JPropertyKey, Brand.ToJSON())
-                   : null;
-
-        #endregion
-
-        #region ToJSON(this DataLicense)
-
-        public static JObject ToJSON(this DataLicense DataLicense)
-
-            => DataLicense != null
-                   ? JSONObject.Create(
-                         new JProperty("id",           DataLicense.Id),
-                         new JProperty("description",  DataLicense.Description),
-                         new JProperty("uris",         new JArray(DataLicense.URIs))
-                     )
                    : null;
 
         #endregion

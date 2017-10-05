@@ -25,7 +25,7 @@ using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Hermod;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
+using org.GraphDefined.Vanaheimr.Aegir;
 
 #endregion
 
@@ -38,122 +38,160 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
     public static partial class JSON_IO
     {
 
-        #region ToJSON(this ChargingStation, Embedded = false, ExpandEVSEIds = true, ExpandOperatorId = false, ExpandBrandId = false)
+        #region ToJSON(this ChargingStation,                      Embedded = false, ...)
 
+        /// <summary>
+        /// Return a JSON representation of the given charging station.
+        /// </summary>
+        /// <param name="ChargingStation">A charging station.</param>
+        /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
         public static JObject ToJSON(this ChargingStation  ChargingStation,
-                                     Boolean               Embedded          = false,
-                                     Boolean               ExpandEVSEIds     = true,
-                                     Boolean               ExpandOperatorId  = false,
-                                     Boolean               ExpandBrandId     = false)
-        {
+                                     Boolean               Embedded                          = false,
+                                     InfoStatus            ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                                     InfoStatus            ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                                     InfoStatus            ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                                     InfoStatus            ExpandEVSEIds                     = InfoStatus.Expand,
+                                     InfoStatus            ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                                     InfoStatus            ExpandDataLicenses                = InfoStatus.ShowIdOnly)
 
-            #region Initial checks
 
-            if (ChargingStation == null)
-                throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
+            => ChargingStation == null
 
-            #endregion
+                   ? null
 
-            // Embedded means it is served as a substructure of e.g. a ChargingPool
-            if (Embedded)
-                return JSONObject.Create(
-                           ChargingStation.Id.         ToJSON("Id"),
-                           ChargingStation.Name.       ToJSON("Name"),
-                           ChargingStation.Description.ToJSON("Description"),
-                           ChargingStation.Brand != null
-                               ? ChargingStation.Brand.ToJSON("Brand")
-                               : null,
-                           ChargingStation.GeoLocation         != ChargingStation.ChargingPool.GeoLocation         ? ChargingStation.GeoLocation.Value.  ToJSON("GeoLocation")         : null,
-                           ChargingStation.Address             != ChargingStation.ChargingPool.Address             ? ChargingStation.Address.            ToJSON("Address")             : null,
-                           ChargingStation.AuthenticationModes != ChargingStation.ChargingPool.AuthenticationModes ? ChargingStation.AuthenticationModes.ToJSON("AuthenticationModes") : null,
-                           ChargingStation.OpeningTimes        != ChargingStation.ChargingPool.OpeningTimes        ? ChargingStation.OpeningTimes.       ToJSON("OpeningTimes")        : null,
+                   : JSONObject.Create(
 
-                           ExpandEVSEIds
-                               ? new JProperty("EVSEs",             new JArray(ChargingStation.EVSEs.  OrderBy(evse   => evse.Id).Select(evse   => evse.  ToJSON(Embedded: true))))
-                               : new JProperty("EVSEIds",           new JArray(ChargingStation.EVSEIds.OrderBy(evseid => evseid). Select(evseid => evseid.ToString())))
-                          );
+                         ChargingStation.Id.ToJSON("@id"),
 
-            else
-                return JSONObject.Create(
-                           ChargingStation.Id.ToJSON("Id"),
-                           new JProperty("ChargingPoolId",          ChargingStation.ChargingPool.Id.ToString()),
+                         Embedded
+                             ? null
+                             : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/ChargingStation"),
 
-                           ExpandOperatorId
-                               ? new JProperty("Operator",          ChargingStation.ChargingPool.Operator.ToJSON())
-                               : new JProperty("OperatorId",        ChargingStation.ChargingPool.Operator.Id.ToString()),
+                         ChargingStation.Name.       IsNeitherNullNorEmpty()
+                             ? ChargingStation.Name.       ToJSON("name")
+                             : null,
 
-                           ChargingStation.Brand != null
-                               ? ExpandBrandId
-                                     ? ChargingStation.Brand.       ToJSON("Brand")
-                                     : new JProperty("BrandId",     ChargingStation.Brand.Id.ToString())
-                               : null,
+                         ChargingStation.Description.IsNeitherNullNorEmpty()
+                             ? ChargingStation.Description.ToJSON("description")
+                             : null,
 
-                           ChargingStation.Name.                    ToJSON("Name"),
-                           ChargingStation.Description.             ToJSON("Description"),
-                           ChargingStation.GeoLocation.Value.       ToJSON("GeoLocation"),
-                           ChargingStation.Address.                 ToJSON("Address"),
-                           ChargingStation.AuthenticationModes.     ToJSON("AuthenticationModes"),
-                           ChargingStation.OpeningTimes.            ToJSON("OpeningTimes"),
+                         ChargingStation.Brand != null
+                             ? ExpandBrandIds.Switch(
+                                   () => new JProperty("brandId",  ChargingStation.Brand.Id.ToString()),
+                                   () => new JProperty("brand",    ChargingStation.Brand.   ToJSON()))
+                             : null,
 
-                           ExpandEVSEIds
-                               ? new JProperty("EVSEs",             new JArray(ChargingStation.EVSEs.  OrderBy(evse   => evse.Id).Select(evse   => evse.  ToJSON(Embedded: true))))
-                               : new JProperty("EVSEIds",           new JArray(ChargingStation.EVSEIds.OrderBy(evseid => evseid). Select(evseid => evseid.ToString())))
-                          );
+                         (!Embedded || ChargingStation.DataSource != ChargingStation.ChargingPool.DataSource)
+                             ? ChargingStation.DataSource.ToJSON("dataSource")
+                             : null,
 
-        }
+                         (!Embedded || ChargingStation.DataLicenses != ChargingStation.ChargingPool.DataLicenses)
+                             ? ExpandDataLicenses.Switch(
+                                 () => new JProperty("dataLicenseIds",  new JArray(ChargingStation.DataLicenses.SafeSelect(license => license.Id.ToString()))),
+                                 () => new JProperty("dataLicenses",    ChargingStation.DataLicenses.ToJSON()))
+                             : null,
+
+                         #region Embedded means it is served as a substructure of e.g. a charging station operator
+
+                         Embedded
+                             ? null
+                             : ExpandRoamingNetworkId.Switch(
+                                   () => new JProperty("roamingNetworkId",           ChargingStation.RoamingNetwork.Id. ToString()),
+                                   () => new JProperty("roamingNetwork",             ChargingStation.RoamingNetwork.    ToJSON(Embedded:                          true,
+                                                                                                                               ExpandChargingStationOperatorIds:  InfoStatus.Hidden,
+                                                                                                                               ExpandChargingPoolIds:             InfoStatus.Hidden,
+                                                                                                                               ExpandChargingStationIds:          InfoStatus.Hidden,
+                                                                                                                               ExpandEVSEIds:                     InfoStatus.Hidden,
+                                                                                                                               ExpandBrandIds:                    InfoStatus.Hidden,
+                                                                                                                               ExpandDataLicenses:                InfoStatus.Hidden))),
+
+                         Embedded
+                             ? null
+                             : ExpandChargingStationOperatorId.Switch(
+                                   () => new JProperty("chargingStationOperatorId",  ChargingStation.Operator.Id.       ToString()),
+                                   () => new JProperty("chargingStationOperator",    ChargingStation.Operator.          ToJSON(Embedded:                          true,
+                                                                                                                               ExpandRoamingNetworkId:            InfoStatus.Hidden,
+                                                                                                                               ExpandChargingPoolIds:             InfoStatus.Hidden,
+                                                                                                                               ExpandChargingStationIds:          InfoStatus.Hidden,
+                                                                                                                               ExpandEVSEIds:                     InfoStatus.Hidden,
+                                                                                                                               ExpandBrandIds:                    InfoStatus.Hidden,
+                                                                                                                               ExpandDataLicenses:                InfoStatus.Hidden))),
+
+                         Embedded
+                             ? null
+                             : ExpandChargingPoolId.Switch(
+                                   () => new JProperty("chargingPoolId",             ChargingStation.ChargingPool.Id.   ToString()),
+                                   () => new JProperty("chargingPool",               ChargingStation.ChargingPool.      ToJSON(Embedded:                          true,
+                                                                                                                               ExpandRoamingNetworkId:            InfoStatus.Hidden,
+                                                                                                                               ExpandChargingStationOperatorId:   InfoStatus.Hidden,
+                                                                                                                               ExpandChargingStationIds:          InfoStatus.Hidden,
+                                                                                                                               ExpandEVSEIds:                     InfoStatus.Hidden,
+                                                                                                                               ExpandBrandIds:                    InfoStatus.Hidden,
+                                                                                                                               ExpandDataLicenses:                InfoStatus.Hidden))),
+
+                         #endregion
+
+                         (!Embedded || ChargingStation.GeoLocation         != ChargingStation.ChargingPool.GeoLocation)         ? ChargingStation.GeoLocation.Value.  ToJSON("geoLocation")         : null,
+                         (!Embedded || ChargingStation.Address             != ChargingStation.ChargingPool.Address)             ? ChargingStation.Address.            ToJSON("address")             : null,
+                         (!Embedded || ChargingStation.AuthenticationModes != ChargingStation.ChargingPool.AuthenticationModes) ? ChargingStation.AuthenticationModes.ToJSON("authenticationModes") : null,
+                         (!Embedded || ChargingStation.HotlinePhoneNumber  != ChargingStation.ChargingPool.HotlinePhoneNumber)  ? ChargingStation.HotlinePhoneNumber. ToJSON("hotlinePhoneNumber")  : null,
+                         (!Embedded || ChargingStation.OpeningTimes        != ChargingStation.ChargingPool.OpeningTimes)        ? ChargingStation.OpeningTimes.       ToJSON("openingTimes")        : null,
+
+                         ExpandEVSEIds.Switch(
+                             () => new JProperty("EVSEIds",
+                                                 ChargingStation.EVSEIds.SafeAny()
+                                                     ? new JArray(ChargingStation.EVSEIds.
+                                                                                  OrderBy(evseid => evseid).
+                                                                                  Select (evseid => evseid.ToString()))
+                                                     : null),
+
+                             () => new JProperty("EVSEs",
+                                                 ChargingStation.EVSEs.SafeAny()
+                                                     ? new JArray(ChargingStation.EVSEs.
+                                                                                  OrderBy(evse   => evse.Id).
+                                                                                  Select (evse   => evse.  ToJSON(Embedded: true)))
+                                                     : null))
+
+                        );
 
         #endregion
 
-        #region ToJSON(this ChargingStation, JPropertyKey)
+        #region ToJSON(this ChargingStations, Skip = 0, Take = 0, Embedded = false, ...)
 
-        public static JProperty ToJSON(this ChargingStation ChargingStation, String JPropertyKey)
-        {
-
-            #region Initial checks
-
-            if (ChargingStation == null)
-                throw new ArgumentNullException(nameof(ChargingStation), "The given charging station must not be null!");
-
-            if (JPropertyKey.IsNullOrEmpty())
-                throw new ArgumentNullException(nameof(JPropertyKey), "The given json property key must not be null or empty!");
-
-            #endregion
-
-            return new JProperty(JPropertyKey,
-                                 ChargingStation.ToJSON());
-
-        }
-
-        #endregion
-
-        #region ToJSON(this ChargingStations, Skip = 0, Take = 0, Embedded = false, ExpandEVSEIds = true, ExpandOperatorIds = false, ExpandBrandIds = false)
-
+        /// <summary>
+        /// Return a JSON representation for the given enumeration of charging stations.
+        /// </summary>
+        /// <param name="ChargingStations">An enumeration of charging stations.</param>
+        /// <param name="Skip">The optional number of charging stations to skip.</param>
+        /// <param name="Take">The optional number of charging stations to return.</param>
+        /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
         public static JArray ToJSON(this IEnumerable<ChargingStation>  ChargingStations,
-                                    UInt64                             Skip               = 0,
-                                    UInt64                             Take               = 0,
-                                    Boolean                            Embedded           = false,
-                                    Boolean                            ExpandEVSEIds      = true,
-                                    Boolean                            ExpandOperatorIds  = false,
-                                    Boolean                            ExpandBrandIds     = false)
-        {
+                                    UInt64                             Skip                              = 0,
+                                    UInt64                             Take                              = 0,
+                                    Boolean                            Embedded                          = false,
+                                    InfoStatus                         ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                                    InfoStatus                         ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                                    InfoStatus                         ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                                    InfoStatus                         ExpandEVSEIds                     = InfoStatus.Expand,
+                                    InfoStatus                         ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                                    InfoStatus                         ExpandDataLicenses                = InfoStatus.ShowIdOnly)
 
-            #region Initial checks
 
-            if (ChargingStations == null)
-                return new JArray();
+            => ChargingStations != null && ChargingStations.Any()
 
-            #endregion
+                   ? new JArray(ChargingStations.
+                                    Where     (station => station != null).
+                                    OrderBy   (station => station.Id).
+                                    SkipTakeFilter(Skip, Take).
+                                    SafeSelect(station => station.ToJSON(Embedded,
+                                                                         ExpandRoamingNetworkId,
+                                                                         ExpandChargingStationOperatorId,
+                                                                         ExpandChargingPoolId,
+                                                                         ExpandEVSEIds,
+                                                                         ExpandBrandIds,
+                                                                         ExpandDataLicenses)))
 
-            return new JArray(ChargingStations.
-                                  Where     (station => station != null).
-                                  OrderBy   (station => station.Id).
-                                  SkipTakeFilter(Skip, Take).
-                                  SafeSelect(station => station.ToJSON(Embedded,
-                                                                       ExpandEVSEIds,
-                                                                       ExpandOperatorIds,
-                                                                       ExpandBrandIds)));
-
-        }
+                   : null;
 
         #endregion
 
@@ -169,7 +207,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
             #endregion
 
-            return ChargingStations != null
+            return ChargingStations?.Any() == true
                        ? new JProperty(JPropertyKey, ChargingStations.ToJSON())
                        : null;
 
@@ -177,70 +215,203 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this ChargingStationAdminStatus, Skip = 0, Take = 0, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>>  ChargingStationAdminStatus,
-                                     UInt64                                                                                                         Skip         = 0,
-                                     UInt64                                                                                                         Take         = 0,
-                                     UInt64                                                                                                         HistorySize  = 1)
+        #region ToJSON(this ChargingStationAdminStatus,          Skip = 0, Take = 0)
+
+        public static JObject ToJSON(this IEnumerable<ChargingStationAdminStatus>  ChargingStationAdminStatus,
+                                     UInt64                                        Skip  = 0,
+                                     UInt64                                        Take  = 0)
         {
 
-            if (ChargingStationAdminStatus == null)
+            #region Initial checks
+
+            if (ChargingStationAdminStatus == null || !ChargingStationAdminStatus.Any())
                 return new JObject();
 
-            var _ChargingStationAdminStatus = Take == 0
-                                                  ? ChargingStationAdminStatus.Skip(Skip)
-                                                  : ChargingStationAdminStatus.Skip(Skip).Take(Take);
+            #endregion
 
-            return new JObject(_ChargingStationAdminStatus.
-                                   SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
-                                                                new JObject(statuslist.Value.
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-                                                                            // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
-                                                                            GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                            Select           (group => group.First()).
+            var _FilteredStatus = new Dictionary<ChargingStation_Id, ChargingStationAdminStatus>();
 
-                                                                            OrderByDescending(tsv   => tsv.Timestamp).
-                                                                            Take             (HistorySize).
-                                                                            Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                     tsv.Value.    ToString())))
+            foreach (var status in ChargingStationAdminStatus)
+            {
 
-                                                            )));
+                if (!_FilteredStatus.ContainsKey(status.Id))
+                    _FilteredStatus.Add(status.Id, status);
+
+                else if (_FilteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    _FilteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
+                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
+                                                                          kvp.Value.Status.Value.    ToString())
+                                                              )));
 
         }
 
         #endregion
 
-        #region ToJSON(this ChargingStationStatus, Skip = 0, Take = 0, HistorySize = 1)
+        #region ToJSON(this ChargingStationAdminStatusSchedules, Skip = 0, Take = 0, HistorySize = 1)
 
-        public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>>  ChargingStationStatus,
-                                     UInt64                                                                                                   Skip         = 0,
-                                     UInt64                                                                                                   Take         = 0,
-                                     UInt64                                                                                                   HistorySize  = 1)
-
+        public static JObject ToJSON(this IEnumerable<ChargingStationAdminStatusSchedule>  ChargingStationAdminStatusSchedules,
+                                     UInt64                                                Skip         = 0,
+                                     UInt64                                                Take         = 0,
+                                     UInt64                                                HistorySize  = 1)
         {
 
-            if (ChargingStationStatus == null)
+            #region Initial checks
+
+            if (ChargingStationAdminStatusSchedules == null || !ChargingStationAdminStatusSchedules.Any())
                 return new JObject();
 
-            var _ChargingStationStatus = Take == 0
-                                             ? ChargingStationStatus.Skip(Skip)
-                                             : ChargingStationStatus.Skip(Skip).Take(Take);
+            #endregion
 
-            return new JObject(_ChargingStationStatus.
-                                   SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
-                                                                new JObject(statuslist.Value.
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
 
-                                                                            // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
-                                                                            GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
-                                                                            Select           (group => group.First()).
+            var _FilteredStatus = new Dictionary<ChargingStation_Id, ChargingStationAdminStatusSchedule>();
 
-                                                                            OrderByDescending(tsv   => tsv.Timestamp).
-                                                                            Take             (HistorySize).
-                                                                            Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
-                                                                                                                     tsv.Value.    ToString())))
+            foreach (var status in ChargingStationAdminStatusSchedules)
+            {
 
-                                                            )));
+                if (!_FilteredStatus.ContainsKey(status.Id))
+                    _FilteredStatus.Add(status.Id, status);
+
+                else if (_FilteredStatus[status.Id].StatusSchedule.Any() &&
+                         _FilteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
+                         _FilteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
+                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JObject(
+                                                                   kvp.Value.StatusSchedule.
+
+                                                                             // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
+                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
+                                                                             Select           (group => group.First()).
+
+                                                                             OrderByDescending(tsv   => tsv.Timestamp).
+                                                                             Take             (HistorySize).
+                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
+                                                                                                                      tsv.Value.    ToString())))
+
+                                                              )));
+
+        }
+
+        #endregion
+
+
+        #region ToJSON(this ChargingStationStatus,               Skip = 0, Take = 0)
+
+        public static JObject ToJSON(this IEnumerable<ChargingStationStatus>  ChargingStationStatus,
+                                     UInt64                                   Skip  = 0,
+                                     UInt64                                   Take  = 0)
+        {
+
+            #region Initial checks
+
+            if (ChargingStationStatus == null || !ChargingStationStatus.Any())
+                return new JObject();
+
+            #endregion
+
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
+
+            var _FilteredStatus = new Dictionary<ChargingStation_Id, ChargingStationStatus>();
+
+            foreach (var status in ChargingStationStatus)
+            {
+
+                if (!_FilteredStatus.ContainsKey(status.Id))
+                    _FilteredStatus.Add(status.Id, status);
+
+                else if (_FilteredStatus[status.Id].Status.Timestamp >= status.Status.Timestamp)
+                    _FilteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
+                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
+                                                                          kvp.Value.Status.Value.    ToString())
+                                                              )));
+
+        }
+
+        #endregion
+
+        #region ToJSON(this ChargingStationAdminStatusSchedules, Skip = 0, Take = 0, HistorySize = 1)
+
+        public static JObject ToJSON(this IEnumerable<ChargingStationStatusSchedule>  ChargingStationStatusSchedules,
+                                     UInt64                                           Skip         = 0,
+                                     UInt64                                           Take         = 0,
+                                     UInt64                                           HistorySize  = 1)
+        {
+
+            #region Initial checks
+
+            if (ChargingStationStatusSchedules == null || !ChargingStationStatusSchedules.Any())
+                return new JObject();
+
+            #endregion
+
+            #region Maybe there are duplicate charging station identifications in the enumeration... take the newest one!
+
+            var _FilteredStatus = new Dictionary<ChargingStation_Id, ChargingStationStatusSchedule>();
+
+            foreach (var status in ChargingStationStatusSchedules)
+            {
+
+                if (!_FilteredStatus.ContainsKey(status.Id))
+                    _FilteredStatus.Add(status.Id, status);
+
+                else if (_FilteredStatus[status.Id].StatusSchedule.Any() &&
+                         _FilteredStatus[status.Id].StatusSchedule.First().Timestamp >= status.StatusSchedule.First().Timestamp)
+                         _FilteredStatus[status.Id] = status;
+
+            }
+
+            #endregion
+
+
+            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
+                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
+
+                                   Select(kvp => new JProperty(kvp.Key.ToString(),
+                                                               new JObject(
+                                                                   kvp.Value.StatusSchedule.
+
+                                                                             // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
+                                                                             GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
+                                                                             Select           (group => group.First()).
+
+                                                                             OrderByDescending(tsv   => tsv.Timestamp).
+                                                                             Take             (HistorySize).
+                                                                             Select           (tsv   => new JProperty(tsv.Timestamp.ToIso8601(),
+                                                                                                                      tsv.Value.    ToString())))
+
+                                                              )));
 
         }
 

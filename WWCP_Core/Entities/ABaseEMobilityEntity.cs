@@ -22,6 +22,8 @@ using System.Collections.Generic;
 
 using Org.BouncyCastle.Bcpg.OpenPgp;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 #endregion
 
 namespace org.GraphDefined.WWCP
@@ -55,23 +57,20 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Id">The unique entity identification.</param>
         /// <param name="RoamingNetwork">A WWCP roaming network.</param>
+        /// <param name="PublicKeyRing">The public key ring of the entity.</param>
+        /// <param name="SecretKeyRing">The secrect key ring of the entity.</param>
         protected ABaseEMobilityEntity(TId               Id,
                                        RoamingNetwork    RoamingNetwork,
                                        PgpPublicKeyRing  PublicKeyRing  = null,
                                        PgpSecretKeyRing  SecretKeyRing  = null)
 
-            : base(Id)
+            : base(Id,
+                   PublicKeyRing,
+                   SecretKeyRing)
 
         {
 
-            #region Initial checks
-
-            if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
-
-            #endregion
-
-            this.RoamingNetwork = RoamingNetwork;
+            this.RoamingNetwork = RoamingNetwork ?? throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
 
         }
 
@@ -84,23 +83,20 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Ids">The unique entity identifications.</param>
         /// <param name="RoamingNetwork">A WWCP roaming network.</param>
+        /// <param name="PublicKeyRing">The public key ring of the entity.</param>
+        /// <param name="SecretKeyRing">The secrect key ring of the entity.</param>
         protected ABaseEMobilityEntity(IEnumerable<TId>  Ids,
                                        RoamingNetwork    RoamingNetwork,
                                        PgpPublicKeyRing  PublicKeyRing  = null,
                                        PgpSecretKeyRing  SecretKeyRing  = null)
 
-            : base(Ids)
+            : base(Ids,
+                   PublicKeyRing,
+                   SecretKeyRing)
 
         {
 
-            #region Initial checks
-
-            if (RoamingNetwork == null)
-                throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
-
-            #endregion
-
-            this.RoamingNetwork = RoamingNetwork;
+            this.RoamingNetwork = RoamingNetwork ?? throw new ArgumentNullException(nameof(RoamingNetwork), "The given roaming network must not be null!");
 
         }
 

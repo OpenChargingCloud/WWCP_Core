@@ -107,7 +107,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                var _TimeLeft = _EndTime - DateTime.Now.ToUniversalTime();// _StartTime + _Duration - DateTime.Now;
+                var _TimeLeft = _EndTime - DateTime.UtcNow;// _StartTime + _Duration - DateTime.UtcNow;
 
                 return _ChargingSession == null
                            ? _TimeLeft.TotalSeconds > 0 ? _TimeLeft : TimeSpan.FromSeconds(0)
@@ -175,7 +175,7 @@ namespace org.GraphDefined.WWCP
         public eMobilityProvider_Id?  ProviderId          { get; }
 
         [Optional]
-        public eMobilityAccount_Id?   eMAId               { get; }
+        public AuthIdentification     Identification      { get; }
 
         [Optional]
         public RoamingNetwork         RoamingNetwork      { get; }
@@ -277,7 +277,7 @@ namespace org.GraphDefined.WWCP
                                    ChargingReservationLevel          ReservationLevel,
 
                                    eMobilityProvider_Id?             ProviderId          = null,
-                                   eMobilityAccount_Id?              eMAId               = null,
+                                   AuthIdentification                Identification      = null,
 
                                    RoamingNetwork                    RoamingNetwork      = null,
                                    ChargingPool_Id?                  ChargingPoolId      = null,
@@ -300,7 +300,7 @@ namespace org.GraphDefined.WWCP
             this._ReservationLevel         = ReservationLevel;
 
             this.ProviderId                = ProviderId;
-            this.eMAId                     = eMAId;
+            this.Identification            = Identification;
 
             this.RoamingNetwork            = RoamingNetwork;
             this.ChargingPoolId            = ChargingPoolId;
@@ -323,13 +323,10 @@ namespace org.GraphDefined.WWCP
         /// Returns true if the reservation is expired.
         /// </summary>
         public Boolean IsExpired()
-        {
 
-            return _ChargingSession == null
-                       ? DateTime.Now.ToUniversalTime() > _EndTime
-                       : false;
-
-        }
+            => _ChargingSession == null
+                   ? DateTime.UtcNow > _EndTime
+                   : false;
 
         #endregion
 
@@ -339,9 +336,8 @@ namespace org.GraphDefined.WWCP
         /// Returns true if the reservation is expired.
         /// </summary>
         public Boolean IsExpired(TimeSpan ReservationSelfCancelAfter)
-        {
-            return DateTime.Now.ToUniversalTime() > (_EndTime + ReservationSelfCancelAfter);
-        }
+
+            => DateTime.UtcNow > (_EndTime + ReservationSelfCancelAfter);
 
         #endregion
 

@@ -27,7 +27,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// An e-mobility provider admin status report.
     /// </summary>
-    public class eMobilityProviderAdminStatusReport : StatusReport<eMobilityProvider, eMobilityProviderAdminStatusType>
+    public class eMobilityProviderAdminStatusReport : StatusReport<eMobilityProvider, eMobilityProviderAdminStatusTypes>
     {
 
         public eMobilityProviderAdminStatusReport(IEnumerable<eMobilityProvider> EMobilityProviders)

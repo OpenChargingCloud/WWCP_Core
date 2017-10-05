@@ -21,7 +21,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The admin status of a roaming network.
     /// </summary>
-    public enum RoamingNetworkAdminStatusType
+    public enum RoamingNetworkAdminStatusTypes
     {
 
         /// <summary>

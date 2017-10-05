@@ -28,6 +28,7 @@ using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
 using System.Threading.Tasks;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -44,8 +45,8 @@ namespace org.GraphDefined.WWCP
     public delegate Task OnAdminStatusChangedDelegate(DateTime Timestamp,
                                                       EventTracking_Id EventTrackingId,
                                                       ChargingStationGroup ChargingStationGroup,
-                                                      Timestamped<ChargingStationGroupAdminStatusType> OldStatus,
-                                                      Timestamped<ChargingStationGroupAdminStatusType> NewStatus);
+                                                      Timestamped<ChargingStationGroupAdminStatusTypes> OldStatus,
+                                                      Timestamped<ChargingStationGroupAdminStatusTypes> NewStatus);
 
     /// <summary>
     /// A delegate called whenever the status changed.
@@ -57,8 +58,8 @@ namespace org.GraphDefined.WWCP
     public delegate Task OnStatusChangedDelegate(DateTime Timestamp,
                                                  EventTracking_Id EventTrackingId,
                                                  ChargingStationGroup ChargingStationGroup,
-                                                 Timestamped<ChargingStationGroupStatusType> OldStatus,
-                                                 Timestamped<ChargingStationGroupStatusType> NewStatus);
+                                                 Timestamped<ChargingStationGroupStatusTypes> OldStatus,
+                                                 Timestamped<ChargingStationGroupStatusTypes> NewStatus);
 
 
     public class AutoIncludeMemberIds
@@ -108,25 +109,85 @@ namespace org.GraphDefined.WWCP
         #region Properties
 
         /// <summary>
-        /// The Charging Station Operator of this charging pool.
+        /// The offical (multi-language) name of this group.
         /// </summary>
         [Mandatory]
-        public ChargingStationOperator  Operator      { get; }
+        public I18NString               Name           { get; }
 
         /// <summary>
-        /// The offical (multi-language) name of this charging station group.
-        /// </summary>
-        [Mandatory]
-        public I18NString               Name          { get; }
-
-        /// <summary>
-        /// An optional (multi-language) description of this charging station group.
+        /// An optional (multi-language) description of this group.
         /// </summary>
         [Optional]
-        public I18NString               Description   { get; }
+        public I18NString               Description    { get; }
 
 
-        private List<ChargingStation_Id> _AllowedMemberIds;
+        /// <summary>
+        /// An optional (multi-language) brand name for this group.
+        /// </summary>
+        [Optional]
+        public Brand                    Brand          { get; }
+
+        /// <summary>
+        /// The priority of this group relative to all other groups.
+        /// </summary>
+        public Priority?                Priority       { get; }
+
+        /// <summary>
+        /// An optional charging tariff.
+        /// </summary>
+        [Optional]
+        public ChargingTariff           Tariff         { get; }
+
+        #region DataLicense
+
+        private ReactiveSet<DataLicense> _DataLicenses;
+
+        /// <summary>
+        /// The license of the group data.
+        /// </summary>
+        [Mandatory]
+        public ReactiveSet<DataLicense> DataLicenses
+        {
+
+            get
+            {
+
+                return _DataLicenses != null && _DataLicenses.Any()
+                           ? _DataLicenses
+                           : Operator?.DataLicenses;
+
+            }
+
+            set
+            {
+
+                if (value != _DataLicenses && value != Operator?.DataLicenses)
+                {
+
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _DataLicenses);
+
+                    else
+                    {
+
+                        if (_DataLicenses == null)
+                            SetProperty(ref _DataLicenses, value);
+
+                        else
+                            SetProperty(ref _DataLicenses, _DataLicenses.Set(value));
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+
+        private HashSet<ChargingStation_Id> _AllowedMemberIds;
 
         public IEnumerable<ChargingStation_Id> AllowedMemberIds
             => _AllowedMemberIds;
@@ -134,6 +195,7 @@ namespace org.GraphDefined.WWCP
         public Func<ChargingStation, Boolean> AutoIncludeStations { get; }
 
 
+        public ChargingStationGroup     ParentGroup    { get; }
 
         #region ChargingStations
 
@@ -150,21 +212,21 @@ namespace org.GraphDefined.WWCP
         /// Return all charging station identifications registered within this charing station group.
         /// </summary>
         public IEnumerable<ChargingStation_Id> ChargingStationIds
-            => ChargingStations.Select(station => station.Id);
+            => ChargingStations.SafeSelect(station => station.Id);
 
         /// <summary>
         /// Return all EVSEs registered within this charing station group.
         /// </summary>
         public IEnumerable<EVSE> EVSEs
-            => ChargingStations.SelectMany(station => station.EVSEs);
+            => ChargingStations.SafeSelectMany(station => station.EVSEs);
 
         /// <summary>
         /// Return all EVSE identifications registered within this charing station group.
         /// </summary>
         public IEnumerable<EVSE_Id> EVSEIds
             => ChargingStations.
-                   SelectMany(station => station.EVSEs).
-                   Select    (evse    => evse.Id);
+                   SafeSelectMany(station => station.EVSEs).
+                   SafeSelect    (evse    => evse.Id);
 
         #endregion
 
@@ -175,20 +237,20 @@ namespace org.GraphDefined.WWCP
         /// The current charging pool admin status.
         /// </summary>
         [Dynamic]
-        public Timestamped<ChargingStationGroupAdminStatusType> AdminStatus
+        public Timestamped<ChargingStationGroupAdminStatusTypes> AdminStatus
             => _AdminStatusSchedule.CurrentStatus;
 
         #endregion
 
         #region AdminStatusSchedule
 
-        private StatusSchedule<ChargingStationGroupAdminStatusType> _AdminStatusSchedule;
+        private StatusSchedule<ChargingStationGroupAdminStatusTypes> _AdminStatusSchedule;
 
         /// <summary>
         /// The charging pool admin status schedule.
         /// </summary>
         [Dynamic]
-        public IEnumerable<Timestamped<ChargingStationGroupAdminStatusType>> AdminStatusSchedule
+        public IEnumerable<Timestamped<ChargingStationGroupAdminStatusTypes>> AdminStatusSchedule
             => _AdminStatusSchedule;
 
         #endregion
@@ -200,20 +262,20 @@ namespace org.GraphDefined.WWCP
         /// The current charging pool status.
         /// </summary>
         [Dynamic]
-        public Timestamped<ChargingStationGroupStatusType> Status
+        public Timestamped<ChargingStationGroupStatusTypes> Status
             => _StatusSchedule.CurrentStatus;
 
         #endregion
 
         #region StatusSchedule
 
-        private StatusSchedule<ChargingStationGroupStatusType> _StatusSchedule;
+        private StatusSchedule<ChargingStationGroupStatusTypes> _StatusSchedule;
 
         /// <summary>
         /// The charging pool status schedule.
         /// </summary>
         [Dynamic]
-        public IEnumerable<Timestamped<ChargingStationGroupStatusType>> StatusSchedule
+        public IEnumerable<Timestamped<ChargingStationGroupStatusTypes>> StatusSchedule
             => _StatusSchedule;
 
         #endregion
@@ -223,9 +285,26 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// A delegate called to aggregate the dynamic status of all subordinated charging stations.
         /// </summary>
-        public Func<ChargingStationStatusReport, ChargingStationGroupStatusType>  StatusAggregationDelegate   { get; }
+        public Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate   { get; }
 
         #endregion
+
+        #endregion
+
+        #region Links
+
+        /// <summary>
+        /// The Charging Station Operator of this charging pool.
+        /// </summary>
+        [Mandatory]
+        public ChargingStationOperator Operator { get; }
+
+        /// <summary>
+        /// The roaming network of this charging station.
+        /// </summary>
+        [InternalUseOnly]
+        public RoamingNetwork RoamingNetwork
+            => Operator?.RoamingNetwork;
 
         #endregion
 
@@ -373,18 +452,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="StatusAggregationDelegate">A delegate called to aggregate the dynamic status of all subordinated charging stations.</param>
         /// <param name="MaxGroupStatusListSize">The default size of the charging station group status list.</param>
         /// <param name="MaxGroupAdminStatusListSize">The default size of the charging station group admin status list.</param>
-        internal ChargingStationGroup(ChargingStationGroup_Id                                            Id,
-                                      ChargingStationOperator                                            Operator,
-                                      I18NString                                                         Name,
-                                      I18NString                                                         Description                  = null,
+        internal ChargingStationGroup(ChargingStationGroup_Id                                             Id,
+                                      ChargingStationOperator                                             Operator,
+                                      I18NString                                                          Name,
+                                      I18NString                                                          Description                   = null,
 
-                                      IEnumerable<ChargingStation>                                       Members                      = null,
-                                      IEnumerable<ChargingStation_Id>                                    MemberIds                    = null,
-                                      Func<ChargingStation, Boolean>                                     AutoIncludeStations          = null,
+                                      Brand                                                               Brand                         = null,
+                                      Priority?                                                           Priority                      = null,
+                                      ChargingTariff                                                      Tariff                        = null,
+                                      IEnumerable<DataLicense>                                            DataLicenses                  = null,
 
-                                      Func<ChargingStationStatusReport, ChargingStationGroupStatusType>  StatusAggregationDelegate    = null,
-                                      UInt16                                                             MaxGroupStatusListSize       = DefaultMaxGroupStatusListSize,
-                                      UInt16                                                             MaxGroupAdminStatusListSize  = DefaultMaxGroupAdminStatusListSize)
+                                      IEnumerable<ChargingStation>                                        Members                       = null,
+                                      IEnumerable<ChargingStation_Id>                                     MemberIds                     = null,
+                                      Func<ChargingStation, Boolean>                                      AutoIncludeStations           = null,
+
+                                      Func<ChargingStationStatusReport, ChargingStationGroupStatusTypes>  StatusAggregationDelegate     = null,
+                                      UInt16                                                              MaxGroupStatusListSize        = DefaultMaxGroupStatusListSize,
+                                      UInt16                                                              MaxGroupAdminStatusListSize   = DefaultMaxGroupAdminStatusListSize)
 
             : base(Id)
 
@@ -406,17 +490,22 @@ namespace org.GraphDefined.WWCP
             this.Name                        = Name;
             this.Description                 = Description ?? new I18NString();
 
-            this._AllowedMemberIds           = MemberIds != null ? new List<ChargingStation_Id>(MemberIds) : new List<ChargingStation_Id>();
-            this.AutoIncludeStations         = AutoIncludeStations ?? (station => true);
+            this.Brand                       = Brand;
+            this.Priority                    = Priority;
+            this.Tariff                      = Tariff;
+            this.DataLicenses                = DataLicenses?.Any() == true ? new ReactiveSet<DataLicense>(DataLicenses) : new ReactiveSet<DataLicense>();
+
+            this._AllowedMemberIds           = MemberIds != null ? new HashSet<ChargingStation_Id>(MemberIds) : new HashSet<ChargingStation_Id>();
+            this.AutoIncludeStations         = AutoIncludeStations ?? (MemberIds == null ? (Func<ChargingStation, Boolean>) (station => true) : station => false);
             this._ChargingStations           = new ConcurrentDictionary<ChargingStation_Id, ChargingStation>();
 
             this.StatusAggregationDelegate   = StatusAggregationDelegate;
 
-            this._AdminStatusSchedule        = new StatusSchedule<ChargingStationGroupAdminStatusType>(MaxGroupAdminStatusListSize);
-            this._AdminStatusSchedule.Insert(ChargingStationGroupAdminStatusType.Unknown);
+            this._AdminStatusSchedule        = new StatusSchedule<ChargingStationGroupAdminStatusTypes>(MaxGroupAdminStatusListSize);
+            this._AdminStatusSchedule.Insert(ChargingStationGroupAdminStatusTypes.Unknown);
 
-            this._StatusSchedule             = new StatusSchedule<ChargingStationGroupStatusType>     (MaxGroupStatusListSize);
-            this._StatusSchedule.     Insert(ChargingStationGroupStatusType.Unknown);
+            this._StatusSchedule             = new StatusSchedule<ChargingStationGroupStatusTypes>     (MaxGroupStatusListSize);
+            this._StatusSchedule.     Insert(ChargingStationGroupStatusTypes.Unknown);
 
             #endregion
 
@@ -456,7 +545,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (Members != null && Members.Any())
+            if (Members?.Any() == true)
                 Members.ForEach(station => Add(station));
 
         }
@@ -538,7 +627,7 @@ namespace org.GraphDefined.WWCP
         /// Set the admin status.
         /// </summary>
         /// <param name="NewAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(ChargingStationGroupAdminStatusType  NewAdminStatus)
+        public void SetAdminStatus(ChargingStationGroupAdminStatusTypes  NewAdminStatus)
         {
             _AdminStatusSchedule.Insert(NewAdminStatus);
         }
@@ -551,7 +640,7 @@ namespace org.GraphDefined.WWCP
         /// Set the admin status.
         /// </summary>
         /// <param name="NewTimestampedAdminStatus">A new timestamped admin status.</param>
-        public void SetAdminStatus(Timestamped<ChargingStationGroupAdminStatusType> NewTimestampedAdminStatus)
+        public void SetAdminStatus(Timestamped<ChargingStationGroupAdminStatusTypes> NewTimestampedAdminStatus)
         {
             _AdminStatusSchedule.Insert(NewTimestampedAdminStatus);
         }
@@ -565,7 +654,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="NewAdminStatus">A new admin status.</param>
         /// <param name="Timestamp">The timestamp when this change was detected.</param>
-        public void SetAdminStatus(ChargingStationGroupAdminStatusType  NewAdminStatus,
+        public void SetAdminStatus(ChargingStationGroupAdminStatusTypes  NewAdminStatus,
                                    DateTime                             Timestamp)
         {
             _AdminStatusSchedule.Insert(NewAdminStatus, Timestamp);
@@ -578,10 +667,10 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Set the timestamped admin status.
         /// </summary>
-        /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
+        /// <param name="NewStatusList">A list of new timestamped admin status.</param>
         /// <param name="ChangeMethod">The change mode.</param>
-        public void SetAdminStatus(IEnumerable<Timestamped<ChargingStationGroupAdminStatusType>>  NewStatusList,
-                                   ChangeMethods                                          ChangeMethod = ChangeMethods.Replace)
+        public void SetAdminStatus(IEnumerable<Timestamped<ChargingStationGroupAdminStatusTypes>>  NewStatusList,
+                                   ChangeMethods                                                  ChangeMethod = ChangeMethods.Replace)
         {
 
             _AdminStatusSchedule.Insert(NewStatusList, ChangeMethod);
@@ -604,8 +693,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="NewStatus">The new charging station admin status.</param>
         internal async Task UpdateAdminStatus(DateTime                                          Timestamp,
                                               EventTracking_Id                                  EventTrackingId,
-                                              Timestamped<ChargingStationGroupAdminStatusType>  OldStatus,
-                                              Timestamped<ChargingStationGroupAdminStatusType>  NewStatus)
+                                              Timestamped<ChargingStationGroupAdminStatusTypes>  OldStatus,
+                                              Timestamped<ChargingStationGroupAdminStatusTypes>  NewStatus)
         {
 
             await OnAdminStatusChanged?.Invoke(Timestamp, EventTrackingId, this, OldStatus, NewStatus);

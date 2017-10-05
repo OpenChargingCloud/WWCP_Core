@@ -522,18 +522,18 @@ namespace org.GraphDefined.WWCP.Importer
 
                                                                 _AllForwardingInfos.Add(ChargingStationId,
                                                                                         new ImporterForwardingInfo(
-                                                                                            OnChangedCallback: SendOnForwardingChanged,
-                                                                                            ChargingStationOperators: GetChargingStationOperators(ChargingStationId),
-                                                                                            StationId: ChargingStationId,
-                                                                                            StationName: "",
-                                                                                            StationServiceTag: "",
-                                                                                            StationAddress: new Address(),
-                                                                                            StationGeoCoordinate: null,
-                                                                                            PhoneNumber: PhoneNumber,
-                                                                                            AdminStatus: AdminStatus,
-                                                                                            Created: DateTime.Now,
-                                                                                            OutOfService: true,
-                                                                                            ForwardedToOperator: CurrentEVSEOperator)
+                                                                                            OnChangedCallback:          SendOnForwardingChanged,
+                                                                                            ChargingStationOperators:   GetChargingStationOperators(ChargingStationId),
+                                                                                            StationId:                  ChargingStationId,
+                                                                                            StationName:                "",
+                                                                                            StationServiceTag:          "",
+                                                                                            StationAddress:             null,//new Address(),
+                                                                                            StationGeoCoordinate:       null,
+                                                                                            PhoneNumber:                PhoneNumber,
+                                                                                            AdminStatus:                AdminStatus,
+                                                                                            Created:                    DateTime.UtcNow,
+                                                                                            OutOfService:               true,
+                                                                                            ForwardedToOperator:        CurrentEVSEOperator)
                                                                                        );
 
                                                             }
@@ -569,7 +569,7 @@ namespace org.GraphDefined.WWCP.Importer
                     throw new ApplicationException("Config file '" + ForwardingFilenamePrefix + "' does not exist!");
 
 
-                OnLoadForwardingDataFromFileFinished?.Invoke(DateTime.Now,
+                OnLoadForwardingDataFromFileFinished?.Invoke(DateTime.UtcNow,
                                                              this,
                                                              InputFile,
                                                              (UInt64) _AllForwardingInfos.Count);
@@ -590,7 +590,7 @@ namespace org.GraphDefined.WWCP.Importer
             lock (ImporterRunLock)
             {
 
-                var Now             = DateTime.Now;
+                var Now             = DateTime.UtcNow;
 
                 var _ConfigFilename = String.Concat(ForwardingFilenamePrefix,     "_",
                                                     Now.Year,                  "-",
@@ -749,7 +749,7 @@ namespace org.GraphDefined.WWCP.Importer
                         ExistingForwardingInfo.UpdateTimestamp();
 
                         if (ForwardingInformationChanged)
-                            OnForwardingInformationChanged?.Invoke(DateTime.Now,
+                            OnForwardingInformationChanged?.Invoke(DateTime.UtcNow,
                                                                    this,
                                                                    ExistingForwardingInfo, //ToDo: Send a clone of the previous forwarding info!
                                                                    ExistingForwardingInfo);
@@ -765,7 +765,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                         _AllForwardingInfos.Add(ForwardingInfo.StationId, ForwardingInfo);
 
-                        OnNewForwardingInformation?.Invoke(DateTime.Now,
+                        OnNewForwardingInformation?.Invoke(DateTime.UtcNow,
                                                            this,
                                                            ForwardingInfo);
 
@@ -806,7 +806,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                         _LastRunId = 0;
 
-                        var StartTime = DateTime.Now;
+                        var StartTime = DateTime.UtcNow;
 
                         #if DEBUG
 
@@ -822,9 +822,9 @@ namespace org.GraphDefined.WWCP.Importer
 
                         LoadForwardingDataFromFile();
 
-                        var FirstData = GetData(DateTime.Now,
+                        var FirstData = GetData(DateTime.UtcNow,
                                                 this,
-                                                DateTime.Now,
+                                                DateTime.UtcNow,
                                                 _LastRunId,
                                                 DNSClient);
 
@@ -839,7 +839,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                         #region Debug info
 
-                        var EndTime = DateTime.Now;
+                        var EndTime = DateTime.UtcNow;
 
                         #if DEBUG
 
@@ -897,7 +897,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                 DebugX.LogT("WWCP importer '" + Id + "' started!");
 
-                var StartTime = DateTime.Now;
+                var StartTime = DateTime.UtcNow;
 
                 #endif
 
@@ -908,7 +908,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                     #region Remove ForwardingInfos older than 7 days...
 
-                    //var Now       = DateTime.Now;
+                    //var Now       = DateTime.UtcNow;
 
                     //var ToRemove  = _AllForwardingInfos.
                     //                    Where (ForwardingInfo => ForwardingInfo.Value.LastTimeSeen + TimeSpan.FromDays(7) < Now).
@@ -919,7 +919,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                     #endregion
 
-                    GetData(DateTime.Now, this, DateTime.Now, _LastRunId++, DNSClient).
+                    GetData(DateTime.UtcNow, this, DateTime.UtcNow, _LastRunId++, DNSClient).
 
                         ContinueWith(ImporterTask => {
 
@@ -953,7 +953,7 @@ namespace org.GraphDefined.WWCP.Importer
 
                         #if DEBUG
 
-                        OnFinished?.Invoke(DateTime.Now, this, "WWCP importer '" + Id + "' finished after " + (DateTime.Now - StartTime).TotalSeconds + " seconds!");
+                        OnFinished?.Invoke(DateTime.UtcNow, this, "WWCP importer '" + Id + "' finished after " + (DateTime.UtcNow - StartTime).TotalSeconds + " seconds!");
 
                         #endif
 

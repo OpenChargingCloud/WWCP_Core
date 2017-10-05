@@ -22,6 +22,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -70,37 +71,55 @@ namespace org.GraphDefined.WWCP
         /// The EVSE used for charging.
         /// </summary>
         [Optional]
-        public EVSE                     EVSE                        { get; }
+        public EVSE                         EVSE                         { get; }
 
         /// <summary>
         /// The identification of the EVSE used for charging.
         /// </summary>
         [Optional]
-        public EVSE_Id?                 EVSEId                      { get; }
+        public EVSE_Id?                     EVSEId                       { get; }
 
         /// <summary>
         /// The charging station of the charging station used for charging.
         /// </summary>
         [Optional]
-        public ChargingStation          ChargingStation             { get; }
+        public ChargingStation              ChargingStation              { get; }
+
+        /// <summary>
+        /// The identification of the charging station used for charging.
+        /// </summary>
+        [Optional]
+        public ChargingStation_Id?          ChargingStationId            { get; }
 
         /// <summary>
         /// The charging pool of the charging pool used for charging.
         /// </summary>
         [Optional]
-        public ChargingPool             ChargingPool                { get; }
+        public ChargingPool                 ChargingPool                 { get; }
+
+        /// <summary>
+        /// The identification of the charging pool used for charging.
+        /// </summary>
+        [Optional]
+        public ChargingPool_Id?             ChargingPoolId               { get; }
 
         /// <summary>
         /// The charging station operator used for charging.
         /// </summary>
         [Optional]
-        public ChargingStationOperator  ChargingStationOperator     { get; }
+        public ChargingStationOperator      ChargingStationOperator      { get; }
+
+        /// <summary>
+        /// The identification of the charging station operator used for charging.
+        /// </summary>
+        [Optional]
+        public ChargingStationOperator_Id?  ChargingStationOperatorId    { get; }
 
         /// <summary>
         /// The consumed charging product.
         /// </summary>
         [Optional]
-        public ChargingProduct          ChargingProduct             { get; }
+        public ChargingProduct              ChargingProduct              { get; }
 
         #endregion
 
@@ -230,8 +249,11 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">The EVSE used for charging.</param>
         /// <param name="EVSEId">The identification of the EVSE used for charging.</param>
         /// <param name="ChargingStation">The charging station of the charging station used for charging.</param>
+        /// <param name="ChargingStationId">The identification of the charging station used for charging.</param>
         /// <param name="ChargingPool">The charging pool of the charging pool used for charging.</param>
+        /// <param name="ChargingPoolId">The identification of the charging pool used for charging.</param>
         /// <param name="ChargingStationOperator">The charging station operator used for charging.</param>
+        /// <param name="ChargingStationOperatorId">The identification of the charging station operator used for charging.</param>
         /// <param name="ChargingProduct">The consumed charging product.</param>
         /// 
         /// <param name="IdentificationStart">The identification used for starting this charging process.</param>
@@ -289,33 +311,36 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            this.SessionId                = SessionId;
-            this.SessionTime              = SessionTime;
-            this.Duration                 = Duration;
+            this.SessionId                   = SessionId;
+            this.SessionTime                 = SessionTime;
+            this.Duration                    = Duration;
 
-            this.EVSE                     = EVSE;
-            this.EVSEId                   = EVSE != null ? EVSE.Id : EVSEId;
-            this.ChargingStation          = ChargingStation;
-            this.ChargingPool             = ChargingPool;
-            this.ChargingStationOperator  = ChargingStationOperator;
-            this.ChargingProduct          = ChargingProduct;
+            this.EVSE                        = EVSE;
+            this.EVSEId                      = EVSE                     != null ? EVSE.Id                    : EVSEId;
+            this.ChargingStation             = ChargingStation;
+            this.ChargingStationId           = ChargingStation          != null ? ChargingStation.Id         : ChargingStationId;
+            this.ChargingPool                = ChargingPool;
+            this.ChargingPoolId              = ChargingPool             != null ? ChargingPool.Id            : ChargingPoolId;
+            this.ChargingStationOperator     = ChargingStationOperator;
+            this.ChargingStationOperatorId   = ChargingStationOperator  != null ? ChargingStationOperator.Id : ChargingStationOperatorId;
+            this.ChargingProduct             = ChargingProduct;
 
-            this.IdentificationStart      = IdentificationStart;
-            this.IdentificationStop       = IdentificationStop;
-            this.ProviderIdStart          = ProviderIdStart;
-            this.ProviderIdStop           = ProviderIdStop;
+            this.IdentificationStart         = IdentificationStart;
+            this.IdentificationStop          = IdentificationStop;
+            this.ProviderIdStart             = ProviderIdStart;
+            this.ProviderIdStop              = ProviderIdStop;
 
-            this.Reservation              = Reservation;
-            this.ReservationId            = ReservationId.HasValue ? ReservationId.Value : Reservation != null ? Reservation.Id : new ChargingReservation_Id?();
-            this.ReservationTime          = ReservationTime;
+            this.Reservation                 = Reservation;
+            this.ReservationId               = Reservation              != null ? Reservation.Id             : ReservationId;
+            this.ReservationTime             = ReservationTime;
 
-            this.ParkingSpaceId           = ParkingSpaceId;
-            this.ParkingTime              = ParkingTime;
-            this.ParkingFee               = ParkingFee;
+            this.ParkingSpaceId              = ParkingSpaceId;
+            this.ParkingTime                 = ParkingTime;
+            this.ParkingFee                  = ParkingFee;
 
-            this.EnergyMeterId            = EnergyMeterId;
-            this.EnergyMeteringValues     = EnergyMeteringValues != null ? EnergyMeteringValues : new Timestamped<Single>[0];
-            this.MeteringSignature        = MeteringSignature;
+            this.EnergyMeterId               = EnergyMeterId;
+            this.EnergyMeteringValues        = EnergyMeteringValues ?? new Timestamped<Single>[0];
+            this.MeteringSignature           = MeteringSignature;
 
         }
 

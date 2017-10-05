@@ -135,14 +135,14 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region TryParse(Text, out ChargingProductId)
+        #region TryParse(Text, out BrandId)
 
         /// <summary>
         /// Parse the given string as a brand identification.
         /// </summary>
         /// <param name="Text">A text representation of a brand identification.</param>
-        /// <param name="ChargingProductId">The parsed brand identification.</param>
-        public static Boolean TryParse(String Text, out Brand_Id ChargingProductId)
+        /// <param name="BrandId">The parsed brand identification.</param>
+        public static Boolean TryParse(String Text, out Brand_Id BrandId)
         {
 
             if (Text != null &&
@@ -152,7 +152,7 @@ namespace org.GraphDefined.WWCP
                 try
                 {
 
-                    ChargingProductId = new Brand_Id(Text);
+                    BrandId = new Brand_Id(Text);
 
                     return true;
 
@@ -164,7 +164,7 @@ namespace org.GraphDefined.WWCP
 
             }
 
-            ChargingProductId = default(Brand_Id);
+            BrandId = default(Brand_Id);
             return false;
 
         }
@@ -187,113 +187,113 @@ namespace org.GraphDefined.WWCP
 
         #region Operator overloading
 
-        #region Operator == (ChargingProductId1, ChargingProductId2)
+        #region Operator == (BrandId1, BrandId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProductId1">A brand identification.</param>
-        /// <param name="ChargingProductId2">Another brand identification.</param>
+        /// <param name="BrandId1">A brand identification.</param>
+        /// <param name="BrandId2">Another brand identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator == (Brand_Id ChargingProductId1, Brand_Id ChargingProductId2)
+        public static Boolean operator == (Brand_Id BrandId1, Brand_Id BrandId2)
         {
 
             // If both are null, or both are same instance, return true.
-            if (Object.ReferenceEquals(ChargingProductId1, ChargingProductId2))
+            if (Object.ReferenceEquals(BrandId1, BrandId2))
                 return true;
 
             // If one is null, but not both, return false.
-            if (((Object) ChargingProductId1 == null) || ((Object) ChargingProductId2 == null))
+            if (((Object) BrandId1 == null) || ((Object) BrandId2 == null))
                 return false;
 
-            return ChargingProductId1.Equals(ChargingProductId2);
+            return BrandId1.Equals(BrandId2);
 
         }
 
         #endregion
 
-        #region Operator != (ChargingProductId1, ChargingProductId2)
+        #region Operator != (BrandId1, BrandId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProductId1">A brand identification.</param>
-        /// <param name="ChargingProductId2">Another brand identification.</param>
+        /// <param name="BrandId1">A brand identification.</param>
+        /// <param name="BrandId2">Another brand identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator != (Brand_Id ChargingProductId1, Brand_Id ChargingProductId2)
-            => !(ChargingProductId1 == ChargingProductId2);
+        public static Boolean operator != (Brand_Id BrandId1, Brand_Id BrandId2)
+            => !(BrandId1 == BrandId2);
 
         #endregion
 
-        #region Operator <  (ChargingProductId1, ChargingProductId2)
+        #region Operator <  (BrandId1, BrandId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProductId1">A brand identification.</param>
-        /// <param name="ChargingProductId2">Another brand identification.</param>
+        /// <param name="BrandId1">A brand identification.</param>
+        /// <param name="BrandId2">Another brand identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator < (Brand_Id ChargingProductId1, Brand_Id ChargingProductId2)
+        public static Boolean operator < (Brand_Id BrandId1, Brand_Id BrandId2)
         {
 
-            if ((Object) ChargingProductId1 == null)
-                throw new ArgumentNullException(nameof(ChargingProductId1), "The given ChargingProductId1 must not be null!");
+            if ((Object) BrandId1 == null)
+                throw new ArgumentNullException(nameof(BrandId1), "The given BrandId1 must not be null!");
 
-            return ChargingProductId1.CompareTo(ChargingProductId2) < 0;
+            return BrandId1.CompareTo(BrandId2) < 0;
 
         }
 
         #endregion
 
-        #region Operator <= (ChargingProductId1, ChargingProductId2)
+        #region Operator <= (BrandId1, BrandId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProductId1">A brand identification.</param>
-        /// <param name="ChargingProductId2">Another brand identification.</param>
+        /// <param name="BrandId1">A brand identification.</param>
+        /// <param name="BrandId2">Another brand identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator <= (Brand_Id ChargingProductId1, Brand_Id ChargingProductId2)
-            => !(ChargingProductId1 > ChargingProductId2);
+        public static Boolean operator <= (Brand_Id BrandId1, Brand_Id BrandId2)
+            => !(BrandId1 > BrandId2);
 
         #endregion
 
-        #region Operator >  (ChargingProductId1, ChargingProductId2)
+        #region Operator >  (BrandId1, BrandId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProductId1">A brand identification.</param>
-        /// <param name="ChargingProductId2">Another brand identification.</param>
+        /// <param name="BrandId1">A brand identification.</param>
+        /// <param name="BrandId2">Another brand identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator > (Brand_Id ChargingProductId1, Brand_Id ChargingProductId2)
+        public static Boolean operator > (Brand_Id BrandId1, Brand_Id BrandId2)
         {
 
-            if ((Object) ChargingProductId1 == null)
-                throw new ArgumentNullException(nameof(ChargingProductId1), "The given ChargingProductId1 must not be null!");
+            if ((Object) BrandId1 == null)
+                throw new ArgumentNullException(nameof(BrandId1), "The given BrandId1 must not be null!");
 
-            return ChargingProductId1.CompareTo(ChargingProductId2) > 0;
+            return BrandId1.CompareTo(BrandId2) > 0;
 
         }
 
         #endregion
 
-        #region Operator >= (ChargingProductId1, ChargingProductId2)
+        #region Operator >= (BrandId1, BrandId2)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProductId1">A brand identification.</param>
-        /// <param name="ChargingProductId2">Another brand identification.</param>
+        /// <param name="BrandId1">A brand identification.</param>
+        /// <param name="BrandId2">Another brand identification.</param>
         /// <returns>true|false</returns>
-        public static Boolean operator >= (Brand_Id ChargingProductId1, Brand_Id ChargingProductId2)
-            => !(ChargingProductId1 < ChargingProductId2);
+        public static Boolean operator >= (Brand_Id BrandId1, Brand_Id BrandId2)
+            => !(BrandId1 < BrandId2);
 
         #endregion
 
         #endregion
 
-        #region IComparable<ChargingProductId> Members
+        #region IComparable<BrandId> Members
 
         #region CompareTo(Object)
 
@@ -317,23 +317,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region CompareTo(ChargingProductId)
+        #region CompareTo(BrandId)
 
         /// <summary>
         /// Compares two instances of this object.
         /// </summary>
-        /// <param name="ChargingProductId">An object to compare with.</param>
-        public Int32 CompareTo(Brand_Id ChargingProductId)
+        /// <param name="BrandId">An object to compare with.</param>
+        public Int32 CompareTo(Brand_Id BrandId)
         {
 
-            if ((Object) ChargingProductId == null)
-                throw new ArgumentNullException(nameof(ChargingProductId),  "The given brand identification must not be null!");
+            if ((Object) BrandId == null)
+                throw new ArgumentNullException(nameof(BrandId),  "The given brand identification must not be null!");
 
-            // Compare the length of the ChargingProductIds
-            var _Result = this.Length.CompareTo(ChargingProductId.Length);
+            // Compare the length of the BrandIds
+            var _Result = this.Length.CompareTo(BrandId.Length);
 
             if (_Result == 0)
-                _Result = String.Compare(InternalId, ChargingProductId.InternalId, StringComparison.Ordinal);
+                _Result = String.Compare(InternalId, BrandId.InternalId, StringComparison.Ordinal);
 
             return _Result;
 
@@ -343,7 +343,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region IEquatable<ChargingProductId> Members
+        #region IEquatable<BrandId> Members
 
         #region Equals(Object)
 
@@ -367,20 +367,20 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Equals(ChargingProductId)
+        #region Equals(BrandId)
 
         /// <summary>
-        /// Compares two ChargingProductIds for equality.
+        /// Compares two BrandIds for equality.
         /// </summary>
-        /// <param name="ChargingProductId">A ChargingProductId to compare with.</param>
+        /// <param name="BrandId">A BrandId to compare with.</param>
         /// <returns>True if both match; False otherwise.</returns>
-        public Boolean Equals(Brand_Id ChargingProductId)
+        public Boolean Equals(Brand_Id BrandId)
         {
 
-            if ((Object) ChargingProductId == null)
+            if ((Object) BrandId == null)
                 return false;
 
-            return InternalId.Equals(ChargingProductId.InternalId);
+            return InternalId.Equals(BrandId.InternalId);
 
         }
 

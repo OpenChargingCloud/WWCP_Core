@@ -24,6 +24,7 @@ using System.Text.RegularExpressions;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Aegir;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -69,7 +70,7 @@ namespace org.GraphDefined.WWCP
         #region Data
 
         //ToDo: Replace with better randomness!
-        private static readonly Random _Random               = new Random(DateTime.Now.Millisecond);
+        private static readonly Random _Random               = new Random(DateTime.UtcNow.Millisecond);
 
         /// <summary>
         /// The regular expression for parsing a charging pool identification.

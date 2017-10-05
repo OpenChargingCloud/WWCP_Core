@@ -26,6 +26,7 @@ using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Aegir;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -176,7 +177,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value == null)
-                    value = new Address();
+                    _Address = value;
 
                 if (_Address != value)
                     SetProperty(ref _Address, value);

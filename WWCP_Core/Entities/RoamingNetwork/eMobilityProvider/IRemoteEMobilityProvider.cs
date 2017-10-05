@@ -31,9 +31,10 @@ namespace org.GraphDefined.WWCP
 {
 
     public interface ISend2RemoteEMobilityProvider : //IRemotePushData,
+                                                     ISendAdminStatus,
                                                      ISendStatus,
                                                      ISendAuthorizeStartStop,
-                                                     ISend2RemoteChargeDetailRecords
+                                                     ISendChargeDetailRecords
 
     {
 
@@ -46,9 +47,10 @@ namespace org.GraphDefined.WWCP
 
 
     public interface IRemoteEMobilityProvider : IReceiveData,
+                                                IReceiveAdminStatus,
                                                 IReceiveStatus,
                                                 IReceiveAuthorizeStartStop,
-                                                IRemoteSendChargeDetailRecords
+                                                IReceiveChargeDetailRecords
 
     {
 

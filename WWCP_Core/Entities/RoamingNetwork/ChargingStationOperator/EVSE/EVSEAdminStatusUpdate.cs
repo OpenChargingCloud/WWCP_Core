@@ -37,39 +37,39 @@ namespace org.GraphDefined.WWCP
         #region Properties
 
         /// <summary>
-        /// The unique identification of the EVSE.
+        /// The updated EVSE.
         /// </summary>
-        public EVSE_Id                           Id          { get; }
+        public EVSE                               EVSE         { get; }
 
         /// <summary>
-        /// The old timestamped status of the EVSE.
+        /// The old timestamped admin status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEAdminStatusTypes>  OldStatus   { get; }
+        public Timestamped<EVSEAdminStatusTypes>  OldStatus    { get; }
 
         /// <summary>
-        /// The new timestamped status of the EVSE.
+        /// The new timestamped admin status of the EVSE.
         /// </summary>
-        public Timestamped<EVSEAdminStatusTypes>  NewStatus   { get; }
+        public Timestamped<EVSEAdminStatusTypes>  NewStatus    { get; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region EVSEAdminStatusUpdate(Id, OldStatus, NewStatus)
+        #region EVSEAdminStatusUpdate(EVSE, OldStatus, NewStatus)
 
         /// <summary>
         /// Create a new EVSE admin status update.
         /// </summary>
-        /// <param name="Id">The unique identification of the EVSE.</param>
+        /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old timestamped admin status of the EVSE.</param>
         /// <param name="NewStatus">The new timestamped admin status of the EVSE.</param>
-        public EVSEAdminStatusUpdate(EVSE_Id                           Id,
+        public EVSEAdminStatusUpdate(EVSE                               EVSE,
                                      Timestamped<EVSEAdminStatusTypes>  OldStatus,
                                      Timestamped<EVSEAdminStatusTypes>  NewStatus)
 
         {
 
-            this.Id         = Id;
+            this.EVSE       = EVSE;
             this.OldStatus  = OldStatus;
             this.NewStatus  = NewStatus;
 
@@ -77,23 +77,23 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEAdminStatusUpdate(Id, OldStatus, NewStatus)
+        #region EVSEAdminStatusUpdate(EVSE, OldStatus, NewStatus)
 
         /// <summary>
         /// Create a new EVSE admin status update.
         /// </summary>
-        /// <param name="Id">The unique identification of the EVSE.</param>
+        /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old timestamped admin status of the EVSE.</param>
         /// <param name="NewStatus">The new timestamped admin status of the EVSE.</param>
-        public EVSEAdminStatusUpdate(EVSE_Id          Id,
+        public EVSEAdminStatusUpdate(EVSE             EVSE,
                                      EVSEAdminStatus  OldStatus,
                                      EVSEAdminStatus  NewStatus)
 
         {
 
-            this.Id         = Id;
-            this.OldStatus  = OldStatus.Combined;
-            this.NewStatus  = NewStatus.Combined;
+            this.EVSE       = EVSE;
+            this.OldStatus  = OldStatus.Status;
+            this.NewStatus  = NewStatus.Status;
 
         }
 
@@ -119,7 +119,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return new EVSEAdminStatusUpdate(EVSE.Id,
+            return new EVSEAdminStatusUpdate(EVSE,
                                              EVSE.AdminStatus,
                                              EVSE.AdminStatusSchedule().Skip(1).FirstOrDefault());
 
@@ -273,7 +273,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException(nameof(EVSEAdminStatusUpdate), "The given EVSE status update must not be null!");
 
             // Compare EVSE Ids
-            var _Result = Id.CompareTo(EVSEAdminStatusUpdate.Id);
+            var _Result = EVSE.CompareTo(EVSEAdminStatusUpdate.EVSE);
 
             // If equal: Compare the new EVSE status
             if (_Result == 0)
@@ -328,7 +328,7 @@ namespace org.GraphDefined.WWCP
             if ((Object) EVSEAdminStatusUpdate == null)
                 return false;
 
-            return Id.       Equals(EVSEAdminStatusUpdate.Id)        &&
+            return EVSE.     Equals(EVSEAdminStatusUpdate.EVSE)      &&
                    OldStatus.Equals(EVSEAdminStatusUpdate.OldStatus) &&
                    NewStatus.Equals(EVSEAdminStatusUpdate.NewStatus);
 
@@ -349,8 +349,8 @@ namespace org.GraphDefined.WWCP
             unchecked
             {
 
-                return Id.       GetHashCode() * 7 ^
-                       OldStatus.GetHashCode() * 5 ^
+                return EVSE.     GetHashCode() * 5 ^
+                       OldStatus.GetHashCode() * 3 ^
                        NewStatus.GetHashCode();
 
             }
@@ -365,7 +365,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public override String ToString()
 
-            => String.Concat(Id, ": ",
+            => String.Concat(EVSE.Id, ": ",
                              OldStatus,
                              " -> ",
                              NewStatus);

@@ -39,23 +39,21 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the roaming network.
         /// </summary>
-        public RoamingNetwork_Id                           Id          { get; }
+        public RoamingNetwork_Id                            Id          { get; }
 
         /// <summary>
         /// The old timestamped status of the roaming network.
         /// </summary>
-        public Timestamped<RoamingNetworkAdminStatusType>  OldStatus   { get; }
+        public Timestamped<RoamingNetworkAdminStatusTypes>  OldStatus   { get; }
 
         /// <summary>
         /// The new timestamped status of the roaming network.
         /// </summary>
-        public Timestamped<RoamingNetworkAdminStatusType>  NewStatus   { get; }
+        public Timestamped<RoamingNetworkAdminStatusTypes>  NewStatus   { get; }
 
         #endregion
 
         #region Constructor(s)
-
-        #region RoamingNetworkAdminStatusUpdate(Id, OldStatus, NewStatus)
 
         /// <summary>
         /// Create a new roaming network admin status update.
@@ -63,9 +61,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="Id">The unique identification of the roaming network.</param>
         /// <param name="OldStatus">The old timestamped admin status of the roaming network.</param>
         /// <param name="NewStatus">The new timestamped admin status of the roaming network.</param>
-        public RoamingNetworkAdminStatusUpdate(RoamingNetwork_Id                           Id,
-                                               Timestamped<RoamingNetworkAdminStatusType>  OldStatus,
-                                               Timestamped<RoamingNetworkAdminStatusType>  NewStatus)
+        public RoamingNetworkAdminStatusUpdate(RoamingNetwork_Id                            Id,
+                                               Timestamped<RoamingNetworkAdminStatusTypes>  OldStatus,
+                                               Timestamped<RoamingNetworkAdminStatusTypes>  NewStatus)
 
         {
 
@@ -74,30 +72,6 @@ namespace org.GraphDefined.WWCP
             this.NewStatus  = NewStatus;
 
         }
-
-        #endregion
-
-        #region RoamingNetworkAdminStatusUpdate(Id, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Create a new roaming network admin status update.
-        /// </summary>
-        /// <param name="Id">The unique identification of the roaming network.</param>
-        /// <param name="OldStatus">The old timestamped admin status of the roaming network.</param>
-        /// <param name="NewStatus">The new timestamped admin status of the roaming network.</param>
-        public RoamingNetworkAdminStatusUpdate(RoamingNetwork_Id          Id,
-                                               RoamingNetworkAdminStatus  OldStatus,
-                                               RoamingNetworkAdminStatus  NewStatus)
-
-        {
-
-            this.Id         = Id;
-            this.OldStatus  = OldStatus.Combined;
-            this.NewStatus  = NewStatus.Combined;
-
-        }
-
-        #endregion
 
         #endregion
 

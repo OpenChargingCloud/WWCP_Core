@@ -39,12 +39,12 @@ namespace org.GraphDefined.WWCP
         #region Data
 
         //ToDo: Replace with better randomness!
-        private static readonly Random _Random                       = new Random(DateTime.Now.Millisecond);
+        private static readonly Random _Random                       = new Random(DateTime.UtcNow.Millisecond);
 
         /// <summary>
         /// The regular expression for parsing a charging tariff identification.
         /// </summary>
-        public  static readonly Regex  ChargingTariffId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?T([A-Z0-9][A-Z0-9\*]{0,30})$",
+        public  static readonly Regex  ChargingTariffId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?T([a-zA-Z0-9_][a-zA-Z0-9_\*\-\.€\$]{0,50})$",
                                                                            RegexOptions.IgnorePatternWhitespace);
 
         #endregion
@@ -132,9 +132,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentException("Illegal text representation of a charging tariff identification: '" + Text + "'!",
                                             nameof(Text));
 
-            ChargingStationOperator_Id _OperatorId;
-
-            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out _OperatorId))
+            if (ChargingStationOperator_Id.TryParse(MatchCollection[0].Groups[1].Value, out ChargingStationOperator_Id _OperatorId))
                 return new ChargingTariff_Id(_OperatorId,
                                              MatchCollection[0].Groups[2].Value);
 

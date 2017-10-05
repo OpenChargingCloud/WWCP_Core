@@ -105,7 +105,7 @@ namespace org.GraphDefined.WWCP
 
                     _Dictionary.Add(Key, NewValue);
 
-                    OnPropertyChanged?.Invoke(DateTime.Now,
+                    OnPropertyChanged?.Invoke(DateTime.UtcNow,
                                               EventTrackingId,
                                               this,
                                               Key,
@@ -124,7 +124,7 @@ namespace org.GraphDefined.WWCP
 
                     _Dictionary[Key] = NewValue;
 
-                    OnPropertyChanged?.Invoke(DateTime.Now,
+                    OnPropertyChanged?.Invoke(DateTime.UtcNow,
                                               EventTrackingId,
                                               this,
                                               Key,
@@ -138,7 +138,7 @@ namespace org.GraphDefined.WWCP
 
                 _Dictionary.Remove(Key);
 
-                OnPropertyChanged?.Invoke(DateTime.Now,
+                OnPropertyChanged?.Invoke(DateTime.UtcNow,
                                           EventTrackingId,
                                           this,
                                           Key,

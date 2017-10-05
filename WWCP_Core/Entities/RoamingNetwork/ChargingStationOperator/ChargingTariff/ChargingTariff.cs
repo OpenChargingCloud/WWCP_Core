@@ -49,19 +49,44 @@ namespace org.GraphDefined.WWCP
         /// The offical (multi-language) name of this charging tariff.
         /// </summary>
         [Mandatory]
-        public I18NString  Name          { get; }
+        public I18NString  Name           { get; }
 
         /// <summary>
         /// An optional (multi-language) description of this charging tariff.
         /// </summary>
         [Optional]
-        public I18NString  Description   { get; }
+        public I18NString  Description    { get; }
 
         /// <summary>
         /// An optional brand for this charging tariff.
         /// </summary>
         [Optional]
-        public Brand       Brand         { get; }
+        public Brand       Brand          { get; }
+
+        /// <summary>
+        /// An URI for more information about this tariff.
+        /// </summary>
+        [Optional]
+        public Uri         TariffURI      { get; }
+
+        /// <summary>
+        /// ISO 4217 code of the currency used for this tariff.
+        /// </summary>
+        [Mandatory]
+        public Currency    Currency       { get; }
+
+        /// <summary>
+        /// The energy mix.
+        /// </summary>
+        [Optional]
+        public EnergyMix   EnergyMix      { get;  }
+
+                /// <summary>
+        /// An enumeration of tariff elements.
+        /// </summary>
+        [Mandatory]
+        public IEnumerable<ChargingTariffElement>  TariffElements    { get; }
+
 
         #endregion
 
@@ -80,9 +105,20 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Create a new charging tariff having the given identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charging tariff pool.</param>
-        internal ChargingTariff(ChargingTariff_Id        Id,
-                                ChargingStationOperator  Operator)
+        /// <param name="Id">The unique identification of the charing tariff.</param>
+        /// <param name="Operator">The charging station operator of this charging tariff.</param>
+        /// <param name="Name">The offical (multi-language) name of this charging tariff.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
+        public ChargingTariff(ChargingTariff_Id                   Id,
+                              ChargingStationOperator             Operator,
+                              I18NString                          Name,
+                              I18NString                          Description,
+                              Brand                               Brand,
+
+                              Uri                                 TariffUrl,
+                              Currency                            Currency,
+                              EnergyMix                           EnergyMix,
+                              IEnumerable<ChargingTariffElement>  TariffElements)
 
             : base(Id)
 
@@ -91,11 +127,26 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (Operator == null)
-                throw new ArgumentNullException(nameof(Operator), "The given charging station operator must not be null!");
+                throw new ArgumentNullException(nameof(Operator),        "The given charging station operator must not be null!");
+
+            if (TariffElements == null || !TariffElements.Any())
+                throw new ArgumentNullException(nameof(TariffElements),  "The given enumeration of tariff elements must not be null or empty!");
 
             #endregion
 
-            this.Operator = Operator;
+            #region Init data and properties
+
+            this.Operator        = Operator;
+            this.Name            = Name;
+            this.Description     = Description ?? new I18NString();
+            this.Brand           = Brand;
+
+            this.TariffURI       = TariffUrl;
+            this.Currency        = Currency;
+            this.EnergyMix       = EnergyMix;
+            this.TariffElements  = TariffElements;
+
+            #endregion
 
         }
 

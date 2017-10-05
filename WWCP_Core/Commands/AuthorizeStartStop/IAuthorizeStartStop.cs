@@ -494,7 +494,7 @@ namespace org.GraphDefined.WWCP
 
 
     /// <summary>
-    /// The interface for sending AuthStart/-Stop requests.
+    /// The interface for receiving AuthStart/-Stop requests.
     /// </summary>
     public interface IReceiveAuthorizeStartStop
     {

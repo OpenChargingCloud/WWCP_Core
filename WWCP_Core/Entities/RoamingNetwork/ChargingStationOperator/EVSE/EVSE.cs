@@ -28,6 +28,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -83,7 +84,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                return _Description.IsNotNullOrEmpty()
+                return _Description.IsNeitherNullNorEmpty()
                            ? _Description
                            : ChargingStation?.Description;
 
@@ -107,7 +108,101 @@ namespace org.GraphDefined.WWCP
 
         }
 
+        public I18NString SetDescription(Languages Language, String Text)
+            => _Description = I18NString.Create(Language, Text);
+
+        public I18NString SetDescription(I18NString I18NText)
+            => _Description = I18NText;
+
+        public I18NString AddDescription(Languages Language, String Text)
+            => _Description.Add(Language, Text);
+
         #endregion
+
+        #region Brand
+
+        private Brand _Brand;
+
+        /// <summary>
+        /// A (multi-language) brand name for this EVSE.
+        /// </summary>
+        [Optional]
+        public Brand Brand
+        {
+
+            get
+            {
+                return _Brand ?? ChargingStation?.Brand;
+            }
+
+            set
+            {
+
+                if (value != _Brand && value != ChargingStation?.Brand)
+                {
+
+                    if (value == null)
+                        DeleteProperty(ref _Brand);
+
+                    else
+                        SetProperty(ref _Brand, value);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region DataLicense
+
+        private ReactiveSet<DataLicense> _DataLicenses;
+
+        /// <summary>
+        /// The license of the EVSE data.
+        /// </summary>
+        [Mandatory]
+        public ReactiveSet<DataLicense> DataLicenses
+        {
+
+            get
+            {
+
+                return _DataLicenses != null && _DataLicenses.Any()
+                           ? _DataLicenses
+                           : ChargingPool?.DataLicenses;
+
+            }
+
+            set
+            {
+
+                if (value != _DataLicenses && value != ChargingPool?.DataLicenses)
+                {
+
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _DataLicenses);
+
+                    else
+                    {
+
+                        if (_DataLicenses == null)
+                            SetProperty(ref _DataLicenses, value);
+
+                        else
+                            SetProperty(ref _DataLicenses, _DataLicenses.Set(value));
+
+                    }
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
 
         #region ChargingModes
 
@@ -640,7 +735,7 @@ namespace org.GraphDefined.WWCP
 
                         //SetStatus(EVSEStatusType.Reserved);
 
-                        OnNewReservation?.Invoke(DateTime.Now, this, _Reservation);
+                        OnNewReservation?.Invoke(DateTime.UtcNow, this, _Reservation);
 
                     }
 
@@ -720,7 +815,7 @@ namespace org.GraphDefined.WWCP
 
                         //SetStatus(EVSEStatusType.Charging);
 
-                        OnNewChargingSession?.Invoke(DateTime.Now, this, _ChargingSession);
+                        OnNewChargingSession?.Invoke(DateTime.UtcNow, this, _ChargingSession);
 
                     }
 
@@ -765,13 +860,14 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region AdminStatusSchedule
+        #region AdminStatusSchedule(HistorySize = null)
 
         private readonly StatusSchedule<EVSEAdminStatusTypes> _AdminStatusSchedule;
 
         /// <summary>
         /// The EVSE admin status schedule.
         /// </summary>
+        /// <param name="HistorySize">The size of the history.</param>
         public IEnumerable<Timestamped<EVSEAdminStatusTypes>> AdminStatusSchedule(UInt64? HistorySize = null)
         {
 
@@ -835,13 +931,14 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region StatusSchedule
+        #region StatusSchedule(HistorySize = null)
 
         private readonly StatusSchedule<EVSEStatusTypes> _StatusSchedule;
 
         /// <summary>
         /// The EVSE status schedule.
         /// </summary>
+        /// <param name="HistorySize">The size of the history.</param>
         public IEnumerable<Timestamped<EVSEStatusTypes>> StatusSchedule(UInt64? HistorySize = null)
         {
 
@@ -978,11 +1075,24 @@ namespace org.GraphDefined.WWCP
         public ChargingStation          ChargingStation   { get; }
 
         /// <summary>
+        /// The charging pool of this EVSE.
+        /// </summary>
+        public ChargingPool             ChargingPool
+            => ChargingStation?.ChargingPool;
+
+        /// <summary>
         /// The operator of this EVSE.
         /// </summary>
         [InternalUseOnly]
         public ChargingStationOperator  Operator
             => ChargingStation?.ChargingPool?.Operator;
+
+        /// <summary>
+        /// The roaming network of this EVSE.
+        /// </summary>
+        [InternalUseOnly]
+        public RoamingNetwork           RoamingNetwork
+            => ChargingStation?.ChargingPool?.Operator?.RoamingNetwork;
 
         #endregion
 
@@ -1393,7 +1503,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
+        /// <param name="Identification">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProduct">The charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
@@ -1409,7 +1519,7 @@ namespace org.GraphDefined.WWCP
                     TimeSpan?                         Duration            = null,
                     ChargingReservation_Id?           ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
-                    eMobilityAccount_Id?              eMAId               = null,
+                    AuthIdentification                Identification      = null,
                     ChargingProduct                   ChargingProduct     = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
@@ -1427,7 +1537,7 @@ namespace org.GraphDefined.WWCP
             ReservationResult result = null;
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -1441,7 +1551,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnReserveRequest?.Invoke(DateTime.Now,
+                OnReserveRequest?.Invoke(DateTime.UtcNow,
                                          Timestamp.Value,
                                          this,
                                          EventTrackingId,
@@ -1451,7 +1561,7 @@ namespace org.GraphDefined.WWCP
                                          StartTime,
                                          Duration,
                                          ProviderId,
-                                         eMAId,
+                                         Identification,
                                          ChargingProduct,
                                          AuthTokens,
                                          eMAIds,
@@ -1481,7 +1591,7 @@ namespace org.GraphDefined.WWCP
                                                    Duration,
                                                    ReservationId,
                                                    ProviderId,
-                                                   eMAId,
+                                                   Identification,
                                                    ChargingProduct,
                                                    AuthTokens,
                                                    eMAIds,
@@ -1495,7 +1605,7 @@ namespace org.GraphDefined.WWCP
                     if (result.Result == ReservationResultType.Success)
                     {
 
-                        OnNewReservation?.Invoke(DateTime.Now,
+                        OnNewReservation?.Invoke(DateTime.UtcNow,
                                                  this,
                                                  result.Reservation);
 
@@ -1529,7 +1639,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnReserveResponse?.Invoke(DateTime.Now,
+                OnReserveResponse?.Invoke(DateTime.UtcNow,
                                           Timestamp.Value,
                                           this,
                                           EventTrackingId,
@@ -1539,7 +1649,7 @@ namespace org.GraphDefined.WWCP
                                           StartTime,
                                           Duration,
                                           ProviderId,
-                                          eMAId,
+                                          Identification,
                                           ChargingProduct,
                                           AuthTokens,
                                           eMAIds,
@@ -1590,7 +1700,7 @@ namespace org.GraphDefined.WWCP
             CancelReservationResult result = null;
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -1620,7 +1730,7 @@ namespace org.GraphDefined.WWCP
                                                          SavedReservation,
                                                          TimeSpan.FromMilliseconds(5));
 
-                SendOnReservationCancelled(DateTime.Now,
+                SendOnReservationCancelled(DateTime.UtcNow,
                                            Timestamp.Value,
                                            this,
                                            EventTrackingId,
@@ -1738,7 +1848,7 @@ namespace org.GraphDefined.WWCP
             RemoteStartEVSEResult result = null;
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -1752,7 +1862,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteStartRequest?.Invoke(DateTime.Now,
+                OnRemoteStartRequest?.Invoke(DateTime.UtcNow,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -1826,7 +1936,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteStartResponse?.Invoke(DateTime.Now,
+                OnRemoteStartResponse?.Invoke(DateTime.UtcNow,
                                               Timestamp.Value,
                                               this,
                                               EventTrackingId,
@@ -1904,7 +2014,7 @@ namespace org.GraphDefined.WWCP
             RemoteStopEVSEResult result = null;
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -1918,7 +2028,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteStopRequest?.Invoke(DateTime.Now,
+                OnRemoteStopRequest?.Invoke(DateTime.UtcNow,
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
@@ -1987,7 +2097,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteStopResponse?.Invoke(DateTime.Now,
+                OnRemoteStopResponse?.Invoke(DateTime.UtcNow,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,

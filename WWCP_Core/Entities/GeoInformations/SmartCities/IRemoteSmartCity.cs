@@ -30,6 +30,7 @@ namespace org.GraphDefined.WWCP
 {
 
     public interface ISend2RemoteSmartCity  : ISendData,
+                                              ISendAdminStatus,
                                               ISendStatus
                                              //IRemoteAuthorizeStartStop,
                                              //IRemoteSendChargeDetailRecord
@@ -53,6 +54,7 @@ namespace org.GraphDefined.WWCP
     }
 
     public interface IRemoteSmartCity  : IReceiveData,
+                                         IReceiveAdminStatus,
                                          IReceiveStatus
                                         //IRemoteAuthorizeStartStop,
                                         //IRemoteSendChargeDetailRecord

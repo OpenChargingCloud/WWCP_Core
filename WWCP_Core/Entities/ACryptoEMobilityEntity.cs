@@ -21,6 +21,9 @@ using System.Collections.Generic;
 
 using Org.BouncyCastle.Bcpg.OpenPgp;
 
+using org.GraphDefined.Vanaheimr.Illias;
+using org.GraphDefined.Vanaheimr.Hermod;
+
 #endregion
 
 namespace org.GraphDefined.WWCP
@@ -38,22 +41,33 @@ namespace org.GraphDefined.WWCP
 
         #region Properties
 
+        /// <summary>
+        /// The public key ring of this entity.
+        /// </summary>
         public PgpPublicKeyRing  PublicKeyRing    { get; }
 
+        /// <summary>
+        /// The secrect key ring of this entity.
+        /// </summary>
         public PgpSecretKeyRing  SecretKeyRing    { get; }
 
+        /// <summary>
+        /// The cryptographical signature of this entity.
+        /// </summary>
         public Signature         Signature        { get; protected set; }
 
         #endregion
 
         #region Constructor(s)
 
-        #region ABaseEMobilityEntity(Id,  ...)
+        #region ACryptoEMobilityEntity(Id, PublicKeyRing, SecretKeyRing)
 
         /// <summary>
         /// Create a new abstract crypto entity.
         /// </summary>
         /// <param name="Id">The unique entity identification.</param>
+        /// <param name="PublicKeyRing">The public key ring of the entity.</param>
+        /// <param name="SecretKeyRing">The secrect key ring of the entity.</param>
         protected ACryptoEMobilityEntity(TId               Id,
                                          PgpPublicKeyRing  PublicKeyRing  = null,
                                          PgpSecretKeyRing  SecretKeyRing  = null)
@@ -62,17 +76,21 @@ namespace org.GraphDefined.WWCP
 
         {
 
+            this.PublicKeyRing  = PublicKeyRing;
+            this.SecretKeyRing  = SecretKeyRing;
 
         }
 
         #endregion
 
-        #region ABaseEMobilityEntity(Ids, ...)
+        #region ACryptoEMobilityEntity(Ids, PublicKeyRing, SecretKeyRing)
 
         /// <summary>
         /// Create a new abstract crypto entity.
         /// </summary>
         /// <param name="Ids">The unique entity identifications.</param>
+        /// <param name="PublicKeyRing">The public key ring of the entity.</param>
+        /// <param name="SecretKeyRing">The secrect key ring of the entity.</param>
         protected ACryptoEMobilityEntity(IEnumerable<TId>  Ids,
                                          PgpPublicKeyRing  PublicKeyRing  = null,
                                          PgpSecretKeyRing  SecretKeyRing  = null)
@@ -80,6 +98,9 @@ namespace org.GraphDefined.WWCP
             : base(Ids)
 
         {
+
+            this.PublicKeyRing  = PublicKeyRing;
+            this.SecretKeyRing  = SecretKeyRing;
 
         }
 

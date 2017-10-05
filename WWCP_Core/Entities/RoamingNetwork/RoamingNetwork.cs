@@ -28,6 +28,7 @@ using System.Collections.Concurrent;
 using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -38,8 +39,10 @@ namespace org.GraphDefined.WWCP
     /// The common interface of all roaming networks.
     /// </summary>
     public interface IRoamingNetwork : IEquatable<RoamingNetwork>, IComparable<RoamingNetwork>, IComparable,
-                                       IStatus<RoamingNetworkStatusType>,
-                                       ISendAuthorizeStartStop
+                                       IStatus<RoamingNetworkStatusTypes>,
+                                       ISendAuthorizeStartStop,
+                                       IReceiveChargeDetailRecords,
+                                       ISendChargeDetailRecords
     { }
 
 
@@ -66,13 +69,25 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public const UInt16 DefaultMaxStatusListSize        = 15;
 
+
+        public readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(60);
+
+
         #endregion
 
         #region Properties
 
         IId ISendAuthorizeStartStop.AuthId => Id;
 
-        public Boolean DisableAuthentication { get; set; }
+        IId ISendChargeDetailRecords.Id
+            => Id;
+
+        IEnumerable<IId> ISendChargeDetailRecords.Ids
+            => Ids.Cast<IId>();
+
+        public Boolean DisableAuthentication            { get; set; }
+
+        public Boolean DisableSendChargeDetailRecords   { get; set; }
 
 
         #region Name
@@ -125,6 +140,19 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region DataLicense
+
+        private ReactiveSet<DataLicense> _DataLicenses;
+
+        /// <summary>
+        /// The license of the roaming network data.
+        /// </summary>
+        [Mandatory]
+        public ReactiveSet<DataLicense> DataLicenses
+            => _DataLicenses;
+
+        #endregion
+
 
         #region AdminStatus
 
@@ -132,7 +160,7 @@ namespace org.GraphDefined.WWCP
         /// The current admin status.
         /// </summary>
         [Optional]
-        public Timestamped<RoamingNetworkAdminStatusType> AdminStatus
+        public Timestamped<RoamingNetworkAdminStatusTypes> AdminStatus
 
             => _AdminStatusSchedule.CurrentStatus;
 
@@ -140,12 +168,12 @@ namespace org.GraphDefined.WWCP
 
         #region AdminStatusSchedule
 
-        private StatusSchedule<RoamingNetworkAdminStatusType> _AdminStatusSchedule;
+        private StatusSchedule<RoamingNetworkAdminStatusTypes> _AdminStatusSchedule;
 
         /// <summary>
         /// The admin status schedule.
         /// </summary>
-        public IEnumerable<Timestamped<RoamingNetworkAdminStatusType>> AdminStatusSchedule(UInt64? HistorySize = null)
+        public IEnumerable<Timestamped<RoamingNetworkAdminStatusTypes>> AdminStatusSchedule(UInt64? HistorySize = null)
         {
 
             if (HistorySize.HasValue)
@@ -164,7 +192,7 @@ namespace org.GraphDefined.WWCP
         /// The current status.
         /// </summary>
         [Optional]
-        public Timestamped<RoamingNetworkStatusType> Status
+        public Timestamped<RoamingNetworkStatusTypes> Status
 
             => _StatusSchedule.CurrentStatus;
 
@@ -172,12 +200,12 @@ namespace org.GraphDefined.WWCP
 
         #region StatusSchedule
 
-        private StatusSchedule<RoamingNetworkStatusType> _StatusSchedule;
+        private StatusSchedule<RoamingNetworkStatusTypes> _StatusSchedule;
 
         /// <summary>
         /// The status schedule.
         /// </summary>
-        public IEnumerable<Timestamped<RoamingNetworkStatusType>> StatusSchedule(UInt64? HistorySize = null)
+        public IEnumerable<Timestamped<RoamingNetworkStatusTypes>> StatusSchedule(UInt64? HistorySize = null)
         {
 
             if (HistorySize.HasValue)
@@ -225,8 +253,8 @@ namespace org.GraphDefined.WWCP
         public RoamingNetwork(RoamingNetwork_Id                         Id,
                               I18NString                                Name                                       = null,
                               I18NString                                Description                                = null,
-                              RoamingNetworkAdminStatusType             AdminStatus                                = RoamingNetworkAdminStatusType.Operational,
-                              RoamingNetworkStatusType                  Status                                     = RoamingNetworkStatusType.Available,
+                              RoamingNetworkAdminStatusTypes            AdminStatus                                = RoamingNetworkAdminStatusTypes.Operational,
+                              RoamingNetworkStatusTypes                 Status                                     = RoamingNetworkStatusTypes.Available,
                               UInt16                                    MaxAdminStatusListSize                     = DefaultMaxAdminStatusListSize,
                               UInt16                                    MaxStatusListSize                          = DefaultMaxStatusListSize,
                               ChargingStationSignatureDelegate          ChargingStationSignatureGenerator          = null,
@@ -239,8 +267,9 @@ namespace org.GraphDefined.WWCP
 
             #region Init data and properties
 
-            this._Name                                              = Description ?? new I18NString();
+            this._Name                                              = Name        ?? new I18NString();
             this._Description                                       = Description ?? new I18NString();
+            this._DataLicenses                                      = new ReactiveSet<DataLicense>();
 
             this._ChargingStationOperators                          = new EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator>(this);
             this._ParkingOperators                                  = new EntityHashSet<RoamingNetwork, ParkingOperator_Id,         ParkingOperator>        (this);
@@ -255,16 +284,16 @@ namespace org.GraphDefined.WWCP
             this._ChargingReservations_AtEMPRoamingProviders        = new ConcurrentDictionary<ChargingReservation_Id, IEMPRoamingProvider>();
 
             this._eMobilityRoamingServices                          = new ConcurrentDictionary<UInt32, IEMPRoamingProvider>();
-            this._PushEVSEDataToOperatorRoamingServices             = new ConcurrentDictionary<UInt32, IPushData>();
-            this._PushEVSEStatusToOperatorRoamingServices           = new ConcurrentDictionary<UInt32, IPushStatus>();
+            //this._PushEVSEDataToOperatorRoamingServices             = new ConcurrentDictionary<UInt32, IPushData>();
+            //this._PushEVSEStatusToOperatorRoamingServices           = new ConcurrentDictionary<UInt32, IPushStatus>();
 
             this._ChargingSessions                                  = new ConcurrentDictionary<ChargingSession_Id, ChargingSession>();
             this._ChargeDetailRecords                               = new ConcurrentDictionary<ChargingSession_Id, ChargeDetailRecord>();
 
-            this._AdminStatusSchedule                               = new StatusSchedule<RoamingNetworkAdminStatusType>(MaxAdminStatusListSize);
+            this._AdminStatusSchedule                               = new StatusSchedule<RoamingNetworkAdminStatusTypes>(MaxAdminStatusListSize);
             this._AdminStatusSchedule.Insert(AdminStatus);
 
-            this._StatusSchedule                                    = new StatusSchedule<RoamingNetworkStatusType>(MaxStatusListSize);
+            this._StatusSchedule                                    = new StatusSchedule<RoamingNetworkStatusTypes>(MaxStatusListSize);
             this._StatusSchedule.Insert(Status);
 
             this.ChargingStationSignatureGenerator                  = ChargingStationSignatureGenerator;
@@ -307,9 +336,10 @@ namespace org.GraphDefined.WWCP
 
 
         private readonly PriorityList<ISendData>                       _ISendData                       = new PriorityList<ISendData>();
-        private readonly PriorityList<ISendStatus>                     _ISendStatus               = new PriorityList<ISendStatus>();
+        private readonly PriorityList<ISendAdminStatus>                _ISendAdminStatus                = new PriorityList<ISendAdminStatus>();
+        private readonly PriorityList<ISendStatus>                     _ISendStatus                     = new PriorityList<ISendStatus>();
         private readonly PriorityList<ISendAuthorizeStartStop>         _ISend2RemoteAuthorizeStartStop  = new PriorityList<ISendAuthorizeStartStop>();
-        private readonly PriorityList<ISend2RemoteChargeDetailRecords> _IRemoteSendChargeDetailRecord   = new PriorityList<ISend2RemoteChargeDetailRecords>();
+        private readonly PriorityList<ISendChargeDetailRecords>        _IRemoteSendChargeDetailRecord   = new PriorityList<ISendChargeDetailRecords>();
 
 
         #region Data/(Admin-)Status management
@@ -375,11 +405,22 @@ namespace org.GraphDefined.WWCP
         private readonly EntityHashSet<RoamingNetwork, ChargingStationOperator_Id, ChargingStationOperator> _ChargingStationOperators;
 
         /// <summary>
-        /// Return all Charging Station Operators registered within this roaming network.
+        /// Return all charging station operators registered within this roaming network.
         /// </summary>
         public IEnumerable<ChargingStationOperator> ChargingStationOperators
 
             => _ChargingStationOperators;
+
+        #endregion
+
+        #region ChargingStationOperatorIds
+
+        /// <summary>
+        /// Return all charging station operator identifications registered within this roaming network.
+        /// </summary>
+        public IEnumerable<ChargingStationOperator_Id> ChargingStationOperatorIds
+
+            => _ChargingStationOperators.SafeSelect(cso => cso.Id);
 
         #endregion
 
@@ -388,11 +429,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the admin status of all charging station operators registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusType>>>> ChargingStationOperatorAdminStatus
+        public IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>> ChargingStationOperatorAdminStatus
 
             => _ChargingStationOperators.
-                   Select(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusType>>>(cso.Id,
-                                                                                                                                                cso.AdminStatusSchedule()));
+                   SafeSelect(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>(cso.Id,
+                                                                                                                                                     cso.AdminStatusSchedule()));
 
         #endregion
 
@@ -401,11 +442,11 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Return the status of all charging station operators registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusType>>>> ChargingStationOperatorStatus
+        public IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>> ChargingStationOperatorStatus
 
             => _ChargingStationOperators.
-                   Select(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusType>>>(cso.Id,
-                                                                                                                                           cso.StatusSchedule()));
+                   SafeSelect(cso => new KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>(cso.Id,
+                                                                                                                                                cso.StatusSchedule()));
 
         #endregion
 
@@ -440,8 +481,8 @@ namespace org.GraphDefined.WWCP
                                           I18NString                                          Description                           = null,
                                           Action<ChargingStationOperator>                Configurator                          = null,
                                           RemoteChargingStationOperatorCreatorDelegate        RemoteChargingStationOperatorCreator  = null,
-                                          ChargingStationOperatorAdminStatusType              AdminStatus                           = ChargingStationOperatorAdminStatusType.Operational,
-                                          ChargingStationOperatorStatusType                   Status                                = ChargingStationOperatorStatusType.Available,
+                                          ChargingStationOperatorAdminStatusTypes              AdminStatus                           = ChargingStationOperatorAdminStatusTypes.Operational,
+                                          ChargingStationOperatorStatusTypes                   Status                                = ChargingStationOperatorStatusTypes.Available,
                                           Action<ChargingStationOperator>                OnSuccess                             = null,
                                           Action<RoamingNetwork, ChargingStationOperator_Id>  OnError                               = null)
 
@@ -473,8 +514,8 @@ namespace org.GraphDefined.WWCP
                                           I18NString                                          Description                            = null,
                                           Action<ChargingStationOperator>                     Configurator                           = null,
                                           RemoteChargingStationOperatorCreatorDelegate        RemoteChargingStationOperatorCreator   = null,
-                                          ChargingStationOperatorAdminStatusType              AdminStatus                            = ChargingStationOperatorAdminStatusType.Operational,
-                                          ChargingStationOperatorStatusType                   Status                                 = ChargingStationOperatorStatusType.Available,
+                                          ChargingStationOperatorAdminStatusTypes              AdminStatus                            = ChargingStationOperatorAdminStatusTypes.Operational,
+                                          ChargingStationOperatorStatusTypes                   Status                                 = ChargingStationOperatorStatusTypes.Available,
                                           Action<ChargingStationOperator>                     OnSuccess                              = null,
                                           Action<RoamingNetwork, ChargingStationOperator_Id>  OnError                                = null)
 
@@ -696,8 +737,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="NewStatus">The new aggreagted Charging Station Operator status.</param>
         internal async Task UpdateCSOStatus(DateTime                             Timestamp,
                                             ChargingStationOperator                         cso,
-                                            Timestamped<ChargingStationOperatorStatusType>  OldStatus,
-                                            Timestamped<ChargingStationOperatorStatusType>  NewStatus)
+                                            Timestamped<ChargingStationOperatorStatusTypes>  OldStatus,
+                                            Timestamped<ChargingStationOperatorStatusTypes>  NewStatus)
         {
 
             // Send Charging Station Operator status change upstream
@@ -743,8 +784,8 @@ namespace org.GraphDefined.WWCP
         /// <param name="NewStatus">The new aggreagted Charging Station Operator status.</param>
         internal async Task UpdateCSOAdminStatus(DateTime                                             Timestamp,
                                                  ChargingStationOperator                              cso,
-                                                 Timestamped<ChargingStationOperatorAdminStatusType>  OldStatus,
-                                                 Timestamped<ChargingStationOperatorAdminStatusType>  NewStatus)
+                                                 Timestamped<ChargingStationOperatorAdminStatusTypes>  OldStatus,
+                                                 Timestamped<ChargingStationOperatorAdminStatusTypes>  NewStatus)
         {
 
             // Send Charging Station Operator admin status change upstream
@@ -1145,27 +1186,40 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EMobilityProviderAdminStatus
+        #region eMobilityProviderIds
 
         /// <summary>
-        /// Return the admin status of all e-mobility providers registered within this roaming network.
+        /// Return all e-mobility providers identifications registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusType>>>> EMobilityProviderAdminStatus
+        public IEnumerable<eMobilityProvider_Id> eMobilityProviderIds
 
-            => _eMobilityProviders.
-                   Select(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusType>>>(emp.Id, emp.AdminStatusSchedule));
+            => _eMobilityProviders.SafeSelect(emp => emp.Id);
 
         #endregion
 
-        #region EMobilityProviderStatus
+        #region eMobilityProviderAdminStatus
 
         /// <summary>
-        /// Return the status of all e-mobility providers registered within this roaming network.
+        /// Return the admin status of all e-mobility providerss registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusType>>>> EMobilityProviderStatus
+        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>> eMobilityProviderAdminStatus
 
             => _eMobilityProviders.
-                   Select(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusType>>>(emp.Id, emp.StatusSchedule));
+                   SafeSelect(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>(emp.Id,
+                                                                                                                                         emp.AdminStatusSchedule));
+
+        #endregion
+
+        #region eMobilityProviderStatus
+
+        /// <summary>
+        /// Return the status of all e-mobility providerss registered within this roaming network.
+        /// </summary>
+        public IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>> eMobilityProviderStatus
+
+            => _eMobilityProviders.
+                   SafeSelect(emp => new KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>(emp.Id,
+                                                                                                                                     emp.StatusSchedule));
 
         #endregion
 
@@ -1209,8 +1263,8 @@ namespace org.GraphDefined.WWCP
                                                             eMobilityProviderPriority                     Priority                        = null,
                                                             Action<eMobilityProvider>                     Configurator                    = null,
                                                             RemoteEMobilityProviderCreatorDelegate        RemoteEMobilityProviderCreator  = null,
-                                                            eMobilityProviderAdminStatusType              AdminStatus                     = eMobilityProviderAdminStatusType.Operational,
-                                                            eMobilityProviderStatusType                   Status                          = eMobilityProviderStatusType.Available,
+                                                            eMobilityProviderAdminStatusTypes              AdminStatus                     = eMobilityProviderAdminStatusTypes.Operational,
+                                                            eMobilityProviderStatusTypes                   Status                          = eMobilityProviderStatusTypes.Available,
                                                             Action<eMobilityProvider>                     OnSuccess                       = null,
                                                             Action<RoamingNetwork, eMobilityProvider_Id>  OnError                         = null)
         {
@@ -1940,8 +1994,9 @@ namespace org.GraphDefined.WWCP
         #region Charging Station Operator Roaming Providers...
 
         private readonly ConcurrentDictionary<UInt32, IEMPRoamingProvider>  _eMobilityRoamingServices;
-        private readonly ConcurrentDictionary<UInt32, IPushData>            _PushEVSEDataToOperatorRoamingServices;
-        private readonly ConcurrentDictionary<UInt32, IPushStatus>          _PushEVSEStatusToOperatorRoamingServices;
+        //private readonly ConcurrentDictionary<UInt32, ISendData>            _PushEVSEDataToOperatorRoamingServices;
+        //private readonly ConcurrentDictionary<UInt32, ISendAdminStatus>     _PushEVSEAdminStatusToOperatorRoamingServices;
+        //private readonly ConcurrentDictionary<UInt32, ISendStatus>          _PushEVSEStatusToOperatorRoamingServices;
 
         #region ChargingStationOperatorRoamingProviders
 
@@ -1997,7 +2052,7 @@ namespace org.GraphDefined.WWCP
                     //                               : 10);
 
                     _ISendData.Add                     (_CPORoamingProvider);
-                    _ISendStatus.Add             (_CPORoamingProvider);
+                    _ISendStatus.Add                   (_CPORoamingProvider);
                     _ISend2RemoteAuthorizeStartStop.Add(_CPORoamingProvider);
                     _IRemoteSendChargeDetailRecord.Add (_CPORoamingProvider);
 
@@ -2168,29 +2223,29 @@ namespace org.GraphDefined.WWCP
 
         #region RegisterPushEVSEDataService(Priority, PushEVSEDataServices)
 
-        /// <summary>
-        /// Register the given push-data service.
-        /// </summary>
-        /// <param name="Priority">The priority of the service.</param>
-        /// <param name="PushEVSEDataServices">The push-data service.</param>
-        public Boolean RegisterPushEVSEStatusService(UInt32              Priority,
-                                                     IPushData           PushEVSEDataServices)
+        ///// <summary>
+        ///// Register the given push-data service.
+        ///// </summary>
+        ///// <param name="Priority">The priority of the service.</param>
+        ///// <param name="PushEVSEDataServices">The push-data service.</param>
+        //public Boolean RegisterPushEVSEStatusService(UInt32              Priority,
+        //                                             IPushData           PushEVSEDataServices)
 
-            => _PushEVSEDataToOperatorRoamingServices.TryAdd(Priority, PushEVSEDataServices);
+        //    => _PushEVSEDataToOperatorRoamingServices.TryAdd(Priority, PushEVSEDataServices);
 
         #endregion
 
         #region RegisterPushEVSEStatusService(Priority, PushEVSEStatusServices)
 
-        /// <summary>
-        /// Register the given push-status service.
-        /// </summary>
-        /// <param name="Priority">The priority of the service.</param>
-        /// <param name="PushEVSEStatusServices">The push-status service.</param>
-        public Boolean RegisterPushEVSEStatusService(UInt32       Priority,
-                                                     IPushStatus  PushEVSEStatusServices)
+        ///// <summary>
+        ///// Register the given push-status service.
+        ///// </summary>
+        ///// <param name="Priority">The priority of the service.</param>
+        ///// <param name="PushEVSEStatusServices">The push-status service.</param>
+        //public Boolean RegisterPushEVSEStatusService(UInt32       Priority,
+        //                                             IPushStatus  PushEVSEStatusServices)
 
-            => _PushEVSEStatusToOperatorRoamingServices.TryAdd(Priority, PushEVSEStatusServices);
+        //    => _PushEVSEStatusToOperatorRoamingServices.TryAdd(Priority, PushEVSEStatusServices);
 
         #endregion
 
@@ -2211,40 +2266,42 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChargingPoolIds
+        #region ChargingPoolIds        (IncludePools = null)
 
         /// <summary>
         /// Return all charging pool identifications registered within this roaming network.
         /// </summary>
-        public IEnumerable<ChargingPool_Id> ChargingPoolids
+        /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPool_Id> ChargingPoolIds(IncludeChargingPoolDelegate IncludePools = null)
 
-            => _ChargingStationOperators.SelectMany(cso => cso.ChargingPoolIds);
+            => _ChargingStationOperators.
+                   SelectMany(cso => cso.ChargingPoolIds(IncludePools));
 
         #endregion
 
-        #region ChargingPoolAdminStatus
+        #region ChargingPoolAdminStatus(IncludePools = null)
 
         /// <summary>
         /// Return the admin status of all charging pools registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>> ChargingPoolAdminStatus
+        /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPoolAdminStatus> ChargingPoolAdminStatus(IncludeChargingPoolDelegate IncludePools = null)
 
             => _ChargingStationOperators.
-                   SelectMany(cso => cso.Select(pool => new KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolAdminStatusTypes>>>(pool.Id,
-                                                                                                                                                 pool.AdminStatusSchedule())));
+                   SelectMany(cso => cso.ChargingPoolAdminStatus(IncludePools));
 
         #endregion
 
-        #region ChargingPoolStatus
+        #region ChargingPoolStatus     (IncludePools = null)
 
         /// <summary>
         /// Return the status of all charging pools registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>> ChargingPoolStatus
+        /// <param name="IncludePools">An optional delegate for filtering charging pools.</param>
+        public IEnumerable<ChargingPoolStatus> ChargingPoolStatus(IncludeChargingPoolDelegate IncludePools = null)
 
             => _ChargingStationOperators.
-                   SelectMany(cso => cso.Select(pool => new KeyValuePair<ChargingPool_Id, IEnumerable<Timestamped<ChargingPoolStatusTypes>>>(pool.Id,
-                                                                                                                                            pool.StatusSchedule())));
+                   SelectMany(cso => cso.ChargingPoolStatus(IncludePools));
 
         #endregion
 
@@ -2544,54 +2601,42 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChargingStationIds
+        #region ChargingStationIds        (IncludeStations = null)
 
         /// <summary>
         /// Return all charging station identifications registered within this roaming network.
         /// </summary>
-        public IEnumerable<ChargingStation_Id> ChargingStationIds
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStation_Id> ChargingStationIds(IncludeChargingStationDelegate IncludeStations = null)
 
-            => _ChargingStationOperators.SelectMany(cso => cso.ChargingStationIds);
+            => _ChargingStationOperators.
+                   SelectMany(cso => cso.ChargingStationIds(IncludeStations));
 
         #endregion
 
-        #region ChargingStationAdminStatus
+        #region ChargingStationAdminStatus(IncludeStations = null)
 
         /// <summary>
         /// Return the admin status of all charging stations registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>> ChargingStationAdminStatus
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStationAdminStatus> ChargingStationAdminStatus(IncludeChargingStationDelegate IncludeStations = null)
 
             => _ChargingStationOperators.
-                   SelectMany(cso =>
-                       cso.SelectMany(pool =>
-                           pool.Select(station =>
-
-                                   new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>(
-                                       station.Id,
-                                       station.AdminStatusSchedule())
-
-                               )));
+                   SelectMany(cso => cso.ChargingStationAdminStatus(IncludeStations));
 
         #endregion
 
-        #region ChargingStationStatus
+        #region ChargingStationStatus     (IncludeStations = null)
 
         /// <summary>
         /// Return the status of all charging stations registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>> ChargingStationStatus
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStationStatus> ChargingStationStatus(IncludeChargingStationDelegate IncludeStations = null)
 
             => _ChargingStationOperators.
-                   SelectMany(cso =>
-                       cso.SelectMany(pool =>
-                           pool.Select(station =>
-
-                                   new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>(
-                                       station.Id,
-                                       station.StatusSchedule())
-
-                               )));
+                   SelectMany(cso => cso.ChargingStationStatus(IncludeStations));
 
         #endregion
 
@@ -2921,57 +2966,55 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEIds
+        #region EVSEIds                (IncludeEVSEs = null)
 
         /// <summary>
         /// Return all EVSE identifications registered within this roaming network.
         /// </summary>
-        public IEnumerable<EVSE_Id> EVSEIds
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSE_Id> EVSEIds(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _ChargingStationOperators.SelectMany(cso => cso.EVSEIds);
+            => _ChargingStationOperators.
+                   SelectMany(cso => cso.EVSEIds(IncludeEVSEs));
 
         #endregion
 
-        #region EVSEAdminStatus
+        #region EVSEAdminStatus        (IncludeEVSEs = null)
 
         /// <summary>
         /// Return the admin status of all EVSEs registered within this roaming network.
         /// </summary>
-
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>> EVSEAdminStatus(UInt64 HistorySize)
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate IncludeEVSEs = null)
 
             => _ChargingStationOperators.
-                   SelectMany(cso =>
-                       cso.SelectMany(pool =>
-                           pool.SelectMany(station =>
-                               station.Select(evse =>
-
-                                   new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>(
-                                       evse.Id,
-                                       evse.AdminStatusSchedule(HistorySize))
-
-                               ))));
+                   SelectMany(cso => cso.EVSEAdminStatus(IncludeEVSEs));
 
         #endregion
 
-        #region EVSEStatus
+        #region EVSEAdminStatusSchedule(IncludeEVSEs = null)
+
+        /// <summary>
+        /// Return the admin status of all EVSEs registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEAdminStatus> EVSEAdminStatusSchedule(IncludeEVSEDelegate IncludeEVSEs = null)
+
+            => _ChargingStationOperators.
+                   SelectMany(cso => cso.EVSEAdminStatus(IncludeEVSEs));
+
+        #endregion
+
+        #region EVSEStatus             (IncludeEVSEs = null)
 
         /// <summary>
         /// Return the status of all EVSEs registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>> EVSEStatus(UInt64 HistorySize)
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEStatus> EVSEStatus(IncludeEVSEDelegate IncludeEVSEs = null)
 
             => _ChargingStationOperators.
-                   SelectMany(cso =>
-                       cso.SelectMany(pool =>
-                           pool.SelectMany(station =>
-                               station.Select(evse =>
-
-                                   new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>(
-                                       evse.Id,
-                                       evse.StatusSchedule(HistorySize))
-
-                               ))));
+                   SelectMany(cso => cso.EVSEStatus(IncludeEVSEs));
 
         #endregion
 
@@ -2985,9 +3028,7 @@ namespace org.GraphDefined.WWCP
         public Boolean ContainsEVSE(EVSE EVSE)
         {
 
-            ChargingStationOperator _ChargingStationOperator  = null;
-
-            if (TryGetChargingStationOperatorById(EVSE.Operator.Id, out _ChargingStationOperator))
+            if (TryGetChargingStationOperatorById(EVSE.Operator.Id, out ChargingStationOperator _ChargingStationOperator))
                 return _ChargingStationOperator.ContainsEVSE(EVSE.Id);
 
             return false;
@@ -3005,9 +3046,7 @@ namespace org.GraphDefined.WWCP
         public Boolean ContainsEVSE(EVSE_Id EVSEId)
         {
 
-            ChargingStationOperator _ChargingStationOperator  = null;
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _ChargingStationOperator))
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _ChargingStationOperator))
                 return _ChargingStationOperator.ContainsEVSE(EVSEId);
 
             return false;
@@ -3021,11 +3060,8 @@ namespace org.GraphDefined.WWCP
         public EVSE GetEVSEbyId(EVSE_Id EVSEId)
         {
 
-            EVSE                    _EVSE                     = null;
-            ChargingStationOperator _ChargingStationOperator  = null;
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _ChargingStationOperator) &&
-                _ChargingStationOperator.TryGetEVSEbyId(EVSEId, out _EVSE))
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _ChargingStationOperator) &&
+                _ChargingStationOperator.TryGetEVSEbyId(EVSEId, out EVSE _EVSE))
                     return _EVSE;
 
             return null;
@@ -3039,9 +3075,7 @@ namespace org.GraphDefined.WWCP
         public Boolean TryGetEVSEbyId(EVSE_Id EVSEId, out EVSE EVSE)
         {
 
-            ChargingStationOperator _ChargingStationOperator  = null;
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _ChargingStationOperator))
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _ChargingStationOperator))
                 return _ChargingStationOperator.TryGetEVSEbyId(EVSEId, out EVSE);
 
             EVSE = null;
@@ -3262,10 +3296,10 @@ namespace org.GraphDefined.WWCP
 
             var results = _ISendData.WhenAll(iSendData => iSendData.
                                                               UpdateStaticData(EVSE,
-                                                              PropertyName,
-                                                              OldValue,
-                                                              NewValue,
-                                                              EventTrackingId: EventTrackingId));
+                                                                               PropertyName,
+                                                                               OldValue,
+                                                                               NewValue,
+                                                                               EventTrackingId: EventTrackingId));
 
             var OnEVSEDataChangedLocal = OnEVSEDataChanged;
             if (OnEVSEDataChangedLocal != null)
@@ -3290,52 +3324,20 @@ namespace org.GraphDefined.WWCP
         /// <param name="EVSE">The updated EVSE.</param>
         /// <param name="OldStatus">The old EVSE status.</param>
         /// <param name="NewStatus">The new EVSE status.</param>
-        internal async Task UpdateEVSEAdminStatus(DateTime                          Timestamp,
-                                                  EventTracking_Id                  EventTrackingId,
-                                                  EVSE                              EVSE,
+        internal async Task UpdateEVSEAdminStatus(DateTime                           Timestamp,
+                                                  EventTracking_Id                   EventTrackingId,
+                                                  EVSE                               EVSE,
                                                   Timestamped<EVSEAdminStatusTypes>  OldStatus,
                                                   Timestamped<EVSEAdminStatusTypes>  NewStatus)
         {
 
-            //Acknowledgement result = null;
-
-            //if (!DisableStatusUpdates)
-            //{
-
-            //    foreach (var AuthenticationService in _IeMobilityServiceProviders.
-            //                                              OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                              Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //    {
-
-            //        result = await AuthenticationService.PushEVSEAdminStatus(new EVSEAdminStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                                 ActionType.update,
-            //                                                                 EVSE.Operator.Id);
-
-            //    }
-
-            //    foreach (var OperatorRoamingService in _OperatorRoamingServices.
-            //                                              OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                              Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //    {
-
-            //        result = await OperatorRoamingService.PushEVSEAdminStatus(new EVSEAdminStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                                  ActionType.update,
-            //                                                                  EVSE.Operator.Id);
-
-            //    }
-
-            //    foreach (var PushEVSEStatusService in _PushEVSEStatusToOperatorRoamingServices.
-            //                                              OrderBy(AuthServiceWithPriority => AuthServiceWithPriority.Key).
-            //                                              Select (AuthServiceWithPriority => AuthServiceWithPriority.Value))
-            //    {
-
-            //        result = await PushEVSEStatusService.PushEVSEAdminStatus(new EVSEAdminStatus(EVSE.Id, NewStatus.Value, NewStatus.Timestamp),
-            //                                                                 ActionType.update,
-            //                                                                 EVSE.Operator.Id);
-
-            //    }
-
-            //}
+            var results = _ISendAdminStatus.WhenAll(iSendAdminStatus => iSendAdminStatus.
+                                                                            UpdateAdminStatus(new EVSEAdminStatusUpdate[] {
+                                                                                                  new EVSEAdminStatusUpdate(EVSE,
+                                                                                                                            OldStatus,
+                                                                                                                            NewStatus)
+                                                                                              },
+                                                                                              EventTrackingId: EventTrackingId));
 
             var OnEVSEAdminStatusChangedLocal = OnEVSEAdminStatusChanged;
             if (OnEVSEAdminStatusChangedLocal != null)
@@ -3367,9 +3369,12 @@ namespace org.GraphDefined.WWCP
         {
 
             var results = _ISendStatus.WhenAll(iSendStatus => iSendStatus.
-                                                              UpdateStatus(new EVSEStatusUpdate[] { new EVSEStatusUpdate(EVSE,
-                                                                                              OldStatus,
-                                                                                              NewStatus) }));
+                                                                  UpdateStatus(new EVSEStatusUpdate[] {
+                                                                                   new EVSEStatusUpdate(EVSE,
+                                                                                                        OldStatus,
+                                                                                                        NewStatus)
+                                                                               },
+                                                                               EventTrackingId: EventTrackingId));
 
             var OnEVSEStatusChangedLocal = OnEVSEStatusChanged;
             if (OnEVSEStatusChangedLocal != null)
@@ -3454,7 +3459,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
+        /// <param name="Identification">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProduct">The charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
@@ -3471,7 +3476,7 @@ namespace org.GraphDefined.WWCP
                     TimeSpan?                         Duration            = null,
                     ChargingReservation_Id?           ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
-                    eMobilityAccount_Id?              eMAId               = null,
+                    AuthIdentification                Identification      = null,
                     ChargingProduct                   ChargingProduct     = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
@@ -3493,7 +3498,7 @@ namespace org.GraphDefined.WWCP
             ReservationResult       result                    = null;
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3505,7 +3510,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveEVSERequest event
 
-            var _StartTime = DateTime.Now;
+            var _StartTime = DateTime.UtcNow;
 
             try
             {
@@ -3520,7 +3525,7 @@ namespace org.GraphDefined.WWCP
                                              StartTime,
                                              Duration,
                                              ProviderId,
-                                             eMAId,
+                                             Identification,
                                              ChargingProduct,
                                              AuthTokens,
                                              eMAIds,
@@ -3545,7 +3550,7 @@ namespace org.GraphDefined.WWCP
                                            Duration,
                                            ReservationId,
                                            ProviderId,
-                                           eMAId,
+                                           Identification,
                                            ChargingProduct,
                                            AuthTokens,
                                            eMAIds,
@@ -3577,7 +3582,7 @@ namespace org.GraphDefined.WWCP
                                                Duration,
                                                ReservationId,
                                                ProviderId,
-                                               eMAId,
+                                               Identification,
                                                ChargingProduct,
                                                AuthTokens,
                                                eMAIds,
@@ -3607,7 +3612,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveEVSEResponse event
 
-            var EndTime = DateTime.Now;
+            var EndTime = DateTime.UtcNow;
 
             try
             {
@@ -3622,7 +3627,7 @@ namespace org.GraphDefined.WWCP
                                               StartTime,
                                               Duration,
                                               ProviderId,
-                                              eMAId,
+                                              Identification,
                                               ChargingProduct,
                                               AuthTokens,
                                               eMAIds,
@@ -3655,7 +3660,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
+        /// <param name="Identification">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProduct">The charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
@@ -3672,7 +3677,7 @@ namespace org.GraphDefined.WWCP
                     TimeSpan?                         Duration            = null,
                     ChargingReservation_Id?           ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
-                    eMobilityAccount_Id?              eMAId               = null,
+                    AuthIdentification                Identification      = null,
                     ChargingProduct                   ChargingProduct     = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
@@ -3694,7 +3699,7 @@ namespace org.GraphDefined.WWCP
             ReservationResult       result                    = null;
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3706,7 +3711,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveChargingStationRequest event
 
-            var _StartTime = DateTime.Now;
+            var _StartTime = DateTime.UtcNow;
 
             try
             {
@@ -3721,7 +3726,7 @@ namespace org.GraphDefined.WWCP
                                                         Duration,
                                                         ReservationId,
                                                         ProviderId,
-                                                        eMAId,
+                                                        Identification,
                                                         ChargingProduct,
                                                         AuthTokens,
                                                         eMAIds,
@@ -3746,7 +3751,7 @@ namespace org.GraphDefined.WWCP
                                            Duration,
                                            ReservationId,
                                            ProviderId,
-                                           eMAId,
+                                           Identification,
                                            ChargingProduct,
                                            AuthTokens,
                                            eMAIds,
@@ -3768,7 +3773,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveChargingStationResponse event
 
-            var EndTime = DateTime.Now;
+            var EndTime = DateTime.UtcNow;
 
             try
             {
@@ -3783,7 +3788,7 @@ namespace org.GraphDefined.WWCP
                                                          Duration,
                                                          ReservationId,
                                                          ProviderId,
-                                                         eMAId,
+                                                         Identification,
                                                          ChargingProduct,
                                                          AuthTokens,
                                                          eMAIds,
@@ -3855,7 +3860,7 @@ namespace org.GraphDefined.WWCP
             ReservationResult       result                    = null;
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3867,7 +3872,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveChargingPoolRequest event
 
-            var _StartTime = DateTime.Now;
+            var _StartTime = DateTime.UtcNow;
 
             try
             {
@@ -3929,7 +3934,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnReserveChargingPoolResponse event
 
-            var EndTime = DateTime.Now;
+            var EndTime = DateTime.UtcNow;
 
             try
             {
@@ -4041,7 +4046,7 @@ namespace org.GraphDefined.WWCP
             CancelReservationResult result                    = null;
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -4139,10 +4144,10 @@ namespace org.GraphDefined.WWCP
                 result = CancelReservationResult.UnknownReservationId(ReservationId,
                                                                       Reason);
 
-                SendOnReservationCancelled(DateTime.Now,
+                SendOnReservationCancelled(DateTime.UtcNow,
                                            Timestamp.HasValue
                                                ? Timestamp.Value
-                                               : DateTime.Now,
+                                               : DateTime.UtcNow,
                                            this,
                                            EventTrackingId,
                                            Id,
@@ -4277,7 +4282,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -4292,7 +4297,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStartRequest event
 
-            var StartTime = DateTime.Now;
+            var StartTime = DateTime.UtcNow;
 
             try
             {
@@ -4394,7 +4399,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStartResponse event
 
-            var EndTime = DateTime.Now;
+            var EndTime = DateTime.UtcNow;
 
             try
             {
@@ -4463,7 +4468,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -4478,7 +4483,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStartRequest event
 
-            var StartTime = DateTime.Now;
+            var StartTime = DateTime.UtcNow;
 
             try
             {
@@ -4580,7 +4585,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStartResponse event
 
-            var EndTime = DateTime.Now;
+            var EndTime = DateTime.UtcNow;
 
             try
             {
@@ -4680,7 +4685,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -4695,7 +4700,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopRequest event
 
-            var StartTime = DateTime.Now;
+            var StartTime = DateTime.UtcNow;
 
             try
             {
@@ -4821,12 +4826,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteStopResponse event
 
-            var EndTime = DateTime.Now;
+            var EndTime = DateTime.UtcNow;
 
             try
             {
 
-                OnRemoteStopResponse?.Invoke(DateTime.Now,
+                OnRemoteStopResponse?.Invoke(DateTime.UtcNow,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -4886,7 +4891,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -4901,7 +4906,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStopRequest event
 
-            var StartTime = DateTime.Now;
+            var StartTime = DateTime.UtcNow;
 
             try
             {
@@ -5031,7 +5036,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteEVSEStopResponse event
 
-            var EndTime = DateTime.Now;
+            var EndTime = DateTime.UtcNow;
 
             try
             {
@@ -5097,7 +5102,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -5112,7 +5117,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStopRequest event
 
-            var StartTime = DateTime.Now;
+            var StartTime = DateTime.UtcNow;
 
             try
             {
@@ -5240,7 +5245,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnRemoteChargingStationStopResponse event
 
-            var EndTime = DateTime.Now;
+            var EndTime = DateTime.UtcNow;
 
             try
             {
@@ -5314,7 +5319,7 @@ namespace org.GraphDefined.WWCP
                 throw new ArgumentNullException(nameof(AuthIdentification),   "The given authentication token must not be null!");
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -5326,7 +5331,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeStartRequest event
 
-            var StartTime = DateTime.Now;
+            var StartTime = DateTime.UtcNow;
 
             try
             {
@@ -5371,9 +5376,7 @@ namespace org.GraphDefined.WWCP
                                                                                       this,
                                                                                       SessionId,
                                                                                       Description:  "No authorization service returned a positiv result!",
-                                                                                      Runtime:      runtime)).
-
-                                   ConfigureAwait(false);
+                                                                                      Runtime:      runtime));
 
 
             #region If Authorized...
@@ -5396,7 +5399,7 @@ namespace org.GraphDefined.WWCP
                                              };
 
                     if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
-                        RegisterExternalChargingSession(DateTime.Now,
+                        RegisterExternalChargingSession(DateTime.UtcNow,
                                                         this,
                                                         NewChargingSession);
 
@@ -5409,7 +5412,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeStartResponse event
 
-            var Endtime = DateTime.Now;
+            var Endtime = DateTime.UtcNow;
 
             try
             {
@@ -5479,7 +5482,7 @@ namespace org.GraphDefined.WWCP
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -5491,7 +5494,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeEVSEStartRequest event
 
-            var StartTime = DateTime.Now;
+            var StartTime = DateTime.UtcNow;
 
             try
             {
@@ -5507,6 +5510,7 @@ namespace org.GraphDefined.WWCP
                                                     EVSEId,
                                                     ChargingProduct,
                                                     SessionId,
+                                                    _ISend2RemoteAuthorizeStartStop,
                                                     RequestTimeout);
 
             }
@@ -5517,6 +5521,9 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
+
+            DebugX.LogT("RN AuthStart Request: " + AuthIdentification);
+            DebugX.LogT(_ISend2RemoteAuthorizeStartStop.Select(_ => _.AuthId).AggregateWith(", "));
 
             var result = await _ISend2RemoteAuthorizeStartStop.
                                    WhenFirst(iRemoteAuthorizeStartStop => iRemoteAuthorizeStartStop.
@@ -5538,10 +5545,10 @@ namespace org.GraphDefined.WWCP
                                                                                           this,
                                                                                           SessionId,
                                                                                           Description:  "No authorization service returned a positiv result!",
-                                                                                          Runtime:      runtime)).
+                                                                                          Runtime:      runtime));
 
-                                   ConfigureAwait(false);
 
+            DebugX.LogT("RN AuthStart Response: " + result.ISendAuthorizeStartStop.AuthId + ": " + AuthIdentification + " => " + result);
 
             #region If Authorized...
 
@@ -5554,19 +5561,19 @@ namespace org.GraphDefined.WWCP
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the charge detail record was sent!
 
-                    var NewChargingSession = new ChargingSession(result.SessionId.Value) {
-                                                 AuthorizatorId   = result.AuthorizatorId,
-                                                 AuthService      = result.ISendAuthorizeStartStop,
-                                                 OperatorId       = OperatorId,
-                                                 EVSEId           = EVSEId,
-                                                 AuthTokenStart   = AuthIdentification?.AuthToken,
-                                                 ChargingProduct  = ChargingProduct
-                                             };
+                    //var NewChargingSession = new ChargingSession(result.SessionId.Value) {
+                    //                             AuthorizatorId   = result.AuthorizatorId,
+                    //                             AuthService      = result.ISendAuthorizeStartStop,
+                    //                             OperatorId       = OperatorId,
+                    //                             EVSEId           = EVSEId,
+                    //                             AuthTokenStart   = AuthIdentification?.AuthToken,
+                    //                             ChargingProduct  = ChargingProduct
+                    //                         };
 
-                    if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
-                        RegisterExternalChargingSession(DateTime.Now,
-                                                        this,
-                                                        NewChargingSession);
+                    //if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
+                    //    RegisterExternalChargingSession(DateTime.UtcNow,
+                    //                                    this,
+                    //                                    NewChargingSession);
 
                 }
 
@@ -5577,7 +5584,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeEVSEStartResponse event
 
-            var Endtime = DateTime.Now;
+            var Endtime = DateTime.UtcNow;
 
             try
             {
@@ -5593,6 +5600,7 @@ namespace org.GraphDefined.WWCP
                                                      EVSEId,
                                                      ChargingProduct,
                                                      SessionId,
+                                                     _ISend2RemoteAuthorizeStartStop,
                                                      RequestTimeout,
                                                      result,
                                                      Endtime - StartTime);
@@ -5648,7 +5656,7 @@ namespace org.GraphDefined.WWCP
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -5660,7 +5668,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeChargingStationStartRequest event
 
-            var StartTime = DateTime.Now;
+            var StartTime = DateTime.UtcNow;
 
             try
             {
@@ -5733,7 +5741,7 @@ namespace org.GraphDefined.WWCP
                                              };
 
                     if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
-                        RegisterExternalChargingSession(DateTime.Now,
+                        RegisterExternalChargingSession(DateTime.UtcNow,
                                                         this,
                                                         NewChargingSession);
 
@@ -5746,7 +5754,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeChargingStationStarted event
 
-            var Endtime = DateTime.Now;
+            var Endtime = DateTime.UtcNow;
 
             try
             {
@@ -5817,7 +5825,7 @@ namespace org.GraphDefined.WWCP
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -5832,7 +5840,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeChargingPoolStartRequest event
 
-            var StartTime = DateTime.Now;
+            var StartTime = DateTime.UtcNow;
 
             try
             {
@@ -5905,7 +5913,7 @@ namespace org.GraphDefined.WWCP
                                              };
 
                     if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
-                        RegisterExternalChargingSession(DateTime.Now,
+                        RegisterExternalChargingSession(DateTime.UtcNow,
                                                         this,
                                                         NewChargingSession);
 
@@ -5918,7 +5926,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeChargingPoolStartResponse event
 
-            var Endtime = DateTime.Now;
+            var Endtime = DateTime.UtcNow;
 
             try
             {
@@ -6048,7 +6056,7 @@ namespace org.GraphDefined.WWCP
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -6063,7 +6071,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeStopRequest event
 
-            var StartTime = DateTime.Now;
+            var StartTime = DateTime.UtcNow;
 
             try
             {
@@ -6126,7 +6134,7 @@ namespace org.GraphDefined.WWCP
                                                         result2.Result == AuthStopResultType.Blocked,
 
                                              runtime => AuthStopResult.NotAuthorized(Id,
-                                                                                     //this,
+                                                                                     this,
                                                                                      SessionId,
                                                                                      Description:  "No authorization service returned a positiv result!",
                                                                                      Runtime:      runtime)).
@@ -6138,7 +6146,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeStopResponse event
 
-            var Endtime = DateTime.Now;
+            var Endtime = DateTime.UtcNow;
 
             try
             {
@@ -6205,7 +6213,7 @@ namespace org.GraphDefined.WWCP
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -6220,12 +6228,12 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeEVSEStopRequest event
 
-            var StartTime = DateTime.Now;
+            var StartTime = DateTime.UtcNow;
 
             try
             {
 
-                OnAuthorizeEVSEStopRequest?.Invoke(DateTime.Now,
+                OnAuthorizeEVSEStopRequest?.Invoke(DateTime.UtcNow,
                                                    Timestamp.Value,
                                                    this,
                                                    Id.ToString(),
@@ -6285,7 +6293,7 @@ namespace org.GraphDefined.WWCP
                                                         result2.Result == AuthStopEVSEResultType.Blocked,
 
                                              runtime => AuthStopEVSEResult.NotAuthorized(Id,
-                                                                                         //this,
+                                                                                         this,
                                                                                          SessionId,
                                                                                          Description:  "No authorization service returned a positiv result!",
                                                                                          Runtime:      runtime)).
@@ -6295,7 +6303,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeEVSEStopResponse event
 
-            var Endtime = DateTime.Now;
+            var Endtime = DateTime.UtcNow;
 
             try
             {
@@ -6366,7 +6374,7 @@ namespace org.GraphDefined.WWCP
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -6381,7 +6389,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeChargingStationStopRequest event
 
-            var StartTime = DateTime.Now;
+            var StartTime = DateTime.UtcNow;
 
             try
             {
@@ -6457,7 +6465,7 @@ namespace org.GraphDefined.WWCP
                                                         result2.Result == AuthStopChargingStationResultType.Blocked,
 
                                              runtime => AuthStopChargingStationResult.NotAuthorized(Id,
-                                                                                                    //this,
+                                                                                                    this,
                                                                                                     SessionId,
                                                                                                     Description:  "No authorization service returned a positiv result!",
                                                                                                     Runtime:      runtime)).
@@ -6489,7 +6497,7 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            var Endtime = DateTime.Now;
+            var Endtime = DateTime.UtcNow;
             var Runtime = Endtime - StartTime;
 
             #region Send OnAuthorizeChargingStationStopResponse event
@@ -6563,7 +6571,7 @@ namespace org.GraphDefined.WWCP
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -6578,7 +6586,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeChargingPoolStopRequest event
 
-            var StartTime = DateTime.Now;
+            var StartTime = DateTime.UtcNow;
 
             try
             {
@@ -6654,7 +6662,7 @@ namespace org.GraphDefined.WWCP
                                                         result2.Result == AuthStopChargingPoolResultType.Blocked,
 
                                              runtime => AuthStopChargingPoolResult.NotAuthorized(Id,
-                                                                                                 //this,
+                                                                                                 this,
                                                                                                  SessionId,
                                                                                                  Description:  "No authorization service returned a positiv result!",
                                                                                                  Runtime:      runtime)).
@@ -6688,7 +6696,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnAuthorizeChargingPoolStopResponse event
 
-            var Endtime = DateTime.Now;
+            var Endtime = DateTime.UtcNow;
 
             try
             {
@@ -6983,7 +6991,7 @@ namespace org.GraphDefined.WWCP
 
         #region OnFilterCDRRecords
 
-        public delegate String OnFilterCDRRecordsDelegate(IId AuthorizatorId, ChargeDetailRecord ChargeDetailRecord);
+        public delegate IEnumerable<String> OnFilterCDRRecordsDelegate(IId AuthorizatorId, ChargeDetailRecord ChargeDetailRecord);
 
         /// <summary>
         /// An event fired whenever a CDR needs to be filtered.
@@ -6992,7 +7000,20 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region SendChargeDetailRecords(...ChargeDetailRecords, ...)
+        #region OnCDRWasFiltered
+
+        public delegate Task OnCDRWasFilteredDelegate(ChargeDetailRecord ChargeDetailRecord, IEnumerable<String> Reason);
+
+        /// <summary>
+        /// An event fired whenever a CDR was filtered.
+        /// </summary>
+        public event OnCDRWasFilteredDelegate OnCDRWasFiltered;
+
+        #endregion
+
+        #region SendChargeDetailRecords(ChargeDetailRecords, ...)
+
+        #region IReceiveChargeDetailRecords.SendChargeDetailRecords(ChargeDetailRecords, ...)
 
         /// <summary>
         /// Send a charge detail record.
@@ -7003,9 +7024,39 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">A token to cancel this request.</param>
         /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        Task<SendCDRsResult>
+
+            IReceiveChargeDetailRecords.SendChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+
+                                                                DateTime?                        Timestamp,
+                                                                CancellationToken?               CancellationToken,
+                                                                EventTracking_Id                 EventTrackingId,
+                                                                TimeSpan?                        RequestTimeout)
+
+                => SendChargeDetailRecords(ChargeDetailRecords,
+                                           TransmissionTypes.Enqueue,
+
+                                           Timestamp,
+                                           CancellationToken,
+                                           EventTrackingId,
+                                           RequestTimeout);
+
+        #endregion
+
+        /// <summary>
+        /// Send a charge detail record.
+        /// </summary>
+        /// <param name="ChargeDetailRecords">An enumeration of charge detail records.</param>
+        /// <param name="TransmissionType">Whether to send the EVSE directly or enqueue it for a while.</param>
+        /// 
+        /// <param name="Timestamp">The timestamp of the request.</param>
+        /// <param name="CancellationToken">A token to cancel this request.</param>
+        /// <param name="EventTrackingId">An unique event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
         public async Task<SendCDRsResult>
 
             SendChargeDetailRecords(IEnumerable<ChargeDetailRecord>  ChargeDetailRecords,
+                                    TransmissionTypes                TransmissionType    = TransmissionTypes.Enqueue,
 
                                     DateTime?                        Timestamp           = null,
                                     CancellationToken?               CancellationToken   = null,
@@ -7017,11 +7068,11 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (ChargeDetailRecords == null)
-                throw new ArgumentNullException(nameof(ChargeDetailRecords), "The given enumeration of charge detail records must not be null!");
+                ChargeDetailRecords = new ChargeDetailRecord[0];
 
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -7029,14 +7080,14 @@ namespace org.GraphDefined.WWCP
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
 
-
-            SendCDRsResult result = null;
+            if (!RequestTimeout.HasValue)
+                RequestTimeout = this.RequestTimeout;
 
             #endregion
 
             #region Send OnSendCDRsRequest event
 
-            var StartTime = DateTime.Now;
+            var StartTime = DateTime.UtcNow;
 
             try
             {
@@ -7059,8 +7110,41 @@ namespace org.GraphDefined.WWCP
             #endregion
 
 
-            if (!ChargeDetailRecords.Any())
-                result = SendCDRsResult.NoOperation(Id);
+            #region if SendChargeDetailRecords disabled...
+
+            DateTime        Endtime;
+            TimeSpan        Runtime;
+            SendCDRsResult  result = null;
+
+            if (DisableSendChargeDetailRecords)
+            {
+
+                Endtime  = DateTime.UtcNow;
+                Runtime  = Endtime - StartTime;
+                result   = SendCDRsResult.AdminDown(Id,
+                                                    this as ISendChargeDetailRecords,
+                                                    ChargeDetailRecords,
+                                                    Runtime: Runtime);
+
+            }
+
+            #endregion
+
+            #region if no charge detail records...
+
+            else if (!ChargeDetailRecords.Any())
+            {
+
+                Endtime  = DateTime.UtcNow;
+                Runtime  = Endtime - StartTime;
+                result   = SendCDRsResult.NoOperation(Id,
+                                                      this as ISendChargeDetailRecords,
+                                                      new SendCDRResult[0],
+                                                      Runtime: Runtime);
+
+            }
+
+            #endregion
 
             else
             {
@@ -7078,18 +7162,16 @@ namespace org.GraphDefined.WWCP
                     if (ChargeDetailRecord.EVSEId.HasValue)
                     {
 
-                        EVSE _EVSE = null;
-
-                        if (TryGetEVSEbyId(ChargeDetailRecord.EVSEId.Value, out _EVSE))
+                        if (TryGetEVSEbyId(ChargeDetailRecord.EVSEId.Value, out EVSE _EVSE))
                         {
 
-                            if (_EVSE.ChargingSession != null &&
+                            if (_EVSE.ChargingSession    != null &&
                                 _EVSE.ChargingSession.Id == ChargeDetailRecord.SessionId)
                             {
 
                                 //_EVSE.Status = EVSEStatusType.Available;
-                                _EVSE.ChargingSession = null;
-                                _EVSE.Reservation = null;
+                                _EVSE.ChargingSession  = null;
+                                _EVSE.Reservation      = null;
 
                             }
 
@@ -7102,8 +7184,8 @@ namespace org.GraphDefined.WWCP
 
                 #region Some charge detail records should perhaps be filtered...
 
-                var FilteredCDRs  = new Dictionary<ChargingSession_Id, String>();
-                var CDRsToSend    = new HashSet<ChargeDetailRecord>(ChargeDetailRecords);
+                var FilteredCDRs          = new List<SendCDRResult>();
+                var RemainingCDRsToSend   = new HashSet<ChargeDetailRecord>(ChargeDetailRecords);
 
                 var OnFilterCDRRecordsLocal = OnFilterCDRRecords;
                 if (OnFilterCDRRecordsLocal != null)
@@ -7113,75 +7195,58 @@ namespace org.GraphDefined.WWCP
                     {
 
                         var FilterResult = OnFilterCDRRecordsLocal(Id, ChargeDetailRecord);
-
-                        if (FilterResult.IsNotNullOrEmpty())
+                        if (FilterResult.IsNeitherNullNorEmpty())
                         {
-                            FilteredCDRs.Add(ChargeDetailRecord.SessionId, FilterResult);
-                            CDRsToSend.Remove(ChargeDetailRecord);
+
+                            FilteredCDRs.Add(new SendCDRResult(ChargeDetailRecord,
+                                                               SendCDRResultTypes.Filtered,
+                                                               FilterResult));
+
+                            try
+                            {
+                                await OnCDRWasFiltered.Invoke(ChargeDetailRecord, FilterResult);
+                            }
+                            catch (Exception e)
+                            {
+                                DebugX.Log("OnCDRWasFiltered event throw an exception: " +
+                                           e.Message + Environment.NewLine +
+                                           e.StackTrace);
+                            }
+
+                            RemainingCDRsToSend.Remove(ChargeDetailRecord);
+
                         }
 
                     }
 
                 }
 
+                if (RemainingCDRsToSend.Count == 0)
+                {
+
+                    Endtime  = DateTime.UtcNow;
+                    Runtime  = Endtime - StartTime;
+                    result   = SendCDRsResult.NoOperation(Id,
+                                                          this as ISendChargeDetailRecords,
+                                                          FilteredCDRs,
+                                                          "All " + FilteredCDRs.Count + " charge detail record(s) had been filtered!",
+                                                          Runtime: Runtime);
+
+                }
+
                 #endregion
 
-
-                if (CDRsToSend.Count ==  0)
-                    result = SendCDRsResult.NotForwared(Id, Description: "All " + FilteredCDRs.Count + " charge detail record(s) had been filtered!");
 
                 else
                 {
 
                     #region Group charge detail records by their targets...
 
-                    var UpstreamProviders         = new Dictionary<eMobilityProvider,   List<ChargeDetailRecord>>();
-                    var UpstreamRoamingProviders  = new Dictionary<IEMPRoamingProvider, List<ChargeDetailRecord>>();
-                    var UnknownCDRTargets         = new List<ChargeDetailRecord>();
+                    var _ISendChargeDetailRecords = new Dictionary<ISendChargeDetailRecords, List<ChargeDetailRecord>>();
 
-                    ChargingStationOperator _Operator;
-                    ChargingSession         _ChargingSession;
-                    IEMPRoamingProvider     _EMPRoamingProvider;
+                    foreach (var isendcdr in _IRemoteSendChargeDetailRecord)
+                        _ISendChargeDetailRecords.Add(isendcdr, new List<ChargeDetailRecord>());
 
-                    foreach (var ChargeDetailRecord in ChargeDetailRecords)
-                    {
-
-                        #region Group by e-mobility providers...
-
-                        //if (_ChargingSessions_at_Operators.TryGetValue(ChargeDetailRecord.SessionId, out _Operator))
-                        //{
-
-                        //    if (!UpstreamOperators.ContainsKey(_Operator))
-                        //        UpstreamOperators.Add(_Operator, new List<ChargeDetailRecord>());
-
-                        //    UpstreamOperators[_Operator].Add(ChargeDetailRecord);
-
-                        //}
-
-                        #endregion
-
-                        #region ...or group by EMP roaming operators...
-
-                        //if (_ChargingSessions_at_EMPRoamingProviders.TryGetValue(ChargeDetailRecord.SessionId, out _EMPRoamingProvider))
-                        //{
-
-                        //    if (!UpstreamRoamingProviders.ContainsKey(_EMPRoamingProvider))
-                        //        UpstreamRoamingProviders.Add(_EMPRoamingProvider, new List<ChargeDetailRecord>());
-
-                        //    UpstreamRoamingProviders[_EMPRoamingProvider].Add(ChargeDetailRecord);
-
-                        //}
-
-                        #endregion
-
-                        #region ...or save as unknown!
-
-                        //else
-                        //    UnknownCDRTargets.Add(ChargeDetailRecord);
-
-                        #endregion
-
-                    }
 
                     #endregion
 
@@ -7212,8 +7277,8 @@ namespace org.GraphDefined.WWCP
 
                     #region Try to find *Roaming Providers* who might kown anything about the given SessionId!
 
-                    if (result == null ||
-                        result.Status == SendCDRsResultType.InvalidSessionId)
+                    if (result == null)
+                        //|| result.Result == SendCDRsResultTypes.InvalidSessionId)
                     {
 
                         var results = await _IRemoteSendChargeDetailRecord.
@@ -7226,7 +7291,7 @@ namespace org.GraphDefined.WWCP
 
                                            //         if (_FilteredCDRs.Length > 0)
                                                         return iRemoteSendChargeDetailRecord.
-                                                                   SendChargeDetailRecords(ChargeDetailRecords,
+                                                                   SendChargeDetailRecords(RemainingCDRsToSend,
                                                                                            CancellationToken: CancellationToken,
                                                                                            EventTrackingId:   EventTrackingId);
 
@@ -7248,7 +7313,7 @@ namespace org.GraphDefined.WWCP
                         //    //                                                                  RequestTimeout);
 
                         //    result = await iRemoteSendChargeDetailRecord.
-                        //                       SendChargeDetailRecords(ChargeDetailRecords,
+                        //                       SendChargeDetailRecords(RemainingCDRsToSend,
                         //                                               CancellationToken: CancellationToken,
                         //                                               EventTrackingId: EventTrackingId);
 
@@ -7262,13 +7327,14 @@ namespace org.GraphDefined.WWCP
 
                     #region ...else fail!
 
-                    if (result == null ||
-                        result.Status == SendCDRsResultType.InvalidSessionId)
+                    if (result == null)
+                        // ||result.Result == SendCDRsResultTypes.InvalidSessionId)
                     {
 
-                        return SendCDRsResult.NotForwared(Id,
-                                                          ChargeDetailRecords,
-                                                          "No authorization service returned a positiv result!");
+                        result = SendCDRsResult.Error(Id,
+                                                      this,
+                                                      RemainingCDRsToSend,
+                                                      "No authorization service returned a positiv result!");
 
                     }
 
@@ -7281,7 +7347,7 @@ namespace org.GraphDefined.WWCP
 
             #region Send OnSendCDRsResponse event
 
-            var EndTime = DateTime.Now;
+            var EndTime = DateTime.UtcNow;
 
             try
             {
@@ -7319,6 +7385,7 @@ namespace org.GraphDefined.WWCP
         {
 
             SendChargeDetailRecords(new ChargeDetailRecord[] { ChargeDetailRecord },
+                                    TransmissionTypes.Enqueue,
 
                                     Timestamp,
                                     new CancellationTokenSource().Token,

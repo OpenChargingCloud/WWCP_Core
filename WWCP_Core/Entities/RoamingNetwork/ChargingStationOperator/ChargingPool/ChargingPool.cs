@@ -29,6 +29,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -100,6 +101,15 @@ namespace org.GraphDefined.WWCP
 
         }
 
+        public I18NString SetName(Languages Language, String Text)
+            => _Name = I18NString.Create(Language, Text);
+
+        public I18NString SetName(I18NString I18NText)
+            => _Name = I18NText;
+
+        public I18NString AddName(Languages Language, String Text)
+            => _Name.Add(Language, Text);
+
         #endregion
 
         #region Description
@@ -139,6 +149,15 @@ namespace org.GraphDefined.WWCP
 
         }
 
+        public I18NString SetDescription(Languages Language, String Text)
+            => _Description = I18NString.Create(Language, Text);
+
+        public I18NString SetDescription(I18NString I18NText)
+            => _Description = I18NText;
+
+        public I18NString AddDescription(Languages Language, String Text)
+            => _Description.Add(Language, Text);
+
         #endregion
 
         #region Brand
@@ -146,8 +165,7 @@ namespace org.GraphDefined.WWCP
         private Brand _Brand;
 
         /// <summary>
-        /// A (multi-language) brand name for this charging pool
-        /// is this is different from the Charging Station Operator.
+        /// A (multi-language) brand name for this charging pool.
         /// </summary>
         [Optional]
         public Brand Brand
@@ -172,6 +190,54 @@ namespace org.GraphDefined.WWCP
 
                     // Delete inherited GeoLocations
                     _ChargingStations.ForEach(station => station.Brand = null);
+
+                }
+
+            }
+
+        }
+
+        #endregion
+
+        #region DataLicense
+
+        private ReactiveSet<DataLicense> _DataLicenses;
+
+        /// <summary>
+        /// The license of the charging pool data.
+        /// </summary>
+        [Mandatory]
+        public ReactiveSet<DataLicense> DataLicenses
+        {
+
+            get
+            {
+
+                return _DataLicenses != null && _DataLicenses.Any()
+                           ? _DataLicenses
+                           : Operator?.DataLicenses;
+
+            }
+
+            set
+            {
+
+                if (value != _DataLicenses && value != Operator?.DataLicenses)
+                {
+
+                    if (value.IsNullOrEmpty())
+                        DeleteProperty(ref _DataLicenses);
+
+                    else
+                    {
+
+                        if (_DataLicenses == null)
+                            SetProperty(ref _DataLicenses, value);
+
+                        else
+                            SetProperty(ref _DataLicenses, _DataLicenses.Set(value));
+
+                    }
 
                 }
 
@@ -972,6 +1038,13 @@ namespace org.GraphDefined.WWCP
         [Optional]
         public ChargingStationOperator  Operator            { get; }
 
+        /// <summary>
+        /// The roaming network of this charging pool.
+        /// </summary>
+        [InternalUseOnly]
+        public RoamingNetwork RoamingNetwork
+            => Operator?.RoamingNetwork;
+
         #endregion
 
         #region Constructor(s)
@@ -985,12 +1058,12 @@ namespace org.GraphDefined.WWCP
         /// <param name="MaxPoolStatusListSize">The default size of the charging pool (aggregated charging station) status list.</param>
         /// <param name="MaxPoolAdminStatusListSize">The default size of the charging pool admin status list.</param>
         public ChargingPool(ChargingPool_Id                             Id,
-                            Action<ChargingPool>                        Configurator                = null,
-                            RemoteChargingPoolCreatorDelegate           RemoteChargingPoolCreator   = null,
-                            Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus          = null,
-                            Timestamped<ChargingPoolStatusTypes>?       InitialStatus               = null,
-                            UInt16                                      MaxPoolAdminStatusListSize  = DefaultMaxAdminStatusListSize,
-                            UInt16                                      MaxPoolStatusListSize       = DefaultMaxStatusListSize)
+                            Action<ChargingPool>                        Configurator                 = null,
+                            RemoteChargingPoolCreatorDelegate           RemoteChargingPoolCreator    = null,
+                            Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus           = null,
+                            Timestamped<ChargingPoolStatusTypes>?       InitialStatus                = null,
+                            UInt16                                      MaxPoolAdminStatusListSize   = DefaultMaxAdminStatusListSize,
+                            UInt16                                      MaxPoolStatusListSize        = DefaultMaxStatusListSize)
 
             : this(Id,
                    null,
@@ -1016,12 +1089,12 @@ namespace org.GraphDefined.WWCP
         /// <param name="MaxPoolAdminStatusListSize">The default size of the charging pool admin status list.</param>
         public ChargingPool(ChargingPool_Id                             Id,
                             ChargingStationOperator                     Operator,
-                            Action<ChargingPool>                        Configurator                = null,
-                            RemoteChargingPoolCreatorDelegate           RemoteChargingPoolCreator   = null,
-                            Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus          = null,
-                            Timestamped<ChargingPoolStatusTypes>?       InitialStatus               = null,
-                            UInt16                                      MaxPoolAdminStatusListSize  = DefaultMaxAdminStatusListSize,
-                            UInt16                                      MaxPoolStatusListSize       = DefaultMaxStatusListSize)
+                            Action<ChargingPool>                        Configurator                 = null,
+                            RemoteChargingPoolCreatorDelegate           RemoteChargingPoolCreator    = null,
+                            Timestamped<ChargingPoolAdminStatusTypes>?  InitialAdminStatus           = null,
+                            Timestamped<ChargingPoolStatusTypes>?       InitialStatus                = null,
+                            UInt16                                      MaxPoolAdminStatusListSize   = DefaultMaxAdminStatusListSize,
+                            UInt16                                      MaxPoolStatusListSize        = DefaultMaxStatusListSize)
 
             : base(Id)
 
@@ -1032,7 +1105,7 @@ namespace org.GraphDefined.WWCP
             this.Operator                    = Operator;
 
             InitialAdminStatus               = InitialAdminStatus ?? new Timestamped<ChargingPoolAdminStatusTypes>(ChargingPoolAdminStatusTypes.Operational);
-            InitialStatus                    = InitialStatus      ?? new Timestamped<ChargingPoolStatusTypes>(ChargingPoolStatusTypes.Available);
+            InitialStatus                    = InitialStatus      ?? new Timestamped<ChargingPoolStatusTypes>     (ChargingPoolStatusTypes.     Available);
 
             this._Name                       = new I18NString();
             this._Description                = new I18NString();
@@ -1287,49 +1360,60 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ChargingStationIds
+        #region ChargingStationIds        (IncludeStations = null)
 
         /// <summary>
-        /// Return all charging station Ids registered within this charing pool.
+        /// Return an enumeration of all charging station identifications.
         /// </summary>
-        public IEnumerable<ChargingStation_Id> ChargingStationIds
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStation_Id> ChargingStationIds(IncludeChargingStationDelegate IncludeStations = null)
 
-            =>_ChargingStations.Ids;
+            => IncludeStations == null
+
+                   ? _ChargingStations.
+                         Select    (station => station.Id)
+
+                   : _ChargingStations.
+                         Where     (station => IncludeStations(station)).
+                         Select    (station => station.Id);
 
         #endregion
 
-        #region ChargingStationAdminStatus
+        #region ChargingStationAdminStatus(IncludeStations = null)
 
         /// <summary>
-        /// Return the admin status of all charging stations registered within this charging pool.
+        /// Return an enumeration of all charging station admin status.
         /// </summary>
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStationAdminStatus> ChargingStationAdminStatus(IncludeChargingStationDelegate IncludeStations = null)
 
-        public IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>> ChargingStationAdminStatus
+            => IncludeStations == null
 
-            => _ChargingStations.Select(station =>
+                   ? _ChargingStations.
+                         Select    (station => new ChargingStationAdminStatus(station.Id, station.AdminStatus))
 
-                                     new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationAdminStatusTypes>>>(
-                                         station.Id,
-                                         station.AdminStatusSchedule())
-
-                                 );
+                   : _ChargingStations.
+                         Where     (station => IncludeStations(station)).
+                         Select    (station => new ChargingStationAdminStatus(station.Id, station.AdminStatus));
 
         #endregion
 
-        #region ChargingStationStatus
+        #region ChargingStationStatus     (IncludeStations = null)
 
         /// <summary>
-        /// Return the status of all charging stations registered within this charging pool.
+        /// Return an enumeration of all charging station status.
         /// </summary>
-        public IEnumerable<KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>> ChargingStationStatus
+        /// <param name="IncludeStations">An optional delegate for filtering charging stations.</param>
+        public IEnumerable<ChargingStationStatus> ChargingStationStatus(IncludeChargingStationDelegate IncludeStations = null)
 
-            => _ChargingStations.Select(station =>
+            => IncludeStations == null
 
-                                     new KeyValuePair<ChargingStation_Id, IEnumerable<Timestamped<ChargingStationStatusTypes>>>(
-                                         station.Id,
-                                         station.StatusSchedule())
+                   ? _ChargingStations.
+                         Select    (station => new ChargingStationStatus(station.Id, station.Status))
 
-                                 );
+                   : _ChargingStations.
+                         Where     (station => IncludeStations(station)).
+                         Select    (station => new ChargingStationStatus(station.Id, station.Status));
 
         #endregion
 
@@ -1409,7 +1493,7 @@ namespace org.GraphDefined.WWCP
                                                        MaxStatusListSize);
 
 
-            if (ChargingStationAddition.SendVoting(DateTime.Now, this, _ChargingStation) &&
+            if (ChargingStationAddition.SendVoting(DateTime.UtcNow, this, _ChargingStation) &&
                 _ChargingStations.TryAdd(_ChargingStation))
             {
 
@@ -1457,7 +1541,7 @@ namespace org.GraphDefined.WWCP
 
                         var __EVSE = GetEVSEbyId(cdr.EVSEId.Value);
 
-                        __EVSE.SendNewChargeDetailRecord(DateTime.Now, this, cdr);
+                        __EVSE.SendNewChargeDetailRecord(DateTime.UtcNow, this, cdr);
 
                     };
 
@@ -1479,7 +1563,7 @@ namespace org.GraphDefined.WWCP
                 }
 
                 OnSuccess?.Invoke(_ChargingStation);
-                ChargingStationAddition.SendNotification(DateTime.Now, this, _ChargingStation);
+                ChargingStationAddition.SendNotification(DateTime.UtcNow, this, _ChargingStation);
 
                 return _ChargingStation;
 
@@ -1619,13 +1703,13 @@ namespace org.GraphDefined.WWCP
             if (TryGetChargingStationbyId(ChargingStationId, out _ChargingStation))
             {
 
-                if (ChargingStationRemoval.SendVoting(DateTime.Now, this, _ChargingStation))
+                if (ChargingStationRemoval.SendVoting(DateTime.UtcNow, this, _ChargingStation))
                 {
 
                     if (_ChargingStations.TryRemove(ChargingStationId, out _ChargingStation))
                     {
 
-                        ChargingStationRemoval.SendNotification(DateTime.Now, this, _ChargingStation);
+                        ChargingStationRemoval.SendNotification(DateTime.UtcNow, this, _ChargingStation);
 
                         return _ChargingStation;
 
@@ -1649,13 +1733,13 @@ namespace org.GraphDefined.WWCP
             if (TryGetChargingStationbyId(ChargingStationId, out ChargingStation))
             {
 
-                if (ChargingStationRemoval.SendVoting(DateTime.Now, this, ChargingStation))
+                if (ChargingStationRemoval.SendVoting(DateTime.UtcNow, this, ChargingStation))
                 {
 
                     if (_ChargingStations.TryRemove(ChargingStationId, out ChargingStation))
                     {
 
-                        ChargingStationRemoval.SendNotification(DateTime.Now, this, ChargingStation);
+                        ChargingStationRemoval.SendNotification(DateTime.UtcNow, this, ChargingStation);
 
                         return true;
 
@@ -1690,32 +1774,6 @@ namespace org.GraphDefined.WWCP
         /// An event fired whenever the aggregated admin status of any subordinated charging station changed.
         /// </summary>
         public event OnChargingStationAdminStatusChangedDelegate  OnChargingStationAdminStatusChanged;
-
-        #endregion
-
-        #region EVSEAddition
-
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
-
-        /// <summary>
-        /// Called whenever an EVSE will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
-
-            => EVSEAddition;
-
-        #endregion
-
-        #region EVSERemoval
-
-        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
-
-        /// <summary>
-        /// Called whenever an EVSE will be or was removed.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
-
-            => EVSERemoval;
 
         #endregion
 
@@ -1835,6 +1893,19 @@ namespace org.GraphDefined.WWCP
 
         #region EVSEs
 
+        #region EVSEAddition
+
+        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSEAddition;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSEAddition
+
+            => EVSEAddition;
+
+        #endregion
+
         #region EVSEs
 
         /// <summary>
@@ -1862,38 +1933,55 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region EVSEAdminStatus
+        #region EVSEAdminStatus        (IncludeEVSEs = null)
 
         /// <summary>
-        /// Return the admin status of all EVSEs registered within this charging pool.
+        /// Return the admin status of all EVSEs registered within this roaming network.
         /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEAdminStatus> EVSEAdminStatus(IncludeEVSEDelegate IncludeEVSEs = null)
 
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>> EVSEAdminStatus(UInt64 HistorySize)
-
-            => _ChargingStations.SelectMany(station => station.Select(evse =>
-
-                                     new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEAdminStatusTypes>>>(
-                                         evse.Id,
-                                         evse.AdminStatusSchedule(HistorySize))
-
-                                 ));
+            => _ChargingStations.
+                   SelectMany(station => station.EVSEAdminStatus(IncludeEVSEs));
 
         #endregion
 
-        #region EVSEStatus
+        #region EVSEAdminStatusSchedule(IncludeEVSEs = null)
 
         /// <summary>
-        /// Return the status of all EVSEs registered within this charging pool.
+        /// Return the admin status of all EVSEs registered within this roaming network.
         /// </summary>
-        public IEnumerable<KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>> EVSEStatus(UInt64 HistorySize)
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEAdminStatus> EVSEAdminStatusSchedule(IncludeEVSEDelegate IncludeEVSEs = null)
 
-            => _ChargingStations.SelectMany(station => station.Select(evse =>
+            => _ChargingStations.
+                   SelectMany(station => station.EVSEAdminStatus(IncludeEVSEs));
 
-                                     new KeyValuePair<EVSE_Id, IEnumerable<Timestamped<EVSEStatusTypes>>>(
-                                         evse.Id,
-                                         evse.StatusSchedule(HistorySize))
+        #endregion
 
-                                 ));
+        #region EVSEStatus             (IncludeEVSEs = null)
+
+        /// <summary>
+        /// Return the admin status of all EVSEs registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEStatus> EVSEStatus(IncludeEVSEDelegate IncludeEVSEs = null)
+
+            => _ChargingStations.
+                   SelectMany(station => station.EVSEStatus(IncludeEVSEs));
+
+        #endregion
+
+        #region EVSEStatusSchedule     (IncludeEVSEs = null)
+
+        /// <summary>
+        /// Return the admin status of all EVSEs registered within this roaming network.
+        /// </summary>
+        /// <param name="IncludeEVSEs">An optional delegate for filtering EVSEs.</param>
+        public IEnumerable<EVSEStatus> EVSEStatusSchedule(IncludeEVSEDelegate IncludeEVSEs = null)
+
+            => _ChargingStations.
+                   SelectMany(station => station.EVSEStatus(IncludeEVSEs));
 
         #endregion
 
@@ -1992,6 +2080,20 @@ namespace org.GraphDefined.WWCP
         //    => SocketOutletRemoval;
 
         //#endregion
+
+
+        #region EVSERemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingStation, EVSE, Boolean> EVSERemoval;
+
+        /// <summary>
+        /// Called whenever an EVSE will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStation, EVSE, Boolean> OnEVSERemoval
+
+            => EVSERemoval;
+
+        #endregion
 
 
         #region (internal) UpdateEVSEData       (Timestamp, EventTrackingId, EVSE, OldStatus, NewStatus)
@@ -2157,7 +2259,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
+        /// <param name="Identification">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProduct">The charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
@@ -2174,7 +2276,7 @@ namespace org.GraphDefined.WWCP
                     TimeSpan?                         Duration            = null,
                     ChargingReservation_Id?           ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
-                    eMobilityAccount_Id?              eMAId               = null,
+                    AuthIdentification                Identification      = null,
                     ChargingProduct                   ChargingProduct     = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
@@ -2195,7 +2297,7 @@ namespace org.GraphDefined.WWCP
             ReservationResult result = null;
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -2209,7 +2311,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnReserveEVSERequest?.Invoke(DateTime.Now,
+                OnReserveEVSERequest?.Invoke(DateTime.UtcNow,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -2219,7 +2321,7 @@ namespace org.GraphDefined.WWCP
                                              StartTime,
                                              Duration,
                                              ProviderId,
-                                             eMAId,
+                                             Identification,
                                              ChargingProduct,
                                              AuthTokens,
                                              eMAIds,
@@ -2248,7 +2350,7 @@ namespace org.GraphDefined.WWCP
                                            Duration,
                                            ReservationId,
                                            ProviderId,
-                                           eMAId,
+                                           Identification,
                                            ChargingProduct,
                                            AuthTokens,
                                            eMAIds,
@@ -2275,7 +2377,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnReserveEVSEResponse?.Invoke(DateTime.Now,
+                OnReserveEVSEResponse?.Invoke(DateTime.UtcNow,
                                        Timestamp.Value,
                                        this,
                                        EventTrackingId,
@@ -2285,7 +2387,7 @@ namespace org.GraphDefined.WWCP
                                        StartTime,
                                        Duration,
                                        ProviderId,
-                                       eMAId,
+                                       Identification,
                                        ChargingProduct,
                                        AuthTokens,
                                        eMAIds,
@@ -2318,7 +2420,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="Duration">The duration of the reservation.</param>
         /// <param name="ReservationId">An optional unique identification of the reservation. Mandatory for updates.</param>
         /// <param name="ProviderId">An optional unique identification of e-Mobility service provider.</param>
-        /// <param name="eMAId">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
+        /// <param name="Identification">An optional unique identification of e-Mobility account/customer requesting this reservation.</param>
         /// <param name="ChargingProduct">The charging product to be reserved.</param>
         /// <param name="AuthTokens">A list of authentication tokens, who can use this reservation.</param>
         /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
@@ -2335,7 +2437,7 @@ namespace org.GraphDefined.WWCP
                     TimeSpan?                         Duration,
                     ChargingReservation_Id?           ReservationId       = null,
                     eMobilityProvider_Id?             ProviderId          = null,
-                    eMobilityAccount_Id?              eMAId               = null,
+                    AuthIdentification                Identification      = null,
                     ChargingProduct                   ChargingProduct     = null,
                     IEnumerable<Auth_Token>           AuthTokens          = null,
                     IEnumerable<eMobilityAccount_Id>  eMAIds              = null,
@@ -2356,7 +2458,7 @@ namespace org.GraphDefined.WWCP
             ReservationResult result = null;
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -2370,7 +2472,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnReserveChargingStationRequest?.Invoke(DateTime.Now,
+                OnReserveChargingStationRequest?.Invoke(DateTime.UtcNow,
                                                         Timestamp.Value,
                                                         this,
                                                         EventTrackingId,
@@ -2380,7 +2482,7 @@ namespace org.GraphDefined.WWCP
                                                         Duration,
                                                         ReservationId,
                                                         ProviderId,
-                                                        eMAId,
+                                                        Identification,
                                                         ChargingProduct,
                                                         AuthTokens,
                                                         eMAIds,
@@ -2407,7 +2509,7 @@ namespace org.GraphDefined.WWCP
                                            Duration,
                                            ReservationId,
                                            ProviderId,
-                                           eMAId,
+                                           Identification,
                                            ChargingProduct,
                                            AuthTokens,
                                            eMAIds,
@@ -2434,7 +2536,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnReserveChargingStationResponse?.Invoke(DateTime.Now,
+                OnReserveChargingStationResponse?.Invoke(DateTime.UtcNow,
                                                          Timestamp.Value,
                                                          this,
                                                          EventTrackingId,
@@ -2444,7 +2546,7 @@ namespace org.GraphDefined.WWCP
                                                          Duration,
                                                          ReservationId,
                                                          ProviderId,
-                                                         eMAId,
+                                                         Identification,
                                                          ChargingProduct,
                                                          AuthTokens,
                                                          eMAIds,
@@ -2515,7 +2617,7 @@ namespace org.GraphDefined.WWCP
             ReservationResult result = null;
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -2529,7 +2631,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnReserveChargingPoolRequest?.Invoke(DateTime.Now,
+                OnReserveChargingPoolRequest?.Invoke(DateTime.UtcNow,
                                                      Timestamp.Value,
                                                      this,
                                                      EventTrackingId,
@@ -2565,7 +2667,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnReserveChargingPoolResponse?.Invoke(DateTime.Now,
+                OnReserveChargingPoolResponse?.Invoke(DateTime.UtcNow,
                                                       Timestamp.Value,
                                                       this,
                                                       EventTrackingId,
@@ -2667,7 +2769,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (EventTrackingId == null)
                 EventTrackingId = EventTracking_Id.New;
@@ -2860,7 +2962,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -2880,7 +2982,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteEVSEStartRequest?.Invoke(DateTime.Now,
+                OnRemoteEVSEStartRequest?.Invoke(DateTime.UtcNow,
                                                  Timestamp.Value,
                                                  this,
                                                  EventTrackingId,
@@ -2940,7 +3042,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteEVSEStartResponse?.Invoke(DateTime.Now,
+                OnRemoteEVSEStartResponse?.Invoke(DateTime.UtcNow,
                                                   Timestamp.Value,
                                                   this,
                                                   EventTrackingId,
@@ -3004,7 +3106,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3024,7 +3126,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteChargingStationStartRequest?.Invoke(DateTime.Now,
+                OnRemoteChargingStationStartRequest?.Invoke(DateTime.UtcNow,
                                                             Timestamp.Value,
                                                             this,
                                                             EventTrackingId,
@@ -3079,7 +3181,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteChargingStationStartResponse?.Invoke(DateTime.Now,
+                OnRemoteChargingStationStartResponse?.Invoke(DateTime.UtcNow,
                                                              Timestamp.Value,
                                                              this,
                                                              EventTrackingId,
@@ -3200,7 +3302,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3221,7 +3323,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteStopRequest?.Invoke(DateTime.Now,
+                OnRemoteStopRequest?.Invoke(DateTime.UtcNow,
                                             Timestamp.Value,
                                             this,
                                             EventTrackingId,
@@ -3268,7 +3370,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteStopResponse?.Invoke(DateTime.Now,
+                OnRemoteStopResponse?.Invoke(DateTime.UtcNow,
                                              Timestamp.Value,
                                              this,
                                              EventTrackingId,
@@ -3328,7 +3430,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3349,7 +3451,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteEVSEStopRequest?.Invoke(DateTime.Now,
+                OnRemoteEVSEStopRequest?.Invoke(DateTime.UtcNow,
                                                 Timestamp.Value,
                                                 this,
                                                 EventTrackingId,
@@ -3419,7 +3521,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteEVSEStopResponse?.Invoke(DateTime.Now,
+                OnRemoteEVSEStopResponse?.Invoke(DateTime.UtcNow,
                                                  Timestamp.Value,
                                                  this,
                                                  EventTrackingId,
@@ -3480,7 +3582,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (!Timestamp.HasValue)
-                Timestamp = DateTime.Now;
+                Timestamp = DateTime.UtcNow;
 
             if (!CancellationToken.HasValue)
                 CancellationToken = new CancellationTokenSource().Token;
@@ -3501,7 +3603,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteChargingStationStopRequest?.Invoke(DateTime.Now,
+                OnRemoteChargingStationStopRequest?.Invoke(DateTime.UtcNow,
                                                            Timestamp.Value,
                                                            this,
                                                            EventTrackingId,
@@ -3586,7 +3688,7 @@ namespace org.GraphDefined.WWCP
             try
             {
 
-                OnRemoteChargingStationStopResponse?.Invoke(DateTime.Now,
+                OnRemoteChargingStationStopResponse?.Invoke(DateTime.UtcNow,
                                                             Timestamp.Value,
                                                             this,
                                                             EventTrackingId,

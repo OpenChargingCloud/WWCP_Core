@@ -463,7 +463,7 @@ namespace org.GraphDefined.WWCP
         {
             get
             {
-                return DateTime.Now - SessionTime.Value.StartTime;
+                return DateTime.UtcNow - SessionTime.Value.StartTime;
             }
         }
 
@@ -592,7 +592,7 @@ namespace org.GraphDefined.WWCP
 
             this._EnergyMeterValues  = new List<Timestamped<Single>>();
 
-            this.SessionTime         = new StartEndDateTime(DateTime.Now);
+            this.SessionTime         = new StartEndDateTime(DateTime.UtcNow);
 
         }
 

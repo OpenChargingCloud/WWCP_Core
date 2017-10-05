@@ -39,7 +39,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the charging pool.
         /// </summary>
-        public ChargingPool_Id                           Id          { get; }
+        public ChargingPool_Id                            Id          { get; }
 
         /// <summary>
         /// The old timestamped status of the charging pool.
@@ -54,8 +54,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
         #region Constructor(s)
-
-        #region ChargingPoolAdminStatusUpdate(Id, OldStatus, NewStatus)
 
         /// <summary>
         /// Create a new charging pool admin status update.
@@ -74,30 +72,6 @@ namespace org.GraphDefined.WWCP
             this.NewStatus  = NewStatus;
 
         }
-
-        #endregion
-
-        #region ChargingPoolAdminStatusUpdate(Id, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Create a new charging pool admin status update.
-        /// </summary>
-        /// <param name="Id">The unique identification of the charging pool.</param>
-        /// <param name="OldStatus">The old timestamped admin status of the charging pool.</param>
-        /// <param name="NewStatus">The new timestamped admin status of the charging pool.</param>
-        public ChargingPoolAdminStatusUpdate(ChargingPool_Id          Id,
-                                             ChargingPoolAdminStatus  OldStatus,
-                                             ChargingPoolAdminStatus  NewStatus)
-
-        {
-
-            this.Id         = Id;
-            this.OldStatus  = OldStatus.Combined;
-            this.NewStatus  = NewStatus.Combined;
-
-        }
-
-        #endregion
 
         #endregion
 

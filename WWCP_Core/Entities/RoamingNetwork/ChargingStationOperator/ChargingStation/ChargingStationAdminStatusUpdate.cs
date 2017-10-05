@@ -39,7 +39,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The unique identification of the charging station.
         /// </summary>
-        public ChargingStation_Id                           Id          { get; }
+        public ChargingStation_Id                            Id          { get; }
 
         /// <summary>
         /// The old timestamped status of the charging station.
@@ -55,15 +55,13 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region ChargingStationAdminStatusUpdate(Id, OldStatus, NewStatus)
-
         /// <summary>
         /// Create a new charging station admin status update.
         /// </summary>
         /// <param name="Id">The unique identification of the charging station.</param>
         /// <param name="OldStatus">The old timestamped admin status of the charging station.</param>
         /// <param name="NewStatus">The new timestamped admin status of the charging station.</param>
-        public ChargingStationAdminStatusUpdate(ChargingStation_Id                           Id,
+        public ChargingStationAdminStatusUpdate(ChargingStation_Id                            Id,
                                                 Timestamped<ChargingStationAdminStatusTypes>  OldStatus,
                                                 Timestamped<ChargingStationAdminStatusTypes>  NewStatus)
 
@@ -74,30 +72,6 @@ namespace org.GraphDefined.WWCP
             this.NewStatus  = NewStatus;
 
         }
-
-        #endregion
-
-        #region ChargingStationAdminStatusUpdate(Id, OldStatus, NewStatus)
-
-        /// <summary>
-        /// Create a new charging station admin status update.
-        /// </summary>
-        /// <param name="Id">The unique identification of the charging station.</param>
-        /// <param name="OldStatus">The old timestamped admin status of the charging station.</param>
-        /// <param name="NewStatus">The new timestamped admin status of the charging station.</param>
-        public ChargingStationAdminStatusUpdate(ChargingStation_Id          Id,
-                                                ChargingStationAdminStatus  OldStatus,
-                                                ChargingStationAdminStatus  NewStatus)
-
-        {
-
-            this.Id         = Id;
-            this.OldStatus  = OldStatus.Combined;
-            this.NewStatus  = NewStatus.Combined;
-
-        }
-
-        #endregion
 
         #endregion
 
