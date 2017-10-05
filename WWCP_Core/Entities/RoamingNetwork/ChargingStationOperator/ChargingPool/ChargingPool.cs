@@ -522,7 +522,14 @@ namespace org.GraphDefined.WWCP
                         DeleteProperty(ref _AuthenticationModes);
 
                     else
+                    {
+
+                        if (_AuthenticationModes == null)
+                            _AuthenticationModes = new ReactiveSet<AuthenticationModes>();
+
                         SetProperty(ref _AuthenticationModes, _AuthenticationModes.Set(value));
+
+                    }
 
                     // Delete inherited authentication modes
                     _ChargingStations.ForEach(station => station.AuthenticationModes = null);
@@ -561,7 +568,14 @@ namespace org.GraphDefined.WWCP
                         DeleteProperty(ref _PaymentOptions);
 
                     else
+                    {
+
+                        if (_PaymentOptions == null)
+                            _PaymentOptions = new ReactiveSet<PaymentOptions>();
+
                         SetProperty(ref _PaymentOptions, _PaymentOptions.Set(value));
+
+                    }
 
                     // Delete inherited payment options
                     _ChargingStations.ForEach(station => station.PaymentOptions = null);
