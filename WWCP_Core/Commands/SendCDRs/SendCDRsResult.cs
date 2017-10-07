@@ -512,6 +512,33 @@ namespace org.GraphDefined.WWCP
                                       Warnings,
                                       Runtime);
 
+
+        /// <summary>
+        /// The charge detail records had been enqueued for later transmission.
+        /// </summary>
+        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
+        /// <param name="Description">An optional description of the send charge detail records result.</param>
+        /// <param name="Warnings">Warnings or additional information.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRsResult
+
+            Enqueued(IId                          AuthorizatorId,
+                     IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
+                     String                       Description                  = null,
+                     IEnumerable<SendCDRResult>   RejectedChargeDetailRecords  = null,
+                     IEnumerable<String>          Warnings                     = null,
+                     TimeSpan?                    Runtime                      = null)
+
+
+                => new SendCDRsResult(AuthorizatorId,
+                                      IReceiveChargeDetailRecords,
+                                      SendCDRsResultTypes.Enqueued,
+                                      RejectedChargeDetailRecords ?? new SendCDRResult[0],
+                                      Description,
+                                      Warnings,
+                                      Runtime);
+
         #endregion
 
         #region (static) Timeout     (AuthorizatorId, ...)
@@ -572,6 +599,32 @@ namespace org.GraphDefined.WWCP
                                       Warnings,
                                       Runtime);
 
+
+        /// <summary>
+        /// The request completed successfully.
+        /// </summary>
+        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
+        /// <param name="Description">An optional description of the send charge detail records result.</param>
+        /// <param name="Warnings">Warnings or additional information.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRsResult
+
+            Success(IId                          AuthorizatorId,
+                    IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
+                    String                       Description   = null,
+                    IEnumerable<String>          Warnings      = null,
+                    TimeSpan?                    Runtime       = null)
+
+
+                => new SendCDRsResult(AuthorizatorId,
+                                      IReceiveChargeDetailRecords,
+                                      SendCDRsResultTypes.Success,
+                                      new SendCDRResult[0],
+                                      Description,
+                                      Warnings,
+                                      Runtime);
+
         #endregion
 
         #region (static) Error       (AuthorizatorId, ...)
@@ -603,8 +656,34 @@ namespace org.GraphDefined.WWCP
                                       Warnings,
                                       Runtime);
 
-        #endregion
+        /// <summary>
+        /// The request completed unsuccessfully.
+        /// </summary>
+        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
+        /// <param name="RejectedChargeDetailRecords">Optional status information about rejected charge detail records.</param>
+        /// <param name="Description">An optional description of the send charge detail records result.</param>
+        /// <param name="Warnings">Warnings or additional information.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        public static SendCDRsResult
 
+            Error(IId                              AuthorizatorId,
+                  IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
+                  IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords   = null,
+                  String                           Description                   = null,
+                  IEnumerable<String>              Warnings                      = null,
+                  TimeSpan?                        Runtime                       = null)
+
+
+                => new SendCDRsResult(AuthorizatorId,
+                                      IReceiveChargeDetailRecords,
+                                      SendCDRsResultTypes.Success,
+                                      RejectedChargeDetailRecords.Select(cdr => new SendCDRResult(cdr, SendCDRResultTypes.Error)),
+                                      Description,
+                                      Warnings,
+                                      Runtime);
+
+        #endregion
 
 
         #region (override) ToString()

@@ -7332,7 +7332,7 @@ namespace org.GraphDefined.WWCP
                     {
 
                         result = SendCDRsResult.Error(Id,
-                                                      this,
+                                                      this as IReceiveChargeDetailRecords,
                                                       RemainingCDRsToSend,
                                                       "No authorization service returned a positiv result!");
 
