@@ -19,6 +19,8 @@
 
 using System;
 
+using org.GraphDefined.Vanaheimr.Illias;
+
 #endregion
 
 namespace org.GraphDefined.WWCP
@@ -54,41 +56,50 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public eMobilityAccount_Id?  RemoteIdentification           { get; }
 
+        /// <summary>
+        /// An optional multilingual description.
+        /// </summary>
+        public I18NString            Description                    { get; }
+
         #endregion
 
         #region Constructor(s)
 
-        #region (private) AuthIdentification(AuthToken)
+        #region (private) AuthIdentification(AuthToken, Description = null)
 
-        private AuthIdentification(Auth_Token  AuthToken)
+        private AuthIdentification(Auth_Token  AuthToken,
+                                   I18NString  Description  = null)
         {
             this.AuthToken = AuthToken;
         }
 
         #endregion
 
-        #region (private) AuthIdentification(QRCodeIdentification)
+        #region (private) AuthIdentification(QRCodeIdentification, Description = null)
 
-        private AuthIdentification(eMAIdWithPIN2 QRCodeIdentification)
+        private AuthIdentification(eMAIdWithPIN2  QRCodeIdentification,
+                                   I18NString     Description  = null)
         {
             this.QRCodeIdentification = QRCodeIdentification;
         }
 
         #endregion
 
-        #region (private) AuthIdentification(PlugAndChargeIdentification, IsPnC)
+        #region (private) AuthIdentification(PlugAndChargeIdentification, IsPnC, Description = null)
 
         private AuthIdentification(eMobilityAccount_Id  PlugAndChargeIdentification,
-                                   Boolean              IsPnC)
+                                   Boolean              IsPnC,
+                                   I18NString           Description  = null)
         {
             this.PlugAndChargeIdentification  = PlugAndChargeIdentification;
         }
 
         #endregion
 
-        #region (private) AuthIdentification(RemoteIdentification)
+        #region (private) AuthIdentification(RemoteIdentification, Description = null)
 
-        private AuthIdentification(eMobilityAccount_Id RemoteIdentification)
+        private AuthIdentification(eMobilityAccount_Id  RemoteIdentification,
+                                   I18NString           Description  = null)
         {
             this.RemoteIdentification = RemoteIdentification;
         }
@@ -98,19 +109,22 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region (static) FromAuthToken(AuthToken)
+        #region (static) FromAuthToken                  (AuthToken,                   Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given authentication token.
         /// </summary>
         /// <param name="AuthToken">An authentication token.</param>
-        public static AuthIdentification FromAuthToken(Auth_Token AuthToken)
+        /// <param name="Description">An optional multilingual description.</param>
+        public static AuthIdentification FromAuthToken(Auth_Token  AuthToken,
+                                                       I18NString  Description  = null)
 
-            => new AuthIdentification(AuthToken);
+            => new AuthIdentification(AuthToken,
+                                      Description);
 
         #endregion
 
-        #region (static) FromQRCodeIdentification(eMAId, PIN)
+        #region (static) FromQRCodeIdentification       (eMAId, PIN,                  Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given
@@ -118,49 +132,61 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="eMAId">An e-mobility account identification.</param>
         /// <param name="PIN">A password/PIN.</param>
+        /// <param name="Description">An optional multilingual description.</param>
         public static AuthIdentification FromQRCodeIdentification(eMobilityAccount_Id  eMAId,
-                                                        String               PIN)
+                                                                  String               PIN,
+                                                                  I18NString           Description  = null)
 
-            => new AuthIdentification(new eMAIdWithPIN2(eMAId, PIN));
+            => new AuthIdentification(new eMAIdWithPIN2(eMAId, PIN),
+                                      Description);
 
         #endregion
 
-        #region (static) FromQRCodeIdentification(QRCodeIdentification)
+        #region (static) FromQRCodeIdentification       (QRCodeIdentification,        Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given
         /// e-mobility account identification and its password.
         /// </summary>
         /// <param name="QRCodeIdentification">A QR code identification.</param>
-        public static AuthIdentification FromQRCodeIdentification(eMAIdWithPIN2 QRCodeIdentification)
+        /// <param name="Description">An optional multilingual description.</param>
+        public static AuthIdentification FromQRCodeIdentification(eMAIdWithPIN2  QRCodeIdentification,
+                                                                  I18NString     Description  = null)
 
-            => new AuthIdentification(QRCodeIdentification);
+            => new AuthIdentification(QRCodeIdentification,
+                                      Description);
 
         #endregion
 
-        #region (static) FromPlugAndChargeIdentification(PlugAndChargeIdentification)
+        #region (static) FromPlugAndChargeIdentification(PlugAndChargeIdentification, Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given
         /// e-mobility account identification transmitted via PnC.
         /// </summary>
         /// <param name="PlugAndChargeIdentification">A PnC e-mobility account identification.</param>
-        public static AuthIdentification FromPlugAndChargeIdentification(eMobilityAccount_Id PlugAndChargeIdentification)
+        /// <param name="Description">An optional multilingual description.</param>
+        public static AuthIdentification FromPlugAndChargeIdentification(eMobilityAccount_Id  PlugAndChargeIdentification,
+                                                                         I18NString           Description  = null)
 
-            => new AuthIdentification(PlugAndChargeIdentification);
+            => new AuthIdentification(PlugAndChargeIdentification,
+                                      Description);
 
         #endregion
 
-        #region (static) FromRemoteIdentification(RemoteIdentification)
+        #region (static) FromRemoteIdentification       (RemoteIdentification,        Description = null)
 
         /// <summary>
         /// Create a new authentication info based on the given
         /// e-mobility account identification.
         /// </summary>
         /// <param name="RemoteIdentification">An e-mobility account identification.</param>
-        public static AuthIdentification FromRemoteIdentification(eMobilityAccount_Id RemoteIdentification)
+        /// <param name="Description">An optional multilingual description.</param>
+        public static AuthIdentification FromRemoteIdentification(eMobilityAccount_Id  RemoteIdentification,
+                                                                  I18NString           Description  = null)
 
-            => new AuthIdentification(RemoteIdentification);
+            => new AuthIdentification(RemoteIdentification,
+                                      Description);
 
         #endregion
 
