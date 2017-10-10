@@ -5548,7 +5548,10 @@ namespace org.GraphDefined.WWCP
                                                                                           Runtime:      runtime));
 
 
-            DebugX.LogT("RN AuthStart Response: " + result.ISendAuthorizeStartStop.AuthId + ": " + AuthIdentification + " => " + result);
+            DebugX.LogT("RN AuthStart Response: " + result?.ISendAuthorizeStartStop?.   AuthId?.ToString() ??
+                                                    result?.IReceiveAuthorizeStartStop?.AuthId?.ToString() ??
+                                                    ""  +
+                                                    ": " + AuthIdentification + " => " + result);
 
             #region If Authorized...
 
