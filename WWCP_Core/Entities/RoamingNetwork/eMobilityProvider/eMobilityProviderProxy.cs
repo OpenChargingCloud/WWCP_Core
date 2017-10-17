@@ -2843,9 +2843,9 @@ namespace org.GraphDefined.WWCP
 
             if (!DisableAuthentication && RemoteEMobilityProvider != null)
                 result = await RemoteEMobilityProvider.AuthorizeStart(AuthIdentification,
-                                                                      null,
-                                                                      null,
-                                                                      null,
+                                                                      ChargingProduct,
+                                                                      SessionId,
+                                                                      OperatorId,
 
                                                                       Timestamp,
                                                                       CancellationToken,
@@ -2981,9 +2981,9 @@ namespace org.GraphDefined.WWCP
             if (!DisableAuthentication && RemoteEMobilityProvider != null)
                 result = await RemoteEMobilityProvider.AuthorizeStart(AuthIdentification,
                                                                       EVSEId,
-                                                                      null,
-                                                                      null,
-                                                                      null,
+                                                                      ChargingProduct,
+                                                                      SessionId,
+                                                                      OperatorId,
 
                                                                       Timestamp,
                                                                       CancellationToken,
@@ -3362,7 +3362,7 @@ namespace org.GraphDefined.WWCP
             if (!DisableAuthentication && RemoteEMobilityProvider != null)
                 result = await RemoteEMobilityProvider.AuthorizeStop(SessionId,
                                                                      AuthIdentification,
-                                                                     null,
+                                                                     OperatorId,
 
                                                                      Timestamp,
                                                                      CancellationToken,
@@ -3493,7 +3493,7 @@ namespace org.GraphDefined.WWCP
                 result = await RemoteEMobilityProvider.AuthorizeStop(SessionId,
                                                                      AuthIdentification,
                                                                      EVSEId,
-                                                                     null,
+                                                                     OperatorId,
 
                                                                      Timestamp,
                                                                      CancellationToken,
