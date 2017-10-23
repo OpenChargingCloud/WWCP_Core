@@ -112,6 +112,17 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Reverse()
+
+        /// <summary>
+        /// Reverse this authentication token.
+        /// </summary>
+        public Auth_Token Reverse()
+
+            => new Auth_Token(_Value.SubTokens(2).AggregateWith(""));
+
+        #endregion
+
         #region Clone
 
         /// <summary>
