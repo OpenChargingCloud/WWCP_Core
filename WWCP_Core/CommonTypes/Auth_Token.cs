@@ -18,6 +18,7 @@
 #region Usings
 
 using System;
+using System.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
 
@@ -119,7 +120,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public Auth_Token Reverse()
 
-            => new Auth_Token(_Value.SubTokens(2).AggregateWith(""));
+            => new Auth_Token(_Value.SubTokens(2).Reverse().Aggregate());
 
         #endregion
 
