@@ -30,26 +30,47 @@ namespace org.GraphDefined.WWCP
         Unspecified         = 0,
 
         /// <summary>
-        /// Private or internal use.
+        /// The EVSE is ready for charging.
         /// </summary>
-        InternalUse         = 1,
+        Operational         = 1,
+
+        /// <summary>
+        /// The EVSE not accessible because of a physical barrier,
+        /// i.e. a car, a construction area or a city festival in front
+        /// of the EVSE.
+        /// </summary>
+        Blocked             = 2,
 
         /// <summary>
         /// The EVSE is not ready for charging because it is under maintenance.
         /// </summary>
-        OutOfService        = 2,
+        OutOfService        = 3,
 
         /// <summary>
-        /// The EVSE is ready to charge.
+        /// Planned for the future.
         /// </summary>
-        Operational         = 3,
+        Planned             = 4,
 
+        /// <summary>
+        /// The EVSE is currently in deployment, but not fully operational yet.
+        /// </summary>
+        InDeployment        = 5,
+
+        /// <summary>
+        /// Private or internal use only.
+        /// </summary>
+        InternalUse         = 6,
+
+        /// <summary>
+        /// The EVSE does no longer exist.
+        /// </summary>
+        Deleted             = 7,
 
         /// <summary>
         /// The EVSE was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownEVSE         = 4
+        UnknownEVSE         = 8
 
     }
 

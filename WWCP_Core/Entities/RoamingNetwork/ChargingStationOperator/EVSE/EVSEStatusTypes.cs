@@ -27,90 +27,63 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// Unclear or unknown status of the EVSE.
         /// </summary>
-        Unspecified             =  0,
+        Unspecified             = 0,
 
         /// <summary>
-        /// The EVSE is planned for the future.
+        /// Currently no communication with the EVSE possible,
+        /// but charging in offline mode might be available.
         /// </summary>
-        Planned                 =  1,
-
-        /// <summary>
-        /// The EVSE is currently in deployment, but not fully operational yet.
-        /// </summary>
-        InDeployment            =  2,
-
-
-        /// <summary>
-        /// Currently no communication with the EVSE possible, but charging in offline mode might be available.
-        /// </summary>
-        Offline                 =  3,
-
-        /// <summary>
-        /// The EVSE is not ready for charging because it is under maintenance.
-        /// </summary>
-        OutOfService            =  4,
-
-        /// <summary>
-        /// The EVSE not accessible because of a physical barrier,
-        /// i.e. a car, a construction area or a city festival in front
-        /// of the EVSE.
-        /// </summary>
-        Blocked                 =  5,
+        Offline                 = 1,
 
         /// <summary>
         /// The EVSE is available for charging.
         /// </summary>
-        Available               =  6,
+        Available               = 2,
 
         /// <summary>
-        /// The EVSE is currently reserved.
+        /// The EVSE is reserved for future charging.
         /// </summary>
-        Reserved                =  7,
+        Reserved                = 3,
 
         /// <summary>
         /// The door of a charging locker is open, the EVSE is unlocked
         /// and is waiting for the customer to plugin.
         /// </summary>
-        WaitingForPlugin        =  8,
+        WaitingForPlugin        = 4,
 
         /// <summary>
         /// A cable is plugged into the socket or a vehicle is connected
         /// to the cable, but both without any further action.
         /// </summary>
-        PluggedIn               =  9,
+        PluggedIn               = 5,
 
         /// <summary>
         /// An ongoing charging process.
         /// </summary>
-        Charging                = 10,
+        Charging                = 6,
 
         /// <summary>
         /// The EVSE has a mechanical door, e.g. an e-bike charging locker,
         /// which was not closed after the customer took the battery out.
         /// </summary>
-        DoorNotClosed           = 11,
+        DoorNotClosed           = 7,
 
         /// <summary>
         /// An error has occured.
         /// </summary>
-        Faulted                 = 12,
+        Faulted                 = 8,
 
         /// <summary>
-        /// Private or internal use.
+        /// The EVSE is not ready for charging because it is under maintenance
+        /// or was disabled by the charging station operator.
         /// </summary>
-        Private                 = 13,
-
-
-        /// <summary>
-        /// The EVSE does no longer exist.
-        /// </summary>
-        Deleted                 = 14,
+        OutOfService            = 9,
 
         /// <summary>
         /// The EVSE was not found!
         /// (Only valid within batch-processing)
         /// </summary>
-        UnknownEVSE             = 15
+        UnknownEVSE             = 10
 
     }
 
