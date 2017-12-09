@@ -265,7 +265,7 @@ namespace org.GraphDefined.WWCP
             {
 
                 if (value == null)
-                    value = new GeoCoordinate(new Latitude(0), new Longitude(0));
+                    value = new GeoCoordinate(Latitude.Parse(0), Longitude.Parse(0));
 
                 if (_GeoLocation != value)
                     SetProperty(ref _GeoLocation, value);
