@@ -36,7 +36,7 @@ namespace org.GraphDefined.WWCP.UnitTests
     public class EVP_IdTests
     {
 
-        private static readonly Random          _Random         = new Random(DateTime.Now.Millisecond);
+        private static readonly Random                     _Random         = new Random(DateTime.Now.Millisecond);
         private static readonly ChargingStationOperator_Id EVSEOperatorId  = ChargingStationOperator_Id.Parse("DE*" + _Random.Next(10) + _Random.Next(10) + _Random.Next(10));
 
 
