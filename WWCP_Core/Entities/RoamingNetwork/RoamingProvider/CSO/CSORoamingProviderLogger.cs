@@ -20,16 +20,12 @@
 using System;
 using System.Linq;
 using System.Threading;
-using System.Net.Security;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Security.Cryptography.X509Certificates;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
-using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -49,23 +45,20 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
-        private        readonly  ChargingStationOperatorNameSelectorDelegate            _OperatorNameSelector;
+        private        readonly  ChargingStationOperatorNameSelectorDelegate   _OperatorNameSelector;
 
-        private static readonly  Regex                                                  pattern                      = new Regex(@"\s=\s");
+        private static readonly  Regex                                         pattern                      = new Regex(@"\s=\s");
 
-        public  static readonly  ChargingStationOperatorNameSelectorDelegate            DefaultOperatorNameSelector  = I18N => I18N.FirstText();
+        public  static readonly  ChargingStationOperatorNameSelectorDelegate   DefaultOperatorNameSelector  = I18N => I18N.FirstText();
 
-        private readonly        HashSet<EVSE>                                           EVSEsToAddQueue;
-        private readonly        HashSet<EVSE>                                           EVSEsToUpdateQueue;
-        private readonly        List<EVSEStatusUpdate>                                  EVSEStatusChangesFastQueue;
-        private readonly        List<EVSEStatusUpdate>                                  EVSEStatusChangesDelayedQueue;
-        private readonly        HashSet<EVSE>                                           EVSEsToRemoveQueue;
-        private readonly        List<WWCP.ChargeDetailRecord>                           ChargeDetailRecordQueue;
+        private        readonly  HashSet<EVSE>                                 EVSEsToAddQueue;
+        private        readonly  HashSet<EVSE>                                 EVSEsToUpdateQueue;
+        private        readonly  List<EVSEStatusUpdate>                        EVSEStatusChangesFastQueue;
+        private        readonly  List<EVSEStatusUpdate>                        EVSEStatusChangesDelayedQueue;
+        private        readonly  HashSet<EVSE>                                 EVSEsToRemoveQueue;
+        private        readonly  List<ChargeDetailRecord>                      ChargeDetailRecordQueue;
 
-        private                 IncludeEVSEIdDelegate                                   _IncludeEVSEIds;
-        private                 IncludeEVSEDelegate                                     _IncludeEVSEs;
-
-        public readonly static  TimeSpan                                                DefaultRequestTimeout  = TimeSpan.FromSeconds(30);
+        public  static readonly  TimeSpan                                      DefaultRequestTimeout        = TimeSpan.FromSeconds(30);
 
         #endregion
 
@@ -232,8 +225,6 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region CSORoamingProviderLogger(Id, Name, Description, RoamingNetwork, ...)
-
         /// <summary>
         /// Create a new WWCP wrapper for the OICP roaming client for Charging Station Operators/CPOs.
         /// </summary>
@@ -242,9 +233,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional (multi-language) description of the charging station operator roaming provider.</param>
         /// <param name="RoamingNetwork">A WWCP roaming network.</param>
         /// 
+        /// <param name="IncludeEVSEIds">Only include the EVSE matching the given delegate.</param>
         /// <param name="IncludeEVSEs">Only include the EVSEs matching the given delegate.</param>
+        /// <param name="CustomEVSEIdMapper">A delegate to customize the mapping of EVSE identifications.</param>
+        /// 
         /// <param name="ServiceCheckEvery">The service check intervall.</param>
         /// <param name="StatusCheckEvery">The status check intervall.</param>
+        /// <param name="CDRCheckEvery">The charge detail record intervall.</param>
         /// 
         /// <param name="DisablePushData">This service can be disabled, e.g. for debugging reasons.</param>
         /// <param name="DisablePushStatus">This service can be disabled, e.g. for debugging reasons.</param>
@@ -252,29 +247,34 @@ namespace org.GraphDefined.WWCP
         /// <param name="DisableSendChargeDetailRecords">This service can be disabled, e.g. for debugging reasons.</param>
         /// 
         /// <param name="DNSClient">The attached DNS service.</param>
-        public CSORoamingProviderLogger(CSORoamingProvider_Id  Id,
-                                        I18NString             Name,
-                                        I18NString             Description,
-                                        RoamingNetwork         RoamingNetwork,
+        public CSORoamingProviderLogger(CSORoamingProvider_Id       Id,
+                                        I18NString                  Name,
+                                        I18NString                  Description,
+                                        RoamingNetwork              RoamingNetwork,
 
-                                        IncludeEVSEIdDelegate  IncludeEVSEIds                   = null,
-                                        IncludeEVSEDelegate    IncludeEVSEs                     = null,
+                                        IncludeEVSEIdDelegate       IncludeEVSEIds                   = null,
+                                        IncludeEVSEDelegate         IncludeEVSEs                     = null,
+                                        CustomEVSEIdMapperDelegate  CustomEVSEIdMapper               = null,
 
-                                        TimeSpan?              ServiceCheckEvery                = null,
-                                        TimeSpan?              StatusCheckEvery                 = null,
-                                        TimeSpan?              CDRCheckEvery                    = null,
+                                        TimeSpan?                   ServiceCheckEvery                = null,
+                                        TimeSpan?                   StatusCheckEvery                 = null,
+                                        TimeSpan?                   CDRCheckEvery                    = null,
 
-                                        Boolean                DisablePushData                  = false,
-                                        Boolean                DisablePushStatus                = false,
-                                        Boolean                DisableAuthentication            = false,
-                                        Boolean                DisableSendChargeDetailRecords   = false,
+                                        Boolean                     DisablePushData                  = false,
+                                        Boolean                     DisablePushStatus                = false,
+                                        Boolean                     DisableAuthentication            = false,
+                                        Boolean                     DisableSendChargeDetailRecords   = false,
 
-                                        DNSClient              DNSClient                        = null)
+                                        DNSClient                   DNSClient                        = null)
 
             : base(Id,
                    Name,
                    Description,
                    RoamingNetwork,
+
+                   IncludeEVSEIds,
+                   IncludeEVSEs,
+                   CustomEVSEIdMapper,
 
                    ServiceCheckEvery,
                    StatusCheckEvery,
@@ -296,19 +296,14 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            this._IncludeEVSEIds                                 = IncludeEVSEIds ?? (evseid => true);
-            this._IncludeEVSEs                                   = IncludeEVSEs   ?? (evse   => true);
-
-            this.EVSEsToAddQueue                                 = new HashSet<EVSE>();
-            this.EVSEsToUpdateQueue                              = new HashSet<EVSE>();
-            this.EVSEStatusChangesFastQueue                      = new List<EVSEStatusUpdate>();
-            this.EVSEStatusChangesDelayedQueue                   = new List<EVSEStatusUpdate>();
-            this.EVSEsToRemoveQueue                              = new HashSet<EVSE>();
-            this.ChargeDetailRecordQueue                         = new List<ChargeDetailRecord>();
+            this.EVSEsToAddQueue                = new HashSet<EVSE>();
+            this.EVSEsToUpdateQueue             = new HashSet<EVSE>();
+            this.EVSEStatusChangesFastQueue     = new List<EVSEStatusUpdate>();
+            this.EVSEStatusChangesDelayedQueue  = new List<EVSEStatusUpdate>();
+            this.EVSEsToRemoveQueue             = new HashSet<EVSE>();
+            this.ChargeDetailRecordQueue        = new List<ChargeDetailRecord>();
 
         }
-
-        #endregion
 
         #endregion
 

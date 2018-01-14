@@ -36,6 +36,12 @@ namespace org.GraphDefined.WWCP
     /// <param name="EVSE">An EVSE to include.</param>
     public delegate Boolean IncludeEVSEDelegate             (EVSE                EVSE);
 
+    /// <summary>
+    /// A delegate for mapping EVSE Ids.
+    /// </summary>
+    /// <param name="EVSEId">An EVSE to be mapped.</param>
+    public delegate String  CustomEVSEIdMapperDelegate      (String              EVSEId);
+
 
     /// <summary>
     /// A delegate for filtering charging station identifications.

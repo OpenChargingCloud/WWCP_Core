@@ -110,6 +110,19 @@ namespace org.GraphDefined.WWCP
         protected readonly     Dictionary<ChargingStationOperator, List<PropertyUpdateInfos>>   ChargingStationOperatorsUpdateLog;
         protected readonly     Dictionary<RoamingNetwork,          List<PropertyUpdateInfos>>   RoamingNetworksUpdateLog;
 
+
+        protected readonly     IncludeEVSEIdDelegate                                            _IncludeEVSEIds;
+        protected readonly     IncludeEVSEDelegate                                              _IncludeEVSEs;
+        protected readonly     CustomEVSEIdMapperDelegate                                       CustomEVSEIdMapper;
+
+        protected readonly     HashSet<EVSE>                                                    EVSEsToAddQueue;
+        protected readonly     HashSet<EVSE>                                                    EVSEsToUpdateQueue;
+        protected readonly     HashSet<EVSE>                                                    EVSEsToRemoveQueue;
+        protected readonly     List<EVSEAdminStatusUpdate>                                      EVSEAdminStatusChangesFastQueue;
+        protected readonly     List<EVSEAdminStatusUpdate>                                      EVSEAdminStatusChangesDelayedQueue;
+        protected readonly     List<EVSEStatusUpdate>                                           EVSEStatusChangesFastQueue;
+        protected readonly     List<EVSEStatusUpdate>                                           EVSEStatusChangesDelayedQueue;
+
         #endregion
 
         #region Properties
@@ -298,8 +311,13 @@ namespace org.GraphDefined.WWCP
         /// <param name="Description">An optional (multi-language) description of the charging station operator roaming provider.</param>
         /// <param name="RoamingNetwork">A WWCP roaming network.</param>
         /// 
+        /// <param name="IncludeEVSEIds">Only include the EVSE matching the given delegate.</param>
+        /// <param name="IncludeEVSEs">Only include the EVSEs matching the given delegate.</param>
+        /// <param name="CustomEVSEIdMapper">A delegate to customize the mapping of EVSE identifications.</param>
+        /// 
         /// <param name="ServiceCheckEvery">The service check intervall.</param>
         /// <param name="StatusCheckEvery">The status check intervall.</param>
+        /// <param name="CDRCheckEvery">The charge detail record intervall.</param>
         /// 
         /// <param name="DisablePushData">This service can be disabled, e.g. for debugging reasons.</param>
         /// <param name="DisablePushStatus">This service can be disabled, e.g. for debugging reasons.</param>
@@ -309,25 +327,27 @@ namespace org.GraphDefined.WWCP
         /// <param name="PublicKeyRing">The public key ring of the entity.</param>
         /// <param name="SecretKeyRing">The secrect key ring of the entity.</param>
         /// <param name="DNSClient">The attached DNS service.</param>
-        public AWWCPCSOAdapter(CSORoamingProvider_Id    Id,
-                               I18NString               Name,
-                               I18NString               Description,
-                               RoamingNetwork           RoamingNetwork,
+        public AWWCPCSOAdapter(CSORoamingProvider_Id       Id,
+                               I18NString                  Name,
+                               I18NString                  Description,
+                               RoamingNetwork              RoamingNetwork,
 
-                               //IncludeEVSEIdDelegate    IncludeEVSEIds                   = null,
-                               //IncludeEVSEDelegate      IncludeEVSEs                     = null,
-                               TimeSpan?                ServiceCheckEvery                = null,
-                               TimeSpan?                StatusCheckEvery                 = null,
-                               TimeSpan?                CDRCheckEvery                    = null,
+                               IncludeEVSEIdDelegate       IncludeEVSEIds                   = null,
+                               IncludeEVSEDelegate         IncludeEVSEs                     = null,
+                               CustomEVSEIdMapperDelegate  CustomEVSEIdMapper               = null,
 
-                               Boolean                  DisablePushData                  = false,
-                               Boolean                  DisablePushStatus                = false,
-                               Boolean                  DisableAuthentication            = false,
-                               Boolean                  DisableSendChargeDetailRecords   = false,
+                               TimeSpan?                   ServiceCheckEvery                = null,
+                               TimeSpan?                   StatusCheckEvery                 = null,
+                               TimeSpan?                   CDRCheckEvery                    = null,
 
-                               PgpPublicKeyRing         PublicKeyRing                    = null,
-                               PgpSecretKeyRing         SecretKeyRing                    = null,
-                               DNSClient                DNSClient                        = null)
+                               Boolean                     DisablePushData                  = false,
+                               Boolean                     DisablePushStatus                = false,
+                               Boolean                     DisableAuthentication            = false,
+                               Boolean                     DisableSendChargeDetailRecords   = false,
+
+                               PgpPublicKeyRing            PublicKeyRing                    = null,
+                               PgpSecretKeyRing            SecretKeyRing                    = null,
+                               DNSClient                   DNSClient                        = null)
 
             : base(Id,
                    RoamingNetwork,
@@ -338,6 +358,10 @@ namespace org.GraphDefined.WWCP
 
             this.Name                                            = Name;
             this.Description                                     = Description;
+
+            this._IncludeEVSEIds                                 = IncludeEVSEIds ?? (evseid => true);
+            this._IncludeEVSEs                                   = IncludeEVSEs   ?? (evse   => true);
+            this.CustomEVSEIdMapper                              = CustomEVSEIdMapper;
 
             this.DisablePushData                                 = DisablePushData;
             this.DisablePushStatus                               = DisablePushStatus;
@@ -368,9 +392,122 @@ namespace org.GraphDefined.WWCP
 
             this.DNSClient                                       = DNSClient;
 
+            this.EVSEsToAddQueue                                  = new HashSet<EVSE>();
+            this.EVSEsToUpdateQueue                               = new HashSet<EVSE>();
+            this.EVSEsToRemoveQueue                               = new HashSet<EVSE>();
+            this.EVSEAdminStatusChangesFastQueue                  = new List<EVSEAdminStatusUpdate>();
+            this.EVSEAdminStatusChangesDelayedQueue               = new List<EVSEAdminStatusUpdate>();
+            this.EVSEStatusChangesFastQueue                       = new List<EVSEStatusUpdate>();
+            this.EVSEStatusChangesDelayedQueue                    = new List<EVSEStatusUpdate>();
+
         }
 
         #endregion
+
+
+
+        #region UpdateStatus     (Sender, StatusUpdates, ...)
+
+        /// <summary>
+        /// Update the given enumeration of EVSE status updates.
+        /// </summary>
+        /// <param name="Sender">The sender of the status update.</param>
+        /// <param name="StatusUpdates">An enumeration of EVSE status updates.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        public async Task<PushStatusResult>
+
+            UpdateStatus(ISendStatus                    Sender,
+                         IEnumerable<EVSEStatusUpdate>  StatusUpdates,
+
+                         DateTime?                      Timestamp,
+                         CancellationToken?             CancellationToken,
+                         EventTracking_Id               EventTrackingId,
+                         TimeSpan?                      RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (StatusUpdates == null || !StatusUpdates.Any())
+                return PushStatusResult.NoOperation(Id, Sender);
+
+            #endregion
+
+
+            #region Send OnEnqueueSendCDRRequest event
+
+            //try
+            //{
+
+            //    OnEnqueueSendCDRRequest?.Invoke(DateTime.UtcNow,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    EventTrackingId,
+            //                                    RoamingNetwork.Id,
+            //                                    ChargeDetailRecord,
+            //                                    RequestTimeout);
+
+            //}
+            //catch (Exception e)
+            //{
+            //    e.Log(nameof(WWCPCPOAdapter) + "." + nameof(OnSendCDRRequest));
+            //}
+
+            #endregion
+
+            await DataAndStatusLock.WaitAsync().ConfigureAwait(false);
+
+            try
+            {
+
+                var FilteredUpdates = StatusUpdates.Where(statusupdate => _IncludeEVSEs  (statusupdate.EVSE) &&
+                                                                          _IncludeEVSEIds(statusupdate.EVSE.Id)).
+                                                    ToArray();
+
+                if (FilteredUpdates.Length > 0)
+                {
+
+                    foreach (var Update in FilteredUpdates)
+                    {
+
+                        // Delay the status update until the EVSE data had been uploaded!
+                        if (EVSEsToAddQueue.Any(evse => evse == Update.EVSE))
+                            EVSEStatusChangesDelayedQueue.Add(Update);
+
+                        else
+                            EVSEStatusChangesFastQueue.Add(Update);
+
+                    }
+
+                    FlushEVSEFastStatusTimer.Change(_FlushEVSEFastStatusEvery, Timeout.Infinite);
+
+                    return PushStatusResult.Enqueued(Id, Sender);
+
+                }
+
+                return PushStatusResult.NoOperation(Id, Sender);
+
+            }
+            finally
+            {
+                DataAndStatusLock.Release();
+            }
+
+        }
+
+        #endregion
+
+
+
+
+
+
+
+
 
 
         #region (timer) FlushEVSEDataAndStatus(State)
