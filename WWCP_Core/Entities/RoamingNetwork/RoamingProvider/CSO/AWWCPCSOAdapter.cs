@@ -176,7 +176,7 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                _FlushEVSEDataAndStatusEvery = (UInt32)value.TotalSeconds;
+                _FlushEVSEDataAndStatusEvery = (UInt32) value.TotalSeconds;
             }
 
         }
@@ -200,7 +200,7 @@ namespace org.GraphDefined.WWCP
 
             set
             {
-                _FlushEVSEFastStatusEvery = (UInt32)value.TotalSeconds;
+                _FlushEVSEFastStatusEvery = (UInt32) value.TotalSeconds;
             }
 
         }
