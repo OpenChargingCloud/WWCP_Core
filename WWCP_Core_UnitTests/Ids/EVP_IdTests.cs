@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2017 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2018 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/GraphDefined/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -36,7 +36,7 @@ namespace org.GraphDefined.WWCP.UnitTests
     public class EVP_IdTests
     {
 
-        private static readonly Random          _Random         = new Random(DateTime.Now.Millisecond);
+        private static readonly Random                     _Random         = new Random(DateTime.Now.Millisecond);
         private static readonly ChargingStationOperator_Id EVSEOperatorId  = ChargingStationOperator_Id.Parse("DE*" + _Random.Next(10) + _Random.Next(10) + _Random.Next(10));
 
 

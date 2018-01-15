@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("GraphDefined GmbH")]
 [assembly: AssemblyProduct("WWCP Core UnitTests")]
-[assembly: AssemblyCopyright("Copyright © 2014-2017 GraphDefined GmbH <achim.friedland@graphdefined.com>")]
+[assembly: AssemblyCopyright("Copyright © 2014-2018 GraphDefined GmbH <achim.friedland@graphdefined.com>")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

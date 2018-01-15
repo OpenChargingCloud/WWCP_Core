@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (c) 2014-2017 GraphDefined GmbH <achim.friedland@graphdefined.com>
+ * Copyright (c) 2014-2018 GraphDefined GmbH <achim.friedland@graphdefined.com>
  * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
@@ -35,6 +35,12 @@ namespace org.GraphDefined.WWCP
     /// </summary>
     /// <param name="EVSE">An EVSE to include.</param>
     public delegate Boolean IncludeEVSEDelegate             (EVSE                EVSE);
+
+    /// <summary>
+    /// A delegate for mapping EVSE Ids.
+    /// </summary>
+    /// <param name="EVSEId">An EVSE to be mapped.</param>
+    public delegate String  CustomEVSEIdMapperDelegate      (String              EVSEId);
 
 
     /// <summary>
