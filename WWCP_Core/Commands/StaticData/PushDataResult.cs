@@ -362,7 +362,7 @@ namespace org.GraphDefined.WWCP
         #region (override) ToString()
 
         /// <summary>
-        /// Return a string representation of this object.
+        /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
 
@@ -696,7 +696,7 @@ namespace org.GraphDefined.WWCP
         #region (override) ToString()
 
         /// <summary>
-        /// Return a string representation of this object.
+        /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
 
