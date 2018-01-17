@@ -1050,7 +1050,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushAdminStatusResult>
+        Task<PushEVSEAdminStatusResult>
 
             ISendAdminStatus.UpdateAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
                                                TransmissionTypes                   TransmissionType,
@@ -1065,11 +1065,11 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (AdminStatusUpdates == null || !AdminStatusUpdates.Any())
-                return Task.FromResult(PushAdminStatusResult.NoOperation(Id, this));
+                return Task.FromResult(PushEVSEAdminStatusResult.NoOperation(Id, this));
 
             #endregion
 
-            return Task.FromResult(PushAdminStatusResult.OutOfService(Id,
+            return Task.FromResult(PushEVSEAdminStatusResult.OutOfService(Id,
                                                                       this,
                                                                       AdminStatusUpdates));
 
@@ -1089,7 +1089,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushStatusResult>
+        Task<PushEVSEStatusResult>
 
             ISendStatus.UpdateStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
                                      TransmissionTypes              TransmissionType,
@@ -1104,7 +1104,7 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (StatusUpdates == null || !StatusUpdates.Any())
-                return Task.FromResult(PushStatusResult.NoOperation(Id, this));
+                return Task.FromResult(PushEVSEStatusResult.NoOperation(Id, this));
 
             #endregion
 
@@ -1158,11 +1158,11 @@ namespace org.GraphDefined.WWCP
 
                         FlushEVSEFastStatusTimer.Change(_FlushEVSEFastStatusEvery, Timeout.Infinite);
 
-                        return Task.FromResult(PushStatusResult.Enqueued(Id, this));
+                        return Task.FromResult(PushEVSEStatusResult.Enqueued(Id, this));
 
                     }
 
-                    return Task.FromResult(PushStatusResult.NoOperation(Id, this));
+                    return Task.FromResult(PushEVSEStatusResult.NoOperation(Id, this));
 
                 }
 
@@ -1170,7 +1170,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            return Task.FromResult(PushStatusResult.Success(Id, this));
+            return Task.FromResult(PushEVSEStatusResult.Success(Id, this));
 
         }
 
@@ -1667,7 +1667,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushAdminStatusResult>
+        Task<PushChargingStationAdminStatusResult>
 
             ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  AdminStatusUpdates,
                                                TransmissionTypes                              TransmissionType,
@@ -1682,13 +1682,13 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (AdminStatusUpdates == null || !AdminStatusUpdates.Any())
-                return Task.FromResult(PushAdminStatusResult.NoOperation(Id, this));
+                return Task.FromResult(PushChargingStationAdminStatusResult.NoOperation(Id, this));
 
             #endregion
 
-            return Task.FromResult(PushAdminStatusResult.OutOfService(Id,
-                                                                      this,
-                                                                      AdminStatusUpdates));
+            return Task.FromResult(PushChargingStationAdminStatusResult.OutOfService(Id,
+                                                                                     this,
+                                                                                     AdminStatusUpdates));
 
         }
 
@@ -1706,7 +1706,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushStatusResult>
+        Task<PushChargingStationStatusResult>
 
             ISendStatus.UpdateStatus(IEnumerable<ChargingStationStatusUpdate>  StatusUpdates,
                                      TransmissionTypes                         TransmissionType,
@@ -1721,11 +1721,11 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (StatusUpdates == null || !StatusUpdates.Any())
-                return Task.FromResult(PushStatusResult.NoOperation(Id, this));
+                return Task.FromResult(PushChargingStationStatusResult.NoOperation(Id, this));
 
             #endregion
 
-            return Task.FromResult(PushStatusResult.Success(Id, this));
+            return Task.FromResult(PushChargingStationStatusResult.Success(Id, this));
 
         }
 
@@ -2221,7 +2221,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushAdminStatusResult>
+        Task<PushChargingPoolAdminStatusResult>
 
             ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  AdminStatusUpdates,
                                                TransmissionTypes                           TransmissionType,
@@ -2236,13 +2236,13 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (AdminStatusUpdates == null || !AdminStatusUpdates.Any())
-                return Task.FromResult(PushAdminStatusResult.NoOperation(Id, this));
+                return Task.FromResult(PushChargingPoolAdminStatusResult.NoOperation(Id, this));
 
             #endregion
 
-            return Task.FromResult(PushAdminStatusResult.OutOfService(Id,
-                                                                      this,
-                                                                      AdminStatusUpdates));
+            return Task.FromResult(PushChargingPoolAdminStatusResult.OutOfService(Id,
+                                                                                  this,
+                                                                                  AdminStatusUpdates));
 
         }
 
@@ -2260,7 +2260,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushStatusResult>
+        Task<PushChargingPoolStatusResult>
 
             ISendStatus.UpdateStatus(IEnumerable<ChargingPoolStatusUpdate>  StatusUpdates,
                                      TransmissionTypes                      TransmissionType,
@@ -2275,11 +2275,11 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (StatusUpdates == null || !StatusUpdates.Any())
-                return Task.FromResult(PushStatusResult.NoOperation(Id, this));
+                return Task.FromResult(PushChargingPoolStatusResult.NoOperation(Id, this));
 
             #endregion
 
-            return Task.FromResult(PushStatusResult.Success(Id, this));
+            return Task.FromResult(PushChargingPoolStatusResult.Success(Id, this));
 
         }
 
@@ -2583,7 +2583,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushAdminStatusResult>
+        Task<PushChargingStationOperatorAdminStatusResult>
 
             ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  AdminStatusUpdates,
                                                TransmissionTypes                                      TransmissionType,
@@ -2598,13 +2598,13 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (AdminStatusUpdates == null || !AdminStatusUpdates.Any())
-                return Task.FromResult(PushAdminStatusResult.NoOperation(Id, this));
+                return Task.FromResult(PushChargingStationOperatorAdminStatusResult.NoOperation(Id, this));
 
             #endregion
 
-            return Task.FromResult(PushAdminStatusResult.OutOfService(Id,
-                                                                      this,
-                                                                      AdminStatusUpdates));
+            return Task.FromResult(PushChargingStationOperatorAdminStatusResult.OutOfService(Id,
+                                                                                             this,
+                                                                                             AdminStatusUpdates));
 
         }
 
@@ -2622,7 +2622,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushStatusResult>
+        Task<PushChargingStationOperatorStatusResult>
 
             ISendStatus.UpdateStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  StatusUpdates,
                                      TransmissionTypes                                 TransmissionType,
@@ -2637,11 +2637,11 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (StatusUpdates == null || !StatusUpdates.Any())
-                return Task.FromResult(PushStatusResult.NoOperation(Id, this));
+                return Task.FromResult(PushChargingStationOperatorStatusResult.NoOperation(Id, this));
 
             #endregion
 
-            return Task.FromResult(PushStatusResult.Success(Id, this));
+            return Task.FromResult(PushChargingStationOperatorStatusResult.Success(Id, this));
 
         }
 
@@ -2804,7 +2804,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushAdminStatusResult>
+        Task<PushRoamingNetworkAdminStatusResult>
 
             ISendAdminStatus.UpdateAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  AdminStatusUpdates,
                                                TransmissionTypes                             TransmissionType,
@@ -2819,13 +2819,13 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (AdminStatusUpdates == null || !AdminStatusUpdates.Any())
-                return Task.FromResult(PushAdminStatusResult.NoOperation(Id, this));
+                return Task.FromResult(PushRoamingNetworkAdminStatusResult.NoOperation(Id, this));
 
             #endregion
 
-            return Task.FromResult(PushAdminStatusResult.OutOfService(Id,
-                                                                      this,
-                                                                      AdminStatusUpdates));
+            return Task.FromResult(PushRoamingNetworkAdminStatusResult.OutOfService(Id,
+                                                                                    this,
+                                                                                    AdminStatusUpdates));
 
         }
 
@@ -2843,7 +2843,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushStatusResult>
+        Task<PushRoamingNetworkStatusResult>
 
             ISendStatus.UpdateStatus(IEnumerable<RoamingNetworkStatusUpdate>  StatusUpdates,
                                      TransmissionTypes                        TransmissionType,
@@ -2858,11 +2858,11 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (StatusUpdates == null || !StatusUpdates.Any())
-                return Task.FromResult(PushStatusResult.NoOperation(Id, this));
+                return Task.FromResult(PushRoamingNetworkStatusResult.NoOperation(Id, this));
 
             #endregion
 
-            return Task.FromResult(PushStatusResult.Success(Id, this));
+            return Task.FromResult(PushRoamingNetworkStatusResult.Success(Id, this));
 
         }
 

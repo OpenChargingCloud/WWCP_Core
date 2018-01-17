@@ -406,7 +406,279 @@ namespace org.GraphDefined.WWCP
 
 
 
-        #region UpdateStatus     (Sender, StatusUpdates, ...)
+        #region SetStaticData   (Sender, EVSE, ...)
+
+        /// <summary>
+        /// Set the given EVSE as new static EVSE data at the eMIP server.
+        /// </summary>
+        /// <param name="Sender">The sender of the new EVSE data.</param>
+        /// <param name="EVSE">An EVSE to upload.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        protected async Task<PushEVSEDataResult>
+
+            SetStaticData(ISendData           Sender,
+                          EVSE                EVSE,
+
+                          DateTime?           Timestamp,
+                          CancellationToken?  CancellationToken,
+                          EventTracking_Id    EventTrackingId,
+                          TimeSpan?           RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (EVSE == null)
+                return PushEVSEDataResult.NoOperation(Id,
+                                                      Sender);
+
+            if (DisablePushData)
+                return PushEVSEDataResult.AdminDown(Id,
+                                                    Sender,
+                                                    new EVSE[] { EVSE });
+
+            #endregion
+
+            #region Send OnEnqueueSendCDRRequest event
+
+            //try
+            //{
+
+            //    OnEnqueueSendCDRRequest?.Invoke(DateTime.UtcNow,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    EventTrackingId,
+            //                                    RoamingNetwork.Id,
+            //                                    ChargeDetailRecord,
+            //                                    RequestTimeout);
+
+            //}
+            //catch (Exception e)
+            //{
+            //    e.Log(nameof(WWCPCPOAdapter) + "." + nameof(OnSendCDRRequest));
+            //}
+
+            #endregion
+
+            await DataAndStatusLock.WaitAsync();
+
+            try
+            {
+
+                if (_IncludeEVSEs == null ||
+                   (_IncludeEVSEs != null && _IncludeEVSEs(EVSE)))
+                {
+
+                    EVSEsToAddQueue.Add(EVSE);
+
+                    FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+
+                }
+
+            }
+            finally
+            {
+                DataAndStatusLock.Release();
+            }
+
+            return PushEVSEDataResult.Enqueued(Id, Sender);
+
+        }
+
+        #endregion
+
+        #region AddStaticData   (Sender, EVSE, ...)
+
+        /// <summary>
+        /// Add the given EVSE to the static EVSE data at the eMIP server.
+        /// </summary>
+        /// <param name="Sender">The sender of the new EVSE data.</param>
+        /// <param name="EVSE">An EVSE to upload.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        protected async Task<PushEVSEDataResult>
+
+            AddStaticData(ISendData           Sender,
+                          EVSE                EVSE,
+
+                          DateTime?           Timestamp,
+                          CancellationToken?  CancellationToken,
+                          EventTracking_Id    EventTrackingId,
+                          TimeSpan?           RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (EVSE == null)
+                return PushEVSEDataResult.NoOperation(Id,
+                                                      Sender);
+
+            if (DisablePushData)
+                return PushEVSEDataResult.AdminDown(Id,
+                                                    Sender,
+                                                    new EVSE[] { EVSE });
+
+            #endregion
+
+            #region Send OnEnqueueSendCDRRequest event
+
+            //try
+            //{
+
+            //    OnEnqueueSendCDRRequest?.Invoke(DateTime.UtcNow,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    EventTrackingId,
+            //                                    RoamingNetwork.Id,
+            //                                    ChargeDetailRecord,
+            //                                    RequestTimeout);
+
+            //}
+            //catch (Exception e)
+            //{
+            //    e.Log(nameof(WWCPCPOAdapter) + "." + nameof(OnSendCDRRequest));
+            //}
+
+            #endregion
+
+            await DataAndStatusLock.WaitAsync();
+
+            try
+            {
+
+                if (_IncludeEVSEs == null ||
+                   (_IncludeEVSEs != null && _IncludeEVSEs(EVSE)))
+                {
+
+                    EVSEsToAddQueue.Add(EVSE);
+
+                    FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+
+                }
+
+            }
+            finally
+            {
+                DataAndStatusLock.Release();
+            }
+
+            return PushEVSEDataResult.Enqueued(Id, Sender);
+
+        }
+
+        #endregion
+
+
+        #region UpdateAdminStatus(Sender, AdminStatusUpdates, ...)
+
+        /// <summary>
+        /// Update the given enumeration of EVSE admin status updates.
+        /// </summary>
+        /// <param name="Sender">The sender of the admin status update.</param>
+        /// <param name="AdminStatusUpdates">An enumeration of EVSE admin status updates.</param>
+        /// 
+        /// <param name="Timestamp">The optional timestamp of the request.</param>
+        /// <param name="CancellationToken">An optional token to cancel this request.</param>
+        /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
+        /// <param name="RequestTimeout">An optional timeout for this request.</param>
+        protected async Task<PushEVSEAdminStatusResult>
+
+            UpdateStatus(ISendAdminStatus                    Sender,
+                         IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
+
+                         DateTime?                           Timestamp,
+                         CancellationToken?                  CancellationToken,
+                         EventTracking_Id                    EventTrackingId,
+                         TimeSpan?                           RequestTimeout)
+
+        {
+
+            #region Initial checks
+
+            if (AdminStatusUpdates == null || !AdminStatusUpdates.Any())
+                return PushEVSEAdminStatusResult.NoOperation(Id,
+                                                             Sender);
+
+            if (DisablePushStatus)
+                return PushEVSEAdminStatusResult.AdminDown(Id,
+                                                           Sender,
+                                                           AdminStatusUpdates);
+
+            #endregion
+
+
+            #region Send OnEnqueueSendCDRRequest event
+
+            //try
+            //{
+
+            //    OnEnqueueSendCDRRequest?.Invoke(DateTime.UtcNow,
+            //                                    Timestamp.Value,
+            //                                    this,
+            //                                    EventTrackingId,
+            //                                    RoamingNetwork.Id,
+            //                                    ChargeDetailRecord,
+            //                                    RequestTimeout);
+
+            //}
+            //catch (Exception e)
+            //{
+            //    e.Log(nameof(WWCPCPOAdapter) + "." + nameof(OnSendCDRRequest));
+            //}
+
+            #endregion
+
+            await DataAndStatusLock.WaitAsync().ConfigureAwait(false);
+
+            try
+            {
+
+                var FilteredUpdates = AdminStatusUpdates.Where(adminstatusupdate => _IncludeEVSEs  (adminstatusupdate.EVSE) &&
+                                                                                    _IncludeEVSEIds(adminstatusupdate.EVSE.Id)).
+                                                         ToArray();
+
+                if (FilteredUpdates.Length > 0)
+                {
+
+                    foreach (var Update in FilteredUpdates)
+                    {
+
+                        // Delay the status update until the EVSE data had been uploaded!
+                        if (!DisablePushData && EVSEsToAddQueue.Any(evse => evse == Update.EVSE))
+                            EVSEAdminStatusChangesDelayedQueue.Add(Update);
+
+                        else
+                            EVSEAdminStatusChangesFastQueue.Add(Update);
+
+                    }
+
+                    FlushEVSEFastStatusTimer.Change(_FlushEVSEFastStatusEvery, Timeout.Infinite);
+
+                    return PushEVSEAdminStatusResult.Enqueued(Id, Sender);
+
+                }
+
+                return PushEVSEAdminStatusResult.NoOperation(Id, Sender);
+
+            }
+            finally
+            {
+                DataAndStatusLock.Release();
+            }
+
+        }
+
+        #endregion
+
+        #region UpdateStatus     (Sender, StatusUpdates,      ...)
 
         /// <summary>
         /// Update the given enumeration of EVSE status updates.
@@ -418,7 +690,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        public async Task<PushStatusResult>
+        protected async Task<PushEVSEStatusResult>
 
             UpdateStatus(ISendStatus                    Sender,
                          IEnumerable<EVSEStatusUpdate>  StatusUpdates,
@@ -433,7 +705,13 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (StatusUpdates == null || !StatusUpdates.Any())
-                return PushStatusResult.NoOperation(Id, Sender);
+                return PushEVSEStatusResult.NoOperation(Id,
+                                                    Sender);
+
+            if (DisablePushStatus)
+                return PushEVSEStatusResult.AdminDown(Id,
+                                                  Sender,
+                                                  StatusUpdates);
 
             #endregion
 
@@ -475,7 +753,7 @@ namespace org.GraphDefined.WWCP
                     {
 
                         // Delay the status update until the EVSE data had been uploaded!
-                        if (EVSEsToAddQueue.Any(evse => evse == Update.EVSE))
+                        if (!DisablePushData && EVSEsToAddQueue.Any(evse => evse == Update.EVSE))
                             EVSEStatusChangesDelayedQueue.Add(Update);
 
                         else
@@ -485,11 +763,11 @@ namespace org.GraphDefined.WWCP
 
                     FlushEVSEFastStatusTimer.Change(_FlushEVSEFastStatusEvery, Timeout.Infinite);
 
-                    return PushStatusResult.Enqueued(Id, Sender);
+                    return PushEVSEStatusResult.Enqueued(Id, Sender);
 
                 }
 
-                return PushStatusResult.NoOperation(Id, Sender);
+                return PushEVSEStatusResult.NoOperation(Id, Sender);
 
             }
             finally
@@ -500,13 +778,6 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
-
-
-
-
-
-
-
 
 
 

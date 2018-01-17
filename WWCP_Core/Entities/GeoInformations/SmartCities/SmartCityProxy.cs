@@ -926,7 +926,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushAdminStatusResult>
+        Task<PushEVSEAdminStatusResult>
 
             ISendAdminStatus.UpdateAdminStatus(IEnumerable<EVSEAdminStatusUpdate>  AdminStatusUpdates,
                                                TransmissionTypes                   TransmissionType,
@@ -939,7 +939,7 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return Task.FromResult(PushAdminStatusResult.OutOfService(Id,
+            return Task.FromResult(PushEVSEAdminStatusResult.OutOfService(Id,
                                                                       this,
                                                                       AdminStatusUpdates));
 
@@ -959,7 +959,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushStatusResult>
+        Task<PushEVSEStatusResult>
 
             ISendStatus.UpdateStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
                                      TransmissionTypes              TransmissionType,
@@ -974,11 +974,11 @@ namespace org.GraphDefined.WWCP
             #region Initial checks
 
             if (StatusUpdates == null || !StatusUpdates.Any())
-                return Task.FromResult(PushStatusResult.NoOperation(Id, this));
+                return Task.FromResult(PushEVSEStatusResult.NoOperation(Id, this));
 
             #endregion
 
-            return Task.FromResult(PushStatusResult.NoOperation(Id, this));
+            return Task.FromResult(PushEVSEStatusResult.NoOperation(Id, this));
 
         }
 
@@ -1305,7 +1305,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushAdminStatusResult>
+        Task<PushChargingStationAdminStatusResult>
 
             ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingStationAdminStatusUpdate>  AdminStatusUpdates,
                                                TransmissionTypes                              TransmissionType,
@@ -1318,9 +1318,9 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return Task.FromResult(PushAdminStatusResult.OutOfService(Id,
-                                                                      this,
-                                                                      AdminStatusUpdates));
+            return Task.FromResult(PushChargingStationAdminStatusResult.OutOfService(Id,
+                                                                                     this,
+                                                                                     AdminStatusUpdates));
 
         }
 
@@ -1338,7 +1338,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushStatusResult>
+        Task<PushChargingStationStatusResult>
 
             ISendStatus.UpdateStatus(IEnumerable<ChargingStationStatusUpdate>  StatusUpdates,
                                      TransmissionTypes                         TransmissionType,
@@ -1349,7 +1349,7 @@ namespace org.GraphDefined.WWCP
                                      TimeSpan?                                 RequestTimeout)
 
 
-                => Task.FromResult(PushStatusResult.NoOperation(Id, this));
+                => Task.FromResult(PushChargingStationStatusResult.NoOperation(Id, this));
 
         #endregion
 
@@ -1673,7 +1673,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushAdminStatusResult>
+        Task<PushChargingPoolAdminStatusResult>
 
             ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingPoolAdminStatusUpdate>  AdminStatusUpdates,
                                                TransmissionTypes                           TransmissionType,
@@ -1684,9 +1684,9 @@ namespace org.GraphDefined.WWCP
                                                TimeSpan?                                   RequestTimeout)
         {
 
-            return Task.FromResult(PushAdminStatusResult.OutOfService(Id,
-                                                                      this,
-                                                                      AdminStatusUpdates));
+            return Task.FromResult(PushChargingPoolAdminStatusResult.OutOfService(Id,
+                                                                                  this,
+                                                                                  AdminStatusUpdates));
 
         }
 
@@ -1704,7 +1704,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushStatusResult>
+        Task<PushChargingPoolStatusResult>
 
             ISendStatus.UpdateStatus(IEnumerable<ChargingPoolStatusUpdate>  StatusUpdates,
                                      TransmissionTypes                      TransmissionType,
@@ -1715,7 +1715,7 @@ namespace org.GraphDefined.WWCP
                                      TimeSpan?                              RequestTimeout)
 
 
-                => Task.FromResult(PushStatusResult.NoOperation(Id, this));
+                => Task.FromResult(PushChargingPoolStatusResult.NoOperation(Id, this));
 
         #endregion
 
@@ -2017,7 +2017,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushAdminStatusResult>
+        Task<PushChargingStationOperatorAdminStatusResult>
 
             ISendAdminStatus.UpdateAdminStatus(IEnumerable<ChargingStationOperatorAdminStatusUpdate>  AdminStatusUpdates,
                                                TransmissionTypes                                      TransmissionType,
@@ -2029,9 +2029,9 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return Task.FromResult(PushAdminStatusResult.OutOfService(Id,
-                                                                      this,
-                                                                      AdminStatusUpdates));
+            return Task.FromResult(PushChargingStationOperatorAdminStatusResult.OutOfService(Id,
+                                                                                             this,
+                                                                                             AdminStatusUpdates));
 
         }
 
@@ -2048,19 +2048,19 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushStatusResult>
+        async Task<PushChargingStationOperatorStatusResult>
 
             ISendStatus.UpdateStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  StatusUpdates,
-                                            TransmissionTypes                                 TransmissionType,
+                                     TransmissionTypes                                 TransmissionType,
 
-                                            DateTime?                                         Timestamp,
-                                            CancellationToken?                                CancellationToken,
-                                            EventTracking_Id                                  EventTrackingId,
-                                            TimeSpan?                                         RequestTimeout)
+                                     DateTime?                                         Timestamp,
+                                     CancellationToken?                                CancellationToken,
+                                     EventTracking_Id                                  EventTrackingId,
+                                     TimeSpan?                                         RequestTimeout)
 
         {
 
-            return PushStatusResult.NoOperation(Id, this);
+            return PushChargingStationOperatorStatusResult.NoOperation(Id, this);
 
         }
 
@@ -2222,7 +2222,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushAdminStatusResult>
+        Task<PushRoamingNetworkAdminStatusResult>
 
             ISendAdminStatus.UpdateAdminStatus(IEnumerable<RoamingNetworkAdminStatusUpdate>  AdminStatusUpdates,
                                                TransmissionTypes                             TransmissionType,
@@ -2234,9 +2234,9 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return Task.FromResult(PushAdminStatusResult.OutOfService(Id,
-                                                                      this,
-                                                                      AdminStatusUpdates));
+            return Task.FromResult(PushRoamingNetworkAdminStatusResult.OutOfService(Id,
+                                                                                    this,
+                                                                                    AdminStatusUpdates));
 
         }
 
@@ -2253,7 +2253,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        async Task<PushStatusResult>
+        async Task<PushRoamingNetworkStatusResult>
 
             ISendStatus.UpdateStatus(IEnumerable<RoamingNetworkStatusUpdate>  StatusUpdates,
                                             TransmissionTypes                        TransmissionType,
@@ -2265,7 +2265,7 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            return PushStatusResult.NoOperation(Id, this);
+            return PushRoamingNetworkStatusResult.NoOperation(Id, this);
 
         }
 

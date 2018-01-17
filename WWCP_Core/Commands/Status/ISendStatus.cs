@@ -66,7 +66,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushStatusResult>
+        Task<PushEVSEStatusResult>
 
             UpdateStatus(IEnumerable<EVSEStatusUpdate>  StatusUpdates,
                          TransmissionTypes              TransmissionType    = TransmissionTypes.Enqueue,
@@ -90,7 +90,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushStatusResult>
+        Task<PushChargingStationStatusResult>
 
             UpdateStatus(IEnumerable<ChargingStationStatusUpdate>  StatusUpdates,
                          TransmissionTypes                         TransmissionType    = TransmissionTypes.Enqueue,
@@ -114,7 +114,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushStatusResult>
+        Task<PushChargingPoolStatusResult>
 
             UpdateStatus(IEnumerable<ChargingPoolStatusUpdate>  StatusUpdates,
                          TransmissionTypes                      TransmissionType    = TransmissionTypes.Enqueue,
@@ -138,7 +138,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushStatusResult>
+        Task<PushChargingStationOperatorStatusResult>
 
             UpdateStatus(IEnumerable<ChargingStationOperatorStatusUpdate>  StatusUpdates,
                          TransmissionTypes                                 TransmissionType    = TransmissionTypes.Enqueue,
@@ -162,7 +162,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="CancellationToken">An optional token to cancel this request.</param>
         /// <param name="EventTrackingId">An optional event tracking identification for correlating this request with other events.</param>
         /// <param name="RequestTimeout">An optional timeout for this request.</param>
-        Task<PushStatusResult>
+        Task<PushRoamingNetworkStatusResult>
 
             UpdateStatus(IEnumerable<RoamingNetworkStatusUpdate>  StatusUpdates,
                          TransmissionTypes                        TransmissionType    = TransmissionTypes.Enqueue,

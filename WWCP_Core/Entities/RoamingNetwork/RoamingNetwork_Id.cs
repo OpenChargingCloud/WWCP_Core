@@ -68,7 +68,7 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region Parse(Text)
+        #region Parse   (Text)
 
         /// <summary>
         /// Parse the given string as a roaming network identification.
@@ -88,6 +88,24 @@ namespace org.GraphDefined.WWCP
             #endregion
 
             return new RoamingNetwork_Id(Text);
+
+        }
+
+        #endregion
+
+        #region TryParse(Text)
+
+        /// <summary>
+        /// Try to parse the given string as a roaming network identification.
+        /// </summary>
+        /// <param name="Text">A text representation of a roaming network identification.</param>
+        public static RoamingNetwork_Id? TryParse(String Text)
+        {
+
+            if (TryParse(Text, out RoamingNetwork_Id RoamingNetworkId))
+                return RoamingNetworkId;
+
+            return new RoamingNetwork_Id?();
 
         }
 

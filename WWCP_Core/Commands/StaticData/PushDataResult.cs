@@ -90,6 +90,21 @@ namespace org.GraphDefined.WWCP
         #region Properties
 
         /// <summary>
+        /// The unqiue identification of the authenticator.
+        /// </summary>
+        public IId                   AuthId          { get; }
+
+        /// <summary>
+        /// An object implementing ISendData.
+        /// </summary>
+        public ISendData             ISendData       { get; }
+
+        /// <summary>
+        /// An object implementing IReceiveData.
+        /// </summary>
+        public IReceiveData          IReceiveData    { get; }
+
+        /// <summary>
         /// The result of the operation.
         /// </summary>
         public PushDataResultTypes   Result          { get; }
@@ -98,6 +113,11 @@ namespace org.GraphDefined.WWCP
         /// An optional description of the result code.
         /// </summary>
         public String                Description     { get; }
+
+        /// <summary>
+        /// An enumeration of rejected EVSEs.
+        /// </summary>
+        public IEnumerable<EVSE>     RejectedEVSEs   { get; }
 
         /// <summary>
         /// Warnings or additional information.
@@ -113,47 +133,91 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (internal) PushEVSEDataResult(AuthId, ISendData,    Result,...)
+        #region (private)  PushEVSEDataResult(AuthId,               Result, ...)
 
         /// <summary>
-        /// Create a new acknowledgement.
+        /// Create a new PushEVSEData result.
         /// </summary>
+        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
+        /// <param name="RejectedEVSEs">An enumeration of rejected EVSEs.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        internal PushEVSEDataResult(IId                   AuthId,
-                                    ISendData             ISendData,
-                                    PushDataResultTypes   Result,
-                                    IEnumerable<EVSE>     RejectedEVSEs  = null,
-                                    String                Description    = null,
-                                    IEnumerable<Warning>  Warnings       = null,
-                                    TimeSpan?             Runtime        = null)
+        private PushEVSEDataResult(IId                   AuthId,
+                                   PushDataResultTypes   Result,
+                                   String                Description     = null,
+                                   IEnumerable<EVSE>     RejectedEVSEs   = null,
+                                   IEnumerable<Warning>  Warnings        = null,
+                                   TimeSpan?             Runtime         = null)
         {
 
-            this.Result       = Result;
+            this.AuthId         = AuthId;
+            this.Result         = Result;
 
-            this.Description  = Description.IsNotNullOrEmpty()
-                                    ? Description.Trim()
-                                    : null;
+            this.Description    = Description.IsNotNullOrEmpty()
+                                      ? Description.Trim()
+                                      : null;
 
-            this.Warnings     = Warnings != null
-                                    ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
-                                    : new Warning[0];
+            this.RejectedEVSEs  = RejectedEVSEs != null
+                                      ? RejectedEVSEs.Where(evse => evse != null)
+                                      : new EVSE[0];
 
-            this.Runtime      = Runtime;
+            this.Warnings       = Warnings != null
+                                      ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
+                                      : new Warning[0];
+
+            this.Runtime        = Runtime;
 
         }
 
         #endregion
 
-        #region (internal) PushEVSEDataResult(AuthId, IReceiveData, Result,...)
+        #region (internal) PushEVSEDataResult(AuthId, ISendData,    Result, ...)
 
         /// <summary>
-        /// Create a new acknowledgement.
+        /// Create a new PushEVSEData result.
         /// </summary>
+        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="ISendData">An object implementing ISendData.</param>
         /// <param name="Result">The result of the operation.</param>
         /// <param name="Description">An optional description of the result code.</param>
+        /// <param name="RejectedEVSEs">An enumeration of rejected EVSEs.</param>
+        /// <param name="Warnings">Warnings or additional information.</param>
+        /// <param name="Runtime">The runtime of the request.</param>
+        internal PushEVSEDataResult(IId                   AuthId,
+                                    ISendData             ISendData,
+                                    PushDataResultTypes   Result,
+                                    String                Description     = null,
+                                    IEnumerable<EVSE>     RejectedEVSEs   = null,
+                                    IEnumerable<Warning>  Warnings        = null,
+                                    TimeSpan?             Runtime         = null)
+
+            : this(AuthId,
+                   Result,
+                   Description,
+                   RejectedEVSEs,
+                   Warnings,
+                   Runtime)
+
+        {
+
+            this.ISendData = ISendData;
+
+        }
+
+        #endregion
+
+        #region (internal) PushEVSEDataResult(AuthId, IReceiveData, Result, ...)
+
+        /// <summary>
+        /// Create a new PushEVSEData result.
+        /// </summary>
+        /// <param name="AuthId">The unqiue identification of the authenticator.</param>
+        /// <param name="IReceiveData">An object implementing IReceiveData.</param>
+        /// <param name="Result">The result of the operation.</param>
+        /// <param name="Description">An optional description of the result code.</param>
+        /// <param name="RejectedEVSEs">An enumeration of rejected EVSEs.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         internal PushEVSEDataResult(IId                   AuthId,
@@ -163,19 +227,17 @@ namespace org.GraphDefined.WWCP
                                     String                Description     = null,
                                     IEnumerable<Warning>  Warnings        = null,
                                     TimeSpan?             Runtime         = null)
+
+            : this(AuthId,
+                   Result,
+                   Description,
+                   RejectedEVSEs,
+                   Warnings,
+                   Runtime)
+
         {
 
-            this.Result       = Result;
-
-            this.Description  = Description.IsNotNullOrEmpty()
-                                    ? Description.Trim()
-                                    : null;
-
-            this.Warnings     = Warnings != null
-                                    ? Warnings.Where(warning => warning.IsNotNullOrEmpty())
-                                    : new Warning[0];
-
-            this.Runtime      = Runtime;
+            this.IReceiveData = IReceiveData;
 
         }
 
@@ -198,8 +260,8 @@ namespace org.GraphDefined.WWCP
             => new PushEVSEDataResult(AuthId,
                                       ISendData,
                                       PushDataResultTypes.AdminDown,
-                                      RejectedEVSEs,
                                       Description,
+                                      RejectedEVSEs,
                                       Warnings,
                                       Runtime);
 
@@ -236,8 +298,8 @@ namespace org.GraphDefined.WWCP
             => new PushEVSEDataResult(AuthId,
                                       ISendData,
                                       PushDataResultTypes.Success,
-                                      new EVSE[0],
                                       Description,
+                                      new EVSE[0],
                                       Warnings,
                                       Runtime);
 
@@ -271,12 +333,12 @@ namespace org.GraphDefined.WWCP
                      TimeSpan?             Runtime        = null)
 
             => new PushEVSEDataResult(AuthId,
-                                  ISendData,
-                                  PushDataResultTypes.Enqueued,
-                                  new EVSE[0],
-                                  Description,
-                                  Warnings,
-                                  Runtime);
+                                      ISendData,
+                                      PushDataResultTypes.Enqueued,
+                                      Description,
+                                      new EVSE[0],
+                                      Warnings,
+                                      Runtime);
 
         #endregion
 
@@ -293,8 +355,8 @@ namespace org.GraphDefined.WWCP
             => new PushEVSEDataResult(AuthId,
                                       ISendData,
                                       PushDataResultTypes.NoOperation,
-                                      new EVSE[0],
                                       Description,
+                                      new EVSE[0],
                                       Warnings,
                                       Runtime);
 
@@ -330,12 +392,12 @@ namespace org.GraphDefined.WWCP
                   TimeSpan?             Runtime        = null)
 
             => new PushEVSEDataResult(AuthId,
-                                  ISendData,
-                                  PushDataResultTypes.Error,
-                                  RejectedEVSEs,
-                                  Description,
-                                  Warnings,
-                                  Runtime);
+                                      ISendData,
+                                      PushDataResultTypes.Error,
+                                      Description,
+                                      RejectedEVSEs,
+                                      Warnings,
+                                      Runtime);
 
 
         public static PushEVSEDataResult
@@ -679,15 +741,15 @@ namespace org.GraphDefined.WWCP
                    ? new PushEVSEDataResult(Id,
                                             ISendData,
                                             Result,
-                                            null,
                                             Description,
+                                            new EVSE[0],
                                             Warnings,
                                             Runtime)
 
                    : new PushEVSEDataResult(Id,
                                             IReceiveData,
                                             Result,
-                                            null,
+                                            new EVSE[0],
                                             Description,
                                             Warnings,
                                             Runtime);

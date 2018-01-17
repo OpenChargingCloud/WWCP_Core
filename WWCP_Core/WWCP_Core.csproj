@@ -51,6 +51,10 @@
   <ItemGroup>
     <Compile Include="Commands\AdminStatus\IReceiveAdminStatus.cs" />
     <Compile Include="Commands\AdminStatus\ISendAdminStatus.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\PushChargingStationAdminStatusResult.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPool\PushChargingPoolAdminStatusResult.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\PushChargingStationOperatorAdminStatusResult.cs" />
+    <Compile Include="Entities\RoamingNetwork\PushRoamingNetworkAdminStatusResult.cs" />
     <Compile Include="Commands\AuthenticationData\IReceiveAuthenticationData.cs" />
     <Compile Include="Commands\AuthenticationData\ISendAuthenticationData.cs" />
     <Compile Include="Commands\AuthenticationData\OnPushAuthenticationData.cs" />
@@ -83,6 +87,10 @@
     <Compile Include="Commands\Reserve\CancelReservationDelegates.cs" />
     <Compile Include="Commands\Reserve\ReserveChargingPoolDelegates.cs" />
     <Compile Include="Commands\SendCDRs\OnGetCDRsDelegate.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\PushChargingStationOperatorStatusResult.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\PushChargingStationStatusResult.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPool\PushChargingPoolStatusResult.cs" />
+    <Compile Include="Entities\RoamingNetwork\PushRoamingNetworkStatusResult.cs" />
     <Compile Include="CommonTypes\Priority.cs" />
     <Compile Include="CommonTypes\TransmissionTypes.cs" />
     <Compile Include="Entities\ABaseEMobilityEntity.cs" />
@@ -186,7 +194,6 @@
     <Compile Include="Entities\GeoInformations\NavigationProvider\NavigationProvider_Id.cs" />
     <Compile Include="Entities\GeoInformations\NavigationProvider\INavigationProvider.cs" />
     <Compile Include="Entities\GeoInformations\NavigationProvider\IRemoteNavigationProvider.cs" />
-    <Compile Include="Entities\RoamingNetwork\PriorityList.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\CSO\CSORoamingProviderLogger.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\EMP\EMPRoamingProvider_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\RoamingProvider\Exceptions.cs" />
@@ -242,8 +249,8 @@
     <Compile Include="CommonTypes\AuthInfoStatus.cs" />
     <Compile Include="CommonTypes\eMAIdStatus.cs" />
     <Compile Include="CommonTypes\eMAIdWithPIN.cs" />
-    <Compile Include="Commands\Status\PushStatusResult.cs" />
-    <Compile Include="Commands\AdminStatus\PushAdminStatusResult.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\PushEVSEStatusResult.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\PushEVSEAdminStatusResult.cs" />
     <Compile Include="Commands\StaticData\PushDataResult.cs" />
     <Compile Include="CommonTypes\AuthTokenStatus.cs" />
     <Compile Include="CommonTypes\ExceptionalPeriod.cs" />

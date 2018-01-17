@@ -69,9 +69,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public const UInt16 DefaultMaxStatusListSize        = 15;
 
-
+        /// <summary>
+        /// The request timeout.
+        /// </summary>
         public readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(60);
-
 
         #endregion
 
@@ -5372,6 +5373,8 @@ namespace org.GraphDefined.WWCP
                                              result2 => result2.Result == AuthStartResultType.Authorized ||
                                                         result2.Result == AuthStartResultType.Blocked,
 
+                                             RequestTimeout ?? this.RequestTimeout,
+
                                              runtime => AuthStartResult.NotAuthorized(Id,
                                                                                       this,
                                                                                       SessionId,
@@ -5540,6 +5543,8 @@ namespace org.GraphDefined.WWCP
 
                                              result2 => result2.Result == AuthStartEVSEResultType.Authorized ||
                                                         result2.Result == AuthStartEVSEResultType.Blocked,
+
+                                             RequestTimeout ?? this.RequestTimeout,
 
                                              runtime => AuthStartEVSEResult.NotAuthorized(Id,
                                                                                           this,
@@ -5714,6 +5719,8 @@ namespace org.GraphDefined.WWCP
                                              result2 => result2.Result == AuthStartChargingStationResultType.Authorized ||
                                                         result2.Result == AuthStartChargingStationResultType.Blocked,
 
+                                             RequestTimeout ?? this.RequestTimeout,
+
                                              runtime => AuthStartChargingStationResult.NotAuthorized(Id,
                                                                                                      this,
                                                                                                      SessionId,
@@ -5885,6 +5892,8 @@ namespace org.GraphDefined.WWCP
 
                                              result2 => result2.Result == AuthStartChargingPoolResultType.Authorized ||
                                                         result2.Result == AuthStartChargingPoolResultType.Blocked,
+
+                                             RequestTimeout ?? this.RequestTimeout,
 
                                              runtime => AuthStartChargingPoolResult.NotAuthorized(Id,
                                                                                                   this,
@@ -6136,6 +6145,8 @@ namespace org.GraphDefined.WWCP
                                              result2 => result2.Result == AuthStopResultType.Authorized ||
                                                         result2.Result == AuthStopResultType.Blocked,
 
+                                             RequestTimeout ?? this.RequestTimeout,
+
                                              runtime => AuthStopResult.NotAuthorized(Id,
                                                                                      this,
                                                                                      SessionId,
@@ -6294,6 +6305,8 @@ namespace org.GraphDefined.WWCP
 
                                              result2 => result2.Result == AuthStopEVSEResultType.Authorized ||
                                                         result2.Result == AuthStopEVSEResultType.Blocked,
+
+                                             RequestTimeout ?? this.RequestTimeout,
 
                                              runtime => AuthStopEVSEResult.NotAuthorized(Id,
                                                                                          this,
@@ -6466,6 +6479,8 @@ namespace org.GraphDefined.WWCP
 
                                              result2 => result2.Result == AuthStopChargingStationResultType.Authorized ||
                                                         result2.Result == AuthStopChargingStationResultType.Blocked,
+
+                                             RequestTimeout ?? this.RequestTimeout,
 
                                              runtime => AuthStopChargingStationResult.NotAuthorized(Id,
                                                                                                     this,
@@ -6663,6 +6678,8 @@ namespace org.GraphDefined.WWCP
 
                                              result2 => result2.Result == AuthStopChargingPoolResultType.Authorized ||
                                                         result2.Result == AuthStopChargingPoolResultType.Blocked,
+
+                                             RequestTimeout ?? this.RequestTimeout,
 
                                              runtime => AuthStopChargingPoolResult.NotAuthorized(Id,
                                                                                                  this,
