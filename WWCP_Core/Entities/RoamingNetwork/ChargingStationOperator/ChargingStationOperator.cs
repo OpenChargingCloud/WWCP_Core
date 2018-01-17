@@ -2944,16 +2944,15 @@ namespace org.GraphDefined.WWCP
 
         #region SetEVSEAdminStatus(EVSEId, AdminStatusList, ChangeMethod = ChangeMethods.Replace)
 
-        public void SetEVSEAdminStatus(EVSE_Id                                        EVSEId,
+        public void SetEVSEAdminStatus(EVSE_Id                                         EVSEId,
                                        IEnumerable<Timestamped<EVSEAdminStatusTypes>>  AdminStatusList,
-                                       ChangeMethods                                  ChangeMethod  = ChangeMethods.Replace)
+                                       ChangeMethods                                   ChangeMethod  = ChangeMethods.Replace)
         {
 
             if (InvalidEVSEIds.Contains(EVSEId))
                 return;
 
-            EVSE _EVSE  = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE))
+            if (TryGetEVSEbyId(EVSEId, out EVSE _EVSE))
                 _EVSE.SetAdminStatus(AdminStatusList, ChangeMethod);
 
         }

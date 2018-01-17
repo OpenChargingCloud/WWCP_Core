@@ -1396,7 +1396,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="NewAdminStatusList">A list of new timestamped admin status.</param>
         /// <param name="ChangeMethod">The change mode.</param>
         public void SetAdminStatus(IEnumerable<Timestamped<EVSEAdminStatusTypes>>  NewAdminStatusList,
-                                   ChangeMethods                                  ChangeMethod = ChangeMethods.Replace)
+                                   ChangeMethods                                   ChangeMethod = ChangeMethods.Replace)
         {
             _AdminStatusSchedule.Insert(NewAdminStatusList, ChangeMethod);
         }

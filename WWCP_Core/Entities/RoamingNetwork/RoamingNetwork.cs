@@ -1259,15 +1259,15 @@ namespace org.GraphDefined.WWCP
         /// <param name="OnSuccess">An optional delegate to configure the new e-mobility provider after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the e-mobility provider failed.</param>
         public eMobilityProvider CreateEMobilityProvider(eMobilityProvider_Id                          ProviderId,
-                                                            I18NString                                    Name                            = null,
-                                                            I18NString                                    Description                     = null,
-                                                            eMobilityProviderPriority                     Priority                        = null,
-                                                            Action<eMobilityProvider>                     Configurator                    = null,
-                                                            RemoteEMobilityProviderCreatorDelegate        RemoteEMobilityProviderCreator  = null,
-                                                            eMobilityProviderAdminStatusTypes              AdminStatus                     = eMobilityProviderAdminStatusTypes.Operational,
-                                                            eMobilityProviderStatusTypes                   Status                          = eMobilityProviderStatusTypes.Available,
-                                                            Action<eMobilityProvider>                     OnSuccess                       = null,
-                                                            Action<RoamingNetwork, eMobilityProvider_Id>  OnError                         = null)
+                                                         I18NString                                    Name                            = null,
+                                                         I18NString                                    Description                     = null,
+                                                         eMobilityProviderPriority                     Priority                        = null,
+                                                         Action<eMobilityProvider>                     Configurator                    = null,
+                                                         RemoteEMobilityProviderCreatorDelegate        RemoteEMobilityProviderCreator  = null,
+                                                         eMobilityProviderAdminStatusTypes             AdminStatus                     = eMobilityProviderAdminStatusTypes.Operational,
+                                                         eMobilityProviderStatusTypes                  Status                          = eMobilityProviderStatusTypes.Available,
+                                                         Action<eMobilityProvider>                     OnSuccess                       = null,
+                                                         Action<RoamingNetwork, eMobilityProvider_Id>  OnError                         = null)
         {
 
             lock (_ChargingStationOperators)
@@ -1294,7 +1294,8 @@ namespace org.GraphDefined.WWCP
                     //_EMobilityProvider.OnEMobilityStationAddition
 
                     //AddIRemotePushData               (_EMobilityProvider);
-                    _ISendStatus.Add             (_eMobilityProviderProxy);
+                    _ISendAdminStatus.Add              (_eMobilityProviderProxy);
+                    _ISendStatus.Add                   (_eMobilityProviderProxy);
                     _ISend2RemoteAuthorizeStartStop.Add(_eMobilityProviderProxy);
                     _IRemoteSendChargeDetailRecord.Add (_eMobilityProviderProxy);
 
@@ -2053,6 +2054,7 @@ namespace org.GraphDefined.WWCP
                     //                               : 10);
 
                     _ISendData.Add                     (_CPORoamingProvider);
+                    _ISendAdminStatus.Add              (_CPORoamingProvider);
                     _ISendStatus.Add                   (_CPORoamingProvider);
                     _ISend2RemoteAuthorizeStartStop.Add(_CPORoamingProvider);
                     _IRemoteSendChargeDetailRecord.Add (_CPORoamingProvider);
@@ -3093,9 +3095,7 @@ namespace org.GraphDefined.WWCP
                                   Timestamped<EVSEStatusTypes>  NewStatus)
         {
 
-            ChargingStationOperator _cso = null;
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _cso))
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _cso))
                 _cso.SetEVSEStatus(EVSEId, NewStatus);
 
         }
@@ -3104,14 +3104,12 @@ namespace org.GraphDefined.WWCP
 
         #region SetEVSEStatus(EVSEId, Timestamp, NewStatus)
 
-        public void SetEVSEStatus(EVSE_Id         EVSEId,
-                                  DateTime        Timestamp,
+        public void SetEVSEStatus(EVSE_Id          EVSEId,
+                                  DateTime         Timestamp,
                                   EVSEStatusTypes  NewStatus)
         {
 
-            ChargingStationOperator _cso = null;
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _cso))
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _cso))
                 _cso.SetEVSEStatus(EVSEId, NewStatus);
 
         }
@@ -3120,14 +3118,12 @@ namespace org.GraphDefined.WWCP
 
         #region SetEVSEStatus(EVSEId, StatusList)
 
-        public void SetEVSEStatus(EVSE_Id                                   EVSEId,
+        public void SetEVSEStatus(EVSE_Id                                    EVSEId,
                                   IEnumerable<Timestamped<EVSEStatusTypes>>  StatusList,
-                                  ChangeMethods                             ChangeMethod  = ChangeMethods.Replace)
+                                  ChangeMethods                              ChangeMethod  = ChangeMethods.Replace)
         {
 
-            ChargingStationOperator _cso = null;
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _cso))
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _cso))
                 _cso.SetEVSEStatus(EVSEId, StatusList, ChangeMethod);
 
         }
@@ -3137,13 +3133,11 @@ namespace org.GraphDefined.WWCP
 
         #region SetEVSEAdminStatus(EVSEId, NewStatus)
 
-        public void SetEVSEAdminStatus(EVSE_Id                           EVSEId,
+        public void SetEVSEAdminStatus(EVSE_Id                            EVSEId,
                                        Timestamped<EVSEAdminStatusTypes>  NewAdminStatus)
         {
 
-            ChargingStationOperator _cso = null;
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _cso))
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _cso))
                 _cso.SetEVSEAdminStatus(EVSEId, NewAdminStatus);
 
         }
@@ -3152,14 +3146,12 @@ namespace org.GraphDefined.WWCP
 
         #region SetEVSEAdminStatus(EVSEId, Timestamp, NewAdminStatus)
 
-        public void SetEVSEAdminStatus(EVSE_Id              EVSEId,
-                                       DateTime             Timestamp,
+        public void SetEVSEAdminStatus(EVSE_Id               EVSEId,
+                                       DateTime              Timestamp,
                                        EVSEAdminStatusTypes  NewAdminStatus)
         {
 
-            ChargingStationOperator _cso = null;
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _cso))
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _cso))
                 _cso.SetEVSEAdminStatus(EVSEId, NewAdminStatus);
 
         }
@@ -3168,14 +3160,12 @@ namespace org.GraphDefined.WWCP
 
         #region SetEVSEAdminStatus(EVSEId, AdminStatusList)
 
-        public void SetEVSEAdminStatus(EVSE_Id                                        EVSEId,
+        public void SetEVSEAdminStatus(EVSE_Id                                         EVSEId,
                                        IEnumerable<Timestamped<EVSEAdminStatusTypes>>  AdminStatusList,
-                                       ChangeMethods                                  ChangeMethod  = ChangeMethods.Replace)
+                                       ChangeMethods                                   ChangeMethod  = ChangeMethods.Replace)
         {
 
-            ChargingStationOperator _cso = null;
-
-            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out _cso))
+            if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _cso))
                 _cso.SetEVSEAdminStatus(EVSEId, AdminStatusList, ChangeMethod);
 
         }
