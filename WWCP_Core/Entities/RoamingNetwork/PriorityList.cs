@@ -88,8 +88,6 @@ namespace org.GraphDefined.WWCP
         {
 
             var StartTime  = DateTime.UtcNow;
-            T  service     = default(T);
-            T2 result      = default(T2);
 
             var AllTasks = _Services.
                             OrderBy(kvp => kvp.Key).
@@ -98,40 +96,30 @@ namespace org.GraphDefined.WWCP
 
             Task<T2> Result;
 
-            do
+            try
             {
 
-                Result = await Task.WhenAny(AllTasks);
+                do
+                {
 
-                AllTasks.Remove(Result);
+                    Result = await Task.WhenAny(AllTasks).ConfigureAwait(false);
 
-                if (Test(Result.Result))
-                    return Result.Result;
+                    AllTasks.Remove(Result);
+
+                    if (!EqualityComparer<T2>.Default.Equals(Result.Result, default(T2)) &&
+                        Test(Result.Result))
+                    {
+                        return Result.Result;
+                    }
+
+                }
+                while (AllTasks.Count > 0);
 
             }
-            while (AllTasks.Count > 0);
-
-            //foreach (var Service in _Services.
-            //                OrderBy(kvp => kvp.Key).
-            //                Select(kvp => kvp.Value))
-            //{
-
-            //    try
-            //    {
-
-            //        service  = Service;
-            //        result   = await Work(Service).ConfigureAwait(false);
-
-            //        if (Test(result))
-            //            return result;
-
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        DebugX.LogT(e.Message);
-            //    }
-
-            //}
+            catch (Exception e)
+            {
+                DebugX.LogT(e.Message);
+            }
 
             return Default(DateTime.UtcNow - StartTime);
 
