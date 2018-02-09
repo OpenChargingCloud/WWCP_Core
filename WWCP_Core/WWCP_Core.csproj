@@ -253,9 +253,6 @@
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\PushEVSEAdminStatusResult.cs" />
     <Compile Include="Commands\StaticData\PushDataResult.cs" />
     <Compile Include="CommonTypes\AuthTokenStatus.cs" />
-    <Compile Include="CommonTypes\ExceptionalPeriod.cs" />
-    <Compile Include="CommonTypes\HourMin.cs" />
-    <Compile Include="CommonTypes\RegularHours.cs" />
     <Compile Include="CommonTypes\StatusDiff.cs" />
     <Compile Include="CommonTypes\IStatus.cs" />
     <Compile Include="CommonTypes\StatusReport.cs" />
@@ -344,7 +341,6 @@
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStationGroup\ChargingStationGroup.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\EVSE\EVSEExceptions.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPool\ChargingPoolExceptions.cs" />
-    <Compile Include="CommonTypes\OpeningTimes.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\ChargingStation.cs" />
     <Compile Include="Entities\AEMobilityEntity.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\UIFeatures.cs" />

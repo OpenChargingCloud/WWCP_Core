@@ -181,8 +181,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Take">The optional number of roaming networks to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
         public static JArray ToJSON(this IEnumerable<RoamingNetwork>  RoamingNetworks,
-                                    UInt64                            Skip                               = 0,
-                                    UInt64                            Take                               = 0,
+                                    UInt64?                           Skip                               = 0,
+                                    UInt64?                           Take                               = 0,
                                     Boolean                           Embedded                           = false,
                                     InfoStatus                        ExpandChargingStationOperatorIds   = InfoStatus.ShowIdOnly,
                                     InfoStatus                        ExpandRoamingNetworkIds              = InfoStatus.ShowIdOnly,
@@ -237,8 +237,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         #region ToJSON(this RoamingNetworkAdminStatus,          Skip = 0, Take = 0)
 
         public static JObject ToJSON(this IEnumerable<RoamingNetworkAdminStatus>  RoamingNetworkAdminStatus,
-                                     UInt64                                       Skip  = 0,
-                                     UInt64                                       Take  = 0)
+                                     UInt64?                                      Skip  = 0,
+                                     UInt64?                                      Take  = 0)
         {
 
             #region Initial checks
@@ -338,8 +338,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         #region ToJSON(this RoamingNetworkStatus,               Skip = 0, Take = 0)
 
         public static JObject ToJSON(this IEnumerable<RoamingNetworkStatus>  RoamingNetworkStatus,
-                                     UInt64                                  Skip  = 0,
-                                     UInt64                                  Take  = 0)
+                                     UInt64?                                 Skip  = 0,
+                                     UInt64?                                 Take  = 0)
         {
 
             #region Initial checks

@@ -213,8 +213,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Take">The optional number of charging station operators to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a roaming network.</param>
         public static JArray ToJSON(this IEnumerable<ChargingStationOperator>  ChargingStationOperators,
-                                    UInt64                                     Skip                       = 0,
-                                    UInt64                                     Take                       = 0,
+                                    UInt64?                                    Skip                       = 0,
+                                    UInt64?                                    Take                       = 0,
                                     Boolean                                    Embedded                   = false,
                                     InfoStatus                                 ExpandRoamingNetworkId     = InfoStatus.ShowIdOnly,
                                     InfoStatus                                 ExpandChargingPoolIds      = InfoStatus.ShowIdOnly,
@@ -246,9 +246,9 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         #region ToJSON(this ChargingStationOperatorAdminStatus, Skip = 0, Take = 0, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>>  ChargingStationOperatorAdminStatus,
-                                     UInt64                                                                                                                         Skip         = 0,
-                                     UInt64                                                                                                                         Take         = 0,
-                                     UInt64                                                                                                                         HistorySize  = 1)
+                                     UInt64?                                                                                                                        Skip         = 0,
+                                     UInt64?                                                                                                                        Take         = 0,
+                                     UInt64?                                                                                                                        HistorySize  = 1)
 
         {
 
@@ -304,9 +304,9 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         #region ToJSON(this ChargingStationOperatorStatus,      Skip = 0, Take = 0, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>>  ChargingStationOperatorStatus,
-                                     UInt64                                                                                                                    Skip         = 0,
-                                     UInt64                                                                                                                    Take         = 0,
-                                     UInt64                                                                                                                    HistorySize  = 1)
+                                     UInt64?                                                                                                                   Skip         = 0,
+                                     UInt64?                                                                                                                   Take         = 0,
+                                     UInt64?                                                                                                                   HistorySize  = 1)
 
         {
 

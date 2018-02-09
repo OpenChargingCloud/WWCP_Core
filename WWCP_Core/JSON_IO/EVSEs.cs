@@ -175,8 +175,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Take">The optional number of EVSEs to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station.</param>
         public static JArray ToJSON(this IEnumerable<EVSE>  EVSEs,
-                                    UInt64                  Skip                              = 0,
-                                    UInt64                  Take                              = 0,
+                                    UInt64?                 Skip                              = 0,
+                                    UInt64?                 Take                              = 0,
                                     Boolean                 Embedded                          = false,
                                     InfoStatus              ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
                                     InfoStatus              ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
@@ -228,8 +228,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         #region ToJSON(this EVSEAdminStatus,          Skip = 0, Take = 0)
 
         public static JObject ToJSON(this IEnumerable<EVSEAdminStatus>  EVSEAdminStatus,
-                                     UInt64                             Skip  = 0,
-                                     UInt64                             Take  = 0)
+                                     UInt64?                            Skip  = 0,
+                                     UInt64?                            Take  = 0)
         {
 
             #region Initial checks
@@ -329,8 +329,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         #region ToJSON(this EVSEStatus,               Skip = 0, Take = 0)
 
         public static JObject ToJSON(this IEnumerable<EVSEStatus>  EVSEStatus,
-                                     UInt64                        Skip  = 0,
-                                     UInt64                        Take  = 0)
+                                     UInt64?                       Skip  = 0,
+                                     UInt64?                       Take  = 0)
         {
 
             #region Initial checks

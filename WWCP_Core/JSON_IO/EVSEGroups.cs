@@ -154,8 +154,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Take">The optional number of charging stations to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
         public static JArray ToJSON(this IEnumerable<EVSEGroup>  EVSEGroups,
-                                    UInt64                       Skip                              = 0,
-                                    UInt64                       Take                              = 0,
+                                    UInt64?                      Skip                              = 0,
+                                    UInt64?                      Take                              = 0,
                                     Boolean                      Embedded                          = false,
                                     InfoStatus                   ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
                                     InfoStatus                   ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,

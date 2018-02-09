@@ -136,8 +136,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Skip">The optional number of e-mobility providers to skip.</param>
         /// <param name="Take">The optional number of e-mobility providers to return.</param>
         public static JArray ToJSON(this IEnumerable<eMobilityProvider>  eMobilityProviders,
-                                    UInt64                               Skip                     = 0,
-                                    UInt64                               Take                     = 0,
+                                    UInt64?                              Skip                     = 0,
+                                    UInt64?                              Take                     = 0,
                                     Boolean                              Embedded                 = false,
                                     InfoStatus                           ExpandRoamingNetworkId   = InfoStatus.ShowIdOnly,
                                     InfoStatus                           ExpandBrandIds           = InfoStatus.ShowIdOnly,

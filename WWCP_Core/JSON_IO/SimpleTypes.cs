@@ -141,8 +141,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Take">The optional number of charging station operators to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
         public static JArray ToJSON(this IEnumerable<Brand>   Brands,
-                                    UInt64                    Skip                       = 0,
-                                    UInt64                    Take                       = 0,
+                                    UInt64?                   Skip                       = 0,
+                                    UInt64?                   Take                       = 0,
                                     Boolean                   Embedded                   = false,
                                     InfoStatus                ExpandChargingPoolIds      = InfoStatus.Hidden,
                                     InfoStatus                ExpandChargingStationIds   = InfoStatus.Hidden,

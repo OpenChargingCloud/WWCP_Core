@@ -22,6 +22,7 @@ using System.Net.Security;
 
 using org.GraphDefined.Vanaheimr.Hermod;
 using org.GraphDefined.Vanaheimr.Hermod.DNS;
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 
 #endregion
 
@@ -40,7 +41,7 @@ namespace org.GraphDefined.WWCP
         IPPort                               TCPPort                    { get; }
         RemoteCertificateValidationCallback  RemoteCertificateValidator { get; }
         String                               VirtualHost                { get; }
-        String                               URIPrefix                  { get; }
+        HTTPURI                              URIPrefix                  { get; }
         TimeSpan                             RequestTimeout             { get; }
 
     }

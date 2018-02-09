@@ -790,10 +790,10 @@ namespace org.GraphDefined.WWCP
         private void FlushEVSEDataAndStatus(Object State)
         {
             if (!DisablePushData)
-                FlushEVSEDataAndStatus2().Wait();
+                FlushEVSEDataAndStatus2(State).Wait();
         }
 
-        private async Task FlushEVSEDataAndStatus2()
+        private async Task FlushEVSEDataAndStatus2(Object State)
         {
 
             var LockTaken = await FlushEVSEDataAndStatusLock.WaitAsync(0);
@@ -881,10 +881,10 @@ namespace org.GraphDefined.WWCP
         private void FlushEVSEFastStatus(Object State)
         {
             if (!DisablePushStatus)
-                FlushEVSEFastStatus2().Wait();
+                FlushEVSEFastStatus2(State).Wait();
         }
 
-        private async Task FlushEVSEFastStatus2()
+        private async Task FlushEVSEFastStatus2(Object State)
         {
 
             var LockTaken = await FlushEVSEFastStatusLock.WaitAsync(0);
@@ -972,10 +972,10 @@ namespace org.GraphDefined.WWCP
         private void FlushChargeDetailRecords(Object State)
         {
             if (!DisableSendChargeDetailRecords)
-                FlushChargeDetailRecords2().Wait();
+                FlushChargeDetailRecords2(State).Wait();
         }
 
-        private async Task FlushChargeDetailRecords2()
+        private async Task FlushChargeDetailRecords2(Object State)
         {
 
             var LockTaken = await FlushChargeDetailRecordsLock.WaitAsync(0);

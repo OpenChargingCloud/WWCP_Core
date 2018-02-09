@@ -123,8 +123,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Skip">The optional number of Charging Station Operators to skip.</param>
         /// <param name="Take">The optional number of Charging Station Operators to return.</param>
         public static JArray ToJSON(this IEnumerable<ParkingOperator>  ParkingOperators,
-                                    UInt64                             Skip                            = 0,
-                                    UInt64                             Take                            = 0,
+                                    UInt64?                            Skip                            = 0,
+                                    UInt64?                            Take                            = 0,
                                     Boolean                            Embedded                        = false,
                                     Boolean                            ExpandChargingRoamingNetworkId  = false,
                                     Boolean                            ExpandChargingPoolIds           = false,
