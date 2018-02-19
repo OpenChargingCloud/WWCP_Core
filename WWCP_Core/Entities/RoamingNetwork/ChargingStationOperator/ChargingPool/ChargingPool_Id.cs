@@ -138,7 +138,7 @@ namespace org.GraphDefined.WWCP
         public static ChargingPool_Id Generate(ChargingStationOperator_Id  OperatorId,
                                                Address                     Address,
                                                GeoCoordinate?              GeoLocation  = null,
-                                               String                      HelperId     = "",
+                                               //String                      HelperId     = "",
                                                Byte                        Length       = 15,
                                                Func<String, String>        Mapper       = null)
         {
@@ -154,8 +154,8 @@ namespace org.GraphDefined.WWCP
                                              String.Concat(
                                                  OperatorId.  ToString(),
                                                  Address.     ToString(),
-                                                 GeoLocation?.ToString() ?? "",
-                                                 HelperId                ?? ""
+                                                 GeoLocation?.ToString() ?? ""
+                                                 //HelperId                ?? ""
                                              )
                                          )).
                                          ToHexString().
