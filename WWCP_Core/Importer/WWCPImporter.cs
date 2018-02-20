@@ -76,7 +76,7 @@ namespace org.GraphDefined.WWCP.Importer
         /// <summary>
         /// The default number of cached data imports.
         /// </summary>
-        public  const            UInt32                             DefaultMaxNumberOfCachedImports   = 100;
+        public  const            UInt32                             DefaultMaxNumberOfCachedImports   = 3;
 
         private readonly         Action<WWCPImporter<T>, Task<T>>   OnShutdown;
 
@@ -936,11 +936,14 @@ namespace org.GraphDefined.WWCP.Importer
 
                         ContinueWith(ImporterTask => {
 
-                            // Save the imported data for later review...
-                            _ImportedData.Add(new Timestamped<T>(ImporterTask.Result));
+                            //if (_ImportedData.Count >= MaxNumberOfCachedDataImports)
+                            //{
+                            //    var succ = _ImportedData.Remove(_ImportedData[0]);
+                            //    DebugX.LogT("Importer Count = " + _ImportedData.Count + " " + succ);
+                            //}
 
-                            if (_ImportedData.Count > MaxNumberOfCachedDataImports)
-                                _ImportedData.Remove(_ImportedData.First());
+                            //// Save the imported data for later review...
+                            //_ImportedData.Add(new Timestamped<T>(ImporterTask.Result));
 
                             // Update ForwardingInfos
                             OnEveryRun?.Invoke(this, ImporterTask);
