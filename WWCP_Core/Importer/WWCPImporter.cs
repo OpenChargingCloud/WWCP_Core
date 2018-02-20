@@ -76,7 +76,7 @@ namespace org.GraphDefined.WWCP.Importer
         /// <summary>
         /// The default number of cached data imports.
         /// </summary>
-        public  const            UInt32                             DefaultMaxNumberOfCachedImports   = 100;
+        public  const            UInt32                             DefaultMaxNumberOfCachedImports   = 10;
 
         private readonly         Action<WWCPImporter<T>, Task<T>>   OnShutdown;
 
