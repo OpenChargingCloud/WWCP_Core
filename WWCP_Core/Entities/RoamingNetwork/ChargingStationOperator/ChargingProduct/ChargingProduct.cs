@@ -109,6 +109,25 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region Parse(ChargingProductId)
+
+        /// <summary>
+        /// Parse the given string as a charging product identification.
+        /// </summary>
+        /// <param name="ChargingProductId">A text representation of a charging product identification.</param>
+        public static ChargingProduct Parse(String ChargingProductId)
+        {
+
+            if (ChargingProductId == null || ChargingProductId.Trim().IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(ChargingProductId), "The given charging product identification must not be null or empty!");
+
+            return new ChargingProduct(ChargingProduct_Id.Parse(ChargingProductId));
+
+        }
+
+        #endregion
+
+
         #region Operator overloading
 
         #region Operator == (ChargingProduct1, ChargingProduct2)
