@@ -515,8 +515,8 @@ namespace org.GraphDefined.WWCP
                                           I18NString                                          Description                            = null,
                                           Action<ChargingStationOperator>                     Configurator                           = null,
                                           RemoteChargingStationOperatorCreatorDelegate        RemoteChargingStationOperatorCreator   = null,
-                                          ChargingStationOperatorAdminStatusTypes              AdminStatus                            = ChargingStationOperatorAdminStatusTypes.Operational,
-                                          ChargingStationOperatorStatusTypes                   Status                                 = ChargingStationOperatorStatusTypes.Available,
+                                          ChargingStationOperatorAdminStatusTypes             AdminStatus                            = ChargingStationOperatorAdminStatusTypes.Operational,
+                                          ChargingStationOperatorStatusTypes                  Status                                 = ChargingStationOperatorStatusTypes.Available,
                                           Action<ChargingStationOperator>                     OnSuccess                              = null,
                                           Action<RoamingNetwork, ChargingStationOperator_Id>  OnError                                = null)
 

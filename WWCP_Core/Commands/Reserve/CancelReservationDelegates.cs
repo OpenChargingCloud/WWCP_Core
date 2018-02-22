@@ -59,13 +59,15 @@ namespace org.GraphDefined.WWCP
     /// <param name="EventTrackingId">An unique event tracking identification for correlating this event with other events.</param>
     /// <param name="ReservationId">The unique identification for this charging reservation.</param>
     /// <param name="Reason">The reason for the cancellation.</param>
+    /// <param name="ProviderId">An optional unique identification of e-mobility service provider.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<Boolean> OnCancelReservationDelegate(DateTime                               Timestamp,
-                                                              CancellationToken                      CancellationToken,
-                                                              EventTracking_Id                       EventTrackingId,
-                                                              ChargingReservation_Id                 ReservationId,
-                                                              ChargingReservationCancellationReason  Reason,
-                                                              TimeSpan?                              RequestTimeout);
+    public delegate Task<CancelReservationResult> OnCancelReservationDelegate(DateTime                               Timestamp,
+                                                                              CancellationToken                      CancellationToken,
+                                                                              EventTracking_Id                       EventTrackingId,
+                                                                              ChargingReservation_Id                 ReservationId,
+                                                                              ChargingReservationCancellationReason  Reason,
+                                                                              eMobilityProvider_Id?                  ProviderId,
+                                                                              TimeSpan?                              RequestTimeout);
 
 
     ///// <summary>

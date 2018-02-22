@@ -83,7 +83,7 @@ namespace org.GraphDefined.WWCP
     /// <param name="eMAIds">A list of eMobility account identifications, who can use this reservation.</param>
     /// <param name="PINs">A list of PINs, who can be entered into a pinpad to use this reservation.</param>
     /// <param name="RequestTimeout">An optional timeout for this request.</param>
-    public delegate Task<ReservationResult> OnReserveEVSEDelegate(RoamingNetwork_Id                 RoamingNetworkId,
+    public delegate Task<ReservationResult> OnReserveEVSEDelegate(//RoamingNetwork_Id                 RoamingNetworkId,
                                                                   ChargingReservation_Id?           ReservationId,
                                                                   EVSE_Id                           EVSEId,
                                                                   DateTime?                         StartTime,
