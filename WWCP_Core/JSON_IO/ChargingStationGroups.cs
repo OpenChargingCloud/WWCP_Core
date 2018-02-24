@@ -144,7 +144,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this ChargingStationGroups, Skip = 0, Take = 0, Embedded = false, ...)
+        #region ToJSON(this ChargingStationGroups, Skip = null, Take = null, Embedded = false, ...)
 
         /// <summary>
         /// Return a JSON representation for the given enumeration of charging stations.
@@ -154,8 +154,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Take">The optional number of charging stations to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
         public static JArray ToJSON(this IEnumerable<ChargingStationGroup>  ChargingStationGroups,
-                                    UInt64?                                 Skip                              = 0,
-                                    UInt64?                                 Take                              = 0,
+                                    UInt64?                                 Skip                              = null,
+                                    UInt64?                                 Take                              = null,
                                     Boolean                                 Embedded                          = false,
                                     InfoStatus                              ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
                                     InfoStatus                              ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,

@@ -171,7 +171,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this RoamingNetworks, Skip = 0, Take = 0, Embedded = false, ...)
+        #region ToJSON(this RoamingNetworks, Skip = null, Take = null, Embedded = false, ...)
 
         /// <summary>
         /// Return a JSON representation for the given enumeration of roaming networks.
@@ -181,8 +181,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Take">The optional number of roaming networks to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
         public static JArray ToJSON(this IEnumerable<RoamingNetwork>  RoamingNetworks,
-                                    UInt64?                           Skip                               = 0,
-                                    UInt64?                           Take                               = 0,
+                                    UInt64?                           Skip                               = null,
+                                    UInt64?                           Take                               = null,
                                     Boolean                           Embedded                           = false,
                                     InfoStatus                        ExpandChargingStationOperatorIds   = InfoStatus.ShowIdOnly,
                                     InfoStatus                        ExpandRoamingNetworkIds              = InfoStatus.ShowIdOnly,
@@ -234,11 +234,11 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         #endregion
 
 
-        #region ToJSON(this RoamingNetworkAdminStatus,          Skip = 0, Take = 0)
+        #region ToJSON(this RoamingNetworkAdminStatus,          Skip = null, Take = null)
 
         public static JObject ToJSON(this IEnumerable<RoamingNetworkAdminStatus>  RoamingNetworkAdminStatus,
-                                     UInt64?                                      Skip  = 0,
-                                     UInt64?                                      Take  = 0)
+                                     UInt64?                                      Skip  = null,
+                                     UInt64?                                      Take  = null)
         {
 
             #region Initial checks
@@ -266,9 +266,9 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             #endregion
 
 
-            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
-                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
-
+            return new JObject(_FilteredStatus.
+                                   OrderBy(status => status.Key).
+                                   SkipTakeFilter(Skip, Take).
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
                                                                new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
                                                                           kvp.Value.Status.Value.    ToString())
@@ -278,12 +278,12 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this RoamingNetworkAdminStatusSchedules, Skip = 0, Take = 0, HistorySize = 1)
+        #region ToJSON(this RoamingNetworkAdminStatusSchedules, Skip = null, Take = null, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<RoamingNetworkAdminStatusSchedule>  RoamingNetworkAdminStatusSchedules,
-                                     UInt64                                               Skip         = 0,
-                                     UInt64                                               Take         = 0,
-                                     UInt64                                               HistorySize  = 1)
+                                     UInt64?                                              Skip         = null,
+                                     UInt64?                                              Take         = null,
+                                     UInt64?                                              HistorySize  = 1)
         {
 
             #region Initial checks
@@ -312,9 +312,9 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             #endregion
 
 
-            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
-                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
-
+            return new JObject(_FilteredStatus.
+                                   OrderBy(status => status.Key).
+                                   SkipTakeFilter(Skip, Take).
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
                                                                new JObject(
                                                                    kvp.Value.StatusSchedule.
@@ -335,11 +335,11 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         #endregion
 
 
-        #region ToJSON(this RoamingNetworkStatus,               Skip = 0, Take = 0)
+        #region ToJSON(this RoamingNetworkStatus,               Skip = null, Take = null)
 
         public static JObject ToJSON(this IEnumerable<RoamingNetworkStatus>  RoamingNetworkStatus,
-                                     UInt64?                                 Skip  = 0,
-                                     UInt64?                                 Take  = 0)
+                                     UInt64?                                 Skip  = null,
+                                     UInt64?                                 Take  = null)
         {
 
             #region Initial checks
@@ -367,9 +367,9 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             #endregion
 
 
-            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
-                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
-
+            return new JObject(_FilteredStatus.
+                                   OrderBy(status => status.Key).
+                                   SkipTakeFilter(Skip, Take).
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
                                                                new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
                                                                           kvp.Value.Status.Value.    ToString())
@@ -379,12 +379,12 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this RoamingNetworkStatusSchedules,      Skip = 0, Take = 0, HistorySize = 1)
+        #region ToJSON(this RoamingNetworkStatusSchedules,      Skip = null, Take = null, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<RoamingNetworkStatusSchedule>  RoamingNetworkStatusSchedules,
-                                     UInt64                                          Skip         = 0,
-                                     UInt64                                          Take         = 0,
-                                     UInt64                                          HistorySize  = 1)
+                                     UInt64?                                         Skip         = null,
+                                     UInt64?                                         Take         = null,
+                                     UInt64?                                         HistorySize  = 1)
         {
 
             #region Initial checks
@@ -413,9 +413,9 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             #endregion
 
 
-            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
-                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
-
+            return new JObject(_FilteredStatus.
+                                   OrderBy(status => status.Key).
+                                   SkipTakeFilter(Skip, Take).
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
                                                                new JObject(
                                                                    kvp.Value.StatusSchedule.

@@ -156,7 +156,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this ChargingStations, Skip = 0, Take = 0, Embedded = false, ...)
+        #region ToJSON(this ChargingStations, Skip = null, Take = null, Embedded = false, ...)
 
         /// <summary>
         /// Return a JSON representation for the given enumeration of charging stations.
@@ -166,8 +166,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Take">The optional number of charging stations to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
         public static JArray ToJSON(this IEnumerable<ChargingStation>  ChargingStations,
-                                    UInt64?                            Skip                              = 0,
-                                    UInt64?                            Take                              = 0,
+                                    UInt64?                            Skip                              = null,
+                                    UInt64?                            Take                              = null,
                                     Boolean                            Embedded                          = false,
                                     InfoStatus                         ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
                                     InfoStatus                         ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
@@ -216,11 +216,11 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         #endregion
 
 
-        #region ToJSON(this ChargingStationAdminStatus,          Skip = 0, Take = 0)
+        #region ToJSON(this ChargingStationAdminStatus,          Skip = null, Take = null)
 
         public static JObject ToJSON(this IEnumerable<ChargingStationAdminStatus>  ChargingStationAdminStatus,
-                                     UInt64?                                       Skip  = 0,
-                                     UInt64?                                       Take  = 0)
+                                     UInt64?                                       Skip  = null,
+                                     UInt64?                                       Take  = null)
         {
 
             #region Initial checks
@@ -248,8 +248,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             #endregion
 
 
-            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
-                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
+            return new JObject((Take.HasValue ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)).
 
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
                                                                new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
@@ -260,11 +260,11 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this ChargingStationAdminStatusSchedules, Skip = 0, Take = 0, HistorySize = 1)
+        #region ToJSON(this ChargingStationAdminStatusSchedules, Skip = null, Take = null, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<ChargingStationAdminStatusSchedule>  ChargingStationAdminStatusSchedules,
-                                     UInt64                                                Skip         = 0,
-                                     UInt64                                                Take         = 0,
+                                     UInt64?                                               Skip         = null,
+                                     UInt64?                                               Take         = null,
                                      UInt64                                                HistorySize  = 1)
         {
 
@@ -294,8 +294,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             #endregion
 
 
-            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
-                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
+            return new JObject((Take.HasValue ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)).
 
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
                                                                new JObject(
@@ -317,11 +317,11 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         #endregion
 
 
-        #region ToJSON(this ChargingStationStatus,               Skip = 0, Take = 0)
+        #region ToJSON(this ChargingStationStatus,               Skip = null, Take = null)
 
         public static JObject ToJSON(this IEnumerable<ChargingStationStatus>  ChargingStationStatus,
-                                     UInt64?                                  Skip  = 0,
-                                     UInt64?                                  Take  = 0)
+                                     UInt64?                                  Skip  = null,
+                                     UInt64?                                  Take  = null)
         {
 
             #region Initial checks
@@ -349,8 +349,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             #endregion
 
 
-            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
-                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
+            return new JObject((Take.HasValue ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)).
 
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
                                                                new JArray(kvp.Value.Status.Timestamp.ToIso8601(),
@@ -361,11 +361,11 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this ChargingStationAdminStatusSchedules, Skip = 0, Take = 0, HistorySize = 1)
+        #region ToJSON(this ChargingStationAdminStatusSchedules, Skip = null, Take = null, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<ChargingStationStatusSchedule>  ChargingStationStatusSchedules,
-                                     UInt64                                           Skip         = 0,
-                                     UInt64                                           Take         = 0,
+                                     UInt64?                                          Skip         = null,
+                                     UInt64?                                          Take         = null,
                                      UInt64                                           HistorySize  = 1)
         {
 
@@ -395,8 +395,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             #endregion
 
 
-            return new JObject((Take == 0 ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)
-                                          : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)).
+            return new JObject((Take.HasValue ? _FilteredStatus.OrderBy(status => status.Key).Skip(Skip).Take(Take)
+                                              : _FilteredStatus.OrderBy(status => status.Key).Skip(Skip)).
 
                                    Select(kvp => new JProperty(kvp.Key.ToString(),
                                                                new JObject(

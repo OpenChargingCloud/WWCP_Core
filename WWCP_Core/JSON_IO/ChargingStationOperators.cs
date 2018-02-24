@@ -203,7 +203,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this ChargingStationOperators, Skip = 0, Take = 0, Embedded = false, ...)
+        #region ToJSON(this ChargingStationOperators, Skip = null, Take = null, Embedded = false, ...)
 
         /// <summary>
         /// Return a JSON representation for the given enumeration of charging station operators.
@@ -213,8 +213,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Take">The optional number of charging station operators to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a roaming network.</param>
         public static JArray ToJSON(this IEnumerable<ChargingStationOperator>  ChargingStationOperators,
-                                    UInt64?                                    Skip                       = 0,
-                                    UInt64?                                    Take                       = 0,
+                                    UInt64?                                    Skip                       = null,
+                                    UInt64?                                    Take                       = null,
                                     Boolean                                    Embedded                   = false,
                                     InfoStatus                                 ExpandRoamingNetworkId     = InfoStatus.ShowIdOnly,
                                     InfoStatus                                 ExpandChargingPoolIds      = InfoStatus.ShowIdOnly,
@@ -243,11 +243,11 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         #endregion
 
 
-        #region ToJSON(this ChargingStationOperatorAdminStatus, Skip = 0, Take = 0, HistorySize = 1)
+        #region ToJSON(this ChargingStationOperatorAdminStatus, Skip = null, Take = null, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorAdminStatusTypes>>>>  ChargingStationOperatorAdminStatus,
-                                     UInt64?                                                                                                                        Skip         = 0,
-                                     UInt64?                                                                                                                        Take         = 0,
+                                     UInt64?                                                                                                                        Skip         = null,
+                                     UInt64?                                                                                                                        Take         = null,
                                      UInt64?                                                                                                                        HistorySize  = 1)
 
         {
@@ -263,8 +263,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
             #region Maybe there are duplicate ChargingStationOperator identifications in the enumeration... take the newest one!
 
-            foreach (var csostatus in Take == 0 ? ChargingStationOperatorAdminStatus.Skip(Skip)
-                                                : ChargingStationOperatorAdminStatus.Skip(Skip).Take(Take))
+            foreach (var csostatus in Take.HasValue ? ChargingStationOperatorAdminStatus.Skip(Skip).Take(Take)
+                                                    : ChargingStationOperatorAdminStatus.Skip(Skip))
             {
 
                 if (!_ChargingStationOperatorAdminStatus.ContainsKey(csostatus.Key))
@@ -301,11 +301,11 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         #endregion
 
 
-        #region ToJSON(this ChargingStationOperatorStatus,      Skip = 0, Take = 0, HistorySize = 1)
+        #region ToJSON(this ChargingStationOperatorStatus,      Skip = null, Take = null, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<KeyValuePair<ChargingStationOperator_Id, IEnumerable<Timestamped<ChargingStationOperatorStatusTypes>>>>  ChargingStationOperatorStatus,
-                                     UInt64?                                                                                                                   Skip         = 0,
-                                     UInt64?                                                                                                                   Take         = 0,
+                                     UInt64?                                                                                                                   Skip         = null,
+                                     UInt64?                                                                                                                   Take         = null,
                                      UInt64?                                                                                                                   HistorySize  = 1)
 
         {
@@ -321,8 +321,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
             #region Maybe there are duplicate ChargingStationOperator identifications in the enumeration... take the newest one!
 
-            foreach (var csostatus in Take == 0 ? ChargingStationOperatorStatus.Skip(Skip)
-                                                 : ChargingStationOperatorStatus.Skip(Skip).Take(Take))
+            foreach (var csostatus in Take.HasValue ? ChargingStationOperatorStatus.Skip(Skip).Take(Take)
+                                                    : ChargingStationOperatorStatus.Skip(Skip))
             {
 
                 if (!_ChargingStationOperatorStatus.ContainsKey(csostatus.Key))

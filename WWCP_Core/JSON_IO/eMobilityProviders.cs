@@ -127,7 +127,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this eMobilityProviders, Skip = 0, Take = 0, Embedded = false, ...)
+        #region ToJSON(this eMobilityProviders, Skip = null, Take = null, Embedded = false, ...)
 
         /// <summary>
         /// Return a JSON representation for the given enumeration of e-mobility providers.
@@ -136,8 +136,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Skip">The optional number of e-mobility providers to skip.</param>
         /// <param name="Take">The optional number of e-mobility providers to return.</param>
         public static JArray ToJSON(this IEnumerable<eMobilityProvider>  eMobilityProviders,
-                                    UInt64?                              Skip                     = 0,
-                                    UInt64?                              Take                     = 0,
+                                    UInt64?                              Skip                     = null,
+                                    UInt64?                              Take                     = null,
                                     Boolean                              Embedded                 = false,
                                     InfoStatus                           ExpandRoamingNetworkId   = InfoStatus.ShowIdOnly,
                                     InfoStatus                           ExpandBrandIds           = InfoStatus.ShowIdOnly,
@@ -160,11 +160,11 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         #endregion
 
 
-        #region ToJSON(this eMobilityProviderAdminStatus, Skip = 0, Take = 0, HistorySize = 1)
+        #region ToJSON(this eMobilityProviderAdminStatus, Skip = null, Take = null, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderAdminStatusTypes>>>>  eMobilityProviderAdminStatus,
-                                     UInt64                                                                                                             Skip         = 0,
-                                     UInt64                                                                                                             Take         = 0,
+                                     UInt64?                                                                                                            Skip         = null,
+                                     UInt64?                                                                                                            Take         = null,
                                      UInt64                                                                                                             HistorySize  = 1)
 
         {
@@ -180,8 +180,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
             #region Maybe there are duplicate eMobilityProvider identifications in the enumeration... take the newest one!
 
-            foreach (var csostatus in Take == 0 ? eMobilityProviderAdminStatus.Skip(Skip)
-                                                : eMobilityProviderAdminStatus.Skip(Skip).Take(Take))
+            foreach (var csostatus in Take.HasValue ? eMobilityProviderAdminStatus.Skip(Skip).Take(Take)
+                                                    : eMobilityProviderAdminStatus.Skip(Skip))
             {
 
                 if (!_eMobilityProviderAdminStatus.ContainsKey(csostatus.Key))
@@ -218,12 +218,12 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         #endregion
 
 
-        #region ToJSON(this eMobilityProviderStatus,      Skip = 0, Take = 0, HistorySize = 1)
+        #region ToJSON(this eMobilityProviderStatus,      Skip = null, Take = null, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<KeyValuePair<eMobilityProvider_Id, IEnumerable<Timestamped<eMobilityProviderStatusTypes>>>>  eMobilityProviderStatus,
-                                     UInt64                                                                                                        Skip         = 0,
-                                     UInt64                                                                                                        Take         = 0,
-                                     UInt64                                                                                                        HistorySize  = 1)
+                                     UInt64?                                                                                                       Skip         = null,
+                                     UInt64?                                                                                                       Take         = null,
+                                     UInt64?                                                                                                       HistorySize  = 1)
 
         {
 
@@ -238,8 +238,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
             #region Maybe there are duplicate eMobilityProvider identifications in the enumeration... take the newest one!
 
-            foreach (var csostatus in Take == 0 ? eMobilityProviderStatus.Skip(Skip)
-                                                 : eMobilityProviderStatus.Skip(Skip).Take(Take))
+            foreach (var csostatus in Take.HasValue ? eMobilityProviderStatus.Skip(Skip).Take(Take)
+                                                    : eMobilityProviderStatus.Skip(Skip))
             {
 
                 if (!_eMobilityProviderStatus.ContainsKey(csostatus.Key))

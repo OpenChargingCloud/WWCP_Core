@@ -174,7 +174,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this ChargingTariffs, Skip = 0, Take = 0, Embedded = false, ...)
+        #region ToJSON(this ChargingTariffs, Skip = null, Take = null, Embedded = false, ...)
 
         /// <summary>
         /// Return a JSON representation for the given enumeration of charging stations.
@@ -184,15 +184,15 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Take">The optional number of charging stations to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
         public static JArray ToJSON(this IEnumerable<ChargingTariff>  ChargingTariffs,
-                                    UInt64?                                 Skip                              = 0,
-                                    UInt64?                                 Take                              = 0,
-                                    Boolean                                 Embedded                          = false,
-                                    InfoStatus                              ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
-                                    InfoStatus                              ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
-                                    InfoStatus                              ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
-                                    InfoStatus                              ExpandEVSEIds                     = InfoStatus.Expand,
-                                    InfoStatus                              ExpandBrandIds                    = InfoStatus.ShowIdOnly,
-                                    InfoStatus                              ExpandDataLicenses                = InfoStatus.ShowIdOnly)
+                                    UInt64?                           Skip                              = null,
+                                    UInt64?                           Take                              = null,
+                                    Boolean                           Embedded                          = false,
+                                    InfoStatus                        ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                                    InfoStatus                        ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                                    InfoStatus                        ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                                    InfoStatus                        ExpandEVSEIds                     = InfoStatus.Expand,
+                                    InfoStatus                        ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                                    InfoStatus                        ExpandDataLicenses                = InfoStatus.ShowIdOnly)
 
 
             => ChargingTariffs != null && ChargingTariffs.Any()
@@ -327,7 +327,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
 
 
-        #region ToCSV(this ChargingTariffs, Skip = 0, Take = 0, Embedded = false, ...)
+        #region ToCSV(this ChargingTariffs, Skip = null, Take = null, Embedded = false, ...)
 
         /// <summary>
         /// Return a JSON representation for the given enumeration of charging stations.
@@ -337,8 +337,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Take">The optional number of charging stations to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
         public static IEnumerable<String[]> GetTariffs(this IEnumerable<ChargingStation> ChargingStations,
-                                                       UInt64?                           Skip                              = 0,
-                                                       UInt64?                           Take                              = 0,
+                                                       UInt64?                           Skip                              = null,
+                                                       UInt64?                           Take                              = null,
                                                        Boolean                           Embedded                          = false,
                                                        InfoStatus                        ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
                                                        InfoStatus                        ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,

@@ -33,7 +33,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
     public static partial class JSON_IO
     {
 
-        #region ToJSON(this RoamingNetworks, Skip = 0, Take = 0)
+        #region ToJSON(this RoamingNetworks, Skip = null, Take = null)
 
         /// <summary>
         /// Return a JSON representation for the given roaming networks collection.
@@ -42,8 +42,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Skip">The optional number of roaming networks to skip.</param>
         /// <param name="Take">The optional number of roaming networks to return.</param>
         public static JArray ToJSON(this RoamingNetworks  RoamingNetworks,
-                                    UInt64                Skip  = 0,
-                                    UInt64                Take  = 0)
+                                    UInt64?               Skip  = null,
+                                    UInt64?               Take  = null)
 
             => RoamingNetworks != null && RoamingNetworks.Any()
                     ? new JArray(RoamingNetworks.AsEnumerable().ToJSON(Skip, Take))
@@ -51,7 +51,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this RoamingNetworks, JPropertyKey, Skip = 0, Take = 0)
+        #region ToJSON(this RoamingNetworks, JPropertyKey, Skip = null, Take = null)
 
         /// <summary>
         /// Return a JSON representation for the given roaming networks collection
@@ -63,8 +63,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Take">The optional number of roaming networks to return.</param>
         public static JProperty ToJSON(this RoamingNetworks  RoamingNetworks,
                                        String                JPropertyKey,
-                                       UInt64                Skip  = 0,
-                                       UInt64                Take  = 0)
+                                       UInt64?               Skip  = null,
+                                       UInt64?               Take  = null)
 
             => RoamingNetworks != null && RoamingNetworks.Any()
                     ? new JProperty(JPropertyKey, RoamingNetworks.AsEnumerable().ToJSON(Skip, Take))

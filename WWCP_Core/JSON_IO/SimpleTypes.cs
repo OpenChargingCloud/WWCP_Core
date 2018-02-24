@@ -103,6 +103,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
+
         #region ToJSON(this Brand)
 
         public static JObject ToJSON(this Brand               Brand,
@@ -131,7 +132,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this Brands, Skip = 0, Take = 0, Embedded = false, ...)
+        #region ToJSON(this Brands, Skip = null, Take = null, Embedded = false, ...)
 
         /// <summary>
         /// Return a JSON representation for the given enumeration of brands.
@@ -141,8 +142,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Take">The optional number of charging station operators to return.</param>
         /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
         public static JArray ToJSON(this IEnumerable<Brand>   Brands,
-                                    UInt64?                   Skip                       = 0,
-                                    UInt64?                   Take                       = 0,
+                                    UInt64?                   Skip                       = null,
+                                    UInt64?                   Take                       = null,
                                     Boolean                   Embedded                   = false,
                                     InfoStatus                ExpandChargingPoolIds      = InfoStatus.Hidden,
                                     InfoStatus                ExpandChargingStationIds   = InfoStatus.Hidden,

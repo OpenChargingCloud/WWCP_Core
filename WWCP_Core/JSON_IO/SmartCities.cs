@@ -114,7 +114,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this SmartCities, Skip = 0, Take = 0, Embedded = false, ExpandChargingRoamingNetworkId = false, ExpandChargingStationIds = false, ExpandChargingStationIds = false, ExpandEVSEIds = false)
+        #region ToJSON(this SmartCities, Skip = null, Take = null, Embedded = false, ExpandChargingRoamingNetworkId = false, ExpandChargingStationIds = false, ExpandChargingStationIds = false, ExpandEVSEIds = false)
 
         /// <summary>
         /// Return a JSON representation for the given enumeration of Charging Station Operators.
@@ -123,8 +123,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
         /// <param name="Skip">The optional number of Charging Station Operators to skip.</param>
         /// <param name="Take">The optional number of Charging Station Operators to return.</param>
         public static JArray ToJSON(this IEnumerable<SmartCityProxy>  SmartCities,
-                                    UInt64?                           Skip                            = 0,
-                                    UInt64?                           Take                            = 0,
+                                    UInt64?                           Skip                            = null,
+                                    UInt64?                           Take                            = null,
                                     Boolean                           Embedded                        = false,
                                     Boolean                           ExpandChargingRoamingNetworkId  = false,
                                     Boolean                           ExpandChargingPoolIds           = false,
@@ -173,12 +173,12 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this SmartCityAdminStatus, Skip = 0, Take = 0, HistorySize = 1)
+        #region ToJSON(this SmartCityAdminStatus, Skip = null, Take = null, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<Timestamped<SmartCityAdminStatusType>>  SmartCityAdminStatus,
-                                     UInt64                                                                 Skip         = 0,
-                                     UInt64                                                                 Take         = 0,
-                                     UInt64                                                                 HistorySize  = 1)
+                                     UInt64?                                                  Skip         = null,
+                                     UInt64?                                                  Take         = null,
+                                     UInt64?                                                  HistorySize  = 1)
 
         {
 
@@ -188,11 +188,9 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             try
             {
 
-                var _StatusHistory = Take == 0
-                                         ? SmartCityAdminStatus.Skip(Skip)
-                                         : SmartCityAdminStatus.Skip(Skip).Take(Take);
+                return new JObject(SmartCityAdminStatus.
+                                       SkipTakeFilter(Skip, Take).
 
-                return new JObject(_StatusHistory.
                                        // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
                                        GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
                                        Select           (group => group.First()).
@@ -213,12 +211,12 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this SmartCityAdminStatus, Skip = 0, Take = 0, HistorySize = 1)
+        #region ToJSON(this SmartCityAdminStatus, Skip = null, Take = null, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityAdminStatusType>>>>  SmartCityAdminStatus,
-                                     UInt64                                                                                                                        Skip         = 0,
-                                     UInt64                                                                                                                        Take         = 0,
-                                     UInt64                                                                                                                        HistorySize  = 1)
+                                     UInt64?                                                                                           Skip         = null,
+                                     UInt64?                                                                                           Take         = null,
+                                     UInt64?                                                                                           HistorySize  = 1)
 
         {
 
@@ -228,11 +226,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             try
             {
 
-                var _StatusHistory = Take == 0
-                                         ? SmartCityAdminStatus.Skip(Skip)
-                                         : SmartCityAdminStatus.Skip(Skip).Take(Take);
-
-                return new JObject(_StatusHistory.
+                return new JObject(SmartCityAdminStatus.
+                                       SkipTakeFilter(Skip, Take).
                                        SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
                                                                     new JObject(statuslist.Value.
 
@@ -258,12 +253,12 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this SmartCityStatus,      Skip = 0, Take = 0, HistorySize = 1)
+        #region ToJSON(this SmartCityStatus,      Skip = null, Take = null, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<Timestamped<SmartCityStatusType>>  SmartCityStatus,
-                                     UInt64                                                            Skip         = 0,
-                                     UInt64                                                            Take         = 0,
-                                     UInt64                                                            HistorySize  = 1)
+                                     UInt64?                                             Skip         = null,
+                                     UInt64?                                             Take         = null,
+                                     UInt64?                                             HistorySize  = 1)
 
         {
 
@@ -273,11 +268,9 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             try
             {
 
-                var _StatusHistory = Take == 0
-                                         ? SmartCityStatus.Skip(Skip)
-                                         : SmartCityStatus.Skip(Skip).Take(Take);
+                return new JObject(SmartCityStatus.
+                                       SkipTakeFilter(Skip, Take).
 
-                return new JObject(_StatusHistory.
                                        // Will filter multiple charging station status having the exact same ISO 8601 timestamp!
                                        GroupBy          (tsv   => tsv.  Timestamp.ToIso8601()).
                                        Select           (group => group.First()).
@@ -298,12 +291,12 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
 
         #endregion
 
-        #region ToJSON(this SmartCityStatus,      Skip = 0, Take = 0, HistorySize = 1)
+        #region ToJSON(this SmartCityStatus,      Skip = null, Take = null, HistorySize = 1)
 
         public static JObject ToJSON(this IEnumerable<KeyValuePair<SmartCity_Id, IEnumerable<Timestamped<SmartCityStatusType>>>>  SmartCityStatus,
-                                     UInt64                                                                                                                   Skip         = 0,
-                                     UInt64                                                                                                                   Take         = 0,
-                                     UInt64                                                                                                                   HistorySize  = 1)
+                                     UInt64?                                                                                      Skip         = null,
+                                     UInt64?                                                                                      Take         = null,
+                                     UInt64?                                                                                      HistorySize  = 1)
 
         {
 
@@ -313,11 +306,8 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
             try
             {
 
-                var _RoamingNetworkStatus = Take == 0
-                                                ? SmartCityStatus.Skip(Skip)
-                                                : SmartCityStatus.Skip(Skip).Take(Take);
-
-                return new JObject(_RoamingNetworkStatus.
+                return new JObject(SmartCityStatus.
+                                       SkipTakeFilter(Skip, Take).
                                        SafeSelect(statuslist => new JProperty(statuslist.Key.ToString(),
                                                                     new JObject(statuslist.Value.
 
