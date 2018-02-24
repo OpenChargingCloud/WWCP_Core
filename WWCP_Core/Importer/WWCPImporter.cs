@@ -828,14 +828,19 @@ namespace org.GraphDefined.WWCP.Importer
                                                 _LastRunId,
                                                 DNSClient);
 
-                        AddOrUpdateForwardingInfos(CreateForwardingTable(this,
-                                                                         FirstData.Result,
-                                                                         AllChargingStationOperators,
-                                                                         GetChargingStationOperators,
-                                                                         GetDefaultChargingStationOperator));
+                        if (FirstData != null)
+                        {
 
-                        OnStartup (this, FirstData);
-                        OnEveryRun(this, FirstData);
+                            AddOrUpdateForwardingInfos(CreateForwardingTable(this,
+                                                                             FirstData.Result,
+                                                                             AllChargingStationOperators,
+                                                                             GetChargingStationOperators,
+                                                                             GetDefaultChargingStationOperator));
+
+                            OnStartup (this, FirstData);
+                            OnEveryRun(this, FirstData);
+
+                        }
 
                         #region Debug info
 
@@ -919,16 +924,26 @@ namespace org.GraphDefined.WWCP.Importer
 
                     #endregion
 
-                    GetData(DateTime.UtcNow, this, DateTime.UtcNow, _LastRunId++, DNSClient).
+                    GetData(DateTime.UtcNow,
+                            this,
+                            DateTime.UtcNow,
+                            _LastRunId++,
+                            DNSClient).
 
                         ContinueWith(ImporterTask => {
 
-                            //ToDo: Handle XML parser exceptions...
-                            AddOrUpdateForwardingInfos(CreateForwardingTable(this,
-                                                                             ImporterTask.Result,
-                                                                             AllChargingStationOperators,
-                                                                             GetChargingStationOperators,
-                                                                             GetDefaultChargingStationOperator));
+                            // Check for null...
+                            if (!EqualityComparer<T>.Default.Equals(ImporterTask.Result, default(T)))
+                            {
+
+                                //ToDo: Handle XML parser exceptions...
+                                AddOrUpdateForwardingInfos(CreateForwardingTable(this,
+                                                                                 ImporterTask.Result,
+                                                                                 AllChargingStationOperators,
+                                                                                 GetChargingStationOperators,
+                                                                                 GetDefaultChargingStationOperator));
+
+                            }
 
                             return ImporterTask.Result;
 
@@ -936,17 +951,23 @@ namespace org.GraphDefined.WWCP.Importer
 
                         ContinueWith(ImporterTask => {
 
-                            //if (_ImportedData.Count >= MaxNumberOfCachedDataImports)
-                            //{
-                            //    var succ = _ImportedData.Remove(_ImportedData[0]);
-                            //    DebugX.LogT("Importer Count = " + _ImportedData.Count + " " + succ);
-                            //}
+                            // Check for null...
+                            if (!EqualityComparer<T>.Default.Equals(ImporterTask.Result, default(T)))
+                            {
 
-                            //// Save the imported data for later review...
-                            //_ImportedData.Add(new Timestamped<T>(ImporterTask.Result));
+                                //if (_ImportedData.Count >= MaxNumberOfCachedDataImports)
+                                //{
+                                //    var succ = _ImportedData.Remove(_ImportedData[0]);
+                                //    DebugX.LogT("Importer Count = " + _ImportedData.Count + " " + succ);
+                                //}
 
-                            // Update ForwardingInfos
-                            OnEveryRun?.Invoke(this, ImporterTask);
+                                //// Save the imported data for later review...
+                                //_ImportedData.Add(new Timestamped<T>(ImporterTask.Result));
+
+                                // Update ForwardingInfos
+                                OnEveryRun?.Invoke(this, ImporterTask);
+
+                            }
 
                         }).
 
