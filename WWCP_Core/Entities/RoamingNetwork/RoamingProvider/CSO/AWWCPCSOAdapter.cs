@@ -113,7 +113,7 @@ namespace org.GraphDefined.WWCP
 
         protected readonly     IncludeEVSEIdDelegate                                            _IncludeEVSEIds;
         protected readonly     IncludeEVSEDelegate                                              _IncludeEVSEs;
-        protected readonly     CustomEVSEIdMapperDelegate                                       CustomEVSEIdMapper;
+        //protected readonly     CustomEVSEIdMapperDelegate                                       CustomEVSEIdMapper;
 
         protected readonly     HashSet<EVSE>                                                    EVSEsToAddQueue;
         protected readonly     HashSet<EVSE>                                                    EVSEsToUpdateQueue;
@@ -334,7 +334,7 @@ namespace org.GraphDefined.WWCP
 
                                IncludeEVSEIdDelegate       IncludeEVSEIds                   = null,
                                IncludeEVSEDelegate         IncludeEVSEs                     = null,
-                               CustomEVSEIdMapperDelegate  CustomEVSEIdMapper               = null,
+                               //CustomEVSEIdMapperDelegate  CustomEVSEIdMapper               = null,
 
                                TimeSpan?                   ServiceCheckEvery                = null,
                                TimeSpan?                   StatusCheckEvery                 = null,
@@ -361,7 +361,7 @@ namespace org.GraphDefined.WWCP
 
             this._IncludeEVSEIds                                 = IncludeEVSEIds ?? (evseid => true);
             this._IncludeEVSEs                                   = IncludeEVSEs   ?? (evse   => true);
-            this.CustomEVSEIdMapper                              = CustomEVSEIdMapper;
+            //this.CustomEVSEIdMapper                              = CustomEVSEIdMapper;
 
             this.DisablePushData                                 = DisablePushData;
             this.DisablePushStatus                               = DisablePushStatus;

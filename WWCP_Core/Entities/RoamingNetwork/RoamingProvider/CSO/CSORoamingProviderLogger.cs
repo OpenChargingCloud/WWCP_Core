@@ -274,7 +274,7 @@ namespace org.GraphDefined.WWCP
 
                    IncludeEVSEIds,
                    IncludeEVSEs,
-                   CustomEVSEIdMapper,
+                   //CustomEVSEIdMapper,
 
                    ServiceCheckEvery,
                    StatusCheckEvery,
