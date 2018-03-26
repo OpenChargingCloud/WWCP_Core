@@ -369,18 +369,18 @@ namespace org.GraphDefined.WWCP
             this.DisableSendChargeDetailRecords                  = DisableSendChargeDetailRecords;
 
             this._FlushEVSEDataAndStatusEvery                    = (UInt32) (ServiceCheckEvery.HasValue
-                                                                      ? ServiceCheckEvery.Value. TotalMilliseconds
-                                                                      : DefaultServiceCheckEvery.TotalMilliseconds);
+                                                                      ? ServiceCheckEvery.Value. TotalSeconds
+                                                                      : DefaultServiceCheckEvery.TotalSeconds);
 
             this.FlushEVSEDataAndStatusTimer                     = new Timer(FlushEVSEDataAndStatus);
 
             this._FlushEVSEFastStatusEvery                       = (UInt32) (StatusCheckEvery.HasValue
-                                                                        ? StatusCheckEvery.Value.  TotalMilliseconds
-                                                                        : DefaultStatusCheckEvery. TotalMilliseconds);
+                                                                        ? StatusCheckEvery.Value.  TotalSeconds
+                                                                        : DefaultStatusCheckEvery. TotalSeconds);
 
             this._FlushChargeDetailRecordsEvery                  = (UInt32) (CDRCheckEvery.HasValue
-                                                                        ? CDRCheckEvery.Value.  TotalMilliseconds
-                                                                        : DefaultCDRCheckEvery. TotalMilliseconds);
+                                                                        ? CDRCheckEvery.Value.  TotalSeconds
+                                                                        : DefaultCDRCheckEvery. TotalSeconds);
 
             this.FlushEVSEFastStatusTimer                        = new Timer(FlushEVSEFastStatus);
 
