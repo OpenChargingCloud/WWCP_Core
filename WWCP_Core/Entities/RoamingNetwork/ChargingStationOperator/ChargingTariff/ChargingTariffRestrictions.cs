@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -123,9 +122,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="MinkWh">The minimum kWh value.</param>
         public static ChargingTariffRestriction MinkWh(Decimal MinkWh)
-        {
-            return new ChargingTariffRestriction(kWh: DecimalMinMax.FromMin(MinkWh));
-        }
+            => new ChargingTariffRestriction(kWh: DecimalMinMax.FromMin(MinkWh));
 
         #endregion
 
@@ -136,9 +133,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="MaxkWh">The maximum kWh value.</param>
         public static ChargingTariffRestriction MaxkWh(Decimal MaxkWh)
-        {
-            return new ChargingTariffRestriction(kWh: DecimalMinMax.FromMax(MaxkWh));
-        }
+            => new ChargingTariffRestriction(kWh: DecimalMinMax.FromMax(MaxkWh));
 
         #endregion
 
@@ -149,9 +144,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="MinPower">The minimum power value.</param>
         public static ChargingTariffRestriction MinPower(Decimal MinPower)
-        {
-            return new ChargingTariffRestriction(Power: DecimalMinMax.FromMin(MinPower));
-        }
+            => new ChargingTariffRestriction(Power: DecimalMinMax.FromMin(MinPower));
 
         #endregion
 
@@ -162,9 +155,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="MaxPower">The maximum power value.</param>
         public static ChargingTariffRestriction MaxPower(Decimal MaxPower)
-        {
-            return new ChargingTariffRestriction(Power: DecimalMinMax.FromMax(MaxPower));
-        }
+            => new ChargingTariffRestriction(Power: DecimalMinMax.FromMax(MaxPower));
 
         #endregion
 
@@ -175,9 +166,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="MinDuration">The minimum Duration value.</param>
         public static ChargingTariffRestriction MinDuration(TimeSpan MinDuration)
-        {
-            return new ChargingTariffRestriction(Duration: TimeSpanMinMax.FromMin(MinDuration));
-        }
+            => new ChargingTariffRestriction(Duration: TimeSpanMinMax.FromMin(MinDuration));
 
         #endregion
 
@@ -188,9 +177,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="MaxDuration">The maximum Duration value.</param>
         public static ChargingTariffRestriction MaxDuration(TimeSpan MaxDuration)
-        {
-            return new ChargingTariffRestriction(Duration: TimeSpanMinMax.FromMax(MaxDuration));
-        }
+            => new ChargingTariffRestriction(Duration: TimeSpanMinMax.FromMax(MaxDuration));
 
         #endregion
 

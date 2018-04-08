@@ -84,13 +84,10 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="Price">Flat rate price.</param>
         public static ChargingPriceComponent FlatRate(Decimal  Price)
-        {
 
-            return new ChargingPriceComponent(ChargingDimensionTypes.FLAT,
-                                              Price,
-                                              1);
-
-        }
+            => new ChargingPriceComponent(ChargingDimensionTypes.FLAT,
+                                          Price,
+                                          1);
 
         #endregion
 
@@ -103,13 +100,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="BillingIncrement">The minimum granularity of time in seconds that you will be billed.</param>
         public static ChargingPriceComponent ChargingTime(Decimal   Price,
                                                           TimeSpan  BillingIncrement)
-        {
 
-            return new ChargingPriceComponent(ChargingDimensionTypes.TIME,
-                                              Price,
-                                              (UInt32) Math.Round(BillingIncrement.TotalSeconds, 0));
-
-        }
+            => new ChargingPriceComponent(ChargingDimensionTypes.TIME,
+                                          Price,
+                                          (UInt32) Math.Round(BillingIncrement.TotalSeconds, 0));
 
         #endregion
 
@@ -122,13 +116,10 @@ namespace org.GraphDefined.WWCP
         /// <param name="BillingIncrement">The minimum granularity of time in seconds that you will be billed.</param>
         public static ChargingPriceComponent ParkingTime(Decimal   Price,
                                                          TimeSpan  BillingIncrement)
-        {
 
-            return new ChargingPriceComponent(ChargingDimensionTypes.PARKING_TIME,
-                                              Price,
-                                              (UInt32) Math.Round(BillingIncrement.TotalSeconds, 0));
-
-        }
+            => new ChargingPriceComponent(ChargingDimensionTypes.PARKING_TIME,
+                                          Price,
+                                          (UInt32) Math.Round(BillingIncrement.TotalSeconds, 0));
 
         #endregion
 
@@ -168,9 +159,10 @@ namespace org.GraphDefined.WWCP
         /// Get a string representation of this object.
         /// </summary>
         public override String ToString()
-        {
-            return String.Concat("type: ", Type.ToString(), ", price: ", Price.ToString(), ", step size:", StepSize.ToString());
-        }
+
+            => String.Concat("type: ",       Type.    ToString(),
+                             ", price: ",    Price.   ToString(),
+                             ", step size:", StepSize.ToString());
 
         #endregion
 

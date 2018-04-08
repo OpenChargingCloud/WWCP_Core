@@ -73,6 +73,10 @@ namespace org.GraphDefined.WWCP
 
         #region Data
 
+        private        readonly  ISendData                                        _ISendData;
+
+        private        readonly  ISendStatus                                      _ISendStatus;
+
         /// <summary>
         /// The default service check intervall.
         /// </summary>
@@ -313,7 +317,6 @@ namespace org.GraphDefined.WWCP
         /// 
         /// <param name="IncludeEVSEIds">Only include the EVSE matching the given delegate.</param>
         /// <param name="IncludeEVSEs">Only include the EVSEs matching the given delegate.</param>
-        /// <param name="CustomEVSEIdMapper">A delegate to customize the mapping of EVSE identifications.</param>
         /// 
         /// <param name="ServiceCheckEvery">The service check intervall.</param>
         /// <param name="StatusCheckEvery">The status check intervall.</param>
@@ -327,27 +330,26 @@ namespace org.GraphDefined.WWCP
         /// <param name="PublicKeyRing">The public key ring of the entity.</param>
         /// <param name="SecretKeyRing">The secrect key ring of the entity.</param>
         /// <param name="DNSClient">The attached DNS service.</param>
-        public AWWCPCSOAdapter(CSORoamingProvider_Id       Id,
-                               I18NString                  Name,
-                               I18NString                  Description,
-                               RoamingNetwork              RoamingNetwork,
+        protected AWWCPCSOAdapter(CSORoamingProvider_Id       Id,
+                                  I18NString                  Name,
+                                  I18NString                  Description,
+                                  RoamingNetwork              RoamingNetwork,
 
-                               IncludeEVSEIdDelegate       IncludeEVSEIds                   = null,
-                               IncludeEVSEDelegate         IncludeEVSEs                     = null,
-                               //CustomEVSEIdMapperDelegate  CustomEVSEIdMapper               = null,
+                                  IncludeEVSEIdDelegate       IncludeEVSEIds                   = null,
+                                  IncludeEVSEDelegate         IncludeEVSEs                     = null,
 
-                               TimeSpan?                   ServiceCheckEvery                = null,
-                               TimeSpan?                   StatusCheckEvery                 = null,
-                               TimeSpan?                   CDRCheckEvery                    = null,
+                                  TimeSpan?                   ServiceCheckEvery                = null,
+                                  TimeSpan?                   StatusCheckEvery                 = null,
+                                  TimeSpan?                   CDRCheckEvery                    = null,
 
-                               Boolean                     DisablePushData                  = false,
-                               Boolean                     DisablePushStatus                = false,
-                               Boolean                     DisableAuthentication            = false,
-                               Boolean                     DisableSendChargeDetailRecords   = false,
+                                  Boolean                     DisablePushData                  = false,
+                                  Boolean                     DisablePushStatus                = false,
+                                  Boolean                     DisableAuthentication            = false,
+                                  Boolean                     DisableSendChargeDetailRecords   = false,
 
-                               PgpPublicKeyRing            PublicKeyRing                    = null,
-                               PgpSecretKeyRing            SecretKeyRing                    = null,
-                               DNSClient                   DNSClient                        = null)
+                                  PgpPublicKeyRing            PublicKeyRing                    = null,
+                                  PgpSecretKeyRing            SecretKeyRing                    = null,
+                                  DNSClient                   DNSClient                        = null)
 
             : base(Id,
                    RoamingNetwork,
@@ -359,9 +361,11 @@ namespace org.GraphDefined.WWCP
             this.Name                                            = Name;
             this.Description                                     = Description;
 
+            this._ISendData                                      = this as ISendData;
+            this._ISendStatus                                    = this as ISendStatus;
+
             this._IncludeEVSEIds                                 = IncludeEVSEIds ?? (evseid => true);
             this._IncludeEVSEs                                   = IncludeEVSEs   ?? (evse   => true);
-            //this.CustomEVSEIdMapper                              = CustomEVSEIdMapper;
 
             this.DisablePushData                                 = DisablePushData;
             this.DisablePushStatus                               = DisablePushStatus;
