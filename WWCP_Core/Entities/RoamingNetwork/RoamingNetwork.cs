@@ -7257,7 +7257,6 @@ namespace org.GraphDefined.WWCP
                     foreach (var isendcdr in _IRemoteSendChargeDetailRecord)
                         _ISendChargeDetailRecords.Add(isendcdr, new List<ChargeDetailRecord>());
 
-
                     #endregion
 
                     #region An authenticator was found for the upstream SessionId!
