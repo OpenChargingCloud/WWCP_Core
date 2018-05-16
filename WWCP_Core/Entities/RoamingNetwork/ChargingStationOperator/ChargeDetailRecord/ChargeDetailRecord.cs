@@ -22,7 +22,6 @@ using System.Linq;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
-using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
@@ -120,6 +119,12 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         [Optional]
         public ChargingProduct              ChargingProduct              { get; }
+
+        /// <summary>
+        /// The charging price.
+        /// </summary>
+        [Optional]
+        public Decimal?                     ChargingPrice                { get; }
 
         #endregion
 
@@ -255,6 +260,7 @@ namespace org.GraphDefined.WWCP
         /// <param name="ChargingStationOperator">The charging station operator used for charging.</param>
         /// <param name="ChargingStationOperatorId">The identification of the charging station operator used for charging.</param>
         /// <param name="ChargingProduct">The consumed charging product.</param>
+        /// <param name="ChargingPrice">The charging price.</param>
         /// 
         /// <param name="IdentificationStart">The identification used for starting this charging process.</param>
         /// <param name="IdentificationStop">The identification used for stopping this charging process.</param>
@@ -287,6 +293,7 @@ namespace org.GraphDefined.WWCP
                                   ChargingStationOperator              ChargingStationOperator     = null,
                                   ChargingStationOperator_Id?          ChargingStationOperatorId   = null,
                                   ChargingProduct                      ChargingProduct             = null,
+                                  Decimal?                             ChargingPrice               = null,
 
                                   AuthIdentification                   IdentificationStart         = null,
                                   AuthIdentification                   IdentificationStop          = null,
@@ -324,6 +331,7 @@ namespace org.GraphDefined.WWCP
             this.ChargingStationOperator     = ChargingStationOperator;
             this.ChargingStationOperatorId   = ChargingStationOperator  != null ? ChargingStationOperator.Id : ChargingStationOperatorId;
             this.ChargingProduct             = ChargingProduct;
+            this.ChargingPrice               = ChargingPrice;
 
             this.IdentificationStart         = IdentificationStart;
             this.IdentificationStop          = IdentificationStop;
