@@ -176,77 +176,20 @@ namespace org.GraphDefined.WWCP
         public DNSClient   DNSClient                         { get; }
 
 
-        #region FlushEVSEDataEvery
-
-        protected UInt32 _FlushEVSEDataAndStatusEvery;
-
         /// <summary>
         /// The EVSE data updates transmission intervall.
         /// </summary>
-        public TimeSpan FlushEVSEDataEvery
-        {
-
-            get
-            {
-                return TimeSpan.FromSeconds(_FlushEVSEDataAndStatusEvery);
-            }
-
-            set
-            {
-                _FlushEVSEDataAndStatusEvery = (UInt32) value.TotalSeconds;
-            }
-
-        }
-
-        #endregion
-
-        #region FlushEVSEFastStatusEvery
-
-        protected UInt32 _FlushEVSEFastStatusEvery;
+        public TimeSpan FlushEVSEDataAndStatusEvery          { get; set; }
 
         /// <summary>
         /// The EVSE status updates transmission intervall.
         /// </summary>
-        public TimeSpan FlushEVSEFastStatusEvery
-        {
-
-            get
-            {
-                return TimeSpan.FromSeconds(_FlushEVSEFastStatusEvery);
-            }
-
-            set
-            {
-                _FlushEVSEFastStatusEvery = (UInt32) value.TotalSeconds;
-            }
-
-        }
-
-        #endregion
-
-        #region FlushChargeDetailRecordsEvery
-
-        protected UInt32 _FlushChargeDetailRecordsEvery;
+        public TimeSpan FlushEVSEFastStatusEvery             { get; set; }
 
         /// <summary>
         /// The charge detail record transmission intervall.
         /// </summary>
-        public TimeSpan FlushChargeDetailRecordsEvery
-        {
-
-            get
-            {
-                return TimeSpan.FromMilliseconds(_FlushChargeDetailRecordsEvery);
-            }
-
-            set
-            {
-                _FlushChargeDetailRecordsEvery = (UInt32) value.TotalMilliseconds;
-            }
-
-        }
-
-        #endregion
+        public TimeSpan FlushChargeDetailRecordsEvery        { get; set; }
 
         #endregion
 
@@ -372,23 +315,21 @@ namespace org.GraphDefined.WWCP
             this.DisableAuthentication                           = DisableAuthentication;
             this.DisableSendChargeDetailRecords                  = DisableSendChargeDetailRecords;
 
-            this._FlushEVSEDataAndStatusEvery                    = (UInt32) (ServiceCheckEvery.HasValue
-                                                                      ? ServiceCheckEvery.Value. TotalSeconds
-                                                                      : DefaultServiceCheckEvery.TotalSeconds);
+            this.FlushEVSEDataAndStatusEvery                     = ServiceCheckEvery.HasValue
+                                                                      ? ServiceCheckEvery.Value
+                                                                      : DefaultServiceCheckEvery;
 
-            this.FlushEVSEDataAndStatusTimer                     = new Timer(FlushEVSEDataAndStatus);
+            this.FlushEVSEFastStatusEvery                        = StatusCheckEvery.HasValue
+                                                                        ? StatusCheckEvery.Value
+                                                                        : DefaultStatusCheckEvery;
 
-            this._FlushEVSEFastStatusEvery                       = (UInt32) (StatusCheckEvery.HasValue
-                                                                        ? StatusCheckEvery.Value.  TotalSeconds
-                                                                        : DefaultStatusCheckEvery. TotalSeconds);
+            this.FlushChargeDetailRecordsEvery                   = CDRCheckEvery.HasValue
+                                                                        ? CDRCheckEvery.Value
+                                                                        : DefaultCDRCheckEvery;
 
-            this._FlushChargeDetailRecordsEvery                  = (UInt32) (CDRCheckEvery.HasValue
-                                                                        ? CDRCheckEvery.Value.  TotalSeconds
-                                                                        : DefaultCDRCheckEvery. TotalSeconds);
-
-            this.FlushEVSEFastStatusTimer                        = new Timer(FlushEVSEFastStatus);
-
-            this.FlushChargeDetailRecordsTimer                   = new Timer(FlushChargeDetailRecords);
+            this.FlushEVSEDataAndStatusTimer                     = new Timer(FlushEVSEDataAndStatus);//,   null, FlushEVSEDataAndStatusEvery,   TimeSpan.FromMilliseconds(-1));
+            this.FlushEVSEFastStatusTimer                        = new Timer(FlushEVSEFastStatus);//,      null, FlushEVSEFastStatusEvery,      TimeSpan.FromMilliseconds(-1));
+            this.FlushChargeDetailRecordsTimer                   = new Timer(FlushChargeDetailRecords);//, null, FlushChargeDetailRecordsEvery, TimeSpan.FromMilliseconds(-1));
 
             this.EVSEsUpdateLog                                  = new Dictionary<EVSE,            List<PropertyUpdateInfos>>();
             this.ChargingStationsUpdateLog                       = new Dictionary<ChargingStation, List<PropertyUpdateInfos>>();
@@ -396,13 +337,13 @@ namespace org.GraphDefined.WWCP
 
             this.DNSClient                                       = DNSClient;
 
-            this.EVSEsToAddQueue                                  = new HashSet<EVSE>();
-            this.EVSEsToUpdateQueue                               = new HashSet<EVSE>();
-            this.EVSEsToRemoveQueue                               = new HashSet<EVSE>();
-            this.EVSEAdminStatusChangesFastQueue                  = new List<EVSEAdminStatusUpdate>();
-            this.EVSEAdminStatusChangesDelayedQueue               = new List<EVSEAdminStatusUpdate>();
-            this.EVSEStatusChangesFastQueue                       = new List<EVSEStatusUpdate>();
-            this.EVSEStatusChangesDelayedQueue                    = new List<EVSEStatusUpdate>();
+            this.EVSEsToAddQueue                                 = new HashSet<EVSE>();
+            this.EVSEsToUpdateQueue                              = new HashSet<EVSE>();
+            this.EVSEsToRemoveQueue                              = new HashSet<EVSE>();
+            this.EVSEAdminStatusChangesFastQueue                 = new List<EVSEAdminStatusUpdate>();
+            this.EVSEAdminStatusChangesDelayedQueue              = new List<EVSEAdminStatusUpdate>();
+            this.EVSEStatusChangesFastQueue                      = new List<EVSEStatusUpdate>();
+            this.EVSEStatusChangesDelayedQueue                   = new List<EVSEStatusUpdate>();
 
         }
 
@@ -479,7 +420,7 @@ namespace org.GraphDefined.WWCP
 
                     EVSEsToAddQueue.Add(EVSE);
 
-                    FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+                    FlushEVSEDataAndStatusTimer.Change(FlushEVSEDataAndStatusEvery, TimeSpan.FromMilliseconds(-1));
 
                 }
 
@@ -564,7 +505,7 @@ namespace org.GraphDefined.WWCP
 
                     EVSEsToAddQueue.Add(EVSE);
 
-                    FlushEVSEDataAndStatusTimer.Change(_FlushEVSEDataAndStatusEvery, Timeout.Infinite);
+                    FlushEVSEDataAndStatusTimer.Change(FlushEVSEDataAndStatusEvery, TimeSpan.FromMilliseconds(-1));
 
                 }
 
@@ -664,7 +605,7 @@ namespace org.GraphDefined.WWCP
 
                     }
 
-                    FlushEVSEFastStatusTimer.Change(_FlushEVSEFastStatusEvery, Timeout.Infinite);
+                    FlushEVSEFastStatusTimer.Change(FlushEVSEFastStatusEvery, TimeSpan.FromMilliseconds(-1));
 
                     return PushEVSEAdminStatusResult.Enqueued(Id, Sender);
 
@@ -765,7 +706,7 @@ namespace org.GraphDefined.WWCP
 
                     }
 
-                    FlushEVSEFastStatusTimer.Change(_FlushEVSEFastStatusEvery, Timeout.Infinite);
+                    FlushEVSEFastStatusTimer.Change(FlushEVSEFastStatusEvery, TimeSpan.FromMilliseconds(-1));
 
                     return PushEVSEStatusResult.Enqueued(Id, Sender);
 
@@ -819,7 +760,7 @@ namespace org.GraphDefined.WWCP
 
                     FlushEVSEDataAndStatusQueuesStartedEvent?.Invoke(this,
                                                                      StartTime,
-                                                                     TimeSpan.FromMilliseconds(_FlushEVSEDataAndStatusEvery),
+                                                                     FlushEVSEDataAndStatusEvery,
                                                                      _FlushEVSEDataRunId);
 
                     #endregion
@@ -834,7 +775,7 @@ namespace org.GraphDefined.WWCP
                                                                       StartTime,
                                                                       EndTime,
                                                                       EndTime - StartTime,
-                                                                      TimeSpan.FromMilliseconds(_FlushEVSEDataAndStatusEvery),
+                                                                      FlushEVSEDataAndStatusEvery,
                                                                       _FlushEVSEDataRunId);
 
                     #endregion
@@ -910,7 +851,7 @@ namespace org.GraphDefined.WWCP
 
                     FlushEVSEFastStatusQueuesStartedEvent?.Invoke(this,
                                                                   StartTime,
-                                                                  TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
+                                                                  FlushEVSEFastStatusEvery,
                                                                   _StatusRunId);
 
                     #endregion
@@ -925,7 +866,7 @@ namespace org.GraphDefined.WWCP
                                                                    StartTime,
                                                                    EndTime,
                                                                    EndTime - StartTime,
-                                                                   TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
+                                                                   FlushEVSEFastStatusEvery,
                                                                    _StatusRunId);
 
                     #endregion
@@ -1001,7 +942,7 @@ namespace org.GraphDefined.WWCP
 
                     FlushChargeDetailRecordsQueuesStartedEvent?.Invoke(this,
                                                                        StartTime,
-                                                                       TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
+                                                                       FlushEVSEFastStatusEvery,
                                                                        _CDRRunId);
 
                     #endregion
@@ -1016,7 +957,7 @@ namespace org.GraphDefined.WWCP
                                                                         StartTime,
                                                                         EndTime,
                                                                         EndTime - StartTime,
-                                                                        TimeSpan.FromMilliseconds(_FlushEVSEFastStatusEvery),
+                                                                        FlushEVSEFastStatusEvery,
                                                                         _CDRRunId);
 
                     #endregion
