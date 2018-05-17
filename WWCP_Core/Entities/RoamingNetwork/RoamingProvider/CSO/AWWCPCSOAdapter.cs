@@ -80,17 +80,17 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The default service check intervall.
         /// </summary>
-        public readonly static TimeSpan                                                         DefaultServiceCheckEvery          = TimeSpan.FromSeconds(31);
+        public readonly static TimeSpan                                                         DefaultFlushEVSEDataAndStatusEvery          = TimeSpan.FromSeconds(31);
 
         /// <summary>
         /// The default status check intervall.
         /// </summary>
-        public readonly static TimeSpan                                                         DefaultStatusCheckEvery           = TimeSpan.FromSeconds(3);
+        public readonly static TimeSpan                                                         DefaultFlushEVSEFastStatusEvery           = TimeSpan.FromSeconds(3);
 
         /// <summary>
         /// The default CDR check intervall.
         /// </summary>
-        public readonly static TimeSpan                                                         DefaultCDRCheckEvery              = TimeSpan.FromSeconds(15);
+        public readonly static TimeSpan                                                         DefaultFlushChargeDetailRecordsEvery              = TimeSpan.FromSeconds(15);
 
 
         protected              UInt64                                                           _FlushEVSEDataRunId               = 1;
@@ -261,9 +261,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="IncludeEVSEIds">Only include the EVSE matching the given delegate.</param>
         /// <param name="IncludeEVSEs">Only include the EVSEs matching the given delegate.</param>
         /// 
-        /// <param name="ServiceCheckEvery">The service check intervall.</param>
-        /// <param name="StatusCheckEvery">The status check intervall.</param>
-        /// <param name="CDRCheckEvery">The charge detail record intervall.</param>
+        /// <param name="FlushEVSEDataAndStatusEvery">The service check intervall.</param>
+        /// <param name="FlushEVSEFastStatusEvery">The status check intervall.</param>
+        /// <param name="FlushChargeDetailRecordsEvery">The charge detail record intervall.</param>
         /// 
         /// <param name="DisablePushData">This service can be disabled, e.g. for debugging reasons.</param>
         /// <param name="DisablePushStatus">This service can be disabled, e.g. for debugging reasons.</param>
@@ -281,9 +281,9 @@ namespace org.GraphDefined.WWCP
                                   IncludeEVSEIdDelegate       IncludeEVSEIds                   = null,
                                   IncludeEVSEDelegate         IncludeEVSEs                     = null,
 
-                                  TimeSpan?                   ServiceCheckEvery                = null,
-                                  TimeSpan?                   StatusCheckEvery                 = null,
-                                  TimeSpan?                   CDRCheckEvery                    = null,
+                                  TimeSpan?                   FlushEVSEDataAndStatusEvery      = null,
+                                  TimeSpan?                   FlushEVSEFastStatusEvery         = null,
+                                  TimeSpan?                   FlushChargeDetailRecordsEvery    = null,
 
                                   Boolean                     DisablePushData                  = false,
                                   Boolean                     DisablePushStatus                = false,
@@ -315,21 +315,13 @@ namespace org.GraphDefined.WWCP
             this.DisableAuthentication                           = DisableAuthentication;
             this.DisableSendChargeDetailRecords                  = DisableSendChargeDetailRecords;
 
-            this.FlushEVSEDataAndStatusEvery                     = ServiceCheckEvery.HasValue
-                                                                      ? ServiceCheckEvery.Value
-                                                                      : DefaultServiceCheckEvery;
+            this.FlushEVSEDataAndStatusEvery                     = FlushEVSEDataAndStatusEvery   ?? DefaultFlushEVSEDataAndStatusEvery;
+            this.FlushEVSEFastStatusEvery                        = FlushEVSEFastStatusEvery      ?? DefaultFlushEVSEFastStatusEvery;
+            this.FlushChargeDetailRecordsEvery                   = FlushChargeDetailRecordsEvery ?? DefaultFlushChargeDetailRecordsEvery;
 
-            this.FlushEVSEFastStatusEvery                        = StatusCheckEvery.HasValue
-                                                                        ? StatusCheckEvery.Value
-                                                                        : DefaultStatusCheckEvery;
-
-            this.FlushChargeDetailRecordsEvery                   = CDRCheckEvery.HasValue
-                                                                        ? CDRCheckEvery.Value
-                                                                        : DefaultCDRCheckEvery;
-
-            this.FlushEVSEDataAndStatusTimer                     = new Timer(FlushEVSEDataAndStatus);//,   null, FlushEVSEDataAndStatusEvery,   TimeSpan.FromMilliseconds(-1));
-            this.FlushEVSEFastStatusTimer                        = new Timer(FlushEVSEFastStatus);//,      null, FlushEVSEFastStatusEvery,      TimeSpan.FromMilliseconds(-1));
-            this.FlushChargeDetailRecordsTimer                   = new Timer(FlushChargeDetailRecords);//, null, FlushChargeDetailRecordsEvery, TimeSpan.FromMilliseconds(-1));
+            this.FlushEVSEDataAndStatusTimer                     = new Timer(FlushEVSEDataAndStatus);
+            this.FlushEVSEFastStatusTimer                        = new Timer(FlushEVSEFastStatus);
+            this.FlushChargeDetailRecordsTimer                   = new Timer(FlushChargeDetailRecords);
 
             this.EVSEsUpdateLog                                  = new Dictionary<EVSE,            List<PropertyUpdateInfos>>();
             this.ChargingStationsUpdateLog                       = new Dictionary<ChargingStation, List<PropertyUpdateInfos>>();
