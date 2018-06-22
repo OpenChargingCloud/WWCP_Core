@@ -338,62 +338,67 @@ namespace org.GraphDefined.WWCP
 
             String[] elements = null;
 
-            foreach (var text in File.ReadAllLines(SessionLogFileName))
+            if (File.Exists(SessionLogFileName))
             {
 
-                elements = text.Split(',');
-
-                switch (elements[0])
+                foreach (var text in File.ReadAllLines(SessionLogFileName))
                 {
 
-                    case "Add":
+                    elements = text.Split(',');
 
-                            // 0: "Add"
-                            // 1: OperatorId
-                            // 2: EVSEId
-                            // 3: ChargingProduct
-                            // 4: AuthIdentification?.AuthToken
-                            // 5: eMA Id
-                            // 6: result.AuthorizatorId
-                            // 7: result.ProviderId
-                            // 8: result.SessionId
+                    switch (elements[0])
+                    {
 
-                            var NewChargingSession = new ChargingSession(ChargingSession_Id.Parse(elements[8])) {
-                                                         AuthorizatorId   = CSORoamingProvider_Id.Parse(elements[6]),
-                                                         //AuthService      = result.ISendAuthorizeStartStop,
-                                                         OperatorId       = elements[1] != "" ? ChargingStationOperator_Id.Parse(elements[1]) : new ChargingStationOperator_Id?(),
-                                                         EVSEId           = EVSE_Id.Parse(elements[2]),
-                                                         AuthTokenStart   = elements[4] != "" ? Auth_Token.                Parse(elements[4]) : null,
-                                                         eMAIdStart       = elements[5] != "" ? eMobilityAccount_Id.       Parse(elements[5]) : new eMobilityAccount_Id?(),
-                                                         ChargingProduct  = elements[3] != "" ? ChargingProduct.           Parse(elements[3]) : null
-                                                     };
+                        case "Add":
 
-                            if (_ChargingSessions.ContainsKey(NewChargingSession.Id))
-                                _ChargingSessions.TryRemove(NewChargingSession.Id, out ChargingSession CS);
+                                // 0: "Add"
+                                // 1: OperatorId
+                                // 2: EVSEId
+                                // 3: ChargingProduct
+                                // 4: AuthIdentification?.AuthToken
+                                // 5: eMA Id
+                                // 6: result.AuthorizatorId
+                                // 7: result.ProviderId
+                                // 8: result.SessionId
 
-                            _ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession);
+                                var NewChargingSession = new ChargingSession(ChargingSession_Id.Parse(elements[8])) {
+                                                             AuthorizatorId   = CSORoamingProvider_Id.Parse(elements[6]),
+                                                             //AuthService      = result.ISendAuthorizeStartStop,
+                                                             OperatorId       = elements[1] != "" ? ChargingStationOperator_Id.Parse(elements[1]) : new ChargingStationOperator_Id?(),
+                                                             EVSEId           = EVSE_Id.Parse(elements[2]),
+                                                             AuthTokenStart   = elements[4] != "" ? Auth_Token.                Parse(elements[4]) : null,
+                                                             eMAIdStart       = elements[5] != "" ? eMobilityAccount_Id.       Parse(elements[5]) : new eMobilityAccount_Id?(),
+                                                             ChargingProduct  = elements[3] != "" ? ChargingProduct.           Parse(elements[3]) : null
+                                                         };
 
-                        break;
+                                if (_ChargingSessions.ContainsKey(NewChargingSession.Id))
+                                    _ChargingSessions.TryRemove(NewChargingSession.Id, out ChargingSession CS);
 
-                    case "Remove":
+                                _ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession);
 
-                        // 0: "Remove"
-                        // 1: EVSEId
-                        // 2: SessionId
+                            break;
 
-                        var EVSEId     = elements[1] != "" ? EVSE_Id.           Parse(elements[1]) : new EVSE_Id?();
-                        var SessionId  =                     ChargingSession_Id.Parse(elements[2]);
+                        case "Remove":
 
-                        if (EVSEId.HasValue)
-                        {
-                            if (_ChargingSessions.TryGetValue(SessionId, out ChargingSession CS1) && CS1.EVSEId == EVSEId.Value)
-                                _ChargingSessions.TryRemove(SessionId, out CS1);
-                        }
+                            // 0: "Remove"
+                            // 1: EVSEId
+                            // 2: SessionId
 
-                        else
-                            _ChargingSessions.TryRemove(SessionId, out ChargingSession CS2);
+                            var EVSEId     = elements[1] != "" ? EVSE_Id.           Parse(elements[1]) : new EVSE_Id?();
+                            var SessionId  =                     ChargingSession_Id.Parse(elements[2]);
 
-                        break;
+                            if (EVSEId.HasValue)
+                            {
+                                if (_ChargingSessions.TryGetValue(SessionId, out ChargingSession CS1) && CS1.EVSEId == EVSEId.Value)
+                                    _ChargingSessions.TryRemove(SessionId, out CS1);
+                            }
+
+                            else
+                                _ChargingSessions.TryRemove(SessionId, out ChargingSession CS2);
+
+                            break;
+
+                    }
 
                 }
 
