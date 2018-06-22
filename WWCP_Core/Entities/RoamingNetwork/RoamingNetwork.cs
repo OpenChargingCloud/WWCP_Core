@@ -29,6 +29,7 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Hermod;
+using System.IO;
 
 #endregion
 
@@ -56,6 +57,9 @@ namespace org.GraphDefined.WWCP
                                   IRoamingNetwork,
                                   IEnumerable<IEntity>
     {
+
+        private static readonly SemaphoreSlim  SessionLogSemaphore  = new SemaphoreSlim(1, 1);
+        private const           String         SessionLogFileName   = "Sessions.log";
 
         #region Data
 
@@ -5559,19 +5563,49 @@ namespace org.GraphDefined.WWCP
                     // Store the upstream session id in order to contact the right authenticator at later requests!
                     // Will be deleted when the charge detail record was sent!
 
-                    //var NewChargingSession = new ChargingSession(result.SessionId.Value) {
-                    //                             AuthorizatorId   = result.AuthorizatorId,
-                    //                             AuthService      = result.ISendAuthorizeStartStop,
-                    //                             OperatorId       = OperatorId,
-                    //                             EVSEId           = EVSEId,
-                    //                             AuthTokenStart   = AuthIdentification?.AuthToken,
-                    //                             ChargingProduct  = ChargingProduct
-                    //                         };
+                    var NewChargingSession = new ChargingSession(result.SessionId.Value) {
+                                                 AuthorizatorId   = result.AuthorizatorId,
+                                                 AuthService      = result.ISendAuthorizeStartStop,
+                                                 OperatorId       = OperatorId,
+                                                 EVSEId           = EVSEId,
+                                                 AuthTokenStart   = AuthIdentification?.AuthToken,
+                                                 ChargingProduct  = ChargingProduct
+                                             };
 
                     //if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
                     //    RegisterExternalChargingSession(DateTime.UtcNow,
                     //                                    this,
                     //                                    NewChargingSession);
+
+
+                    var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
+
+                    if (success)
+                    {
+                        try
+                        {
+
+                            var LogLine = String.Concat(OperatorId,                     ",",
+                                                        EVSEId,                         ",",
+                                                        ChargingProduct,                ",",
+                                                        AuthIdentification?.AuthToken,  ",",
+                                                        result.AuthorizatorId,          ",",
+                                                        result.ProviderId,              ",",
+                                                        result.SessionId);
+
+                            File.AppendAllText(SessionLogFileName,
+                                               LogLine + Environment.NewLine);
+
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.Message);
+                        }
+                        finally
+                        {
+                            SessionLogSemaphore.Release();
+                        }
+                    }
 
                 }
 
