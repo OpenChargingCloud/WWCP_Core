@@ -4428,12 +4428,21 @@ namespace org.GraphDefined.WWCP
                             //                                    this,
                             //                                    NewChargingSession);
 
+                            // 0: "Add"
+                            // 1: OperatorId
+                            // 2: EVSEId
+                            // 3: ChargingProduct
+                            // 4: AuthIdentification?.AuthToken
+                            // 5: eMA Id
+                            // 6: result.AuthorizatorId
+                            // 7: result.ProviderId
+                            // 8: result.SessionId
 
                             var LogLine = String.Concat("Add,",
                                                         EVSEId.OperatorId,              ",",
                                                         EVSEId,                         ",",
                                                         ChargingProduct,                ",",
-                                                        //AuthIdentification?.AuthToken,  ",",
+                                                        ",", //AuthIdentification?.AuthToken,
                                                         eMAId,                          ",",
                                                                                         ",",
                                                         ProviderId,              ",",
@@ -5820,7 +5829,6 @@ namespace org.GraphDefined.WWCP
                             //    RegisterExternalChargingSession(DateTime.UtcNow,
                             //                                    this,
                             //                                    NewChargingSession);
-
 
                             var LogLine = String.Concat("Add,",
                                                         OperatorId,                     ",",
