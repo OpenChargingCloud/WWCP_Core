@@ -346,29 +346,31 @@ namespace org.GraphDefined.WWCP
 
                     elements = text.Split(',');
 
-                    switch (elements[0])
+                    switch (elements[1])
                     {
 
                         case "Add":
 
-                                // 0: "Add"
-                                // 1: OperatorId
-                                // 2: EVSEId
-                                // 3: ChargingProduct
-                                // 4: AuthIdentification?.AuthToken
-                                // 5: eMA Id
-                                // 6: result.AuthorizatorId
-                                // 7: result.ProviderId
-                                // 8: result.SessionId
+                                // 0: Timestamp
+                                // 1: "Add"
+                                // 2: OperatorId
+                                // 3: EVSEId
+                                // 4: ChargingProduct
+                                // 5: AuthIdentification?.AuthToken
+                                // 6: eMA Id
+                                // 7: result.AuthorizatorId
+                                // 8: result.ProviderId
+                                // 9: result.SessionId
 
-                                var NewChargingSession = new ChargingSession(ChargingSession_Id.Parse(elements[8])) {
-                                                             AuthorizatorId   = CSORoamingProvider_Id.Parse(elements[6]),
+                                var NewChargingSession = new ChargingSession(ChargingSession_Id.Parse(elements[9]),
+                                                                             elements[0] != "" ? DateTime.Parse(elements[0]) : DateTime.UtcNow) {
+                                                             AuthorizatorId   = elements[7] != "" ? CSORoamingProvider_Id.     Parse(elements[7]) : null,
                                                              //AuthService      = result.ISendAuthorizeStartStop,
-                                                             OperatorId       = elements[1] != "" ? ChargingStationOperator_Id.Parse(elements[1]) : new ChargingStationOperator_Id?(),
-                                                             EVSEId           = EVSE_Id.Parse(elements[2]),
-                                                             AuthTokenStart   = elements[4] != "" ? Auth_Token.                Parse(elements[4]) : null,
-                                                             eMAIdStart       = elements[5] != "" ? eMobilityAccount_Id.       Parse(elements[5]) : new eMobilityAccount_Id?(),
-                                                             ChargingProduct  = elements[3] != "" ? ChargingProduct.           Parse(elements[3]) : null
+                                                             OperatorId       = elements[2] != "" ? ChargingStationOperator_Id.Parse(elements[2]) : new ChargingStationOperator_Id?(),
+                                                             EVSEId           = EVSE_Id.Parse(elements[3]),
+                                                             AuthTokenStart   = elements[5] != "" ? Auth_Token.                Parse(elements[5]) : null,
+                                                             eMAIdStart       = elements[6] != "" ? eMobilityAccount_Id.       Parse(elements[6]) : new eMobilityAccount_Id?(),
+                                                             ChargingProduct  = elements[4] != "" ? ChargingProduct.           Parse(elements[4]) : null
                                                          };
 
                                 if (_ChargingSessions.ContainsKey(NewChargingSession.Id))
@@ -380,12 +382,13 @@ namespace org.GraphDefined.WWCP
 
                         case "Remove":
 
-                            // 0: "Remove"
-                            // 1: EVSEId
-                            // 2: SessionId
+                            // 0: Timestamp
+                            // 1: "Remove"
+                            // 2: EVSEId
+                            // 3: SessionId
 
-                            var EVSEId     = elements[1] != "" ? EVSE_Id.           Parse(elements[1]) : new EVSE_Id?();
-                            var SessionId  =                     ChargingSession_Id.Parse(elements[2]);
+                            var EVSEId     = elements[2] != "" ? EVSE_Id.           Parse(elements[2]) : new EVSE_Id?();
+                            var SessionId  =                     ChargingSession_Id.Parse(elements[3]);
 
                             if (EVSEId.HasValue)
                             {
@@ -4438,7 +4441,8 @@ namespace org.GraphDefined.WWCP
                             // 7: result.ProviderId
                             // 8: result.SessionId
 
-                            var LogLine = String.Concat("Add,",
+                            var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),
+                                                        "Add,",
                                                         EVSEId.OperatorId,              ",",
                                                         EVSEId,                         ",",
                                                         ChargingProduct,                ",",
@@ -4498,9 +4502,6 @@ namespace org.GraphDefined.WWCP
                     if (result.Result == RemoteStartEVSEResultType.Success)
                     {
 
-                        //    _ChargingSessions.TryAdd(result.Session.Id,
-                        //                             result.Session.SetEMPRoamingProvider(_EMPRoamingProvier));
-
                         var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
 
                         if (success)
@@ -4517,7 +4518,8 @@ namespace org.GraphDefined.WWCP
                                 //                                    NewChargingSession);
 
 
-                                var LogLine = String.Concat("Add,",
+                                var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), 
+                                                            "Add,",
                                                             EVSEId.OperatorId,              ",",
                                                             EVSEId,                         ",",
                                                             ChargingProduct,                ",",
@@ -4923,7 +4925,8 @@ namespace org.GraphDefined.WWCP
                     try
                     {
 
-                        var LogLine = String.Concat("Remove,",
+                        var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),
+                                                    "Remove,",
                                                     ",",
                                                     SessionId);
 
@@ -5225,7 +5228,8 @@ namespace org.GraphDefined.WWCP
                 try
                 {
 
-                    var LogLine = String.Concat("Remove,",
+                    var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),
+                                                "Remove,",
                                                 EVSEId, ",",
                                                 SessionId);
 
@@ -5393,7 +5397,8 @@ namespace org.GraphDefined.WWCP
                     try
                     {
 
-                        var LogLine = String.Concat("Remove,",
+                        var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),
+                                                    "Remove,",
                                                     ",",
                                                     SessionId);
 
@@ -5830,7 +5835,8 @@ namespace org.GraphDefined.WWCP
                             //                                    this,
                             //                                    NewChargingSession);
 
-                            var LogLine = String.Concat("Add,",
+                            var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),
+                                                        "Add,",
                                                         OperatorId,                     ",",
                                                         EVSEId,                         ",",
                                                         ChargingProduct,                ",",
@@ -6594,7 +6600,8 @@ namespace org.GraphDefined.WWCP
                 try
                 {
 
-                    var LogLine = String.Concat("Remove,",
+                    var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),
+                                                "Remove,",
                                                 EVSEId, ",",
                                                 SessionId);
 
@@ -7447,7 +7454,7 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region if no charge detail records...
+            #region ..., or when there are no charge detail records...
 
             else if (!ChargeDetailRecords.Any())
             {
@@ -7456,7 +7463,7 @@ namespace org.GraphDefined.WWCP
                 Runtime  = Endtime - StartTime;
                 result   = SendCDRsResult.NoOperation(Id,
                                                       this as ISendChargeDetailRecords,
-                                                      new SendCDRResult[0],
+                                                      ChargeDetailRecords,
                                                       Runtime: Runtime);
 
             }
@@ -7466,15 +7473,21 @@ namespace org.GraphDefined.WWCP
             else
             {
 
+                var ChargeDetailRecordsToProcess  = ChargeDetailRecords.ToList();
+                var ExpectedChargeDetailRecords   = ChargeDetailRecords.ToList();
+
                 //ToDo: Merge given cdr information with local information!
 
-                foreach (var ChargeDetailRecord in ChargeDetailRecords)
-                    _ChargeDetailRecords.TryAdd(ChargeDetailRecord.SessionId, ChargeDetailRecord);
+                #region Store all CDRs...
 
+                //foreach (var ChargeDetailRecord in ChargeDetailRecordsList)
+                //    _ChargeDetailRecords.TryAdd(ChargeDetailRecord.SessionId, ChargeDetailRecord);
+
+                #endregion
 
                 #region Delete cached session information
 
-                foreach (var ChargeDetailRecord in ChargeDetailRecords)
+                foreach (var ChargeDetailRecord in ChargeDetailRecordsToProcess)
                 {
                     if (ChargeDetailRecord.EVSEId.HasValue)
                     {
@@ -7499,10 +7512,9 @@ namespace org.GraphDefined.WWCP
 
                 #endregion
 
-                #region Some charge detail records should perhaps be filtered...
+                var resultMap = new List<SendCDRResult>();
 
-                var FilteredCDRs          = new List<SendCDRResult>();
-                var RemainingCDRsToSend   = new HashSet<ChargeDetailRecord>(ChargeDetailRecords);
+                #region Some charge detail records should perhaps be filtered...
 
                 var OnFilterCDRRecordsLocal = OnFilterCDRRecords;
                 if (OnFilterCDRRecordsLocal != null)
@@ -7515,9 +7527,9 @@ namespace org.GraphDefined.WWCP
                         if (FilterResult.IsNeitherNullNorEmpty())
                         {
 
-                            FilteredCDRs.Add(new SendCDRResult(ChargeDetailRecord,
-                                                               SendCDRResultTypes.Filtered,
-                                                               FilterResult));
+                            resultMap.Add(new SendCDRResult(ChargeDetailRecord,
+                                                            SendCDRResultTypes.Filtered,
+                                                            FilterResult));
 
                             try
                             {
@@ -7530,7 +7542,7 @@ namespace org.GraphDefined.WWCP
                                            e.StackTrace);
                             }
 
-                            RemainingCDRsToSend.Remove(ChargeDetailRecord);
+                            ChargeDetailRecordsToProcess.Remove(ChargeDetailRecord);
 
                         }
 
@@ -7538,137 +7550,154 @@ namespace org.GraphDefined.WWCP
 
                 }
 
-                if (RemainingCDRsToSend.Count == 0)
+                #endregion
+
+                #region Group charge detail records by their targets...
+
+                var _ISendChargeDetailRecords = new Dictionary<ISendChargeDetailRecords, List<ChargeDetailRecord>>();
+
+                foreach (var isendcdr in _IRemoteSendChargeDetailRecord)
+                    _ISendChargeDetailRecords.Add(isendcdr, new List<ChargeDetailRecord>());
+
+                ChargingSession chargingSession = null;
+
+                foreach (var cdr in ChargeDetailRecordsToProcess.ToArray())
                 {
 
-                    Endtime  = DateTime.UtcNow;
-                    Runtime  = Endtime - StartTime;
-                    result   = SendCDRsResult.NoOperation(Id,
-                                                          this as ISendChargeDetailRecords,
-                                                          FilteredCDRs,
-                                                          "All " + FilteredCDRs.Count + " charge detail record(s) had been filtered!",
-                                                          Runtime: Runtime);
+                    if (_ChargingSessions.TryGetValue(cdr.SessionId, out chargingSession))
+                    {
+
+                        // Might occur when the software had been restarted
+                        //   while charging sessions still had been active!
+                        if (chargingSession.AuthService == null && chargingSession.AuthorizatorId != null)
+                            chargingSession.AuthService = _IRemoteSendChargeDetailRecord.FirstOrDefault(rm => rm.Id.ToString() == chargingSession.AuthorizatorId.ToString()) as ISendAuthorizeStartStop;
+
+                        if (chargingSession.AuthService != null && chargingSession.AuthService is ISendChargeDetailRecords sendCDR)
+                        {
+                            _ISendChargeDetailRecords[sendCDR].Add(cdr);
+                            ChargeDetailRecordsToProcess.Remove(cdr);
+                        }
+
+                    }
+
+                }
+
+                #endregion
+
+                #region Any CDRs left? => bad!
+
+                if (ChargeDetailRecordsToProcess.Count > 0)
+                {
+
+                    foreach (var _cdr in ChargeDetailRecordsToProcess)
+                        resultMap.Add(new SendCDRResult(_cdr,
+                                                        SendCDRResultTypes.UnknownSessionId));
+
+                    ChargeDetailRecordsToProcess.Clear();
 
                 }
 
                 #endregion
 
 
-                else
+                #region Send CDRs to IRemoteSendChargeDetailRecord targets...
+
+                SendCDRsResult partResults = null;
+
+                foreach (var sendCDR in _ISendChargeDetailRecords.Where(kvp => kvp.Value.Count > 0))
                 {
 
-                    #region Group charge detail records by their targets...
+                    partResults = await sendCDR.Key.SendChargeDetailRecords(sendCDR.Value,
+                                                                            TransmissionTypes.Enqueue,
 
-                    var _ISendChargeDetailRecords = new Dictionary<ISendChargeDetailRecords, List<ChargeDetailRecord>>();
+                                                                            Timestamp,
+                                                                            CancellationToken,
+                                                                            EventTrackingId,
+                                                                            RequestTimeout);
 
-                    foreach (var isendcdr in _IRemoteSendChargeDetailRecord)
-                        _ISendChargeDetailRecords.Add(isendcdr, new List<ChargeDetailRecord>());
-
-                    #endregion
-
-                    #region An authenticator was found for the upstream SessionId!
-
-                    //if (_ChargingSessions.TryGetValue(ChargeDetailRecord.SessionId, out _ChargingSession))
-                    //{
-
-                    //    if (_ChargingSession.AuthService != null)
-                    //        result = await _ChargingSession.AuthService.SendChargeDetailRecord(Timestamp,
-                    //                                                                           CancellationToken,
-                    //                                                                           EventTrackingId,
-                    //                                                                           ChargeDetailRecord,
-                    //                                                                           RequestTimeout);
-
-                    //    else if (_ChargingSession.OperatorRoamingService != null)
-                    //        result = await _ChargingSession.OperatorRoamingService.SendChargeDetailRecord(Timestamp,
-                    //                                                                                      CancellationToken,
-                    //                                                                                      EventTrackingId,
-                    //                                                                                      ChargeDetailRecord,
-                    //                                                                                      RequestTimeout);
-
-                    //    _ChargingSession.RemoveMe = true;
-
-                    //}
-
-                    #endregion
-
-                    #region Try to find *Roaming Providers* who might kown anything about the given SessionId!
-
-                    if (result == null)
-                        //|| result.Result == SendCDRsResultTypes.InvalidSessionId)
+                    if (partResults == null)
                     {
 
-                        var results = await _IRemoteSendChargeDetailRecord.
-                                                WhenAll(iRemoteSendChargeDetailRecord => {
-
-                                           //         var _FilteredCDRs = ChargeDetailRecords.Where(cdr => iRemoteSendChargeDetailRecord.Ids.Contains(cdr.IdentificationStart.QRCodeIdentification?.eMAId. ProviderId) ||
-                                           //                                                              iRemoteSendChargeDetailRecord.Ids.Contains(cdr.IdentificationStart.PlugAndChargeIdentification?.ProviderId) ||
-                                           //                                                              iRemoteSendChargeDetailRecord.Ids.Contains(cdr.IdentificationStart.RemoteIdentification?.       ProviderId)).
-                                           //                                                 ToArray();
-
-                                           //         if (_FilteredCDRs.Length > 0)
-                                                        return iRemoteSendChargeDetailRecord.
-                                                                   SendChargeDetailRecords(RemainingCDRsToSend,
-                                                                                           CancellationToken: CancellationToken,
-                                                                                           EventTrackingId:   EventTrackingId);
-
-                                                   // else
-                                                   //     return null;
-
-                                                });
-
-                        //foreach (var iRemoteSendChargeDetailRecord in _IRemoteSendChargeDetailRecord.
-                        //                                                  OrderBy(v => v.Key).
-                        //                                                  Select (v => v.Value).
-                        //                                                  ToArray())
-                        //{
-
-                        //    //result = await OtherOperatorRoamingService.SendChargeDetailRecord(Timestamp,
-                        //    //                                                                  CancellationToken,
-                        //    //                                                                  EventTrackingId,
-                        //    //                                                                  ChargeDetailRecord,
-                        //    //                                                                  RequestTimeout);
-
-                        //    result = await iRemoteSendChargeDetailRecord.
-                        //                       SendChargeDetailRecords(RemainingCDRsToSend,
-                        //                                               CancellationToken: CancellationToken,
-                        //                                               EventTrackingId: EventTrackingId);
-
-                        //}
-
-                        result = results.Skip(1).FirstOrDefault();
+                        foreach (var _cdr in sendCDR.Value)
+                        {
+                            resultMap.Add(new SendCDRResult(_cdr,
+                                                            SendCDRResultTypes.Error,
+                                                            sendCDR.Key + " returned null!"));
+                        }
 
                     }
 
-                    #endregion
-
-                    #region ...else fail!
-
-                    if (result == null)
-                        // ||result.Result == SendCDRsResultTypes.InvalidSessionId)
+                    else
                     {
-
-                        result = SendCDRsResult.Error(Id,
-                                                      this as IReceiveChargeDetailRecords,
-                                                      RemainingCDRsToSend,
-                                                      "No authorization service returned a positiv result!");
-
+                        foreach (var singleSendCDRResult in partResults.ResultMap)
+                            resultMap.Add(singleSendCDRResult);
                     }
-
-                    #endregion
 
                 }
+
+                #endregion
+
+                #region Check if we really received a response for every charge detail record!
+
+                foreach (var cdrresult in resultMap)
+                    ExpectedChargeDetailRecords.Remove(cdrresult.ChargeDetailRecord);
+
+                if (ExpectedChargeDetailRecords.Count > 0)
+                {
+                    foreach (var _cdr in ExpectedChargeDetailRecords)
+                    {
+                        resultMap.Add(new SendCDRResult(_cdr,
+                                                        SendCDRResultTypes.Error,
+                                                        "Did not receive an result for this charge detail record!"));
+                    }
+                }
+
+                #endregion
+
+                var Overview = new Dictionary<SendCDRResultTypes, UInt32>();
+                foreach (var res in resultMap)
+                {
+
+                    if (!Overview.ContainsKey(res.Result))
+                        Overview.Add(res.Result, 1);
+
+                    else
+                        Overview[res.Result]++;
+
+                }
+
+                var GlobalResultNumber = Overview.Values.Max();
+                var GlobalResults      = Overview.Where(kvp => kvp.Value == GlobalResultNumber).Select(kvp => kvp.Key).ToList();
+                if (GlobalResults.Count > 1)
+                {
+
+                    if (GlobalResults.Contains(SendCDRResultTypes.Success))
+                        GlobalResults.Remove(SendCDRResultTypes.Success);
+
+                    if (GlobalResults.Contains(SendCDRResultTypes.Enqueued))
+                        GlobalResults.Remove(SendCDRResultTypes.Enqueued);
+
+                }
+
+                Endtime  = DateTime.UtcNow;
+                Runtime  = Endtime - StartTime;
+                result   = new SendCDRsResult(this.Id,
+                                              this as IReceiveChargeDetailRecords,
+                                              GlobalResults[0].Covert(),
+                                              resultMap,
+                                              "",
+                                              null,
+                                              Runtime);
 
             }
 
 
             #region Send OnSendCDRsResponse event
 
-            var EndTime = DateTime.UtcNow;
-
             try
             {
 
-                OnSendCDRsResponse?.Invoke(EndTime,
+                OnSendCDRsResponse?.Invoke(Endtime,
                                            Timestamp.Value,
                                            this,
                                            Id.ToString(),
@@ -7677,7 +7706,7 @@ namespace org.GraphDefined.WWCP
                                            ChargeDetailRecords,
                                            RequestTimeout,
                                            result,
-                                           EndTime - StartTime);
+                                           Runtime);
 
             }
             catch (Exception e)

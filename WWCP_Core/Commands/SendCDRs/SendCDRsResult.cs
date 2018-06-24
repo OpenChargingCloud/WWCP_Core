@@ -95,9 +95,9 @@ namespace org.GraphDefined.WWCP
         public SendCDRsResultTypes          Result                         { get; }
 
         /// <summary>
-        /// Optional status information about rejected charge detail records.
+        /// Status information about all charge detail records.
         /// </summary>
-        public IEnumerable<SendCDRResult>   RejectedChargeDetailRecords    { get; }
+        public IEnumerable<SendCDRResult>   ResultMap                      { get; }
 
         /// <summary>
         /// An optional description of the send charge detail records result.
@@ -118,7 +118,7 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (private) SendCDRsResult(AuthorizatorId, ISendChargeDetailRecords,    Result, ...)
+        #region (internal) SendCDRsResult(AuthorizatorId, ISendChargeDetailRecords,    Result, ...)
 
         /// <summary>
         /// Create a new send charge detail records result.
@@ -126,36 +126,36 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
         /// <param name="Result">The result of the charge detail record transmission.</param>
-        /// <param name="RejectedChargeDetailRecords">Optional status information about rejected charge detail records.</param>
+        /// <param name="ResultMap">Status information about all charge detail records.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private SendCDRsResult(IId                         AuthorizatorId,
-                               ISendChargeDetailRecords    ISendChargeDetailRecords,
-                               SendCDRsResultTypes         Result,
-                               IEnumerable<SendCDRResult>  RejectedChargeDetailRecords   = null,
-                               String                      Description                   = null,
-                               IEnumerable<String>         Warnings                      = null,
-                               TimeSpan?                   Runtime                       = null)
+        internal SendCDRsResult(IId                         AuthorizatorId,
+                                ISendChargeDetailRecords    ISendChargeDetailRecords,
+                                SendCDRsResultTypes         Result,
+                                IEnumerable<SendCDRResult>  ResultMap,
+                                String                      Description   = null,
+                                IEnumerable<String>         Warnings      = null,
+                                TimeSpan?                   Runtime       = null)
         {
 
-            this.AuthorizatorId               = AuthorizatorId;
-            this.ISendChargeDetailRecords     = ISendChargeDetailRecords;
-            this.Result                       = Result;
-            this.RejectedChargeDetailRecords  = RejectedChargeDetailRecords ?? new SendCDRResult[0];
-            this.Description                  = Description;
-            this.Warnings                     = Warnings != null
-                                                    ? Warnings.Where     (warning => warning != null).
-                                                               SafeSelect(warning => warning.Trim()).
-                                                               Where     (warning => warning.IsNotNullOrEmpty())
-                                                    : new String[0];
-            this.Runtime                      = Runtime;
+            this.AuthorizatorId            = AuthorizatorId;
+            this.ISendChargeDetailRecords  = ISendChargeDetailRecords;
+            this.Result                    = Result;
+            this.ResultMap                 = ResultMap ?? new SendCDRResult[0];
+            this.Description               = Description;
+            this.Warnings                  = Warnings != null
+                                                 ? Warnings.Where     (warning => warning != null).
+                                                            SafeSelect(warning => warning.Trim()).
+                                                            Where     (warning => warning.IsNotNullOrEmpty())
+                                                 : new String[0];
+            this.Runtime                   = Runtime;
 
         }
 
         #endregion
 
-        #region (private) SendCDRsResult(AuthorizatorId, IReceiveChargeDetailRecords, Result, ...)
+        #region (internal) SendCDRsResult(AuthorizatorId, IReceiveChargeDetailRecords, Result, ...)
 
         /// <summary>
         /// Create a new send charge detail records result.
@@ -163,23 +163,23 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">The identification of the charge detail record receiving entity.</param>
         /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
         /// <param name="Result">The result of the charge detail record transmission.</param>
-        /// <param name="RejectedChargeDetailRecords">Optional status information about rejected charge detail records.</param>
+        /// <param name="ResultMap">Status information about all charge detail records.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
-        private SendCDRsResult(IId                          AuthorizatorId,
-                               IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
-                               SendCDRsResultTypes          Result,
-                               IEnumerable<SendCDRResult>   RejectedChargeDetailRecords   = null,
-                               String                       Description                   = null,
-                               IEnumerable<String>          Warnings                      = null,
-                               TimeSpan?                    Runtime                       = null)
+        internal SendCDRsResult(IId                          AuthorizatorId,
+                                IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
+                                SendCDRsResultTypes          Result,
+                                IEnumerable<SendCDRResult>   ResultMap     = null,
+                                String                       Description   = null,
+                                IEnumerable<String>          Warnings      = null,
+                                TimeSpan?                    Runtime       = null)
         {
 
             this.AuthorizatorId               = AuthorizatorId;
             this.IReceiveChargeDetailRecords  = IReceiveChargeDetailRecords;
             this.Result                       = Result;
-            this.RejectedChargeDetailRecords  = RejectedChargeDetailRecords ?? new SendCDRResult[0];
+            this.ResultMap                    = ResultMap ?? new SendCDRResult[0];
             this.Description                  = Description;
             this.Warnings                     = Warnings != null
                                                     ? Warnings.Where     (warning => warning != null).
@@ -193,7 +193,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
         #endregion
-
 
 
         #region (static) NoOperation (AuthorizatorId, ...)
@@ -203,24 +202,24 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
-        /// <param name="RejectedChargeDetailRecords">Optional status information about rejected charge detail records.</param>
+        /// <param name="ResultMap">Status information about all charge detail records.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            NoOperation(IId                         AuthorizatorId,
-                        ISendChargeDetailRecords    ISendChargeDetailRecords,
-                        IEnumerable<SendCDRResult>  RejectedChargeDetailRecords   = null,
-                        String                      Description                   = null,
-                        IEnumerable<String>         Warnings                      = null,
-                        TimeSpan?                   Runtime                       = null)
+            NoOperation(IId                              AuthorizatorId,
+                        ISendChargeDetailRecords         ISendChargeDetailRecords,
+                        IEnumerable<ChargeDetailRecord>  ResultMap,
+                        String                           Description   = null,
+                        IEnumerable<String>              Warnings      = null,
+                        TimeSpan?                        Runtime       = null)
 
 
                 => new SendCDRsResult(AuthorizatorId,
                                       ISendChargeDetailRecords,
                                       SendCDRsResultTypes.NoOperation,
-                                      RejectedChargeDetailRecords,
+                                      ResultMap.SafeSelect(cdr => new SendCDRResult(cdr, SendCDRResultTypes.NoOperation)),
                                       Description,
                                       Warnings,
                                       Runtime);
@@ -232,24 +231,24 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
-        /// <param name="RejectedChargeDetailRecords">Optional status information about rejected charge detail records.</param>
+        /// <param name="ResultMap">Status information about all charge detail records.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            NoOperation(IId                          AuthorizatorId,
-                        IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
-                        IEnumerable<SendCDRResult>   RejectedChargeDetailRecords   = null,
-                        String                       Description                   = null,
-                        IEnumerable<String>          Warnings                      = null,
-                        TimeSpan?                    Runtime                       = null)
+            NoOperation(IId                              AuthorizatorId,
+                        IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
+                        IEnumerable<ChargeDetailRecord>  ResultMap,
+                        String                           Description   = null,
+                        IEnumerable<String>              Warnings      = null,
+                        TimeSpan?                        Runtime       = null)
 
 
                 => new SendCDRsResult(AuthorizatorId,
                                       IReceiveChargeDetailRecords,
                                       SendCDRsResultTypes.NoOperation,
-                                      RejectedChargeDetailRecords,
+                                      ResultMap.SafeSelect(cdr => new SendCDRResult(cdr, SendCDRResultTypes.NoOperation)),
                                       Description,
                                       Warnings,
                                       Runtime);
@@ -258,39 +257,39 @@ namespace org.GraphDefined.WWCP
 
         #region (static) AdminDown   (AuthorizatorId, ...)
 
+        ///// <summary>
+        ///// The service is administratively down.
+        ///// </summary>
+        ///// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        ///// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
+        ///// <param name="ResultMap">Status information about all charge detail records.</param>
+        ///// <param name="Description">An optional description of the send charge detail records result.</param>
+        ///// <param name="Warnings">Warnings or additional information.</param>
+        ///// <param name="Runtime">The runtime of the request.</param>
+        //public static SendCDRsResult
+
+        //    AdminDown(IId                         AuthorizatorId,
+        //              ISendChargeDetailRecords    ISendChargeDetailRecords,
+        //              IEnumerable<SendCDRResult>  ResultMap,
+        //              String                      Description   = null,
+        //              IEnumerable<String>         Warnings      = null,
+        //              TimeSpan?                   Runtime       = null)
+
+
+        //        => new SendCDRsResult(AuthorizatorId,
+        //                              ISendChargeDetailRecords,
+        //                              SendCDRsResultTypes.AdminDown,
+        //                              ResultMap,
+        //                              Description,
+        //                              Warnings,
+        //                              Runtime);
+
         /// <summary>
         /// The service is administratively down.
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
-        /// <param name="RejectedChargeDetailRecords">Optional status information about rejected charge detail records.</param>
-        /// <param name="Description">An optional description of the send charge detail records result.</param>
-        /// <param name="Warnings">Warnings or additional information.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRsResult
-
-            AdminDown(IId                         AuthorizatorId,
-                      ISendChargeDetailRecords    ISendChargeDetailRecords,
-                      IEnumerable<SendCDRResult>  RejectedChargeDetailRecords,
-                      String                      Description   = null,
-                      IEnumerable<String>         Warnings      = null,
-                      TimeSpan?                   Runtime       = null)
-
-
-                => new SendCDRsResult(AuthorizatorId,
-                                      ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.AdminDown,
-                                      RejectedChargeDetailRecords,
-                                      Description,
-                                      Warnings,
-                                      Runtime);
-
-        /// <summary>
-        /// The service is administratively down.
-        /// </summary>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
-        /// <param name="RejectedChargeDetailRecords">Optional status information about rejected charge detail records.</param>
+        /// <param name="ResultMap">Status information about all charge detail records.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -298,7 +297,7 @@ namespace org.GraphDefined.WWCP
 
             AdminDown(IId                              AuthorizatorId,
                       ISendChargeDetailRecords         ISendChargeDetailRecords,
-                      IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords,
+                      IEnumerable<ChargeDetailRecord>  ResultMap,
                       String                           Description   = null,
                       IEnumerable<String>              Warnings      = null,
                       TimeSpan?                        Runtime       = null)
@@ -307,46 +306,46 @@ namespace org.GraphDefined.WWCP
                 => new SendCDRsResult(AuthorizatorId,
                                       ISendChargeDetailRecords,
                                       SendCDRsResultTypes.AdminDown,
-                                      RejectedChargeDetailRecords.SafeSelect(cdr => new SendCDRResult(cdr, SendCDRResultTypes.AdminDown)),
+                                      ResultMap.SafeSelect(cdr => new SendCDRResult(cdr, SendCDRResultTypes.AdminDown)),
                                       Description,
                                       Warnings,
                                       Runtime);
 
 
 
+        ///// <summary>
+        ///// The service is administratively down.
+        ///// </summary>
+        ///// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        ///// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
+        ///// <param name="ResultMap">Status information about all charge detail records.</param>
+        ///// <param name="Description">An optional description of the send charge detail records result.</param>
+        ///// <param name="Warnings">Warnings or additional information.</param>
+        ///// <param name="Runtime">The runtime of the request.</param>
+        //public static SendCDRsResult
+
+        //    AdminDown(IId                          AuthorizatorId,
+        //              IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
+        //              IEnumerable<SendCDRResult>   ResultMap,
+        //              String                       Description   = null,
+        //              IEnumerable<String>          Warnings      = null,
+        //              TimeSpan?                    Runtime       = null)
+
+
+        //        => new SendCDRsResult(AuthorizatorId,
+        //                              IReceiveChargeDetailRecords,
+        //                              SendCDRsResultTypes.AdminDown,
+        //                              ResultMap,
+        //                              Description,
+        //                              Warnings,
+        //                              Runtime);
+
         /// <summary>
         /// The service is administratively down.
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
-        /// <param name="RejectedChargeDetailRecords">Optional status information about rejected charge detail records.</param>
-        /// <param name="Description">An optional description of the send charge detail records result.</param>
-        /// <param name="Warnings">Warnings or additional information.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRsResult
-
-            AdminDown(IId                          AuthorizatorId,
-                      IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
-                      IEnumerable<SendCDRResult>   RejectedChargeDetailRecords,
-                      String                       Description   = null,
-                      IEnumerable<String>          Warnings      = null,
-                      TimeSpan?                    Runtime       = null)
-
-
-                => new SendCDRsResult(AuthorizatorId,
-                                      IReceiveChargeDetailRecords,
-                                      SendCDRsResultTypes.AdminDown,
-                                      RejectedChargeDetailRecords,
-                                      Description,
-                                      Warnings,
-                                      Runtime);
-
-        /// <summary>
-        /// The service is administratively down.
-        /// </summary>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
-        /// <param name="RejectedChargeDetailRecords">Optional status information about rejected charge detail records.</param>
+        /// <param name="ResultMap">Status information about all charge detail records.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -354,7 +353,7 @@ namespace org.GraphDefined.WWCP
 
             AdminDown(IId                              AuthorizatorId,
                       IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
-                      IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords,
+                      IEnumerable<ChargeDetailRecord>  ResultMap,
                       String                           Description   = null,
                       IEnumerable<String>              Warnings      = null,
                       TimeSpan?                        Runtime       = null)
@@ -363,7 +362,7 @@ namespace org.GraphDefined.WWCP
                 => new SendCDRsResult(AuthorizatorId,
                                       IReceiveChargeDetailRecords,
                                       SendCDRsResultTypes.AdminDown,
-                                      RejectedChargeDetailRecords.Select(cdr => new SendCDRResult(cdr, SendCDRResultTypes.AdminDown)),
+                                      ResultMap.Select(cdr => new SendCDRResult(cdr, SendCDRResultTypes.AdminDown)),
                                       Description,
                                       Warnings,
                                       Runtime);
@@ -372,39 +371,39 @@ namespace org.GraphDefined.WWCP
 
         #region (static) OutOfService(AuthorizatorId, ...)
 
+        ///// <summary>
+        ///// The service is out of service.
+        ///// </summary>
+        ///// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        ///// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
+        ///// <param name="ResultMap">Status information about all charge detail records.</param>
+        ///// <param name="Description">An optional description of the send charge detail records result.</param>
+        ///// <param name="Warnings">Warnings or additional information.</param>
+        ///// <param name="Runtime">The runtime of the request.</param>
+        //public static SendCDRsResult
+
+        //    OutOfService(IId                         AuthorizatorId,
+        //                 ISendChargeDetailRecords    ISendChargeDetailRecords,
+        //                 IEnumerable<SendCDRResult>  ResultMap,
+        //                 String                      Description   = null,
+        //                 IEnumerable<String>         Warnings      = null,
+        //                 TimeSpan?                   Runtime       = null)
+
+
+        //        => new SendCDRsResult(AuthorizatorId,
+        //                              ISendChargeDetailRecords,
+        //                              SendCDRsResultTypes.OutOfService,
+        //                              ResultMap,
+        //                              Description,
+        //                              Warnings,
+        //                              Runtime);
+
         /// <summary>
         /// The service is out of service.
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
-        /// <param name="RejectedChargeDetailRecords">Optional status information about rejected charge detail records.</param>
-        /// <param name="Description">An optional description of the send charge detail records result.</param>
-        /// <param name="Warnings">Warnings or additional information.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRsResult
-
-            OutOfService(IId                         AuthorizatorId,
-                         ISendChargeDetailRecords    ISendChargeDetailRecords,
-                         IEnumerable<SendCDRResult>  RejectedChargeDetailRecords,
-                         String                      Description   = null,
-                         IEnumerable<String>         Warnings      = null,
-                         TimeSpan?                   Runtime       = null)
-
-
-                => new SendCDRsResult(AuthorizatorId,
-                                      ISendChargeDetailRecords,
-                                      SendCDRsResultTypes.OutOfService,
-                                      RejectedChargeDetailRecords,
-                                      Description,
-                                      Warnings,
-                                      Runtime);
-
-        /// <summary>
-        /// The service is out of service.
-        /// </summary>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
-        /// <param name="RejectedChargeDetailRecords">Optional status information about rejected charge detail records.</param>
+        /// <param name="ResultMap">Status information about all charge detail records.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -412,7 +411,7 @@ namespace org.GraphDefined.WWCP
 
             OutOfService(IId                              AuthorizatorId,
                          ISendChargeDetailRecords         ISendChargeDetailRecords,
-                         IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords,
+                         IEnumerable<ChargeDetailRecord>  ResultMap,
                          String                           Description   = null,
                          IEnumerable<String>              Warnings      = null,
                          TimeSpan?                        Runtime       = null)
@@ -421,46 +420,46 @@ namespace org.GraphDefined.WWCP
                 => new SendCDRsResult(AuthorizatorId,
                                       ISendChargeDetailRecords,
                                       SendCDRsResultTypes.OutOfService,
-                                      RejectedChargeDetailRecords.Select(cdr => new SendCDRResult(cdr, SendCDRResultTypes.OutOfService)),
+                                      ResultMap.Select(cdr => new SendCDRResult(cdr, SendCDRResultTypes.OutOfService)),
                                       Description,
                                       Warnings,
                                       Runtime);
 
 
 
+        ///// <summary>
+        ///// The service is out of service.
+        ///// </summary>
+        ///// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
+        ///// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
+        ///// <param name="RejectedChargeDetailRecords">Status information about all charge detail records.</param>
+        ///// <param name="Description">An optional description of the send charge detail records result.</param>
+        ///// <param name="Warnings">Warnings or additional information.</param>
+        ///// <param name="Runtime">The runtime of the request.</param>
+        //public static SendCDRsResult
+
+        //    OutOfService(IId                          AuthorizatorId,
+        //                 IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
+        //                 IEnumerable<SendCDRResult>   RejectedChargeDetailRecords,
+        //                 String                       Description   = null,
+        //                 IEnumerable<String>          Warnings      = null,
+        //                 TimeSpan?                    Runtime       = null)
+
+
+        //        => new SendCDRsResult(AuthorizatorId,
+        //                              IReceiveChargeDetailRecords,
+        //                              SendCDRsResultTypes.OutOfService,
+        //                              RejectedChargeDetailRecords,
+        //                              Description,
+        //                              Warnings,
+        //                              Runtime);
+
         /// <summary>
         /// The service is out of service.
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
-        /// <param name="RejectedChargeDetailRecords">Optional status information about rejected charge detail records.</param>
-        /// <param name="Description">An optional description of the send charge detail records result.</param>
-        /// <param name="Warnings">Warnings or additional information.</param>
-        /// <param name="Runtime">The runtime of the request.</param>
-        public static SendCDRsResult
-
-            OutOfService(IId                          AuthorizatorId,
-                         IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
-                         IEnumerable<SendCDRResult>   RejectedChargeDetailRecords,
-                         String                       Description   = null,
-                         IEnumerable<String>          Warnings      = null,
-                         TimeSpan?                    Runtime       = null)
-
-
-                => new SendCDRsResult(AuthorizatorId,
-                                      IReceiveChargeDetailRecords,
-                                      SendCDRsResultTypes.OutOfService,
-                                      RejectedChargeDetailRecords,
-                                      Description,
-                                      Warnings,
-                                      Runtime);
-
-        /// <summary>
-        /// The service is out of service.
-        /// </summary>
-        /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
-        /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
-        /// <param name="RejectedChargeDetailRecords">Optional status information about rejected charge detail records.</param>
+        /// <param name="RejectedChargeDetailRecords">Status information about all charge detail records.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -491,23 +490,24 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
+        /// <param name="ResultMap">Status information about all charge detail records.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Enqueued(IId                         AuthorizatorId,
-                     ISendChargeDetailRecords    ISendChargeDetailRecords,
-                     String                      Description                  = null,
-                     IEnumerable<SendCDRResult>  RejectedChargeDetailRecords  = null,
-                     IEnumerable<String>         Warnings                     = null,
-                     TimeSpan?                   Runtime                      = null)
+            Enqueued(IId                              AuthorizatorId,
+                     ISendChargeDetailRecords         ISendChargeDetailRecords,
+                     IEnumerable<ChargeDetailRecord>  ResultMap,
+                     String                           Description   = null,
+                     IEnumerable<String>              Warnings      = null,
+                     TimeSpan?                        Runtime       = null)
 
 
                 => new SendCDRsResult(AuthorizatorId,
                                       ISendChargeDetailRecords,
                                       SendCDRsResultTypes.Enqueued,
-                                      RejectedChargeDetailRecords ?? new SendCDRResult[0],
+                                      ResultMap.SafeSelect(cdr => new SendCDRResult(cdr, SendCDRResultTypes.Enqueued)),
                                       Description,
                                       Warnings,
                                       Runtime);
@@ -518,23 +518,24 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
+        /// <param name="ResultMap">Status information about all charge detail records.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Enqueued(IId                          AuthorizatorId,
-                     IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
-                     String                       Description                  = null,
-                     IEnumerable<SendCDRResult>   RejectedChargeDetailRecords  = null,
-                     IEnumerable<String>          Warnings                     = null,
-                     TimeSpan?                    Runtime                      = null)
+            Enqueued(IId                              AuthorizatorId,
+                     IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
+                     IEnumerable<ChargeDetailRecord>  ResultMap,
+                     String                           Description   = null,
+                     IEnumerable<String>              Warnings      = null,
+                     TimeSpan?                        Runtime       = null)
 
 
                 => new SendCDRsResult(AuthorizatorId,
                                       IReceiveChargeDetailRecords,
                                       SendCDRsResultTypes.Enqueued,
-                                      RejectedChargeDetailRecords ?? new SendCDRResult[0],
+                                      ResultMap.SafeSelect(cdr => new SendCDRResult(cdr, SendCDRResultTypes.Enqueued)),
                                       Description,
                                       Warnings,
                                       Runtime);
@@ -548,29 +549,29 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
+        /// <param name="ResultMap">Status information about all charge detail records.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Timeout(IId                         AuthorizatorId,
-                    ISendChargeDetailRecords    ISendChargeDetailRecords,
-                    String                      Description                  = null,
-                    IEnumerable<SendCDRResult>  RejectedChargeDetailRecords  = null,
-                    IEnumerable<String>         Warnings                     = null,
-                    TimeSpan?                   Runtime                      = null)
+            Timeout(IId                              AuthorizatorId,
+                    ISendChargeDetailRecords         ISendChargeDetailRecords,
+                    IEnumerable<ChargeDetailRecord>  ResultMap,
+                    String                           Description   = null,
+                    IEnumerable<String>              Warnings      = null,
+                    TimeSpan?                        Runtime       = null)
 
 
                 => new SendCDRsResult(AuthorizatorId,
                                       ISendChargeDetailRecords,
                                       SendCDRsResultTypes.Timeout,
-                                      RejectedChargeDetailRecords ?? new SendCDRResult[0],
+                                      ResultMap.SafeSelect(cdr => new SendCDRResult(cdr, SendCDRResultTypes.Timeout)),
                                       Description,
                                       Warnings,
                                       Runtime);
 
         #endregion
-
 
         #region (static) Success     (AuthorizatorId, ...)
 
@@ -579,22 +580,24 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
+        /// <param name="ResultMap">Status information about all charge detail records.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Success(IId                       AuthorizatorId,
-                    ISendChargeDetailRecords  ISendChargeDetailRecords,
-                    String                    Description   = null,
-                    IEnumerable<String>       Warnings      = null,
-                    TimeSpan?                 Runtime       = null)
+            Success(IId                              AuthorizatorId,
+                    ISendChargeDetailRecords         ISendChargeDetailRecords,
+                    IEnumerable<ChargeDetailRecord>  ResultMap,
+                    String                           Description   = null,
+                    IEnumerable<String>              Warnings      = null,
+                    TimeSpan?                        Runtime       = null)
 
 
                 => new SendCDRsResult(AuthorizatorId,
                                       ISendChargeDetailRecords,
                                       SendCDRsResultTypes.Success,
-                                      new SendCDRResult[0],
+                                      ResultMap.SafeSelect(cdr => new SendCDRResult(cdr, SendCDRResultTypes.Success)),
                                       Description,
                                       Warnings,
                                       Runtime);
@@ -605,22 +608,24 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
+        /// <param name="ResultMap">Status information about all charge detail records.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
         public static SendCDRsResult
 
-            Success(IId                          AuthorizatorId,
-                    IReceiveChargeDetailRecords  IReceiveChargeDetailRecords,
-                    String                       Description   = null,
-                    IEnumerable<String>          Warnings      = null,
-                    TimeSpan?                    Runtime       = null)
+            Success(IId                              AuthorizatorId,
+                    IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
+                    IEnumerable<ChargeDetailRecord>  ResultMap,
+                    String                           Description   = null,
+                    IEnumerable<String>              Warnings      = null,
+                    TimeSpan?                        Runtime       = null)
 
 
                 => new SendCDRsResult(AuthorizatorId,
                                       IReceiveChargeDetailRecords,
                                       SendCDRsResultTypes.Success,
-                                      new SendCDRResult[0],
+                                      ResultMap.SafeSelect(cdr => new SendCDRResult(cdr, SendCDRResultTypes.Success)),
                                       Description,
                                       Warnings,
                                       Runtime);
@@ -634,7 +639,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="ISendChargeDetailRecords">The entity sending charge detail records.</param>
-        /// <param name="RejectedChargeDetailRecords">Optional status information about rejected charge detail records.</param>
+        /// <param name="ResultMap">Status information about all charge detail records.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -642,16 +647,16 @@ namespace org.GraphDefined.WWCP
 
             Error(IId                              AuthorizatorId,
                   ISendChargeDetailRecords         ISendChargeDetailRecords,
-                  IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords   = null,
-                  String                           Description                   = null,
-                  IEnumerable<String>              Warnings                      = null,
-                  TimeSpan?                        Runtime                       = null)
+                  IEnumerable<ChargeDetailRecord>  ResultMap,
+                  String                           Description   = null,
+                  IEnumerable<String>              Warnings      = null,
+                  TimeSpan?                        Runtime       = null)
 
 
                 => new SendCDRsResult(AuthorizatorId,
                                       ISendChargeDetailRecords,
                                       SendCDRsResultTypes.Success,
-                                      RejectedChargeDetailRecords.Select(cdr => new SendCDRResult(cdr, SendCDRResultTypes.Error)),
+                                      ResultMap.Select(cdr => new SendCDRResult(cdr, SendCDRResultTypes.Error)),
                                       Description,
                                       Warnings,
                                       Runtime);
@@ -661,7 +666,7 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         /// <param name="AuthorizatorId">The identification of the charge detail record sending entity.</param>
         /// <param name="IReceiveChargeDetailRecords">The entity receiving charge detail records.</param>
-        /// <param name="RejectedChargeDetailRecords">Optional status information about rejected charge detail records.</param>
+        /// <param name="ResultMap">Status information about all charge detail records.</param>
         /// <param name="Description">An optional description of the send charge detail records result.</param>
         /// <param name="Warnings">Warnings or additional information.</param>
         /// <param name="Runtime">The runtime of the request.</param>
@@ -669,16 +674,16 @@ namespace org.GraphDefined.WWCP
 
             Error(IId                              AuthorizatorId,
                   IReceiveChargeDetailRecords      IReceiveChargeDetailRecords,
-                  IEnumerable<ChargeDetailRecord>  RejectedChargeDetailRecords   = null,
-                  String                           Description                   = null,
-                  IEnumerable<String>              Warnings                      = null,
-                  TimeSpan?                        Runtime                       = null)
+                  IEnumerable<ChargeDetailRecord>  ResultMap,
+                  String                           Description   = null,
+                  IEnumerable<String>              Warnings      = null,
+                  TimeSpan?                        Runtime       = null)
 
 
                 => new SendCDRsResult(AuthorizatorId,
                                       IReceiveChargeDetailRecords,
                                       SendCDRsResultTypes.Success,
-                                      RejectedChargeDetailRecords.Select(cdr => new SendCDRResult(cdr, SendCDRResultTypes.Error)),
+                                      ResultMap.Select(cdr => new SendCDRResult(cdr, SendCDRResultTypes.Error)),
                                       Description,
                                       Warnings,
                                       Runtime);
@@ -713,7 +718,7 @@ namespace org.GraphDefined.WWCP
         NoOperation,
 
         /// <summary>
-        /// The service was disabled by the administrator.
+        /// The service was disabled by an administrator.
         /// </summary>
         AdminDown,
 
@@ -723,9 +728,40 @@ namespace org.GraphDefined.WWCP
         OutOfService,
 
         /// <summary>
+        /// The charge detail records had been filtered.
+        /// </summary>
+        Filtered,
+
+        /// <summary>
+        /// The charging session identification is invalid.
+        /// </summary>
+        InvalidSessionId,
+
+        /// <summary>
+        /// The charging session identification is unknown.
+        /// </summary>
+        UnknownSessionId,
+
+        /// <summary>
+        /// The EVSE identification is unknown.
+        /// </summary>
+        UnknownEVSE,
+
+        /// <summary>
+        /// A data format error occured.
+        /// </summary>
+        CouldNotConvertCDRFormat,
+
+
+        /// <summary>
         /// The charge detail records had been enqueued for later transmission.
         /// </summary>
         Enqueued,
+
+        /// <summary>
+        /// Everything ok.
+        /// </summary>
+        Success,
 
         /// <summary>
         /// A timeout occured.
@@ -733,14 +769,10 @@ namespace org.GraphDefined.WWCP
         Timeout,
 
 
-
-
         /// <summary>
         /// The operation led to an error.
         /// </summary>
-        Error,
-
-        Success
+        Error
 
     }
 
@@ -752,22 +784,15 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         Unspecified,
 
+        /// <summary>
+        /// No operation e.g. because no charge detail record passed the charge detail records filter.
+        /// </summary>
+        NoOperation,
+
+        /// <summary>
+        /// The service was disabled by an administrator.
+        /// </summary>
         AdminDown,
-
-        Filtered,
-
-        Enqueued,
-
-        Success,
-
-        InvalidSessionId,
-
-        CouldNotConvertCDRFormat,
-
-        UnknownEVSE,
-
-        Timeout,
-
 
         /// <summary>
         /// The service is out of service.
@@ -775,9 +800,109 @@ namespace org.GraphDefined.WWCP
         OutOfService,
 
         /// <summary>
+        /// The charge detail record had been filtered.
+        /// </summary>
+        Filtered,
+
+        /// <summary>
+        /// The charging session identification is invalid.
+        /// </summary>
+        InvalidSessionId,
+
+        /// <summary>
+        /// The charging session identification is unknown.
+        /// </summary>
+        UnknownSessionId,
+
+        /// <summary>
+        /// The EVSE identification is unknown.
+        /// </summary>
+        UnknownEVSE,
+
+        /// <summary>
+        /// A data format error occured.
+        /// </summary>
+        CouldNotConvertCDRFormat,
+
+
+        /// <summary>
+        /// The charge detail record had been enqueued for later transmission.
+        /// </summary>
+        Enqueued,
+
+        /// <summary>
+        /// Everything ok.
+        /// </summary>
+        Success,
+
+        /// <summary>
+        /// A timeout occured.
+        /// </summary>
+        Timeout,
+
+
+        /// <summary>
         /// The operation led to an error.
         /// </summary>
         Error
+
+    }
+
+
+    public static class SendCDRResultTypesExtentions
+    {
+
+        public static SendCDRsResultTypes Covert(this SendCDRResultTypes result)
+        {
+
+            switch (result)
+            {
+
+                case SendCDRResultTypes.NoOperation:
+                    return SendCDRsResultTypes.NoOperation;
+
+                case SendCDRResultTypes.AdminDown:
+                    return SendCDRsResultTypes.AdminDown;
+
+                case SendCDRResultTypes.OutOfService:
+                    return SendCDRsResultTypes.OutOfService;
+
+                case SendCDRResultTypes.Filtered:
+                    return SendCDRsResultTypes.Filtered;
+
+                case SendCDRResultTypes.InvalidSessionId:
+                    return SendCDRsResultTypes.InvalidSessionId;
+
+                case SendCDRResultTypes.UnknownSessionId:
+                    return SendCDRsResultTypes.UnknownSessionId;
+
+                case SendCDRResultTypes.UnknownEVSE:
+                    return SendCDRsResultTypes.UnknownEVSE;
+
+                case SendCDRResultTypes.CouldNotConvertCDRFormat:
+                    return SendCDRsResultTypes.CouldNotConvertCDRFormat;
+
+
+                case SendCDRResultTypes.Enqueued:
+                    return SendCDRsResultTypes.Enqueued;
+
+                case SendCDRResultTypes.Success:
+                    return SendCDRsResultTypes.Success;
+
+                case SendCDRResultTypes.Timeout:
+                    return SendCDRsResultTypes.Timeout;
+
+
+
+                case SendCDRResultTypes.Error:
+                    return SendCDRsResultTypes.Error;
+
+                default:
+                    return SendCDRsResultTypes.Unspecified;
+
+            }
+
+        }
 
     }
 

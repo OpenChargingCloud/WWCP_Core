@@ -531,9 +531,9 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        public ISendAuthorizeStartStop  AuthService               { get; set; }
+        public ISendAuthorizeStartStop    AuthService               { get; set; }
 
-        public IId                        AuthorizatorId             { get; set; }
+        public IId                        AuthorizatorId            { get; set; }
 
 
         public ChargingStationOperator    ChargingStationOperator   { get; set; }
@@ -577,22 +577,16 @@ namespace org.GraphDefined.WWCP
         /// Create a new group/pool of charging stations having the given identification.
         /// </summary>
         /// <param name="Id">The unique identification of the charing pool.</param>
-        public ChargingSession(ChargingSession_Id  Id)
+        /// <param name="Timestamp">The timestamp of the session creation.</param>
+        public ChargingSession(ChargingSession_Id  Id,
+                               DateTime?           Timestamp = null)
 
             : base(Id)
 
         {
 
-            #region Initial checks
-
-            if (Id   == null)
-                throw new ArgumentNullException(nameof(Id),  "The given charging session identification must not be null!");
-
-            #endregion
-
+            this.SessionTime         = new StartEndDateTime(Timestamp ?? DateTime.UtcNow);
             this._EnergyMeterValues  = new List<Timestamped<Single>>();
-
-            this.SessionTime         = new StartEndDateTime(DateTime.UtcNow);
 
         }
 

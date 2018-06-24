@@ -3941,7 +3941,7 @@ namespace org.GraphDefined.WWCP
 
                 }
 
-                return Task.FromResult(SendCDRsResult.Enqueued(Id, this));
+                return Task.FromResult(SendCDRsResult.Enqueued(Id, this, ChargeDetailRecords));
 
             }
 
