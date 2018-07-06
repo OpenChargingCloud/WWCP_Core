@@ -80,8 +80,8 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void NewEVSP_IdMethodTest()
         {
-            var _EVSP_Id1 = eMobilityProvider_Id.Parse(Country.Germany, _Random.GetString(3));
-            var _EVSP_Id2 = eMobilityProvider_Id.Parse(Country.Germany, _Random.GetString(3));
+            var _EVSP_Id1 = eMobilityProvider_Id.Parse(Country.Germany, _Random.RandomString(3));
+            var _EVSP_Id2 = eMobilityProvider_Id.Parse(Country.Germany, _Random.RandomString(3));
             Assert.AreNotEqual(_EVSP_Id1, _EVSP_Id2);
         }
 
@@ -575,7 +575,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         public void CompareToNonEVSP_IdTest()
         {
 
-            var _EVSP_Id  = eMobilityProvider_Id.Parse(Country.Germany, _Random.GetString(3));
+            var _EVSP_Id  = eMobilityProvider_Id.Parse(Country.Germany, _Random.RandomString(3));
             var _Object   = "123";
 
             Assert.Throws<ArgumentException>(() => _EVSP_Id.CompareTo(_Object));
@@ -653,7 +653,7 @@ namespace org.GraphDefined.WWCP.UnitTests
         [Test]
         public void EqualsNonEVSP_IdTest()
         {
-            var _EVSP_Id  = eMobilityProvider_Id.Parse(Country.Germany, _Random.GetString(3));
+            var _EVSP_Id  = eMobilityProvider_Id.Parse(Country.Germany, _Random.RandomString(3));
             var _Object   = "123";
             Assert.IsFalse(_EVSP_Id.Equals(_Object));
         }

@@ -17,6 +17,7 @@
 
 #region Usings
 
+using org.GraphDefined.Vanaheimr.Hermod.HTTP;
 using System;
 
 #endregion
@@ -27,9 +28,9 @@ namespace org.GraphDefined.WWCP
     public static class Semantics
     {
 
-        public const String DebugLog         = "DebugLog";
-        public const String ImporterLog      = "ImporterLog";
-        public const String ForwardingInfos  = "ForwardingInfos";
+        public static readonly HTTPEventSource_Id DebugLog         = HTTPEventSource_Id.Parse("DebugLog");
+        public static readonly HTTPEventSource_Id ImporterLog      = HTTPEventSource_Id.Parse("ImporterLog");
+        public static readonly HTTPEventSource_Id ForwardingInfos  = HTTPEventSource_Id.Parse("ForwardingInfos");
 
     }
 
