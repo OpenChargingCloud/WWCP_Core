@@ -3165,6 +3165,21 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region SetEVSEStatus(EVSEStatusList)
+
+        public void SetEVSEStatus(IEnumerable<EVSEStatus> EVSEStatusList)
+        {
+
+            foreach (var evseStatus in EVSEStatusList)
+            {
+                if (TryGetChargingStationOperatorById(evseStatus.Id.OperatorId, out ChargingStationOperator _cso))
+                    _cso.SetEVSEStatus(evseStatus);
+            }
+
+        }
+
+        #endregion
+
         #region SetEVSEStatus(EVSEId, NewStatus)
 
         public void SetEVSEStatus(EVSE_Id                       EVSEId,
@@ -3186,7 +3201,7 @@ namespace org.GraphDefined.WWCP
         {
 
             if (TryGetChargingStationOperatorById(EVSEId.OperatorId, out ChargingStationOperator _cso))
-                _cso.SetEVSEStatus(EVSEId, NewStatus);
+                _cso.SetEVSEStatus(EVSEId, new Timestamped<EVSEStatusTypes>(Timestamp, NewStatus));
 
         }
 

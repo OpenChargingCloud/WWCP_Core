@@ -2730,14 +2730,25 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
+        #region SetEVSEStatus(NewStatus)
+
+        public void SetEVSEStatus(EVSEStatus  NewStatus)
+        {
+
+            if (TryGetEVSEbyId(NewStatus.Id, out EVSE _EVSE))
+                _EVSE.SetStatus(NewStatus.Status);
+
+        }
+
+        #endregion
+
         #region SetEVSEStatus(EVSEId, NewStatus)
 
-        public void SetEVSEStatus(EVSE_Id         EVSEId,
+        public void SetEVSEStatus(EVSE_Id          EVSEId,
                                   EVSEStatusTypes  NewStatus)
         {
 
-            EVSE _EVSE = null;
-            if (TryGetEVSEbyId(EVSEId, out _EVSE))
+            if (TryGetEVSEbyId(EVSEId, out EVSE _EVSE))
                 _EVSE.SetStatus(NewStatus);
 
         }

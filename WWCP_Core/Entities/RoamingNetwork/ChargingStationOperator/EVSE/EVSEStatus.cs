@@ -52,11 +52,13 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
+        #region EVSEStatus(Id, Status,            CustomData = null)
+
         /// <summary>
         /// Create a new EVSE status.
         /// </summary>
         /// <param name="Id">The unique identification of the EVSE.</param>
-        /// <param name="Status">The current status of the EVSE.</param>
+        /// <param name="Status">The current timestamped status of the EVSE.</param>
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public EVSEStatus(EVSE_Id                              Id,
                           Timestamped<EVSEStatusTypes>         Status,
@@ -70,6 +72,30 @@ namespace org.GraphDefined.WWCP
             this.Status  = Status;
 
         }
+
+        #endregion
+
+        #region EVSEStatus(Id, Status, Timestamp, CustomData = null)
+
+        /// <summary>
+        /// Create a new EVSE status.
+        /// </summary>
+        /// <param name="Id">The unique identification of the EVSE.</param>
+        /// <param name="Status">The current status of the EVSE.</param>
+        /// <param name="Timestamp">The timestamp of the status change of the EVSE.</param>
+        /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
+        public EVSEStatus(EVSE_Id                              Id,
+                          EVSEStatusTypes                      Status,
+                          DateTime                             Timestamp,
+                          IReadOnlyDictionary<String, Object>  CustomData  = null)
+
+            : this(Id,
+                   new Timestamped<EVSEStatusTypes>(Timestamp, Status),
+                   CustomData)
+
+        { }
+
+        #endregion
 
         #endregion
 
