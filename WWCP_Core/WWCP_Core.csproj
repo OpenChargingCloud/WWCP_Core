@@ -53,6 +53,9 @@
     <Compile Include="Commands\AdminStatus\ISendAdminStatus.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingStation\PushChargingStationAdminStatusResult.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingPool\PushChargingPoolAdminStatusResult.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingTariffGroupExceptions.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingTariffGroup.cs" />
+    <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\ChargingTariff\ChargingTariffGroup_Id.cs" />
     <Compile Include="Entities\RoamingNetwork\ChargingStationOperator\PushChargingStationOperatorAdminStatusResult.cs" />
     <Compile Include="Entities\RoamingNetwork\PushRoamingNetworkAdminStatusResult.cs" />
     <Compile Include="Commands\AuthenticationData\IReceiveAuthenticationData.cs" />

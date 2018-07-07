@@ -159,6 +159,21 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Parse(OperatorId, ChargingTariffGroupId, Suffix)
+
+        /// <summary>
+        /// Parse the given string as an EVSE group identification.
+        /// </summary>
+        /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="Suffix">The suffix of the EVSE group identification.</param>
+        public static EVSEGroup_Id Parse(ChargingStationOperator_Id  OperatorId,
+                                         ChargingTariffGroup_Id      ChargingTariffGroupId,
+                                         String                      Suffix)
+
+            => Parse(OperatorId.ToString(OperatorIdFormats.ISO_STAR) + "*GE_" + ChargingTariffGroupId + "_" + Suffix);
+
+        #endregion
+
         #region TryParse(Text, out EVSEGroupId)
 
         /// <summary>

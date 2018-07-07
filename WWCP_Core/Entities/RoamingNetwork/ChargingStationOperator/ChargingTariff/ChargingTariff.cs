@@ -88,19 +88,20 @@ namespace org.GraphDefined.WWCP
         public IEnumerable<ChargingTariffElement>  TariffElements    { get; }
 
 
-        #endregion
-
-        #region Links
-
         /// <summary>
         /// The charging tariff operator of this charging tariff.
         /// </summary>
         [InternalUseOnly]
-        public ChargingStationOperator  Operator   { get; }
+        public ChargingStationOperator  Operator       { get; }
+
+
+        public ChargingTariffGroup      TariffGroup    { get; }
 
         #endregion
 
         #region Constructor(s)
+
+        #region ChargingTariff(Id, Operator, ...)
 
         /// <summary>
         /// Create a new charging tariff having the given identification.
@@ -149,6 +150,47 @@ namespace org.GraphDefined.WWCP
             #endregion
 
         }
+
+        #endregion
+
+        #region ChargingTariff(Id, TariffGroup, ...)
+
+        /// <summary>
+        /// Create a new charging tariff having the given identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charing tariff.</param>
+        /// <param name="TariffGroup">The charging tariff group of this charging tariff.</param>
+        /// <param name="Name">The offical (multi-language) name of this charging tariff.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
+        public ChargingTariff(ChargingTariff_Id                   Id,
+                              ChargingTariffGroup                 TariffGroup,
+                              I18NString                          Name,
+                              I18NString                          Description,
+                              Brand                               Brand,
+
+                              Uri                                 TariffUrl,
+                              Currency                            Currency,
+                              EnergyMix                           EnergyMix,
+                              IEnumerable<ChargingTariffElement>  TariffElements)
+
+            : this(Id,
+                   TariffGroup.Operator,
+                   Name,
+                   Description,
+                   Brand,
+
+                   TariffUrl,
+                   Currency,
+                   EnergyMix,
+                   TariffElements)
+
+        {
+
+            this.TariffGroup  = TariffGroup;
+
+        }
+
+        #endregion
 
         #endregion
 

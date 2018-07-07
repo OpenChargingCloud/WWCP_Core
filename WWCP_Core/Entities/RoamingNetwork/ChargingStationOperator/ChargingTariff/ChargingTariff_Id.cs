@@ -157,6 +157,21 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
+        #region Parse(OperatorId, Suffix)
+
+        /// <summary>
+        /// Parse the given string as a charging tariff identification.
+        /// </summary>
+        /// <param name="OperatorId">The unique identification of a charging station operator.</param>
+        /// <param name="Suffix">The suffix of the charging tariff identification.</param>
+        public static ChargingTariff_Id Parse(ChargingStationOperator_Id  OperatorId,
+                                              ChargingTariffGroup_Id      TariffGroupId,
+                                              String                      Suffix)
+
+            => Parse(OperatorId.ToString(OperatorIdFormats.ISO_STAR) + "*T" + TariffGroupId + "_" + Suffix);
+
+        #endregion
+
         #region TryParse(Text, out ChargingTariff_Id)
 
         /// <summary>
