@@ -153,7 +153,7 @@ namespace org.GraphDefined.WWCP
         public static ChargingTariffGroup_Id Parse(ChargingStationOperator_Id  OperatorId,
                                               String                      Suffix)
 
-            => Parse(OperatorId.ToString(OperatorIdFormats.ISO_STAR) + "*T" + Suffix);
+            => Parse(OperatorId.ToString(OperatorIdFormats.ISO_STAR) + "*TG" + Suffix);
 
         #endregion
 
