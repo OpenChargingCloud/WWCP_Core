@@ -600,6 +600,8 @@ namespace org.GraphDefined.WWCP
 
             this.ChargingTariffAddition        = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariff,       Boolean>(() => new VetoVote(), true);
             this.ChargingTariffRemoval         = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariff,       Boolean>(() => new VetoVote(), true);
+            this.ChargingTariffGroupAddition   = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariffGroup,  Boolean>(() => new VetoVote(), true);
+            this.ChargingTariffGroupRemoval    = new VotingNotificator<DateTime, ChargingStationOperator,    ChargingTariffGroup,  Boolean>(() => new VetoVote(), true);
 
             #endregion
 
@@ -3605,179 +3607,6 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-
-        #region ChargingTariffGroups
-
-        #region ChargingTariffGroupAddition
-
-        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> ChargingTariffGroupAddition;
-
-        /// <summary>
-        /// Called whenever a charging tariff will be or was added.
-        /// </summary>
-        public IVotingSender<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> OnChargingTariffGroupAddition
-
-            => ChargingTariffGroupAddition;
-
-        #endregion
-
-        #region ChargingTariffGroups
-
-        private readonly EntityHashSet<ChargingStationOperator, ChargingTariffGroup_Id, ChargingTariffGroup> _ChargingTariffGroups;
-
-        /// <summary>
-        /// All charging tariff groups registered within this charging station operator.
-        /// </summary>
-        public IEnumerable<ChargingTariffGroup> ChargingTariffGroups
-
-            => _ChargingTariffGroups;
-
-        #endregion
-
-
-        #region CreateChargingTariffGroup     (IdSuffix, Name, Description = null, ..., OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// Create and register a new charging tariff group having the given
-        /// unique charging tariff identification.
-        /// </summary>
-        /// <param name="IdSuffix">The suffix of the unique identification of the charing tariff group.</param>
-        /// <param name="Description">An optional (multi-language) description of this charging tariff group.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff group after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff group failed.</param>
-        public ChargingTariffGroup CreateChargingTariffGroup(String                                                   IdSuffix,
-                                                             I18NString                                               Description,
-                                                             Action<ChargingTariffGroup>                              OnSuccess  = null,
-                                                             Action<ChargingStationOperator, ChargingTariffGroup_Id>  OnError    = null)
-
-        {
-
-            lock (_ChargingTariffGroups)
-            {
-
-                #region Initial checks
-
-                var NewGroupId = ChargingTariffGroup_Id.Parse(Id, IdSuffix);
-
-                if (_ChargingTariffGroups.ContainsId(NewGroupId))
-                {
-
-                    if (OnError != null)
-                        OnError?.Invoke(this, NewGroupId);
-
-                    throw new ChargingTariffGroupAlreadyExists(this, NewGroupId);
-
-                }
-
-                #endregion
-
-                var _ChargingTariffGroup = new ChargingTariffGroup(NewGroupId,
-                                                                   this,
-                                                                   Description);
-
-
-                if (ChargingTariffGroupAddition.SendVoting(DateTime.UtcNow, this, _ChargingTariffGroup) &&
-                    _ChargingTariffGroups.TryAdd(_ChargingTariffGroup))
-                {
-
-                    //_ChargingTariffGroup.OnEVSEDataChanged                             += UpdateEVSEData;
-                    //_ChargingTariffGroup.OnEVSEStatusChanged                           += UpdateEVSEStatus;
-                    //_ChargingTariffGroup.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
-
-                    //_ChargingTariffGroup.OnChargingStationDataChanged                  += UpdateChargingStationData;
-                    //_ChargingTariffGroup.OnChargingStationStatusChanged                += UpdateChargingStationStatus;
-                    //_ChargingTariffGroup.OnChargingStationAdminStatusChanged           += UpdateChargingStationAdminStatus;
-
-                    ////_ChargingTariffGroup.OnDataChanged                                 += UpdateChargingTariffGroupData;
-                    ////_ChargingTariffGroup.OnAdminStatusChanged                          += UpdateChargingTariffGroupAdminStatus;
-
-                    OnSuccess?.Invoke(_ChargingTariffGroup);
-
-                    ChargingTariffGroupAddition.SendNotification(DateTime.UtcNow,
-                                                                 this,
-                                                                 _ChargingTariffGroup);
-
-                    return _ChargingTariffGroup;
-
-                }
-
-                return null;
-
-            }
-
-        }
-
-        #endregion
-
-        #region GetOrCreateChargingTariffGroup(Id,       Name, Description = null, ..., OnSuccess = null, OnError = null)
-
-        /// <summary>
-        /// Get or create and register a new charging tariff having the given
-        /// unique charging tariff identification.
-        /// </summary>
-        /// <param name="IdSuffix">The suffix of the unique identification of the charing tariff group.</param>
-        /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
-        public ChargingTariffGroup GetOrCreateChargingTariffGroup(String                                                   IdSuffix,
-                                                                  I18NString                                               Description,
-                                                                  Action<ChargingTariffGroup>                              OnSuccess  = null,
-                                                                  Action<ChargingStationOperator, ChargingTariffGroup_Id>  OnError    = null)
-
-        {
-
-            lock (_ChargingTariffGroups)
-            {
-
-                if (_ChargingTariffGroups.TryGet(ChargingTariffGroup_Id.Parse(Id, IdSuffix), out ChargingTariffGroup _ChargingTariffGroup))
-                    return _ChargingTariffGroup;
-
-                return CreateChargingTariffGroup(IdSuffix,
-                                                 Description,
-                                                 OnSuccess,
-                                                 OnError);
-
-            }
-
-        }
-
-        #endregion
-
-
-        #region GetChargingTariffGroup(Id)
-
-        /// <summary>
-        /// Return to charging tariff for the given charging tariff identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the charing tariff.</param>
-        public ChargingTariffGroup GetChargingTariffGroup(ChargingTariffGroup_Id Id)
-        {
-
-            if (_ChargingTariffGroups.TryGet(Id, out ChargingTariffGroup TariffGroup))
-                return TariffGroup;
-
-            return null;
-
-        }
-
-        #endregion
-
-        #region TryGetChargingTariffGroup(Id, out ChargingTariffGroup)
-
-        /// <summary>
-        /// Try to return to charging tariff for the given charging tariff identification.
-        /// </summary>
-        /// <param name="Id">The unique identification of the charing tariff.</param>
-        /// <param name="ChargingTariffGroup">The charing tariff.</param>
-        public Boolean TryGetChargingTariffGroup(ChargingTariffGroup_Id Id,
-                                            out ChargingTariffGroup ChargingTariffGroup)
-
-            => _ChargingTariffGroups.TryGet(Id, out ChargingTariffGroup);
-
-        #endregion
-
-        #endregion
-
         #region ChargingTariffs
 
         #region ChargingTariffAddition
@@ -4181,6 +4010,277 @@ namespace org.GraphDefined.WWCP
                 OnError?.Invoke(this, ChargingTariff);
 
                 return ChargingTariff;
+
+            }
+
+        }
+
+        #endregion
+
+        #endregion
+
+        #region ChargingTariffGroups
+
+        #region ChargingTariffGroupAddition
+
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> ChargingTariffGroupAddition;
+
+        /// <summary>
+        /// Called whenever a charging tariff will be or was added.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> OnChargingTariffGroupAddition
+
+            => ChargingTariffGroupAddition;
+
+        #endregion
+
+        #region ChargingTariffGroups
+
+        private readonly EntityHashSet<ChargingStationOperator, ChargingTariffGroup_Id, ChargingTariffGroup> _ChargingTariffGroups;
+
+        /// <summary>
+        /// All charging tariff groups registered within this charging station operator.
+        /// </summary>
+        public IEnumerable<ChargingTariffGroup> ChargingTariffGroups
+
+            => _ChargingTariffGroups;
+
+        #endregion
+
+
+        #region CreateChargingTariffGroup     (IdSuffix, Name, Description = null, ..., OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Create and register a new charging tariff group having the given
+        /// unique charging tariff identification.
+        /// </summary>
+        /// <param name="IdSuffix">The suffix of the unique identification of the charing tariff group.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging tariff group.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff group after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff group failed.</param>
+        public ChargingTariffGroup CreateChargingTariffGroup(String                                                   IdSuffix,
+                                                             I18NString                                               Description,
+                                                             Action<ChargingTariffGroup>                              OnSuccess  = null,
+                                                             Action<ChargingStationOperator, ChargingTariffGroup_Id>  OnError    = null)
+
+        {
+
+            lock (_ChargingTariffGroups)
+            {
+
+                #region Initial checks
+
+                var NewGroupId = ChargingTariffGroup_Id.Parse(Id, IdSuffix);
+
+                if (_ChargingTariffGroups.ContainsId(NewGroupId))
+                {
+
+                    if (OnError != null)
+                        OnError?.Invoke(this, NewGroupId);
+
+                    throw new ChargingTariffGroupAlreadyExists(this, NewGroupId);
+
+                }
+
+                #endregion
+
+                var _ChargingTariffGroup = new ChargingTariffGroup(NewGroupId,
+                                                                   this,
+                                                                   Description);
+
+
+                if (ChargingTariffGroupAddition.SendVoting(DateTime.UtcNow, this, _ChargingTariffGroup) &&
+                    _ChargingTariffGroups.TryAdd(_ChargingTariffGroup))
+                {
+
+                    //_ChargingTariffGroup.OnEVSEDataChanged                             += UpdateEVSEData;
+                    //_ChargingTariffGroup.OnEVSEStatusChanged                           += UpdateEVSEStatus;
+                    //_ChargingTariffGroup.OnEVSEAdminStatusChanged                      += UpdateEVSEAdminStatus;
+
+                    //_ChargingTariffGroup.OnChargingStationDataChanged                  += UpdateChargingStationData;
+                    //_ChargingTariffGroup.OnChargingStationStatusChanged                += UpdateChargingStationStatus;
+                    //_ChargingTariffGroup.OnChargingStationAdminStatusChanged           += UpdateChargingStationAdminStatus;
+
+                    ////_ChargingTariffGroup.OnDataChanged                                 += UpdateChargingTariffGroupData;
+                    ////_ChargingTariffGroup.OnAdminStatusChanged                          += UpdateChargingTariffGroupAdminStatus;
+
+                    OnSuccess?.Invoke(_ChargingTariffGroup);
+
+                    ChargingTariffGroupAddition.SendNotification(DateTime.UtcNow,
+                                                                 this,
+                                                                 _ChargingTariffGroup);
+
+                    return _ChargingTariffGroup;
+
+                }
+
+                return null;
+
+            }
+
+        }
+
+        #endregion
+
+        #region GetOrCreateChargingTariffGroup(Id,       Name, Description = null, ..., OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// Get or create and register a new charging tariff having the given
+        /// unique charging tariff identification.
+        /// </summary>
+        /// <param name="IdSuffix">The suffix of the unique identification of the charing tariff group.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
+        public ChargingTariffGroup GetOrCreateChargingTariffGroup(String                                                   IdSuffix,
+                                                                  I18NString                                               Description,
+                                                                  Action<ChargingTariffGroup>                              OnSuccess  = null,
+                                                                  Action<ChargingStationOperator, ChargingTariffGroup_Id>  OnError    = null)
+
+        {
+
+            lock (_ChargingTariffGroups)
+            {
+
+                if (_ChargingTariffGroups.TryGet(ChargingTariffGroup_Id.Parse(Id, IdSuffix), out ChargingTariffGroup _ChargingTariffGroup))
+                    return _ChargingTariffGroup;
+
+                return CreateChargingTariffGroup(IdSuffix,
+                                                 Description,
+                                                 OnSuccess,
+                                                 OnError);
+
+            }
+
+        }
+
+        #endregion
+
+
+        #region GetChargingTariffGroup(Id)
+
+        /// <summary>
+        /// Return to charging tariff for the given charging tariff identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charing tariff.</param>
+        public ChargingTariffGroup GetChargingTariffGroup(ChargingTariffGroup_Id Id)
+        {
+
+            if (_ChargingTariffGroups.TryGet(Id, out ChargingTariffGroup TariffGroup))
+                return TariffGroup;
+
+            return null;
+
+        }
+
+        #endregion
+
+        #region TryGetChargingTariffGroup(Id, out ChargingTariffGroup)
+
+        /// <summary>
+        /// Try to return to charging tariff for the given charging tariff identification.
+        /// </summary>
+        /// <param name="Id">The unique identification of the charing tariff.</param>
+        /// <param name="ChargingTariffGroup">The charing tariff.</param>
+        public Boolean TryGetChargingTariffGroup(ChargingTariffGroup_Id Id,
+                                                 out ChargingTariffGroup ChargingTariffGroup)
+
+            => _ChargingTariffGroups.TryGet(Id, out ChargingTariffGroup);
+
+        #endregion
+
+
+        #region ChargingTariffGroupRemoval
+
+        internal readonly IVotingNotificator<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> ChargingTariffGroupRemoval;
+
+        /// <summary>
+        /// Called whenever a charging tariff group will be or was removed.
+        /// </summary>
+        public IVotingSender<DateTime, ChargingStationOperator, ChargingTariffGroup, Boolean> OnChargingTariffGroupRemoval
+
+            => ChargingTariffGroupRemoval;
+
+        #endregion
+
+        #region RemoveChargingTariffGroup(ChargingTariffGroupId, OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// All charging tariffs registered within this charging station operator.
+        /// </summary>
+        /// <param name="ChargingTariffGroupId">The unique identification of the charging tariff to be removed.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the charging tariff failed.</param>
+        public ChargingTariffGroup RemoveChargingTariffGroup(ChargingTariffGroup_Id                                   ChargingTariffGroupId,
+                                                             Action<ChargingStationOperator, ChargingTariffGroup>     OnSuccess   = null,
+                                                             Action<ChargingStationOperator, ChargingTariffGroup_Id>  OnError     = null)
+        {
+
+            lock (_ChargingTariffGroups)
+            {
+
+                if (_ChargingTariffGroups.TryGet(ChargingTariffGroupId, out ChargingTariffGroup ChargingTariffGroup) &&
+                    ChargingTariffGroupRemoval.SendVoting(DateTime.UtcNow,
+                                                          this,
+                                                          ChargingTariffGroup) &&
+                    _ChargingTariffGroups.TryRemove(ChargingTariffGroupId, out ChargingTariffGroup _ChargingTariffGroup))
+                {
+
+                    OnSuccess?.Invoke(this, ChargingTariffGroup);
+
+                    ChargingTariffGroupRemoval.SendNotification(DateTime.UtcNow,
+                                                                this,
+                                                                _ChargingTariffGroup);
+
+                    return _ChargingTariffGroup;
+
+                }
+
+                OnError?.Invoke(this, ChargingTariffGroupId);
+
+                return null;
+
+            }
+
+        }
+
+        #endregion
+
+        #region RemoveChargingTariffGroup(ChargingTariffGroup,   OnSuccess = null, OnError = null)
+
+        /// <summary>
+        /// All charging tariffs registered within this charging station operator.
+        /// </summary>
+        /// <param name="ChargingTariffGroup">The charging tariff to remove.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful deletion.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the deletion of the charging tariff failed.</param>
+        public ChargingTariffGroup RemoveChargingTariffGroup(ChargingTariffGroup                                   ChargingTariffGroup,
+                                                             Action<ChargingStationOperator, ChargingTariffGroup>  OnSuccess   = null,
+                                                             Action<ChargingStationOperator, ChargingTariffGroup>  OnError     = null)
+        {
+
+            lock (_ChargingTariffGroups)
+            {
+
+                if (ChargingTariffGroupRemoval.SendVoting(DateTime.UtcNow,
+                                                          this,
+                                                          ChargingTariffGroup) &&
+                    _ChargingTariffGroups.TryRemove(ChargingTariffGroup.Id, out ChargingTariffGroup _ChargingTariffGroup))
+                {
+
+                    OnSuccess?.Invoke(this, _ChargingTariffGroup);
+
+                    ChargingTariffGroupRemoval.SendNotification(DateTime.UtcNow,
+                                                                this,
+                                                                _ChargingTariffGroup);
+
+                    return _ChargingTariffGroup;
+
+                }
+
+                OnError?.Invoke(this, ChargingTariffGroup);
+
+                return ChargingTariffGroup;
 
             }
 
