@@ -5220,7 +5220,7 @@ namespace org.GraphDefined.WWCP
                 if (result.Result == RemoteStartEVSEResultType.Success)
                 {
 
-                    result.Session.Operator = this;
+                    result.Session.ChargingStationOperator = this;
 
                     OnNewChargingSession?.Invoke(DateTime.UtcNow,
                                                  this,
@@ -5264,7 +5264,7 @@ namespace org.GraphDefined.WWCP
 
                     if (result.Result == RemoteStartEVSEResultType.Success)
                     {
-                        result.Session.Operator = this;
+                        result.Session.ChargingStationOperator = this;
                         _ChargingSessions.TryAdd(result.Session.Id, _ChargingPool);
                     }
 
@@ -5414,7 +5414,7 @@ namespace org.GraphDefined.WWCP
 
                 {
 
-                    result.Session.Operator = this;
+                    result.Session.ChargingStationOperator = this;
 
                     OnNewChargingSession?.Invoke(DateTime.UtcNow, this, result.Session);
 
@@ -5511,8 +5511,8 @@ namespace org.GraphDefined.WWCP
             if (Session != null)
             {
 
-                if (Session.Operator == null)
-                    Session.Operator = this;
+                if (Session.ChargingStationOperator == null)
+                    Session.ChargingStationOperator = this;
 
             }
 

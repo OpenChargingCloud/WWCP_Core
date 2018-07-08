@@ -157,7 +157,7 @@ namespace org.GraphDefined.WWCP.Net.IO.JSON
                             ? new JProperty("socketOutlets",  new JArray(EVSE.SocketOutlets.ToJSON()))
                             : null,
 
-                         EVSE.EnergyMeterId.IsNotNullOrEmpty() ? new JProperty("energyMeterId", EVSE.EnergyMeterId) : null,
+                         EVSE.EnergyMeterId.HasValue ? new JProperty("energyMeterId", EVSE.EnergyMeterId) : null,
 
                          !Embedded ? EVSE.ChargingStation.OpeningTimes.ToJSON("openingTimes") : null
 

@@ -22,11 +22,82 @@ using System.Linq;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
+
+    /// <summary>
+    /// Extention methods for the charging sessions.
+    /// </summary>
+    public static class ChargingSessionExtentions
+    {
+
+        #region ToJSON(this ChargingSession, JPropertyKey)
+
+        public static JProperty ToJSON(this ChargingSession ChargingSession, String JPropertyKey)
+        {
+
+            #region Initial checks
+
+            if (ChargingSession == null)
+                throw new ArgumentNullException(nameof(ChargingSession),  "The given charging session must not be null!");
+
+            if (JPropertyKey.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(JPropertyKey),     "The given json property key must not be null or empty!");
+
+            #endregion
+
+            return new JProperty(JPropertyKey,
+                                 ChargingSession.ToJSON());
+
+        }
+
+        #endregion
+
+        #region ToJSON(this ChargingSessions)
+
+        public static JArray ToJSON(this IEnumerable<ChargingSession>  ChargingSessions)
+        {
+
+            #region Initial checks
+
+            if (ChargingSessions == null)
+                return new JArray();
+
+            #endregion
+
+            return ChargingSessions != null && ChargingSessions.Any()
+                       ? new JArray(ChargingSessions.SafeSelect(session => session.ToJSON()))
+                       : new JArray();
+
+        }
+
+        #endregion
+
+        #region ToJSON(this ChargingSessions, JPropertyKey)
+
+        public static JProperty ToJSON(this IEnumerable<ChargingSession> ChargingSessions, String JPropertyKey)
+        {
+
+            #region Initial checks
+
+            if (JPropertyKey.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(JPropertyKey), "The json property key must not be null or empty!");
+
+            #endregion
+
+            return ChargingSessions != null
+                       ? new JProperty(JPropertyKey, ChargingSessions.ToJSON())
+                       : new JProperty(JPropertyKey, new JArray());
+
+        }
+
+        #endregion
+
+    }
 
     /// <summary>
     /// A pool of electric vehicle charging stations.
@@ -80,30 +151,30 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Operator
+        #region ChargingStationOperator
 
-        private ChargingStationOperator _Operator;
+        private ChargingStationOperator _ChargingStationOperator;
 
         /// <summary>
         /// The charging station operator serving this session.
         /// </summary>
-        public ChargingStationOperator Operator
+        public ChargingStationOperator ChargingStationOperator
 
         {
 
             get
             {
-                return _Operator;
+                return _ChargingStationOperator;
             }
 
             set
             {
 
-                _Operator = value;
+                _ChargingStationOperator = value;
 
                 if (value != null)
                 {
-                    OperatorId          = value.Id;
+                    ChargingStationOperatorId          = value.Id;
                     _RoamingNetwork     = value.RoamingNetwork;
                     RoamingNetworkId    = value.RoamingNetwork.Id;
                 }
@@ -115,12 +186,12 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region OperatorId
+        #region ChargingStationOperatorId
 
         /// <summary>
         /// The unqiue identification of the charging station operator serving this session.
         /// </summary>
-        public ChargingStationOperator_Id?  OperatorId   { get; set; }
+        public ChargingStationOperator_Id?  ChargingStationOperatorId   { get; set; }
 
         #endregion
 
@@ -147,8 +218,8 @@ namespace org.GraphDefined.WWCP
                 if (value != null)
                 {
                     _ChargingPoolId     = value.Id;
-                    _Operator           = value.Operator;
-                    OperatorId          = value.Operator.Id;
+                    _ChargingStationOperator           = value.Operator;
+                    ChargingStationOperatorId          = value.Operator.Id;
                     _RoamingNetwork     = value.Operator.RoamingNetwork;
                     RoamingNetworkId    = value.Operator.RoamingNetwork.Id;
                 }
@@ -218,8 +289,8 @@ namespace org.GraphDefined.WWCP
                     _ChargingStationId  = value.Id;
                     _ChargingPool       = value.ChargingPool;
                     _ChargingPoolId     = value.ChargingPool.Id;
-                    _Operator           = value.Operator;
-                    OperatorId          = value.Operator.Id;
+                    _ChargingStationOperator           = value.Operator;
+                    ChargingStationOperatorId          = value.Operator.Id;
                     _RoamingNetwork     = value.Operator.RoamingNetwork;
                     RoamingNetworkId    = value.Operator.RoamingNetwork.Id;
                 }
@@ -287,8 +358,8 @@ namespace org.GraphDefined.WWCP
                     _ChargingStationId  = value.ChargingStation.Id;
                     _ChargingPool       = value.ChargingStation.ChargingPool;
                     _ChargingPoolId     = value.ChargingStation.ChargingPool.Id;
-                    _Operator           = value.Operator;
-                    OperatorId          = value.Operator.Id;
+                    _ChargingStationOperator           = value.Operator;
+                    ChargingStationOperatorId          = value.Operator.Id;
                     _RoamingNetwork     = value.Operator.RoamingNetwork;
                     RoamingNetworkId    = value.Operator.RoamingNetwork.Id;
                 }
@@ -389,39 +460,31 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region ProviderIdStart
+        #region Identification
 
         /// <summary>
-        /// The e-Mobility service provider identification for starting this charging session.
+        /// The identification used for starting this charging process.
         /// </summary>
         [Optional]
-        public eMobilityProvider_Id? ProviderIdStart { get; set; }
-
-        #endregion
-
-        #region ProviderIdStop
+        public AuthIdentification               IdentificationStart    { get; set; }
 
         /// <summary>
-        /// The e-Mobility service provider identification for stopping this charging session.
+        /// The identification used for stopping this charging process.
         /// </summary>
         [Optional]
-        public eMobilityProvider_Id? ProviderIdStop { get; set; }
-
-        #endregion
-
-        #region AuthTokenStart
-
-        public Auth_Token AuthTokenStart { get; set; }
-
-        #endregion
-
-        #region eMAIdStart
+        public AuthIdentification               IdentificationStop     { get; set; }
 
         /// <summary>
-        /// The unique identification of an Electric Mobility Account (driver contract) (eMAId).
+        /// The identification of the e-mobility provider used for starting this charging process.
         /// </summary>
         [Optional]
-        public eMobilityAccount_Id? eMAIdStart { get; set; }
+        public eMobilityProvider_Id?            ProviderIdStart        { get; set; }
+
+        /// <summary>
+        /// The identification of the e-mobility provider used for stopping this charging process.
+        /// </summary>
+        [Optional]
+        public eMobilityProvider_Id?            ProviderIdStop         { get; set; }
 
         #endregion
 
@@ -453,19 +516,14 @@ namespace org.GraphDefined.WWCP
         /// Optional timestamps when the charging session started and ended.
         /// </summary>
         [Mandatory]
-        public StartEndDateTime? SessionTime { get; set; }
+        public StartEndDateTime SessionTime { get; }
 
         #endregion
 
-        #region SessionRuntime
+        #region Duration
 
-        public TimeSpan SessionRuntime
-        {
-            get
-            {
-                return DateTime.UtcNow - SessionTime.Value.StartTime;
-            }
-        }
+        public TimeSpan Duration
+            => (SessionTime.EndTime ?? DateTime.UtcNow) - SessionTime.StartTime;
 
         #endregion
 
@@ -492,7 +550,7 @@ namespace org.GraphDefined.WWCP
 
         #region EnergyMeterValues
 
-        private List<Timestamped<Single>> _EnergyMeterValues;
+        private readonly List<Timestamped<Single>> _EnergyMeterValues;
 
         /// <summary>
         /// An optional enumeration of intermediate energy meter values.
@@ -500,13 +558,23 @@ namespace org.GraphDefined.WWCP
         /// and the last timestamp in watt-hours [Wh].
         /// </summary>
         [Optional]
-        public List<Timestamped<Single>> EnergyMeteringValues
-        {
-            get
-            {
-                return _EnergyMeterValues;
-            }
-        }
+        public IEnumerable<Timestamped<Single>> EnergyMeteringValues
+            => _EnergyMeterValues;
+
+        #endregion
+
+        #region SignedMeteringValues
+
+        private readonly List<SignedMeteringValue> _SignedMeteringValues;
+
+        /// <summary>
+        /// An optional enumeration of signed intermediate energy meter values.
+        /// This values indicate the consumed energy between the current
+        /// and the last timestamp in watt-hours [Wh].
+        /// </summary>
+        [Optional]
+        public IEnumerable<SignedMeteringValue> SignedMeteringValues
+            => _SignedMeteringValues;
 
         #endregion
 
@@ -536,9 +604,6 @@ namespace org.GraphDefined.WWCP
         public IId                        AuthorizatorId            { get; set; }
 
 
-        public ChargingStationOperator    ChargingStationOperator   { get; set; }
-
-
         public IEMPRoamingProvider        EMPRoamingProvider        { get; set; }
 
 
@@ -551,6 +616,12 @@ namespace org.GraphDefined.WWCP
         public DateTime                   CDRSent                   { get; set; }
 
         public Boolean                    RemoveMe                  { get; set; }
+
+
+        private readonly HashSet<String> _Signatures;
+
+        public IEnumerable<String> Signatures
+                   => _Signatures;
 
         #endregion
 
@@ -568,6 +639,20 @@ namespace org.GraphDefined.WWCP
         /// An event send whenever a new energy meter value was received.
         /// </summary>
         public event OnNewEnergyMeterValueDelegate OnNewEnergyMeterValue;
+
+
+        /// <summary>
+        /// An event send whenever a new energy meter value was received.
+        /// </summary>
+        /// <param name="Timestamp">The current timestamp.</param>
+        /// <param name="ChargingSession">The unique charging session identification.</param>
+        /// <param name="EnergyMeterValue">A timestamped energy meter value.</param>
+        public delegate void OnNewSignedEnergyMeterValueDelegate(DateTime Timestamp, ChargingSession ChargingSession, SignedMeteringValue EnergyMeterValue);
+
+        /// <summary>
+        /// An event send whenever a new energy meter value was received.
+        /// </summary>
+        public event OnNewSignedEnergyMeterValueDelegate OnNewSignedEnergyMeterValue;
 
         #endregion
 
@@ -604,6 +689,92 @@ namespace org.GraphDefined.WWCP
             this.EMPRoamingProvider = EMPRoamingProvider;
             return this;
         }
+
+
+
+        public JObject ToJSON()
+
+            => JSONObject.Create(
+
+                   new JProperty("@id",            Id.ToString()),
+                   new JProperty("@context",       ""),
+
+                   new JProperty("sessionTime",           JSONObject.Create(
+                         new JProperty("start",             SessionTime.StartTime.ToIso8601()),
+                         SessionTime.EndTime.HasValue
+                             ? new JProperty("end",         SessionTime.EndTime.Value.ToIso8601())
+                             : null
+                     )),
+
+                   new JProperty("duration",                Duration.TotalSeconds),
+
+
+                   ChargingStationOperatorId.HasValue
+                       ? new JProperty("chargingStationOperatorId",   ChargingStationOperatorId.ToString())
+                       : null,
+                   ChargingPoolId.HasValue
+                       ? new JProperty("chargingPoolId",              ChargingPoolId.           ToString())
+                       : null,
+                   ChargingStationId.HasValue
+                       ? new JProperty("chargingStationId",           ChargingStationId.        ToString())
+                       : null,
+                   EVSEId.HasValue
+                       ? new JProperty("evseId",                      EVSEId.                   ToString())
+                       : null,
+
+
+
+                   Reservation != null
+
+                       ? new JProperty("Reservation", new JObject(
+                                                          new JProperty("ReservationId",  Reservation.Id.ToString()),
+                                                          new JProperty("Start",          Reservation.StartTime.ToIso8601()),
+                                                          new JProperty("Duration",       Reservation.Duration.TotalSeconds)
+                                                          )
+                                                      )
+
+                       : ReservationId != null
+                             ? new JProperty("ReservationId",    ReservationId.ToString())
+                             : null,
+
+                   ChargingStationOperatorId.HasValue
+                       ? new JProperty("EVSEOperatorId",         ChargingStationOperatorId.ToString())
+                       : null,
+
+                   ChargingPoolId.HasValue
+                       ? new JProperty("ChargingPoolId",         ChargingPoolId.ToString())
+                       : null,
+
+                   ChargingStationId.HasValue
+                       ? new JProperty("ChargingStationId",      ChargingStationId.ToString())
+                       : null,
+
+                   EVSEId.HasValue
+                       ? new JProperty("EVSEId",                 EVSEId.ToString())
+                       : null,
+
+                   ChargingProduct != null
+                       ? new JProperty("ChargingProduct",        ChargingProduct.ToJSON())
+                       : null,
+
+                   ProviderIdStart != null
+                       ? new JProperty("ProviderId",             ProviderIdStart.ToString())
+                       : null,
+
+                   EnergyMeterId.HasValue
+                       ? new JProperty("EnergyMeterId",          EnergyMeterId.ToString())
+                       : null,
+
+                   EnergyMeteringValues.Any()
+                       ? new JProperty("EnergyMeterValues",      new JObject(
+                                                                     
+                                                                         EnergyMeteringValues.
+                                                                         Select(MeterValue => new JProperty(MeterValue.Timestamp.ToIso8601(),
+                                                                                                            MeterValue.Value))
+                                                                 ))
+                       : null
+
+            );
 
 
 

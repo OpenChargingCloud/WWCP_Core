@@ -364,13 +364,14 @@ namespace org.GraphDefined.WWCP
 
                                 var NewChargingSession = new ChargingSession(ChargingSession_Id.Parse(elements[9]),
                                                                              elements[0] != "" ? DateTime.Parse(elements[0]) : DateTime.UtcNow) {
-                                                             AuthorizatorId   = elements[7] != "" ? CSORoamingProvider_Id.     Parse(elements[7]) : null,
-                                                             //AuthService      = result.ISendAuthorizeStartStop,
-                                                             OperatorId       = elements[2] != "" ? ChargingStationOperator_Id.Parse(elements[2]) : new ChargingStationOperator_Id?(),
-                                                             EVSEId           = EVSE_Id.Parse(elements[3]),
-                                                             AuthTokenStart   = elements[5] != "" ? Auth_Token.                Parse(elements[5]) : null,
-                                                             eMAIdStart       = elements[6] != "" ? eMobilityAccount_Id.       Parse(elements[6]) : new eMobilityAccount_Id?(),
-                                                             ChargingProduct  = elements[4] != "" ? ChargingProduct.           Parse(elements[4]) : null
+                                                             AuthorizatorId       = elements[7] != "" ? CSORoamingProvider_Id.     Parse(elements[7]) : null,
+                                                             //AuthService          = result.ISendAuthorizeStartStop,
+                                                             ChargingStationOperatorId           = elements[2] != "" ? ChargingStationOperator_Id.Parse(elements[2]) : new ChargingStationOperator_Id?(),
+                                                             EVSEId               = EVSE_Id.Parse(elements[3]),
+                                                             IdentificationStart  = elements[5] != "" ? AuthIdentification.FromAuthToken           (Auth_Token.Parse(elements[5]))
+                                                                                  : elements[6] != "" ? AuthIdentification.FromRemoteIdentification(eMobilityAccount_Id.Parse(elements[6]))
+                                                                                  : null,
+                                                             ChargingProduct      = elements[4] != "" ? ChargingProduct.           Parse(elements[4]) : null
                                                          };
 
                                 if (_ChargingSessions.ContainsKey(NewChargingSession.Id))
@@ -5649,11 +5650,11 @@ namespace org.GraphDefined.WWCP
                     // Will be deleted when the charge detail record was sent!
 
                     var NewChargingSession = new ChargingSession(result.SessionId.Value) {
-                                                 AuthorizatorId   = result.AuthorizatorId,
-                                                 AuthService      = result.ISendAuthorizeStartStop,
-                                                 OperatorId       = OperatorId,
-                                                 AuthTokenStart   = AuthIdentification?.AuthToken,
-                                                 ChargingProduct  = ChargingProduct
+                                                 AuthorizatorId       = result.AuthorizatorId,
+                                                 AuthService          = result.ISendAuthorizeStartStop,
+                                                 ChargingStationOperatorId           = OperatorId,
+                                                 IdentificationStart  = AuthIdentification,
+                                                 ChargingProduct      = ChargingProduct
                                              };
 
                     if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
@@ -5832,12 +5833,12 @@ namespace org.GraphDefined.WWCP
                             // Will be deleted when the charge detail record was sent!
 
                             var NewChargingSession = new ChargingSession(result.SessionId.Value) {
-                                                         AuthorizatorId   = result.AuthorizatorId,
-                                                         AuthService      = result.ISendAuthorizeStartStop,
-                                                         OperatorId       = OperatorId,
-                                                         EVSEId           = EVSEId,
-                                                         AuthTokenStart   = AuthIdentification?.AuthToken,
-                                                         ChargingProduct  = ChargingProduct
+                                                         AuthorizatorId       = result.AuthorizatorId,
+                                                         AuthService          = result.ISendAuthorizeStartStop,
+                                                         ChargingStationOperatorId           = OperatorId,
+                                                         EVSEId               = EVSEId,
+                                                         IdentificationStart  = AuthIdentification,
+                                                         ChargingProduct      = ChargingProduct
                                                      };
 
                             if (_ChargingSessions.ContainsKey(NewChargingSession.Id))
@@ -6035,12 +6036,12 @@ namespace org.GraphDefined.WWCP
                     // Will be deleted when the charge detail record was sent!
 
                     var NewChargingSession = new ChargingSession(result.SessionId.Value) {
-                                                 AuthorizatorId     = result.AuthorizatorId,
-                                                 AuthService        = result.ISendAuthorizeStartStop,
-                                                 OperatorId         = OperatorId,
-                                                 ChargingStationId  = ChargingStationId,
-                                                 AuthTokenStart     = AuthIdentification?.AuthToken,
-                                                 ChargingProduct    = ChargingProduct
+                                                 AuthorizatorId       = result.AuthorizatorId,
+                                                 AuthService          = result.ISendAuthorizeStartStop,
+                                                 ChargingStationOperatorId           = OperatorId,
+                                                 ChargingStationId    = ChargingStationId,
+                                                 IdentificationStart  = AuthIdentification,
+                                                 ChargingProduct      = ChargingProduct
                                              };
 
                     if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))
@@ -6209,12 +6210,12 @@ namespace org.GraphDefined.WWCP
                     // Will be deleted when the charge detail record was sent!
 
                     var NewChargingSession = new ChargingSession(result.SessionId.Value) {
-                                                 AuthorizatorId   = result.AuthorizatorId,
-                                                 AuthService      = result.ISendAuthorizeStartStop,
-                                                 OperatorId       = OperatorId,
-                                                 ChargingPoolId   = ChargingPoolId,
-                                                 AuthTokenStart   = AuthIdentification?.AuthToken,
-                                                 ChargingProduct  = ChargingProduct
+                                                 AuthorizatorId       = result.AuthorizatorId,
+                                                 AuthService          = result.ISendAuthorizeStartStop,
+                                                 ChargingStationOperatorId           = OperatorId,
+                                                 ChargingPoolId       = ChargingPoolId,
+                                                 IdentificationStart  = AuthIdentification,
+                                                 ChargingProduct      = ChargingProduct
                                              };
 
                     if (_ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession))

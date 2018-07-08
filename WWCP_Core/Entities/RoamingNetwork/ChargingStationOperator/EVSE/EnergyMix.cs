@@ -22,6 +22,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -81,6 +82,33 @@ namespace org.GraphDefined.WWCP
             
 
         }
+
+        #endregion
+
+
+        #region ToJSON(this EnergyMix)
+
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        public JObject ToJSON()
+
+            => JSONObject.Create(
+
+                   new JProperty("is_green_energy", IsGreenEnergy),
+
+                   //new JProperty("energy_sources",  new JArray(
+                   //    EnergyMix.EnergySources.SafeSelect(energysource => energysource.ToJSON())
+                   //)),
+
+                   //new JProperty("environ_impact",  new JArray(
+                   //    EnergyMix.EnvironmentalImpacts.Select(environmentalimpact => environmentalimpact.ToJSON())
+                   //)),
+
+                   new JProperty("supplier_name",        Supplier.     ToJSON()),
+                   new JProperty("energy_product_name",  EnergyProduct.ToJSON())
+
+               );
 
         #endregion
 

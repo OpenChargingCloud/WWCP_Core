@@ -1,6 +1,6 @@
 ﻿/*
  * Copyright (c) 2014-2018 GraphDefined GmbH <achim.friedland@graphdefined.com>
- * This file is part of WWCP OICP <https://github.com/OpenChargingCloud/WWCP_OICP>
+ * This file is part of WWCP Core <https://github.com/OpenChargingCloud/WWCP_Core>
  *
  * Licensed under the Affero GPL license, Version 3.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,10 @@
 
 using System;
 
+using Org.BouncyCastle.Bcpg.OpenPgp;
+
 using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
 
 #endregion
 
@@ -29,8 +32,8 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// Some sort of token for authentication.
     /// </summary>
-    public class AuthIdentification : IEquatable<AuthIdentification>,
-                                      IComparable<AuthIdentification>
+    public sealed class AuthIdentification : IEquatable<AuthIdentification>,
+                                             IComparable<AuthIdentification>
     {
 
         #region Properties
@@ -57,6 +60,11 @@ namespace org.GraphDefined.WWCP
         public eMobilityAccount_Id?  RemoteIdentification           { get; }
 
         /// <summary>
+        /// A PGP/GPG public key.
+        /// </summary>
+        public PgpPublicKey          PublicKey                      { get; }
+
+        /// <summary>
         /// An optional multilingual description.
         /// </summary>
         public I18NString            Description                    { get; }
@@ -65,46 +73,22 @@ namespace org.GraphDefined.WWCP
 
         #region Constructor(s)
 
-        #region (private) AuthIdentification(AuthToken, Description = null)
-
-        private AuthIdentification(Auth_Token  AuthToken,
-                                   I18NString  Description  = null)
+        private AuthIdentification(Auth_Token            AuthToken                     = null,
+                                   eMAIdWithPIN2         QRCodeIdentification          = null,
+                                   eMobilityAccount_Id?  PlugAndChargeIdentification   = null,
+                                   eMobilityAccount_Id?  RemoteIdentification          = null,
+                                   PgpPublicKey          PublicKey                     = null,
+                                   I18NString            Description                   = null)
         {
-            this.AuthToken = AuthToken;
-        }
 
-        #endregion
-
-        #region (private) AuthIdentification(QRCodeIdentification, Description = null)
-
-        private AuthIdentification(eMAIdWithPIN2  QRCodeIdentification,
-                                   I18NString     Description  = null)
-        {
-            this.QRCodeIdentification = QRCodeIdentification;
-        }
-
-        #endregion
-
-        #region (private) AuthIdentification(PlugAndChargeIdentification, IsPnC, Description = null)
-
-        private AuthIdentification(eMobilityAccount_Id  PlugAndChargeIdentification,
-                                   Boolean              IsPnC,
-                                   I18NString           Description  = null)
-        {
+            this.AuthToken                    = AuthToken;
+            this.QRCodeIdentification         = QRCodeIdentification;
             this.PlugAndChargeIdentification  = PlugAndChargeIdentification;
+            this.RemoteIdentification         = RemoteIdentification;
+            this.PublicKey                    = PublicKey;
+            this.Description                  = Description;
+
         }
-
-        #endregion
-
-        #region (private) AuthIdentification(RemoteIdentification, Description = null)
-
-        private AuthIdentification(eMobilityAccount_Id  RemoteIdentification,
-                                   I18NString           Description  = null)
-        {
-            this.RemoteIdentification = RemoteIdentification;
-        }
-
-        #endregion
 
         #endregion
 
@@ -119,8 +103,8 @@ namespace org.GraphDefined.WWCP
         public static AuthIdentification FromAuthToken(Auth_Token  AuthToken,
                                                        I18NString  Description  = null)
 
-            => new AuthIdentification(AuthToken,
-                                      Description);
+            => new AuthIdentification(AuthToken:   AuthToken,
+                                      Description: Description);
 
         #endregion
 
@@ -137,8 +121,8 @@ namespace org.GraphDefined.WWCP
                                                                   String               PIN,
                                                                   I18NString           Description  = null)
 
-            => new AuthIdentification(new eMAIdWithPIN2(eMAId, PIN),
-                                      Description);
+            => new AuthIdentification(QRCodeIdentification: new eMAIdWithPIN2(eMAId, PIN),
+                                      Description:          Description);
 
         #endregion
 
@@ -153,8 +137,8 @@ namespace org.GraphDefined.WWCP
         public static AuthIdentification FromQRCodeIdentification(eMAIdWithPIN2  QRCodeIdentification,
                                                                   I18NString     Description  = null)
 
-            => new AuthIdentification(QRCodeIdentification,
-                                      Description);
+            => new AuthIdentification(QRCodeIdentification: QRCodeIdentification,
+                                      Description:          Description);
 
         #endregion
 
@@ -169,8 +153,8 @@ namespace org.GraphDefined.WWCP
         public static AuthIdentification FromPlugAndChargeIdentification(eMobilityAccount_Id  PlugAndChargeIdentification,
                                                                          I18NString           Description  = null)
 
-            => new AuthIdentification(PlugAndChargeIdentification,
-                                      Description);
+            => new AuthIdentification(PlugAndChargeIdentification: PlugAndChargeIdentification,
+                                      Description:                 Description);
 
         #endregion
 
@@ -185,10 +169,54 @@ namespace org.GraphDefined.WWCP
         public static AuthIdentification FromRemoteIdentification(eMobilityAccount_Id  RemoteIdentification,
                                                                   I18NString           Description  = null)
 
-            => new AuthIdentification(RemoteIdentification,
-                                      Description);
+            => new AuthIdentification(RemoteIdentification: RemoteIdentification,
+                                      Description:          Description);
 
         #endregion
+
+        #region (static) FromPublicKey                  (PublicKey,                   Description = null)
+
+        /// <summary>
+        /// Create a new authentication info based on the given
+        /// PGP/GPG public key.
+        /// </summary>
+        /// <param name="PublicKey">A PGP/GPG public key.</param>
+        /// <param name="Description">An optional multilingual description.</param>
+        public static AuthIdentification FromPublicKey(PgpPublicKey  PublicKey,
+                                                       I18NString    Description  = null)
+
+            => new AuthIdentification(PublicKey:   PublicKey,
+                                      Description: Description);
+
+        #endregion
+
+
+        public JObject ToJSON()
+
+            => JSONObject.Create(
+
+                   AuthToken                    != null
+                       ? new JProperty("authToken",                     AuthToken.                      ToString())
+                       : null,
+
+                   QRCodeIdentification         != null
+                       ? new JProperty("QRCodeIdentification",          QRCodeIdentification.           ToString())
+                       : null,
+
+                   PlugAndChargeIdentification  != null
+                       ? new JProperty("plugAndChargeIdentification",   PlugAndChargeIdentification.    ToString())
+                       : null,
+
+                   RemoteIdentification         != null
+                       ? new JProperty("remoteIdentification",          RemoteIdentification.           ToString())
+                       : null,
+
+                   PublicKey                    != null
+                       ? new JProperty("publicKey",                     PublicKey.                      ToString())
+                       : null
+
+               );
+
 
 
         #region Operator overloading
@@ -319,10 +347,8 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 throw new ArgumentNullException(nameof(Object),  "The given object must not be null!");
 
-            // Check if the given object is an AuthIdentification.
-            var AuthIdentification = Object as AuthIdentification;
-            if ((Object) AuthIdentification == null)
-                throw new ArgumentException("The given object is not a AuthIdentification!");
+            if (!(Object is AuthIdentification AuthIdentification))
+                throw new ArgumentException("The given object is not an AuthIdentification!");
 
             return CompareTo(AuthIdentification);
 
@@ -354,6 +380,9 @@ namespace org.GraphDefined.WWCP
             if (RemoteIdentification.HasValue && AuthIdentification.RemoteIdentification.HasValue)
                 return RemoteIdentification.Value.CompareTo(AuthIdentification.RemoteIdentification.Value);
 
+            if (PublicKey != null && AuthIdentification.PublicKey != null)
+                return PublicKey.Fingerprint.ToHexString().CompareTo(AuthIdentification.PublicKey.Fingerprint.ToHexString());
+
             return String.Compare(ToString(), AuthIdentification.ToString(), StringComparison.Ordinal);
 
         }
@@ -377,12 +406,10 @@ namespace org.GraphDefined.WWCP
             if (Object == null)
                 return false;
 
-            // Check if the given object is an AuthIdentification.
-            var AuthIdentification = Object as AuthIdentification;
-            if ((Object) AuthIdentification == null)
+            if (!(Object is AuthIdentification AuthIdentification))
                 return false;
 
-            return this.Equals(AuthIdentification);
+            return Equals(AuthIdentification);
 
         }
 
@@ -412,6 +439,9 @@ namespace org.GraphDefined.WWCP
 
             if (RemoteIdentification.HasValue && AuthIdentification.RemoteIdentification.HasValue)
                 return RemoteIdentification.Value.Equals(AuthIdentification.RemoteIdentification.Value);
+
+            if (PublicKey != null && AuthIdentification.PublicKey != null)
+                return PublicKey.Fingerprint.ToHexString().Equals(AuthIdentification.PublicKey.Fingerprint.ToHexString());
 
             return false;
 
@@ -445,7 +475,7 @@ namespace org.GraphDefined.WWCP
         public override String ToString()
         {
 
-            if (AuthToken != null)
+            if (AuthToken            != null)
                 return AuthToken.                        ToString();
 
             if (QRCodeIdentification != null)
@@ -456,6 +486,9 @@ namespace org.GraphDefined.WWCP
 
             if (RemoteIdentification.HasValue)
                 return RemoteIdentification.       Value.ToString();
+
+            if (PublicKey            != null)
+                return PublicKey.Fingerprint.            ToHexString();
 
             return String.Empty;
 

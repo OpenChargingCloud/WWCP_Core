@@ -27,11 +27,57 @@ using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using System.Threading.Tasks;
 using System.Threading;
+using Newtonsoft.Json.Linq;
+using org.GraphDefined.Vanaheimr.Hermod;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
+
+    /// <summary>
+    /// Extention methods for brands.
+    /// </summary>
+    public static class BrandExtentions
+    {
+
+        #region ToJSON(this Brands, Skip = null, Take = null, Embedded = false, ...)
+
+        /// <summary>
+        /// Return a JSON representation for the given enumeration of brands.
+        /// </summary>
+        /// <param name="Brands">An enumeration of brands.</param>
+        /// <param name="Skip">The optional number of charging station operators to skip.</param>
+        /// <param name="Take">The optional number of charging station operators to return.</param>
+        /// <param name="Embedded">Whether this data is embedded into another data structure.</param>
+        public static JArray ToJSON(this IEnumerable<Brand>   Brands,
+                                    UInt64?                   Skip                       = null,
+                                    UInt64?                   Take                       = null,
+                                    Boolean                   Embedded                   = false,
+                                    InfoStatus                ExpandChargingPoolIds      = InfoStatus.Hidden,
+                                    InfoStatus                ExpandChargingStationIds   = InfoStatus.Hidden,
+                                    InfoStatus                ExpandEVSEIds              = InfoStatus.Hidden,
+                                    InfoStatus                ExpandDataLicenses         = InfoStatus.ShowIdOnly)
+
+
+            => Brands == null || !Brands.Any()
+
+                   ? new JArray()
+
+                   : new JArray(Brands.
+                                    Where         (brand => brand != null).
+                                    OrderBy       (brand => brand.Id).
+                                    SkipTakeFilter(Skip, Take).
+                                    SafeSelect    (brand => brand.ToJSON(Embedded,
+                                                                         ExpandChargingPoolIds,
+                                                                         ExpandChargingStationIds,
+                                                                         ExpandEVSEIds,
+                                                                         ExpandDataLicenses)));
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// An Electric Vehicle Supply Equipment (Brand) to charge an electric vehicle (EV).
@@ -98,6 +144,32 @@ namespace org.GraphDefined.WWCP
             this.Homepage  = Homepage;
 
         }
+
+        #endregion
+
+
+        #region ToJSON()
+
+        public JObject ToJSON(Boolean     Embedded                   = false,
+                              InfoStatus  ExpandChargingPoolIds      = InfoStatus.Hidden,
+                              InfoStatus  ExpandChargingStationIds   = InfoStatus.Hidden,
+                              InfoStatus  ExpandEVSEIds              = InfoStatus.Hidden,
+                              InfoStatus  ExpandDataLicenses         = InfoStatus.ShowIdOnly)
+
+            => JSONObject.Create(
+
+                   new JProperty("Id",    Id.  ToString()),
+                   new JProperty("Name",  Name.ToJSON()),
+
+                   LogoURI.IsNotNullOrEmpty()
+                       ? new JProperty("LogoURI",   LogoURI)
+                       : null,
+
+                   Homepage.IsNotNullOrEmpty()
+                       ? new JProperty("Homepage",  Homepage)
+                       : null
+
+               );
 
         #endregion
 

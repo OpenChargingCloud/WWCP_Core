@@ -18,7 +18,7 @@
 #region Usings
 
 using System;
-
+using Newtonsoft.Json.Linq;
 using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
@@ -118,7 +118,7 @@ namespace org.GraphDefined.WWCP
         public static ChargingProduct Parse(String ChargingProductId)
         {
 
-            if (ChargingProductId == null || ChargingProductId.Trim().IsNullOrEmpty())
+            if (ChargingProductId?.Trim().IsNullOrEmpty() != false)
                 throw new ArgumentNullException(nameof(ChargingProductId), "The given charging product identification must not be null or empty!");
 
             return new ChargingProduct(ChargingProduct_Id.Parse(ChargingProductId));
@@ -126,6 +126,32 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+
+
+        public JObject ToJSON()
+
+            => JSONObject.Create(
+                           new JProperty("@id",                   Id.ToString()),
+                           MinDuration.HasValue
+                               ? new JProperty("minDuration",               MinDuration.Value.TotalSeconds)
+                               : null,
+                           StopChargingAfterTime.HasValue
+                               ? new JProperty("stopChargingAfterTime",     StopChargingAfterTime.Value.TotalSeconds)
+                               : null,
+                           MinPower.HasValue
+                               ? new JProperty("minPower",                  MinPower.Value)
+                               : null,
+                           MaxPower.HasValue
+                               ? new JProperty("maxPower",                  MaxPower.Value)
+                               : null,
+                           MinEnergy.HasValue
+                               ? new JProperty("minEnergy",                 MinEnergy.Value)
+                               : null,
+                           StopChargingAfterKWh.HasValue
+                               ? new JProperty("stopChargingAfterKWh",      StopChargingAfterKWh.Value)
+                               : null
+                       );
 
 
         #region Operator overloading

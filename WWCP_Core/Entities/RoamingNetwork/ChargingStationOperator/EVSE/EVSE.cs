@@ -29,6 +29,7 @@ using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
 using org.GraphDefined.Vanaheimr.Hermod;
+using Org.BouncyCastle.Bcpg.OpenPgp;
 
 #endregion
 
@@ -615,13 +616,13 @@ namespace org.GraphDefined.WWCP
 
         #region EnergyMeterId
 
-        private String _EnergyMeterId;
+        private EnergyMeter_Id? _EnergyMeterId;
 
         /// <summary>
         /// The energy meter identification.
         /// </summary>
         [Optional]
-        public String EnergyMeterId
+        public EnergyMeter_Id? EnergyMeterId
         {
 
             get
@@ -780,6 +781,9 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+
+        public PgpPublicKeyRingBundle PublicKeys   { get; set; }
 
 
         #region ChargingSession

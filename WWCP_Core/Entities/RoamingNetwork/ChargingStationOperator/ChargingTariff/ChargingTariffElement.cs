@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.Vanaheimr.Illias;
 
 #endregion
 
@@ -124,7 +125,24 @@ namespace org.GraphDefined.WWCP
 
         #region ToJSON()
 
-        
+        /// <summary>
+        /// Return a JSON representation of this object.
+        /// </summary>
+        public JObject ToJSON()
+
+            => JSONObject.Create(
+
+                   new JProperty("price_components",
+                                 new JArray(ChargingPriceComponents.
+                                                Select(component => component.ToJSON()))),
+
+                   ChargingTariffRestrictions?.Any() == true
+                       ? new JProperty("restrictions",
+                                       new JArray(ChargingTariffRestrictions.
+                                                      Select(restriction => restriction.ToJSON())))
+                       : null
+
+               );
 
         #endregion
 

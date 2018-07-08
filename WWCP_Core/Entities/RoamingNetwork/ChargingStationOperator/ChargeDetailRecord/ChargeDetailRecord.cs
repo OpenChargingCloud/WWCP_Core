@@ -22,11 +22,104 @@ using System.Linq;
 using System.Collections.Generic;
 
 using org.GraphDefined.Vanaheimr.Illias;
+using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Bcpg.OpenPgp;
+using Org.BouncyCastle.Bcpg;
+using System.IO;
+using System.Text.RegularExpressions;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
+
+    public class SignedMeteringValue {
+
+        public DateTime            Timestamp        { get; }
+        public Double              MeterValue       { get; }
+        public EnergyMeter_Id      MeterId          { get; }
+        public EVSE_Id             EVSEId           { get; }
+        public AuthIdentification  UserId           { get; }
+        public PgpPublicKey        PublicKey        { get; }
+        public String              lastSignature    { get; }
+        public String              Signature        { get; private set; }
+
+
+        public SignedMeteringValue(DateTime            Timestamp,
+                                   Double              MeterValue,
+                                   EnergyMeter_Id      MeterId,
+                                   EVSE_Id             EVSEId,
+                                   AuthIdentification  UserId,
+                                   PgpPublicKey        PublicKey,
+                                   String              lastSignature  = "",
+                                   String              Signature      = "")
+        {
+
+            this.Timestamp      = Timestamp;
+            this.MeterValue     = MeterValue;
+            this.MeterId        = MeterId;
+            this.EVSEId         = EVSEId;
+            this.UserId         = UserId;
+            this.PublicKey      = PublicKey;
+            this.lastSignature  = lastSignature != null ? lastSignature.Trim() : "";
+            this.Signature      = Signature     != null ? Signature.    Trim() : "";
+
+            if (UserId == null)
+                new ArgumentNullException(nameof(UserId), "A signed meter value must have some kind of user identification!");
+
+        }
+
+
+        public JObject ToJSON()
+
+            => JSONObject.Create(
+                           new JProperty("timestamp",      Timestamp.ToIso8601()),
+                           new JProperty("meterValue",     MeterValue),
+                           new JProperty("meterId",        MeterId.ToString()),
+                           new JProperty("evseId",         EVSEId. ToString()),
+                           new JProperty("userId",         UserId),
+                           new JProperty("publicKey",      PublicKey.Fingerprint.ToHexString()),
+                           new JProperty("lastSignature",  lastSignature),
+                           new JProperty("signature",      Signature)
+                       );
+
+
+        public SignedMeteringValue Sign(PgpSecretKey  SecretKey,
+                                        String        Passphrase)
+        {
+
+            var SignatureGenerator = new PgpSignatureGenerator(SecretKey.PublicKey.Algorithm,
+                                                               HashAlgorithms.Sha512);
+
+            SignatureGenerator.InitSign(PgpSignatureTypes.BinaryDocument,
+                                        SecretKey.ExtractPrivateKey(Passphrase));
+
+            var JSON             = ToJSON();
+            var JSONText         = JSON.ToString().Replace(Environment.NewLine, " ");
+            var JSONBlob         = JSON.ToUTF8Bytes();
+
+            SignatureGenerator.Update(JSONBlob, 0, JSONBlob.Length);
+
+            var _Signature       = SignatureGenerator.Generate();
+            var OutputStream     = new MemoryStream();
+            var SignatureStream  = new BcpgOutputStream(new ArmoredOutputStream(OutputStream));
+
+            _Signature.Encode(SignatureStream);
+
+            SignatureStream.Flush();
+            SignatureStream.Close();
+
+            OutputStream.Flush();
+            OutputStream.Close();
+
+            JSON["signature"] = this.Signature = OutputStream.ToArray().ToHexString();
+
+            return this;
+
+        }
+
+    }
+
 
     /// <summary>
     /// A charge detail record for a charging session.
@@ -36,6 +129,12 @@ namespace org.GraphDefined.WWCP
                                       IComparable<ChargeDetailRecord>,
                                       IComparable
     {
+
+        #region Data
+
+        public static readonly Regex JSONWhitespaceRegEx = new Regex(@"(\s)+", RegexOptions.IgnorePatternWhitespace);
+
+        #endregion
 
         #region Properties
 
@@ -64,7 +163,7 @@ namespace org.GraphDefined.WWCP
 
         #endregion
 
-        #region Location / Product
+        #region Location / Operator
 
         /// <summary>
         /// The EVSE used for charging.
@@ -114,11 +213,20 @@ namespace org.GraphDefined.WWCP
         [Optional]
         public ChargingStationOperator_Id?  ChargingStationOperatorId    { get; }
 
+        #endregion
+
+        #region Charging product/tariff/price
+
         /// <summary>
         /// The consumed charging product.
         /// </summary>
         [Optional]
         public ChargingProduct              ChargingProduct              { get; }
+
+        /// <summary>
+        /// The charging tariff.
+        /// </summary>
+        public ChargingTariff               ChargingTariff               { get; }
 
         /// <summary>
         /// The charging price.
@@ -146,13 +254,13 @@ namespace org.GraphDefined.WWCP
         /// The identification of the e-mobility provider used for starting this charging process.
         /// </summary>
         [Optional]
-        public eMobilityProvider_Id?  ProviderIdStart        { get; }
+        public eMobilityProvider_Id?            ProviderIdStart        { get; }
 
         /// <summary>
         /// The identification of the e-mobility provider used for stopping this charging process.
         /// </summary>
         [Optional]
-        public eMobilityProvider_Id?  ProviderIdStop         { get; }
+        public eMobilityProvider_Id?            ProviderIdStop         { get; }
 
         #endregion
 
@@ -223,8 +331,7 @@ namespace org.GraphDefined.WWCP
             get
             {
 
-                if (EnergyMeteringValues == null ||
-                    EnergyMeteringValues.Count() < 1)
+                if (EnergyMeteringValues?.Any() != true)
                     return 0;
 
                 return EnergyMeteringValues.Last().Value - EnergyMeteringValues.First().Value;
@@ -232,13 +339,14 @@ namespace org.GraphDefined.WWCP
             }
         }
 
-        /// <summary>
-        /// An optional signature of the metering values.
-        /// </summary>
-        [Optional]
-        public String                            MeteringSignature      { get; }
+        public IEnumerable<SignedMeteringValue>     SignedMeteringValues   { get; }
 
         #endregion
+
+        private readonly HashSet<String> _Signatures;
+
+        public IEnumerable<String> Signatures
+                   => _Signatures;
 
         #endregion
 
@@ -277,7 +385,6 @@ namespace org.GraphDefined.WWCP
         /// 
         /// <param name="EnergyMeterId">An optional unique identification of the energy meter.</param>
         /// <param name="EnergyMeteringValues">An optional enumeration of intermediate energy metering values.</param>
-        /// <param name="MeteringSignature">An optional signature of the metering values.</param>
         /// 
         /// <param name="CustomData">An optional dictionary of customer-specific data.</param>
         public ChargeDetailRecord(ChargingSession_Id                   SessionId,
@@ -310,7 +417,8 @@ namespace org.GraphDefined.WWCP
 
                                   EnergyMeter_Id?                      EnergyMeterId               = null,
                                   IEnumerable<Timestamped<Single>>     EnergyMeteringValues        = null,
-                                  String                               MeteringSignature           = null,
+                                  IEnumerable<SignedMeteringValue>        SignedMeteringValues        = null,
+                                  IEnumerable<String>                  Signatures                  = null,
 
                                   IReadOnlyDictionary<String, Object>  CustomData                  = null)
 
@@ -323,13 +431,13 @@ namespace org.GraphDefined.WWCP
             this.Duration                    = Duration;
 
             this.EVSE                        = EVSE;
-            this.EVSEId                      = EVSE                     != null ? EVSE.Id                    : EVSEId;
+            this.EVSEId                      = EVSEId                    ?? EVSE?.Id;
             this.ChargingStation             = ChargingStation;
-            this.ChargingStationId           = ChargingStation          != null ? ChargingStation.Id         : ChargingStationId;
+            this.ChargingStationId           = ChargingStationId         ?? ChargingStation?.Id;
             this.ChargingPool                = ChargingPool;
-            this.ChargingPoolId              = ChargingPool             != null ? ChargingPool.Id            : ChargingPoolId;
+            this.ChargingPoolId              = ChargingPoolId            ?? ChargingPool?.Id;
             this.ChargingStationOperator     = ChargingStationOperator;
-            this.ChargingStationOperatorId   = ChargingStationOperator  != null ? ChargingStationOperator.Id : ChargingStationOperatorId;
+            this.ChargingStationOperatorId   = ChargingStationOperatorId ?? ChargingStationOperator?.Id;
             this.ChargingProduct             = ChargingProduct;
             this.ChargingPrice               = ChargingPrice;
 
@@ -339,7 +447,7 @@ namespace org.GraphDefined.WWCP
             this.ProviderIdStop              = ProviderIdStop;
 
             this.Reservation                 = Reservation;
-            this.ReservationId               = Reservation              != null ? Reservation.Id             : ReservationId;
+            this.ReservationId               = ReservationId             ?? Reservation?.Id;
             this.ReservationTime             = ReservationTime;
 
             this.ParkingSpaceId              = ParkingSpaceId;
@@ -348,11 +456,117 @@ namespace org.GraphDefined.WWCP
 
             this.EnergyMeterId               = EnergyMeterId;
             this.EnergyMeteringValues        = EnergyMeteringValues ?? new Timestamped<Single>[0];
-            this.MeteringSignature           = MeteringSignature;
+            this.SignedMeteringValues        = SignedMeteringValues ?? new SignedMeteringValue[0];
+            this._Signatures                 = Signatures.SafeAny()  ? new HashSet<String>(Signatures) : new HashSet<String>();
+
+            if (SignedMeteringValues.Any() && !EnergyMeteringValues.Any())
+            {
+
+                this.EnergyMeteringValues = SignedMeteringValues.Select(svalue => new Timestamped<Single>(svalue.Timestamp,
+                                                                                                       (Single) svalue.MeterValue));
+
+            }
 
         }
 
         #endregion
+
+
+
+        public JObject ToJSON()
+
+            => JSONObject.Create(
+
+                           new JProperty("@id",                               SessionId.ToString()),
+                           new JProperty("@context",                          ""),
+
+                           SessionTime.HasValue
+                               ? new JProperty("sessionTime",           JSONObject.Create(
+                                     new JProperty("start",             SessionTime.Value.StartTime.ToIso8601()),
+                                     SessionTime.Value.EndTime.HasValue
+                                         ? new JProperty("end",         SessionTime.Value.EndTime.Value.ToIso8601())
+                                         : null
+                                 ))
+                               : null,
+
+                           Duration.HasValue
+                               ? new JProperty("duration",                    Duration.Value.TotalSeconds)
+                               : null,
+
+                           ChargingStationOperatorId.HasValue
+                               ? new JProperty("chargingStationOperatorId",   ChargingStationOperatorId.ToString())
+                               : null,
+                           ChargingPoolId.HasValue
+                               ? new JProperty("chargingPoolId",              ChargingPoolId.           ToString())
+                               : null,
+                           ChargingStationId.HasValue
+                               ? new JProperty("chargingStationId",           ChargingStationId.        ToString())
+                               : null,
+                           EVSEId.HasValue
+                               ? new JProperty("evseId",                      EVSEId.                   ToString())
+                               : null,
+
+
+                           ChargingProduct != null
+                               ? new JProperty("chargingProduct",             ChargingProduct.ToJSON())
+                               : null
+
+                       //new JProperty("meterValue",     MeterValue),
+                       //new JProperty("meterId",        MeterId.ToString()),
+
+                       //new JProperty("userId",         UserId),
+                       //new JProperty("publicKey",      PublicKey.KeyId),
+                       //new JProperty("lastSignature",  lastSignature),
+                       //new JProperty("signature",      Signature)
+                       );
+
+
+        public JObject ToSignedJSON(PgpSecretKey SecretKey, String Passphrase)
+        {
+
+            var SignatureGenerator = new PgpSignatureGenerator(SecretKey.PublicKey.Algorithm,
+                                                               HashAlgorithms.Sha512);
+
+            SignatureGenerator.InitSign(PgpSignatureTypes.BinaryDocument,
+                                        SecretKey.ExtractPrivateKey(Passphrase));
+
+            var JSON             = ToJSON();
+            var JSONText         = JSONWhitespaceRegEx.Replace(JSON.ToString().Replace(Environment.NewLine, " "), " ").Trim();
+            var JSONBlob         = JSON.ToUTF8Bytes();
+
+            SignatureGenerator.Update(JSONBlob, 0, JSONBlob.Length);
+
+            var SignatureGen     = SignatureGenerator.Generate();
+            var OutputStream     = new MemoryStream();
+            var SignatureStream  = new BcpgOutputStream(new ArmoredOutputStream(OutputStream));
+
+            SignatureGen.Encode(SignatureStream);
+
+            SignatureStream.Flush();
+            SignatureStream.Close();
+
+            OutputStream.Flush();
+            OutputStream.Close();
+
+            var Signature        = OutputStream.ToArray().ToHexString();
+            _Signatures.Add(Signature);
+
+            JSON["signature"] = Signature;
+
+            return JSON;
+
+        }
+
+
+
+
+
+
+
+
+
+
+
 
 
         #region Operator overloading

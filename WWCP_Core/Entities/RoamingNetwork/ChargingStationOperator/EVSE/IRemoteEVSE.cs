@@ -150,9 +150,9 @@ namespace org.GraphDefined.WWCP
         Double?                     MaxCapacity             { get; set; }
 
         /// <summary>
-        /// Point of delivery or meter identification.
+        /// The energy meter identification.
         /// </summary>
-        String                      PointOfDelivery         { get; set; }
+        EnergyMeter_Id?             EnergyMeterId           { get; set; }
 
 
         ReactiveSet<SocketOutlet> SocketOutlets { get; set; }

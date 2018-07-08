@@ -28,11 +28,174 @@ using org.GraphDefined.Vanaheimr.Illias;
 using org.GraphDefined.Vanaheimr.Illias.Votes;
 using org.GraphDefined.Vanaheimr.Styx.Arrows;
 using org.GraphDefined.Vanaheimr.Aegir;
+using Newtonsoft.Json.Linq;
+using org.GraphDefined.Vanaheimr.Hermod;
+using org.GraphDefined.WWCP.Net.IO.JSON;
 
 #endregion
 
 namespace org.GraphDefined.WWCP
 {
+
+    /// <summary>
+    /// Extention methods for charging tariffs.
+    /// </summary>
+    public static class ChargingTariffExtentions
+    {
+
+        #region ToJSON(this ChargingTariffs, Skip = null, Take = null, Embedded = false, ...)
+
+        /// <summary>
+        /// Return a JSON representation for the given enumeration of charging stations.
+        /// </summary>
+        /// <param name="ChargingTariffs">An enumeration of charging tariffs.</param>
+        /// <param name="Skip">The optional number of charging stations to skip.</param>
+        /// <param name="Take">The optional number of charging stations to return.</param>
+        /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
+        public static JArray ToJSON(this IEnumerable<ChargingTariff>  ChargingTariffs,
+                                    UInt64?                           Skip                              = null,
+                                    UInt64?                           Take                              = null,
+                                    Boolean                           Embedded                          = false,
+                                    InfoStatus                        ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                                    InfoStatus                        ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                                    InfoStatus                        ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                                    InfoStatus                        ExpandEVSEIds                     = InfoStatus.Expand,
+                                    InfoStatus                        ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                                    InfoStatus                        ExpandDataLicenses                = InfoStatus.ShowIdOnly)
+
+
+            => ChargingTariffs != null && ChargingTariffs.Any()
+
+                   ? new JArray(ChargingTariffs.
+                                    Where     (stationgroup => stationgroup != null).
+                                    OrderBy   (stationgroup => stationgroup.Id).
+                                    SkipTakeFilter(Skip, Take).
+                                    SafeSelect(stationgroup => stationgroup.ToJSON(Embedded,
+                                                                                   ExpandRoamingNetworkId,
+                                                                                   ExpandChargingStationOperatorId,
+                                                                                   ExpandChargingPoolId,
+                                                                                   ExpandEVSEIds,
+                                                                                   ExpandBrandIds,
+                                                                                   ExpandDataLicenses)))
+
+                   : null;
+
+        #endregion
+
+        #region ToJSON(this ChargingTariffs, JPropertyKey)
+
+        public static JProperty ToJSON(this IEnumerable<ChargingTariff> ChargingTariffs, String JPropertyKey)
+        {
+
+            #region Initial checks
+
+            if (JPropertyKey.IsNullOrEmpty())
+                throw new ArgumentNullException(nameof(JPropertyKey), "The json property key must not be null or empty!");
+
+            #endregion
+
+            return ChargingTariffs?.Any() == true
+                       ? new JProperty(JPropertyKey, ChargingTariffs.ToJSON())
+                       : null;
+
+        }
+
+        #endregion
+
+
+        #region ToCSV(this ChargingTariffs, Skip = null, Take = null, Embedded = false, ...)
+
+        /// <summary>
+        /// Return a JSON representation for the given enumeration of charging stations.
+        /// </summary>
+        /// <param name="ChargingTariffs">An enumeration of charging tariffs.</param>
+        /// <param name="Skip">The optional number of charging stations to skip.</param>
+        /// <param name="Take">The optional number of charging stations to return.</param>
+        /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging pool.</param>
+        public static IEnumerable<String[]> GetTariffs(this IEnumerable<ChargingStation> ChargingStations,
+                                                       UInt64?                           Skip                              = null,
+                                                       UInt64?                           Take                              = null,
+                                                       Boolean                           Embedded                          = false,
+                                                       InfoStatus                        ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                                                       InfoStatus                        ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                                                       InfoStatus                        ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                                                       InfoStatus                        ExpandEVSEIds                     = InfoStatus.Expand,
+                                                       InfoStatus                        ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                                                       InfoStatus                        ExpandDataLicenses                = InfoStatus.ShowIdOnly)
+
+
+            => ChargingStations != null && ChargingStations.Any()
+
+                   ? ChargingStations.
+                         Where     (station => station != null).
+                         OrderBy   (station => station.Id).
+                         SkipTakeFilter(Skip, Take).
+                         SafeSelectMany(station => {
+
+                             var results = new List<String[]>();
+
+                             foreach (var group in station.Operator.ChargingStationGroups.Where(group => group.Tariff != null))
+                                 if (group.AllowedMemberIds.Contains(station.Id) ||
+                                     (group.AutoIncludeStations != null && group.AutoIncludeStations(station.Operator.GetChargingStationbyId(station.Id))))
+                                     foreach (var evse in station)
+                                        results.Add(new String[] {
+                                                        evse.Id.                            ToString(),
+                                                     //   station.Brand.Name.                 FirstText(),
+                                                        station.Name.                       FirstText(),
+                                                        station.Address.Street,
+                                                        station.Address.HouseNumber,
+                                                        station.Address.PostalCode,
+                                                        station.Address.City.               FirstText(),
+                                                        station.Address.Country.CountryName.FirstText(),
+                                                        evse.MaxPower.                      ToString() + " kW",
+                                                        evse.SocketOutlets.First().Plug.    ToString(),
+                                                        group.Tariff.Name.                  FirstText()
+                                                    });
+
+                             foreach (var evse in station)
+                                 foreach (var group in evse.Operator.EVSEGroups.Where(group => group.Tariff != null))
+                                     if (group.AllowedMemberIds.Contains(evse.Id) ||
+                                         (group.AutoIncludeStations != null && group.AutoIncludeStations(evse.Operator.GetEVSEbyId(evse.Id))))
+                                         results.Add(new String[] {
+                                                         evse.Id.                            ToString(),
+                                                      //   station.Brand.Name.                 FirstText(),
+                                                         station.Name.                       FirstText(),
+                                                         station.Address.Street,
+                                                         station.Address.HouseNumber,
+                                                         station.Address.PostalCode,
+                                                         station.Address.City.               FirstText(),
+                                                         station.Address.Country.CountryName.FirstText(),
+                                                         evse.MaxPower.                      ToString() + " kW",
+                                                         evse.SocketOutlets.First().Plug.    ToString(),
+                                                         group.Tariff.Name.                  FirstText()
+                                                     });
+
+                             if (results.Count == 0)
+                                 foreach (var evse in station)
+                                     results.Add(new String[] {
+                                                     evse.Id.                            ToString(),
+                                                   //  station.Brand.Name.                 FirstText(),
+                                                     station.Name.                       FirstText(),
+                                                     station.Address.Street,
+                                                     station.Address.HouseNumber,
+                                                     station.Address.PostalCode,
+                                                     station.Address.City.               FirstText(),
+                                                     station.Address.Country.CountryName.FirstText(),
+                                                     evse.MaxPower.                      ToString() + " kW",
+                                                     evse.SocketOutlets.First().Plug.    ToString(),
+                                                     "-"
+                                                 });
+
+                             return results;
+
+                         })
+
+                   : new List<String[]>();
+
+        #endregion
+
+    }
+
 
     /// <summary>
     /// A charging tariff to charge an electric vehicle.
@@ -191,6 +354,137 @@ namespace org.GraphDefined.WWCP
         }
 
         #endregion
+
+        #endregion
+
+
+        #region ToJSON(Embedded = false, ...)
+
+        /// <summary>
+        /// Return a JSON representation of the given charging tariff.
+        /// </summary>
+        /// <param name="Embedded">Whether this data is embedded into another data structure, e.g. into a charging station operator.</param>
+        public JObject ToJSON(Boolean              Embedded                          = false,
+                              InfoStatus           ExpandRoamingNetworkId            = InfoStatus.ShowIdOnly,
+                              InfoStatus           ExpandChargingStationOperatorId   = InfoStatus.ShowIdOnly,
+                              InfoStatus           ExpandChargingPoolId              = InfoStatus.ShowIdOnly,
+                              InfoStatus           ExpandEVSEIds                     = InfoStatus.Expand,
+                              InfoStatus           ExpandBrandIds                    = InfoStatus.ShowIdOnly,
+                              InfoStatus           ExpandDataLicenses                = InfoStatus.ShowIdOnly)
+
+
+            => JSONObject.Create(
+
+                         Id.ToJSON("@id"),
+
+                         Embedded
+                             ? null
+                             : new JProperty("@context", "https://open.charging.cloud/contexts/wwcp+json/ChargingTariff"),
+
+                         Name.       IsNeitherNullNorEmpty()
+                             ? Name.       ToJSON("name")
+                             : null,
+
+                         Description.IsNeitherNullNorEmpty()
+                             ? Description.ToJSON("description")
+                             : null,
+
+                         Brand != null
+                             ? ExpandBrandIds.Switch(
+                                   () => new JProperty("brandId",  Brand.Id.ToString()),
+                                   () => new JProperty("brand",    Brand.   ToJSON()))
+                             : null,
+
+                         (!Embedded || DataSource != Operator.DataSource)
+                             ? DataSource.ToJSON("dataSource")
+                             : null,
+
+                         //(!Embedded || DataLicenses != Operator.DataLicenses)
+                         //    ? ExpandDataLicenses.Switch(
+                         //        () => new JProperty("dataLicenseIds",  new JArray(DataLicenses.SafeSelect(license => license.Id.ToString()))),
+                         //        () => new JProperty("dataLicenses",    DataLicenses.ToJSON()))
+                         //    : null,
+
+
+                         new JProperty("currency", Currency.ISOCode),
+
+                         TariffURI != null
+                             ? new JProperty("URI", TariffURI.ToString())
+                             : null,
+
+                         TariffElements.Any()
+                             ? new JProperty("elements", new JArray(TariffElements.Select(TariffElement => TariffElement.ToJSON())))
+                             : null,
+
+                         EnergyMix != null
+                             ? new JProperty("energy_mix", EnergyMix.ToJSON())
+                             : null,
+
+
+
+                         Operator.ChargingStationGroups.Any(group => group.Tariff == this)
+                             ? new JProperty("chargingStations", new JArray(Operator.ChargingStationGroups.
+                                                                                Where (group => group.Tariff == this).
+                                                                                Select(group => group.AllowedMemberIds.
+                                                                                                          Select(id => id.ToString()))))
+                             : null,
+
+                         Operator.EVSEGroups.           Any(group => group.Tariff == this)
+                             ? new JProperty("EVSEs",            new JArray(Operator.EVSEGroups.
+                                                                                Where (group => group.Tariff == this).
+                                                                                Select(group => group.AllowedMemberIds.
+                                                                                                          Select(id => id.ToString()))))
+                             : null
+
+
+
+
+
+
+        //                 #region Embedded means it is served as a substructure of e.g. a charging station operator
+
+        //                 Embedded
+        //                     ? null
+        //                     : ExpandRoamingNetworkId.Switch(
+        //                           () => new JProperty("roamingNetworkId",           RoamingNetwork.Id. ToString()),
+        //                           () => new JProperty("roamingNetwork",             RoamingNetwork.    ToJSON(Embedded:                          true,
+        //                                                                                                                            ExpandChargingStationOperatorIds:  InfoStatus.Hidden,
+        //                                                                                                                            ExpandChargingPoolIds:             InfoStatus.Hidden,
+        //                                                                                                                            ExpandChargingStationIds:          InfoStatus.Hidden,
+        //                                                                                                                            ExpandEVSEIds:                     InfoStatus.Hidden,
+        //                                                                                                                            ExpandBrandIds:                    InfoStatus.Hidden,
+        //                                                                                                                            ExpandDataLicenses:                InfoStatus.Hidden))),
+
+        //                 Embedded
+        //                     ? null
+        //                     : ExpandChargingStationOperatorId.Switch(
+        //                           () => new JProperty("chargingStationOperatorId",  Operator.Id.       ToString()),
+        //                           () => new JProperty("chargingStationOperator",    Operator.          ToJSON(Embedded:                          true,
+        //                                                                                                                            ExpandRoamingNetworkId:            InfoStatus.Hidden,
+        //                                                                                                                            ExpandChargingPoolIds:             InfoStatus.Hidden,
+        //                                                                                                                            ExpandChargingStationIds:          InfoStatus.Hidden,
+        //                                                                                                                            ExpandEVSEIds:                     InfoStatus.Hidden,
+        //                                                                                                                            ExpandBrandIds:                    InfoStatus.Hidden,
+        //                                                                                                                            ExpandDataLicenses:                InfoStatus.Hidden))),
+
+        //                 #endregion
+
+        //                 ExpandEVSEIds.Switch(
+        //                     () => new JProperty("EVSEIds",
+        //                                         EVSEIds.SafeAny()
+        //                                             ? new JArray(EVSEIds.
+        //                                                                               OrderBy(evseid => evseid).
+        //                                                                               Select (evseid => evseid.ToString()))
+        //                                             : null),
+
+        //                     () => new JProperty("EVSEs",
+        //                                         EVSEs.SafeAny()
+        //                                             ? new JArray(EVSEs.
+        //                                                                               OrderBy(evse   => evse.Id).
+        //                                                                               Select (evse   => evse.  ToJSON(Embedded: true)))
+        //                                             : null))
+
+                        );
 
         #endregion
 
