@@ -44,7 +44,7 @@ namespace org.GraphDefined.WWCP
         /// <summary>
         /// The regular expression for parsing a charging tariff group identification.
         /// </summary>
-        public  static readonly Regex  ChargingTariffGroupId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?T([a-zA-Z0-9_][a-zA-Z0-9_\*\-\.€\$]{0,50})$",
+        public  static readonly Regex  ChargingTariffGroupId_RegEx  = new Regex(@"^([A-Z]{2}\*?[A-Z0-9]{3})\*?TG([a-zA-Z0-9_][a-zA-Z0-9_\*\-\.€\$]{0,50})$",
                                                                            RegexOptions.IgnorePatternWhitespace);
 
         #endregion

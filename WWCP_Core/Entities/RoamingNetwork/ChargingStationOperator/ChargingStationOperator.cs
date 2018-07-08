@@ -565,6 +565,7 @@ namespace org.GraphDefined.WWCP
             this._EVSEGroups                  = new EntityHashSet <ChargingStationOperator, EVSEGroup_Id,            EVSEGroup>           (this);
 
             this._ChargingTariffs             = new EntityHashSet <ChargingStationOperator, ChargingTariff_Id,       ChargingTariff>      (this);
+            this._ChargingTariffGroups        = new EntityHashSet <ChargingStationOperator, ChargingTariffGroup_Id,  ChargingTariffGroup> (this);
 
             this._AdminStatusSchedule         = new StatusSchedule<ChargingStationOperatorAdminStatusTypes>(MaxAdminStatusListSize);
             this._AdminStatusSchedule.Insert(InitialAdminStatus.Value);
@@ -3634,17 +3635,17 @@ namespace org.GraphDefined.WWCP
         #endregion
 
 
-        #region CreateChargingTariffGroup     (Id,       Name, Description = null, ..., OnSuccess = null, OnError = null)
+        #region CreateChargingTariffGroup     (IdSuffix, Name, Description = null, ..., OnSuccess = null, OnError = null)
 
         /// <summary>
-        /// Create and register a new charging tariff having the given
+        /// Create and register a new charging tariff group having the given
         /// unique charging tariff identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing tariff.</param>
-        /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
-        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
-        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
-        public ChargingTariffGroup CreateChargingTariffGroup(ChargingTariffGroup_Id                                   Id,
+        /// <param name="IdSuffix">The suffix of the unique identification of the charing tariff group.</param>
+        /// <param name="Description">An optional (multi-language) description of this charging tariff group.</param>
+        /// <param name="OnSuccess">An optional delegate to configure the new charging tariff group after its successful creation.</param>
+        /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff group failed.</param>
+        public ChargingTariffGroup CreateChargingTariffGroup(String                                                   IdSuffix,
                                                              I18NString                                               Description,
                                                              Action<ChargingTariffGroup>                              OnSuccess  = null,
                                                              Action<ChargingStationOperator, ChargingTariffGroup_Id>  OnError    = null)
@@ -3656,19 +3657,21 @@ namespace org.GraphDefined.WWCP
 
                 #region Initial checks
 
-                if (_ChargingTariffGroups.ContainsId(Id))
+                var NewGroupId = ChargingTariffGroup_Id.Parse(Id, IdSuffix);
+
+                if (_ChargingTariffGroups.ContainsId(NewGroupId))
                 {
 
                     if (OnError != null)
-                        OnError?.Invoke(this, Id);
+                        OnError?.Invoke(this, NewGroupId);
 
-                    throw new ChargingTariffGroupAlreadyExists(this, Id);
+                    throw new ChargingTariffGroupAlreadyExists(this, NewGroupId);
 
                 }
 
                 #endregion
 
-                var _ChargingTariffGroup = new ChargingTariffGroup(Id,
+                var _ChargingTariffGroup = new ChargingTariffGroup(NewGroupId,
                                                                    this,
                                                                    Description);
 
@@ -3712,11 +3715,11 @@ namespace org.GraphDefined.WWCP
         /// Get or create and register a new charging tariff having the given
         /// unique charging tariff identification.
         /// </summary>
-        /// <param name="Id">The unique identification of the charing tariff.</param>
+        /// <param name="IdSuffix">The suffix of the unique identification of the charing tariff group.</param>
         /// <param name="Description">An optional (multi-language) description of this charging tariff.</param>
         /// <param name="OnSuccess">An optional delegate to configure the new charging tariff after its successful creation.</param>
         /// <param name="OnError">An optional delegate to be called whenever the creation of the charging tariff failed.</param>
-        public ChargingTariffGroup GetOrCreateChargingTariffGroup(ChargingTariffGroup_Id                                   Id,
+        public ChargingTariffGroup GetOrCreateChargingTariffGroup(String                                                   IdSuffix,
                                                                   I18NString                                               Description,
                                                                   Action<ChargingTariffGroup>                              OnSuccess  = null,
                                                                   Action<ChargingStationOperator, ChargingTariffGroup_Id>  OnError    = null)
@@ -3726,17 +3729,10 @@ namespace org.GraphDefined.WWCP
             lock (_ChargingTariffGroups)
             {
 
-                #region Initial checks
-
-                if (Name.IsNullOrEmpty())
-                    throw new ArgumentNullException(nameof(Name), "The name of the charging tariff must not be null or empty!");
-
-                #endregion
-
-                if (_ChargingTariffGroups.TryGet(Id, out ChargingTariffGroup _ChargingTariffGroup))
+                if (_ChargingTariffGroups.TryGet(ChargingTariffGroup_Id.Parse(Id, IdSuffix), out ChargingTariffGroup _ChargingTariffGroup))
                     return _ChargingTariffGroup;
 
-                return CreateChargingTariffGroup(Id,
+                return CreateChargingTariffGroup(IdSuffix,
                                                  Description,
                                                  OnSuccess,
                                                  OnError);
