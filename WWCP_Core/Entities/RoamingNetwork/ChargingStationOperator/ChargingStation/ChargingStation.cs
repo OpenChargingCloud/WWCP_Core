@@ -1940,32 +1940,37 @@ namespace org.GraphDefined.WWCP
 
             #endregion
 
-            #region If the EVSE identification is new/unknown: Call CreateEVSE(...)
+            lock (_EVSEs)
+            {
 
-            if (!_EVSEs.ContainsId(EVSEId))
-                return CreateEVSE(EVSEId,
-                                  Configurator,
-                                  RemoteEVSECreator,
-                                  InitialAdminStatus,
-                                  InitialStatus,
-                                  MaxAdminStatusListSize,
-                                  MaxStatusListSize,
-                                  OnSuccess,
-                                  OnError);
+                #region If the EVSE identification is new/unknown: Call CreateEVSE(...)
 
-            #endregion
+                if (!_EVSEs.ContainsId(EVSEId))
+                    return CreateEVSE(EVSEId,
+                                      Configurator,
+                                      RemoteEVSECreator,
+                                      InitialAdminStatus,
+                                      InitialStatus,
+                                      MaxAdminStatusListSize,
+                                      MaxStatusListSize,
+                                      OnSuccess,
+                                      OnError);
+
+                #endregion
 
 
-            // Merge existing EVSE with new EVSE data...
+                // Merge existing EVSE with new EVSE data...
+                return _EVSEs.
+                           GetById(EVSEId).
+                           UpdateWith(new EVSE(EVSEId,
+                                               this,
+                                               Configurator,
+                                               null,
+                                               new Timestamped<EVSEAdminStatusTypes>(DateTime.MinValue, EVSEAdminStatusTypes.Operational),
+                                               new Timestamped<EVSEStatusTypes>     (DateTime.MinValue, EVSEStatusTypes.Available)));
 
-            return _EVSEs.
-                       GetById(EVSEId).
-                       UpdateWith(new EVSE(EVSEId,
-                                           this,
-                                           Configurator,
-                                           null,
-                                           new Timestamped<EVSEAdminStatusTypes>(DateTime.MinValue, EVSEAdminStatusTypes.Operational),
-                                           new Timestamped<EVSEStatusTypes>     (DateTime.MinValue, EVSEStatusTypes.Available)));
+            }
+
         }
 
         #endregion
