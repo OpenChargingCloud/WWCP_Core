@@ -459,11 +459,11 @@ namespace org.GraphDefined.WWCP
             this.SignedMeteringValues        = SignedMeteringValues ?? new SignedMeteringValue[0];
             this._Signatures                 = Signatures.SafeAny()  ? new HashSet<String>(Signatures) : new HashSet<String>();
 
-            if (SignedMeteringValues.Any() && !EnergyMeteringValues.Any())
+            if (SignedMeteringValues.SafeAny() && !EnergyMeteringValues.SafeAny())
             {
 
                 this.EnergyMeteringValues = SignedMeteringValues.Select(svalue => new Timestamped<Single>(svalue.Timestamp,
-                                                                                                       (Single) svalue.MeterValue));
+                                                                                                          (Single) svalue.MeterValue));
 
             }
 
