@@ -30,6 +30,7 @@ namespace org.GraphDefined.WWCP
     /// <summary>
     /// The abstract result of an authorize start operation.
     /// </summary>
+    /// <typeparam name="T">The type of the result</typeparam>
     public abstract class AAuthStartResult<T> : IAAuthStartResult<T>
         where T : struct
     {
@@ -60,6 +61,21 @@ namespace org.GraphDefined.WWCP
         /// The optional charging session identification, when the authorize start operation was successful.
         /// </summary>
         public ChargingSession_Id?          SessionId                     { get; }
+
+        /// <summary>
+        /// An optional contract identification.
+        /// </summary>
+        public String                       ContractId                    { get; }
+
+        /// <summary>
+        /// An optional printed number.
+        /// </summary>
+        public String                       PrintedNumber                 { get; }
+
+        /// <summary>
+        /// The timestamp when this authorization expires.
+        /// </summary>
+        public DateTime?                    ExpiryDate                    { get; }
 
         /// <summary>
         /// The optional maximum allowed charging current.
@@ -129,6 +145,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">The identification of the authorizing entity.</param>
         /// <param name="Result">The authorize start result type.</param>
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="ContractId">An optional contract identification.</param>
+        /// <param name="PrintedNumber">An optional printed number.</param>
+        /// <param name="ExpiryDate">The timestamp when this authorization expires.</param>
         /// <param name="MaxkW">The optional maximum allowed charging current.</param>
         /// <param name="MaxkWh">The optional maximum allowed charging energy.</param>
         /// <param name="MaxDuration">The optional maximum allowed charging duration.</param>
@@ -144,6 +163,9 @@ namespace org.GraphDefined.WWCP
         private AAuthStartResult(IId                          AuthorizatorId,
                                  T                            Result,
                                  ChargingSession_Id?          SessionId              = null,
+                                 String                       ContractId             = null,
+                                 String                       PrintedNumber          = null,
+                                 DateTime?                    ExpiryDate             = null,
                                  Single?                      MaxkW                  = null,
                                  Single?                      MaxkWh                 = null,
                                  TimeSpan?                    MaxDuration            = null,
@@ -159,17 +181,13 @@ namespace org.GraphDefined.WWCP
 
         {
 
-            #region Initial checks
-
-            if (AuthorizatorId == null)
-                throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
-
-            #endregion
-
-            this.AuthorizatorId           = AuthorizatorId;
+            this.AuthorizatorId           = AuthorizatorId ?? throw new ArgumentNullException(nameof(AuthorizatorId), "The given identification of the authorizator must not be null!");
             this.ISendAuthorizeStartStop  = ISendAuthorizeStartStop;
             this.Result                   = Result;
             this.SessionId                = SessionId;
+            this.ContractId               = ContractId;
+            this.PrintedNumber            = PrintedNumber;
+            this.ExpiryDate               = ExpiryDate;
             this.MaxkW                    = MaxkW;
             this.MaxkWh                   = MaxkWh;
             this.MaxDuration              = MaxDuration;
@@ -177,11 +195,11 @@ namespace org.GraphDefined.WWCP
             this.ListOfAuthStopTokens     = ListOfAuthStopTokens;
             this.ListOfAuthStopPINs       = ListOfAuthStopPINs;
 
-            this.ProviderId               = ProviderId      ?? new eMobilityProvider_Id?();
+            this.ProviderId               = ProviderId     ?? new eMobilityProvider_Id?();
             this.Description              = Description;
             this.AdditionalInfo           = AdditionalInfo;
             this.NumberOfRetries          = NumberOfRetries;
-            this.Runtime                  = Runtime         ?? TimeSpan.FromSeconds(0);
+            this.Runtime                  = Runtime        ?? TimeSpan.FromSeconds(0);
 
         }
 
@@ -196,6 +214,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="Result">The authorize start result type.</param>
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="ContractId">An optional contract identification.</param>
+        /// <param name="PrintedNumber">An optional printed number.</param>
+        /// <param name="ExpiryDate">The timestamp when this authorization expires.</param>
         /// <param name="MaxkW">The optional maximum allowed charging current.</param>
         /// <param name="MaxkWh">The optional maximum allowed charging energy.</param>
         /// <param name="MaxDuration">The optional maximum allowed charging duration.</param>
@@ -212,6 +233,9 @@ namespace org.GraphDefined.WWCP
                                    ISendAuthorizeStartStop      ISendAuthorizeStartStop,
                                    T                            Result,
                                    ChargingSession_Id?          SessionId              = null,
+                                   String                       ContractId             = null,
+                                   String                       PrintedNumber          = null,
+                                   DateTime?                    ExpiryDate             = null,
                                    Single?                      MaxkW                  = null,
                                    Single?                      MaxkWh                 = null,
                                    TimeSpan?                    MaxDuration            = null,
@@ -228,6 +252,9 @@ namespace org.GraphDefined.WWCP
             : this(AuthorizatorId,
                    Result,
                    SessionId,
+                   ContractId,
+                   PrintedNumber,
+                   ExpiryDate,
                    MaxkW,
                    MaxkWh,
                    MaxDuration,
@@ -258,6 +285,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
         /// <param name="Result">The authorize start result type.</param>
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="ContractId">An optional contract identification.</param>
+        /// <param name="PrintedNumber">An optional printed number.</param>
+        /// <param name="ExpiryDate">The timestamp when this authorization expires.</param>
         /// <param name="MaxkW">The optional maximum allowed charging current.</param>
         /// <param name="MaxkWh">The optional maximum allowed charging energy.</param>
         /// <param name="MaxDuration">The optional maximum allowed charging duration.</param>
@@ -274,6 +304,9 @@ namespace org.GraphDefined.WWCP
                                    IReceiveAuthorizeStartStop   IReceiveAuthorizeStartStop,
                                    T                            Result,
                                    ChargingSession_Id?          SessionId              = null,
+                                   String                       ContractId             = null,
+                                   String                       PrintedNumber          = null,
+                                   DateTime?                    ExpiryDate             = null,
                                    Single?                      MaxkW                  = null,
                                    Single?                      MaxkWh                 = null,
                                    TimeSpan?                    MaxDuration            = null,
@@ -290,6 +323,9 @@ namespace org.GraphDefined.WWCP
             : this(AuthorizatorId,
                    Result,
                    SessionId,
+                   ContractId,
+                   PrintedNumber,
+                   ExpiryDate,
                    MaxkW,
                    MaxkWh,
                    MaxDuration,
@@ -320,14 +356,8 @@ namespace org.GraphDefined.WWCP
         /// Return a text representation of this object.
         /// </summary>
         public override String ToString()
-        {
 
-            if (ProviderId != null)
-                return String.Concat(Result.ToString(), ", ", ProviderId);
-
-            return String.Concat(Result.ToString());
-
-        }
+            => Result + (ProviderId != null ? ", " + ProviderId : "");
 
         #endregion
 

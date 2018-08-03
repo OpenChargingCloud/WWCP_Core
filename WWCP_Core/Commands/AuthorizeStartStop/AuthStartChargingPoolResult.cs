@@ -44,6 +44,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="Result">The authorize start result type.</param>
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="ContractId">An optional contract identification.</param>
+        /// <param name="PrintedNumber">An optional printed number.</param>
+        /// <param name="ExpiryDate">The timestamp when this authorization expires.</param>
         /// <param name="MaxkW">The optional maximum allowed charging current.</param>
         /// <param name="MaxkWh">The optional maximum allowed charging energy.</param>
         /// <param name="MaxDuration">The optional maximum allowed charging duration.</param>
@@ -60,6 +63,9 @@ namespace org.GraphDefined.WWCP
                                             ISendAuthorizeStartStop          ISendAuthorizeStartStop,
                                             AuthStartChargingPoolResultType  Result,
                                             ChargingSession_Id?              SessionId              = null,
+                                            String                           ContractId             = null,
+                                            String                           PrintedNumber          = null,
+                                            DateTime?                        ExpiryDate             = null,
                                             Single?                          MaxkW                  = null,
                                             Single?                          MaxkWh                 = null,
                                             TimeSpan?                        MaxDuration            = null,
@@ -77,6 +83,9 @@ namespace org.GraphDefined.WWCP
                    ISendAuthorizeStartStop,
                    Result,
                    SessionId,
+                   ContractId,
+                   PrintedNumber,
+                   ExpiryDate,
                    MaxkW,
                    MaxkWh,
                    MaxDuration,
@@ -103,6 +112,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
         /// <param name="Result">The authorize start result type.</param>
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="ContractId">An optional contract identification.</param>
+        /// <param name="PrintedNumber">An optional printed number.</param>
+        /// <param name="ExpiryDate">The timestamp when this authorization expires.</param>
         /// <param name="MaxkW">The optional maximum allowed charging current.</param>
         /// <param name="MaxkWh">The optional maximum allowed charging energy.</param>
         /// <param name="MaxDuration">The optional maximum allowed charging duration.</param>
@@ -119,6 +131,9 @@ namespace org.GraphDefined.WWCP
                                             IReceiveAuthorizeStartStop       IReceiveAuthorizeStartStop,
                                             AuthStartChargingPoolResultType  Result,
                                             ChargingSession_Id?              SessionId              = null,
+                                            String                           ContractId             = null,
+                                            String                           PrintedNumber          = null,
+                                            DateTime?                        ExpiryDate             = null,
                                             Single?                          MaxkW                  = null,
                                             Single?                          MaxkWh                 = null,
                                             TimeSpan?                        MaxDuration            = null,
@@ -136,6 +151,9 @@ namespace org.GraphDefined.WWCP
                    IReceiveAuthorizeStartStop,
                    Result,
                    SessionId,
+                   ContractId,
+                   PrintedNumber,
+                   ExpiryDate,
                    MaxkW,
                    MaxkWh,
                    MaxDuration,
@@ -459,6 +477,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="ISendAuthorizeStartStop">The entity asking for an authorization.</param>
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="ContractId">An optional contract identification.</param>
+        /// <param name="PrintedNumber">An optional printed number.</param>
+        /// <param name="ExpiryDate">The timestamp when this authorization expires.</param>
         /// <param name="MaxkW">The optional maximum allowed charging current.</param>
         /// <param name="MaxkWh">The optional maximum allowed charging energy.</param>
         /// <param name="MaxDuration">The optional maximum allowed charging duration.</param>
@@ -476,6 +497,9 @@ namespace org.GraphDefined.WWCP
             Authorized(IId                          AuthorizatorId,
                        ISendAuthorizeStartStop      ISendAuthorizeStartStop,
                        ChargingSession_Id?          SessionId              = null,
+                       String                       ContractId             = null,
+                       String                       PrintedNumber          = null,
+                       DateTime?                    ExpiryDate             = null,
                        Single?                      MaxkW                  = null,
                        Single?                      MaxkWh                 = null,
                        TimeSpan?                    MaxDuration            = null,
@@ -494,6 +518,9 @@ namespace org.GraphDefined.WWCP
                                                    ISendAuthorizeStartStop,
                                                    AuthStartChargingPoolResultType.Authorized,
                                                    SessionId,
+                                                   ContractId,
+                                                   PrintedNumber,
+                                                   ExpiryDate,
                                                    MaxkW,
                                                    MaxkWh,
                                                    MaxDuration,
@@ -515,6 +542,9 @@ namespace org.GraphDefined.WWCP
         /// <param name="AuthorizatorId">An authorizator identification.</param>
         /// <param name="IReceiveAuthorizeStartStop">The entity giving an authorization.</param>
         /// <param name="SessionId">The optional charging session identification, when the authorize start operation was successful.</param>
+        /// <param name="ContractId">An optional contract identification.</param>
+        /// <param name="PrintedNumber">An optional printed number.</param>
+        /// <param name="ExpiryDate">The timestamp when this authorization expires.</param>
         /// <param name="MaxkW">The optional maximum allowed charging current.</param>
         /// <param name="MaxkWh">The optional maximum allowed charging energy.</param>
         /// <param name="MaxDuration">The optional maximum allowed charging duration.</param>
@@ -532,6 +562,9 @@ namespace org.GraphDefined.WWCP
             Authorized(IId                          AuthorizatorId,
                        IReceiveAuthorizeStartStop   IReceiveAuthorizeStartStop,
                        ChargingSession_Id?          SessionId              = null,
+                       String                       ContractId             = null,
+                       String                       PrintedNumber          = null,
+                       DateTime?                    ExpiryDate             = null,
                        Single?                      MaxkW                  = null,
                        Single?                      MaxkWh                 = null,
                        TimeSpan?                    MaxDuration            = null,
@@ -550,6 +583,9 @@ namespace org.GraphDefined.WWCP
                                                    IReceiveAuthorizeStartStop,
                                                    AuthStartChargingPoolResultType.Authorized,
                                                    SessionId,
+                                                   ContractId,
+                                                   PrintedNumber,
+                                                   ExpiryDate,
                                                    MaxkW,
                                                    MaxkWh,
                                                    MaxDuration,

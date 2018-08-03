@@ -3921,6 +3921,7 @@ namespace org.GraphDefined.WWCP
                                                      Id.ToString(),
                                                      EventTrackingId,
                                                      RoamingNetwork.Id,
+                                                     new ChargeDetailRecord[0],
                                                      ChargeDetailRecords,
                                                      RequestTimeout);
 
@@ -3960,6 +3961,7 @@ namespace org.GraphDefined.WWCP
                                           Id.ToString(),
                                           EventTrackingId,
                                           RoamingNetwork.Id,
+                                          new ChargeDetailRecord[0],
                                           ChargeDetailRecords,
                                           RequestTimeout);
 
@@ -3977,10 +3979,10 @@ namespace org.GraphDefined.WWCP
 
             var result   = DisableAuthentication
 
-                               ? SendCDRsResult.AdminDown(Id,
-                                                          this,
-                                                          ChargeDetailRecords,
-                                                          Runtime: Runtime)
+                               ? SendCDRsResult.AdminDown   (Id,
+                                                             this,
+                                                             ChargeDetailRecords,
+                                                             Runtime: Runtime)
 
                                : SendCDRsResult.OutOfService(Id,
                                                              this,
@@ -3999,6 +4001,7 @@ namespace org.GraphDefined.WWCP
                                            Id.ToString(),
                                            EventTrackingId,
                                            RoamingNetwork.Id,
+                                           new ChargeDetailRecord[0],
                                            ChargeDetailRecords,
                                            RequestTimeout,
                                            result,

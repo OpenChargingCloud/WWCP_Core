@@ -7438,6 +7438,7 @@ namespace org.GraphDefined.WWCP
                                           Id.ToString(),
                                           EventTrackingId,
                                           Id,
+                                          new ChargeDetailRecord[0],
                                           ChargeDetailRecords,
                                           RequestTimeout);
 
@@ -7719,6 +7720,7 @@ namespace org.GraphDefined.WWCP
                                            Id.ToString(),
                                            EventTrackingId,
                                            Id,
+                                           new ChargeDetailRecord[0],
                                            ChargeDetailRecords,
                                            RequestTimeout,
                                            result,
