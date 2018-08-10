@@ -4457,7 +4457,7 @@ namespace org.GraphDefined.WWCP
                             // 7: result.ProviderId
                             // 8: result.SessionId
 
-                            var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),
+                            var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),    ",",
                                                         "Add,",
                                                         EVSEId.OperatorId,              ",",
                                                         EVSEId,                         ",",
@@ -4534,7 +4534,7 @@ namespace org.GraphDefined.WWCP
                                 //                                    NewChargingSession);
 
 
-                                var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), 
+                                var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),    ",",
                                                             "Add,",
                                                             EVSEId.OperatorId,              ",",
                                                             EVSEId,                         ",",
@@ -4941,7 +4941,7 @@ namespace org.GraphDefined.WWCP
                     try
                     {
 
-                        var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),
+                        var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
                                                     "Remove,",
                                                     ",",
                                                     SessionId);
@@ -5244,7 +5244,7 @@ namespace org.GraphDefined.WWCP
                 try
                 {
 
-                    var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),
+                    var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
                                                 "Remove,",
                                                 EVSEId, ",",
                                                 SessionId);
@@ -5413,7 +5413,7 @@ namespace org.GraphDefined.WWCP
                     try
                     {
 
-                        var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),
+                        var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
                                                     "Remove,",
                                                     ",",
                                                     SessionId);
@@ -5851,7 +5851,7 @@ namespace org.GraphDefined.WWCP
                             //                                    this,
                             //                                    NewChargingSession);
 
-                            var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),
+                            var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),    ",",
                                                         "Add,",
                                                         OperatorId,                     ",",
                                                         EVSEId,                         ",",
@@ -6616,7 +6616,7 @@ namespace org.GraphDefined.WWCP
                 try
                 {
 
-                    var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),
+                    var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
                                                 "Remove,",
                                                 EVSEId, ",",
                                                 SessionId);

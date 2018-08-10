@@ -63,6 +63,12 @@ namespace org.GraphDefined.WWCP
 
         }
 
+
+        public override String ToString()
+
+            => String.Concat("Result: ", Result.ToString(),
+                             Warnings.SafeAny() ? " with " + Warnings.Count() + " warnings!" : "");
+
     }
 
 
