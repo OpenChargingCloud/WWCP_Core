@@ -59,7 +59,6 @@ namespace org.GraphDefined.WWCP
     {
 
         private static readonly SemaphoreSlim  SessionLogSemaphore  = new SemaphoreSlim(1, 1);
-        private const           String         SessionLogFileName   = "Sessions.log";
 
         #region Data
 
@@ -238,6 +237,11 @@ namespace org.GraphDefined.WWCP
         /// </summary>
         public ChargingStationOperatorSignatureDelegate  ChargingStationOperatorSignatureGenerator    { get; }
 
+        /// <summary>
+        /// The charging sessions log file name.
+        /// </summary>
+        public String                                    SessionLogFileName                           { get; }
+
         #endregion
 
         #region Constructor(s)
@@ -305,6 +309,8 @@ namespace org.GraphDefined.WWCP
             this.ChargingPoolSignatureGenerator                     = ChargingPoolSignatureGenerator;
             this.ChargingStationOperatorSignatureGenerator          = ChargingStationOperatorSignatureGenerator;
 
+            this.SessionLogFileName                                 = "Sessions-" + Id + ".log";
+
             #endregion
 
             #region Init events
@@ -367,6 +373,7 @@ namespace org.GraphDefined.WWCP
                                                          AuthorizatorId       = elements[7] != "" ? CSORoamingProvider_Id.     Parse(elements[7]) : null,
                                                          //AuthService          = result.ISendAuthorizeStartStop,
                                                          ChargingStationOperatorId           = elements[2] != "" ? ChargingStationOperator_Id.Parse(elements[2]) : new ChargingStationOperator_Id?(),
+                                                         EVSE                 = GetEVSEbyId(EVSE_Id.Parse(elements[3])),
                                                          EVSEId               = EVSE_Id.Parse(elements[3]),
                                                          IdentificationStart  = elements[5] != "" ? AuthIdentification.FromAuthToken           (Auth_Token.Parse(elements[5]))
                                                                               : elements[6] != "" ? AuthIdentification.FromRemoteIdentification(eMobilityAccount_Id.Parse(elements[6]))
@@ -5854,12 +5861,13 @@ namespace org.GraphDefined.WWCP
                             // Will be deleted when the charge detail record was sent!
 
                             var NewChargingSession = new ChargingSession(result.SessionId.Value) {
-                                                         AuthorizatorId       = result.AuthorizatorId,
-                                                         AuthService          = result.ISendAuthorizeStartStop,
-                                                         ChargingStationOperatorId           = OperatorId,
-                                                         EVSEId               = EVSEId,
-                                                         IdentificationStart  = AuthIdentification,
-                                                         ChargingProduct      = ChargingProduct
+                                                         AuthorizatorId             = result.AuthorizatorId,
+                                                         ProviderIdStart            = result.ProviderId,
+                                                         AuthService                = result.ISendAuthorizeStartStop,
+                                                         ChargingStationOperatorId  = OperatorId,
+                                                         EVSEId                     = EVSEId,
+                                                         IdentificationStart        = AuthIdentification,
+                                                         ChargingProduct            = ChargingProduct
                                                      };
 
                             if (_ChargingSessions.ContainsKey(NewChargingSession.Id))
@@ -6630,30 +6638,36 @@ namespace org.GraphDefined.WWCP
                                    ConfigureAwait(false);
 
 
-            var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
-
-            if (success)
+            if (result.Result == AuthStopEVSEResultType.Authorized)
             {
-                try
-                {
 
-                    var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
-                                                "Stop,",
-                                                EVSEId, ",",
-                                                SessionId, ",",
-                                                AuthIdentification);
+                var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
 
-                    File.AppendAllText(SessionLogFileName,
-                                       LogLine + Environment.NewLine);
+                if (success)
+                {
+                    try
+                    {
 
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e.Message);
-                }
-                finally
-                {
-                    SessionLogSemaphore.Release();
+                        var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
+                                                    "Stop,",
+                                                    OperatorId,         ",",
+                                                    EVSEId,             ",",
+                                                    AuthIdentification, ",",
+                                                    SessionId);
+
+                        File.AppendAllText(SessionLogFileName,
+                                           LogLine + Environment.NewLine);
+
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                    finally
+                    {
+                        SessionLogSemaphore.Release();
+                    }
+
                 }
 
             }
@@ -7745,8 +7759,10 @@ namespace org.GraphDefined.WWCP
 
                             var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
                                                         "SendCDR,",
-                                                        ",",
+                                                        sendCDRResult.ChargeDetailRecord.EVSE?.Id ?? sendCDRResult.ChargeDetailRecord.EVSEId, ",",
                                                         sendCDRResult.ChargeDetailRecord.SessionId, ",",
+                                                        sendCDRResult.ChargeDetailRecord.IdentificationStart, ",",
+                                                        sendCDRResult.ChargeDetailRecord.IdentificationStop, ",",
                                                         sendCDRResult.Result, ",",
                                                         sendCDRResult.Warnings.AggregateWith("/"));
 
