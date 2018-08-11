@@ -349,44 +349,59 @@ namespace org.GraphDefined.WWCP
                     switch (elements[1])
                     {
 
-                        case "Add":
+                        case "Start":
 
-                                // 0: Timestamp
-                                // 1: "Add"
-                                // 2: OperatorId
-                                // 3: EVSEId
-                                // 4: ChargingProduct
-                                // 5: AuthIdentification?.AuthToken
-                                // 6: eMA Id
-                                // 7: result.AuthorizatorId
-                                // 8: result.ProviderId
-                                // 9: result.SessionId
+                            // 0: Timestamp
+                            // 1: "Start"
+                            // 2: OperatorId
+                            // 3: EVSEId
+                            // 4: ChargingProduct
+                            // 5: AuthIdentification?.AuthToken
+                            // 6: eMA Id
+                            // 7: result.AuthorizatorId
+                            // 8: result.ProviderId
+                            // 9: result.SessionId
 
-                                var NewChargingSession = new ChargingSession(ChargingSession_Id.Parse(elements[9]),
-                                                                             elements[0] != "" ? DateTime.Parse(elements[0]) : DateTime.UtcNow) {
-                                                             AuthorizatorId       = elements[7] != "" ? CSORoamingProvider_Id.     Parse(elements[7]) : null,
-                                                             //AuthService          = result.ISendAuthorizeStartStop,
-                                                             ChargingStationOperatorId           = elements[2] != "" ? ChargingStationOperator_Id.Parse(elements[2]) : new ChargingStationOperator_Id?(),
-                                                             EVSEId               = EVSE_Id.Parse(elements[3]),
-                                                             IdentificationStart  = elements[5] != "" ? AuthIdentification.FromAuthToken           (Auth_Token.Parse(elements[5]))
-                                                                                  : elements[6] != "" ? AuthIdentification.FromRemoteIdentification(eMobilityAccount_Id.Parse(elements[6]))
-                                                                                  : null,
-                                                             ChargingProduct      = elements[4] != "" ? ChargingProduct.           Parse(elements[4]) : null
-                                                         };
+                            var NewChargingSession = new ChargingSession(ChargingSession_Id.Parse(elements[9]),
+                                                                         elements[0] != "" ? DateTime.Parse(elements[0]) : DateTime.UtcNow) {
+                                                         AuthorizatorId       = elements[7] != "" ? CSORoamingProvider_Id.     Parse(elements[7]) : null,
+                                                         //AuthService          = result.ISendAuthorizeStartStop,
+                                                         ChargingStationOperatorId           = elements[2] != "" ? ChargingStationOperator_Id.Parse(elements[2]) : new ChargingStationOperator_Id?(),
+                                                         EVSEId               = EVSE_Id.Parse(elements[3]),
+                                                         IdentificationStart  = elements[5] != "" ? AuthIdentification.FromAuthToken           (Auth_Token.Parse(elements[5]))
+                                                                              : elements[6] != "" ? AuthIdentification.FromRemoteIdentification(eMobilityAccount_Id.Parse(elements[6]))
+                                                                              : null,
+                                                         ChargingProduct      = elements[4] != "" ? ChargingProduct.           Parse(elements[4]) : null
+                                                     };
 
-                                if (_ChargingSessions.ContainsKey(NewChargingSession.Id))
-                                    _ChargingSessions.TryRemove(NewChargingSession.Id, out ChargingSession CS);
+                            if (_ChargingSessions.ContainsKey(NewChargingSession.Id))
+                                _ChargingSessions.TryRemove(NewChargingSession.Id, out ChargingSession CS);
 
-                                _ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession);
+                            _ChargingSessions.TryAdd(NewChargingSession.Id, NewChargingSession);
 
                             break;
 
-                        case "Remove":
+
+                        case "Stop":
 
                             // 0: Timestamp
-                            // 1: "Remove"
+                            // 1: "Stop"
                             // 2: EVSEId
                             // 3: SessionId
+                            // 4: RFID UID
+                            // 5: eMAId
+
+                            break;
+
+
+                        case "SendCDR":
+
+                            // 0: Timestamp
+                            // 1: "SendCDR"
+                            // 2: EVSEId
+                            // 3: SessionId
+                            // 4: SendCDRResult
+                            // 5: Warnings, aggregatedWith "/"
 
                             var EVSEId     = elements[2] != "" ? EVSE_Id.           Parse(elements[2]) : new EVSE_Id?();
                             var SessionId  =                     ChargingSession_Id.Parse(elements[3]);
@@ -4447,7 +4462,7 @@ namespace org.GraphDefined.WWCP
                             //                                    this,
                             //                                    NewChargingSession);
 
-                            // 0: "Add"
+                            // 0: "Start"
                             // 1: OperatorId
                             // 2: EVSEId
                             // 3: ChargingProduct
@@ -4458,7 +4473,7 @@ namespace org.GraphDefined.WWCP
                             // 8: result.SessionId
 
                             var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),    ",",
-                                                        "Add,",
+                                                        "Start,",
                                                         EVSEId.OperatorId,              ",",
                                                         EVSEId,                         ",",
                                                         ChargingProduct,                ",",
@@ -4535,7 +4550,7 @@ namespace org.GraphDefined.WWCP
 
 
                                 var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),    ",",
-                                                            "Add,",
+                                                            "Start,",
                                                             EVSEId.OperatorId,              ",",
                                                             EVSEId,                         ",",
                                                             ChargingProduct,                ",",
@@ -4942,9 +4957,11 @@ namespace org.GraphDefined.WWCP
                     {
 
                         var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
-                                                    "Remove,",
+                                                    "Stop,",
                                                     ",",
-                                                    SessionId);
+                                                    SessionId, ",",
+                                                    ",",
+                                                    eMAId);
 
                         File.AppendAllText(SessionLogFileName,
                                            LogLine + Environment.NewLine);
@@ -5245,9 +5262,11 @@ namespace org.GraphDefined.WWCP
                 {
 
                     var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
-                                                "Remove,",
+                                                "Stop,",
                                                 EVSEId, ",",
-                                                SessionId);
+                                                SessionId, ",",
+                                                ",",
+                                                eMAId);
 
                     File.AppendAllText(SessionLogFileName,
                                        LogLine + Environment.NewLine);
@@ -5414,9 +5433,11 @@ namespace org.GraphDefined.WWCP
                     {
 
                         var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
-                                                    "Remove,",
+                                                    "Stop,",
                                                     ",",
-                                                    SessionId);
+                                                    SessionId, ",",
+                                                    ",",
+                                                    eMAId);
 
                         File.AppendAllText(SessionLogFileName,
                                            LogLine + Environment.NewLine);
@@ -5852,7 +5873,7 @@ namespace org.GraphDefined.WWCP
                             //                                    NewChargingSession);
 
                             var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(),    ",",
-                                                        "Add,",
+                                                        "Start,",
                                                         OperatorId,                     ",",
                                                         EVSEId,                         ",",
                                                         ChargingProduct,                ",",
@@ -6617,9 +6638,10 @@ namespace org.GraphDefined.WWCP
                 {
 
                     var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
-                                                "Remove,",
+                                                "Stop,",
                                                 EVSEId, ",",
-                                                SessionId);
+                                                SessionId, ",",
+                                                AuthIdentification);
 
                     File.AppendAllText(SessionLogFileName,
                                        LogLine + Environment.NewLine);
@@ -7705,6 +7727,47 @@ namespace org.GraphDefined.WWCP
                                               "",
                                               null,
                                               Runtime);
+
+
+                #region Store "SendCDR"-information within
+
+                var success = await SessionLogSemaphore.WaitAsync(TimeSpan.FromSeconds(5));
+
+                if (success)
+                {
+                    try
+                    {
+
+                        foreach (var sendCDRResult in resultMap)
+                        {
+
+                            _ChargingSessions.TryRemove(sendCDRResult.ChargeDetailRecord.SessionId, out ChargingSession CS);
+
+                            var LogLine = String.Concat(DateTime.UtcNow.ToIso8601(), ",",
+                                                        "SendCDR,",
+                                                        ",",
+                                                        sendCDRResult.ChargeDetailRecord.SessionId, ",",
+                                                        sendCDRResult.Result, ",",
+                                                        sendCDRResult.Warnings.AggregateWith("/"));
+
+                            File.AppendAllText(SessionLogFileName,
+                                               LogLine + Environment.NewLine);
+
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e.Message);
+                    }
+                    finally
+                    {
+                        SessionLogSemaphore.Release();
+                    }
+
+                }
+
+                #endregion
 
             }
 
